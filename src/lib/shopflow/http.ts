@@ -63,6 +63,9 @@ export class HttpShopflowClient implements ShopflowClient {
     q.set("locale", params.locale);
     if (params.category) q.set("category", params.category);
     if (params.search) q.set("search", params.search);
+    if (params.origin) q.set("origin", params.origin);
+    if (params.minPrice != null) q.set("minPrice", String(params.minPrice));
+    if (params.maxPrice != null) q.set("maxPrice", String(params.maxPrice));
     if (params.sort) q.set("sort", params.sort);
     if (params.page) q.set("page", String(params.page));
     if (params.pageSize) q.set("pageSize", String(params.pageSize));

@@ -100,7 +100,14 @@
     "empty": "Mahsulot topilmadi",
     "resultsCount": "{count} ta mahsulot",
     "searchResults": "“{query}” bo‘yicha natijalar",
-    "searchPlaceholder": "Mahsulot qidirish…"
+    "searchPlaceholder": "Mahsulot qidirish…",
+    "filters": "Filtrlar",
+    "origin": "Ishlab chiqaruvchi",
+    "allOrigins": "Barchasi",
+    "priceFrom": "Narx, dan",
+    "priceTo": "gacha",
+    "apply": "Qo‘llash",
+    "clearFilters": "Filtrlarni tozalash"
   },
   "cart": {
     "title": "Savatcha",

@@ -25,16 +25,30 @@ export async function generateMetadata({
   });
 }
 
+const toNum = (v?: string) => {
+  const n = Number(v);
+  return v && Number.isFinite(n) && n >= 0 ? n : undefined;
+};
+
 export default async function ProductsPage({
   params,
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ sort?: string; q?: string }>;
+  searchParams: Promise<{ sort?: string; q?: string; origin?: string; min?: string; max?: string }>;
 }) {
   const { locale } = await params;
-  const { sort, q } = await searchParams;
+  const { sort, q, origin, min, max } = await searchParams;
   setRequestLocale(locale);
   const activeSort = valid.includes(sort as Sort) ? (sort as Sort) : "popular";
-  return <ShopView locale={locale} sort={activeSort} search={q?.trim() || undefined} />;
+  return (
+    <ShopView
+      locale={locale}
+      sort={activeSort}
+      search={q?.trim() || undefined}
+      origin={origin || undefined}
+      minPrice={toNum(min)}
+      maxPrice={toNum(max)}
+    />
+  );
 }

@@ -96,6 +96,9 @@ export interface ProductListParams {
   locale: Locale;
   category?: string;
   search?: string;
+  origin?: string;
+  minPrice?: number;
+  maxPrice?: number;
   sort?: "popular" | "price_asc" | "price_desc" | "new";
   page?: number;
   pageSize?: number;
