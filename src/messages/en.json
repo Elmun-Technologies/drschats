@@ -100,7 +100,14 @@
     "empty": "No products found",
     "resultsCount": "{count} products",
     "searchResults": "Results for “{query}”",
-    "searchPlaceholder": "Search products…"
+    "searchPlaceholder": "Search products…",
+    "filters": "Filters",
+    "origin": "Made in",
+    "allOrigins": "All",
+    "priceFrom": "Price, from",
+    "priceTo": "to",
+    "apply": "Apply",
+    "clearFilters": "Clear filters"
   },
   "cart": {
     "title": "Cart",

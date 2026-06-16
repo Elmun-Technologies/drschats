@@ -724,10 +724,13 @@ export class MockShopflowClient implements ShopflowClient {
   }
 
   async getProducts(params: ProductListParams): Promise<ProductListResult> {
-    const { locale, category, search, sort, page = 1, pageSize = 12 } = params;
+    const { locale, category, search, origin, minPrice, maxPrice, sort, page = 1, pageSize = 12 } = params;
     let items = rawProducts.map((p) => resolveProduct(p, locale));
 
     if (category) items = items.filter((p) => p.categorySlug === category);
+    if (origin) items = items.filter((p) => p.origin === origin);
+    if (minPrice != null) items = items.filter((p) => p.price >= minPrice);
+    if (maxPrice != null) items = items.filter((p) => p.price <= maxPrice);
     if (search) {
       const q = search.toLowerCase();
       items = items.filter(

@@ -100,7 +100,14 @@
     "empty": "Продукты не найдены",
     "resultsCount": "{count} продуктов",
     "searchResults": "Результаты по «{query}»",
-    "searchPlaceholder": "Поиск продуктов…"
+    "searchPlaceholder": "Поиск продуктов…",
+    "filters": "Фильтры",
+    "origin": "Производитель",
+    "allOrigins": "Все",
+    "priceFrom": "Цена, от",
+    "priceTo": "до",
+    "apply": "Применить",
+    "clearFilters": "Сбросить фильтры"
   },
   "cart": {
     "title": "Корзина",

@@ -5,6 +5,7 @@ import type { ProductListParams } from "@/lib/shopflow/types";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
+import { FilterBar } from "@/components/shop/FilterBar";
 import { cn } from "@/lib/utils";
 
 type Sort = NonNullable<ProductListParams["sort"]>;
@@ -21,17 +22,29 @@ export async function ShopView({
   activeCategory,
   sort = "popular",
   search,
+  origin,
+  minPrice,
+  maxPrice,
 }: {
   locale: Locale;
   activeCategory?: string;
   sort?: Sort;
   search?: string;
+  origin?: string;
+  minPrice?: number;
+  maxPrice?: number;
 }) {
   const t = await getTranslations("shop");
-  const [categories, result] = await Promise.all([
+  const [categories, result, facetPool] = await Promise.all([
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, category: activeCategory, search, sort, pageSize: 24 }),
+    shopflow.getProducts({ locale, category: activeCategory, search, origin, minPrice, maxPrice, sort, pageSize: 24 }),
+    // Unfiltered (by origin/price) pool for the current category, to derive facets.
+    shopflow.getProducts({ locale, category: activeCategory, search, pageSize: 100 }),
   ]);
+
+  const origins = Array.from(
+    new Set(facetPool.items.map((p) => p.origin).filter((o): o is string => Boolean(o))),
+  ).sort();
 
   const active = activeCategory
     ? categories.find((c) => c.slug === activeCategory)
@@ -42,6 +55,9 @@ export async function ShopView({
     const query: Record<string, string> = {};
     if (s !== "popular") query.sort = s;
     if (search) query.q = search;
+    if (origin) query.origin = origin;
+    if (minPrice != null) query.min = String(minPrice);
+    if (maxPrice != null) query.max = String(maxPrice);
     return { pathname: basePath, query };
   };
 
@@ -89,15 +105,32 @@ export async function ShopView({
           </div>
         </div>
 
-        {result.items.length === 0 ? (
-          <p className="py-24 text-center text-muted">{t("empty")}</p>
-        ) : (
-          <div className="mb-32 mt-10 grid grid-cols-2 gap-4 lg:grid-cols-4">
-            {result.items.map((p, i) => (
-              <ProductCard key={p.id} product={p} index={i} />
-            ))}
-          </div>
-        )}
+        {/* Filters + grid */}
+        <div className="mb-32 mt-10 grid gap-8 lg:grid-cols-[260px_1fr]">
+          <aside className="lg:sticky lg:top-24 lg:self-start">
+            <FilterBar
+              basePath={basePath}
+              origins={origins}
+              current={{
+                origin,
+                min: minPrice != null ? String(minPrice) : undefined,
+                max: maxPrice != null ? String(maxPrice) : undefined,
+                sort,
+                q: search,
+              }}
+            />
+          </aside>
+
+          {result.items.length === 0 ? (
+            <p className="py-24 text-center text-muted">{t("empty")}</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+              {result.items.map((p, i) => (
+                <ProductCard key={p.id} product={p} index={i} />
+              ))}
+            </div>
+          )}
+        </div>
       </Container>
     </div>
   );
