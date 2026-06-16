@@ -98,7 +98,9 @@
     "sortPriceDesc": "Price: high to low",
     "sortNew": "New",
     "empty": "No products found",
-    "resultsCount": "{count} products"
+    "resultsCount": "{count} products",
+    "searchResults": "Results for “{query}”",
+    "searchPlaceholder": "Search products…"
   },
   "cart": {
     "title": "Cart",
