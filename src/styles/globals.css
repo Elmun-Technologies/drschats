@@ -1,0 +1,160 @@
+@import "tailwindcss";
+
+/*
+  Alimkhanov design tokens.
+  Premium "Whoop-style" dark system. Swap brand values here when the real
+  brand-book / logo / colours arrive — nothing else needs to change.
+*/
+@theme {
+  /* Brand surfaces */
+  --color-ink: #08090b;
+  --color-surface: #0e1013;
+  --color-surface-2: #15181d;
+  --color-surface-3: #1d2127;
+  --color-line: rgba(255, 255, 255, 0.08);
+  --color-line-strong: rgba(255, 255, 255, 0.16);
+
+  /* Foreground */
+  --color-fg: #f4f6f8;
+  --color-muted: #9aa3ad;
+  --color-faint: #69707a;
+
+  /* Brand accents — "vital green" energy + warm gold */
+  --color-accent: #1fd17b;
+  --color-accent-soft: rgba(31, 209, 123, 0.12);
+  --color-accent-strong: #16b86a;
+  --color-gold: #e7b94b;
+  --color-danger: #ff5c5c;
+
+  /* Typography (bound to next/font CSS vars in layout) */
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 2rem;
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Animations */
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Utility layer */
+@layer utilities {
+  .container-px {
+    padding-inline: clamp(1.25rem, 5vw, 5rem);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .gradient-accent {
+    background-image: linear-gradient(
+      135deg,
+      var(--color-accent) 0%,
+      var(--color-gold) 100%
+    );
+  }
+  .text-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, var(--color-muted) 90%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-ink);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-3);
+  border-radius: 999px;
+}
