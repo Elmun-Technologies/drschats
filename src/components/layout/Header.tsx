@@ -7,6 +7,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
+import { SearchBox } from "./SearchBox";
 
 const navItems = [
   { key: "shop", href: "/products" },
@@ -54,6 +55,9 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-3">
+          <div className="hidden sm:block">
+            <SearchBox />
+          </div>
           <LocaleSwitcher className="hidden sm:block" />
           <CartButton label={t("cart")} />
           <button

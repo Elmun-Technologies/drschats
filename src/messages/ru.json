@@ -98,7 +98,9 @@
     "sortPriceDesc": "Цена: по убыванию",
     "sortNew": "Новинки",
     "empty": "Продукты не найдены",
-    "resultsCount": "{count} продуктов"
+    "resultsCount": "{count} продуктов",
+    "searchResults": "Результаты по «{query}»",
+    "searchPlaceholder": "Поиск продуктов…"
   },
   "cart": {
     "title": "Корзина",

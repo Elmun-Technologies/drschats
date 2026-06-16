@@ -20,15 +20,17 @@ export async function ShopView({
   locale,
   activeCategory,
   sort = "popular",
+  search,
 }: {
   locale: Locale;
   activeCategory?: string;
   sort?: Sort;
+  search?: string;
 }) {
   const t = await getTranslations("shop");
   const [categories, result] = await Promise.all([
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, category: activeCategory, sort, pageSize: 24 }),
+    shopflow.getProducts({ locale, category: activeCategory, search, sort, pageSize: 24 }),
   ]);
 
   const active = activeCategory
@@ -36,17 +38,22 @@ export async function ShopView({
     : undefined;
 
   const basePath = activeCategory ? `/products/${activeCategory}` : "/products";
-  const sortQuery = (s: Sort) => ({ pathname: basePath, query: s === "popular" ? {} : { sort: s } });
+  const sortQuery = (s: Sort) => {
+    const query: Record<string, string> = {};
+    if (s !== "popular") query.sort = s;
+    if (search) query.q = search;
+    return { pathname: basePath, query };
+  };
 
   return (
     <div className="pt-32">
       <Container>
         <header className="max-w-2xl">
           <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">
-            {active ? active.name : t("title")}
+            {search ? t("searchResults", { query: search }) : active ? active.name : t("title")}
           </h1>
           <p className="mt-3 text-lg text-muted">
-            {active?.description ?? t("subtitle")}
+            {search ? t("resultsCount", { count: result.total }) : active?.description ?? t("subtitle")}
           </p>
         </header>
 

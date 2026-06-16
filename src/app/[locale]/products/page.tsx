@@ -30,11 +30,11 @@ export default async function ProductsPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ sort?: string }>;
+  searchParams: Promise<{ sort?: string; q?: string }>;
 }) {
   const { locale } = await params;
-  const { sort } = await searchParams;
+  const { sort, q } = await searchParams;
   setRequestLocale(locale);
   const activeSort = valid.includes(sort as Sort) ? (sort as Sort) : "popular";
-  return <ShopView locale={locale} sort={activeSort} />;
+  return <ShopView locale={locale} sort={activeSort} search={q?.trim() || undefined} />;
 }

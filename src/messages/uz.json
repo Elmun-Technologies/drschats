@@ -98,7 +98,9 @@
     "sortPriceDesc": "Narx: qimmatidan",
     "sortNew": "Yangi",
     "empty": "Mahsulot topilmadi",
-    "resultsCount": "{count} ta mahsulot"
+    "resultsCount": "{count} ta mahsulot",
+    "searchResults": "“{query}” bo‘yicha natijalar",
+    "searchPlaceholder": "Mahsulot qidirish…"
   },
   "cart": {
     "title": "Savatcha",
