@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
+import { Logo } from "./Logo";
 
 export function Footer() {
   const t = useTranslations("footer");
@@ -12,9 +13,7 @@ export function Footer() {
       <Container className="py-16">
         <div className="grid gap-12 md:grid-cols-[2fr_1fr_1fr_1fr]">
           <div>
-            <span className="font-display text-2xl font-bold">
-              ALIM<span className="text-accent">KHANOV</span>
-            </span>
+            <Logo className="text-2xl" />
             <p className="mt-4 max-w-xs text-sm text-muted">{t("tagline")}</p>
           </div>
 

@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
 import { SearchBox } from "./SearchBox";
+import { Logo } from "./Logo";
 
 const navItems = [
   { key: "shop", href: "/products" },
@@ -38,8 +39,8 @@ export function Header() {
       )}
     >
       <div className="container-px mx-auto flex h-16 max-w-7xl items-center justify-between gap-4">
-        <Link href="/" className="font-display text-xl font-bold tracking-tight">
-          ALIM<span className="text-accent">KHANOV</span>
+        <Link href="/" aria-label="Alimkhanov">
+          <Logo />
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
@@ -81,9 +82,7 @@ export function Header() {
             className="fixed inset-0 z-50 flex flex-col bg-ink md:hidden"
           >
             <div className="container-px flex h-16 items-center justify-between">
-              <span className="font-display text-xl font-bold">
-                ALIM<span className="text-accent">KHANOV</span>
-              </span>
+              <Logo />
               <button
                 onClick={() => setMenuOpen(false)}
                 aria-label={t("closeMenu")}

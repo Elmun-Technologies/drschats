@@ -66,3 +66,7 @@ added in the platform render automatically via the template.
 Currently a premium dark token system + placeholder imagery (Picsum). Real
 logo, brand colours, fonts and product photos plug into
 `src/styles/globals.css` (tokens) and the product image host in `next.config.ts`.
+
+Brand wiring is centralised in **`src/lib/brand.ts`** (logo path, wordmark,
+per-product photo overrides) and **`public/brand/`** — see that folder's README.
+The `<Logo>` component falls back to the text wordmark until a logo file is set.

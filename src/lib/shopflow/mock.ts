@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
+import { BRAND } from "@/lib/brand";
 import type {
   Category,
   Product,
@@ -683,7 +684,10 @@ function resolveProduct(p: RawProduct, locale: Locale): Product {
     rating: p.rating,
     reviewCount: p.reviewCount,
     inStock: p.inStock,
-    images: p.imageSeeds.map((s) => img(s, p.name[locale])),
+    images:
+      BRAND.productImageOverrides[p.slug]?.length
+        ? BRAND.productImageOverrides[p.slug].map((url) => ({ url, alt: p.name[locale] }))
+        : p.imageSeeds.map((s) => img(s, p.name[locale])),
     highlights: p.highlights[locale],
     benefits: p.benefits[locale],
     ingredients: p.ingredients[locale],
