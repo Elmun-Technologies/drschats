@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { locales, routing } from "@/lib/i18n/routing";
 import { shopflow, listAllSlugs } from "@/lib/shopflow";
+import { listArticleSlugs } from "@/lib/content/blog";
 import { SITE_URL } from "@/lib/seo/metadata";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -9,7 +10,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = ["", "/products", "/about", "/blog", "/contact"];
   const categoryPaths = categories.map((c) => `/products/${c.slug}`);
   const productPaths = listAllSlugs().map(({ slug }) => `/product/${slug}`);
-  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths];
+  const blogPaths = listArticleSlugs().map((slug) => `/blog/${slug}`);
+  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths];
 
   return allPaths.map((path) => {
     const languages: Record<string, string> = {};

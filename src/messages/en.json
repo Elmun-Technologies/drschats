@@ -179,7 +179,11 @@
   "blog": {
     "title": "Health blog",
     "subtitle": "Useful articles about vitamins and healthy living",
-    "comingSoon": "Articles are coming very soon."
+    "comingSoon": "Articles are coming very soon.",
+    "minRead": "{min} min read",
+    "readMore": "Read",
+    "backToBlog": "Back to blog",
+    "relatedProducts": "Related products"
   },
   "meta": {
     "homeTitle": "Alimkhanov — Vitamins & Supplements in Uzbekistan",

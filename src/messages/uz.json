@@ -179,7 +179,11 @@
   "blog": {
     "title": "Sog‘liq blogi",
     "subtitle": "Vitaminlar va sog‘lom hayot haqida foydali maqolalar",
-    "comingSoon": "Maqolalar tez orada qo‘shiladi."
+    "comingSoon": "Maqolalar tez orada qo‘shiladi.",
+    "minRead": "{min} daqiqa o‘qish",
+    "readMore": "O‘qish",
+    "backToBlog": "Blogga qaytish",
+    "relatedProducts": "Mos mahsulotlar"
   },
   "meta": {
     "homeTitle": "Alimkhanov — Vitaminlar va BAD O‘zbekistonda",
