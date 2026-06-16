@@ -1,0 +1,190 @@
+{
+  "nav": {
+    "shop": "Do‘kon",
+    "products": "Mahsulotlar",
+    "about": "Kompaniya",
+    "blog": "Blog",
+    "contact": "Aloqa",
+    "cart": "Savatcha",
+    "openMenu": "Menyuni ochish",
+    "closeMenu": "Yopish"
+  },
+  "common": {
+    "addToCart": "Savatga qo‘shish",
+    "buyNow": "Hozir buyurtma berish",
+    "viewAll": "Barchasini ko‘rish",
+    "learnMore": "Batafsil",
+    "from": "dan",
+    "reviews": "{count} ta sharh",
+    "inStock": "Sotuvda bor",
+    "outOfStock": "Sotuvda yo‘q",
+    "search": "Qidirish",
+    "quantity": "Miqdor",
+    "loading": "Yuklanmoqda…",
+    "origin": "Ishlab chiqarilgan",
+    "servings": "Hajmi"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Shveytsariya, Germaniya va Rossiya sifati",
+      "title": "Har kuningiz uchun isbotlangan nutriyentlar",
+      "subtitle": "Alimkhanov — laboratoriyada sinovdan o‘tgan vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, shaffof formulalar, eshigingizgacha yetkazib berish.",
+      "cta": "Do‘konni ko‘rish",
+      "secondaryCta": "Mahsulotlar haqida"
+    },
+    "marquee": "Sertifikatlangan sifat · Hidsiz formulalar · Tez yetkazib berish · 30 kun kafolat",
+    "science": {
+      "eyebrow": "Fan asosida",
+      "title": "Sof tarkib. Ortiqcha hech narsa.",
+      "subtitle": "Har bir formula tarkibi va dozasi bilan to‘liq shaffof.",
+      "points": {
+        "tested": { "title": "Laboratoriyada sinalgan", "description": "Har partiya tozalik va dozaga tekshiriladi." },
+        "transparent": { "title": "Shaffof formula", "description": "Yashirin tarkib yo‘q — hammasi yorliqda." },
+        "absorb": { "title": "Yuqori so‘rilish", "description": "Tana yaxshi qabul qiladigan faol formalar." }
+      }
+    },
+    "categories": {
+      "title": "Maqsadingiz bo‘yicha tanlang",
+      "subtitle": "Har bir ehtiyoj uchun aniq yechim"
+    },
+    "bestsellers": {
+      "title": "Eng ko‘p tanlanganlar",
+      "subtitle": "Mijozlarimiz eng ko‘p sevadigan mahsulotlar"
+    },
+    "trust": {
+      "title": "Minglab mijozlar ishonadi",
+      "stats": {
+        "customers": "Faol mijoz",
+        "rating": "O‘rtacha baho",
+        "delivery": "Yetkazib berish",
+        "products": "Sifatli mahsulot"
+      }
+    },
+    "cta": {
+      "title": "Sog‘lig‘ingizga bugun sarmoya kiriting",
+      "subtitle": "Bir necha daqiqada buyurtma bering — operatorimiz tasdiqlash uchun qo‘ng‘iroq qiladi.",
+      "button": "Do‘konga o‘tish"
+    }
+  },
+  "product": {
+    "breadcrumbHome": "Bosh sahifa",
+    "highlights": "Asosiy afzalliklar",
+    "benefits": "Foydalari",
+    "ingredients": "Tarkibi",
+    "ingredientName": "Nomi",
+    "ingredientAmount": "Miqdori",
+    "ingredientDV": "Kunlik me’yor",
+    "howToUse": "Qabul qilish tartibi",
+    "faq": "Ko‘p so‘raladigan savollar",
+    "reviews": "Mijozlar sharhlari",
+    "upsell": "Buni ham qo‘shing",
+    "upsellDiscount": "{percent}% chegirma",
+    "addUpsell": "Qo‘shish",
+    "buyBox": {
+      "guarantee": "30 kunlik qoniqish kafolati",
+      "delivery": "1–3 kun ichida yetkazib berish",
+      "secure": "Operator orqali tasdiqlash"
+    },
+    "notFound": "Mahsulot topilmadi",
+    "backToShop": "Do‘konga qaytish"
+  },
+  "shop": {
+    "title": "Barcha mahsulotlar",
+    "subtitle": "Sog‘liq va energiya uchun to‘liq katalog",
+    "all": "Barchasi",
+    "sort": "Saralash",
+    "sortPopular": "Ommabop",
+    "sortPriceAsc": "Narx: arzonidan",
+    "sortPriceDesc": "Narx: qimmatidan",
+    "sortNew": "Yangi",
+    "empty": "Mahsulot topilmadi",
+    "resultsCount": "{count} ta mahsulot"
+  },
+  "cart": {
+    "title": "Savatcha",
+    "empty": "Savatchangiz bo‘sh",
+    "emptyCta": "Do‘konga o‘tish",
+    "subtotal": "Mahsulotlar",
+    "discount": "Chegirma",
+    "shipping": "Yetkazib berish",
+    "free": "Bepul",
+    "total": "Jami",
+    "checkout": "Buyurtmani rasmiylashtirish",
+    "remove": "O‘chirish",
+    "continue": "Xaridni davom ettirish",
+    "freeShippingProgress": "Bepul yetkazib berishgacha {amount}",
+    "freeShippingUnlocked": "Bepul yetkazib berish ochildi!"
+  },
+  "checkout": {
+    "title": "Buyurtmani rasmiylashtirish",
+    "contactSection": "Aloqa ma’lumotlari",
+    "name": "Ism familiya",
+    "namePlaceholder": "Ismingiz",
+    "phone": "Telefon raqami",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "deliverySection": "Yetkazib berish",
+    "region": "Viloyat / shahar",
+    "regionPlaceholder": "Toshkent",
+    "address": "Manzil",
+    "addressPlaceholder": "Ko‘cha, uy, kvartira",
+    "note": "Izoh (ixtiyoriy)",
+    "notePlaceholder": "Qo‘shimcha ma’lumot",
+    "method": "Yetkazib berish usuli",
+    "methodCourier": "Kuryer orqali",
+    "methodPickup": "O‘zi olib ketish",
+    "paymentNote": "To‘lov yetkazib berishda — naqd yoki karta orqali.",
+    "summary": "Buyurtma tarkibi",
+    "submit": "Buyurtmani yuborish",
+    "submitting": "Yuborilmoqda…",
+    "operatorNote": "Buyurtma bergach, operatorimiz tasdiqlash uchun qo‘ng‘iroq qiladi.",
+    "upsellTitle": "Buyurtmangizga qo‘shing va tejang",
+    "errorRequired": "Bu maydon majburiy",
+    "errorPhone": "To‘g‘ri telefon raqamini kiriting",
+    "success": {
+      "title": "Buyurtmangiz qabul qilindi!",
+      "subtitle": "Tez orada operatorimiz siz bilan bog‘lanadi.",
+      "orderId": "Buyurtma raqami",
+      "home": "Bosh sahifaga"
+    }
+  },
+  "footer": {
+    "tagline": "Sog‘lom hayot uchun isbotlangan nutriyentlar.",
+    "shop": "Do‘kon",
+    "company": "Kompaniya",
+    "support": "Yordam",
+    "delivery": "Yetkazib berish",
+    "offer": "Ommaviy oferta",
+    "privacy": "Maxfiylik siyosati",
+    "rights": "Barcha huquqlar himoyalangan.",
+    "language": "Til"
+  },
+  "about": {
+    "title": "Alimkhanov haqida",
+    "lead": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitaminlar va biologik faol qo‘shimchalar yetkazib beruvchi.",
+    "body": "Alimkhanov Pharm Group Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qiladi. Biz har bir mahsulotni puxta tanlaymiz, sifatni kafolatlaymiz va mijozlarimizga ishonchli xizmat ko‘rsatamiz.",
+    "values": {
+      "quality": { "title": "Sifat", "description": "Faqat sertifikatlangan, laboratoriyada sinalgan mahsulotlar." },
+      "trust": { "title": "Ishonch", "description": "2000+ dorixona va minglab mijozlar bizni tanlaydi." },
+      "care": { "title": "G‘amxo‘rlik", "description": "Har bir mijoz uchun individual yondashuv." }
+    }
+  },
+  "contact": {
+    "title": "Biz bilan bog‘laning",
+    "subtitle": "Savollaringiz bormi? Biz yordam berishga tayyormiz.",
+    "phone": "Telefon",
+    "email": "Email",
+    "address": "Manzil",
+    "addressValue": "Toshkent shahri, O‘zbekiston"
+  },
+  "blog": {
+    "title": "Sog‘liq blogi",
+    "subtitle": "Vitaminlar va sog‘lom hayot haqida foydali maqolalar",
+    "comingSoon": "Maqolalar tez orada qo‘shiladi."
+  },
+  "meta": {
+    "homeTitle": "Alimkhanov — Vitaminlar va BAD O‘zbekistonda",
+    "homeDescription": "Shveytsariya, Germaniya va Rossiya sifatidagi vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, tez yetkazib berish.",
+    "shopTitle": "Do‘kon — Alimkhanov vitaminlari va qo‘shimchalari",
+    "shopDescription": "Sog‘liq va energiya uchun to‘liq vitamin va BAD katalogi. Bugun buyurtma bering."
+  }
+}

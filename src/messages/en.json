@@ -1,0 +1,190 @@
+{
+  "nav": {
+    "shop": "Shop",
+    "products": "Products",
+    "about": "Company",
+    "blog": "Blog",
+    "contact": "Contact",
+    "cart": "Cart",
+    "openMenu": "Open menu",
+    "closeMenu": "Close"
+  },
+  "common": {
+    "addToCart": "Add to cart",
+    "buyNow": "Order now",
+    "viewAll": "View all",
+    "learnMore": "Learn more",
+    "from": "from",
+    "reviews": "{count} reviews",
+    "inStock": "In stock",
+    "outOfStock": "Out of stock",
+    "search": "Search",
+    "quantity": "Quantity",
+    "loading": "Loading…",
+    "origin": "Made in",
+    "servings": "Size"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Swiss, German & Russian quality",
+      "title": "Proven nutrients for every single day",
+      "subtitle": "Alimkhanov — lab-tested vitamins and dietary supplements. Clean composition, transparent formulas, delivered to your door.",
+      "cta": "Shop now",
+      "secondaryCta": "About the products"
+    },
+    "marquee": "Certified quality · Odourless formulas · Fast delivery · 30-day guarantee",
+    "science": {
+      "eyebrow": "Backed by science",
+      "title": "Clean composition. Nothing extra.",
+      "subtitle": "Every formula is fully transparent on ingredients and dosage.",
+      "points": {
+        "tested": { "title": "Lab tested", "description": "Every batch is checked for purity and dosage." },
+        "transparent": { "title": "Transparent formula", "description": "No hidden ingredients — it's all on the label." },
+        "absorb": { "title": "High absorption", "description": "Active forms your body actually absorbs." }
+      }
+    },
+    "categories": {
+      "title": "Choose by your goal",
+      "subtitle": "A precise solution for every need"
+    },
+    "bestsellers": {
+      "title": "Customer favourites",
+      "subtitle": "The products our customers love most"
+    },
+    "trust": {
+      "title": "Trusted by thousands",
+      "stats": {
+        "customers": "Active customers",
+        "rating": "Average rating",
+        "delivery": "Delivery",
+        "products": "Quality products"
+      }
+    },
+    "cta": {
+      "title": "Invest in your health today",
+      "subtitle": "Place your order in minutes — our operator will call to confirm.",
+      "button": "Go to shop"
+    }
+  },
+  "product": {
+    "breadcrumbHome": "Home",
+    "highlights": "Key highlights",
+    "benefits": "Benefits",
+    "ingredients": "Ingredients",
+    "ingredientName": "Component",
+    "ingredientAmount": "Amount",
+    "ingredientDV": "Daily value",
+    "howToUse": "How to use",
+    "faq": "Frequently asked questions",
+    "reviews": "Customer reviews",
+    "upsell": "Add these too",
+    "upsellDiscount": "{percent}% off",
+    "addUpsell": "Add",
+    "buyBox": {
+      "guarantee": "30-day satisfaction guarantee",
+      "delivery": "Delivery in 1–3 days",
+      "secure": "Confirmation by operator"
+    },
+    "notFound": "Product not found",
+    "backToShop": "Back to shop"
+  },
+  "shop": {
+    "title": "All products",
+    "subtitle": "The full catalogue for health and energy",
+    "all": "All",
+    "sort": "Sort",
+    "sortPopular": "Popular",
+    "sortPriceAsc": "Price: low to high",
+    "sortPriceDesc": "Price: high to low",
+    "sortNew": "New",
+    "empty": "No products found",
+    "resultsCount": "{count} products"
+  },
+  "cart": {
+    "title": "Cart",
+    "empty": "Your cart is empty",
+    "emptyCta": "Go to shop",
+    "subtotal": "Items",
+    "discount": "Discount",
+    "shipping": "Shipping",
+    "free": "Free",
+    "total": "Total",
+    "checkout": "Checkout",
+    "remove": "Remove",
+    "continue": "Continue shopping",
+    "freeShippingProgress": "{amount} away from free shipping",
+    "freeShippingUnlocked": "Free shipping unlocked!"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "contactSection": "Contact details",
+    "name": "Full name",
+    "namePlaceholder": "Your name",
+    "phone": "Phone number",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "deliverySection": "Delivery",
+    "region": "Region / city",
+    "regionPlaceholder": "Tashkent",
+    "address": "Address",
+    "addressPlaceholder": "Street, house, apartment",
+    "note": "Note (optional)",
+    "notePlaceholder": "Additional information",
+    "method": "Delivery method",
+    "methodCourier": "By courier",
+    "methodPickup": "Pickup",
+    "paymentNote": "Pay on delivery — cash or card.",
+    "summary": "Order summary",
+    "submit": "Submit order",
+    "submitting": "Submitting…",
+    "operatorNote": "After ordering, our operator will call you to confirm.",
+    "upsellTitle": "Add to your order and save",
+    "errorRequired": "This field is required",
+    "errorPhone": "Enter a valid phone number",
+    "success": {
+      "title": "Your order has been received!",
+      "subtitle": "Our operator will contact you shortly.",
+      "orderId": "Order number",
+      "home": "Back home"
+    }
+  },
+  "footer": {
+    "tagline": "Proven nutrients for a healthy life.",
+    "shop": "Shop",
+    "company": "Company",
+    "support": "Support",
+    "delivery": "Delivery",
+    "offer": "Public offer",
+    "privacy": "Privacy policy",
+    "rights": "All rights reserved.",
+    "language": "Language"
+  },
+  "about": {
+    "title": "About Alimkhanov",
+    "lead": "Over 10 years of experience supplying quality vitamins and dietary supplements in Uzbekistan.",
+    "body": "Alimkhanov Pharm Group partners with leading manufacturers from Switzerland, Germany and Russia. We carefully select every product, guarantee quality and provide reliable service to our customers.",
+    "values": {
+      "quality": { "title": "Quality", "description": "Only certified, lab-tested products." },
+      "trust": { "title": "Trust", "description": "Chosen by 2000+ pharmacies and thousands of customers." },
+      "care": { "title": "Care", "description": "An individual approach for every customer." }
+    }
+  },
+  "contact": {
+    "title": "Get in touch",
+    "subtitle": "Have questions? We're here to help.",
+    "phone": "Phone",
+    "email": "Email",
+    "address": "Address",
+    "addressValue": "Tashkent, Uzbekistan"
+  },
+  "blog": {
+    "title": "Health blog",
+    "subtitle": "Useful articles about vitamins and healthy living",
+    "comingSoon": "Articles are coming very soon."
+  },
+  "meta": {
+    "homeTitle": "Alimkhanov — Vitamins & Supplements in Uzbekistan",
+    "homeDescription": "Vitamins and dietary supplements with Swiss, German and Russian quality. Clean composition, fast delivery.",
+    "shopTitle": "Shop — Alimkhanov vitamins & supplements",
+    "shopDescription": "The full catalogue of vitamins and supplements for health and energy. Order today."
+  }
+}
