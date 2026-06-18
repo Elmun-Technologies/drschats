@@ -9,6 +9,17 @@ app is the cinematic, SEO-optimized storefront layer that integrates with it.
 > Visual benchmark: [whoop.com](https://www.whoop.com). Structure benchmarks:
 > Thorne, Vitamin World, Nature Made, Carlson Labs, NutraChamps.
 
+## See it live (one-click deploy)
+
+The fastest way to view the UI on a shareable URL — Next.js runs on Vercel with
+no extra config:
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FElmun-Technologies%2Fdrschats&env=SHOPFLOW_MODE,NEXT_PUBLIC_SITE_URL&envDescription=SHOPFLOW_MODE%3Dmock%20for%20sample%20data%3B%20NEXT_PUBLIC_SITE_URL%3Dyour%20vercel%20url)
+
+Set `SHOPFLOW_MODE=mock` and `NEXT_PUBLIC_SITE_URL=https://<your>.vercel.app`,
+deploy, and open `/uz`. Switch `SHOPFLOW_MODE=http` (+ API url/key) later for the
+real Shopflow data.
+
 ## Stack
 
 - **Next.js 15** (App Router) + **TypeScript** — SSR/SSG/ISR for SEO
