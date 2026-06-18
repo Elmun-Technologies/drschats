@@ -29,9 +29,12 @@ export function CategoryShowcase({ categories }: { categories: Category[] }) {
                   alt={c.name}
                   fill
                   sizes="(max-width: 1024px) 50vw, 25vw"
-                  className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
+                  className="object-cover grayscale-[0.3] transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110 group-hover:grayscale-0"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent" />
+                {/* accent duotone + depth so placeholder imagery reads as intentional */}
+                <div className="absolute inset-0 bg-accent/20 mix-blend-multiply" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/55 to-ink/10" />
+                <div className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100 bg-[radial-gradient(circle_at_50%_120%,rgba(31,209,123,0.35),transparent_60%)]" />
                 <div className="relative">
                   <h3 className="font-display text-xl font-semibold text-fg">{c.name}</h3>
                   {i === 0 && c.description && (

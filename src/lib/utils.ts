@@ -6,17 +6,16 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-const localeTag: Record<Locale, string> = {
-  uz: "uz-UZ",
-  ru: "ru-RU",
-  en: "en-US",
-};
-
-/** Format an integer UZS amount as e.g. "189 000 so'm". */
+/**
+ * Format an integer UZS amount as e.g. "189 000 so'm".
+ * Grouping is done manually (not via Intl) so the output is identical on the
+ * server and in the browser — Intl's ICU thousands-separator can differ between
+ * Node and Chromium and break hydration.
+ */
 export function formatMoney(amount: number, locale: Locale): string {
-  const grouped = new Intl.NumberFormat(localeTag[locale], {
-    maximumFractionDigits: 0,
-  }).format(amount);
+  const grouped = Math.round(amount)
+    .toString()
+    .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
   const suffix = locale === "ru" ? "сум" : locale === "en" ? "UZS" : "so‘m";
   return `${grouped} ${suffix}`;
 }

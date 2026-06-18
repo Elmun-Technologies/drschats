@@ -37,7 +37,11 @@ export interface Article {
   relatedProductSlugs: string[];
 }
 
-const img = (seed: string) => `https://picsum.photos/seed/${seed}/1200/700`;
+const img = (seed: string) => {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return `/placeholders/p${(h % 6) + 1}.svg`;
+};
 
 const rawArticles: RawArticle[] = [
   {

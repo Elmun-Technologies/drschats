@@ -6,6 +6,10 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
+    // Allow our own on-brand gradient placeholder SVGs (same-origin, /public).
+    dangerouslyAllowSVG: true,
+    contentDispositionType: "attachment",
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       // Placeholder/CDN sources — real Shopflow product image host is added here later.
       { protocol: "https", hostname: "picsum.photos" },

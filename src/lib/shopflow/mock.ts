@@ -20,10 +20,14 @@ import type {
 /** Localized value: one string per supported locale. */
 type L<T = string> = Record<Locale, T>;
 
-const img = (seed: string, alt: string) => ({
-  url: `https://picsum.photos/seed/${seed}/900/1100`,
-  alt,
-});
+// Deterministic on-brand gradient placeholder per seed (no external network).
+// Real product photos plug in via BRAND.productImageOverrides.
+const PLACEHOLDERS = 6;
+const img = (seed: string, alt: string) => {
+  let h = 0;
+  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
+  return { url: `/placeholders/p${(h % PLACEHOLDERS) + 1}.svg`, alt };
+};
 
 interface RawCategory {
   id: string;

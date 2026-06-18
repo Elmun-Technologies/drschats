@@ -35,7 +35,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.6, delay: (index % 4) * 0.07, ease: [0.16, 1, 0.3, 1] }}
-      className="group flex flex-col overflow-hidden rounded-xl border border-line bg-surface transition-colors duration-300 hover:border-line-strong"
+      className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-[0_28px_70px_-28px_rgba(31,209,123,0.4)]"
     >
       <Link href={`/product/${product.slug}`} className="relative block aspect-[4/5] overflow-hidden bg-surface-2">
         <Image
@@ -43,8 +43,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           alt={product.images[0]?.alt ?? product.name}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-105"
+          className="object-cover transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-110"
         />
+        <div className="absolute inset-0 bg-gradient-to-t from-surface/90 via-transparent to-transparent" />
         {product.badges[0] && (
           <div className="absolute left-3 top-3">
             <Badge tone="accent">{product.badges[0]}</Badge>
