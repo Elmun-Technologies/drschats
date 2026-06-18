@@ -7,8 +7,10 @@ import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
 import { HeroSlider } from "@/components/home/HeroSlider";
 import { PressLogos } from "@/components/home/PressLogos";
 import { ProductCarousel } from "@/components/home/ProductCarousel";
+import { TopProducts } from "@/components/home/TopProducts";
 import { CategoryCarousel } from "@/components/home/CategoryCarousel";
 import { ScienceSection } from "@/components/home/ScienceSection";
+import { Testimonials } from "@/components/home/Testimonials";
 import { TrustStats } from "@/components/home/TrustStats";
 import { HomeCTA } from "@/components/home/HomeCTA";
 
@@ -48,8 +50,10 @@ export default async function HomePage({
       <HeroSlider />
       <PressLogos />
       <ProductCarousel products={bestsellers.items} />
+      <TopProducts products={bestsellers.items} />
       <CategoryCarousel categories={categories} />
       <ScienceSection />
+      <Testimonials products={bestsellers.items} />
       <TrustStats />
       <HomeCTA />
     </>

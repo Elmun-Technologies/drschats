@@ -53,6 +53,19 @@
       }
     ],
     "pressTitle": "Ommaviy axborot vositalarida",
+    "top": {
+      "title": "Tepa mahsulotlar",
+      "subtitle": "Eng ko‘p tanlangan formulalar — taqqoslang va tanlang",
+      "buy": "Sotib olish",
+      "learn": "Batafsil",
+      "includes": "Tarkibida:"
+    },
+    "voices": {
+      "title": "Mijozlarimiz nima deydi",
+      "subtitle": "Minglab odam Alimkhanov’ga ishonadi",
+      "member": "Mijoz",
+      "join": "Hozir qo‘shilish"
+    },
     "marquee": "Sertifikatlangan sifat · Hidsiz formulalar · Tez yetkazib berish · 30 kun kafolat",
     "statement": {
       "eyebrow": "Bizning falsafamiz",
