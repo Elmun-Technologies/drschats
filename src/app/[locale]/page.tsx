@@ -4,14 +4,13 @@ import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
-import { HeroSlider } from "@/components/home/HeroSlider";
+import { HeroMinimal } from "@/components/home/HeroMinimal";
 import { PressLogos } from "@/components/home/PressLogos";
-import { ProductCarousel } from "@/components/home/ProductCarousel";
-import { TopProducts } from "@/components/home/TopProducts";
-import { CategoryCarousel } from "@/components/home/CategoryCarousel";
-import { ScienceSection } from "@/components/home/ScienceSection";
-import { Testimonials } from "@/components/home/Testimonials";
-import { TrustStats } from "@/components/home/TrustStats";
+import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { StatsBand } from "@/components/home/StatsBand";
+import { QualityList } from "@/components/home/QualityList";
+import { BlogTeaser } from "@/components/home/BlogTeaser";
 import { HomeCTA } from "@/components/home/HomeCTA";
 
 export const revalidate = 300;
@@ -47,14 +46,13 @@ export default async function HomePage({
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <HeroSlider />
+      <HeroMinimal />
       <PressLogos />
-      <ProductCarousel products={bestsellers.items} />
-      <TopProducts products={bestsellers.items} />
-      <CategoryCarousel categories={categories} />
-      <ScienceSection />
-      <Testimonials products={bestsellers.items} />
-      <TrustStats />
+      <CategoryGrid categories={categories} />
+      <FeaturedProducts products={bestsellers.items} />
+      <QualityList />
+      <StatsBand />
+      <BlogTeaser locale={locale} />
       <HomeCTA />
     </>
   );
