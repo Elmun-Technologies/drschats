@@ -53,6 +53,19 @@
       }
     ],
     "pressTitle": "As featured in",
+    "top": {
+      "title": "Top products",
+      "subtitle": "Our most popular formulas — compare and choose",
+      "buy": "Buy now",
+      "learn": "Learn more",
+      "includes": "Includes:"
+    },
+    "voices": {
+      "title": "What our customers say",
+      "subtitle": "Thousands of people trust Alimkhanov",
+      "member": "Customer",
+      "join": "Join now"
+    },
     "marquee": "Certified quality · Odourless formulas · Fast delivery · 30-day guarantee",
     "statement": {
       "eyebrow": "Our philosophy",
