@@ -76,18 +76,31 @@
       "title": "Sof tarkib. Ortiqcha hech narsa.",
       "subtitle": "Har bir formula tarkibi va dozasi bilan to‘liq shaffof.",
       "points": {
-        "tested": { "title": "Laboratoriyada sinalgan", "description": "Har partiya tozalik va dozaga tekshiriladi." },
-        "transparent": { "title": "Shaffof formula", "description": "Yashirin tarkib yo‘q — hammasi yorliqda." },
-        "absorb": { "title": "Yuqori so‘rilish", "description": "Tana yaxshi qabul qiladigan faol formalar." }
+        "tested": {
+          "title": "Laboratoriyada sinalgan",
+          "description": "Har partiya tozalik va dozaga tekshiriladi."
+        },
+        "transparent": {
+          "title": "Shaffof formula",
+          "description": "Yashirin tarkib yo‘q — hammasi yorliqda."
+        },
+        "absorb": {
+          "title": "Yuqori so‘rilish",
+          "description": "Tana yaxshi qabul qiladigan faol formalar."
+        }
       }
     },
     "categories": {
-      "title": "Maqsadingiz bo‘yicha tanlang",
-      "subtitle": "Har bir ehtiyoj uchun aniq yechim"
+      "eyebrow": "Mahsulot kategoriyalari",
+      "title": "Premium sifat",
+      "subtitle": "Har bir ehtiyoj uchun aniq yechim",
+      "lead": "Alimkhanov mahsulotlari yetakchi sog‘liqni saqlash mutaxassislari tavsiyalari asosida, Yevropa sifat standartlarida ishlab chiqariladi.",
+      "viewAll": "Barcha kategoriyalar"
     },
     "bestsellers": {
       "title": "Eng ko‘p tanlanganlar",
-      "subtitle": "Mijozlarimiz eng ko‘p sevadigan mahsulotlar"
+      "subtitle": "Mijozlarimiz eng ko‘p sevadigan mahsulotlar",
+      "eyebrow": "Mashhur"
     },
     "trust": {
       "title": "Minglab mijozlar ishonadi",
@@ -210,9 +223,18 @@
     "lead": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitaminlar va biologik faol qo‘shimchalar yetkazib beruvchi.",
     "body": "Alimkhanov Pharm Group Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qiladi. Biz har bir mahsulotni puxta tanlaymiz, sifatni kafolatlaymiz va mijozlarimizga ishonchli xizmat ko‘rsatamiz.",
     "values": {
-      "quality": { "title": "Sifat", "description": "Faqat sertifikatlangan, laboratoriyada sinalgan mahsulotlar." },
-      "trust": { "title": "Ishonch", "description": "2000+ dorixona va minglab mijozlar bizni tanlaydi." },
-      "care": { "title": "G‘amxo‘rlik", "description": "Har bir mijoz uchun individual yondashuv." }
+      "quality": {
+        "title": "Sifat",
+        "description": "Faqat sertifikatlangan, laboratoriyada sinalgan mahsulotlar."
+      },
+      "trust": {
+        "title": "Ishonch",
+        "description": "2000+ dorixona va minglab mijozlar bizni tanlaydi."
+      },
+      "care": {
+        "title": "G‘amxo‘rlik",
+        "description": "Har bir mijoz uchun individual yondashuv."
+      }
     }
   },
   "contact": {
@@ -230,7 +252,8 @@
     "minRead": "{min} daqiqa o‘qish",
     "readMore": "O‘qish",
     "backToBlog": "Blogga qaytish",
-    "relatedProducts": "Mos mahsulotlar"
+    "relatedProducts": "Mos mahsulotlar",
+    "eyebrow": "Yangiliklar"
   },
   "meta": {
     "homeTitle": "Alimkhanov — Vitaminlar va BAD O‘zbekistonda",

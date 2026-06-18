@@ -93,7 +93,29 @@ const rawCategories: RawCategory[] = [
     },
     image: img("cat-beauty", "Beauty").url,
   },
+  catSimple("cat-kids", "kids", "Bolalar uchun", "Дети", "Vitamins for Children"),
+  catSimple("cat-effervescent", "effervescent", "Shipuchi tabletkalar", "Шипучие таблетки", "Effervescent Tablets"),
+  catSimple("cat-probiotics", "probiotics", "Probiotiklar", "Пробиотики", "Probiotics"),
+  catSimple("cat-collagen", "collagen", "Kollagen", "Коллаген", "Collagen"),
+  catSimple("cat-sexual", "sexual-health", "Jinsiy salomatlik", "Сексуальное здоровье", "Sexual Health"),
+  catSimple("cat-hair", "hair-care", "Soch parvarishi", "Уход за волосами", "Hair Care"),
+  catSimple("cat-sport", "sport", "Sport va fitnes", "Спорт и фитнес", "Sports & Fit"),
+  catSimple("cat-joints", "joints", "Bo‘g‘imlar", "Суставы", "Bones & Joints"),
+  catSimple("cat-liver", "liver", "Jigar uchun", "Для печени", "Liver Support"),
+  catSimple("cat-pregnancy", "pregnancy", "Homiladorlik", "Беременность", "Healthy Pregnancy"),
+  catSimple("cat-herbaltea", "herbal-tea", "O‘simlik choyi", "Травяной чай", "Herbal Tea"),
 ];
+
+/** Helper for lightweight categories (no long description needed in the grid). */
+function catSimple(id: string, slug: string, uz: string, ru: string, en: string): RawCategory {
+  return {
+    id,
+    slug,
+    name: { uz, ru, en },
+    description: { uz, ru, en },
+    image: img(id, en).url,
+  };
+}
 
 interface RawProduct {
   id: string;

@@ -13,6 +13,7 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
       <Container>
         <div className="mb-12 flex flex-wrap items-end justify-between gap-4">
           <div className="max-w-xl">
+            <p className="mb-2 text-sm font-semibold text-accent-strong">{t("eyebrow")}</p>
             <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">{t("title")}</h2>
             <p className="mt-3 text-muted">{t("subtitle")}</p>
           </div>
