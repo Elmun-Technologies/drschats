@@ -4,12 +4,11 @@ import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
-import { Hero } from "@/components/home/Hero";
-import { Marquee } from "@/components/animation/Marquee";
-import { BigStatement } from "@/components/home/BigStatement";
+import { HeroSlider } from "@/components/home/HeroSlider";
+import { PressLogos } from "@/components/home/PressLogos";
+import { ProductCarousel } from "@/components/home/ProductCarousel";
+import { CategoryCarousel } from "@/components/home/CategoryCarousel";
 import { ScienceSection } from "@/components/home/ScienceSection";
-import { CategoryShowcase } from "@/components/home/CategoryShowcase";
-import { BestSellers } from "@/components/home/BestSellers";
 import { TrustStats } from "@/components/home/TrustStats";
 import { HomeCTA } from "@/components/home/HomeCTA";
 
@@ -38,21 +37,19 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [categories, bestsellers, t] = await Promise.all([
+  const [categories, bestsellers] = await Promise.all([
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 4 }),
-    getTranslations("home"),
+    shopflow.getProducts({ locale, sort: "popular", pageSize: 8 }),
   ]);
 
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <Hero />
-      <Marquee text={t("marquee")} />
-      <BigStatement />
+      <HeroSlider />
+      <PressLogos />
+      <ProductCarousel products={bestsellers.items} />
+      <CategoryCarousel categories={categories} />
       <ScienceSection />
-      <CategoryShowcase categories={categories} />
-      <BestSellers products={bestsellers.items} />
       <TrustStats />
       <HomeCTA />
     </>

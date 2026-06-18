@@ -1,22 +1,21 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="900" height="1100" viewBox="0 0 900 1100">
   <defs>
-    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0" stop-color="#143010"/>
-      <stop offset="1" stop-color="#0e1208"/>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.6" y2="1">
+      <stop offset="0" stop-color="#efe4ff"/>
+      <stop offset="1" stop-color="#e2d0ff"/>
     </linearGradient>
-    <filter id="b" x="-50%" y="-50%" width="200%" height="200%">
-      <feGaussianBlur stdDeviation="70"/>
-    </filter>
+    <radialGradient id="hl" cx="0.5" cy="0.42" r="0.5">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.65"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="40"/></filter>
   </defs>
   <rect width="900" height="1100" fill="url(#bg)"/>
-  <g filter="url(#b)">
-    <circle cx="640" cy="320" r="280" fill="#e7b94b" opacity="0.55"/>
-    <circle cx="240" cy="860" r="240" fill="#1fd17b" opacity="0.40"/>
+  <circle cx="450" cy="470" r="300" fill="url(#hl)"/>
+  <g filter="url(#b)" opacity="0.5">
+    <circle cx="680" cy="240" r="120" fill="#b98cff"/>
+    <circle cx="220" cy="880" r="140" fill="#b98cff"/>
   </g>
-  <g fill="none" stroke="#ffffff" stroke-opacity="0.06">
-    <circle cx="450" cy="550" r="180"/>
-    <circle cx="450" cy="550" r="280"/>
-    <circle cx="450" cy="550" r="380"/>
-  </g>
-  <circle cx="450" cy="550" r="14" fill="#ffffff" opacity="0.5"/>
+  <rect x="360" y="330" width="180" height="430" rx="80" fill="#ffffff" opacity="0.45"/>
+  <rect x="392" y="300" width="116" height="70" rx="26" fill="#ffffff" opacity="0.55"/>
 </svg>
