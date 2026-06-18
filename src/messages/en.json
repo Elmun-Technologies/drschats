@@ -32,6 +32,27 @@
       "cta": "Shop now",
       "secondaryCta": "About the products"
     },
+    "slides": [
+      {
+        "eyebrow": "Swiss · German · Russian quality",
+        "title": "High-performance nutrition to unlock your potential",
+        "subtitle": "Lab-tested vitamins and supplements. Clean composition, results you can feel.",
+        "cta": "Shop now"
+      },
+      {
+        "eyebrow": "Offer",
+        "title": "Free delivery on orders over 300,000 UZS",
+        "subtitle": "Order today — our operator confirms and we deliver fast.",
+        "cta": "Go to shop"
+      },
+      {
+        "eyebrow": "Bestseller",
+        "title": "Omega-3 Premium — for heart, brain and vision",
+        "subtitle": "1000 mg EPA+DHA, molecularly distilled, odourless.",
+        "cta": "Learn more"
+      }
+    ],
+    "pressTitle": "As featured in",
     "marquee": "Certified quality · Odourless formulas · Fast delivery · 30-day guarantee",
     "statement": {
       "eyebrow": "Our philosophy",

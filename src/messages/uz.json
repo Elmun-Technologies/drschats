@@ -32,6 +32,27 @@
       "cta": "Do‘konni ko‘rish",
       "secondaryCta": "Mahsulotlar haqida"
     },
+    "slides": [
+      {
+        "eyebrow": "Shveytsariya · Germaniya · Rossiya sifati",
+        "title": "Yuqori samarali nutriyentlar — salohiyatingizni oching",
+        "subtitle": "Laboratoriyada sinovdan o‘tgan vitamin va BADlar. Sof tarkib, ishonchli natija.",
+        "cta": "Xarid qilish"
+      },
+      {
+        "eyebrow": "Aksiya",
+        "title": "300 000 so‘mdan ortiq xaridga bepul yetkazib berish",
+        "subtitle": "Bugun buyurtma bering — operatorimiz tasdiqlaydi, tez yetkazamiz.",
+        "cta": "Do‘konga o‘tish"
+      },
+      {
+        "eyebrow": "Bestseller",
+        "title": "Omega-3 Premium — yurak, miya va ko‘z uchun",
+        "subtitle": "1000 mg EPA+DHA, molekulyar distillangan, hidsiz formula.",
+        "cta": "Batafsil ko‘rish"
+      }
+    ],
+    "pressTitle": "Ommaviy axborot vositalarida",
     "marquee": "Sertifikatlangan sifat · Hidsiz formulalar · Tez yetkazib berish · 30 kun kafolat",
     "statement": {
       "eyebrow": "Bizning falsafamiz",
