@@ -6,6 +6,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
 import { Hero } from "@/components/home/Hero";
 import { Marquee } from "@/components/animation/Marquee";
+import { BigStatement } from "@/components/home/BigStatement";
 import { ScienceSection } from "@/components/home/ScienceSection";
 import { CategoryShowcase } from "@/components/home/CategoryShowcase";
 import { BestSellers } from "@/components/home/BestSellers";
@@ -48,6 +49,7 @@ export default async function HomePage({
       <JsonLd data={organizationLd()} />
       <Hero />
       <Marquee text={t("marquee")} />
+      <BigStatement />
       <ScienceSection />
       <CategoryShowcase categories={categories} />
       <BestSellers products={bestsellers.items} />

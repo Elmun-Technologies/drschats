@@ -42,7 +42,7 @@ export function CollagenBeauty({ product, upsells }: BespokeProps) {
         {/* Right: glowing product image */}
         <div className="absolute inset-0 lg:relative lg:h-full">
           <motion.div style={{ scale: imgScale }} className="absolute inset-0">
-            <Image src="https://picsum.photos/seed/collagen-hero/1200/1400" alt="" fill priority sizes="50vw" className="object-cover" />
+            <Image src="/placeholders/p5.svg" alt="" fill priority sizes="50vw" className="object-cover" />
           </motion.div>
           <motion.div
             style={{ opacity: glow }}

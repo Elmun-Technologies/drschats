@@ -14,7 +14,7 @@ export function ScienceSection() {
   const points = ["tested", "transparent", "absorb"] as const;
 
   return (
-    <section className="border-t border-line py-24 sm:py-32">
+    <section className="relative border-t border-line py-28 sm:py-36">
       <Container>
         <SectionHeading
           eyebrow={t("eyebrow")}
@@ -22,17 +22,21 @@ export function ScienceSection() {
           subtitle={t("subtitle")}
           align="center"
         />
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
+        <div className="mt-20 grid gap-6 md:grid-cols-3">
           {points.map((p, i) => (
             <Reveal key={p} index={i} className="h-full">
-              <div className="group h-full rounded-2xl border border-line bg-surface p-8 transition-colors duration-300 hover:border-accent/40">
-                <div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-accent-soft text-accent transition-transform duration-300 group-hover:scale-110">
-                  <svg viewBox="0 0 24 24" className="h-7 w-7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                    <path d={icons[p]} />
-                  </svg>
+              <div className="group relative h-full overflow-hidden rounded-3xl border border-line bg-surface p-10 transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40">
+                <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
+                <div className="relative">
+                  <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-soft text-accent transition-transform duration-500 group-hover:scale-110">
+                    <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={icons[p]} />
+                    </svg>
+                  </div>
+                  <div className="mb-2 font-display text-sm font-semibold text-faint">0{i + 1}</div>
+                  <h3 className="font-display text-2xl font-semibold">{t(`points.${p}.title`)}</h3>
+                  <p className="mt-3 text-muted">{t(`points.${p}.description`)}</p>
                 </div>
-                <h3 className="font-display text-xl font-semibold">{t(`points.${p}.title`)}</h3>
-                <p className="mt-3 text-muted">{t(`points.${p}.description`)}</p>
               </div>
             </Reveal>
           ))}

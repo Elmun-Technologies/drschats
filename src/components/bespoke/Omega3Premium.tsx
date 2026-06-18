@@ -32,7 +32,7 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
       {/* Cinematic hero */}
       <section ref={heroRef} className="relative flex min-h-[100svh] items-end">
         <motion.div style={{ y: imgY }} className="absolute inset-0 -z-10 scale-110">
-          <Image src="https://picsum.photos/seed/omega3-hero/1920/1400" alt="" fill priority sizes="100vw" className="object-cover" />
+          <Image src="/placeholders/p1.svg" alt="" fill priority sizes="100vw" className="object-cover" />
           <motion.div style={{ opacity: overlay }} className="absolute inset-0 bg-ink" />
           <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/30 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(31,209,123,0.25),transparent_55%)]" />
