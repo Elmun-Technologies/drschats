@@ -22,7 +22,10 @@
     "quantity": "Miqdor",
     "loading": "Yuklanmoqda…",
     "origin": "Ishlab chiqarilgan",
-    "servings": "Hajmi"
+    "servings": "Hajmi",
+    "addedToCart": "Savatga qo‘shildi",
+    "viewCart": "Savatchaga o‘tish",
+    "backToTop": "Yuqoriga"
   },
   "home": {
     "hero": {
