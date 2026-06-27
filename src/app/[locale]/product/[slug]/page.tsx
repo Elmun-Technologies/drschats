@@ -5,7 +5,8 @@ import type { Locale } from "@/lib/i18n/routing";
 import { shopflow, listAllSlugs } from "@/lib/shopflow";
 import { routing } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
-import { JsonLd, productLd, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
+import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
+import { reviewerForKey } from "@/lib/content/experts";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { getBespokeComponent } from "@/components/bespoke/registry";
 
@@ -53,10 +54,12 @@ export default async function ProductPage({
   ]);
 
   const Bespoke = getBespokeComponent(slug);
+  const reviewer = reviewerForKey(product.id, locale);
+  const author = reviewerForKey(product.slug, locale);
 
   return (
     <>
-      <JsonLd data={productLd(product, locale)} />
+      <JsonLd data={productGraph({ product, locale, reviewer, author })} />
       {product.faq.length > 0 && <JsonLd data={faqLd(product.faq)} />}
       <JsonLd
         data={breadcrumbLd([

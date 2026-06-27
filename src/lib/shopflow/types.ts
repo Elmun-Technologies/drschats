@@ -66,6 +66,8 @@ export interface Product {
   badges: string[];
   servings?: string;
   origin?: string;
+  /** Quality marks shown in the sourcing-transparency block (cGMP, ISO, Halal…). */
+  certifications?: string[];
   /** Whether a hand-crafted bespoke page component exists for this product. */
   bespoke: boolean;
 }

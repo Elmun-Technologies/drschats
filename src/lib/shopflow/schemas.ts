@@ -68,6 +68,7 @@ export const productSchema = z.object({
   badges: z.array(z.string()),
   servings: z.string().optional(),
   origin: z.string().optional(),
+  certifications: z.array(z.string()).default([]),
   bespoke: z.boolean(),
 });
 

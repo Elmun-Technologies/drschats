@@ -723,6 +723,7 @@ function resolveProduct(p: RawProduct, locale: Locale): Product {
     badges: p.badges[locale],
     servings: p.servings[locale],
     origin: p.origin[locale],
+    certifications: ["cGMP", "ISO 22000", "Halal"],
     bespoke: p.bespoke,
   };
 }

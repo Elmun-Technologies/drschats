@@ -10,6 +10,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { trackAddToCart, trackViewProduct } from "@/lib/analytics/events";
+import { reviewerForKey } from "@/lib/content/experts";
+import { ReviewedBy } from "@/components/product/ReviewedBy";
+import { Disclaimer } from "@/components/legal/Disclaimer";
 
 export function BuyBox({ product }: { product: Product }) {
   const locale = useLocale() as Locale;
@@ -17,6 +20,7 @@ export function BuyBox({ product }: { product: Product }) {
   const tp = useTranslations("product.buyBox");
   const add = useCart((s) => s.add);
   const [qty, setQty] = useState(1);
+  const reviewer = reviewerForKey(product.id, locale);
 
   useEffect(() => {
     trackViewProduct(product.slug, product.price);
@@ -60,6 +64,8 @@ export function BuyBox({ product }: { product: Product }) {
         reviewsLabel={t("reviews", { count: product.reviewCount })}
       />
 
+      <ReviewedBy expert={reviewer} />
+
       <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="lg" />
 
       <div className="flex flex-wrap gap-4 text-sm text-muted">
@@ -74,6 +80,16 @@ export function BuyBox({ product }: { product: Product }) {
           </span>
         )}
       </div>
+
+      {product.certifications && product.certifications.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {product.certifications.map((c) => (
+            <span key={c} className="rounded-full border border-line bg-surface px-3 py-1 text-xs font-semibold text-muted">
+              {c}
+            </span>
+          ))}
+        </div>
+      )}
 
       <div className="flex items-stretch gap-3">
         <div className="flex items-center rounded-full border border-line">
@@ -108,6 +124,8 @@ export function BuyBox({ product }: { product: Product }) {
           </li>
         ))}
       </ul>
+
+      <Disclaimer variant="product" />
     </div>
   );
 }

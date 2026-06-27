@@ -137,7 +137,11 @@
       "secure": "Operator orqali tasdiqlash"
     },
     "notFound": "Mahsulot topilmadi",
-    "backToShop": "Do‘konga qaytish"
+    "backToShop": "Do‘konga qaytish",
+    "reviewedBy": "Shifokor tomonidan tekshirilgan",
+    "certifications": "Sertifikatlar va sifat",
+    "sourcing": "Kelib chiqishi va shaffoflik",
+    "coaNote": "Har bir partiya og‘ir metallar va patogenlarga tekshiriladi. Tahlil sertifikati (COA) so‘rov bo‘yicha taqdim etiladi."
   },
   "shop": {
     "title": "Barcha mahsulotlar",
@@ -260,5 +264,20 @@
     "homeDescription": "Shveytsariya, Germaniya va Rossiya sifatidagi vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, tez yetkazib berish.",
     "shopTitle": "Do‘kon — Alimkhanov vitaminlari va qo‘shimchalari",
     "shopDescription": "Sog‘liq va energiya uchun to‘liq vitamin va BAD katalogi. Bugun buyurtma bering."
+  },
+  "legal": {
+    "notMedicine": "Dori vositasi emas",
+    "warning": "Dori vositasi emas. Mutaxassis bilan maslahatlashing.",
+    "footer": "Biologik faol qo‘shimchalar dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing. Kontent faqat ma’lumiy xarakterga ega.",
+    "articleDisclaimer": "Ushbu maqola faqat ma’lumiy xarakterga ega va malakali shifokor maslahati hamda davolanishning o‘rnini bosmaydi. Har qanday qo‘shimchani qabul qilishdan oldin shifokor bilan maslahatlashing."
+  },
+  "experts": {
+    "badge": "Tibbiy ekspertlar kengashi",
+    "title": "Tibbiy ekspertlar kengashi",
+    "subtitle": "Saytdagi har bir mahsulot va maqola malakali mutaxassislar tomonidan tekshiriladi",
+    "credentials": "Malaka va sertifikatlar",
+    "profiles": "Tashqi profillar",
+    "reviewed": "Tekshiruvchi",
+    "back": "Kengashga qaytish"
   }
 }
