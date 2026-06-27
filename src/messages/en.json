@@ -279,5 +279,41 @@
     "profiles": "External profiles",
     "reviewed": "Reviewer",
     "back": "Back to the council"
+  },
+  "delivery": {
+    "title": "Delivery & payment",
+    "subtitle": "Fast, reliable delivery across Tashkent and all of Uzbekistan",
+    "shippingTitle": "Delivery",
+    "tashkentTitle": "Across Tashkent — courier",
+    "tashkentTime": "1–2 business days",
+    "tashkentFree": "Free on orders over 300,000 UZS. Otherwise — 20,000 UZS.",
+    "regionsTitle": "To the regions — EMU post",
+    "regionsTime": "2–5 business days",
+    "regionsFree": "Free on orders over 700,000 UZS. Otherwise — 30,000 UZS.",
+    "pickupTitle": "Pickup",
+    "pickupTime": "Free · from our Tashkent point",
+    "paymentTitle": "Payment methods",
+    "payCod": "Cash or card on delivery",
+    "payClick": "Online payment via Click",
+    "payPayme": "Online payment via Payme",
+    "payInstallment": "Instalments (major bank cards)",
+    "note": "After your order is confirmed, an operator will contact you to agree the exact time and address."
+  },
+  "loyalty": {
+    "title": "Loyalty programme",
+    "subtitle": "Privileges for regular customers and partners",
+    "privilegedTitle": "Privileged client",
+    "privilegedDesc": "Up to 15% cashback on purchases, weekly promotions and access to private sales.",
+    "privilegedClub": "“Loyalty Club”: with steady purchases of 50+ points a month, after 6 months you receive premium brand sets as a gift.",
+    "consultantTitle": "Brand consultant",
+    "consultantDesc": "A status for professional partners growing their own referral network.",
+    "consultantLegal": "Bonuses are paid only after registering as a sole proprietor (YTT) and signing an advertising-services contract — guaranteeing full legality of the business.",
+    "pointsTitle": "Points system",
+    "pointsDesc": "Wholesale turnover converts into points. The value of a point depends on the product category:",
+    "pointsNew": "New products — 1 point = 2,900 UZS",
+    "pointsStandard": "Standard product — 1 point = 2,750 UZS",
+    "pointsPromo": "Promo product — 1 point = 2,050 UZS",
+    "cta": "Become a partner",
+    "join": "Register"
   }
 }

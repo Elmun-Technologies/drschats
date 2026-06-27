@@ -279,5 +279,41 @@
     "profiles": "Tashqi profillar",
     "reviewed": "Tekshiruvchi",
     "back": "Kengashga qaytish"
+  },
+  "delivery": {
+    "title": "Yetkazib berish va to‘lov",
+    "subtitle": "Toshkent va butun O‘zbekiston bo‘ylab tez va ishonchli yetkazib berish",
+    "shippingTitle": "Yetkazib berish",
+    "tashkentTitle": "Toshkent bo‘ylab — kuryer",
+    "tashkentTime": "1–2 ish kuni",
+    "tashkentFree": "300 000 so‘mdan ortiq xaridga bepul. Aks holda — 20 000 so‘m.",
+    "regionsTitle": "Viloyatlarga — EMU pochta",
+    "regionsTime": "2–5 ish kuni",
+    "regionsFree": "700 000 so‘mdan ortiq xaridga bepul. Aks holda — 30 000 so‘m.",
+    "pickupTitle": "O‘zi olib ketish",
+    "pickupTime": "Bepul · Toshkent shahridagi punktdan",
+    "paymentTitle": "To‘lov usullari",
+    "payCod": "Yetkazib berishda naqd yoki karta orqali",
+    "payClick": "Click orqali onlayn to‘lov",
+    "payPayme": "Payme orqali onlayn to‘lov",
+    "payInstallment": "Bo‘lib to‘lash (asosiy banklar kartalari)",
+    "note": "Buyurtma tasdiqlangach, operator siz bilan bog‘lanib, aniq vaqt va manzilni kelishadi."
+  },
+  "loyalty": {
+    "title": "Sodiqlik dasturi",
+    "subtitle": "Doimiy mijozlar va hamkorlar uchun imtiyozlar",
+    "privilegedTitle": "Imtiyozli mijoz",
+    "privilegedDesc": "Xaridlardan 15% gacha keshbek, haftalik aksiyalar va yopiq sotuvlarga kirish.",
+    "privilegedClub": "“Doimiylik klubi”: oyiga 50 balldan barqaror xarid qilsangiz, 6 oydan so‘ng qimmatli brend to‘plamlari sovg‘a.",
+    "consultantTitle": "Brend konsultanti",
+    "consultantDesc": "O‘z referal tarmog‘ini rivojlantiruvchi professional hamkorlar uchun maqom.",
+    "consultantLegal": "Bonuslar faqat Yakka tartibdagi tadbirkor (YTT) sifatida ro‘yxatdan o‘tib, reklama xizmatlari shartnomasi tuzilgandan so‘ng to‘lanadi — bu biznesning to‘liq qonuniyligini kafolatlaydi.",
+    "pointsTitle": "Ballar tizimi",
+    "pointsDesc": "Optom aylanma ballarga aylantiriladi. Bir ballning qiymati mahsulot toifasiga qarab o‘zgaradi:",
+    "pointsNew": "Yangiliklar — 1 ball = 2 900 so‘m",
+    "pointsStandard": "Standart mahsulot — 1 ball = 2 750 so‘m",
+    "pointsPromo": "Aksiya mahsuloti — 1 ball = 2 050 so‘m",
+    "cta": "Hamkor bo‘lish",
+    "join": "Ro‘yxatdan o‘tish"
   }
 }

@@ -9,6 +9,7 @@ export function Footer() {
   const contact = useTranslations("contact");
   const legal = useTranslations("legal");
   const experts = useTranslations("experts");
+  const loyalty = useTranslations("loyalty");
   const year = new Date().getFullYear();
 
   return (
@@ -34,6 +35,7 @@ export function Footer() {
             <FooterLink href="/blog">{nav("blog")}</FooterLink>
             <FooterLink href="/contact">{nav("contact")}</FooterLink>
             <FooterLink href="/delivery">{t("delivery")}</FooterLink>
+            <FooterLink href="/loyalty">{loyalty("title")}</FooterLink>
             <FooterLink href="/privacy">{t("privacy")}</FooterLink>
           </FooterCol>
 
