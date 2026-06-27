@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
-import { Link } from "@/lib/i18n/navigation";
+import { Link, usePathname } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
@@ -19,6 +19,7 @@ const navItems = [
 
 export function Header() {
   const t = useTranslations("nav");
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -44,15 +45,27 @@ export function Header() {
         </Link>
 
         <nav className="hidden items-center gap-8 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.key}
-              href={item.href}
-              className="text-sm font-medium text-muted transition-colors hover:text-fg"
-            >
-              {t(item.key)}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const active = pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={cn(
+                  "group relative text-sm font-medium transition-colors",
+                  active ? "text-fg" : "text-muted hover:text-fg",
+                )}
+              >
+                {t(item.key)}
+                <span
+                  className={cn(
+                    "absolute -bottom-1.5 left-0 h-0.5 rounded-full bg-accent transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
+                    active ? "w-full" : "w-0 group-hover:w-full",
+                  )}
+                />
+              </Link>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">

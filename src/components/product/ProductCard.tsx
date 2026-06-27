@@ -44,6 +44,15 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           sizes="(max-width: 768px) 50vw, 25vw"
           className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
         />
+        {product.images[1] && (
+          <Image
+            src={product.images[1].url}
+            alt=""
+            fill
+            sizes="(max-width: 768px) 50vw, 25vw"
+            className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+          />
+        )}
         {product.badges[0] && (
           <span className="absolute left-3 top-3 rounded-full bg-ink/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-fg shadow-sm backdrop-blur">
             {product.badges[0]}

@@ -22,7 +22,10 @@
     "quantity": "Количество",
     "loading": "Загрузка…",
     "origin": "Произведено",
-    "servings": "Объём"
+    "servings": "Объём",
+    "addedToCart": "Добавлено в корзину",
+    "viewCart": "Перейти в корзину",
+    "backToTop": "Наверх"
   },
   "home": {
     "hero": {

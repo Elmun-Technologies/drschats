@@ -13,6 +13,9 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { CookieConsent } from "@/components/layout/CookieConsent";
+import { Toaster } from "@/components/ui/Toaster";
+import { ScrollProgress } from "@/components/ui/ScrollProgress";
+import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
 import { SITE_URL } from "@/lib/seo/metadata";
 
@@ -52,12 +55,15 @@ export default async function LocaleLayout({
             >
               {locale === "ru" ? "К содержимому" : locale === "en" ? "Skip to content" : "Asosiy qismga o‘tish"}
             </a>
+            <ScrollProgress />
             <SmoothScroll>
               <Header />
               <main id="main-content">{children}</main>
               <Footer />
               <CartDrawer />
               <CookieConsent />
+              <Toaster />
+              <BackToTop />
             </SmoothScroll>
           </PromotionsProvider>
         </NextIntlClientProvider>

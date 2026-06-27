@@ -22,7 +22,10 @@
     "quantity": "Quantity",
     "loading": "Loading…",
     "origin": "Made in",
-    "servings": "Size"
+    "servings": "Size",
+    "addedToCart": "Added to cart",
+    "viewCart": "View cart",
+    "backToTop": "To top"
   },
   "home": {
     "hero": {
