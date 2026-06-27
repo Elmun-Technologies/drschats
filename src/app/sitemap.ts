@@ -8,7 +8,7 @@ import { SITE_URL } from "@/lib/seo/metadata";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categories = await shopflow.getCategories(routing.defaultLocale);
 
-  const staticPaths = ["", "/products", "/about", "/blog", "/contact", "/experts", "/delivery", "/loyalty"];
+  const staticPaths = ["", "/products", "/about", "/blog", "/contact", "/experts", "/delivery", "/loyalty", "/ingredients"];
   const categoryPaths = categories.map((c) => `/products/${c.slug}`);
   const productPaths = listAllSlugs().map(({ slug }) => `/product/${slug}`);
   const blogPaths = listArticleSlugs().map((slug) => `/blog/${slug}`);

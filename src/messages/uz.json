@@ -315,5 +315,22 @@
     "pointsPromo": "Aksiya mahsuloti — 1 ball = 2 050 so‘m",
     "cta": "Hamkor bo‘lish",
     "join": "Ro‘yxatdan o‘tish"
+  },
+  "ingredients_page": {
+    "title": "Ingredientlar va sertifikatlar",
+    "subtitle": "Faol moddalar shaffof ko‘rsatkichi — har biri laboratoriyada tekshiriladi",
+    "badge": "Shaffoflik",
+    "foundIn": "Tarkibida bor:",
+    "synergyTitle": "Moslik va sinergiya",
+    "synergyDesc": "Qaysi nutriyentlar bir-birini kuchaytiradi, qaysilari to‘sqinlik qiladi",
+    "boost": "Kuchaytiradi",
+    "block": "To‘sqinlik qiladi",
+    "coaTitle": "Tahlil sertifikati (COA)",
+    "coaDesc": "Har bir partiya og‘ir metallar va patogenlarga mustaqil laboratoriyada tekshiriladi. Sertifikat so‘rov bo‘yicha taqdim etiladi."
+  },
+  "cookie": {
+    "text": "Biz saytdan foydalanishni yaxshilash uchun cookie fayllardan foydalanamiz.",
+    "accept": "Qabul qilaman",
+    "more": "Batafsil"
   }
 }

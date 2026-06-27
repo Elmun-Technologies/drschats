@@ -315,5 +315,22 @@
     "pointsPromo": "Promo product — 1 point = 2,050 UZS",
     "cta": "Become a partner",
     "join": "Register"
+  },
+  "ingredients_page": {
+    "title": "Ingredients & certificates",
+    "subtitle": "A transparent index of active ingredients — each one lab-tested",
+    "badge": "Transparency",
+    "foundIn": "Found in:",
+    "synergyTitle": "Compatibility & synergy",
+    "synergyDesc": "Which nutrients boost each other and which hinder absorption",
+    "boost": "Boosts",
+    "block": "Hinders",
+    "coaTitle": "Certificate of Analysis (COA)",
+    "coaDesc": "Every batch is tested for heavy metals and pathogens in an independent lab. The certificate is available on request."
+  },
+  "cookie": {
+    "text": "We use cookies to improve your experience.",
+    "accept": "Accept",
+    "more": "Learn more"
   }
 }

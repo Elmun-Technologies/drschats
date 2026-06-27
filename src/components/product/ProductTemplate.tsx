@@ -103,6 +103,29 @@ export async function ProductTemplate({
           </Reveal>
         </section>
 
+        {/* Sourcing & transparency */}
+        <section className="mt-24">
+          <Reveal>
+            <h2 className="font-display text-3xl font-bold tracking-tight">{t("sourcing")}</h2>
+          </Reveal>
+          <div className="mt-8 grid gap-4 md:grid-cols-[1.2fr_1fr]">
+            <Reveal>
+              <div className="h-full rounded-2xl border border-line bg-surface p-6 text-muted">{t("coaNote")}</div>
+            </Reveal>
+            {product.certifications && product.certifications.length > 0 && (
+              <Reveal index={1}>
+                <div className="flex h-full flex-wrap content-start gap-2 rounded-2xl border border-line bg-surface p-6">
+                  {product.certifications.map((c) => (
+                    <span key={c} className="rounded-full border border-line bg-ink px-3 py-1 text-xs font-semibold text-muted">
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </Reveal>
+            )}
+          </div>
+        </section>
+
         {/* Upsells */}
         <section className="mt-24">
           <UpsellRail offers={upsells} />

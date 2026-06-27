@@ -10,6 +10,7 @@ export function Footer() {
   const legal = useTranslations("legal");
   const experts = useTranslations("experts");
   const loyalty = useTranslations("loyalty");
+  const ingredients = useTranslations("ingredients_page");
   const year = new Date().getFullYear();
 
   return (
@@ -25,6 +26,7 @@ export function Footer() {
 
           <FooterCol title={t("shop")}>
             <FooterLink href="/products">{nav("products")}</FooterLink>
+            <FooterLink href="/ingredients">{ingredients("title")}</FooterLink>
             <FooterLink href="/products/vitamins">Vitamins</FooterLink>
             <FooterLink href="/products/omega">Omega</FooterLink>
           </FooterCol>
