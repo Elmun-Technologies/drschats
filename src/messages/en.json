@@ -76,18 +76,31 @@
       "title": "Clean composition. Nothing extra.",
       "subtitle": "Every formula is fully transparent on ingredients and dosage.",
       "points": {
-        "tested": { "title": "Lab tested", "description": "Every batch is checked for purity and dosage." },
-        "transparent": { "title": "Transparent formula", "description": "No hidden ingredients — it's all on the label." },
-        "absorb": { "title": "High absorption", "description": "Active forms your body actually absorbs." }
+        "tested": {
+          "title": "Lab tested",
+          "description": "Every batch is checked for purity and dosage."
+        },
+        "transparent": {
+          "title": "Transparent formula",
+          "description": "No hidden ingredients — it's all on the label."
+        },
+        "absorb": {
+          "title": "High absorption",
+          "description": "Active forms your body actually absorbs."
+        }
       }
     },
     "categories": {
-      "title": "Choose by your goal",
-      "subtitle": "A precise solution for every need"
+      "eyebrow": "Product categories",
+      "title": "Premium quality",
+      "subtitle": "A precise solution for every need",
+      "lead": "Alimkhanov products are developed on the recommendations of leading healthcare specialists, to European quality standards.",
+      "viewAll": "All categories"
     },
     "bestsellers": {
       "title": "Customer favourites",
-      "subtitle": "The products our customers love most"
+      "subtitle": "The products our customers love most",
+      "eyebrow": "Popular"
     },
     "trust": {
       "title": "Trusted by thousands",
@@ -210,9 +223,18 @@
     "lead": "Over 10 years of experience supplying quality vitamins and dietary supplements in Uzbekistan.",
     "body": "Alimkhanov Pharm Group partners with leading manufacturers from Switzerland, Germany and Russia. We carefully select every product, guarantee quality and provide reliable service to our customers.",
     "values": {
-      "quality": { "title": "Quality", "description": "Only certified, lab-tested products." },
-      "trust": { "title": "Trust", "description": "Chosen by 2000+ pharmacies and thousands of customers." },
-      "care": { "title": "Care", "description": "An individual approach for every customer." }
+      "quality": {
+        "title": "Quality",
+        "description": "Only certified, lab-tested products."
+      },
+      "trust": {
+        "title": "Trust",
+        "description": "Chosen by 2000+ pharmacies and thousands of customers."
+      },
+      "care": {
+        "title": "Care",
+        "description": "An individual approach for every customer."
+      }
     }
   },
   "contact": {
@@ -230,7 +252,8 @@
     "minRead": "{min} min read",
     "readMore": "Read",
     "backToBlog": "Back to blog",
-    "relatedProducts": "Related products"
+    "relatedProducts": "Related products",
+    "eyebrow": "News"
   },
   "meta": {
     "homeTitle": "Alimkhanov — Vitamins & Supplements in Uzbekistan",
