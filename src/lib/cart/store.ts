@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartLine } from "./pricing";
+import { useToast } from "@/lib/ui/toast";
 
 interface CartState {
   lines: CartLine[];
@@ -19,12 +20,11 @@ export const useCart = create<CartState>()(
     (set) => ({
       lines: [],
       isOpen: false,
-      add: (line, quantity = 1) =>
+      add: (line, quantity = 1) => {
         set((state) => {
           const existing = state.lines.find((l) => l.productId === line.productId);
           if (existing) {
             return {
-              isOpen: true,
               lines: state.lines.map((l) =>
                 l.productId === line.productId
                   ? { ...l, quantity: l.quantity + quantity }
@@ -32,11 +32,11 @@ export const useCart = create<CartState>()(
               ),
             };
           }
-          return {
-            isOpen: true,
-            lines: [...state.lines, { ...line, quantity }],
-          };
-        }),
+          return { lines: [...state.lines, { ...line, quantity }] };
+        });
+        // Premium, non-intrusive feedback instead of force-opening the drawer.
+        useToast.getState().notify();
+      },
       remove: (productId) =>
         set((state) => ({
           lines: state.lines.filter((l) => l.productId !== productId),
