@@ -1,8 +1,9 @@
 import type { Product } from "@/lib/shopflow/types";
+import type { Expert } from "@/lib/content/experts";
 import { SITE_NAME, SITE_URL } from "./metadata";
 import type { Locale } from "@/lib/i18n/routing";
 
-/** Renders a JSON-LD <script> for rich results. */
+/** Renders a JSON-LD <script> for rich results / AI agents. */
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script
@@ -12,39 +13,151 @@ export function JsonLd({ data }: { data: Record<string, unknown> }) {
   );
 }
 
-export function organizationLd() {
+function personNode(expert: Expert) {
   return {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: SITE_NAME,
-    url: SITE_URL,
-    description:
-      "Alimkhanov — premium vitamins and dietary supplements distributor in Uzbekistan.",
+    "@type": "Person",
+    "@id": `${SITE_URL}/experts/${expert.slug}#person`,
+    name: expert.name,
+    jobTitle: expert.title,
+    url: `${SITE_URL}/experts/${expert.slug}`,
+    sameAs: expert.sameAs,
   };
 }
 
-export function productLd(product: Product, locale: Locale) {
+/** Authoritative Organization node — reused across the graph. */
+export function organizationNode() {
+  return {
+    "@type": "Organization",
+    "@id": `${SITE_URL}/#organization`,
+    name: "Alimkhanov Pharm Group",
+    url: SITE_URL,
+    logo: `${SITE_URL}/brand/logo.png`,
+    description:
+      "Alimkhanov — premium vitamins and dietary supplements distributor in Uzbekistan.",
+    contactPoint: {
+      "@type": "ContactPoint",
+      telephone: "+998-71-200-00-00",
+      contactType: "customer service",
+      areaServed: "UZ",
+      availableLanguage: ["Uzbek", "Russian", "English"],
+    },
+    sameAs: ["https://t.me/", "https://instagram.com/", "https://facebook.com/"],
+  };
+}
+
+export function organizationLd() {
+  return { "@context": "https://schema.org", ...organizationNode() };
+}
+
+/**
+ * Product page graph: MedicalWebPage (with author + reviewedBy) + Product +
+ * Organization — the YMYL-grade structured-data model. `reviewer` and `author`
+ * power the E-E-A-T `reviewedBy` signal that search engines and AI agents read.
+ */
+export function productGraph({
+  product,
+  locale,
+  reviewer,
+  author,
+  datePublished,
+  dateModified,
+}: {
+  product: Product;
+  locale: Locale;
+  reviewer: Expert;
+  author: Expert;
+  datePublished?: string;
+  dateModified?: string;
+}) {
+  const url = `${SITE_URL}/${locale}/product/${product.slug}`;
   return {
     "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    description: product.tagline,
-    image: product.images.map((i) => i.url),
-    brand: { "@type": "Brand", name: SITE_NAME },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.rating,
-      reviewCount: product.reviewCount,
-    },
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "UZS",
-      price: product.price,
-      availability: product.inStock
-        ? "https://schema.org/InStock"
-        : "https://schema.org/OutOfStock",
-      url: `${SITE_URL}/${locale}/product/${product.slug}`,
-    },
+    "@graph": [
+      {
+        "@type": "MedicalWebPage",
+        "@id": `${url}#webpage`,
+        url,
+        name: `${product.name} — Alimkhanov`,
+        description: product.tagline,
+        inLanguage: locale,
+        datePublished: datePublished ?? "2025-01-01T09:00:00+05:00",
+        dateModified: dateModified ?? "2026-06-27T09:00:00+05:00",
+        isPartOf: { "@id": `${SITE_URL}/#organization` },
+        author: personNode(author),
+        reviewedBy: personNode(reviewer),
+      },
+      {
+        "@type": "Product",
+        "@id": `${url}#product`,
+        name: product.name,
+        image: product.images.map((i) => i.url),
+        description: product.tagline,
+        sku: product.id,
+        brand: { "@type": "Brand", name: SITE_NAME },
+        aggregateRating: {
+          "@type": "AggregateRating",
+          ratingValue: product.rating,
+          reviewCount: product.reviewCount,
+        },
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "UZS",
+          price: product.price,
+          priceValidUntil: "2027-12-31",
+          availability: product.inStock
+            ? "https://schema.org/InStock"
+            : "https://schema.org/OutOfStock",
+          itemCondition: "https://schema.org/NewCondition",
+          url,
+        },
+      },
+      organizationNode(),
+    ],
+  };
+}
+
+/** Blog article graph with author + medical reviewer. */
+export function articleGraph({
+  title,
+  description,
+  image,
+  url,
+  datePublished,
+  dateModified,
+  locale,
+  author,
+  reviewer,
+}: {
+  title: string;
+  description: string;
+  image: string;
+  url: string;
+  datePublished: string;
+  dateModified: string;
+  locale: Locale;
+  author: Expert;
+  reviewer: Expert;
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": ["MedicalWebPage", "Article"],
+        "@id": `${url}#webpage`,
+        url,
+        headline: title,
+        description,
+        image: [image],
+        inLanguage: locale,
+        datePublished,
+        dateModified,
+        isPartOf: { "@id": `${SITE_URL}/#organization` },
+        author: personNode(author),
+        reviewedBy: personNode(reviewer),
+        publisher: { "@id": `${SITE_URL}/#organization` },
+      },
+      organizationNode(),
+    ],
   };
 }
 

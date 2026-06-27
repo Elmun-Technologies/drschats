@@ -7,8 +7,11 @@ import { routing } from "@/lib/i18n/routing";
 import { getArticle, listArticleSlugs } from "@/lib/content/blog";
 import { shopflow } from "@/lib/shopflow";
 import type { Product } from "@/lib/shopflow/types";
-import { buildPageMetadata, SITE_URL, SITE_NAME } from "@/lib/seo/metadata";
-import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, articleGraph, breadcrumbLd } from "@/lib/seo/jsonld";
+import { reviewerForKey } from "@/lib/content/experts";
+import { ReviewedBy } from "@/components/product/ReviewedBy";
+import { Disclaimer } from "@/components/legal/Disclaimer";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { Badge } from "@/components/ui/Badge";
@@ -41,20 +44,6 @@ export async function generateMetadata({
   });
 }
 
-function articleLd(title: string, description: string, image: string, date: string, url: string) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: title,
-    description,
-    image: [image],
-    datePublished: date,
-    author: { "@type": "Organization", name: SITE_NAME },
-    publisher: { "@type": "Organization", name: SITE_NAME },
-    mainEntityOfPage: url,
-  };
-}
-
 export default async function ArticlePage({
   params,
 }: {
@@ -72,10 +61,24 @@ export default async function ArticlePage({
   ]);
   const relatedProducts = related.filter((p): p is Product => p !== null);
   const url = `${SITE_URL}/${locale}/blog/${slug}`;
+  const reviewer = reviewerForKey(slug, locale);
+  const author = reviewerForKey(`${slug}-author`, locale);
 
   return (
     <article className="pt-24">
-      <JsonLd data={articleLd(article.title, article.excerpt, article.image, article.date, url)} />
+      <JsonLd
+        data={articleGraph({
+          title: article.title,
+          description: article.excerpt,
+          image: article.image,
+          url,
+          datePublished: article.date,
+          dateModified: article.date,
+          locale,
+          author,
+          reviewer,
+        })}
+      />
       <JsonLd
         data={breadcrumbLd([
           { name: t("title"), url: `${SITE_URL}/${locale}/blog` },
@@ -96,6 +99,9 @@ export default async function ArticlePage({
           {article.title}
         </h1>
         <p className="mt-5 text-xl text-muted">{article.excerpt}</p>
+        <div className="mt-6">
+          <ReviewedBy expert={reviewer} />
+        </div>
       </Container>
 
       <Container size="narrow" className="mt-10">
@@ -120,6 +126,7 @@ export default async function ArticlePage({
             </Reveal>
           ))}
         </div>
+        <Disclaimer variant="article" className="mt-12" />
       </Container>
 
       {/* Related products */}

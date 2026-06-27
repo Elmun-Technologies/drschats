@@ -7,6 +7,8 @@ export function Footer() {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
   const contact = useTranslations("contact");
+  const legal = useTranslations("legal");
+  const experts = useTranslations("experts");
   const year = new Date().getFullYear();
 
   return (
@@ -28,6 +30,7 @@ export function Footer() {
 
           <FooterCol title={t("company")}>
             <FooterLink href="/about">{nav("about")}</FooterLink>
+            <FooterLink href="/experts">{experts("badge")}</FooterLink>
             <FooterLink href="/blog">{nav("blog")}</FooterLink>
             <FooterLink href="/contact">{nav("contact")}</FooterLink>
             <FooterLink href="/delivery">{t("delivery")}</FooterLink>
@@ -51,7 +54,12 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/45">
+        {/* Law-mandated БАД disclaimer (UZ Law "On Advertising", art. 35) */}
+        <div className="mt-12 rounded-xl border border-gold/30 bg-gold/10 p-4 text-sm text-white/80">
+          <span className="font-semibold text-gold">{legal("notMedicine")}.</span> {legal("footer")}
+        </div>
+
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/45">
           <span>© {year} Alimkhanov Pharm Group. {t("rights")}</span>
           <span className="rounded-full border border-white/15 px-3 py-1 text-xs">EU / CH / RU quality</span>
         </div>

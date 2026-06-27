@@ -137,7 +137,11 @@
       "secure": "Confirmation by operator"
     },
     "notFound": "Product not found",
-    "backToShop": "Back to shop"
+    "backToShop": "Back to shop",
+    "reviewedBy": "Medically reviewed by",
+    "certifications": "Certifications & quality",
+    "sourcing": "Sourcing & transparency",
+    "coaNote": "Every batch is tested for heavy metals and pathogens. A Certificate of Analysis (COA) is available on request."
   },
   "shop": {
     "title": "All products",
@@ -260,5 +264,20 @@
     "homeDescription": "Vitamins and dietary supplements with Swiss, German and Russian quality. Clean composition, fast delivery.",
     "shopTitle": "Shop — Alimkhanov vitamins & supplements",
     "shopDescription": "The full catalogue of vitamins and supplements for health and energy. Order today."
+  },
+  "legal": {
+    "notMedicine": "Not a medicine",
+    "warning": "This is not a medicine. Consult a specialist before use.",
+    "footer": "Dietary supplements are not medicines. Consult a specialist before use. Content is for informational purposes only.",
+    "articleDisclaimer": "This article is for informational purposes only and does not replace a consultation with a qualified doctor or treatment. Consult your doctor before taking any supplements."
+  },
+  "experts": {
+    "badge": "Medical Expert Council",
+    "title": "Medical Expert Council",
+    "subtitle": "Every product and article on this site is reviewed by qualified specialists",
+    "credentials": "Credentials & certifications",
+    "profiles": "External profiles",
+    "reviewed": "Reviewer",
+    "back": "Back to the council"
   }
 }
