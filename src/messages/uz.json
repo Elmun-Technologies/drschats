@@ -370,6 +370,19 @@
     "coaTitle": "Tahlil sertifikati (COA)",
     "coaDesc": "Har bir partiya og‘ir metallar va patogenlarga mustaqil laboratoriyada tekshiriladi. Sertifikat so‘rov bo‘yicha taqdim etiladi."
   },
+  "upsell": {
+    "stepOf": "{step}/{total} qadam",
+    "savedSoFar": "Tejadingiz: {amount}!",
+    "growSavings": "Tejamkorligingizni oshiring",
+    "accept": "Ha, qo'shaman!",
+    "skip": "O'tkazib yuboraman",
+    "freeGiftTitle": "MAXSUS SOVG'A",
+    "freeGiftCovered": "Tejamkorligingiz ({amount}) uni qoplaydi!",
+    "freeGiftCta": "Sovg'amni olaman!",
+    "freeLabel": "BEPUL",
+    "progressLabel": "Tejamkorlik: {amount}",
+    "progressSteps": "{done}/{total} qadam"
+  },
   "cookie": {
     "text": "Biz saytdan foydalanishni yaxshilash uchun cookie fayllardan foydalanamiz.",
     "accept": "Qabul qilaman",

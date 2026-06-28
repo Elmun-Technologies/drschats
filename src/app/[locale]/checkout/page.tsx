@@ -25,7 +25,7 @@ export default async function CheckoutPage({
   setRequestLocale(locale);
 
   const [recommended, t] = await Promise.all([
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 6 }),
+    shopflow.getProducts({ locale, sort: "popular", pageSize: 20 }),
     getTranslations("checkout"),
   ]);
 

@@ -19,8 +19,8 @@ import { Link } from "@/lib/i18n/navigation";
 import { buttonVariants } from "@/components/ui/Button";
 import { submitOrder } from "@/app/[locale]/checkout/actions";
 import { getAttribution, trackLead } from "@/lib/analytics/events";
-
-const UPSELL_DISCOUNT = 15;
+import { buildUpsellLadder } from "@/lib/upsell/ladder";
+import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 
 export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   const locale = useLocale() as Locale;
@@ -64,9 +64,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
     );
   }
 
-  const upsellItems = recommended
-    .filter((p) => !lines.some((l) => l.productId === p.id))
-    .slice(0, 3);
+  const ladderSteps = buildUpsellLadder(lines, recommended);
 
   async function onSubmit(values: FormValues) {
     setSubmitting(true);
@@ -145,45 +143,61 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <p className="text-sm text-muted">{t("paymentNote")}</p>
         </fieldset>
 
-        {/* Upsell */}
-        {upsellItems.length > 0 && (
+        {/* Upsell Ladder */}
+        {ladderSteps.length > 0 && (
           <fieldset>
             <legend className="mb-4 font-display text-xl font-semibold">{t("upsellTitle")}</legend>
             <div className="space-y-3">
-              {upsellItems.map((p) => {
-                const discounted = Math.round(p.price * (1 - UPSELL_DISCOUNT / 100));
-                return (
-                  <div key={p.id} className="flex items-center gap-4 rounded-xl border border-line bg-surface p-3">
-                    <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-surface-2">
-                      <Image src={p.images[0]?.url ?? ""} alt={p.name} fill sizes="56px" className="object-cover" />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-sm font-medium">{p.name}</p>
-                      <div className="mt-1 flex items-center gap-2">
-                        <span className="text-sm font-semibold text-accent">{formatMoney(discounted, locale)}</span>
-                        <Badge tone="gold">−{UPSELL_DISCOUNT}%</Badge>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() =>
-                        add({
-                          productId: p.id,
-                          slug: p.slug,
-                          name: p.name,
-                          image: p.images[0]?.url ?? "",
-                          price: p.price,
-                          oldPrice: p.oldPrice,
-                          upsellDiscountPercent: UPSELL_DISCOUNT,
-                        })
-                      }
-                      className="rounded-full bg-surface-3 px-4 py-2 text-xs font-semibold text-fg transition-colors hover:bg-accent hover:text-ink"
-                    >
-                      {t("upsellTitle").split(" ")[0]}
-                    </button>
+              {ladderSteps.map((step, i) => (
+                <div
+                  key={step.product.id}
+                  className={`flex items-center gap-4 rounded-xl border p-3 transition-all ${
+                    step.stepType === "free_gift"
+                      ? "border-amber-400/50 bg-gradient-to-r from-amber-950/30 to-surface"
+                      : "border-line bg-surface"
+                  }`}
+                >
+                  <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-surface-2">
+                    <Image src={step.product.images[0]?.url ?? ""} alt={step.product.name} fill sizes="56px" className="object-cover" />
                   </div>
-                );
-              })}
+                  <div className="flex-1">
+                    <p className="text-xs text-faint">{step.reason}</p>
+                    <p className="text-sm font-medium">{step.product.name}</p>
+                    <div className="mt-1 flex items-center gap-2">
+                      <span className="text-sm text-faint line-through">{formatMoney(step.product.price, locale)}</span>
+                      {step.stepType === "free_gift" ? (
+                        <span className="font-display text-sm font-bold text-amber-400">BEPUL 🎁</span>
+                      ) : (
+                        <>
+                          <span className="text-sm font-semibold text-accent">{formatMoney(step.discountedPrice, locale)}</span>
+                          <Badge tone="gold">−{step.discountPercent}%</Badge>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      add({
+                        productId: step.product.id,
+                        slug: step.product.slug,
+                        name: step.product.name,
+                        image: step.product.images[0]?.url ?? "",
+                        price: step.product.price,
+                        oldPrice: step.product.oldPrice,
+                        upsellDiscountPercent: step.discountPercent,
+                      })
+                    }
+                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
+                      step.stepType === "free_gift"
+                        ? "bg-amber-400 text-ink hover:bg-amber-300"
+                        : "bg-surface-3 text-fg hover:bg-accent hover:text-ink"
+                    }`}
+                  >
+                    {step.stepType === "free_gift" ? "Olish" : `+${i + 1}`}
+                  </button>
+                </div>
+              ))}
             </div>
           </fieldset>
         )}
@@ -235,6 +249,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               <span>{formatMoney(totals.total, locale)}</span>
             </div>
           </div>
+          <UpsellSavingsBar />
         </div>
       </aside>
     </div>
