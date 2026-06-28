@@ -54,6 +54,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             -{discount}%
           </span>
         )}
+        {!product.inStock && (
+          <div className="absolute inset-0 flex items-center justify-center bg-ink/50 backdrop-blur-[2px]">
+            <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-muted">
+              {t("outOfStock")}
+            </span>
+          </div>
+        )}
         <WishlistButton productId={product.id} className="absolute right-2 top-2 h-8 w-8 bg-surface/80 backdrop-blur-sm" />
       </Link>
 
@@ -74,7 +81,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <button
           onClick={handleAdd}
           disabled={!product.inStock}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-surface py-2.5 text-sm font-semibold text-fg transition-colors hover:bg-accent hover:text-ink disabled:opacity-50"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:bg-surface disabled:text-muted disabled:opacity-60 disabled:translate-y-0"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />

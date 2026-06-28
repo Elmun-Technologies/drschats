@@ -53,7 +53,16 @@ export default async function ExpertsPage({
                 <div className="flex flex-1 flex-col p-6">
                   <h2 className="font-display text-xl font-bold group-hover:text-accent-strong">{e.name}</h2>
                   <p className="mt-1 text-sm text-accent-strong">{e.title}</p>
-                  <p className="mt-3 text-sm text-muted">{e.bio}</p>
+                  <p className="mt-3 line-clamp-3 text-sm text-muted">{e.bio}</p>
+                  {e.credentials.length > 0 && (
+                    <div className="mt-4 flex flex-wrap gap-1.5">
+                      {e.credentials.slice(0, 3).map((c) => (
+                        <span key={c} className="rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[11px] font-medium text-muted">
+                          {c}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </Link>
             </Reveal>

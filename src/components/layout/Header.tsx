@@ -142,9 +142,24 @@ export function Header() {
                 </svg>
               </button>
             </div>
-            <nav className="container-px flex flex-col gap-1 pt-6">
+            <div className="container-px pt-4">
+              <form onSubmit={submitSearch} className="flex items-center rounded-xl border border-line bg-surface px-4">
+                <input
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  placeholder={common("search") + "…"}
+                  className="h-12 flex-1 bg-transparent text-sm text-fg outline-none placeholder:text-faint"
+                />
+                <button type="submit" aria-label={common("search")} onClick={() => setMenuOpen(false)}>
+                  <svg viewBox="0 0 24 24" className="h-5 w-5 text-muted" fill="none" stroke="currentColor" strokeWidth="2">
+                    <circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" strokeLinecap="round" />
+                  </svg>
+                </button>
+              </form>
+            </div>
+            <nav className="container-px flex flex-col gap-1 pt-4">
               {navItems.map((item) => (
-                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="py-3 font-display text-2xl font-semibold">
+                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="border-b border-line/50 py-4 font-display text-xl font-semibold last:border-0">
                   {t(item.key)}
                 </Link>
               ))}

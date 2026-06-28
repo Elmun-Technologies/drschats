@@ -110,7 +110,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   return (
     <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10 [order:2] lg:[order:1]">
         <fieldset className="space-y-5">
           <legend className="mb-2 font-display text-xl font-semibold">{t("contactSection")}</legend>
           <Field label={t("name")} error={errors.name?.message}>
@@ -213,7 +213,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
       </form>
 
       {/* Summary */}
-      <aside className="lg:sticky lg:top-24 lg:self-start">
+      <aside className="[order:1] lg:[order:2] lg:sticky lg:top-24 lg:self-start">
         <div className="rounded-2xl border border-line bg-surface p-6">
           <h2 className="mb-5 font-display text-lg font-semibold">{t("summary")}</h2>
           <div className="space-y-4">

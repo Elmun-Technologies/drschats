@@ -132,9 +132,11 @@
       }
     },
     "cta": {
+      "eyebrow": "Health is the greatest wealth",
       "title": "Invest in your health today",
       "subtitle": "Place your order in minutes — our operator will call to confirm.",
-      "button": "Go to shop"
+      "button": "Go to shop",
+      "secondaryButton": "Meet our experts"
     },
     "recentlyViewed": {
       "eyebrow": "History",
