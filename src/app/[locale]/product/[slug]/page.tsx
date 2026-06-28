@@ -6,7 +6,7 @@ import { shopflow, listAllSlugs } from "@/lib/shopflow";
 import { routing } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { reviewerForKey } from "@/lib/content/experts";
+import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { getBespokeComponent } from "@/components/bespoke/registry";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
@@ -57,8 +57,10 @@ export default async function ProductPage({
   ]);
 
   const Bespoke = getBespokeComponent(slug);
-  const reviewer = reviewerForKey(product.id, locale);
-  const author = reviewerForKey(product.slug, locale);
+  const [reviewer, author] = await Promise.all([
+    reviewerForKey(product.id, locale),
+    reviewerForKey(product.slug, locale),
+  ]);
 
   return (
     <>
@@ -75,7 +77,7 @@ export default async function ProductPage({
       {Bespoke ? (
         <Bespoke product={product} upsells={upsells} locale={locale} />
       ) : (
-        <ProductTemplate product={product} upsells={upsells} locale={locale} />
+        <ProductTemplate product={product} upsells={upsells} locale={locale} reviewer={reviewer} />
       )}
       <SimilarProducts currentProduct={product} allProducts={allProducts.items} />
     </>

@@ -4,12 +4,12 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { routing } from "@/lib/i18n/routing";
-import { getArticle, listArticleSlugs } from "@/lib/content/blog";
+import { getArticle, listArticleSlugs } from "@/lib/content/blog.sanity";
 import { shopflow } from "@/lib/shopflow";
 import type { Product } from "@/lib/shopflow/types";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, articleGraph, breadcrumbLd } from "@/lib/seo/jsonld";
-import { reviewerForKey } from "@/lib/content/experts";
+import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { Container } from "@/components/ui/Container";
@@ -21,9 +21,10 @@ import { ProductCard } from "@/components/product/ProductCard";
 export const revalidate = 3600;
 export const dynamicParams = true;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const slugs = await listArticleSlugs();
   return routing.locales.flatMap((locale) =>
-    listArticleSlugs().map((slug) => ({ locale, slug })),
+    slugs.map((slug) => ({ locale, slug })),
   );
 }
 
@@ -33,7 +34,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const article = getArticle(slug, locale);
+  const article = await getArticle(slug, locale);
   if (!article) return {};
   return buildPageMetadata({
     locale,
@@ -52,17 +53,17 @@ export default async function ArticlePage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const article = getArticle(slug, locale);
+  const article = await getArticle(slug, locale);
   if (!article) notFound();
 
-  const [t, related] = await Promise.all([
+  const [t, related, reviewer, author] = await Promise.all([
     getTranslations("blog"),
     Promise.all(article.relatedProductSlugs.map((s) => shopflow.getProduct(s, locale))),
+    reviewerForKey(slug, locale),
+    reviewerForKey(`${slug}-author`, locale),
   ]);
   const relatedProducts = related.filter((p): p is Product => p !== null);
   const url = `${SITE_URL}/${locale}/blog/${slug}`;
-  const reviewer = reviewerForKey(slug, locale);
-  const author = reviewerForKey(`${slug}-author`, locale);
 
   return (
     <article className="pt-10">

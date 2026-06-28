@@ -11,19 +11,20 @@ import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { trackAddToCart, trackViewProduct } from "@/lib/analytics/events";
 import { reviewerForKey } from "@/lib/content/experts";
+import type { Expert } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { ShareButton } from "@/components/product/ShareButton";
 
-export function BuyBox({ product }: { product: Product }) {
+export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; reviewer?: Expert }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const tp = useTranslations("product.buyBox");
   const add = useCart((s) => s.add);
   const [qty, setQty] = useState(1);
-  const reviewer = reviewerForKey(product.id, locale);
+  const reviewer = reviewerProp ?? reviewerForKey(product.id, locale);
 
   useEffect(() => {
     trackViewProduct(product.slug, product.price);

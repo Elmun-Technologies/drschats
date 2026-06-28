@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { getExperts } from "@/lib/content/experts";
+import { getExperts } from "@/lib/content/experts.sanity";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
@@ -27,7 +27,7 @@ export default async function ExpertsPage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const [t, experts] = await Promise.all([getTranslations("experts"), Promise.resolve(getExperts(locale))]);
+  const [t, experts] = await Promise.all([getTranslations("experts"), getExperts(locale)]);
 
   return (
     <div className="pt-10">

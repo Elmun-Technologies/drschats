@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { routing } from "@/lib/i18n/routing";
-import { getExpert, listExpertSlugs } from "@/lib/content/experts";
+import { getExpert, listExpertSlugs } from "@/lib/content/experts.sanity";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
@@ -13,9 +13,10 @@ import { Link } from "@/lib/i18n/navigation";
 export const revalidate = 3600;
 export const dynamicParams = true;
 
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const slugs = await listExpertSlugs();
   return routing.locales.flatMap((locale) =>
-    listExpertSlugs().map((slug) => ({ locale, slug })),
+    slugs.map((slug) => ({ locale, slug })),
   );
 }
 
@@ -25,7 +26,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale; slug: string }>;
 }): Promise<Metadata> {
   const { locale, slug } = await params;
-  const expert = getExpert(slug, locale);
+  const expert = await getExpert(slug, locale);
   if (!expert) return {};
   return buildPageMetadata({
     locale,
@@ -43,7 +44,7 @@ export default async function ExpertPage({
 }) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
-  const expert = getExpert(slug, locale);
+  const expert = await getExpert(slug, locale);
   if (!expert) notFound();
   const t = await getTranslations("experts");
 
