@@ -10,7 +10,7 @@ import { ArticleCard } from "@/components/blog/ArticleCard";
 import { Badge } from "@/components/ui/Badge";
 import { Link } from "@/lib/i18n/navigation";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,

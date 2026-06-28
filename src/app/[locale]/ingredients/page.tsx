@@ -9,7 +9,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { Reveal } from "@/components/animation/Reveal";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateMetadata({
   params,

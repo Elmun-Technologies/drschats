@@ -10,7 +10,7 @@ import { JsonLd } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {
