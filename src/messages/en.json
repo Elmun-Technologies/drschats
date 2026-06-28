@@ -342,7 +342,10 @@
   "delivery": {
     "title": "Delivery & payment",
     "subtitle": "Fast, reliable delivery across Tashkent and all of Uzbekistan",
-    "shippingTitle": "Delivery",
+    "eyebrow": "Delivery",
+    "freeBannerTitle": "Free delivery on orders over 300,000 UZS",
+    "freeBannerDesc": "Across Tashkent. Nationwide on orders over 700,000 UZS.",
+    "shippingTitle": "Delivery options",
     "tashkentTitle": "Across Tashkent — courier",
     "tashkentTime": "1–2 business days",
     "tashkentFree": "Free on orders over 300,000 UZS. Otherwise — 20,000 UZS.",
@@ -350,13 +353,15 @@
     "regionsTime": "2–5 business days",
     "regionsFree": "Free on orders over 700,000 UZS. Otherwise — 30,000 UZS.",
     "pickupTitle": "Pickup",
-    "pickupTime": "Free · from our Tashkent point",
+    "pickupTime": "Free",
+    "pickupFree": "From our Tashkent warehouse.",
     "paymentTitle": "Payment methods",
-    "payCod": "Cash or card on delivery",
-    "payClick": "Online payment via Click",
-    "payPayme": "Online payment via Payme",
-    "payInstallment": "Instalments (major bank cards)",
-    "note": "After your order is confirmed, an operator will contact you to agree the exact time and address."
+    "payCod": "Cash / card on delivery",
+    "payClick": "Click",
+    "payPayme": "Payme",
+    "payInstallment": "Instalments",
+    "note": "After your order is confirmed, an operator will contact you to agree the exact time and address.",
+    "contactCta": "Contact us"
   },
   "loyalty": {
     "title": "Loyalty programme",

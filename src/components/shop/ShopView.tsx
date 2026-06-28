@@ -91,12 +91,31 @@ export async function ShopView({
       </div>
 
       <Container className="py-10">
-        <header className="mb-8">
+        <header className="mb-6">
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h1>
           <p className="mt-2 text-muted">
             {search ? t("resultsCount", { count: result.total }) : active?.description ?? t("subtitle")}
           </p>
         </header>
+
+        {/* Mobile category chips — hidden on large screens */}
+        <div className="mb-6 flex gap-2 overflow-x-auto pb-1 lg:hidden">
+          <Link
+            href="/products"
+            className={cn("shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", !activeCategory ? "border-accent bg-accent-soft text-accent-strong" : "border-line text-muted")}
+          >
+            {t("all")}
+          </Link>
+          {categories.map((c) => (
+            <Link
+              key={c.id}
+              href={`/products/${c.slug}`}
+              className={cn("shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", c.slug === activeCategory ? "border-accent bg-accent-soft text-accent-strong" : "border-line text-muted")}
+            >
+              {c.name}
+            </Link>
+          ))}
+        </div>
 
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
           {/* Sidebar */}
