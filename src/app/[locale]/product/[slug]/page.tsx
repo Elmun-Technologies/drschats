@@ -15,11 +15,26 @@ import { SimilarProducts } from "@/components/personalization/SimilarProducts";
 export const revalidate = 300;
 export const dynamicParams = true;
 
-export function generateStaticParams() {
-  // Pre-render every product in every locale.
-  return routing.locales.flatMap((locale) =>
-    listAllSlugs().map(({ slug }) => ({ locale, slug })),
-  );
+export async function generateStaticParams() {
+  try {
+    const results = await Promise.all(
+      routing.locales.map((locale) =>
+        shopflow.getProducts({ locale, pageSize: 200 }).then((r) =>
+          r.items.map(({ slug }) => ({ locale, slug }))
+        )
+      )
+    );
+    const combined = results.flat();
+    // fallback to mock slugs if API returned nothing
+    if (combined.length === 0) {
+      return routing.locales.flatMap((locale) =>
+        listAllSlugs().map(({ slug }) => ({ locale, slug }))
+      );
+    }
+    return combined;
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({
@@ -51,8 +66,8 @@ export default async function ProductPage({
   if (!product) notFound();
 
   const [upsells, allProducts, t] = await Promise.all([
-    shopflow.getUpsells(product.id, locale),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }),
+    shopflow.getUpsells(product.id, locale).catch(() => []),
+    shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }).catch(() => ({ items: [], total: 0, page: 1, pageSize: 50 })),
     getTranslations("product"),
   ]);
 
