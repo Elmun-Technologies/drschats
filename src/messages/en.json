@@ -523,6 +523,8 @@
       "eyebrow": "Convenient payment",
       "title": "Payment methods",
       "subtitle": "Pay whichever way is convenient for you.",
+      "secureTitle": "100% secure payment",
+      "secureNote": "All online payments go through encrypted Click and Payme gateways. Card details are never stored.",
       "methods": [
         {
           "title": "Click",
@@ -561,6 +563,12 @@
       "eyebrow": "Our guarantee",
       "title": "Guarantee & returns",
       "subtitle": "We fully guarantee the quality and clean composition of our products.",
+      "badgeLabel": "day return guarantee",
+      "badgeDesc": "Not satisfied — we refund with no questions asked.",
+      "howToReturn": "How to return",
+      "returnStep1": "Call our operator or message us on Telegram.",
+      "returnStep2": "Hand the product in its original packaging to the courier.",
+      "returnStep3": "Your payment is returned within 1–3 business days.",
       "points": [
         {
           "title": "30-day guarantee",
