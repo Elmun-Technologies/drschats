@@ -275,9 +275,12 @@
       "subtitle": "Tez orada operatorimiz siz bilan bog’lanadi.",
       "orderId": "Buyurtma raqami",
       "home": "Bosh sahifaga",
-      "step1": "Operatorimiz 15–30 daqiqa ichida qo’ng’iroq qiladi",
-      "step2": "Buyurtma 24–48 soat ichida yig’ilib tayyorlanadi",
-      "step3": "Kuryer yetkazib beradi — to’lov olayotganda"
+      "whatsNext": "Keyingi qadam",
+      "stepLabel": "{n}-qadam",
+      "step1": "Operatorimiz 15–30 daqiqa ichida buyurtmangizni tasdiqlash uchun qo’ng’iroq qiladi",
+      "step2": "Buyurtma 24–48 soat ichida yig’ilib jo’natishga tayyorlanadi",
+      "step3": "Kuryer manzilingizga yetkazib beradi — to’lov qabul qilayotganda",
+      "continueShopping": "Xarid qilishni davom ettirish"
     },
     "upsellAdd": "Qo'shish",
     "upsellFree": "BEPUL 🎁"
