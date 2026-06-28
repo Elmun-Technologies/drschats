@@ -124,7 +124,7 @@ export const orderRequestSchema = z.object({
     shipping: z.number(),
     total: z.number(),
   }),
-  locale: z.enum(["uz", "ru", "en"]),
+  locale: z.enum(["ru", "uz"]),
   attribution: z
     .object({
       utmSource: z.string().optional(),
