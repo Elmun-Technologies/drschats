@@ -387,7 +387,9 @@
     "pointsStandard": "Standart mahsulot — 1 ball = 2 750 so‘m",
     "pointsPromo": "Aksiya mahsuloti — 1 ball = 2 050 so‘m",
     "cta": "Hamkor bo‘lish",
-    "join": "Ro‘yxatdan o‘tish"
+    "join": "Ro‘yxatdan o‘tish",
+    "discount": "chegirma",
+    "fromAmount": "{amount} so'mdan"
   },
   "ingredients_page": {
     "title": "Ingredientlar va sertifikatlar",
