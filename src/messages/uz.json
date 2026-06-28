@@ -176,9 +176,11 @@
     "upsellDiscount": "{percent}% chegirma",
     "addUpsell": "Qo‘shish",
     "buyBox": {
-      "guarantee": "30 kunlik qoniqish kafolati",
-      "delivery": "1–3 kun ichida yetkazib berish",
-      "secure": "Operator orqali tasdiqlash"
+      "guarantee": "30 kun kafolat",
+      "delivery": "1–3 kun yetkazish",
+      "secure": "Xavfsiz to'lov",
+      "youSave": "{amount} tejaysiz",
+      "payWith": "To'lov usullari"
     },
     "notFound": "Mahsulot topilmadi",
     "backToShop": "Do‘konga qaytish",
