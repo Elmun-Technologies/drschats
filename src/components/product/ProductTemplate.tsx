@@ -26,7 +26,7 @@ export async function ProductTemplate({
   const t = await getTranslations("product");
 
   return (
-    <div className="pt-24">
+    <div className="pt-10">
       <Container>
         <Breadcrumb product={product} />
 

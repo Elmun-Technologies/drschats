@@ -30,7 +30,7 @@ export default async function BlogPage({
   const articles = getArticles(locale);
 
   return (
-    <div className="pt-32">
+    <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
           <Reveal>

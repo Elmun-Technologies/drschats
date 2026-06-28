@@ -65,7 +65,7 @@ export default async function ArticlePage({
   const author = reviewerForKey(`${slug}-author`, locale);
 
   return (
-    <article className="pt-24">
+    <article className="pt-10">
       <JsonLd
         data={articleGraph({
           title: article.title,

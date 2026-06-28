@@ -34,7 +34,7 @@ export default async function DeliveryPage({
   const payments = [t("payClick"), t("payPayme"), t("payCod"), t("payInstallment")];
 
   return (
-    <div className="pt-32">
+    <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
           <h1 className="font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">{t("title")}</h1>

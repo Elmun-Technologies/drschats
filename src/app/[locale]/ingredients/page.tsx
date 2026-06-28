@@ -37,7 +37,7 @@ export default async function IngredientsPage({
   const nameBySlug = new Map(products.items.map((p) => [p.slug, p.name]));
 
   return (
-    <div className="pt-32">
+    <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
           <p className="text-sm font-semibold text-accent-strong">{t("badge")}</p>

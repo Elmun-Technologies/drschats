@@ -4,7 +4,7 @@ import { Reveal } from "@/components/animation/Reveal";
 /** Simple shell for legal/info pages. Real copy is supplied by the client. */
 export function LegalPage({ title, body }: { title: string; body: string }) {
   return (
-    <div className="pt-32">
+    <div className="pt-10">
       <Container size="narrow">
         <Reveal>
           <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">{title}</h1>

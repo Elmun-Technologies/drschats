@@ -31,7 +31,7 @@ export default async function LoyaltyPage({
   const points = [t("pointsNew"), t("pointsStandard"), t("pointsPromo")];
 
   return (
-    <div className="pt-32">
+    <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
           <h1 className="font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">{t("title")}</h1>

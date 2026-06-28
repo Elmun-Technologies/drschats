@@ -4,12 +4,12 @@ import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
-import { HeroMinimal } from "@/components/home/HeroMinimal";
-import { PressLogos } from "@/components/home/PressLogos";
-import { CategoryGrid } from "@/components/home/CategoryGrid";
+import { HeroBento } from "@/components/home/HeroBento";
+import { TopCategories } from "@/components/home/TopCategories";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { ProductCarousel } from "@/components/home/ProductCarousel";
+import { PromoBanners } from "@/components/home/PromoBanners";
 import { StatsBand } from "@/components/home/StatsBand";
-import { QualityList } from "@/components/home/QualityList";
 import { BlogTeaser } from "@/components/home/BlogTeaser";
 import { HomeCTA } from "@/components/home/HomeCTA";
 
@@ -38,19 +38,20 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [categories, bestsellers] = await Promise.all([
+  const [categories, bestsellers, topRated] = await Promise.all([
     shopflow.getCategories(locale),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 8 }),
+    shopflow.getProducts({ locale, sort: "new", pageSize: 8 }),
   ]);
 
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <HeroMinimal />
-      <PressLogos />
-      <CategoryGrid categories={categories} />
+      <HeroBento />
+      <TopCategories categories={categories} />
       <FeaturedProducts products={bestsellers.items} />
-      <QualityList />
+      <PromoBanners />
+      <ProductCarousel products={topRated.items} />
       <StatsBand />
       <BlogTeaser locale={locale} />
       <HomeCTA />

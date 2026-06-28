@@ -61,7 +61,7 @@ export default async function ExpertPage({
   };
 
   return (
-    <div className="pt-32">
+    <div className="pt-10">
       <JsonLd data={personLd} />
       <Container size="narrow">
         <Link href="/experts" className="text-sm text-muted hover:text-accent">

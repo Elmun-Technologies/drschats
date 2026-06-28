@@ -38,7 +38,7 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_30%,rgba(31,209,123,0.25),transparent_55%)]" />
         </motion.div>
 
-        <motion.div style={{ y: textY }} className="w-full pb-24 pt-32">
+        <motion.div style={{ y: textY }} className="w-full pb-24 pt-10">
           <Container>
             <Reveal>
               <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
