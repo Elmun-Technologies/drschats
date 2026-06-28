@@ -6,6 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
 import { FilterBar } from "@/components/shop/FilterBar";
+import { Pagination } from "@/components/shop/Pagination";
 import { cn } from "@/lib/utils";
 
 type Sort = NonNullable<ProductListParams["sort"]>;
@@ -17,6 +18,8 @@ const sortLabelKey: Record<Sort, string> = {
   new: "sortNew",
 };
 
+const PAGE_SIZE = 24;
+
 export async function ShopView({
   locale,
   activeCategory,
@@ -25,6 +28,7 @@ export async function ShopView({
   origin,
   minPrice,
   maxPrice,
+  page = 1,
 }: {
   locale: Locale;
   activeCategory?: string;
@@ -33,13 +37,14 @@ export async function ShopView({
   origin?: string;
   minPrice?: number;
   maxPrice?: number;
+  page?: number;
 }) {
   const [t, nav, prod, categories, result, facetPool] = await Promise.all([
     getTranslations("shop"),
     getTranslations("nav"),
     getTranslations("product"),
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, category: activeCategory, search, origin, minPrice, maxPrice, sort, pageSize: 24 }),
+    shopflow.getProducts({ locale, category: activeCategory, search, origin, minPrice, maxPrice, sort, pageSize: PAGE_SIZE, page }),
     shopflow.getProducts({ locale, category: activeCategory, search, pageSize: 100 }),
   ]);
 
@@ -50,16 +55,23 @@ export async function ShopView({
   const active = activeCategory ? categories.find((c) => c.slug === activeCategory) : undefined;
   const basePath = activeCategory ? `/products/${activeCategory}` : "/products";
   const heading = search ? t("searchResults", { query: search }) : active ? active.name : t("title");
+  const totalPages = Math.ceil((result.total || 0) / PAGE_SIZE);
 
-  const sortQuery = (s: Sort) => {
-    const query: Record<string, string> = {};
-    if (s !== "popular") query.sort = s;
-    if (search) query.q = search;
-    if (origin) query.origin = origin;
-    if (minPrice != null) query.min = String(minPrice);
-    if (maxPrice != null) query.max = String(maxPrice);
-    return { pathname: basePath, query };
-  };
+  function buildQuery(overrides: Record<string, string | undefined>) {
+    const q: Record<string, string> = {};
+    if (sort !== "popular") q.sort = sort;
+    if (search) q.q = search;
+    if (origin) q.origin = origin;
+    if (minPrice != null) q.min = String(minPrice);
+    if (maxPrice != null) q.max = String(maxPrice);
+    if (page > 1) q.page = String(page);
+    Object.entries(overrides).forEach(([k, v]) => {
+      if (v === undefined) delete q[k]; else q[k] = v;
+    });
+    return { pathname: basePath, query: q };
+  }
+
+  const sortQuery = (s: Sort) => buildQuery({ sort: s !== "popular" ? s : undefined, page: undefined });
 
   return (
     <>
@@ -141,11 +153,18 @@ export async function ShopView({
             {result.items.length === 0 ? (
               <p className="py-24 text-center text-muted">{t("empty")}</p>
             ) : (
-              <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                {result.items.map((p, i) => (
-                  <ProductCard key={p.id} product={p} index={i} />
-                ))}
-              </div>
+              <>
+                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                  {result.items.map((p, i) => (
+                    <ProductCard key={p.id} product={p} index={i} />
+                  ))}
+                </div>
+                <Pagination
+                  currentPage={page}
+                  totalPages={totalPages}
+                  buildHref={(p) => buildQuery({ page: p > 1 ? String(p) : undefined })}
+                />
+              </>
             )}
           </div>
         </div>

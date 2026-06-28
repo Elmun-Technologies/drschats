@@ -10,6 +10,7 @@ import { formatMoney } from "@/lib/utils";
 import { StarRating } from "@/components/ui/StarRating";
 import { useCart } from "@/lib/cart/store";
 import { trackAddToCart } from "@/lib/analytics/events";
+import { WishlistButton } from "@/components/product/WishlistButton";
 
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const locale = useLocale() as Locale;
@@ -53,6 +54,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             -{discount}%
           </span>
         )}
+        <WishlistButton productId={product.id} className="absolute right-2 top-2 h-8 w-8 bg-surface/80 backdrop-blur-sm" />
       </Link>
 
       <div className="flex flex-1 flex-col px-1 pt-3">

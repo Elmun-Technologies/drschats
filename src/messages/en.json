@@ -41,7 +41,8 @@
     "addedToCart": "Added to cart",
     "viewCart": "View cart",
     "backToTop": "To top",
-    "addToCartShort": "Add to cart"
+    "addToCartShort": "Add to cart",
+    "share": "Share"
   },
   "home": {
     "hero": {
@@ -657,6 +658,21 @@
         "answer": "Free on orders over 300,000 UZS in Tashkent and 700,000 UZS to the regions."
       }
     ]
+  },
+  "socialProof": {
+    "bought": "just purchased"
+  },
+  "countdown": {
+    "label": "Sale ends in:",
+    "days": "d",
+    "hours": "h",
+    "minutes": "m",
+    "seconds": "s"
+  },
+  "wishlist": {
+    "add": "Add to wishlist",
+    "remove": "Remove from wishlist",
+    "added": "Added to wishlist"
   },
   "exit": {
     "title": "Wait! We have a special offer for you",

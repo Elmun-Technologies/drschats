@@ -22,6 +22,7 @@ import { JsonLd, websiteLd, localBusinessLd } from "@/lib/seo/jsonld";
 import { ExitIntentPopup } from "@/components/exit-intent/ExitIntentPopup";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
+import { LivePurchaseToast } from "@/components/social-proof/LivePurchaseToast";
 
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -77,6 +78,7 @@ export default async function LocaleLayout({
               <BackToTop />
               <MobileBottomNav />
               <ExitIntentPopup />
+              <LivePurchaseToast />
             </SmoothScroll>
           </PromotionsProvider>
         </NextIntlClientProvider>
