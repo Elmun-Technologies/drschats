@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
+import type { Product } from "@/lib/shopflow/types";
 
 interface SlideCopy {
   eyebrow: string;
@@ -46,7 +48,7 @@ const DEAL_CARDS = [
   },
 ];
 
-export function HeroBento() {
+export function HeroBento({ featuredProducts = [] }: { featuredProducts?: Product[] }) {
   const t = useTranslations("home");
   const b = useTranslations("home.bento");
   const slides = t.raw("slides") as SlideCopy[];
@@ -113,10 +115,10 @@ export function HeroBento() {
 
           {/* Bento deal cards */}
           <div className="grid gap-4">
-            <DealCard card={DEAL_CARDS[0]} off={b(DEAL_CARDS[0].offKey)} title={b(DEAL_CARDS[0].titleKey)} cta={b("viewMore")} />
+            <DealCard card={DEAL_CARDS[0]} off={b(DEAL_CARDS[0].offKey)} title={b(DEAL_CARDS[0].titleKey)} cta={b("viewMore")} product={featuredProducts[0]} />
             <div className="grid grid-cols-2 gap-4">
-              <DealCard card={DEAL_CARDS[1]} off={b(DEAL_CARDS[1].offKey)} title={b(DEAL_CARDS[1].titleKey)} />
-              <DealCard card={DEAL_CARDS[2]} off={b(DEAL_CARDS[2].offKey)} title={b(DEAL_CARDS[2].titleKey)} />
+              <DealCard card={DEAL_CARDS[1]} off={b(DEAL_CARDS[1].offKey)} title={b(DEAL_CARDS[1].titleKey)} product={featuredProducts[1]} />
+              <DealCard card={DEAL_CARDS[2]} off={b(DEAL_CARDS[2].offKey)} title={b(DEAL_CARDS[2].titleKey)} product={featuredProducts[2]} />
             </div>
           </div>
         </div>
@@ -130,34 +132,59 @@ function DealCard({
   off,
   title,
   cta,
+  product,
 }: {
   card: typeof DEAL_CARDS[number];
   off: string;
   title: string;
   cta?: string;
+  product?: Product;
 }) {
+  const imageUrl = product?.images[0]?.url;
   return (
     <Link
-      href="/products"
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl ${card.bg} ${card.big ? "min-h-[200px] p-7" : "min-h-[170px] p-5"} transition-all hover:-translate-y-0.5`}
+      href={product ? `/product/${product.slug}` : "/products"}
+      className={`group relative flex overflow-hidden rounded-2xl ${card.bg} ${card.big ? "min-h-[200px]" : "min-h-[170px]"} transition-all hover:-translate-y-0.5`}
     >
-      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d={card.icon} />
-        </svg>
+      {/* Text content */}
+      <div className={`relative z-10 flex flex-col justify-between ${card.big ? "w-[55%] p-7" : "w-[60%] p-5"}`}>
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d={card.icon} />
+          </svg>
+        </div>
+        <div>
+          <p className="text-xs font-bold uppercase tracking-widest text-fg/60">{off}</p>
+          <h3 className={`mt-1 font-display font-extrabold leading-tight text-fg ${card.big ? "text-xl" : "text-base"}`}>{title}</h3>
+          {cta && (
+            <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-ink transition-gap group-hover:gap-2">
+              {cta}
+              <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </span>
+          )}
+        </div>
       </div>
-      <div>
-        <p className="text-xs font-bold uppercase tracking-widest text-fg/60">{off}</p>
-        <h3 className={`mt-1 font-display font-extrabold leading-tight text-fg ${card.big ? "text-xl" : "text-base"}`}>{title}</h3>
-        {cta && (
-          <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-ink transition-gap group-hover:gap-2">
-            {cta}
-            <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          </span>
-        )}
-      </div>
+
+      {/* Product image */}
+      {imageUrl ? (
+        <div className={`absolute bottom-0 right-0 ${card.big ? "h-[190px] w-[45%]" : "h-[155px] w-[42%]"}`}>
+          <Image
+            src={imageUrl}
+            alt={product?.name ?? ""}
+            fill
+            sizes="(max-width: 768px) 45vw, 20vw"
+            className="object-contain object-bottom drop-shadow-lg transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+      ) : (
+        <div className="absolute bottom-0 right-0 flex items-end justify-center opacity-10" style={{ width: card.big ? "45%" : "42%", height: card.big ? "190px" : "155px" }}>
+          <svg viewBox="0 0 24 24" className="h-24 w-24" fill="currentColor">
+            <path d={card.icon} />
+          </svg>
+        </div>
+      )}
     </Link>
   );
 }
