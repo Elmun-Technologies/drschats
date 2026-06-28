@@ -7,7 +7,15 @@
     "contact": "Contact",
     "cart": "Cart",
     "openMenu": "Open menu",
-    "closeMenu": "Close"
+    "closeMenu": "Close",
+    "faqs": "FAQs",
+    "account": "My Account",
+    "shopByCategories": "Shop By Categories",
+    "allCategories": "All Categories",
+    "topDeals": "Top deals",
+    "home": "Home",
+    "ingredients": "Ingredients",
+    "experts": "Experts"
   },
   "common": {
     "addToCart": "Add to cart",
@@ -25,7 +33,8 @@
     "servings": "Size",
     "addedToCart": "Added to cart",
     "viewCart": "View cart",
-    "backToTop": "To top"
+    "backToTop": "To top",
+    "addToCartShort": "Add to cart"
   },
   "home": {
     "hero": {
@@ -118,6 +127,15 @@
       "title": "Invest in your health today",
       "subtitle": "Place your order in minutes — our operator will call to confirm.",
       "button": "Go to shop"
+    },
+    "bento": {
+      "b1Off": "Up to 45% OFF",
+      "b1Title": "Exclusive medical product deals",
+      "b2Off": "15% OFF",
+      "b2Title": "Women's health",
+      "b3Off": "15% OFF",
+      "b3Title": "Premium wellness products",
+      "viewMore": "View More"
     }
   },
   "product": {
@@ -335,5 +353,16 @@
     "text": "We use cookies to improve your experience.",
     "accept": "Accept",
     "more": "Learn more"
+  },
+  "topbar": {
+    "announcement": "Due to the COVID-19 situation, orders may be processed with a slight delay"
+  },
+  "header": {
+    "needHelp": "Need Help?",
+    "phone": "+998 71 200 00 00"
+  },
+  "badges": {
+    "hot": "HOT",
+    "sale": "SALE"
   }
 }

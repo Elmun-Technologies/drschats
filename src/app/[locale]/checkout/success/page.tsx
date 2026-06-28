@@ -20,7 +20,7 @@ export default async function SuccessPage({
   const t = await getTranslations("checkout.success");
 
   return (
-    <div className="flex min-h-[80svh] items-center pt-24">
+    <div className="flex min-h-[80svh] items-center pt-10">
       <Container size="narrow">
         <div className="flex flex-col items-center text-center">
           <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-accent-soft text-accent">

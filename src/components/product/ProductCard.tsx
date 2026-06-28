@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Link } from "@/lib/i18n/navigation";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
-import { Price } from "@/components/ui/Price";
+import { formatMoney } from "@/lib/utils";
 import { StarRating } from "@/components/ui/StarRating";
 import { useCart } from "@/lib/cart/store";
 import { trackAddToCart } from "@/lib/analytics/events";
@@ -15,6 +15,10 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const add = useCart((s) => s.add);
+
+  const discount = product.oldPrice
+    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+    : 0;
 
   function handleAdd() {
     add({
@@ -34,54 +38,48 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.45, delay: (index % 4) * 0.05, ease: [0.16, 1, 0.3, 1] }}
-      className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink transition-all duration-300 hover:border-line-strong hover:shadow-[0_14px_40px_-22px_rgba(15,26,20,0.3)]"
+      className="group flex h-full flex-col rounded-xl border border-line bg-ink p-3 transition-all duration-300 hover:border-line-strong hover:shadow-[0_14px_40px_-22px_rgba(15,26,20,0.3)]"
     >
-      <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-surface">
+      <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden rounded-lg bg-surface">
         <Image
           src={product.images[0]?.url ?? ""}
           alt={product.images[0]?.alt ?? product.name}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.04]"
+          className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
         />
-        {product.images[1] && (
-          <Image
-            src={product.images[1].url}
-            alt=""
-            fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-          />
-        )}
-        {product.badges[0] && (
-          <span className="absolute left-3 top-3 rounded-full bg-ink/90 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-fg shadow-sm backdrop-blur">
-            {product.badges[0]}
+        {discount > 0 && (
+          <span className="absolute left-2 top-2 rounded bg-blue px-1.5 py-0.5 text-[11px] font-bold text-white">
+            -{discount}%
           </span>
         )}
       </Link>
 
-      <div className="flex flex-1 flex-col p-4">
-        <StarRating rating={product.rating} count={product.reviewCount} reviewsLabel={t("reviews", { count: product.reviewCount })} />
-        <Link href={`/product/${product.slug}`} className="mt-2 block">
-          <h3 className="font-display text-[15px] font-semibold leading-snug text-fg transition-colors group-hover:text-accent-strong">
+      <div className="flex flex-1 flex-col px-1 pt-3">
+        <Link href={`/product/${product.slug}`} className="block">
+          <h3 className="line-clamp-2 min-h-[2.6em] text-[15px] font-semibold leading-snug text-fg transition-colors group-hover:text-accent-strong">
             {product.name}
           </h3>
-          <p className="mt-1 line-clamp-1 text-sm text-muted">{product.tagline}</p>
         </Link>
-
-        <div className="mt-3 flex items-center justify-between gap-2 border-t border-line pt-3">
-          <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="sm" />
-          <button
-            onClick={handleAdd}
-            aria-label={t("addToCart")}
-            disabled={!product.inStock}
-            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-ink transition-all duration-300 hover:bg-accent-strong disabled:opacity-40"
-          >
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 5v14M5 12h14" strokeLinecap="round" />
-            </svg>
-          </button>
+        <StarRating rating={product.rating} className="mt-2" />
+        <div className="mt-2 flex items-baseline gap-2">
+          {product.oldPrice && (
+            <span className="text-sm text-faint line-through">{formatMoney(product.oldPrice, locale)}</span>
+          )}
+          <span className="font-display text-base font-bold text-accent-strong">{formatMoney(product.price, locale)}</span>
         </div>
+
+        <button
+          onClick={handleAdd}
+          disabled={!product.inStock}
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-surface py-2.5 text-sm font-semibold text-fg transition-colors hover:bg-accent hover:text-ink disabled:opacity-50"
+        >
+          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />
+            <path d="M3 6h18M16 10a4 4 0 01-8 0" strokeLinecap="round" />
+          </svg>
+          {product.inStock ? t("addToCartShort") : t("outOfStock")}
+        </button>
       </div>
     </motion.article>
   );

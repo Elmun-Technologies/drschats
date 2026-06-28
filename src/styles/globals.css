@@ -27,6 +27,16 @@
   --color-gold: #e0a32f;
   --color-danger: #e5484d;
 
+  /* HealthMart secondary palette */
+  --color-teal: #1faa78;
+  --color-blue: #2f55e6;
+  --color-blue-soft: rgba(47, 85, 230, 0.1);
+  /* pastel banner backgrounds */
+  --color-pastel-beige: #ece4d8;
+  --color-pastel-lilac: #e9e3f6;
+  --color-pastel-mint: #dcefe2;
+  --color-pastel-sky: #dceaf6;
+
   /* Typography (bound to next/font CSS vars in layout) */
   --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;

@@ -28,7 +28,7 @@ export default async function AboutPage({
   const values = ["quality", "trust", "care"] as const;
 
   return (
-    <div className="pt-32">
+    <div className="pt-10">
       <Container size="narrow">
         <Reveal>
           <h1 className="font-display text-4xl font-bold tracking-tight sm:text-6xl">{t("title")}</h1>

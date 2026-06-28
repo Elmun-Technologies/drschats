@@ -7,7 +7,15 @@
     "contact": "Aloqa",
     "cart": "Savatcha",
     "openMenu": "Menyuni ochish",
-    "closeMenu": "Yopish"
+    "closeMenu": "Yopish",
+    "faqs": "Savol-javob",
+    "account": "Mening hisobim",
+    "shopByCategories": "Kategoriyalar bo‘yicha",
+    "allCategories": "Barcha kategoriyalar",
+    "topDeals": "Aksiyalar",
+    "home": "Bosh sahifa",
+    "ingredients": "Ingredientlar",
+    "experts": "Ekspertlar"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -25,7 +33,8 @@
     "servings": "Hajmi",
     "addedToCart": "Savatga qo‘shildi",
     "viewCart": "Savatchaga o‘tish",
-    "backToTop": "Yuqoriga"
+    "backToTop": "Yuqoriga",
+    "addToCartShort": "Savatga"
   },
   "home": {
     "hero": {
@@ -118,6 +127,15 @@
       "title": "Sog‘lig‘ingizga bugun sarmoya kiriting",
       "subtitle": "Bir necha daqiqada buyurtma bering — operatorimiz tasdiqlash uchun qo‘ng‘iroq qiladi.",
       "button": "Do‘konga o‘tish"
+    },
+    "bento": {
+      "b1Off": "45% gacha CHEGIRMA",
+      "b1Title": "Eksklyuziv tibbiy mahsulot chegirmalari",
+      "b2Off": "15% CHEGIRMA",
+      "b2Title": "Ayollar salomatligi",
+      "b3Off": "15% CHEGIRMA",
+      "b3Title": "Premium wellness mahsulotlar",
+      "viewMore": "Batafsil"
     }
   },
   "product": {
@@ -335,5 +353,16 @@
     "text": "Biz saytdan foydalanishni yaxshilash uchun cookie fayllardan foydalanamiz.",
     "accept": "Qabul qilaman",
     "more": "Batafsil"
+  },
+  "topbar": {
+    "announcement": "COVID-19 sharoiti tufayli buyurtmalar bir oz kechikishi mumkin"
+  },
+  "header": {
+    "needHelp": "Yordam kerakmi?",
+    "phone": "+998 71 200 00 00"
+  },
+  "badges": {
+    "hot": "YANGI",
+    "sale": "AKSIYA"
   }
 }
