@@ -280,7 +280,9 @@
       "step1": "Operatorimiz 15–30 daqiqa ichida buyurtmangizni tasdiqlash uchun qo’ng’iroq qiladi",
       "step2": "Buyurtma 24–48 soat ichida yig’ilib jo’natishga tayyorlanadi",
       "step3": "Kuryer manzilingizga yetkazib beradi — to’lov qabul qilayotganda",
-      "continueShopping": "Xarid qilishni davom ettirish"
+      "continueShopping": "Xarid qilishni davom ettirish",
+      "trackBot": "Telegram orqali buyurtmani kuzatish",
+      "trackBotDesc": "@drschatsstorebot orqali buyurtma holatini real vaqtda bilib turing"
     },
     "upsellAdd": "Qo'shish",
     "upsellFree": "BEPUL 🎁"
