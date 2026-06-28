@@ -8,8 +8,8 @@ import type { Product } from "@/lib/shopflow/types";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, allProducts] = await Promise.all([
-    shopflow.getCategories(routing.defaultLocale),
-    shopflow.getProducts({ locale: routing.defaultLocale, sort: "popular", pageSize: 200 }),
+    shopflow.getCategories(routing.defaultLocale).catch(() => []),
+    shopflow.getProducts({ locale: routing.defaultLocale, sort: "popular", pageSize: 200 }).catch(() => ({ items: [], total: 0, page: 1, pageSize: 200 })),
   ]);
 
   // Build a rating map for priority boosting

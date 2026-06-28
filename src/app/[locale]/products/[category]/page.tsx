@@ -15,10 +15,14 @@ type Sort = NonNullable<ProductListParams["sort"]>;
 const valid: Sort[] = ["popular", "price_asc", "price_desc", "new"];
 
 export async function generateStaticParams() {
-  const categories = await shopflow.getCategories(routing.defaultLocale);
-  return routing.locales.flatMap((locale) =>
-    categories.map((c) => ({ locale, category: c.slug })),
-  );
+  try {
+    const categories = await shopflow.getCategories(routing.defaultLocale);
+    return routing.locales.flatMap((locale) =>
+      categories.map((c) => ({ locale, category: c.slug })),
+    );
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({

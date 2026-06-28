@@ -48,7 +48,7 @@ export default async function LocaleLayout({
 
   const [messages, promotions, tc] = await Promise.all([
     getMessages(),
-    shopflow.getPromotions(locale as Locale),
+    shopflow.getPromotions(locale as Locale).catch(() => []),
     getTranslations("common"),
   ]);
 

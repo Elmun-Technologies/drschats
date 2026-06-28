@@ -55,7 +55,7 @@ async function api<T>(path: string, schema: z.ZodType<T>, init?: RequestInit): P
 
 export class HttpShopflowClient implements ShopflowClient {
   async getCategories(locale: Locale): Promise<Category[]> {
-    return api(`/categories?locale=${locale}`, z.array(categorySchema));
+    return api(`/api/v1/categories?locale=${locale}`, z.array(categorySchema));
   }
 
   async getProducts(params: ProductListParams): Promise<ProductListResult> {
@@ -69,12 +69,12 @@ export class HttpShopflowClient implements ShopflowClient {
     if (params.sort) q.set("sort", params.sort);
     if (params.page) q.set("page", String(params.page));
     if (params.pageSize) q.set("pageSize", String(params.pageSize));
-    return api(`/products?${q.toString()}`, productListResultSchema);
+    return api(`/api/v1/products?${q.toString()}`, productListResultSchema);
   }
 
   async getProduct(slug: string, locale: Locale): Promise<Product | null> {
     try {
-      return await api(`/products/${slug}?locale=${locale}`, productSchema);
+      return await api(`/api/v1/products/${slug}?locale=${locale}`, productSchema);
     } catch {
       return null;
     }
@@ -82,17 +82,17 @@ export class HttpShopflowClient implements ShopflowClient {
 
   async getUpsells(productId: string, locale: Locale): Promise<UpsellOffer[]> {
     return api(
-      `/products/${productId}/upsells?locale=${locale}`,
+      `/api/v1/products/${productId}/upsells?locale=${locale}`,
       z.array(upsellOfferSchema),
     );
   }
 
   async getPromotions(locale: Locale): Promise<Promotion[]> {
-    return api(`/promotions?locale=${locale}`, z.array(promotionSchema));
+    return api(`/api/v1/promotions?locale=${locale}`, z.array(promotionSchema));
   }
 
   async createOrder(payload: OrderRequest): Promise<OrderResult> {
-    return api(`/orders`, orderResultSchema, {
+    return api(`/api/v1/orders`, orderResultSchema, {
       method: "POST",
       body: JSON.stringify(payload),
     });
