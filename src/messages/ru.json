@@ -214,7 +214,9 @@
   "cart": {
     "title": "Корзина",
     "empty": "Ваша корзина пуста",
+    "emptyHint": "Просмотрите товары и добавьте понравившиеся",
     "emptyCta": "Перейти в магазин",
+    "summary": "Итог заказа",
     "subtotal": "Товары",
     "discount": "Скидка",
     "shipping": "Доставка",
@@ -224,7 +226,10 @@
     "remove": "Удалить",
     "continue": "Продолжить покупки",
     "freeShippingProgress": "До бесплатной доставки {amount}",
-    "freeShippingUnlocked": "Бесплатная доставка активирована!"
+    "freeShippingUnlocked": "Бесплатная доставка активирована!",
+    "trustGuarantee": "Гарантия возврата 30 дней",
+    "trustDelivery": "Доставка 1–3 дня",
+    "trustSecure": "Безопасная оплата"
   },
   "checkout": {
     "title": "Оформление заказа",

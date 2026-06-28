@@ -213,18 +213,23 @@
   },
   "cart": {
     "title": "Savatcha",
-    "empty": "Savatchangiz bo‘sh",
-    "emptyCta": "Do‘konga o‘tish",
+    "empty": "Savatchangiz bo’sh",
+    "emptyHint": "Mahsulotlarni ko’rib, sevimlilaringizni qo’shing",
+    "emptyCta": "Do’konga o’tish",
+    "summary": "Buyurtma xulosasi",
     "subtotal": "Mahsulotlar",
     "discount": "Chegirma",
     "shipping": "Yetkazib berish",
     "free": "Bepul",
     "total": "Jami",
     "checkout": "Buyurtmani rasmiylashtirish",
-    "remove": "O‘chirish",
+    "remove": "O’chirish",
     "continue": "Xaridni davom ettirish",
     "freeShippingProgress": "Bepul yetkazib berishgacha {amount}",
-    "freeShippingUnlocked": "Bepul yetkazib berish ochildi!"
+    "freeShippingUnlocked": "Bepul yetkazib berish ochildi!",
+    "trustGuarantee": "30 kunlik qoniqish kafolati",
+    "trustDelivery": "1–3 kun ichida yetkazib berish",
+    "trustSecure": "Xavfsiz to’lov"
   },
   "checkout": {
     "title": "Buyurtmani rasmiylashtirish",

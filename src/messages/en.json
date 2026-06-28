@@ -214,7 +214,9 @@
   "cart": {
     "title": "Cart",
     "empty": "Your cart is empty",
+    "emptyHint": "Browse products and add your favourites",
     "emptyCta": "Go to shop",
+    "summary": "Order summary",
     "subtotal": "Items",
     "discount": "Discount",
     "shipping": "Shipping",
@@ -224,7 +226,10 @@
     "remove": "Remove",
     "continue": "Continue shopping",
     "freeShippingProgress": "{amount} away from free shipping",
-    "freeShippingUnlocked": "Free shipping unlocked!"
+    "freeShippingUnlocked": "Free shipping unlocked!",
+    "trustGuarantee": "30-day return guarantee",
+    "trustDelivery": "1–3 day delivery",
+    "trustSecure": "Secure payment"
   },
   "checkout": {
     "title": "Checkout",
