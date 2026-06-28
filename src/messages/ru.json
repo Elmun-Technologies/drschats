@@ -246,7 +246,7 @@
     "phonePlaceholder": "+998 90 123 45 67",
     "deliverySection": "Доставка",
     "region": "Область / город",
-    "regionPlaceholder": "Ташкент",
+    "regionPlaceholder": "Выберите регион",
     "address": "Адрес",
     "addressPlaceholder": "Улица, дом, квартира",
     "note": "Комментарий (необязательно)",

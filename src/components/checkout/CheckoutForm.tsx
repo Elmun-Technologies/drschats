@@ -1,6 +1,24 @@
 "use client";
 
 import { useState } from "react";
+
+const UZ_REGIONS = [
+  "Toshkent shahri",
+  "Toshkent viloyati",
+  "Samarqand viloyati",
+  "Farg'ona viloyati",
+  "Andijon viloyati",
+  "Namangan viloyati",
+  "Buxoro viloyati",
+  "Xorazm viloyati",
+  "Qashqadaryo viloyati",
+  "Surxondaryo viloyati",
+  "Sirdaryo viloyati",
+  "Jizzax viloyati",
+  "Navoiy viloyati",
+  "Qoraqalpog'iston Respublikasi",
+];
+
 import Image from "next/image";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -125,7 +143,12 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <legend className="mb-2 font-display text-xl font-semibold">{t("deliverySection")}</legend>
           <div className="grid gap-5 sm:grid-cols-2">
             <Field label={t("region")} error={errors.region?.message}>
-              <input className={inputClass} placeholder={t("regionPlaceholder")} {...register("region")} />
+              <select className={inputClass} {...register("region")}>
+                <option value="">{t("regionPlaceholder")}</option>
+                {UZ_REGIONS.map((r) => (
+                  <option key={r} value={r}>{r}</option>
+                ))}
+              </select>
             </Field>
             <Field label={t("method")}>
               <select className={inputClass} {...register("method")}>
