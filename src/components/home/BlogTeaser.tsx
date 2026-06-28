@@ -20,7 +20,7 @@ export async function BlogTeaser({ locale }: { locale: Locale }) {
             <p className="mt-3 text-muted">{t("subtitle")}</p>
           </div>
           <Link href="/blog" className={buttonVariants("secondary")}>
-            {t("title")}
+            {t("viewAll")}
           </Link>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
