@@ -159,6 +159,11 @@
       "b3Off": "СКИДКА 15%",
       "b3Title": "Премиум wellness товары",
       "viewMore": "Подробнее"
+    },
+    "newArrivals": {
+      "title": "Новинки",
+      "subtitle": "Свежие поступления — уже в наличии",
+      "eyebrow": "Новые"
     }
   },
   "product": {
