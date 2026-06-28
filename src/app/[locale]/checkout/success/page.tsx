@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { buttonVariants } from "@/components/ui/Button";
+import { PurchaseTracker } from "@/components/personalization/PurchaseTracker";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -22,6 +23,7 @@ export default async function SuccessPage({
   return (
     <div className="flex min-h-[80svh] items-center pt-10">
       <Container size="narrow">
+        <PurchaseTracker />
         <div className="flex flex-col items-center text-center">
           <div className="mb-8 flex h-20 w-20 items-center justify-center rounded-full bg-accent-soft text-accent">
             <svg viewBox="0 0 24 24" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="2">

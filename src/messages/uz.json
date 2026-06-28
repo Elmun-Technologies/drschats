@@ -135,6 +135,19 @@
       "subtitle": "Bir necha daqiqada buyurtma bering — operatorimiz tasdiqlash uchun qo‘ng‘iroq qiladi.",
       "button": "Do‘konga o‘tish"
     },
+    "recentlyViewed": {
+      "eyebrow": "Tarix",
+      "title": "So'nggi ko'rilgan mahsulotlar"
+    },
+    "forYou": {
+      "eyebrow": "Siz uchun",
+      "title": "Siz uchun tanlangan",
+      "subtitle": "Ko'rish tarixingiz asosida maxsus tanlangan mahsulotlar"
+    },
+    "similar": {
+      "eyebrow": "Tavsiya",
+      "title": "O'xshash mahsulotlar"
+    },
     "bento": {
       "b1Off": "45% gacha CHEGIRMA",
       "b1Title": "Eksklyuziv tibbiy mahsulot chegirmalari",

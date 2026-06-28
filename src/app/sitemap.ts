@@ -4,9 +4,18 @@ import { shopflow, listAllSlugs } from "@/lib/shopflow";
 import { listArticleSlugs } from "@/lib/content/blog";
 import { listExpertSlugs } from "@/lib/content/experts";
 import { SITE_URL } from "@/lib/seo/metadata";
+import type { Product } from "@/lib/shopflow/types";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const categories = await shopflow.getCategories(routing.defaultLocale);
+  const [categories, allProducts] = await Promise.all([
+    shopflow.getCategories(routing.defaultLocale),
+    shopflow.getProducts({ locale: routing.defaultLocale, sort: "popular", pageSize: 200 }),
+  ]);
+
+  // Build a rating map for priority boosting
+  const ratingMap = new Map<string, number>(
+    allProducts.items.map((p: Product) => [p.slug, p.rating]),
+  );
 
   const staticPaths = [
     "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
@@ -22,11 +31,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return allPaths.map((path) => {
     const languages: Record<string, string> = {};
     for (const l of locales) languages[l] = `${SITE_URL}/${l}${path}`;
+
+    let priority = path === "" ? 1 : 0.6;
+    if (path.startsWith("/product/")) {
+      const slug = path.replace("/product/", "");
+      const rating = ratingMap.get(slug) ?? 0;
+      // High-rated (≥4.5) products get priority 0.9, others 0.8
+      priority = rating >= 4.5 ? 0.9 : 0.8;
+    } else if (path.startsWith("/products/") || path === "/products") {
+      priority = 0.7;
+    } else if (path.startsWith("/blog/")) {
+      priority = 0.65;
+    }
+
     return {
       url: `${SITE_URL}/${routing.defaultLocale}${path}`,
       lastModified: new Date(),
       changeFrequency: path.startsWith("/product/") ? "weekly" : "monthly",
-      priority: path === "" ? 1 : path.startsWith("/product/") ? 0.8 : 0.6,
+      priority,
       alternates: { languages },
     };
   });

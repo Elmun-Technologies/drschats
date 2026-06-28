@@ -9,6 +9,8 @@ import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { reviewerForKey } from "@/lib/content/experts";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { getBespokeComponent } from "@/components/bespoke/registry";
+import { ViewTracker } from "@/components/personalization/ViewTracker";
+import { SimilarProducts } from "@/components/personalization/SimilarProducts";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -48,8 +50,9 @@ export default async function ProductPage({
   const product = await shopflow.getProduct(slug, locale);
   if (!product) notFound();
 
-  const [upsells, t] = await Promise.all([
+  const [upsells, allProducts, t] = await Promise.all([
     shopflow.getUpsells(product.id, locale),
+    shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }),
     getTranslations("product"),
   ]);
 
@@ -68,11 +71,13 @@ export default async function ProductPage({
           { name: product.name, url: `${SITE_URL}/${locale}/product/${slug}` },
         ])}
       />
+      <ViewTracker slug={product.slug} categorySlug={product.categorySlug} price={product.price} />
       {Bespoke ? (
         <Bespoke product={product} upsells={upsells} locale={locale} />
       ) : (
         <ProductTemplate product={product} upsells={upsells} locale={locale} />
       )}
+      <SimilarProducts currentProduct={product} allProducts={allProducts.items} />
     </>
   );
 }

@@ -18,6 +18,7 @@ import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
 import { SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, websiteLd, localBusinessLd } from "@/lib/seo/jsonld";
 
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -47,6 +48,8 @@ export default async function LocaleLayout({
   return (
     <html lang={localeHtmlLang[locale as Locale]} className={`${sora.variable} ${manrope.variable}`}>
       <body className="grain min-h-screen antialiased">
+        <JsonLd data={websiteLd(locale as Locale)} />
+        <JsonLd data={localBusinessLd()} />
         <NextIntlClientProvider messages={messages}>
           <PromotionsProvider promotions={promotions}>
             <a

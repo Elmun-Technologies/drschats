@@ -51,7 +51,9 @@ export function buildPageMetadata({
       url: `${SITE_URL}/${locale}${path === "/" ? "" : path}`,
       type: "website",
       locale,
-      images: image ? [{ url: image }] : undefined,
+      images: image
+        ? [{ url: image, width: 1200, height: 630, alt: title }]
+        : undefined,
     },
     twitter: {
       card: "summary_large_image",
