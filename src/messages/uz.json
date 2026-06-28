@@ -519,10 +519,12 @@
       ]
     },
     "payment": {
-      "crumb": "To‘lov",
-      "eyebrow": "Qulay to‘lov",
-      "title": "To‘lov usullari",
-      "subtitle": "Sizga qulay bo‘lgan har qanday usulda to‘lashingiz mumkin.",
+      "crumb": "To’lov",
+      "eyebrow": "Qulay to’lov",
+      "title": "To’lov usullari",
+      "subtitle": "Sizga qulay bo’lgan har qanday usulda to’lashingiz mumkin.",
+      "secureTitle": "100% xavfsiz to’lov",
+      "secureNote": "Barcha onlayn to’lovlar Click va Payme shifrlangan shlyuzlari orqali amalga oshiriladi. Karta ma’lumotlari saqlanmaydi.",
       "methods": [
         {
           "title": "Click",
@@ -560,7 +562,13 @@
       "crumb": "Kafolat",
       "eyebrow": "Bizning kafolatimiz",
       "title": "Kafolat va qaytarish",
-      "subtitle": "Mahsulotlarimiz sifati va sof tarkibiga to‘liq kafolat beramiz.",
+      "subtitle": "Mahsulotlarimiz sifati va sof tarkibiga to’liq kafolat beramiz.",
+      "badgeLabel": "kun qaytarish kafolati",
+      "badgeDesc": "Qoniqmasangiz — hech qanday savolsiz qaytaramiz.",
+      "howToReturn": "Qaytarish tartibi",
+      "returnStep1": "Operatorga qo’ng’iroq qiling yoki Telegram orqali yozing.",
+      "returnStep2": "Mahsulotni asl qadoqda kuryerga topshiring.",
+      "returnStep3": "To’lovingiz 1–3 ish kunida qaytariladi.",
       "points": [
         {
           "title": "30 kunlik kafolat",
