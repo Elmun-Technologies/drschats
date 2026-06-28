@@ -43,7 +43,15 @@
     "backToTop": "Yuqoriga",
     "addToCartShort": "Savatga",
     "share": "Ulashish",
-    "skipToContent": "Asosiy qismga o'tish"
+    "skipToContent": "Asosiy qismga o'tish",
+    "errorTitle": "Xatolik yuz berdi",
+    "errorDesc": "Sahifani yuklashda muammo chiqdi. Qayta urinib ko'ring yoki bosh sahifaga qayting.",
+    "errorRetry": "Qayta urinish",
+    "errorHome": "Bosh sahifa",
+    "notFoundTitle": "Sahifa topilmadi",
+    "notFoundDesc": "Sahifa topilmadi · Страница не найдена",
+    "notFoundHome": "Bosh sahifaga qaytish",
+    "notFoundShop": "Do'konga o'tish"
   },
   "home": {
     "hero": {
