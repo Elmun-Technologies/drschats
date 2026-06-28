@@ -183,7 +183,8 @@
     "priceFrom": "Price, from",
     "priceTo": "to",
     "apply": "Apply",
-    "clearFilters": "Clear filters"
+    "clearFilters": "Clear filters",
+    "categoriesTitle": "Categories"
   },
   "cart": {
     "title": "Cart",

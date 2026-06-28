@@ -183,7 +183,8 @@
     "priceFrom": "Narx, dan",
     "priceTo": "gacha",
     "apply": "Qo‘llash",
-    "clearFilters": "Filtrlarni tozalash"
+    "clearFilters": "Filtrlarni tozalash",
+    "categoriesTitle": "Kategoriyalar"
   },
   "cart": {
     "title": "Savatcha",
