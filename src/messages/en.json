@@ -657,5 +657,19 @@
         "answer": "Free on orders over 300,000 UZS in Tashkent and 700,000 UZS to the regions."
       }
     ]
+  },
+  "exit": {
+    "title": "Wait! We have a special offer for you",
+    "body": "Get 10% off your first order. Leave your phone number and our operator will contact you.",
+    "phonePlaceholder": "+998 90 000 00 00",
+    "cta": "Get discount",
+    "dismiss": "No thanks",
+    "successMessage": "Thank you! We'll contact you shortly."
+  },
+  "outOfStock": {
+    "notify": "This product is currently out of stock. Leave your phone number and we'll notify you when it's back.",
+    "phone": "+998 90 000 00 00",
+    "submit": "Notify me",
+    "success": "Thank you! We'll let you know when the product is available."
   }
 }

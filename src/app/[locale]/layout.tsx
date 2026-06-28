@@ -19,6 +19,9 @@ import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, websiteLd, localBusinessLd } from "@/lib/seo/jsonld";
+import { ExitIntentPopup } from "@/components/exit-intent/ExitIntentPopup";
+import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
+import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
 
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -47,6 +50,11 @@ export default async function LocaleLayout({
 
   return (
     <html lang={localeHtmlLang[locale as Locale]} className={`${sora.variable} ${manrope.variable}`}>
+      <head>
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#0ea5e9" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
+      </head>
       <body className="grain min-h-screen antialiased">
         <JsonLd data={websiteLd(locale as Locale)} />
         <JsonLd data={localBusinessLd()} />
@@ -61,16 +69,19 @@ export default async function LocaleLayout({
             <ScrollProgress />
             <SmoothScroll>
               <Header />
-              <main id="main-content">{children}</main>
+              <main id="main-content" className="pb-16 md:pb-0">{children}</main>
               <Footer />
               <CartDrawer />
               <CookieConsent />
               <Toaster />
               <BackToTop />
+              <MobileBottomNav />
+              <ExitIntentPopup />
             </SmoothScroll>
           </PromotionsProvider>
         </NextIntlClientProvider>
         <Analytics />
+        <ServiceWorkerRegistration />
       </body>
     </html>
   );
