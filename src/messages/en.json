@@ -176,9 +176,11 @@
     "upsellDiscount": "{percent}% off",
     "addUpsell": "Add",
     "buyBox": {
-      "guarantee": "30-day satisfaction guarantee",
-      "delivery": "Delivery in 1–3 days",
-      "secure": "Confirmation by operator"
+      "guarantee": "30-day guarantee",
+      "delivery": "1–3 day delivery",
+      "secure": "Secure payment",
+      "youSave": "You save {amount}",
+      "payWith": "Payment methods"
     },
     "notFound": "Product not found",
     "backToShop": "Back to shop",
