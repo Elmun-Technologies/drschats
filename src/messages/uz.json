@@ -42,7 +42,8 @@
     "viewCart": "Savatchaga o‘tish",
     "backToTop": "Yuqoriga",
     "addToCartShort": "Savatga",
-    "share": "Ulashish"
+    "share": "Ulashish",
+    "skipToContent": "Asosiy qismga o'tish"
   },
   "home": {
     "hero": {
@@ -506,7 +507,8 @@
           "title": "G‘amxo‘rlik",
           "text": "Har mijozga individual yondashuv."
         }
-      ]
+      ],
+      "certsLabel": "Sertifikatlar"
     },
     "news": {
       "crumb": "Yangiliklar",

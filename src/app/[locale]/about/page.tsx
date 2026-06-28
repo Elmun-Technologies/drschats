@@ -91,7 +91,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
         <Reveal index={5}>
           <div className="mt-14 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface px-6 py-5">
             <span className="mr-2 text-xs font-semibold uppercase tracking-widest text-faint">
-              {locale === "ru" ? "Сертификаты" : "Sertifikatlar"}
+              {t("certsLabel")}
             </span>
             {CERTS.map((c) => (
               <span key={c} className="rounded-full border border-line bg-ink px-4 py-1.5 text-sm font-semibold text-fg">
