@@ -253,7 +253,10 @@
       "title": "Your order has been received!",
       "subtitle": "Our operator will contact you shortly.",
       "orderId": "Order number",
-      "home": "Back home"
+      "home": "Back home",
+      "step1": "Our operator will call within 15–30 minutes",
+      "step2": "Your order is picked and packed within 24–48 hours",
+      "step3": "Courier delivers — pay on delivery"
     }
   },
   "footer": {
@@ -292,7 +295,11 @@
     "phone": "Phone",
     "email": "Email",
     "address": "Address",
-    "addressValue": "Tashkent, Uzbekistan"
+    "addressValue": "Tashkent, Uzbekistan",
+    "workHours": "Mon–Sat, 09:00–18:00",
+    "emailHint": "We reply within 24 hours",
+    "telegramTitle": "Our Telegram channel",
+    "telegramHint": "Quick replies and updates"
   },
   "blog": {
     "title": "Health blog",
@@ -465,6 +472,7 @@
           "label": "Products"
         }
       ],
+      "mission": "Our mission is to bring world-class vitamins and supplements to every family in Uzbekistan at accessible prices.",
       "values": [
         {
           "title": "Quality",

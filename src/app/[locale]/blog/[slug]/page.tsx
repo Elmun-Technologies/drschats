@@ -92,15 +92,20 @@ export default async function ArticlePage({
         <Link href="/blog" className="text-sm text-muted hover:text-accent">
           ← {t("backToBlog")}
         </Link>
-        <div className="mt-6 flex items-center gap-3">
+        <div className="mt-6 flex flex-wrap items-center gap-3">
           <Badge tone="accent">{article.category}</Badge>
           <span className="text-sm text-faint">{t("minRead", { min: article.readingMinutes })}</span>
+          {article.date && (
+            <time className="text-sm text-faint" dateTime={article.date}>
+              {new Date(article.date).toLocaleDateString(locale, { year: "numeric", month: "long", day: "numeric" })}
+            </time>
+          )}
         </div>
         <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-balance sm:text-5xl">
           {article.title}
         </h1>
         <p className="mt-5 text-xl text-muted">{article.excerpt}</p>
-        <div className="mt-6">
+        <div className="mt-6 flex items-center justify-between gap-4">
           <ReviewedBy expert={reviewer} />
         </div>
       </Container>
