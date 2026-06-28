@@ -2,8 +2,10 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
+import { JsonLd, faqLd } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
+import { FaqSection } from "@/components/page/FaqSection";
 
 export const revalidate = 3600;
 
@@ -25,6 +27,8 @@ export default async function DeliveryPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("delivery");
+  const pg = await getTranslations("pages");
+  const faq = pg.raw("deliveryFaq") as { question: string; answer: string }[];
 
   const options = [
     { title: t("tashkentTitle"), time: t("tashkentTime"), free: t("tashkentFree") },
@@ -35,6 +39,7 @@ export default async function DeliveryPage({
 
   return (
     <div className="pt-10">
+      <JsonLd data={faqLd(faq)} />
       <Container>
         <header className="max-w-2xl">
           <h1 className="font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">{t("title")}</h1>
@@ -73,8 +78,9 @@ export default async function DeliveryPage({
           </div>
         </section>
 
-        <p className="mb-32 mt-12 max-w-2xl text-muted">{t("note")}</p>
+        <p className="mt-12 max-w-2xl text-muted">{t("note")}</p>
       </Container>
+      <FaqSection heading={pg("deliveryFaqTitle")} items={faq} />
     </div>
   );
 }

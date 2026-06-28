@@ -15,7 +15,14 @@
     "topDeals": "Top deals",
     "home": "Home",
     "ingredients": "Ingredients",
-    "experts": "Experts"
+    "experts": "Experts",
+    "brands": "Brands",
+    "news": "News",
+    "payment": "Payment",
+    "guarantee": "Guarantee",
+    "requisites": "Requisites",
+    "licenses": "Licence & certificates",
+    "aboutUs": "About us"
   },
   "common": {
     "addToCart": "Add to cart",
@@ -365,5 +372,264 @@
   "badges": {
     "hot": "HOT",
     "sale": "SALE"
+  },
+  "pages": {
+    "brands": {
+      "crumb": "Brands",
+      "eyebrow": "Trusted manufacturers",
+      "title": "Brands",
+      "subtitle": "We partner with leading pharma manufacturers from Switzerland, Germany and Russia.",
+      "items": [
+        {
+          "title": "Swiss Energy",
+          "text": "Premium vitamins and effervescent tablets from Switzerland.",
+          "meta": "Switzerland"
+        },
+        {
+          "title": "Doppelherz",
+          "text": "Classic vitamin and mineral complexes from Germany.",
+          "meta": "Germany"
+        },
+        {
+          "title": "Now Foods",
+          "text": "A global brand for sports nutrition and supplements.",
+          "meta": "USA"
+        },
+        {
+          "title": "Evalar",
+          "text": "Plant-based supplements from Russia.",
+          "meta": "Russia"
+        },
+        {
+          "title": "Solgar",
+          "text": "Premium vitamins and minerals, the gold standard.",
+          "meta": "USA"
+        },
+        {
+          "title": "Orzax",
+          "text": "A trusted local supplement manufacturer.",
+          "meta": "Uzbekistan"
+        }
+      ]
+    },
+    "about": {
+      "crumb": "About us",
+      "eyebrow": "About us",
+      "title": "Alimkhanov Pharm Group",
+      "subtitle": "Over 10 years supplying quality vitamins and supplements in Uzbekistan.",
+      "intro": "We partner with leading manufacturers from Switzerland, Germany and Russia, serving 2000+ pharmacies and thousands of customers.",
+      "stats": [
+        {
+          "value": "10+",
+          "label": "Years of experience"
+        },
+        {
+          "value": "2000+",
+          "label": "Partner pharmacies"
+        },
+        {
+          "value": "50,000+",
+          "label": "Customers"
+        },
+        {
+          "value": "120+",
+          "label": "Products"
+        }
+      ],
+      "values": [
+        {
+          "title": "Quality",
+          "text": "Only certified, lab-tested products."
+        },
+        {
+          "title": "Trust",
+          "text": "Chosen by thousands of customers and pharmacies."
+        },
+        {
+          "title": "Care",
+          "text": "An individual approach for everyone."
+        }
+      ]
+    },
+    "news": {
+      "crumb": "News",
+      "eyebrow": "Company news",
+      "title": "News",
+      "subtitle": "The latest news and announcements from Alimkhanov.",
+      "items": [
+        {
+          "title": "New Swiss Energy line has arrived",
+          "text": "A new range of effervescent vitamins from Switzerland.",
+          "meta": "2026-06-01"
+        },
+        {
+          "title": "New warehouse opened in Tashkent",
+          "text": "A new logistics hub for faster delivery.",
+          "meta": "2026-05-12"
+        },
+        {
+          "title": "Our 2000th partner pharmacy",
+          "text": "Our partner network has grown again.",
+          "meta": "2026-04-20"
+        }
+      ]
+    },
+    "payment": {
+      "crumb": "Payment",
+      "eyebrow": "Convenient payment",
+      "title": "Payment methods",
+      "subtitle": "Pay whichever way is convenient for you.",
+      "methods": [
+        {
+          "title": "Click",
+          "text": "Online payment via the Click app or USSD.",
+          "meta": "Online"
+        },
+        {
+          "title": "Payme",
+          "text": "Secure online payment via Payme.",
+          "meta": "Online"
+        },
+        {
+          "title": "Cash / card",
+          "text": "Cash or card on delivery.",
+          "meta": "On delivery"
+        },
+        {
+          "title": "Instalments",
+          "text": "Instalments with major bank cards.",
+          "meta": "Instalments"
+        }
+      ],
+      "faq": [
+        {
+          "question": "Is payment secure?",
+          "answer": "Yes, all online payments go through the encrypted Click and Payme gateways."
+        },
+        {
+          "question": "Can I pay on delivery?",
+          "answer": "Of course — cash or card to the courier."
+        }
+      ]
+    },
+    "guarantee": {
+      "crumb": "Guarantee",
+      "eyebrow": "Our guarantee",
+      "title": "Guarantee & returns",
+      "subtitle": "We fully guarantee the quality and clean composition of our products.",
+      "points": [
+        {
+          "title": "30-day guarantee",
+          "text": "Not satisfied — return within 30 days."
+        },
+        {
+          "title": "Genuine products",
+          "text": "Only official, certified products."
+        },
+        {
+          "title": "Quality control",
+          "text": "Every batch is tested for metals and pathogens."
+        }
+      ],
+      "faq": [
+        {
+          "question": "How do I return a product?",
+          "answer": "Call our operator — returns are accepted within 30 days (unopened packaging)."
+        },
+        {
+          "question": "Will I be refunded?",
+          "answer": "Yes, you receive a full refund for returned products."
+        }
+      ]
+    },
+    "requisites": {
+      "crumb": "Requisites",
+      "eyebrow": "Legal details",
+      "title": "Requisites",
+      "subtitle": "Official legal and bank details of the company.",
+      "rows": [
+        {
+          "label": "Company name",
+          "value": "Alimkhanov Pharm Group LLC"
+        },
+        {
+          "label": "Address",
+          "value": "Tashkent, Uzbekistan"
+        },
+        {
+          "label": "TIN",
+          "value": "300 000 000"
+        },
+        {
+          "label": "MFO",
+          "value": "00 000"
+        },
+        {
+          "label": "Account",
+          "value": "2020 8000 0000 0000 0000"
+        },
+        {
+          "label": "Bank",
+          "value": "JSCB, Tashkent"
+        },
+        {
+          "label": "Phone",
+          "value": "+998 71 200 00 00"
+        },
+        {
+          "label": "Email",
+          "value": "info@alimkhanov.com"
+        }
+      ]
+    },
+    "licenses": {
+      "crumb": "Licence & certificates",
+      "eyebrow": "Official documents",
+      "title": "Licence & certificates",
+      "subtitle": "Our operations are legal and certified — all documents are open.",
+      "items": [
+        {
+          "title": "Pharmaceutical activity licence",
+          "text": "Issued by the Ministry of Health of Uzbekistan.",
+          "meta": "Ministry of Health"
+        },
+        {
+          "title": "GMP certificate",
+          "text": "Compliance with international manufacturing standards.",
+          "meta": "GMP"
+        },
+        {
+          "title": "ISO 22000",
+          "text": "Food safety management system.",
+          "meta": "ISO"
+        },
+        {
+          "title": "Halal certificate",
+          "text": "Products meet Halal requirements.",
+          "meta": "Halal"
+        },
+        {
+          "title": "State registration certificate",
+          "text": "Every supplement is registered in the state registry.",
+          "meta": "Registry"
+        },
+        {
+          "title": "Certificate of Analysis (COA)",
+          "text": "Lab analysis for every batch.",
+          "meta": "COA"
+        }
+      ]
+    },
+    "deliveryFaqTitle": "Frequently asked questions",
+    "deliveryFaq": [
+      {
+        "question": "How long does delivery take?",
+        "answer": "1–2 business days across Tashkent, 2–5 business days to the regions via EMU."
+      },
+      {
+        "question": "Is delivery free?",
+        "answer": "Free on orders over 300,000 UZS in Tashkent and 700,000 UZS to the regions."
+      }
+    ]
   }
 }

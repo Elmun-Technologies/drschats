@@ -15,7 +15,14 @@
     "topDeals": "Aksiyalar",
     "home": "Bosh sahifa",
     "ingredients": "Ingredientlar",
-    "experts": "Ekspertlar"
+    "experts": "Ekspertlar",
+    "brands": "Brendlar",
+    "news": "Yangiliklar",
+    "payment": "To‘lov",
+    "guarantee": "Kafolat",
+    "requisites": "Rekvizitlar",
+    "licenses": "Litsenziya va sertifikatlar",
+    "aboutUs": "Biz haqimizda"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -365,5 +372,264 @@
   "badges": {
     "hot": "YANGI",
     "sale": "AKSIYA"
+  },
+  "pages": {
+    "brands": {
+      "crumb": "Brendlar",
+      "eyebrow": "Ishonchli ishlab chiqaruvchilar",
+      "title": "Brendlar",
+      "subtitle": "Shveytsariya, Germaniya va Rossiyaning yetakchi farma ishlab chiqaruvchilari bilan hamkorlik qilamiz.",
+      "items": [
+        {
+          "title": "Swiss Energy",
+          "text": "Shveytsariyaning premium vitamin va shipuchi tabletkalari.",
+          "meta": "Shveytsariya"
+        },
+        {
+          "title": "Doppelherz",
+          "text": "Germaniyaning klassik vitamin va mineral komplekslari.",
+          "meta": "Germaniya"
+        },
+        {
+          "title": "Now Foods",
+          "text": "Sport ovqatlanishi va BADlar bo‘yicha jahon brendi.",
+          "meta": "AQSh"
+        },
+        {
+          "title": "Evalar",
+          "text": "Rossiyaning o‘simlik asosidagi qo‘shimchalari.",
+          "meta": "Rossiya"
+        },
+        {
+          "title": "Solgar",
+          "text": "Premium vitamin va minerallar, oltin standart.",
+          "meta": "AQSh"
+        },
+        {
+          "title": "Orzax",
+          "text": "Mahalliy ishonchli BAD ishlab chiqaruvchi.",
+          "meta": "O‘zbekiston"
+        }
+      ]
+    },
+    "about": {
+      "crumb": "Biz haqimizda",
+      "eyebrow": "Biz haqimizda",
+      "title": "Alimkhanov Pharm Group",
+      "subtitle": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitamin va BAD yetkazib beruvchi.",
+      "intro": "Biz Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qilamiz, 2000+ dorixona va minglab mijozlarga xizmat ko‘rsatamiz.",
+      "stats": [
+        {
+          "value": "10+",
+          "label": "Yillik tajriba"
+        },
+        {
+          "value": "2000+",
+          "label": "Hamkor dorixona"
+        },
+        {
+          "value": "50 000+",
+          "label": "Mijoz"
+        },
+        {
+          "value": "120+",
+          "label": "Mahsulot"
+        }
+      ],
+      "values": [
+        {
+          "title": "Sifat",
+          "text": "Faqat sertifikatlangan, laboratoriyada sinalgan mahsulotlar."
+        },
+        {
+          "title": "Ishonch",
+          "text": "Minglab mijoz va dorixona bizni tanlaydi."
+        },
+        {
+          "title": "G‘amxo‘rlik",
+          "text": "Har mijozga individual yondashuv."
+        }
+      ]
+    },
+    "news": {
+      "crumb": "Yangiliklar",
+      "eyebrow": "Kompaniya yangiliklari",
+      "title": "Yangiliklar",
+      "subtitle": "Alimkhanov hayotidan so‘nggi yangiliklar va e’lonlar.",
+      "items": [
+        {
+          "title": "Yangi Swiss Energy liniyasi keldi",
+          "text": "Shveytsariyadan yangi shipuchi vitaminlar assortimenti.",
+          "meta": "2026-06-01"
+        },
+        {
+          "title": "Toshkentda yangi ombor ochildi",
+          "text": "Tezroq yetkazib berish uchun yangi logistika markazi.",
+          "meta": "2026-05-12"
+        },
+        {
+          "title": "2000-chi hamkor dorixona",
+          "text": "Hamkorlik tarmog‘imiz yana kengaydi.",
+          "meta": "2026-04-20"
+        }
+      ]
+    },
+    "payment": {
+      "crumb": "To‘lov",
+      "eyebrow": "Qulay to‘lov",
+      "title": "To‘lov usullari",
+      "subtitle": "Sizga qulay bo‘lgan har qanday usulda to‘lashingiz mumkin.",
+      "methods": [
+        {
+          "title": "Click",
+          "text": "Click ilovasi yoki USSD orqali onlayn to‘lov.",
+          "meta": "Onlayn"
+        },
+        {
+          "title": "Payme",
+          "text": "Payme orqali xavfsiz onlayn to‘lov.",
+          "meta": "Onlayn"
+        },
+        {
+          "title": "Naqd / karta",
+          "text": "Yetkazib berishda naqd yoki karta orqali.",
+          "meta": "Yetkazishda"
+        },
+        {
+          "title": "Bo‘lib to‘lash",
+          "text": "Asosiy banklar kartalari bilan bo‘lib to‘lash.",
+          "meta": "Rassrochka"
+        }
+      ],
+      "faq": [
+        {
+          "question": "To‘lov xavfsizmi?",
+          "answer": "Ha, barcha onlayn to‘lovlar Click va Payme shifrlangan shlyuzlari orqali amalga oshiriladi."
+        },
+        {
+          "question": "Yetkazib berishda to‘lasam bo‘ladimi?",
+          "answer": "Albatta — naqd yoki karta orqali kuryerga to‘lashingiz mumkin."
+        }
+      ]
+    },
+    "guarantee": {
+      "crumb": "Kafolat",
+      "eyebrow": "Bizning kafolatimiz",
+      "title": "Kafolat va qaytarish",
+      "subtitle": "Mahsulotlarimiz sifati va sof tarkibiga to‘liq kafolat beramiz.",
+      "points": [
+        {
+          "title": "30 kunlik kafolat",
+          "text": "Qoniqmasangiz, 30 kun ichida qaytaring."
+        },
+        {
+          "title": "Original mahsulot",
+          "text": "Faqat rasmiy, sertifikatlangan mahsulotlar."
+        },
+        {
+          "title": "Sifat nazorati",
+          "text": "Har partiya og‘ir metall va patogenlarga tekshiriladi."
+        }
+      ],
+      "faq": [
+        {
+          "question": "Mahsulotni qanday qaytaraman?",
+          "answer": "Operatorga qo‘ng‘iroq qiling — qaytarish 30 kun ichida amalga oshiriladi (ochilmagan qadoq)."
+        },
+        {
+          "question": "Pul qaytariladimi?",
+          "answer": "Ha, qaytarilgan mahsulot uchun to‘lovingiz to‘liq qaytariladi."
+        }
+      ]
+    },
+    "requisites": {
+      "crumb": "Rekvizitlar",
+      "eyebrow": "Yuridik ma’lumotlar",
+      "title": "Rekvizitlar",
+      "subtitle": "Kompaniyaning rasmiy yuridik va bank rekvizitlari.",
+      "rows": [
+        {
+          "label": "Tashkilot nomi",
+          "value": "“Alimkhanov Pharm Group” MChJ"
+        },
+        {
+          "label": "Manzil",
+          "value": "Toshkent shahri, O‘zbekiston"
+        },
+        {
+          "label": "STIR (INN)",
+          "value": "300 000 000"
+        },
+        {
+          "label": "MFO",
+          "value": "00 000"
+        },
+        {
+          "label": "Hisob raqami",
+          "value": "2020 8000 0000 0000 0000"
+        },
+        {
+          "label": "Bank",
+          "value": "AT Bank, Toshkent"
+        },
+        {
+          "label": "Telefon",
+          "value": "+998 71 200 00 00"
+        },
+        {
+          "label": "Email",
+          "value": "info@alimkhanov.com"
+        }
+      ]
+    },
+    "licenses": {
+      "crumb": "Litsenziya va sertifikatlar",
+      "eyebrow": "Rasmiy hujjatlar",
+      "title": "Litsenziya va sertifikatlar",
+      "subtitle": "Faoliyatimiz qonuniy va sertifikatlangan — barcha hujjatlar ochiq.",
+      "items": [
+        {
+          "title": "Farmatsevtika faoliyati litsenziyasi",
+          "text": "O‘zbekiston Sog‘liqni saqlash vazirligi tomonidan berilgan.",
+          "meta": "So‘liqni saqlash vazirligi"
+        },
+        {
+          "title": "GMP sertifikati",
+          "text": "Xalqaro ishlab chiqarish standartlariga muvofiqlik.",
+          "meta": "GMP"
+        },
+        {
+          "title": "ISO 22000",
+          "text": "Oziq-ovqat xavfsizligi boshqaruv tizimi.",
+          "meta": "ISO"
+        },
+        {
+          "title": "Halal sertifikati",
+          "text": "Mahsulotlar halal talablariga mos.",
+          "meta": "Halal"
+        },
+        {
+          "title": "Davlat ro‘yxatidan o‘tish guvohnomasi",
+          "text": "Har bir BAD davlat reyestrida ro‘yxatdan o‘tgan.",
+          "meta": "Reyestr"
+        },
+        {
+          "title": "Tahlil sertifikati (COA)",
+          "text": "Har partiya uchun laboratoriya tahlili.",
+          "meta": "COA"
+        }
+      ]
+    },
+    "deliveryFaqTitle": "Ko‘p so‘raladigan savollar",
+    "deliveryFaq": [
+      {
+        "question": "Yetkazib berish qancha vaqt oladi?",
+        "answer": "Toshkent bo‘ylab 1–2 ish kuni, viloyatlarga EMU orqali 2–5 ish kuni."
+      },
+      {
+        "question": "Yetkazib berish bepulmi?",
+        "answer": "Toshkentda 300 000 so‘mdan, viloyatlarda 700 000 so‘mdan ortiq xaridga bepul."
+      }
+    ]
   }
 }

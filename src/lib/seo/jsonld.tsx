@@ -173,6 +173,20 @@ export function faqLd(faq: { question: string; answer: string }[]) {
   };
 }
 
+export function itemListLd(name: string, items: { name: string; description?: string }[]) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name,
+    itemListElement: items.map((it, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: it.name,
+      ...(it.description ? { description: it.description } : {}),
+    })),
+  };
+}
+
 export function breadcrumbLd(items: { name: string; url: string }[]) {
   return {
     "@context": "https://schema.org",
