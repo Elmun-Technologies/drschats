@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { getArticles } from "@/lib/content/blog";
+import { getArticles } from "@/lib/content/blog.sanity";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { ArticleCard } from "@/components/blog/ArticleCard";

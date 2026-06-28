@@ -1,8 +1,8 @@
 import type { MetadataRoute } from "next";
 import { locales, routing } from "@/lib/i18n/routing";
 import { shopflow, listAllSlugs } from "@/lib/shopflow";
-import { listArticleSlugs } from "@/lib/content/blog";
-import { listExpertSlugs } from "@/lib/content/experts";
+import { listArticleSlugs } from "@/lib/content/blog.sanity";
+import { listExpertSlugs } from "@/lib/content/experts.sanity";
 import { SITE_URL } from "@/lib/seo/metadata";
 import type { Product } from "@/lib/shopflow/types";
 
@@ -23,9 +23,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "/requisites", "/licenses",
   ];
   const categoryPaths = categories.map((c) => `/products/${c.slug}`);
+  const [blogSlugs, expertSlugs] = await Promise.all([listArticleSlugs(), listExpertSlugs()]);
   const productPaths = listAllSlugs().map(({ slug }) => `/product/${slug}`);
-  const blogPaths = listArticleSlugs().map((slug) => `/blog/${slug}`);
-  const expertPaths = listExpertSlugs().map((slug) => `/experts/${slug}`);
+  const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
+  const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);
   const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths, ...expertPaths];
 
   return allPaths.map((path) => {

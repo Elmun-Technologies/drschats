@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { getArticles } from "@/lib/content/blog";
+import { getArticles } from "@/lib/content/blog.sanity";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { ArticleCard } from "@/components/blog/ArticleCard";
@@ -27,7 +27,7 @@ export default async function BlogPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("blog");
-  const articles = getArticles(locale);
+  const articles = await getArticles(locale);
 
   return (
     <div className="pt-10">

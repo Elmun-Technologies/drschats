@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { getIngredients, getSynergy } from "@/lib/content/ingredients";
+import { getIngredients, getSynergy } from "@/lib/content/ingredients.sanity";
 import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Container } from "@/components/ui/Container";
@@ -32,8 +32,7 @@ export default async function IngredientsPage({
     getTranslations("ingredients_page"),
     shopflow.getProducts({ locale, pageSize: 100 }),
   ]);
-  const ingredients = getIngredients(locale);
-  const synergy = getSynergy(locale);
+  const [ingredients, synergy] = await Promise.all([getIngredients(locale), getSynergy(locale)]);
   const nameBySlug = new Map(products.items.map((p) => [p.slug, p.name]));
 
   return (

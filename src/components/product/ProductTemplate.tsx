@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product, UpsellOffer } from "@/lib/shopflow/types";
+import type { Expert } from "@/lib/content/experts";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { StarRating } from "@/components/ui/StarRating";
@@ -18,10 +19,12 @@ export async function ProductTemplate({
   product,
   upsells,
   locale,
+  reviewer,
 }: {
   product: Product;
   upsells: UpsellOffer[];
   locale: Locale;
+  reviewer?: Expert;
 }) {
   const t = await getTranslations("product");
 
@@ -32,7 +35,7 @@ export async function ProductTemplate({
 
         <div className="mt-8 grid gap-12 lg:grid-cols-2">
           <ProductGallery images={product.images} />
-          <BuyBox product={product} />
+          <BuyBox product={product} reviewer={reviewer} />
         </div>
 
         {/* Highlights */}

@@ -5,6 +5,7 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  transpilePackages: ["sanity", "next-sanity", "@sanity/ui", "@sanity/vision"],
   async headers() {
     return [
       {
@@ -28,6 +29,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "picsum.photos" },
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "**.uzum.uz" },
+      { protocol: "https", hostname: "cdn.sanity.io" },
     ],
   },
 };
