@@ -41,7 +41,8 @@
     "addedToCart": "Savatga qo‘shildi",
     "viewCart": "Savatchaga o‘tish",
     "backToTop": "Yuqoriga",
-    "addToCartShort": "Savatga"
+    "addToCartShort": "Savatga",
+    "share": "Ulashish"
   },
   "home": {
     "hero": {
@@ -657,6 +658,21 @@
         "answer": "Toshkentda 300 000 so’mdan, viloyatlarda 700 000 so’mdan ortiq xaridga bepul."
       }
     ]
+  },
+  "socialProof": {
+    "bought": "sotib oldi"
+  },
+  "countdown": {
+    "label": "Aksiya tugashiga:",
+    "days": "kun",
+    "hours": "soat",
+    "minutes": "daqiqa",
+    "seconds": "soniya"
+  },
+  "wishlist": {
+    "add": "Sevimlilarga",
+    "remove": "Sevimlilardan olib tashlash",
+    "added": "Sevimlilarga qo'shildi"
   },
   "exit": {
     "title": "Ketmang! Sizga maxsus taklif bor",

@@ -14,6 +14,8 @@ import { reviewerForKey } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
+import { WishlistButton } from "@/components/product/WishlistButton";
+import { ShareButton } from "@/components/product/ShareButton";
 
 export function BuyBox({ product }: { product: Product }) {
   const locale = useLocale() as Locale;
@@ -129,6 +131,11 @@ export function BuyBox({ product }: { product: Product }) {
           </li>
         ))}
       </ul>
+
+      <div className="flex items-center gap-3 border-t border-line pt-4">
+        <WishlistButton productId={product.id} className="h-10 w-10 rounded-full border border-line hover:border-red-400" />
+        <ShareButton name={product.name} />
+      </div>
 
       <Disclaimer variant="product" />
     </div>
