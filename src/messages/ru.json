@@ -183,7 +183,8 @@
     "priceFrom": "Цена, от",
     "priceTo": "до",
     "apply": "Применить",
-    "clearFilters": "Сбросить фильтры"
+    "clearFilters": "Сбросить фильтры",
+    "categoriesTitle": "Категории"
   },
   "cart": {
     "title": "Корзина",
