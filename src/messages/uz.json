@@ -742,5 +742,44 @@
     "phone": "+998 90 000 00 00",
     "submit": "Xabar ber",
     "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz."
+  },
+  "privacy": {
+    "title": "Maxfiylik siyosati",
+    "effective": "Kuchga kirish sanasi: 2026 yil 28 iyun",
+    "intro": "Dr. Schatz Store sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday ma’lumotlarni to’plashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
+    "sections": [
+      {
+        "heading": "1. Qanday ma’lumotlarni to’playmiz",
+        "body": "Telegram-bot (@drschatsstorebot) orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi."
+      },
+      {
+        "heading": "2. Ma’lumotlardan qanday foydalanamiz",
+        "body": "• Buyurtmalarni qayta ishlash va yetkazib berish\n• Bot orqali buyurtma holati haqida xabarnomalar\n• Mijozlarga texnik yordam berish\n• Xizmat sifatini yaxshilash"
+      },
+      {
+        "heading": "3. Uchinchi tomonlarga uzatish",
+        "body": "Biz shaxsiy ma’lumotlaringizni uchinchi tomonlarga sotmaymiz va uzatmaymiz, bundan mustasno:\n• Yetkazib berish xizmati — buyurtmani bajarish uchun zarur bo’lgan ism, telefon va manzil.\n\nBarcha hamkorlar sizning ma’lumotlaringiz maxfiyligini ta’minlashga majbur."
+      },
+      {
+        "heading": "4. Ma’lumotlarni saqlash va himoya qilish",
+        "body": "Ma’lumotlar shifrlash bilan himoyalangan serverlarda saqlanadi. Ruxsatsiz kirish, o’zgartirish yoki tarqalishdan himoya qilish uchun texnik va tashkiliy choralar ko’ramiz.\n\nMa’lumotlar faqat buyurtmani bajarish va nizolarni hal qilish uchun zarur muddat davomida saqlanadi."
+      },
+      {
+        "heading": "5. Sizning huquqlaringiz",
+        "body": "Siz quyidagi huquqlarga egasiz:\n• O’z ma’lumotlaringizga kirish huquqi\n• Ma’lumotlarni tuzatish yoki o’chirish talabi\n• Ishlov berishga rozilikni qaytarib olish\n\nBuning uchun bot orqali /yordam buyrug’ini yuboring yoki do’kon administratori bilan bog’laning."
+      },
+      {
+        "heading": "6. Cookies va tahlil",
+        "body": "Sayt to’g’ri ishlashi va tahlil uchun cookies’dan foydalanadi (Google Tag Manager, Yandex.Metrika). Brauzer sozlamalarida cookies’ni o’chirib qo’yishingiz mumkin, lekin saytning ba’zi funksiyalari ishlamay qolishi mumkin."
+      },
+      {
+        "heading": "7. Siyosat o’zgarishlari",
+        "body": "Biz ushbu siyosatni yangilashimiz mumkin. Muhim o’zgarishlar bo’lsa, bot orqali xabardor qilamiz yoki saytda e’lon joylashtiramiz. Joriy versiya doimo ushbu sahifada mavjud bo’ladi."
+      },
+      {
+        "heading": "8. Aloqa",
+        "body": "Maxfiylik bo’yicha savollar uchun murojaat qiling:\n• Telegram-bot: @drschatsstorebot → /yordam\n• Instagram: @alimkhanov_pharm"
+      }
+    ]
   }
 }

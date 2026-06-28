@@ -22,6 +22,14 @@ function personNode(expert: Expert) {
     jobTitle: expert.title,
     url: `${SITE_URL}/experts/${expert.slug}`,
     sameAs: expert.sameAs,
+    ...(expert.credentials && expert.credentials.length > 0
+      ? {
+          hasCredential: expert.credentials.map((c) => ({
+            "@type": "EducationalOccupationalCredential",
+            credentialCategory: c,
+          })),
+        }
+      : {}),
   };
 }
 
@@ -42,7 +50,10 @@ export function organizationNode() {
       areaServed: "UZ",
       availableLanguage: ["Uzbek", "Russian"],
     },
-    sameAs: ["https://t.me/", "https://instagram.com/", "https://facebook.com/"],
+    sameAs: [
+      "https://t.me/drschatsstorebot",
+      "https://instagram.com/alimkhanov_pharm",
+    ],
   };
 }
 
@@ -110,6 +121,24 @@ export function productGraph({
             : "https://schema.org/OutOfStock",
           itemCondition: "https://schema.org/NewCondition",
           url,
+          seller: { "@id": `${SITE_URL}/#organization` },
+          shippingDetails: {
+            "@type": "OfferShippingDetails",
+            shippingRate: {
+              "@type": "MonetaryAmount",
+              value: 0,
+              currency: "UZS",
+            },
+            shippingDestination: {
+              "@type": "DefinedRegion",
+              addressCountry: "UZ",
+            },
+            deliveryTime: {
+              "@type": "ShippingDeliveryTime",
+              handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
+              transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
+            },
+          },
         },
       },
       organizationNode(),
@@ -156,6 +185,10 @@ export function articleGraph({
         author: personNode(author),
         reviewedBy: personNode(reviewer),
         publisher: { "@id": `${SITE_URL}/#organization` },
+        speakable: {
+          "@type": "SpeakableSpecification",
+          cssSelector: ["h1", "h2", ".article-excerpt"],
+        },
       },
       organizationNode(),
     ],
@@ -252,7 +285,10 @@ export function localBusinessLd() {
       "@type": "Country",
       name: "Uzbekistan",
     },
-    sameAs: ["https://t.me/", "https://instagram.com/", "https://facebook.com/"],
+    sameAs: [
+      "https://t.me/drschatsstorebot",
+      "https://instagram.com/alimkhanov_pharm",
+    ],
     parentOrganization: { "@id": `${SITE_URL}/#organization` },
   };
 }

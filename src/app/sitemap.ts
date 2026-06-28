@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { locales, routing } from "@/lib/i18n/routing";
-import { shopflow, listAllSlugs } from "@/lib/shopflow";
+import { shopflow } from "@/lib/shopflow";
 import { listArticleSlugs } from "@/lib/content/blog.sanity";
 import { listExpertSlugs } from "@/lib/content/experts.sanity";
 import { SITE_URL } from "@/lib/seo/metadata";
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
   const categoryPaths = categories.map((c) => `/products/${c.slug}`);
   const [blogSlugs, expertSlugs] = await Promise.all([listArticleSlugs(), listExpertSlugs()]);
-  const productPaths = listAllSlugs().map(({ slug }) => `/product/${slug}`);
+  const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
   const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);
   const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths, ...expertPaths];
@@ -45,10 +45,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority = 0.65;
     }
 
+    languages["x-default"] = `${SITE_URL}/${routing.defaultLocale}${path}`;
+
+    let changeFrequency: "weekly" | "monthly" | "daily" = "monthly";
+    if (path.startsWith("/product/")) changeFrequency = "weekly";
+    else if (path.startsWith("/blog/")) changeFrequency = "weekly";
+    else if (path === "/products" || path === "" || path.startsWith("/products/")) changeFrequency = "daily";
+
     return {
       url: `${SITE_URL}/${routing.defaultLocale}${path}`,
       lastModified: new Date(),
-      changeFrequency: path.startsWith("/product/") ? "weekly" : "monthly",
+      changeFrequency,
       priority,
       alternates: { languages },
     };
