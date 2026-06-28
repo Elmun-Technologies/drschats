@@ -2,6 +2,7 @@ import type { Product } from "@/lib/shopflow/types";
 import type { Expert } from "@/lib/content/experts";
 import { SITE_NAME, SITE_URL } from "./metadata";
 import type { Locale } from "@/lib/i18n/routing";
+import { locales } from "@/lib/i18n/routing";
 
 /** Renders a JSON-LD <script> for rich results / AI agents. */
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
@@ -197,5 +198,61 @@ export function breadcrumbLd(items: { name: string; url: string }[]) {
       name: it.name,
       item: it.url,
     })),
+  };
+}
+
+/** WebSite node with SearchAction — enables Google Sitelinks Search Box. */
+export function websiteLd(locale: Locale) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${SITE_URL}/#website`,
+    url: SITE_URL,
+    name: SITE_NAME,
+    description:
+      "Premium vitamins and dietary supplements distributor in Uzbekistan. Lab-tested, certified quality.",
+    inLanguage: locales as unknown as string[],
+    potentialAction: {
+      "@type": "SearchAction",
+      target: {
+        "@type": "EntryPoint",
+        urlTemplate: `${SITE_URL}/${locale}/products?search={search_term_string}`,
+      },
+      "query-input": "required name=search_term_string",
+    },
+  };
+}
+
+/** LocalBusiness node for Google local search and Maps integration. */
+export function localBusinessLd() {
+  return {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "PharmacyOrDrugstore"],
+    "@id": `${SITE_URL}/#localbusiness`,
+    name: "Alimkhanov Pharm Group",
+    url: SITE_URL,
+    logo: `${SITE_URL}/brand/logo.png`,
+    image: `${SITE_URL}/brand/logo.png`,
+    telephone: "+998-71-200-00-00",
+    email: "info@alimkhanov.com",
+    priceRange: "$$",
+    openingHours: "Mo-Sa 09:00-18:00",
+    address: {
+      "@type": "PostalAddress",
+      addressCountry: "UZ",
+      addressLocality: "Toshkent",
+      addressRegion: "Toshkent",
+    },
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: 41.2995,
+      longitude: 69.2401,
+    },
+    areaServed: {
+      "@type": "Country",
+      name: "Uzbekistan",
+    },
+    sameAs: ["https://t.me/", "https://instagram.com/", "https://facebook.com/"],
+    parentOrganization: { "@id": `${SITE_URL}/#organization` },
   };
 }

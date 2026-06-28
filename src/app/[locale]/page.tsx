@@ -12,6 +12,8 @@ import { PromoBanners } from "@/components/home/PromoBanners";
 import { StatsBand } from "@/components/home/StatsBand";
 import { BlogTeaser } from "@/components/home/BlogTeaser";
 import { HomeCTA } from "@/components/home/HomeCTA";
+import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
+import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
 
 export const revalidate = 300;
 
@@ -38,10 +40,11 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [categories, bestsellers, topRated] = await Promise.all([
+  const [categories, bestsellers, topRated, allProducts] = await Promise.all([
     shopflow.getCategories(locale),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 8 }),
     shopflow.getProducts({ locale, sort: "new", pageSize: 8 }),
+    shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }),
   ]);
 
   return (
@@ -50,7 +53,9 @@ export default async function HomePage({
       <HeroBento />
       <TopCategories categories={categories} />
       <FeaturedProducts products={bestsellers.items} />
+      <PersonalizedRail allProducts={allProducts.items} />
       <PromoBanners />
+      <RecentlyViewed allProducts={allProducts.items} />
       <ProductCarousel products={topRated.items} />
       <StatsBand />
       <BlogTeaser locale={locale} />

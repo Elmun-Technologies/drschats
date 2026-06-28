@@ -135,6 +135,19 @@
       "subtitle": "Place your order in minutes — our operator will call to confirm.",
       "button": "Go to shop"
     },
+    "recentlyViewed": {
+      "eyebrow": "History",
+      "title": "Recently Viewed"
+    },
+    "forYou": {
+      "eyebrow": "For You",
+      "title": "Picked for You",
+      "subtitle": "Personalised selection based on your browsing history"
+    },
+    "similar": {
+      "eyebrow": "Recommendations",
+      "title": "Similar Products"
+    },
     "bento": {
       "b1Off": "Up to 45% OFF",
       "b1Title": "Exclusive medical product deals",
