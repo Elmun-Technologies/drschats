@@ -19,7 +19,7 @@ export function scoreProduct(
   score += (product.rating / 5) * 1.5;
 
   // Category affinity (0–4 range)
-  const affinity = affinities[product.categorySlug] ?? 0;
+  const affinity = affinities[product.categorySlug ?? ""] ?? 0;
   score += affinity * 4;
 
   // Price proximity — boost if within 40% of user's typical price
@@ -81,7 +81,7 @@ export function getSimilarProducts(
     .map((p) => {
       let score = 0;
 
-      if (p.categorySlug === current.categorySlug) score += 4;
+      if (p.categorySlug && current.categorySlug && p.categorySlug === current.categorySlug) score += 4;
       if (p.origin && current.origin && p.origin === current.origin) score += 2;
 
       const priceDiff = Math.abs(p.price - current.price) / (current.price || 1);

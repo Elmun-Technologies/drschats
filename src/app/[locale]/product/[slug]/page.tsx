@@ -69,11 +69,11 @@ export default async function ProductPage({
       <JsonLd
         data={breadcrumbLd([
           { name: t("breadcrumbHome"), url: `${SITE_URL}/${locale}` },
-          { name: product.categorySlug, url: `${SITE_URL}/${locale}/products/${product.categorySlug}` },
+          { name: product.categorySlug ?? "", url: `${SITE_URL}/${locale}/products/${product.categorySlug ?? ""}` },
           { name: product.name, url: `${SITE_URL}/${locale}/product/${slug}` },
         ])}
       />
-      <ViewTracker slug={product.slug} categorySlug={product.categorySlug} price={product.price} />
+      <ViewTracker slug={product.slug} categorySlug={product.categorySlug ?? ""} price={product.price} />
       {Bespoke ? (
         <Bespoke product={product} upsells={upsells} locale={locale} />
       ) : (

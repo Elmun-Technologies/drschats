@@ -48,8 +48,8 @@ export interface Product {
   name: string;
   tagline: string;
   description: string;
-  categoryId: string;
-  categorySlug: string;
+  categoryId?: string | null;
+  categorySlug?: string | null;
   price: Money;
   oldPrice?: Money;
   currency: Currency;
@@ -64,7 +64,7 @@ export interface Product {
   faq: FaqItem[];
   reviews: Review[];
   badges: string[];
-  servings?: string;
+  servings?: string | number;
   origin?: string;
   /** Quality marks shown in the sourcing-transparency block (cGMP, ISO, Halal…). */
   certifications?: string[];
