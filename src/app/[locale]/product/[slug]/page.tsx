@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { shopflow, listAllSlugs } from "@/lib/shopflow";
-import { routing } from "@/lib/i18n/routing";
+import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
@@ -15,26 +14,8 @@ import { SimilarProducts } from "@/components/personalization/SimilarProducts";
 export const revalidate = 300;
 export const dynamicParams = true;
 
-export async function generateStaticParams() {
-  try {
-    const results = await Promise.all(
-      routing.locales.map((locale) =>
-        shopflow.getProducts({ locale, pageSize: 200 }).then((r) =>
-          r.items.map(({ slug }) => ({ locale, slug }))
-        )
-      )
-    );
-    const combined = results.flat();
-    // fallback to mock slugs if API returned nothing
-    if (combined.length === 0) {
-      return routing.locales.flatMap((locale) =>
-        listAllSlugs().map(({ slug }) => ({ locale, slug }))
-      );
-    }
-    return combined;
-  } catch {
-    return [];
-  }
+export function generateStaticParams() {
+  return [];
 }
 
 export async function generateMetadata({
