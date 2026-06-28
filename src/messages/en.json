@@ -370,6 +370,19 @@
     "coaTitle": "Certificate of Analysis (COA)",
     "coaDesc": "Every batch is tested for heavy metals and pathogens in an independent lab. The certificate is available on request."
   },
+  "upsell": {
+    "stepOf": "Step {step}/{total}",
+    "savedSoFar": "You saved: {amount}!",
+    "growSavings": "Keep growing your savings",
+    "accept": "Yes, add it!",
+    "skip": "Skip",
+    "freeGiftTitle": "SPECIAL GIFT",
+    "freeGiftCovered": "Your savings ({amount}) cover it!",
+    "freeGiftCta": "Claim my gift!",
+    "freeLabel": "FREE",
+    "progressLabel": "Saved: {amount}",
+    "progressSteps": "{done}/{total} steps"
+  },
   "cookie": {
     "text": "We use cookies to improve your experience.",
     "accept": "Accept",

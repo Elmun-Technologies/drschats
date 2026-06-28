@@ -11,6 +11,8 @@ import { computeTotals } from "@/lib/cart/pricing";
 import { formatMoney } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
 import { trackBeginCheckout } from "@/lib/analytics/events";
+import { UpsellLadderModal } from "@/components/upsell/UpsellLadderModal";
+import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 
 export function CartDrawer() {
   const locale = useLocale() as Locale;
@@ -20,6 +22,8 @@ export function CartDrawer() {
   const totals = computeTotals(lines, promotions);
 
   return (
+    <>
+    <UpsellLadderModal />
     <AnimatePresence>
       {isOpen && (
         <>
@@ -99,6 +103,7 @@ export function CartDrawer() {
                   ))}
                 </div>
 
+                <UpsellSavingsBar />
                 <footer className="space-y-3 border-t border-line px-6 py-5">
                   <Row label={t("subtotal")} value={formatMoney(totals.subtotal, locale)} />
                   {totals.discount > 0 && (
@@ -129,6 +134,7 @@ export function CartDrawer() {
         </>
       )}
     </AnimatePresence>
+    </>
   );
 }
 

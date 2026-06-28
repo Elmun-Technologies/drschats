@@ -370,6 +370,19 @@
     "coaTitle": "Сертификат анализа (COA)",
     "coaDesc": "Каждая партия проверяется на тяжёлые металлы и патогены в независимой лаборатории. Сертификат — по запросу."
   },
+  "upsell": {
+    "stepOf": "Шаг {step}/{total}",
+    "savedSoFar": "Вы сэкономили: {amount}!",
+    "growSavings": "Увеличивайте экономию",
+    "accept": "Да, добавить!",
+    "skip": "Пропустить",
+    "freeGiftTitle": "ОСОБЫЙ ПОДАРОК",
+    "freeGiftCovered": "Ваша экономия ({amount}) покрывает это!",
+    "freeGiftCta": "Забрать подарок!",
+    "freeLabel": "БЕСПЛАТНО",
+    "progressLabel": "Экономия: {amount}",
+    "progressSteps": "{done}/{total} шага"
+  },
   "cookie": {
     "text": "Мы используем cookie для улучшения работы сайта.",
     "accept": "Принять",
