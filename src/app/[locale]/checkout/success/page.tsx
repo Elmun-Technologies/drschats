@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { buttonVariants } from "@/components/ui/Button";
 import { PurchaseTracker } from "@/components/personalization/PurchaseTracker";
+import { SuccessCheckmark } from "@/components/checkout/SuccessCheckmark";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -25,15 +26,7 @@ export default async function SuccessPage({
       <Container size="narrow">
         <PurchaseTracker />
         <div className="flex flex-col items-center text-center">
-          {/* Animated checkmark */}
-          <div className="relative mb-8">
-            <div className="h-24 w-24 rounded-full bg-accent-soft" />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <svg viewBox="0 0 24 24" className="h-12 w-12 text-accent" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M5 12l4 4L19 7" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-          </div>
+          <SuccessCheckmark />
 
           <h1 className="font-display text-3xl font-bold tracking-tight sm:text-4xl">{t("title")}</h1>
           <p className="mt-4 max-w-md text-lg text-muted">{t("subtitle")}</p>

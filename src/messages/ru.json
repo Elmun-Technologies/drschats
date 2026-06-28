@@ -43,7 +43,15 @@
     "backToTop": "Наверх",
     "addToCartShort": "В корзину",
     "share": "Поделиться",
-    "skipToContent": "К содержимому"
+    "skipToContent": "К содержимому",
+    "errorTitle": "Что-то пошло не так",
+    "errorDesc": "При загрузке страницы возникла ошибка. Попробуйте ещё раз или вернитесь на главную.",
+    "errorRetry": "Попробовать снова",
+    "errorHome": "Главная",
+    "notFoundTitle": "Страница не найдена",
+    "notFoundDesc": "Sahifa topilmadi · Страница не найдена",
+    "notFoundHome": "На главную",
+    "notFoundShop": "В магазин"
   },
   "home": {
     "hero": {
