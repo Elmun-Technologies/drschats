@@ -18,7 +18,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Reveal } from "@/components/animation/Reveal";
 import { ProductCard } from "@/components/product/ProductCard";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 export const dynamicParams = true;
 
 export async function generateStaticParams() {

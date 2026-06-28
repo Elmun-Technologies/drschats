@@ -10,7 +10,7 @@ import { getBrands } from "@/lib/content/brands.sanity";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 
-export const revalidate = 3600;
+export const revalidate = 60;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
