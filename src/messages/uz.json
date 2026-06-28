@@ -269,7 +269,9 @@
       "step1": "Operatorimiz 15–30 daqiqa ichida qo’ng’iroq qiladi",
       "step2": "Buyurtma 24–48 soat ichida yig’ilib tayyorlanadi",
       "step3": "Kuryer yetkazib beradi — to’lov olayotganda"
-    }
+    },
+    "upsellAdd": "Qo'shish",
+    "upsellFree": "BEPUL 🎁"
   },
   "footer": {
     "tagline": "Sog‘lom hayot uchun isbotlangan nutriyentlar.",

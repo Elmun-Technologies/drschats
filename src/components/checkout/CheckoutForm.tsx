@@ -166,7 +166,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-sm text-faint line-through">{formatMoney(step.product.price, locale)}</span>
                       {step.stepType === "free_gift" ? (
-                        <span className="font-display text-sm font-bold text-amber-400">BEPUL 🎁</span>
+                        <span className="font-display text-sm font-bold text-amber-400">{t("upsellFree")}</span>
                       ) : (
                         <>
                           <span className="text-sm font-semibold text-accent">{formatMoney(step.discountedPrice, locale)}</span>
@@ -194,7 +194,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                         : "bg-surface-3 text-fg hover:bg-accent hover:text-ink"
                     }`}
                   >
-                    {step.stepType === "free_gift" ? "Olish" : `+${i + 1}`}
+                    {step.stepType === "free_gift" ? t("upsellFree") : t("upsellAdd")}
                   </button>
                 </div>
               ))}
