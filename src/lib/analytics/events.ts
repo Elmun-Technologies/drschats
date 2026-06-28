@@ -45,6 +45,18 @@ export function trackLead(orderId: string, value: number) {
   if (ymId) window.ym?.(Number(ymId), "reachGoal", "order_submitted");
 }
 
+export function trackUpsellView(step: number, total: number, productId: string) {
+  track("upsell_view", { step, total, product_id: productId });
+}
+
+export function trackUpsellAccept(step: number, productId: string, savedAmount: number) {
+  track("upsell_accept", { step, product_id: productId, saved_amount: savedAmount, currency: "UZS" });
+}
+
+export function trackUpsellSkip(step: number, productId: string) {
+  track("upsell_skip", { step, product_id: productId });
+}
+
 /** Read UTM/referrer for ad attribution stored on the order. */
 export function getAttribution() {
   if (typeof window === "undefined") return undefined;

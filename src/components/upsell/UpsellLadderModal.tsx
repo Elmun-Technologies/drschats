@@ -10,7 +10,7 @@ import { useUpsell } from "@/lib/upsell/store";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { getUpsellProducts } from "@/app/actions/getUpsellProducts";
 import { formatMoney } from "@/lib/utils";
-import { trackAddToCart } from "@/lib/analytics/events";
+import { trackAddToCart, trackUpsellView, trackUpsellAccept, trackUpsellSkip } from "@/lib/analytics/events";
 
 export function UpsellLadderModal() {
   const locale = useLocale() as Locale;
@@ -18,6 +18,13 @@ export function UpsellLadderModal() {
   const { lines, add } = useCart();
   const { steps, currentStep, isOpen, cumulativeSavings, shown, openLadder, nextStep, skipStep, closeLadder } = useUpsell();
   const prevLength = useRef(lines.length);
+
+  // Track view when step changes
+  useEffect(() => {
+    if (isOpen && step) {
+      trackUpsellView(currentStep + 1, steps.length, step.product.id);
+    }
+  }, [isOpen, currentStep]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Watch for new items added to cart → trigger ladder once per session
   useEffect(() => {
@@ -38,11 +45,16 @@ export function UpsellLadderModal() {
   const step = steps[currentStep];
   if (!step) return null;
 
+  // Track impression when step changes
+  // (we call it inline; effect would cause double-fire on strict mode)
+
+
   const isFreeGift = step.stepType === "free_gift";
   const totalSteps = steps.length;
   const displaySavings = cumulativeSavings;
 
   function handleAccept() {
+    trackUpsellAccept(currentStep + 1, step.product.id, step.savedAmount);
     add(
       {
         productId: step.product.id,
@@ -205,7 +217,7 @@ export function UpsellLadderModal() {
                   {isFreeGift ? t("freeGiftCta") : t("accept")}
                 </button>
                 <button
-                  onClick={skipStep}
+                  onClick={() => { trackUpsellSkip(currentStep + 1, step.product.id); skipStep(); }}
                   className="rounded-full border border-line px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-fg"
                 >
                   {t("skip")}

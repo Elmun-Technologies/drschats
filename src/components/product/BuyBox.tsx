@@ -13,6 +13,7 @@ import { trackAddToCart, trackViewProduct } from "@/lib/analytics/events";
 import { reviewerForKey } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { Disclaimer } from "@/components/legal/Disclaimer";
+import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 
 export function BuyBox({ product }: { product: Product }) {
   const locale = useLocale() as Locale;
@@ -113,6 +114,10 @@ export function BuyBox({ product }: { product: Product }) {
           {product.inStock ? t("addToCart") : t("outOfStock")}
         </Button>
       </div>
+
+      {!product.inStock && (
+        <OutOfStockNotify productId={product.id} productName={product.name} />
+      )}
 
       <ul className="space-y-2 border-t border-line pt-6 text-sm">
         {[tp("guarantee"), tp("delivery"), tp("secure")].map((line) => (

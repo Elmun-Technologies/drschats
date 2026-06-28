@@ -646,16 +646,30 @@
         }
       ]
     },
-    "deliveryFaqTitle": "Ko‘p so‘raladigan savollar",
+    "deliveryFaqTitle": "Ko’p so’raladigan savollar",
     "deliveryFaq": [
       {
         "question": "Yetkazib berish qancha vaqt oladi?",
-        "answer": "Toshkent bo‘ylab 1–2 ish kuni, viloyatlarga EMU orqali 2–5 ish kuni."
+        "answer": "Toshkent bo’ylab 1–2 ish kuni, viloyatlarga EMU orqali 2–5 ish kuni."
       },
       {
         "question": "Yetkazib berish bepulmi?",
-        "answer": "Toshkentda 300 000 so‘mdan, viloyatlarda 700 000 so‘mdan ortiq xaridga bepul."
+        "answer": "Toshkentda 300 000 so’mdan, viloyatlarda 700 000 so’mdan ortiq xaridga bepul."
       }
     ]
+  },
+  "exit": {
+    "title": "Ketmang! Sizga maxsus taklif bor",
+    "body": "Birinchi buyurtmaga 10% chegirma. Telefon raqamingizni qoldiring — operatorimiz siz bilan bog’lanadi.",
+    "phonePlaceholder": "+998 90 000 00 00",
+    "cta": "Chegirma olish",
+    "dismiss": "Yo’q, kerak emas",
+    "successMessage": "Rahmat! Tez orada bog’lanamiz."
+  },
+  "outOfStock": {
+    "notify": "Bu mahsulot hozirda sotuvda yo’q. Telefon raqamingizni qoldiring — mahsulot kelganda xabar beramiz.",
+    "phone": "+998 90 000 00 00",
+    "submit": "Xabar ber",
+    "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz."
   }
 }
