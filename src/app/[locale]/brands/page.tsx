@@ -62,7 +62,7 @@ export default async function BrandsPage({ params }: { params: Promise<{ locale:
       <JsonLd data={itemListLd(t("title"), items.map((i) => ({ name: i.title, description: i.text })))} />
       <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/brands` }])} />
       <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
-      <CardGrid items={items} columns={3} />
+      <CardGrid items={items} columns={3} withImage={false} />
     </div>
   );
 }

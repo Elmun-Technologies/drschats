@@ -40,7 +40,7 @@ export function organizationNode() {
       telephone: "+998-71-200-00-00",
       contactType: "customer service",
       areaServed: "UZ",
-      availableLanguage: ["Uzbek", "Russian", "English"],
+      availableLanguage: ["Uzbek", "Russian"],
     },
     sameAs: ["https://t.me/", "https://instagram.com/", "https://facebook.com/"],
   };

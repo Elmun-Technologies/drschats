@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Sora, Manrope } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
-import { setRequestLocale, getMessages } from "next-intl/server";
+import { setRequestLocale, getMessages, getTranslations } from "next-intl/server";
 import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { PromotionsProvider } from "@/lib/cart/promotions-context";
@@ -46,8 +46,11 @@ export default async function LocaleLayout({
   if (!isLocale(locale)) notFound();
   setRequestLocale(locale);
 
-  const messages = await getMessages();
-  const promotions = await shopflow.getPromotions(locale as Locale);
+  const [messages, promotions, tc] = await Promise.all([
+    getMessages(),
+    shopflow.getPromotions(locale as Locale),
+    getTranslations("common"),
+  ]);
 
   return (
     <html lang={localeHtmlLang[locale as Locale]} className={`${sora.variable} ${manrope.variable}`}>
@@ -65,7 +68,7 @@ export default async function LocaleLayout({
               href="#main-content"
               className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-accent focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink"
             >
-              {locale === "ru" ? "К содержимому" : locale === "en" ? "Skip to content" : "Asosiy qismga o‘tish"}
+              {tc("skipToContent")}
             </a>
             <ScrollProgress />
             <SmoothScroll>

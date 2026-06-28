@@ -8,7 +8,6 @@ const localeString = (name: string, title: string) =>
     fields: [
       { name: "uz", title: "O'zbekcha", type: "string" },
       { name: "ru", title: "Русский", type: "string" },
-      { name: "en", title: "English", type: "string" },
     ],
   });
 
@@ -20,7 +19,6 @@ const localeText = (name: string, title: string) =>
     fields: [
       { name: "uz", title: "O'zbekcha", type: "text" },
       { name: "ru", title: "Русский", type: "text" },
-      { name: "en", title: "English", type: "text" },
     ],
   });
 

@@ -81,10 +81,10 @@ export default async function LoyaltyPage({
                 )}
                 <span className={`text-xs font-bold uppercase tracking-widest ${tier.badge}`}>{tier.label}</span>
                 <p className="mt-2 font-display text-3xl font-extrabold text-fg">{tier.discount}</p>
-                <p className="mt-1 text-xs text-muted">chegirma</p>
+                <p className="mt-1 text-xs text-muted">{t("discount")}</p>
                 {tier.threshold !== "0" && (
                   <p className="mt-4 text-xs text-muted">
-                    {tier.threshold} {`so'mdan`}
+                    {t("fromAmount", { amount: tier.threshold })}
                   </p>
                 )}
               </div>

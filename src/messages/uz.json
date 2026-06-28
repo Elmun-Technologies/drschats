@@ -42,7 +42,8 @@
     "viewCart": "Savatchaga o‘tish",
     "backToTop": "Yuqoriga",
     "addToCartShort": "Savatga",
-    "share": "Ulashish"
+    "share": "Ulashish",
+    "skipToContent": "Asosiy qismga o'tish"
   },
   "home": {
     "hero": {
@@ -159,6 +160,11 @@
       "b3Off": "15% CHEGIRMA",
       "b3Title": "Premium wellness mahsulotlar",
       "viewMore": "Batafsil"
+    },
+    "newArrivals": {
+      "title": "Yangi mahsulotlar",
+      "subtitle": "Yangi kelgan mahsulotlar — allaqachon mavjud",
+      "eyebrow": "Yangi"
     }
   },
   "product": {
@@ -264,7 +270,9 @@
       "step1": "Operatorimiz 15–30 daqiqa ichida qo’ng’iroq qiladi",
       "step2": "Buyurtma 24–48 soat ichida yig’ilib tayyorlanadi",
       "step3": "Kuryer yetkazib beradi — to’lov olayotganda"
-    }
+    },
+    "upsellAdd": "Qo'shish",
+    "upsellFree": "BEPUL 🎁"
   },
   "footer": {
     "tagline": "Sog‘lom hayot uchun isbotlangan nutriyentlar.",
@@ -379,7 +387,9 @@
     "pointsStandard": "Standart mahsulot — 1 ball = 2 750 so‘m",
     "pointsPromo": "Aksiya mahsuloti — 1 ball = 2 050 so‘m",
     "cta": "Hamkor bo‘lish",
-    "join": "Ro‘yxatdan o‘tish"
+    "join": "Ro‘yxatdan o‘tish",
+    "discount": "chegirma",
+    "fromAmount": "{amount} so'mdan"
   },
   "ingredients_page": {
     "title": "Ingredientlar va sertifikatlar",
@@ -499,7 +509,8 @@
           "title": "G‘amxo‘rlik",
           "text": "Har mijozga individual yondashuv."
         }
-      ]
+      ],
+      "certsLabel": "Sertifikatlar"
     },
     "news": {
       "crumb": "Yangiliklar",

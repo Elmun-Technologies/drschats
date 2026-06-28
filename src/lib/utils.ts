@@ -16,6 +16,6 @@ export function formatMoney(amount: number, locale: Locale): string {
   const grouped = Math.round(amount)
     .toString()
     .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  const suffix = locale === "ru" ? "сум" : locale === "en" ? "UZS" : "so‘m";
+  const suffix = locale === "ru" ? "сум" : "so’m";
   return `${grouped} ${suffix}`;
 }
