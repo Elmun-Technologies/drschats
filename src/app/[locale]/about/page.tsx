@@ -1,58 +1,51 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata } from "@/lib/seo/metadata";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, organizationLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
+import { PageHero } from "@/components/page/PageHero";
+import { CardGrid, type GridCard } from "@/components/page/CardGrid";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "about" });
-  return buildPageMetadata({ locale, path: "/about", title: `${t("title")} — Alimkhanov`, description: t("lead") });
+  const t = await getTranslations({ locale, namespace: "pages.about" });
+  return buildPageMetadata({ locale, path: "/about", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
 }
 
-export default async function AboutPage({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}) {
+export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("about");
-  const values = ["quality", "trust", "care"] as const;
+  const t = await getTranslations("pages.about");
+  const stats = t.raw("stats") as { value: string; label: string }[];
+  const values = t.raw("values") as GridCard[];
 
   return (
-    <div className="pt-10">
-      <Container size="narrow">
-        <Reveal>
-          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-6xl">{t("title")}</h1>
-        </Reveal>
-        <Reveal index={1}>
-          <p className="mt-6 text-xl text-muted">{t("lead")}</p>
-        </Reveal>
-        <Reveal index={2}>
-          <p className="mt-6 text-muted">{t("body")}</p>
-        </Reveal>
-      </Container>
+    <div className="pb-24">
+      <JsonLd data={organizationLd()} />
+      <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/about` }])} />
+      <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
 
-      <Container>
-        <div className="mb-32 mt-20 grid gap-6 md:grid-cols-3">
-          {values.map((v, i) => (
-            <Reveal key={v} index={i}>
-              <div className="h-full rounded-2xl border border-line bg-surface p-8">
-                <h3 className="font-display text-xl font-semibold text-accent">{t(`values.${v}.title`)}</h3>
-                <p className="mt-3 text-muted">{t(`values.${v}.description`)}</p>
+      <Container className="pt-10">
+        <Reveal>
+          <p className="max-w-3xl text-lg leading-relaxed text-muted">{t("intro")}</p>
+        </Reveal>
+        <div className="mt-12 grid grid-cols-2 gap-6 lg:grid-cols-4">
+          {stats.map((s, i) => (
+            <Reveal key={s.label} index={i}>
+              <div className="rounded-2xl border border-line bg-surface p-6 text-center">
+                <div className="font-display text-3xl font-extrabold text-accent-strong sm:text-4xl">{s.value}</div>
+                <div className="mt-2 text-sm text-muted">{s.label}</div>
               </div>
             </Reveal>
           ))}
         </div>
       </Container>
+
+      <CardGrid items={values} columns={3} withImage={false} />
     </div>
   );
 }

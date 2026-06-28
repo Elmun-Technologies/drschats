@@ -16,7 +16,7 @@ export function Footer() {
   return (
     <footer className="bg-[#0c1512] text-white/70">
       <Container className="py-16">
-        <div className="grid gap-12 md:grid-cols-[1.6fr_1fr_1fr_1.2fr]">
+        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.1fr]">
           <div>
             <div className="text-2xl text-white">
               <Logo className="text-2xl" />
@@ -26,17 +26,23 @@ export function Footer() {
 
           <FooterCol title={t("shop")}>
             <FooterLink href="/products">{nav("products")}</FooterLink>
+            <FooterLink href="/brands">{nav("brands")}</FooterLink>
             <FooterLink href="/ingredients">{ingredients("title")}</FooterLink>
-            <FooterLink href="/products/vitamins">Vitamins</FooterLink>
-            <FooterLink href="/products/omega">Omega</FooterLink>
+            <FooterLink href="/licenses">{nav("licenses")}</FooterLink>
           </FooterCol>
 
           <FooterCol title={t("company")}>
-            <FooterLink href="/about">{nav("about")}</FooterLink>
+            <FooterLink href="/about">{nav("aboutUs")}</FooterLink>
+            <FooterLink href="/news">{nav("news")}</FooterLink>
             <FooterLink href="/experts">{experts("badge")}</FooterLink>
             <FooterLink href="/blog">{nav("blog")}</FooterLink>
-            <FooterLink href="/contact">{nav("contact")}</FooterLink>
+            <FooterLink href="/requisites">{nav("requisites")}</FooterLink>
+          </FooterCol>
+
+          <FooterCol title={t("support")}>
             <FooterLink href="/delivery">{t("delivery")}</FooterLink>
+            <FooterLink href="/payment">{nav("payment")}</FooterLink>
+            <FooterLink href="/guarantee">{nav("guarantee")}</FooterLink>
             <FooterLink href="/loyalty">{loyalty("title")}</FooterLink>
             <FooterLink href="/privacy">{t("privacy")}</FooterLink>
           </FooterCol>
