@@ -251,9 +251,12 @@
     "errorPhone": "To‘g‘ri telefon raqamini kiriting",
     "success": {
       "title": "Buyurtmangiz qabul qilindi!",
-      "subtitle": "Tez orada operatorimiz siz bilan bog‘lanadi.",
+      "subtitle": "Tez orada operatorimiz siz bilan bog’lanadi.",
       "orderId": "Buyurtma raqami",
-      "home": "Bosh sahifaga"
+      "home": "Bosh sahifaga",
+      "step1": "Operatorimiz 15–30 daqiqa ichida qo’ng’iroq qiladi",
+      "step2": "Buyurtma 24–48 soat ichida yig’ilib tayyorlanadi",
+      "step3": "Kuryer yetkazib beradi — to’lov olayotganda"
     }
   },
   "footer": {
@@ -287,12 +290,16 @@
     }
   },
   "contact": {
-    "title": "Biz bilan bog‘laning",
+    "title": "Biz bilan bog’laning",
     "subtitle": "Savollaringiz bormi? Biz yordam berishga tayyormiz.",
     "phone": "Telefon",
     "email": "Email",
     "address": "Manzil",
-    "addressValue": "Toshkent shahri, O‘zbekiston"
+    "addressValue": "Toshkent shahri, O’zbekiston",
+    "workHours": "Dushanba–Shanba, 09:00–18:00",
+    "emailHint": "24 soat ichida javob beramiz",
+    "telegramTitle": "Telegram kanalimiz",
+    "telegramHint": "Tez javob va yangiliklar uchun"
   },
   "blog": {
     "title": "Sog‘liq blogi",
@@ -465,6 +472,7 @@
           "label": "Mahsulot"
         }
       ],
+      "mission": "Bizning maqsadimiz — har bir o'zbek oilasiga dunyo standartidagi vitaminlar va biologik qo'shimchalarni qulay narxda yetkazib berish.",
       "values": [
         {
           "title": "Sifat",

@@ -52,6 +52,11 @@ export function CartDrawer() {
 
             {lines.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-surface-2">
+                  <svg viewBox="0 0 24 24" className="h-10 w-10 text-faint" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18M16 10a4 4 0 01-8 0" />
+                  </svg>
+                </div>
                 <p className="text-muted">{t("empty")}</p>
                 <Link href="/products" onClick={close} className={buttonVariants("primary")}>
                   {t("emptyCta")}

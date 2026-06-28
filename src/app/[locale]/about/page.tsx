@@ -38,11 +38,16 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <Reveal key={s.label} index={i}>
               <div className="rounded-2xl border border-line bg-surface p-6 text-center">
                 <div className="font-display text-3xl font-extrabold text-accent-strong sm:text-4xl">{s.value}</div>
-                <div className="mt-2 text-sm text-muted">{s.label}</div>
+                <div className="mt-2 text-sm font-medium text-muted">{s.label}</div>
               </div>
             </Reveal>
           ))}
         </div>
+        <Reveal index={4}>
+          <div className="mt-8 rounded-2xl border border-accent/20 bg-accent-soft p-6">
+            <p className="text-sm font-medium text-accent-strong">{t("mission")}</p>
+          </div>
+        </Reveal>
       </Container>
 
       <CardGrid items={values} columns={3} withImage={false} />

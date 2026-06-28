@@ -69,14 +69,22 @@ export default async function ExpertPage({
           ← {t("back")}
         </Link>
 
-        <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-center">
-          <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl border border-line bg-surface">
-            <Image src={expert.image} alt={expert.name} fill sizes="112px" className="object-cover" />
+        <div className="mt-8 flex flex-col gap-8 sm:flex-row sm:items-start">
+          <div className="relative h-40 w-40 shrink-0 overflow-hidden rounded-3xl border border-line bg-surface shadow-lg">
+            <Image src={expert.image} alt={expert.name} fill sizes="160px" className="object-cover" />
           </div>
-          <div>
+          <div className="flex-1">
             <p className="text-sm font-semibold text-accent-strong">{t("badge")}</p>
             <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{expert.name}</h1>
             <p className="mt-1 text-lg text-muted">{expert.title}</p>
+            {expert.worksFor && (
+              <p className="mt-2 flex items-center gap-2 text-sm text-muted">
+                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                  <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2M12 12v4M10 14h4" />
+                </svg>
+                {expert.worksFor}
+              </p>
+            )}
           </div>
         </div>
 
