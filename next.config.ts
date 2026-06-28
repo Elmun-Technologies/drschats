@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "images.unsplash.com" },
       { protocol: "https", hostname: "**.uzum.uz" },
       { protocol: "https", hostname: "cdn.sanity.io" },
+      { protocol: "https", hostname: "shop-flow.uz" },
       { protocol: "https", hostname: "**.shop-flow.uz" },
     ],
   },
