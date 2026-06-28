@@ -132,9 +132,11 @@
       }
     },
     "cta": {
-      "title": "Sog‘lig‘ingizga bugun sarmoya kiriting",
-      "subtitle": "Bir necha daqiqada buyurtma bering — operatorimiz tasdiqlash uchun qo‘ng‘iroq qiladi.",
-      "button": "Do‘konga o‘tish"
+      "eyebrow": "Sog’liq — eng katta boylik",
+      "title": "Sog’lig’ingizga bugun sarmoya kiriting",
+      "subtitle": "Bir necha daqiqada buyurtma bering — operatorimiz tasdiqlash uchun qo’ng’iroq qiladi.",
+      "button": "Do’konga o’tish",
+      "secondaryButton": "Ekspertlar bilan tanishing"
     },
     "recentlyViewed": {
       "eyebrow": "Tarix",

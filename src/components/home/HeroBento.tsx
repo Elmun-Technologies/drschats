@@ -44,13 +44,16 @@ export function HeroBento() {
                 className="flex flex-1 items-center"
               >
                 <div className="max-w-sm p-8 sm:p-12">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-fg/60">{s.eyebrow}</p>
+                  <span className="inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent-strong">
+                    {s.eyebrow}
+                  </span>
                   <h1 className="mt-4 font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">
                     {s.title}
                   </h1>
                   <p className="mt-4 text-sm text-fg/70">{s.subtitle}</p>
-                  <Link href="/products" className="mt-7 inline-flex items-center rounded-full bg-ink px-7 py-3 text-sm font-bold text-fg shadow-sm transition-transform hover:-translate-y-0.5">
+                  <Link href="/products" className="mt-7 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:bg-accent-strong">
                     {s.cta}
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 10h12M10 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round"/></svg>
                   </Link>
                 </div>
                 <div className="relative hidden flex-1 sm:block">

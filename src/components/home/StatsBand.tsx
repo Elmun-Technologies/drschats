@@ -13,7 +13,7 @@ export function StatsBand() {
   ] as const;
 
   return (
-    <section className="py-20 sm:py-24">
+    <section className="bg-surface py-20 sm:py-24">
       <Container>
         <Reveal>
           <h2 className="mb-14 max-w-2xl font-display text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">
