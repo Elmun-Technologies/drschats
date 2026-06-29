@@ -22,7 +22,7 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
               i === active ? "border-accent" : "border-line hover:border-line-strong",
             )}
           >
-            <Image src={img.url} alt={img.alt} fill sizes="64px" className="object-cover" />
+            <Image src={img.url} alt={img.alt} fill sizes="64px" className="object-contain p-2" />
           </button>
         ))}
       </div>
@@ -41,7 +41,7 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
             fill
             priority
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover"
+            className="object-contain p-2"
           />
         )}
       </motion.div>

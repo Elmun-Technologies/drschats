@@ -47,7 +47,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           alt={product.images[0]?.alt ?? product.name}
           fill
           sizes="(max-width: 768px) 50vw, 25vw"
-          className="object-cover transition-transform duration-500 group-hover:scale-105"
+          className="object-contain p-2 transition-transform duration-500 group-hover:scale-105"
         />
         {discount > 0 && (
           <span className="absolute left-2 top-2 rounded bg-blue px-1.5 py-0.5 text-[11px] font-bold text-white">
