@@ -17,6 +17,7 @@ import { Disclaimer } from "@/components/legal/Disclaimer";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { ShareButton } from "@/components/product/ShareButton";
+import { formatMoney } from "@/lib/utils";
 
 function PaymentIcon({ label }: { label: string }) {
   return (
@@ -89,7 +90,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         {product.oldPrice && (
           <p className="mt-1 text-xs text-accent">
             {tp("youSave", {
-              amount: new Intl.NumberFormat(locale, { style: "currency", currency: "UZS", maximumFractionDigits: 0 }).format(product.oldPrice - product.price),
+              amount: formatMoney(product.oldPrice - product.price, locale),
             })}
           </p>
         )}
