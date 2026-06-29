@@ -12,13 +12,13 @@ export function ProductGallery({ images }: { images: ProductImage[] }) {
 
   return (
     <div className="flex flex-col-reverse gap-4 lg:flex-row">
-      <div className="flex gap-3 lg:flex-col">
+      <div className="flex gap-3 overflow-x-auto lg:max-h-[480px] lg:flex-col lg:overflow-x-visible lg:overflow-y-auto">
         {images.map((img, i) => (
           <button
             key={i}
             onClick={() => setActive(i)}
             className={cn(
-              "relative h-20 w-16 shrink-0 overflow-hidden rounded-lg border transition-colors",
+              "relative h-20 w-16 shrink-0 overflow-hidden rounded-lg border bg-surface-2 transition-colors",
               i === active ? "border-accent" : "border-line hover:border-line-strong",
             )}
           >
