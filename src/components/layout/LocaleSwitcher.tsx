@@ -32,10 +32,10 @@ export function LocaleSwitcher({ className }: { className?: string }) {
       </button>
       {open && (
         <>
-          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
           <ul
             role="listbox"
-            className="absolute right-0 z-20 mt-2 min-w-[160px] overflow-hidden rounded-xl border border-line bg-surface-2 py-1 shadow-2xl"
+            className="absolute right-0 z-50 mt-2 min-w-[160px] overflow-hidden rounded-xl border border-line bg-surface-2 py-1 shadow-2xl"
           >
             {locales.map((l) => (
               <li key={l}>
