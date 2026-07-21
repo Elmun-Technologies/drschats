@@ -165,6 +165,20 @@ export function Header() {
                   {t(item.key)}
                 </Link>
               ))}
+              <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-1 border-t border-line pt-4">
+                {([
+                  { key: "wishlist", href: "/wishlist" },
+                  { key: "track", href: "/track" },
+                  { key: "faq", href: "/faq" },
+                  { key: "reviews", href: "/reviews" },
+                  { key: "b2b", href: "/b2b" },
+                  { key: "careers", href: "/careers" },
+                ] as const).map((item) => (
+                  <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="py-2.5 text-sm font-medium text-muted hover:text-accent-strong">
+                    {t(item.key)}
+                  </Link>
+                ))}
+              </div>
               <div className="pt-6">
                 <LocaleSwitcher />
               </div>
