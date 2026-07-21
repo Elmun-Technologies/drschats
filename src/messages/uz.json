@@ -25,7 +25,9 @@
     "aboutUs": "Biz haqimizda",
     "wishlist": "Sevimlilar",
     "reviews": "Sharhlar",
-    "faq": "Savol-javob"
+    "faq": "Savol-javob",
+    "careers": "Bo'sh ish o'rinlari",
+    "b2b": "Optom (B2B)"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -330,7 +332,29 @@
     "workHours": "Dushanba–Shanba, 09:00–18:00",
     "emailHint": "24 soat ichida javob beramiz",
     "telegramTitle": "Telegram kanalimiz",
-    "telegramHint": "Tez javob va yangiliklar uchun"
+    "telegramHint": "Tez javob va yangiliklar uchun",
+    "formTitle": "Bizga yozing",
+    "formSubtitle": "Savol, maslahat yoki hamkorlik taklifi — formani to'ldiring, operatorlarimiz eng qisqa vaqtda bog'lanadi.",
+    "nameLabel": "Ismingiz",
+    "namePlaceholder": "To'liq ismingiz",
+    "phoneLabel": "Telefon raqami",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "topicLabel": "Murojaat mavzusi",
+    "topicOrder": "Buyurtma bo'yicha savol",
+    "topicConsult": "Mahsulot bo'yicha maslahat",
+    "topicCoop": "Hamkorlik",
+    "topicOther": "Boshqa savol",
+    "messageLabel": "Xabaringiz",
+    "messagePlaceholder": "Savolingiz yoki qayta qo'ng'iroq so'rovingizni yozing...",
+    "submit": "Yuborish",
+    "submitting": "Yuborilmoqda...",
+    "successTitle": "Rahmat! Murojaatingiz qabul qilindi",
+    "successText": "Operatorlarimiz eng qisqa vaqt ichida ko'rsatilgan raqam orqali siz bilan bog'lanadi.",
+    "errorGeneric": "Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.",
+    "errorName": "Ismingizni kiriting",
+    "errorPhone": "To'g'ri telefon raqamini kiriting",
+    "errorMessage": "Xabaringizni yozing",
+    "required": "Majburiy maydon"
   },
   "blog": {
     "title": "Sog‘liq blogi",
@@ -1122,5 +1146,187 @@
     "ctaText": "Alimkhanov Pharm mahsulotlarini sinab ko'ring yoki tajribangiz bilan bo'lishing — har bir sharh boshqalarga to'g'ri tanlov qilishga yordam beradi.",
     "ctaShop": "Mahsulotlarni ko'rish",
     "ctaWrite": "Sharh qoldirish"
+  },
+  "b2b": {
+    "crumb": "Optom hamkorlik",
+    "eyebrow": "B2B — optom savdo",
+    "title": "Alimkhanov Pharm bilan optom hamkorlik",
+    "subtitle": "Dorixonalar, klinikalar, fitnes markazlar va sotuvchilar uchun sertifikatlangan vitaminlar va biofaol qo'shimchalarni to'g'ridan-to'g'ri narxlarda yetkazib beramiz — butun O'zbekiston bo'ylab.",
+    "intro": "Biz bilan hamkorlik — bu asl mahsulot, barqaror yetkazib berish va shaffof narxlar. Har bir hamkorga shaxsiy menejer biriktiriladi, hujjatlar rasmiy tuziladi, katalog va marketing materiallari bepul taqdim etiladi. Bir marta so'rov qoldiring — qolganini biz hal qilamiz.",
+    "ctaPrimary": "Hamkor bo'lish",
+    "ctaSecondary": "Menejer bilan bog'lanish",
+    "benefitsTitle": "Nega Alimkhanov Pharm bilan ishlash foydali",
+    "benefits": [
+      {
+        "title": "Optom narxlar va hajm chegirmalari",
+        "text": "Buyurtma hajmi oshgani sari narx pasayadi. Muntazam hamkorlar uchun alohida shartlar va mavsumiy aksiyalar amal qiladi."
+      },
+      {
+        "title": "Sertifikatlangan asl mahsulot",
+        "text": "Barcha tovarlar rasmiy import va sifat sertifikatlari bilan ta'minlangan. Har bir partiya uchun hujjatlarni to'liq taqdim etamiz."
+      },
+      {
+        "title": "Tez B2B logistika",
+        "text": "Toshkent bo'ylab kunlik yetkazib berish, viloyatlarga esa transport kompaniyalari orqali 1–3 kun ichida jo'natma."
+      },
+      {
+        "title": "Shaxsiy menejer",
+        "text": "Sizga biriktirilgan menejer buyurtma, hujjat va qoldiqlar bo'yicha bir oynadan barcha masalalarni hal qiladi."
+      },
+      {
+        "title": "Marketing qo'llab-quvvatlash",
+        "text": "Mahsulot fotolari, tavsiflar, POS-materiallar va reklama kontenti — sotuvingizni oshirish uchun bepul beriladi."
+      },
+      {
+        "title": "Moslashuvchan to'lov shartlari",
+        "text": "Naqd, pul o'tkazmasi va ishonchli hamkorlar uchun kechiktirilgan to'lov (otsrochka) imkoniyati mavjud."
+      }
+    ],
+    "tiersTitle": "Hajmga qarab chegirma darajalari",
+    "tiers": [
+      {
+        "volume": "5 mln so'mdan",
+        "discount": "5%",
+        "note": "Kirish darajasi — birinchi optom buyurtmalar uchun"
+      },
+      {
+        "volume": "15 mln so'mdan",
+        "discount": "10%",
+        "note": "Muntazam hamkorlar uchun kengaytirilgan chegirma"
+      },
+      {
+        "volume": "50 mln so'mdan",
+        "discount": "15%",
+        "note": "Maksimal shartlar, kechiktirilgan to'lov va ustuvor logistika"
+      }
+    ],
+    "audienceTitle": "Bizning optom mijozlarimiz",
+    "audience": [
+      {
+        "label": "Dorixonalar va dorixona tarmoqlari"
+      },
+      {
+        "label": "Klinikalar va tibbiyot markazlari"
+      },
+      {
+        "label": "Fitnes va sport klublari"
+      },
+      {
+        "label": "Do'konlar va onlayn sotuvchilar"
+      }
+    ],
+    "stepsTitle": "Hamkorlikni qanday boshlash mumkin",
+    "steps": [
+      "So'rov qoldiring — saytdagi shakl orqali yoki telefon/Telegram orqali murojaat qiling.",
+      "Menejer siz bilan bog'lanadi — ehtiyojlaringizni aniqlab, individual narx taklifini tayyorlaydi.",
+      "Shartnoma va katalog — rasmiy hujjatlarni imzolaymiz va to'liq katalogni yuboramiz.",
+      "Birinchi buyurtma — tovarni qabul qiling va doimiy hamkorlikni boshlang."
+    ],
+    "ctaTitle": "Optom hamkor bo'lishga tayyormisiz?",
+    "ctaText": "Bugun so'rov qoldiring — menejerimiz ish kuni davomida siz bilan bog'lanib, individual narx taklifini taqdim etadi.",
+    "ctaButton": "Hamkor bo'lish"
+  },
+  "careers": {
+    "crumb": "Bo'sh ish o'rinlari",
+    "eyebrow": "Karyera",
+    "title": "Alimkhanov Pharm jamoasiga qo'shiling",
+    "subtitle": "Biz O'zbekistonliklarning sog'lig'i uchun ishonchli vitamin va bio-qo'shimchalarni yetkazamiz. Jamoamizni kuchaytiradigan g'ayratli insonlarni qidiryapmiz.",
+    "intro": "Alimkhanov Pharm — Toshkentdagi tez o'sayotgan sog'liqni saqlash va e-commerce kompaniyasi. Biz Dr. Schatz Store brendi ostida yuzlab premium mahsulotlarni sotamiz va har kuni minglab mijozlarga xizmat ko'rsatamiz. Bizda har bir xodim o'z ishining natijasini ko'radi, o'sadi va real ta'sir ko'rsatadi. Agar siz sifatli mahsulot, ochiq muloqot va professional rivojlanishni qadrlasangiz — sizni kutamiz.",
+    "benefitsTitle": "Nega aynan biz bilan?",
+    "benefits": [
+      {
+        "title": "Raqobatbardosh maosh",
+        "text": "Bozordan yuqori barqaror oylik, natijaga bog'liq bonuslar va har chorakda ko'rib chiqiladigan ish haqi."
+      },
+      {
+        "title": "Sog'liq va qo'shimchalar imtiyozi",
+        "text": "Barcha xodimlar uchun vitamin va bio-qo'shimchalarga doimiy chegirma hamda tibbiy sug'urta paketi."
+      },
+      {
+        "title": "O'sish va lavozim ko'tarilishi",
+        "text": "Individual rivojlanish rejasi, ichki lavozim ko'tarilishlari va yangi yo'nalishlarni sinab ko'rish imkoni."
+      },
+      {
+        "title": "Zamonaviy ofis — Toshkent markazi",
+        "text": "Qulay lokatsiya, yorug' va zamonaviy ish joyi, bepul choy-qahva va dam olish zonasi."
+      },
+      {
+        "title": "Do'stona jamoa",
+        "text": "Ochiq muloqot, bir-birini qo'llab-quvvatlaydigan hamkasblar va muntazam jamoaviy tadbirlar."
+      },
+      {
+        "title": "Ta'lim va treninglar",
+        "text": "Mahsulot va kasbiy treninglar, tashqi kurslar uchun byudjet va tajribali mentorlar yordami."
+      }
+    ],
+    "valuesTitle": "Bizning qadriyatlarimiz",
+    "values": [
+      {
+        "title": "Mijoz sog'lig'i birinchi o'rinda",
+        "text": "Har bir qaror mijozning ishonchi va farovonligidan boshlanadi. Biz faqat sifati tasdiqlangan mahsulotlarni taklif qilamiz."
+      },
+      {
+        "title": "Ochiqlik va halollik",
+        "text": "Ichki jamoada ham, mijozlar bilan ham to'g'ri va shaffof muloqot qilamiz. So'z bilan ish bir xil bo'ladi."
+      },
+      {
+        "title": "Doimiy o'sish",
+        "text": "Har kuni biroz yaxshiroq bo'lishga intilamiz — kompaniya sifatida ham, jamoa a'zolari sifatida ham."
+      },
+      {
+        "title": "Natijaga mas'uliyat",
+        "text": "Biz jarayonni emas, natijani qadrlaymiz. Har bir xodim o'z zonasi uchun to'liq javobgar."
+      }
+    ],
+    "positionsTitle": "Ochiq bo'sh ish o'rinlari",
+    "positions": [
+      {
+        "title": "Farmatsevt-konsultant",
+        "dept": "Mijozlarga xizmat",
+        "type": "To'liq stavka",
+        "location": "Toshkent"
+      },
+      {
+        "title": "Ombor operatori",
+        "dept": "Logistika",
+        "type": "To'liq stavka",
+        "location": "Toshkent"
+      },
+      {
+        "title": "SMM menejer",
+        "dept": "Marketing",
+        "type": "To'liq stavka",
+        "location": "Toshkent / Gibrid"
+      },
+      {
+        "title": "Frontend dasturchi",
+        "dept": "IT",
+        "type": "To'liq stavka",
+        "location": "Masofaviy / Toshkent"
+      },
+      {
+        "title": "Qo'llab-quvvatlash mutaxassisi",
+        "dept": "Mijozlarga xizmat",
+        "type": "Smenali",
+        "location": "Toshkent"
+      },
+      {
+        "title": "Kuryer",
+        "dept": "Yetkazib berish",
+        "type": "To'liq stavka",
+        "location": "Toshkent"
+      },
+      {
+        "title": "Kontent muharriri",
+        "dept": "Marketing",
+        "type": "Yarim stavka",
+        "location": "Masofaviy"
+      }
+    ],
+    "apply": "Ariza yuborish",
+    "typeLabel": "Bandlik turi",
+    "ctaTitle": "O'zingizga mos o'rin topmadingizmi?",
+    "ctaText": "Rezyumeingizni bizga yuboring — biz uni saqlab qo'yamiz va mos vakansiya paydo bo'lganda siz bilan bog'lanamiz. Telegram orqali ham murojaat qilishingiz mumkin.",
+    "ctaButton": "Rezyume yuborish"
   }
 }

@@ -28,6 +28,7 @@ export function Footer() {
             <FooterLink href="/products">{nav("products")}</FooterLink>
             <FooterLink href="/brands">{nav("brands")}</FooterLink>
             <FooterLink href="/ingredients">{ingredients("title")}</FooterLink>
+            <FooterLink href="/b2b">{nav("b2b")}</FooterLink>
             <FooterLink href="/licenses">{nav("licenses")}</FooterLink>
           </FooterCol>
 
@@ -37,6 +38,7 @@ export function Footer() {
             <FooterLink href="/experts">{experts("badge")}</FooterLink>
             <FooterLink href="/blog">{nav("blog")}</FooterLink>
             <FooterLink href="/reviews">{nav("reviews")}</FooterLink>
+            <FooterLink href="/careers">{nav("careers")}</FooterLink>
             <FooterLink href="/requisites">{nav("requisites")}</FooterLink>
           </FooterCol>
 

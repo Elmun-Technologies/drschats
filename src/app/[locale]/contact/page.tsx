@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 export const revalidate = 3600;
 
@@ -119,6 +120,20 @@ export default async function ContactPage({
             </svg>
           </a>
         </Reveal>
+
+        <div className="mt-16">
+          <Reveal>
+            <h2 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">{t("formTitle")}</h2>
+          </Reveal>
+          <Reveal index={1}>
+            <p className="mt-3 text-muted">{t("formSubtitle")}</p>
+          </Reveal>
+          <Reveal index={2}>
+            <div className="mt-8">
+              <ContactForm />
+            </div>
+          </Reveal>
+        </div>
 
         <div className="mb-32" />
       </Container>
