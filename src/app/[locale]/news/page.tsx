@@ -6,6 +6,7 @@ import { JsonLd, itemListLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { PageHero } from "@/components/page/PageHero";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
+import { NewsletterSignup } from "@/components/marketing/NewsletterSignup";
 
 export const revalidate = 3600;
 
@@ -67,6 +68,10 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: L
             ))}
           </div>
         )}
+
+        <Reveal className="mt-12">
+          <NewsletterSignup variant="band" />
+        </Reveal>
       </Container>
     </div>
   );

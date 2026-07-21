@@ -27,7 +27,8 @@
     "reviews": "Sharhlar",
     "faq": "Savol-javob",
     "careers": "Bo'sh ish o'rinlari",
-    "b2b": "Optom (B2B)"
+    "b2b": "Optom (B2B)",
+    "track": "Buyurtmani kuzatish"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -1328,5 +1329,54 @@
     "ctaTitle": "O'zingizga mos o'rin topmadingizmi?",
     "ctaText": "Rezyumeingizni bizga yuboring — biz uni saqlab qo'yamiz va mos vakansiya paydo bo'lganda siz bilan bog'lanamiz. Telegram orqali ham murojaat qilishingiz mumkin.",
     "ctaButton": "Rezyume yuborish"
+  },
+  "newsletter": {
+    "title": "Sog'liq bo'yicha yangiliklarni birinchi bo'lib oling",
+    "subtitle": "Vitaminlar, aksiyalar va mutaxassislar maslahatlarini har hafta pochtangizga yuboramiz. Spam yo'q — faqat foydali kontent.",
+    "placeholder": "Email manzilingiz",
+    "button": "Obuna bo'lish",
+    "submitting": "Yuborilmoqda...",
+    "successTitle": "Obuna rasmiylashtirildi!",
+    "successText": "Tez orada birinchi xatimizni yuboramiz. Rahmat!",
+    "errorEmail": "Iltimos, to'g'ri email manzil kiriting.",
+    "errorGeneric": "Xatolik yuz berdi. Iltimos, qaytadan urinib ko'ring.",
+    "privacyNote": "Obuna bo'lish orqali maxfiylik siyosatimizga rozilik bildirasiz. Istalgan vaqtda bekor qilishingiz mumkin."
+  },
+  "track": {
+    "title": "Buyurtmani kuzatish",
+    "subtitle": "Buyurtmangiz qayerda ekanini bilib oling. Jonli holat Telegram bot yoki telefon orqali tasdiqlanadi.",
+    "crumb": "Buyurtmani kuzatish",
+    "eyebrow": "Yetkazib berish",
+    "telegramTitle": "Telegram bot orqali jonli kuzatuv",
+    "telegramText": "Buyurtmangizning haqiqiy holati — qabul qilingandan yetkazib berilgungacha — rasmiy Telegram botimizda real vaqtda ko'rsatiladi. Botni oching, buyurtma raqamingizni yuboring va operatorimiz aniq holatni darhol tasdiqlaydi.",
+    "telegramCta": "Telegram botni ochish",
+    "lookupTitle": "Buyurtma ma'lumotlarini kiriting",
+    "orderLabel": "Buyurtma raqami",
+    "orderPlaceholder": "Masalan: A1B2C3D4",
+    "phoneLabel": "Telefon raqami",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "lookupButton": "Kuzatuvni ko'rsatish",
+    "journeyTitle": "Buyurtmangiz qanday harakatlanadi",
+    "journeyNote": "Bu #{order} buyurtmangiz o'tadigan bosqichlarning umumiy ko'rinishi. Aniq joriy holatni bilish uchun Telegram botimizni oching yoki bizga qo'ng'iroq qiling — operatorimiz buyurtmangizni raqami bo'yicha tekshirib beradi.",
+    "stages": [
+      {
+        "title": "Qabul qilindi",
+        "text": "Buyurtmangiz tizimga tushdi va tasdiqlash uchun operatorga yuborildi. Tez orada siz bilan bog'lanamiz."
+      },
+      {
+        "title": "Yig'ilmoqda",
+        "text": "Mahsulotlaringiz omborda tanlanmoqda va yetkazib berishga tayyorlanmoqda."
+      },
+      {
+        "title": "Yo'lda",
+        "text": "Buyurtmangiz kuryerga topshirildi va manzilingizga yo'l oldi."
+      },
+      {
+        "title": "Yetkazildi",
+        "text": "Buyurtma qo'lingizga topshirildi. Xaridingiz uchun rahmat!"
+      }
+    ],
+    "phoneCta": "Qo'ng'iroq qilish",
+    "callUs": "Har kuni 9:00 dan 21:00 gacha: +998 71 200 00 00"
   }
 }

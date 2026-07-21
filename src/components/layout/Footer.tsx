@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
+import { NewsletterSignup } from "@/components/marketing/NewsletterSignup";
 import { Logo } from "./Logo";
 
 export function Footer() {
@@ -44,6 +45,7 @@ export function Footer() {
 
           <FooterCol title={t("support")}>
             <FooterLink href="/delivery">{t("delivery")}</FooterLink>
+            <FooterLink href="/track">{nav("track")}</FooterLink>
             <FooterLink href="/payment">{nav("payment")}</FooterLink>
             <FooterLink href="/guarantee">{nav("guarantee")}</FooterLink>
             <FooterLink href="/loyalty">{loyalty("title")}</FooterLink>
@@ -77,6 +79,10 @@ export function Footer() {
               </a>
             </div>
           </div>
+        </div>
+
+        <div className="mt-12 border-t border-white/10 pt-10">
+          <NewsletterSignup variant="compact" />
         </div>
 
         {/* Law-mandated БАД disclaimer (UZ Law "On Advertising", art. 35) */}
