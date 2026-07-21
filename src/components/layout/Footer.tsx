@@ -36,6 +36,7 @@ export function Footer() {
             <FooterLink href="/news">{nav("news")}</FooterLink>
             <FooterLink href="/experts">{experts("badge")}</FooterLink>
             <FooterLink href="/blog">{nav("blog")}</FooterLink>
+            <FooterLink href="/reviews">{nav("reviews")}</FooterLink>
             <FooterLink href="/requisites">{nav("requisites")}</FooterLink>
           </FooterCol>
 
@@ -44,7 +45,9 @@ export function Footer() {
             <FooterLink href="/payment">{nav("payment")}</FooterLink>
             <FooterLink href="/guarantee">{nav("guarantee")}</FooterLink>
             <FooterLink href="/loyalty">{loyalty("title")}</FooterLink>
+            <FooterLink href="/faq">{nav("faq")}</FooterLink>
             <FooterLink href="/privacy">{t("privacy")}</FooterLink>
+            <FooterLink href="/offer">{t("offer")}</FooterLink>
           </FooterCol>
 
           <div>

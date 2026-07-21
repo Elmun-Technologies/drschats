@@ -9,6 +9,7 @@ import { Container } from "@/components/ui/Container";
 import { TopBar } from "./TopBar";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
+import { WishlistNavButton } from "./WishlistNavButton";
 import { Logo } from "./Logo";
 
 const navItems = [
@@ -75,6 +76,7 @@ export function Header() {
 
         <div className="ml-auto flex items-center gap-2 md:ml-0">
           <LocaleSwitcher className="hidden sm:block" />
+          <WishlistNavButton label={t("wishlist")} />
           <CartButton label={t("cart")} />
           <button
             onClick={() => setMenuOpen(true)}

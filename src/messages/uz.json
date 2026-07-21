@@ -22,7 +22,10 @@
     "guarantee": "Kafolat",
     "requisites": "Rekvizitlar",
     "licenses": "Litsenziya va sertifikatlar",
-    "aboutUs": "Biz haqimizda"
+    "aboutUs": "Biz haqimizda",
+    "wishlist": "Sevimlilar",
+    "reviews": "Sharhlar",
+    "faq": "Savol-javob"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -727,7 +730,18 @@
   "wishlist": {
     "add": "Sevimlilarga",
     "remove": "Sevimlilardan olib tashlash",
-    "added": "Sevimlilarga qo'shildi"
+    "added": "Sevimlilarga qo'shildi",
+    "pageTitle": "Sevimlilar",
+    "pageEyebrow": "Sizning tanlovingiz",
+    "pageSubtitle": "Keyinroq xarid qilish uchun saqlagan vitaminlar va sog'liqni saqlash mahsulotlaringiz. Istalgan vaqtda savatga qo'shing.",
+    "crumb": "Sevimlilar",
+    "count": "{count} ta mahsulot",
+    "empty": "Sevimlilar ro'yxati bo'sh",
+    "emptyDesc": "Yoqtirgan mahsulotlaringizni yurakcha belgisi bilan saqlang — ular shu yerda to'planadi va istalgan vaqtda topasiz.",
+    "emptyCta": "Mahsulotlarni ko'rish",
+    "browse": "Katalogga o'tish",
+    "clearAll": "Hammasini tozalash",
+    "addToCart": "Savatga qo'shish"
   },
   "exit": {
     "title": "Ketmang! Sizga maxsus taklif bor",
@@ -781,5 +795,332 @@
         "body": "Maxfiylik bo’yicha savollar uchun murojaat qiling:\n• Telegram-bot: @drschatsstorebot → /yordam\n• Instagram: @alimkhanov_pharm"
       }
     ]
+  },
+  "faqPage": {
+    "crumb": "Savol-javob",
+    "eyebrow": "Yordam markazi",
+    "title": "Ko'p beriladigan savollar",
+    "subtitle": "O'zbekiston bo'ylab yetkazib berish, to'lov, sertifikatsiya, qaytarish va Alimkhanov Pharm sodiqlik dasturi haqida hammasi. Javob topmadingizmi — Telegram orqali yozing yoki qo'ng'iroq qiling.",
+    "navLabel": "Bo'limlar",
+    "ctaTitle": "Savollaringiz qoldimi?",
+    "ctaText": "Maslahatchilarimiz har kuni 9:00 dan 21:00 gacha aloqada. Telegramda bir necha daqiqada javob beramiz yoki qulay vaqtda qayta qo'ng'iroq qilamiz.",
+    "ctaButton": "Telegramga yozish",
+    "ctaPhone": "+998 71 200 00 00",
+    "categories": [
+      {
+        "title": "Buyurtma va yetkazib berish",
+        "items": [
+          {
+            "question": "Toshkent bo'ylab yetkazib berish qancha turadi va qancha vaqt oladi?",
+            "answer": "Toshkent bo'ylab kuryer buyurtmani 1–2 ish kuni ichida yetkazadi. 300 000 so'mdan yuqori buyurtmalarda yetkazib berish bepul, undan kam bo'lsa — 25 000 so'm. Kuryer oldindan bog'lanib, qulay vaqtni kelishib oladi."
+          },
+          {
+            "question": "Viloyatlarga ham yetkazib berasizmi?",
+            "answer": "Ha, biz barcha viloyatlarga — Samarqand, Buxoro, Namangan, Andijon, Farg'ona, Nukus va boshqalarga jo'natamiz. BTS Express va O'zbekiston Pochtasi orqali yetkazish 3–5 ish kuni davom etadi. Narxi rasmiylashtirishda avtomatik hisoblanadi, 35 000 so'mdan boshlab."
+          },
+          {
+            "question": "Buyurtmani o'zim olib ketishim mumkinmi?",
+            "answer": "Ha. Buyurtmani Toshkentdagi topshirish punktimizdan bepul olib ketishingiz mumkin. Rasmiylashtirilgach, buyurtma tayyor bo'lganida Telegram orqali xabar beramiz — odatda o'sha kuniyoq."
+          },
+          {
+            "question": "Buyurtmamni qanday kuzataman?",
+            "answer": "Buyurtma rasmiylashtirilgach, @drschatsstorebot Telegram boti buyurtma raqami va holatini yuboradi. Har bir bosqichda xabar olib turasiz: tasdiqlash, yig'ish, kuryerga topshirish va yetkazish. Holatni istalgan vaqtda botga yozib bilib olishingiz mumkin."
+          },
+          {
+            "question": "Buyurtma berish uchun akkaunt yaratish shartmi?",
+            "answer": "Yo'q, ro'yxatdan o'tish shart emas. Buyurtmani mehmon sifatida berish mumkin — ism, telefon va manzilni ko'rsatish yetarli. Ammo akkaunt bilan qulayroq: buyurtmalar tarixi saqlanadi va sodiqlik dasturi bonuslari qo'shiladi."
+          }
+        ]
+      },
+      {
+        "title": "To'lov",
+        "items": [
+          {
+            "question": "Qanday to'lov usullarini qabul qilasiz?",
+            "answer": "Biz UzCard va Humo kartalari, Payme va Click orqali, shuningdek qabul qilishda kuryerga naqd yoki karta orqali to'lovni (yetkazib berilganda to'lash) qabul qilamiz. Barcha onlayn to'lovlar himoyalangan ulanish orqali amalga oshiriladi."
+          },
+          {
+            "question": "Buyurtmani olganimda to'lasam bo'ladimi?",
+            "answer": "Ha, yetkazib berilganda to'lash O'zbekiston bo'ylab mavjud. Buyurtmani ko'zdan kechirib, hammasi joyida ekaniga ishonch hosil qilgach, kuryerga naqd yoki karta orqali to'laysiz. Ba'zi viloyat buyurtmalarida qisman oldindan to'lov talab qilinishi mumkin — operator bu haqda oldindan xabar beradi."
+          },
+          {
+            "question": "Payme va Click orqali to'lash xavfsizmi?",
+            "answer": "Ha. Onlayn to'lov Payme va Click to'lov tizimlarining himoyalangan sahifalarida amalga oshiriladi. Biz karta ma'lumotlaringizni saqlamaymiz va ko'rmaymiz — ular shifrlangan kanal orqali to'g'ridan-to'g'ri bankka uzatiladi."
+          },
+          {
+            "question": "Chek va to'lov hujjatlarini berasizmi?",
+            "answer": "Ha. Har bir buyurtmaga elektron chek shakllantiriladi va u Telegram hamda ko'rsatilgan raqamga yuboriladi. Yuridik shaxslar uchun hisob-faktura va shartnoma taqdim etamiz — rekvizitlaringizni «Kontaktlar» bo'limi orqali yuboring."
+          }
+        ]
+      },
+      {
+        "title": "Mahsulotlar va sifat",
+        "items": [
+          {
+            "question": "Mahsulotlaringiz asl (original) mi va sertifikatlari bormi?",
+            "answer": "Ha, biz rasmiy distribyutormiz va faqat ishonchli ishlab chiqaruvchilar bilan ishlaymiz. Barcha mahsulotlar muvofiqlik sertifikatlari bilan ta'minlangan va O'zbekistonda ro'yxatdan o'tadi. Sertifikat va litsenziyalar «Litsenziyalar» hamda «Sifat kafolati» sahifalarida mavjud."
+          },
+          {
+            "question": "BAD (biofaol qo'shimcha) dori vositasimi?",
+            "answer": "Yo'q. Biologik faol qo'shimchalar (BAD) dori vositasi emas va kasalliklarni davolash uchun mo'ljallanmagan. Bu — vitamin, mineral va boshqa nutrientlarning qo'shimcha manbai. Surunkali kasalliklar, homiladorlik yoki dori qabul qilayotgan bo'lsangiz, avval shifokor bilan maslahatlashing."
+          },
+          {
+            "question": "Vitamin va qo'shimchalarni qanday to'g'ri saqlash kerak?",
+            "answer": "Ko'pchilik qo'shimchalar quruq, yorug'likdan himoyalangan joyda, 25 °C dan past haroratda, bolalardan uzoqda saqlanadi. Ba'zi probiotiklar va suyuq shakllar muzlatgichda saqlanishi kerak — bu doim qadoqda va mahsulot tavsifida ko'rsatilgan."
+          },
+          {
+            "question": "Sotib olishdan oldin yaroqlilik muddatini qanday tekshiraman?",
+            "answer": "Biz faqat yangi yaroqlilik muddatiga ega mahsulotlarni jo'natamiz — muddati tugashiga kamida bir necha oy qolgan. Aniq sanani buyurtma berishdan oldin Telegramda maslahatchidan bilib olishingiz mumkin."
+          },
+          {
+            "question": "Qo'shimchalarni tanlashda maslahat olsam bo'ladimi?",
+            "answer": "Ha. Mutaxassislarimiz va ekspertlarimiz maqsadingizga mos vitaminlarni tanlashda yordam beradi — immunitet, energiya, teri salomatligi, sport. Telegramga yozing yoki mutaxassislar tavsiyalari jamlangan «Ekspertlar» bo'limiga qarang."
+          }
+        ]
+      },
+      {
+        "title": "Qaytarish va kafolat",
+        "items": [
+          {
+            "question": "Mahsulotni qaytarsam bo'ladimi va qaysi muddatda?",
+            "answer": "Ha, mahsulotni olganingizdan keyin 30 kun ichida qaytarishingiz mumkin — qadoq ochilmagan va tovar ko'rinishi saqlangan bo'lsa. To'liq summani to'lov qilingan usulda qaytaramiz."
+          },
+          {
+            "question": "Mahsulot shikastlangan yoki noto'g'ri kelsa nima qilaman?",
+            "answer": "48 soat ichida Telegram orqali rasm ilova qilib biz bilan bog'laning. Mahsulotni bepul almashtiramiz yoki pulni qaytaramiz — o'z hisobimizdan, ortiqcha savolsiz. Xaridingizdan ishonchda bo'lishingiz biz uchun eng muhimi."
+          },
+          {
+            "question": "Qaysi mahsulotlar qaytarilmaydi?",
+            "answer": "Sanitariya normalariga ko'ra ochilgan BAD, vitamin qadoqlari va tanaga tegadigan mahsulotlar qaytarilmaydi. Agar mahsulot ochilmagan va tovar ko'rinishi saqlangan bo'lsa, qaytarish muammosiz rasmiylashtiriladi."
+          },
+          {
+            "question": "Qaytarishni qanday rasmiylashtiraman?",
+            "answer": "Operatorimizga @drschatsstorebot Telegram botiga buyurtma raqami va qaytarish sababini yozing. Mahsulotni topshirishning qulay usulini kelishamiz va uni olganimizdan so'ng 3–7 ish kuni ichida pulni qaytaramiz."
+          }
+        ]
+      },
+      {
+        "title": "Akkaunt va sodiqlik dasturi",
+        "items": [
+          {
+            "question": "Sodiqlik dasturi qanday ishlaydi?",
+            "answer": "Har bir xarid uchun bonus ballar olasiz, ular bilan keyingi buyurtmaning 30% gacha qismini to'lash mumkin. Xaridlar qancha ko'p bo'lsa — darajangiz va keshbek foizi shuncha yuqori. Ballar akkaunt bilan buyurtma berilganda avtomatik qo'shiladi."
+          },
+          {
+            "question": "Dasturda qanday darajalar bor?",
+            "answer": "Uchta daraja: «Start» (keshbek 3%), «Aktiv» (5%, 1 500 000 so'mdan xaridlar) va «Premium» (7% hamda bepul yetkazish, 5 000 000 so'mdan). Daraja xaridlar ortishi bilan avtomatik ko'tariladi va keyingi yil davomida saqlanadi."
+          },
+          {
+            "question": "Qanday ro'yxatdan o'taman va akkauntga kiraman?",
+            "answer": "Akkaunt birinchi buyurtmada telefon raqami orqali yaratiladi. Kirish Telegram botidan kelgan kod bilan tasdiqlanadi — parolni eslab qolish shart emas. Shu tarzda ma'lumotlaringiz va buyurtmalar tarixi xavfsiz qoladi."
+          },
+          {
+            "question": "Aksiya va chegirmalar haqida xabarlar keladimi?",
+            "answer": "Ha. Telegram botimizga obuna bo'lib, chegirmalar, shaxsiy promokodlar va yangi mahsulotlar haqida birinchilardan bo'lib bilib turasiz. Istalgan vaqtda bitta buyruq bilan obunani bekor qilishingiz mumkin."
+          }
+        ]
+      }
+    ]
+  },
+  "offer": {
+    "title": "Ommaviy oferta",
+    "subtitle": "Alimkhanov Pharm saytida tovarlarni masofadan sotib olish shartnomasi",
+    "crumb": "Ommaviy oferta",
+    "eyebrow": "Yuridik hujjatlar",
+    "effective": "Kuchga kirish sanasi: 2026-yil 1-yanvar",
+    "intro": "Ushbu hujjat «Alimkhanov Pharm» MChJ (keyingi o‘rinlarda — «Sotuvchi») tomonidan har qanday muomalaga layoqatli jismoniy shaxsga (keyingi o‘rinlarda — «Xaridor») quyida keltirilgan shartlar asosida tovarlarni masofadan chakana sotish shartnomasini tuzish bo‘yicha rasmiy taklif (ommaviy oferta) hisoblanadi.\n\nalimkhanov.com saytida ushbu ofertada nazarda tutilgan tartibda buyurtma rasmiylashtirish O‘zbekiston Respublikasi Fuqarolik kodeksining 367 va 369-moddalariga muvofiq uning barcha shartlarini to‘liq va so‘zsiz qabul qilish (aksept) deb hisoblanadi.",
+    "sections": [
+      {
+        "heading": "Umumiy qoidalar va atamalar",
+        "body": "«Sayt» — alimkhanov.com manzilida joylashgan internet-do‘kon, uning barcha sahifalari va servislari bilan birga.\n«Tovar» — Saytda taqdim etilgan vitaminlar, biologik faol qo‘shimchalar (BFQ), sog‘liq mahsulotlari va yondosh tovarlar.\n«Buyurtma» — Xaridorning tanlangan Tovarlarni sotib olish va yetkazib berishga oid tegishli tarzda rasmiylashtirilgan so‘rovi.\nSotuvchi istalgan vaqtda ushbu oferta shartlarini oldindan xabar bermasdan o‘zgartirishga haqli; amaldagi tahriri Saytda joylashtiriladi. Har bir Buyurtmaga u rasmiylashtirilgan paytda amalda bo‘lgan tahrir qo‘llaniladi."
+      },
+      {
+        "heading": "Ofertaning predmeti",
+        "body": "Sotuvchi Tovarni Xaridor mulkiga topshirish, Xaridor esa Tovarni qabul qilish va ushbu oferta shartlari asosida to‘lash majburiyatini oladi.\nSaytda taqdim etilgan tasvirlar, tavsiflar, xususiyatlar va narxlar axborot xarakteriga ega bo‘lib, haqiqiy Tovardan biroz farq qilishi mumkin. Tarkib va qo‘llash usuli haqidagi aniq ma’lumotlar Tovar qadog‘ida ko‘rsatilgan."
+      },
+      {
+        "heading": "Buyurtmani rasmiylashtirish tartibi",
+        "body": "Xaridor Buyurtmani Saytda mustaqil ravishda yoki +998 71 200 00 00 telefoni yoxud Telegram orqali operator yordamida rasmiylashtiradi.\nRasmiylashtirishda Xaridor ishonchli ma’lumotlarni: ism, aloqa telefoni va yetkazib berish manzilini taqdim etadi. Ko‘rsatilgan ma’lumotlarning to‘g‘riligi uchun javobgarlik Xaridor zimmasida.\nBuyurtma operator tomonidan tasdiqlangandan so‘ng qabul qilingan hisoblanadi. Sotuvchi Tovar omborda bo‘lmaganda yoki ma’lumotlar noto‘g‘ri bo‘lganda Xaridorni ogohlantirgan holda Buyurtmani rad etishga haqli."
+      },
+      {
+        "heading": "Narxlar va to‘lov tartibi",
+        "body": "Saytdagi barcha narxlar O‘zbekiston so‘mida (UZS) ko‘rsatilgan va barcha tegishli soliqlarni o‘z ichiga oladi.\nTovar narxi Buyurtma rasmiylashtirilgan paytda amal qiladi va tasdiqlangandan so‘ng o‘zgartirilmaydi. Yetkazib berish narxi alohida hisoblanadi va Buyurtma tasdiqlanguncha Xaridorga ma’lum qilinadi.\nTo‘lov Tovarni qabul qilishda naqd pul yoki bank kartasi bilan, shuningdek Saytdagi boshqa usullar (Payme, Click, Uzum) orqali amalga oshiriladi. To‘lov majburiyati mablag‘ Sotuvchiga tushgan paytdan bajarilgan hisoblanadi."
+      },
+      {
+        "heading": "Yetkazib berish",
+        "body": "Yetkazib berish Toshkent shahri bo‘ylab va O‘zbekiston Respublikasi hududlariga Sotuvchi yoki jalb qilingan kuryer xizmatlari kuchi bilan amalga oshiriladi.\nYetkazib berish muddatlari Buyurtma tasdiqlanganda Xaridor bilan kelishiladi va odatda Toshkent bo‘yicha 1–3 ish kunini tashkil etadi. Tovarga mulk huquqi va tasodifiy yo‘qotish xavfi Tovar topshirilgan paytda Xaridorga o‘tadi.\nQabul qilishda Xaridor Tovar butligini va qadoqning shikastlanmaganligini tekshirishi shart."
+      },
+      {
+        "heading": "Tovarni qaytarish va almashtirish",
+        "body": "Xaridor sifatli Tovardan u topshirilgunga qadar, topshirilgandan so‘ng esa O‘zbekiston Respublikasining iste’molchilar huquqlarini himoya qilish to‘g‘risidagi qonunchiligida belgilangan muddat va tartibda voz kechishga haqli.\nDiqqat: sifatli biologik faol qo‘shimchalar va dori vositalari qaytarilmaydigan sifatli nooziq-ovqat tovarlari ro‘yxatiga kiruvchi mahsulot sifatida almashtirilmaydi va qaytarilmaydi.\nSifatsiz Tovar (nuqsonli, yaroqlilik muddati o‘tgan yoki qadog‘i buzilgan) almashtirilishi yoki to‘langan summa qaytarilishi lozim. Mablag‘ to‘lov qilingan usulda qonunda belgilangan muddatda qaytariladi."
+      },
+      {
+        "heading": "Sifat va sertifikatlash",
+        "body": "Sotuvchi sotilayotgan Tovarlar original mahsulot ekanligini, rasmiy distribyutorlardan yetkazilishini hamda O‘zbekiston Respublikasi hududida amal qiluvchi zarur sertifikatlar va davlat ro‘yxatidan o‘tganlik guvohnomalariga ega ekanligini kafolatlaydi.\nTovarlar ishlab chiqaruvchi belgilagan harorat rejimi va shartlariga rioya qilingan holda saqlanadi. Ruxsat beruvchi hujjatlar nusxalari Xaridor talabiga ko‘ra taqdim etiladi."
+      },
+      {
+        "heading": "Tomonlarning huquq va majburiyatlari",
+        "body": "Sotuvchi majburiyati: sifatli Tovarni kelishilgan muddatda topshirish, Tovar haqida ishonchli axborot berish, Xaridor shaxsiy ma’lumotlari maxfiyligini ta’minlash.\nXaridor majburiyati: Buyurtma rasmiylashtirishda ishonchli ma’lumot berish, Tovarni qabul qilish va to‘lash, ushbu oferta shartlari hamda Tovar qadog‘idagi axborot bilan tanishish, zarurat bo‘lsa qo‘llashdan oldin mutaxassis bilan maslahatlashish."
+      },
+      {
+        "heading": "Javobgarlik va fors-major",
+        "body": "Tomonlar majburiyatlarni bajarmaganlik yoki lozim darajada bajarmaganlik uchun O‘zbekiston Respublikasi qonunchiligiga muvofiq javobgar bo‘ladilar.\nSotuvchi Tovarni ko‘rsatmaga zid ravishda qo‘llash oqibatlari, shuningdek tarkibiy qismlarga individual moslashmaslik uchun javobgar emas.\nTomonlar yengib bo‘lmas kuch holatlari (fors-major): tabiiy ofatlar, harbiy harakatlar, davlat organlari hujjatlari va tomonlar nazoratidan tashqari boshqa hodisalar tufayli majburiyatlarni qisman yoki to‘liq bajarmaganlik uchun javobgarlikdan ozod etiladi."
+      },
+      {
+        "heading": "Shaxsiy ma’lumotlar",
+        "body": "Buyurtmani rasmiylashtirish orqali Xaridor O‘zbekiston Respublikasining «Shaxsga doir ma’lumotlar to‘g‘risida»gi qonuniga muvofiq shartnomani bajarish maqsadida o‘z shaxsiy ma’lumotlarini qayta ishlashga rozilik beradi.\nShaxsiy ma’lumotlarni yig‘ish, saqlash va himoya qilish tartibi Saytda joylashtirilgan Maxfiylik siyosatida batafsil bayon etilgan."
+      },
+      {
+        "heading": "Nizolarni hal etish",
+        "body": "Ushbu ofertani bajarish bilan bog‘liq barcha nizo va kelishmovchiliklarni tomonlar muzokaralar yo‘li bilan hal etishga intiladilar.\nKelishuvga erishilmaganda nizo O‘zbekiston Respublikasi qonunchiligida belgilangan tartibda, Sotuvchining joylashuvi bo‘yicha ko‘rib chiqiladi. Da’vo tartibida hal etish majburiy; da’voga javob berish muddati — 10 ish kuni."
+      },
+      {
+        "heading": "Rekvizitlar va kontaktlar",
+        "body": "Sotuvchi: «Alimkhanov Pharm» MChJ (Dr. Schatz Store), Toshkent shahri, O‘zbekiston Respublikasi.\nTelefon: +998 71 200 00 00. Elektron pochta: info@alimkhanov.com. Telegram: @alimkhanov_pharm.\nTashkilotning to‘liq bank va ro‘yxatga olish rekvizitlari «Rekvizitlar» sahifasida keltirilgan."
+      }
+    ],
+    "requisitesNote": "Sotuvchining to‘liq yuridik, bank va ro‘yxatga olish ma’lumotlari, jumladan STIR, hisob raqami va manzili alohida rekvizitlar sahifasida joylashtirilgan.",
+    "requisitesCta": "Kompaniya rekvizitlari",
+    "supportNote": "Oferta yoki buyurtma bo‘yicha savollaringiz bormi? Qo‘llab-quvvatlash xizmatimiz har kuni aloqada.",
+    "supportCta": "Biz bilan bog‘lanish"
+  },
+  "reviewsPage": {
+    "crumb": "Sharhlar",
+    "eyebrow": "Mijozlar fikri",
+    "title": "Mijozlarimiz nima deydi",
+    "subtitle": "10 000 dan ortiq O'zbekiston xaridori Alimkhanov Pharm mahsulotlariga ishonch bildirgan. Har bir sharh — tasdiqlangan buyurtma egasidan.",
+    "average": "4.8",
+    "totalLabel": "tasdiqlangan sharh asosida",
+    "verifiedBadge": "Tasdiqlangan xarid",
+    "stats": [
+      {
+        "value": "10 000+",
+        "label": "haqiqiy sharhlar"
+      },
+      {
+        "value": "98%",
+        "label": "do'stlariga tavsiya qiladi"
+      },
+      {
+        "value": "4.8/5",
+        "label": "o'rtacha baho"
+      },
+      {
+        "value": "100%",
+        "label": "tasdiqlangan xaridorlar"
+      }
+    ],
+    "distribution": [
+      82,
+      13,
+      3,
+      1,
+      1
+    ],
+    "items": [
+      {
+        "name": "Dilnoza Karimova",
+        "city": "Toshkent",
+        "rating": 5,
+        "product": "Vitamin D3 2000 IU",
+        "text": "Qishda o'zimni doim charchagan his qilardim, shifokorim D vitamini yetishmasligini aytdi. Ikki oy ichgach, tetiklik qaytdi va tahlillar ham yaxshilandi. Yetkazib berish Toshkent bo'ylab bir kunda keldi.",
+        "date": "12-iyun, 2026",
+        "initial": "D"
+      },
+      {
+        "name": "Jasur Abdullayev",
+        "city": "Samarqand",
+        "rating": 5,
+        "product": "Omega-3 Premium",
+        "text": "IFOS sertifikatiga ega toza baliq yog'ini uzoq qidirgandim. Kapsulalar hidsiz, balig'iy ta'm bermaydi. Xolesterin ko'rsatkichlarim uch oyda sezilarli tushdi. Sifatidan juda mamnunman.",
+        "date": "3-iyun, 2026",
+        "initial": "J"
+      },
+      {
+        "name": "Nigora Yusupova",
+        "city": "Buxoro",
+        "rating": 5,
+        "product": "Magniy B6",
+        "text": "Uyqusizlik va oyoq tirishishidan aziyat chekardim. Magniy kompleksini kechqurun ichaman, endi tinch uxlayapman va asabiylik kamaydi. Butun oilamga tavsiya qildim.",
+        "date": "28-may, 2026",
+        "initial": "N"
+      },
+      {
+        "name": "Sardor Rahimov",
+        "city": "Toshkent",
+        "rating": 4,
+        "product": "Immunitet kompleksi",
+        "text": "Sovuq mavsumida shamollashning oldini olish uchun oldim. Ta'siri bor, oilada hech kim kasal bo'lmadi. Bitta kamchilik — qadoqlash biroz katta, sumkada joy egallaydi. Umumiy taassurot ijobiy.",
+        "date": "20-may, 2026",
+        "initial": "S"
+      },
+      {
+        "name": "Malika Toshpo'latova",
+        "city": "Farg'ona",
+        "rating": 5,
+        "product": "Kollagen Marin",
+        "text": "Uch oydan beri ichaman — teri namligi va tirnoqlarim ancha mustahkam bo'ldi. Suvda oson eriydi, ta'mi neytral. Natija haqiqatan ko'rinib turibdi, davom ettiraman.",
+        "date": "15-may, 2026",
+        "initial": "M"
+      },
+      {
+        "name": "Bekzod Umarov",
+        "city": "Andijon",
+        "rating": 5,
+        "product": "Multivitamin Kunlik",
+        "text": "Faol ish rejimida ovqatlanish har doim to'g'ri chiqmaydi. Kunlik multivitamin bilan energiyam barqaror bo'ldi, tushdan keyingi holsizlik yo'qoldi. Narxi sifatiga to'liq mos.",
+        "date": "8-may, 2026",
+        "initial": "B"
+      },
+      {
+        "name": "Gulnora Sattorova",
+        "city": "Namangan",
+        "rating": 5,
+        "product": "Vitamin C 1000",
+        "text": "Konsultant menga aynan kerakli dozani tanlashda yordam berdi. Xizmat darajasi yuqori, savollarimga sabr bilan javob berishdi. Mahsulot asl, sertifikatlari ilova qilingan.",
+        "date": "2-may, 2026",
+        "initial": "G"
+      },
+      {
+        "name": "Aziz Nazarov",
+        "city": "Qarshi",
+        "rating": 5,
+        "product": "Omega-3 Premium",
+        "text": "Sport bilan shug'ullanaman, bo'g'imlar uchun omega muhim. Ushbu brendni murabbiyim tavsiya qildi. Mashg'ulotlardan keyin tiklanish tezlashdi. Buyurtma viloyatga ham tez yetib keldi.",
+        "date": "24-aprel, 2026",
+        "initial": "A"
+      },
+      {
+        "name": "Feruza Ismoilova",
+        "city": "Toshkent",
+        "rating": 5,
+        "product": "Temir + Folat",
+        "text": "Homiladorlik davrida gemoglabinim pastligi sabab shifokor tavsiya qilgandi. Oshqozonni bezovta qilmadi, o'zimni ancha yaxshi his qilyapman. Yetkazib berish nihoyatda tezkor.",
+        "date": "18-aprel, 2026",
+        "initial": "F"
+      },
+      {
+        "name": "Otabek Xolmatov",
+        "city": "Nukus",
+        "rating": 4,
+        "product": "Sink Pikolinat",
+        "text": "Immunitet va teri uchun oldim, ta'siri sekin-asta seziladi. Mahsulot sifatli, faqat uzoq viloyatga yetkazish bir oz ko'proq vaqt oldi. Baribir qayta buyurtma beraman.",
+        "date": "10-aprel, 2026",
+        "initial": "O"
+      },
+      {
+        "name": "Kamola Yo'ldosheva",
+        "city": "Samarqand",
+        "rating": 5,
+        "product": "Kollagen Marin",
+        "text": "Do'stim tavsiya qilgach sinab ko'rdim va afsuslanmadim. Soch tushishi kamaydi, teri yorqinroq ko'rinadi. Qadoqlash chiroyli, sovg'a sifatida ham berish mumkin.",
+        "date": "1-aprel, 2026",
+        "initial": "K"
+      }
+    ],
+    "ctaTitle": "Siz ham fikringizni bildiring",
+    "ctaText": "Alimkhanov Pharm mahsulotlarini sinab ko'ring yoki tajribangiz bilan bo'lishing — har bir sharh boshqalarga to'g'ri tanlov qilishga yordam beradi.",
+    "ctaShop": "Mahsulotlarni ko'rish",
+    "ctaWrite": "Sharh qoldirish"
   }
 }
