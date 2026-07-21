@@ -48,13 +48,13 @@ export function NewsletterSignup({ variant = "band" }: NewsletterSignupProps) {
       <div className={compact ? "" : "max-w-xl"}>
         <h2
           className={cn(
-            "font-display font-bold text-fg",
-            compact ? "text-lg" : "text-2xl sm:text-3xl",
+            "font-display font-bold",
+            compact ? "text-lg text-white" : "text-2xl text-fg sm:text-3xl",
           )}
         >
           {t("title")}
         </h2>
-        <p className={cn("text-muted", compact ? "mt-1.5 text-sm" : "mt-3 text-base")}>
+        <p className={cn(compact ? "mt-1.5 text-sm text-white/60" : "mt-3 text-base text-muted")}>
           {t("subtitle")}
         </p>
       </div>
@@ -80,8 +80,8 @@ export function NewsletterSignup({ variant = "band" }: NewsletterSignupProps) {
             </svg>
           </span>
           <span>
-            <span className="block text-sm font-semibold text-fg">{t("successTitle")}</span>
-            <span className="block text-xs text-muted">{t("successText")}</span>
+            <span className={cn("block text-sm font-semibold", compact ? "text-white" : "text-fg")}>{t("successTitle")}</span>
+            <span className={cn("block text-xs", compact ? "text-white/60" : "text-muted")}>{t("successText")}</span>
           </span>
         </div>
       ) : (
@@ -101,8 +101,10 @@ export function NewsletterSignup({ variant = "band" }: NewsletterSignupProps) {
               placeholder={t("placeholder")}
               aria-label={t("placeholder")}
               className={cn(
-                "h-14 flex-1 rounded-full border border-line bg-surface-2 px-6 text-sm text-fg outline-none transition-colors placeholder:text-faint focus:border-accent",
-                compact && "h-12 px-5",
+                "h-14 flex-1 rounded-full border px-6 text-sm outline-none transition-colors focus:border-accent",
+                compact
+                  ? "h-12 border-white/15 bg-white/5 px-5 text-white placeholder:text-white/40"
+                  : "border-line bg-surface-2 text-fg placeholder:text-faint",
               )}
             />
             <button
@@ -117,7 +119,7 @@ export function NewsletterSignup({ variant = "band" }: NewsletterSignupProps) {
             </button>
           </div>
           {error && <p className="px-2 text-xs text-danger">{error}</p>}
-          <p className={cn("px-2 text-faint", compact ? "text-[11px]" : "text-xs")}>
+          <p className={cn("px-2", compact ? "text-[11px] text-white/40" : "text-xs text-faint")}>
             {t("privacyNote")}
           </p>
         </form>
