@@ -3,6 +3,8 @@ import { locales, routing } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { listArticleSlugs } from "@/lib/content/blog.sanity";
 import { listExpertSlugs } from "@/lib/content/experts.sanity";
+import { getHealthTopicIndex } from "@/lib/content/health-topics.sanity";
+import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import type { Product } from "@/lib/shopflow/types";
 
@@ -20,14 +22,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = [
     "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
     "/loyalty", "/ingredients", "/brands", "/news", "/payment", "/guarantee",
-    "/requisites", "/licenses",
+    "/requisites", "/licenses", "/goals", "/symptoms", "/vitamins",
   ];
   const categoryPaths = categories.map((c) => `/products/${c.slug}`);
-  const [blogSlugs, expertSlugs] = await Promise.all([listArticleSlugs(), listExpertSlugs()]);
+  const [blogSlugs, expertSlugs, healthTopics] = await Promise.all([
+    listArticleSlugs(),
+    listExpertSlugs(),
+    getHealthTopicIndex(),
+  ]);
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
   const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);
-  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths, ...expertPaths];
+  const topicPaths = healthTopics.map((t) => `${TOPIC_BASE_PATH[t.kind]}/${t.slug}`);
+  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths, ...expertPaths, ...topicPaths];
 
   return allPaths.map((path) => {
     const languages: Record<string, string> = {};
@@ -43,6 +50,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority = 0.7;
     } else if (path.startsWith("/blog/")) {
       priority = 0.65;
+    } else if (["/goals", "/symptoms", "/vitamins"].some((p) => path.startsWith(p))) {
+      // Health topics are the organic-search backbone — rank them above the
+      // static informational pages, just under product detail.
+      priority = path.split("/").length > 2 ? 0.8 : 0.75;
     }
 
     languages["x-default"] = `${SITE_URL}/${routing.defaultLocale}${path}`;

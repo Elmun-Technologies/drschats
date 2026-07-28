@@ -11,10 +11,17 @@ import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
 import { Logo } from "./Logo";
 
+/*
+  Navigation leads with health intent, not with the catalogue: visitors arrive
+  with "I can't sleep", not with "magnesium". Goals and symptoms therefore sit
+  ahead of the shop, and the shop is what they funnel into.
+*/
 const navItems = [
   { key: "home", href: "/" },
+  { key: "goals", href: "/goals" },
+  { key: "symptoms", href: "/symptoms" },
+  { key: "vitamins", href: "/vitamins", badge: "sale" },
   { key: "products", href: "/products" },
-  { key: "ingredients", href: "/ingredients", badge: "sale" },
   { key: "experts", href: "/experts", badge: "hot" },
   { key: "blog", href: "/blog" },
   { key: "contact", href: "/contact" },

@@ -22,7 +22,10 @@
     "guarantee": "Kafolat",
     "requisites": "Rekvizitlar",
     "licenses": "Litsenziya va sertifikatlar",
-    "aboutUs": "Biz haqimizda"
+    "aboutUs": "Biz haqimizda",
+    "goals": "Sog'liq maqsadlari",
+    "symptoms": "Belgilar",
+    "vitamins": "Vitaminlar"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -795,5 +798,32 @@
         "body": "Maxfiylik bo’yicha savollar uchun murojaat qiling:\n• Telegram-bot: @drschatsstorebot → /yordam\n• Instagram: @alimkhanov_pharm"
       }
     ]
+  },
+  "health": {
+    "goal": {
+      "singular": "Sog'liq maqsadi",
+      "plural": "Sog'liq maqsadlari",
+      "indexTitle": "Sog'liq maqsadlari",
+      "indexSubtitle": "Mahsulot bo'yicha emas — maqsad bo'yicha tanlang. Har bir maqsad uchun nutriyentlar, mahsulotlar va shifokor izohi.",
+      "empty": "Hozircha maqsadlar qo'shilmagan."
+    },
+    "symptom": {
+      "singular": "Belgi",
+      "plural": "Belgilar",
+      "indexTitle": "Belgilar kutubxonasi",
+      "indexSubtitle": "Charchoq, uyqusizlik, soch to'kilishi — mumkin bo'lgan sabablar va qachon shifokorga murojaat qilish kerakligi.",
+      "empty": "Hozircha belgilar qo'shilmagan."
+    },
+    "vitamin": {
+      "singular": "Vitamin",
+      "plural": "Vitaminlar",
+      "indexTitle": "Vitaminlar qo'llanmasi",
+      "indexSubtitle": "Har bir nutriyent: bu nima, kimga kerak, qachon ichiladi va nima bilan birga qabul qilinadi.",
+      "empty": "Hozircha vitaminlar qo'shilmagan."
+    },
+    "keyIngredients": "Asosiy nutriyentlar",
+    "allVitamins": "Barcha vitaminlar",
+    "relatedProducts": "Tegishli mahsulotlar",
+    "relatedTopics": "Shuningdek qarang"
   }
 }
