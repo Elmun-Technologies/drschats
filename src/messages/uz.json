@@ -194,7 +194,21 @@
       "delivery": "1–3 kun yetkazish",
       "secure": "Xavfsiz to'lov",
       "youSave": "{amount} tejaysiz",
-      "payWith": "To'lov usullari"
+      "payWith": "To'lov usullari",
+      "decrease": "Miqdorni kamaytirish",
+      "increase": "Miqdorni oshirish",
+      "total": "Jami"
+    },
+    "tabsLabel": "Mahsulot ma'lumotlari",
+    "showMoreReviews": "Yana {count} ta sharh",
+    "showLessReviews": "Yopish",
+    "verifiedBuyer": "Tasdiqlangan xarid",
+    "gallery": {
+      "label": "Mahsulot galereyasi",
+      "previous": "Oldingi rasm",
+      "next": "Keyingi rasm",
+      "thumb": "{index}-rasm",
+      "counter": "{index} / {total}"
     },
     "notFound": "Mahsulot topilmadi",
     "backToShop": "Do‘konga qaytish",

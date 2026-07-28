@@ -71,8 +71,18 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
       <section className="border-t border-line py-24">
         <Container>
           <Breadcrumb product={product} />
-          <div className="mt-8 grid gap-12 lg:grid-cols-2">
-            <ProductGallery images={product.images} />
+          <div className="mt-8 grid gap-12 lg:grid-cols-2 lg:items-start">
+            <div className="lg:sticky lg:top-24">
+              <ProductGallery
+                images={product.images}
+                discountPercent={
+                  product.oldPrice
+                    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+                    : 0
+                }
+                inStock={product.inStock}
+              />
+            </div>
             <BuyBox product={product} />
           </div>
         </Container>
