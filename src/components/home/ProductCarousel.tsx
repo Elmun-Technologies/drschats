@@ -10,6 +10,8 @@ export function ProductCarousel({ products }: { products: Product[] }) {
   const t = useTranslations("home.newArrivals");
   const common = useTranslations("common");
 
+  if (products.length === 0) return null;
+
   return (
     <section className="py-20 sm:py-24">
       <Container>

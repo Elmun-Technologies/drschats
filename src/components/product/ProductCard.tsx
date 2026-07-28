@@ -71,7 +71,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           </h3>
         </Link>
         <StarRating rating={product.rating} className="mt-2" />
-        <div className="mt-2 flex items-baseline gap-2">
+        <div className="mt-2 mb-3 flex items-baseline gap-2">
           {product.oldPrice && (
             <span className="text-sm text-faint line-through">{formatMoney(product.oldPrice, locale)}</span>
           )}
@@ -81,7 +81,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <button
           onClick={handleAdd}
           disabled={!product.inStock}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:bg-surface disabled:text-muted disabled:opacity-60 disabled:translate-y-0"
+          className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:bg-surface disabled:text-muted disabled:opacity-60 disabled:translate-y-0"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />

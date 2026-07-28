@@ -106,9 +106,11 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <StarRating rating={product.rating} />
-        <a href="#reviews" className="text-sm text-muted underline-offset-4 hover:text-accent-strong hover:underline">
-          {t("reviews", { count: product.reviewCount })}
-        </a>
+        {product.reviewCount > 0 && (
+          <a href="#reviews" className="text-sm text-muted underline-offset-4 hover:text-accent-strong hover:underline">
+            {t("reviews", { count: product.reviewCount })}
+          </a>
+        )}
         <span
           className={`inline-flex items-center gap-1.5 text-sm font-medium ${
             product.inStock ? "text-accent-strong" : "text-danger"
