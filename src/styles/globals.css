@@ -85,9 +85,12 @@
   }
 }
 
-/* CSS-only route transition (no JS dependency → never hides content) */
+/* CSS-only route transition (no JS dependency → never hides content).
+   `backwards` (not `both`): a filled-forwards transform leaves an identity
+   matrix on the wrapper, which turns it into the containing block for every
+   `position: fixed` descendant (sticky buy bar, drawers, popups). */
 .page-in {
-  animation: pagein 0.42s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: pagein 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
 }
 
 :root {

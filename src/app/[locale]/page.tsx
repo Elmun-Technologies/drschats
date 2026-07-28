@@ -50,7 +50,7 @@ export default async function HomePage({
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <HeroBento />
+      <HeroBento products={bestsellers.items} />
       <TopCategories categories={categories} />
       <FeaturedProducts products={bestsellers.items} />
       <PersonalizedRail allProducts={allProducts.items} />

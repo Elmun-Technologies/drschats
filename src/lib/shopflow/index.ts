@@ -1,6 +1,7 @@
 import type { ShopflowClient } from "./types";
 import { MockShopflowClient } from "./mock";
 import { HttpShopflowClient } from "./http";
+import { withResilientReads } from "./resilient";
 
 export * from "./types";
 export { listAllSlugs } from "./mock";
@@ -16,7 +17,9 @@ let client: ShopflowClient | null = null;
 export function getShopflow(): ShopflowClient {
   if (client) return client;
   const mode = process.env.SHOPFLOW_MODE ?? "mock";
-  client = mode === "http" ? new HttpShopflowClient() : new MockShopflowClient();
+  client = withResilientReads(
+    mode === "http" ? new HttpShopflowClient() : new MockShopflowClient(),
+  );
   return client;
 }
 

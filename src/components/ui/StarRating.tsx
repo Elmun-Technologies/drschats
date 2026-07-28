@@ -11,6 +11,10 @@ export function StarRating({
   className?: string;
   reviewsLabel?: string;
 }) {
+  // An unrated product renders nothing — five grey stars next to "0.0" reads as
+  // a broken widget, not as "no reviews yet".
+  if (!(rating > 0)) return null;
+
   return (
     <div className={cn("flex items-center gap-2", className)}>
       <div className="flex items-center gap-0.5" aria-hidden>

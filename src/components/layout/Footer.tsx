@@ -16,7 +16,7 @@ export function Footer() {
   return (
     <footer className="bg-[#0c1512] text-white/70">
       <Container className="py-16">
-        <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr_1.1fr]">
+        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.1fr_1.1fr]">
           <div>
             <div className="text-2xl text-white">
               <Logo className="text-2xl" />
@@ -75,7 +75,7 @@ export function Footer() {
         </div>
 
         {/* Law-mandated БАД disclaimer (UZ Law "On Advertising", art. 35) */}
-        <div className="mt-12 rounded-xl border border-gold/30 bg-gold/10 p-4 text-sm text-white/80">
+        <div className="mt-10 rounded-xl border border-gold/30 bg-gold/10 p-4 text-sm text-white/80">
           <span className="font-semibold text-gold">{legal("notMedicine")}.</span> {legal("footer")}
         </div>
 

@@ -8,6 +8,9 @@ import type { Product } from "@/lib/shopflow/types";
 export function FeaturedProducts({ products }: { products: Product[] }) {
   const t = useTranslations("home.bestsellers");
   const common = useTranslations("common");
+
+  if (products.length === 0) return null;
+
   return (
     <section className="border-t border-line bg-surface py-20 sm:py-24">
       <Container>

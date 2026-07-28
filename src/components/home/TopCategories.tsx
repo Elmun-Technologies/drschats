@@ -42,6 +42,9 @@ function getCategoryIcon(slug: string): string {
 
 export function TopCategories({ categories }: { categories: Category[] }) {
   const t = useTranslations("home.categories");
+
+  if (categories.length === 0) return null;
+
   return (
     <section className="bg-ink py-16">
       <Container>

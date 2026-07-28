@@ -7,7 +7,7 @@ import { buttonVariants } from "@/components/ui/Button";
 export function HomeCTA() {
   const t = useTranslations("home.cta");
   return (
-    <section className="relative overflow-hidden py-24 sm:py-32">
+    <section className="relative overflow-hidden py-16 sm:py-20">
       {/* gradient background */}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-accent/10 via-transparent to-blue/10" />
       <div className="pointer-events-none absolute -left-32 -top-32 h-80 w-80 rounded-full bg-accent/5 blur-3xl" />

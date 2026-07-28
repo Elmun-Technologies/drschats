@@ -1,10 +1,12 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
+import type { Product } from "@/lib/shopflow/types";
 
 interface SlideCopy {
   eyebrow: string;
@@ -46,7 +48,7 @@ const DEAL_CARDS = [
   },
 ];
 
-export function HeroBento() {
+export function HeroBento({ products = [] }: { products?: Product[] }) {
   const t = useTranslations("home");
   const b = useTranslations("home.bento");
   const slides = t.raw("slides") as SlideCopy[];
@@ -113,10 +115,16 @@ export function HeroBento() {
 
           {/* Bento deal cards */}
           <div className="grid gap-4">
-            <DealCard card={DEAL_CARDS[0]} off={b(DEAL_CARDS[0].offKey)} title={b(DEAL_CARDS[0].titleKey)} cta={b("viewMore")} />
+            <DealCard
+              card={DEAL_CARDS[0]}
+              off={b(DEAL_CARDS[0].offKey)}
+              title={b(DEAL_CARDS[0].titleKey)}
+              cta={b("viewMore")}
+              product={products[0]}
+            />
             <div className="grid grid-cols-2 gap-4">
-              <DealCard card={DEAL_CARDS[1]} off={b(DEAL_CARDS[1].offKey)} title={b(DEAL_CARDS[1].titleKey)} />
-              <DealCard card={DEAL_CARDS[2]} off={b(DEAL_CARDS[2].offKey)} title={b(DEAL_CARDS[2].titleKey)} />
+              <DealCard card={DEAL_CARDS[1]} off={b(DEAL_CARDS[1].offKey)} title={b(DEAL_CARDS[1].titleKey)} product={products[1]} />
+              <DealCard card={DEAL_CARDS[2]} off={b(DEAL_CARDS[2].offKey)} title={b(DEAL_CARDS[2].titleKey)} product={products[2]} />
             </div>
           </div>
         </div>
@@ -130,23 +138,43 @@ function DealCard({
   off,
   title,
   cta,
+  product,
 }: {
   card: typeof DEAL_CARDS[number];
   off: string;
   title: string;
   cta?: string;
+  product?: Product;
 }) {
+  const image = product?.images[0]?.url;
+
   return (
     <Link
-      href="/products"
+      href={product ? `/product/${product.slug}` : "/products"}
       className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl ${card.bg} ${card.big ? "min-h-[200px] p-7" : "min-h-[170px] p-5"} transition-all hover:-translate-y-0.5`}
     >
-      <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
-        <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-          <path d={card.icon} />
-        </svg>
+      {/* Top row: icon, plus the product thumbnail on the compact cards where
+          there is no room for artwork alongside the copy. */}
+      <div className="relative z-10 flex items-start justify-between gap-3">
+        <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+            <path d={card.icon} />
+          </svg>
+        </span>
+        {image && !card.big && (
+          <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-ink/40 shadow-sm">
+            <Image
+              src={image}
+              alt=""
+              fill
+              sizes="64px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          </span>
+        )}
       </div>
-      <div>
+
+      <div className={`relative z-10 ${image && card.big ? "max-w-[58%]" : ""}`}>
         <p className="text-xs font-bold uppercase tracking-widest text-fg/60">{off}</p>
         <h3 className={`mt-1 font-display font-extrabold leading-tight text-fg ${card.big ? "text-xl" : "text-base"}`}>{title}</h3>
         {cta && (
@@ -158,12 +186,26 @@ function DealCard({
           </span>
         )}
       </div>
-      {/* decorative watermark icon */}
-      <div className="absolute bottom-0 right-3 opacity-[0.07]">
-        <svg viewBox="0 0 24 24" className={`${card.big ? "h-28 w-28" : "h-20 w-20"}`} fill="currentColor">
-          <path d={card.icon} />
-        </svg>
-      </div>
+
+      {image && card.big && (
+        <div className="pointer-events-none absolute bottom-5 right-5 top-5 w-[34%] overflow-hidden rounded-xl bg-ink/40 shadow-sm">
+          <Image
+            src={image}
+            alt=""
+            fill
+            sizes="(max-width: 1024px) 40vw, 200px"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+          />
+        </div>
+      )}
+
+      {!image && (
+        <div className="pointer-events-none absolute bottom-0 right-3 opacity-[0.07]">
+          <svg viewBox="0 0 24 24" className={`${card.big ? "h-28 w-28" : "h-20 w-20"}`} fill="currentColor">
+            <path d={card.icon} />
+          </svg>
+        </div>
+      )}
     </Link>
   );
 }
