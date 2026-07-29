@@ -16,15 +16,21 @@ import { Logo } from "./Logo";
   with "I can't sleep", not with "magnesium". Goals and symptoms therefore sit
   ahead of the shop, and the shop is what they funnel into.
 */
+const BADGE_TONE: Record<string, string> = {
+  sale: "bg-accent-soft text-accent-strong",
+  hot: "bg-danger/10 text-danger",
+};
+
 const navItems = [
   { key: "home", href: "/" },
+  { key: "quiz", href: "/quiz", badge: "hot" },
   { key: "goals", href: "/goals" },
   { key: "symptoms", href: "/symptoms" },
-  { key: "vitamins", href: "/vitamins", badge: "sale" },
+  { key: "programs", href: "/programs" },
+  { key: "vitamins", href: "/vitamins" },
   { key: "products", href: "/products" },
-  { key: "experts", href: "/experts", badge: "hot" },
+  { key: "experts", href: "/experts" },
   { key: "blog", href: "/blog" },
-  { key: "contact", href: "/contact" },
 ] as const;
 
 export function Header() {
@@ -120,7 +126,7 @@ export function Header() {
                   {"badge" in item && item.badge && (
                     <span className={cn(
                       "rounded px-1.5 py-0.5 text-[9px] font-bold uppercase",
-                      item.badge === "sale" ? "bg-accent-soft text-accent-strong" : "bg-danger/10 text-danger",
+                      BADGE_TONE[item.badge],
                     )}>
                       {badges(item.badge)}
                     </span>
