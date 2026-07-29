@@ -47,10 +47,10 @@ export default async function CategoryPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale; category: string }>;
-  searchParams: Promise<{ sort?: string; q?: string; origin?: string; min?: string; max?: string; page?: string }>;
+  searchParams: Promise<{ sort?: string; q?: string; origin?: string; min?: string; max?: string; page?: string; goal?: string }>;
 }) {
   const { locale, category } = await params;
-  const { sort, q, origin, min, max, page } = await searchParams;
+  const { sort, q, origin, min, max, page, goal } = await searchParams;
   setRequestLocale(locale);
 
   const categories = await shopflow.getCategories(locale);
@@ -62,6 +62,7 @@ export default async function CategoryPage({
     <ShopView
       locale={locale}
       activeCategory={category}
+      goal={goal?.trim() || undefined}
       sort={activeSort}
       search={q?.trim() || undefined}
       origin={origin || undefined}

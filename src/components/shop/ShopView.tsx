@@ -7,6 +7,8 @@ import { Link } from "@/lib/i18n/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
 import { FilterBar } from "@/components/shop/FilterBar";
 import { Pagination } from "@/components/shop/Pagination";
+import { getHealthTopics } from "@/lib/content/health-topics.sanity";
+import { paginateByGoal, toGoalFacets } from "@/lib/shop/goal-facets";
 import { cn } from "@/lib/utils";
 
 type Sort = NonNullable<ProductListParams["sort"]>;
@@ -23,6 +25,7 @@ const PAGE_SIZE = 24;
 export async function ShopView({
   locale,
   activeCategory,
+  goal,
   sort = "popular",
   search,
   origin,
@@ -32,6 +35,7 @@ export async function ShopView({
 }: {
   locale: Locale;
   activeCategory?: string;
+  goal?: string;
   sort?: Sort;
   search?: string;
   origin?: string;
@@ -39,14 +43,23 @@ export async function ShopView({
   maxPrice?: number;
   page?: number;
 }) {
-  const [t, nav, prod, categories, result, facetPool] = await Promise.all([
+  const [t, nav, prod, health, categories, listing, facetPool, topics] = await Promise.all([
     getTranslations("shop"),
     getTranslations("nav"),
     getTranslations("product"),
+    getTranslations("health"),
     shopflow.getCategories(locale),
     shopflow.getProducts({ locale, category: activeCategory, search, origin, minPrice, maxPrice, sort, pageSize: PAGE_SIZE, page }),
-    shopflow.getProducts({ locale, category: activeCategory, search, pageSize: 100 }),
+    shopflow.getProducts({ locale, category: activeCategory, search, origin, minPrice, maxPrice, pageSize: 100 }),
+    getHealthTopics(locale, "goal"),
   ]);
+
+  const goalFacets = toGoalFacets(topics, facetPool.items);
+  const activeGoal = goal ? topics.find((topicItem) => topicItem.slug === goal) : undefined;
+  // Shopflow has no goal filter, so a goal listing is paginated over the pool.
+  const result = activeGoal
+    ? paginateByGoal(facetPool.items, activeGoal, { sort, page, pageSize: PAGE_SIZE })
+    : listing;
 
   const origins = Array.from(
     new Set(facetPool.items.map((p) => p.origin).filter((o): o is string => Boolean(o))),
@@ -54,12 +67,19 @@ export async function ShopView({
 
   const active = activeCategory ? categories.find((c) => c.slug === activeCategory) : undefined;
   const basePath = activeCategory ? `/products/${activeCategory}` : "/products";
-  const heading = search ? t("searchResults", { query: search }) : active ? active.name : t("title");
+  const heading = search
+    ? t("searchResults", { query: search })
+    : activeGoal
+      ? activeGoal.name
+      : active
+        ? active.name
+        : t("title");
   const totalPages = Math.ceil((result.total || 0) / PAGE_SIZE);
 
   function buildQuery(overrides: Record<string, string | undefined>) {
     const q: Record<string, string> = {};
     if (sort !== "popular") q.sort = sort;
+    if (goal) q.goal = goal;
     if (search) q.q = search;
     if (origin) q.origin = origin;
     if (minPrice != null) q.min = String(minPrice);
@@ -94,9 +114,52 @@ export async function ShopView({
         <header className="mb-6">
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h1>
           <p className="mt-2 text-muted">
-            {search ? t("resultsCount", { count: result.total }) : active?.description ?? t("subtitle")}
+            {search
+              ? t("resultsCount", { count: result.total })
+              : activeGoal?.headline ?? active?.description ?? t("subtitle")}
           </p>
+          {activeGoal && (
+            <Link
+              href={`/goals/${activeGoal.slug}`}
+              className="mt-3 inline-flex text-sm font-semibold text-accent-strong hover:underline"
+            >
+              {t("readGoal", { goal: activeGoal.name })} →
+            </Link>
+          )}
         </header>
+
+        {/* Goal facets — the visitor filters by intent, not by warehouse category. */}
+        {goalFacets.length > 0 && (
+          <nav aria-label={health("goal.plural")} className="mb-8">
+            <p className="mb-3 text-sm font-semibold text-fg">{t("byGoal")}</p>
+            <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+              <Link
+                href={buildQuery({ goal: undefined, page: undefined })}
+                className={cn(
+                  "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                  !goal ? "border-accent bg-accent-soft text-accent-strong" : "border-line text-muted hover:border-line-strong hover:text-fg",
+                )}
+              >
+                {t("all")}
+              </Link>
+              {goalFacets.map((facet) => (
+                <Link
+                  key={facet.slug}
+                  href={buildQuery({ goal: facet.slug, page: undefined })}
+                  className={cn(
+                    "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                    facet.slug === goal
+                      ? "border-accent bg-accent-soft text-accent-strong"
+                      : "border-line text-muted hover:border-line-strong hover:text-fg",
+                  )}
+                >
+                  {facet.name}
+                  <span className="ml-1.5 text-xs text-faint">{facet.count}</span>
+                </Link>
+              ))}
+            </div>
+          </nav>
+        )}
 
         {/* Mobile category chips — hidden on large screens */}
         <div className="mb-6 flex gap-2 overflow-x-auto pb-1 lg:hidden">

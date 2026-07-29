@@ -242,7 +242,9 @@
     "priceTo": "gacha",
     "apply": "Qo‘llash",
     "clearFilters": "Filtrlarni tozalash",
-    "categoriesTitle": "Kategoriyalar"
+    "categoriesTitle": "Kategoriyalar",
+    "byGoal": "Maqsad bo'yicha",
+    "readGoal": "{goal} haqida batafsil"
   },
   "cart": {
     "title": "Savatcha",

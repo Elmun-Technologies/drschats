@@ -242,7 +242,9 @@
     "priceTo": "до",
     "apply": "Применить",
     "clearFilters": "Сбросить фильтры",
-    "categoriesTitle": "Категории"
+    "categoriesTitle": "Категории",
+    "byGoal": "По цели",
+    "readGoal": "Подробнее о «{goal}»"
   },
   "cart": {
     "title": "Корзина",
