@@ -12,6 +12,11 @@ import { PromoBanners } from "@/components/home/PromoBanners";
 import { StatsBand } from "@/components/home/StatsBand";
 import { BlogTeaser } from "@/components/home/BlogTeaser";
 import { HomeCTA } from "@/components/home/HomeCTA";
+import { QuizPromo } from "@/components/home/QuizPromo";
+import { ProgramsRail } from "@/components/home/ProgramsRail";
+import { DoctorAdvice } from "@/components/home/DoctorAdvice";
+import { HomeFaq } from "@/components/home/HomeFaq";
+import { NewsletterSignup } from "@/components/home/NewsletterSignup";
 import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
 import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
 
@@ -52,13 +57,19 @@ export default async function HomePage({
       <JsonLd data={organizationLd()} />
       <HeroBento products={bestsellers.items} />
       <TopCategories categories={categories} />
+      {/* Intent first: the consultant is the widest entry into the catalogue. */}
+      <QuizPromo />
       <FeaturedProducts products={bestsellers.items} />
+      <ProgramsRail locale={locale} />
       <PersonalizedRail allProducts={allProducts.items} />
       <PromoBanners />
       <RecentlyViewed allProducts={allProducts.items} />
       <ProductCarousel products={topRated.items} />
+      <DoctorAdvice locale={locale} />
       <StatsBand />
       <BlogTeaser locale={locale} />
+      <HomeFaq />
+      <NewsletterSignup />
       <HomeCTA />
     </>
   );
