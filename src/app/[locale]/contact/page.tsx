@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
+import { ContactChannels } from "@/components/contact/ContactChannels";
 
 export const revalidate = 3600;
 
@@ -66,7 +67,7 @@ export default async function ContactPage({
 
   return (
     <div className="pt-10">
-      <Container size="narrow">
+      <Container>
         <Reveal>
           <h1 className="font-display text-4xl font-bold tracking-tight sm:text-6xl">{t("title")}</h1>
         </Reveal>
@@ -120,7 +121,9 @@ export default async function ContactPage({
           </a>
         </Reveal>
 
-        <div className="mb-32" />
+        <ContactChannels />
+
+        <div className="mb-24" />
       </Container>
     </div>
   );

@@ -27,7 +27,8 @@
     "symptoms": "Belgilar",
     "vitamins": "Vitaminlar",
     "quiz": "AI konsultant",
-    "programs": "Dasturlar"
+    "programs": "Dasturlar",
+    "reviews": "Sharhlar"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -406,7 +407,35 @@
     "workHours": "Dushanba–Shanba, 09:00–18:00",
     "emailHint": "24 soat ichida javob beramiz",
     "telegramTitle": "Telegram kanalimiz",
-    "telegramHint": "Tez javob va yangiliklar uchun"
+    "telegramHint": "Tez javob va yangiliklar uchun",
+    "channels": {
+      "title": "Qaysi masala bo'yicha murojaat qilyapsiz?",
+      "subtitle": "Har bir yo'nalish uchun alohida kanal — javob tezroq keladi.",
+      "orders": {
+        "title": "Buyurtma va yetkazib berish",
+        "description": "Buyurtma holati, o'zgartirish, qaytarish."
+      },
+      "support": {
+        "title": "Mahsulot bo'yicha maslahat",
+        "description": "Qaysi mahsulot mos kelishi, tarkib va qabul tartibi."
+      },
+      "whatsapp": {
+        "title": "WhatsApp orqali yozish",
+        "description": "Qo'ng'iroq qilishga qulay bo'lmasa — yozib qoldiring."
+      },
+      "pharmacy": {
+        "title": "Dorixonalar uchun",
+        "description": "Ulgurji narxlar, assortiment va yetkazib berish shartlari."
+      },
+      "distributor": {
+        "title": "Distributorlik",
+        "description": "Viloyatlarda hamkorlik va rasmiy vakillik."
+      },
+      "corporate": {
+        "title": "Korporativ buyurtma (B2B)",
+        "description": "Xodimlar uchun to'plamlar, sovg'a va korporativ dasturlar."
+      }
+    }
   },
   "blog": {
     "title": "Sog‘liq blogi",
@@ -932,5 +961,20 @@
     "includes": "{count} ta mahsulot · {days} kunlik miqdor",
     "addProgram": "Dasturni savatga ({count})",
     "cancelNote": "Har bir mahsulotni savatchada alohida o'zgartirishingiz mumkin"
+  },
+  "reviews": {
+    "eyebrow": "Mijozlar tajribasi",
+    "title": "Sharhlar va tarixlar",
+    "subtitle": "Yulduzcha emas — haqiqiy tajriba: video sharhlar, holatlar va mahsulot sharhlari.",
+    "basedOn": "{count} ta sharh asosida",
+    "storiesTitle": "Mijozlar tarixi",
+    "productReviewsTitle": "Mahsulot sharhlari",
+    "empty": "Hozircha sharhlar yo'q. Birinchi bo'lib fikr qoldiring.",
+    "browse": "Katalogni ko'rish",
+    "kind": {
+      "video": "Video sharh",
+      "case": "Holat",
+      "transformation": "Natija"
+    }
   }
 }

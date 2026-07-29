@@ -44,6 +44,7 @@ export function Footer() {
             <FooterLink href="/about">{nav("aboutUs")}</FooterLink>
             <FooterLink href="/news">{nav("news")}</FooterLink>
             <FooterLink href="/experts">{experts("badge")}</FooterLink>
+            <FooterLink href="/reviews">{nav("reviews")}</FooterLink>
             <FooterLink href="/blog">{nav("blog")}</FooterLink>
             <FooterLink href="/requisites">{nav("requisites")}</FooterLink>
           </FooterCol>

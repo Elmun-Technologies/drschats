@@ -24,6 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
     "/loyalty", "/ingredients", "/brands", "/news", "/payment", "/guarantee",
     "/requisites", "/licenses", "/goals", "/symptoms", "/vitamins", "/quiz", "/programs",
+    "/reviews",
   ];
   const categoryPaths = categories.map((c) => `/products/${c.slug}`);
   const [blogSlugs, expertSlugs, healthTopics, programSlugs] = await Promise.all([
