@@ -29,6 +29,7 @@ export function QuizPlanActions({ products }: { products: Product[] }) {
           oldPrice: product.oldPrice,
         },
         1,
+        { silent: true },
       );
       trackAddToCart(product.slug, product.price, 1);
     }

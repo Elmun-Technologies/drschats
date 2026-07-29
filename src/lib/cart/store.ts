@@ -9,7 +9,15 @@ interface CartState {
   lines: CartLine[];
   isOpen: boolean;
   _savedAt: number;
-  add: (line: Omit<CartLine, "quantity">, quantity?: number) => void;
+  /**
+   * `silent` suppresses the toast — bulk adds (a programme, a quiz plan) fire
+   * one notification of their own instead of one per product.
+   */
+  add: (
+    line: Omit<CartLine, "quantity">,
+    quantity?: number,
+    options?: { silent?: boolean },
+  ) => void;
   remove: (productId: string) => void;
   setQuantity: (productId: string, quantity: number) => void;
   clear: () => void;
@@ -24,7 +32,7 @@ export const useCart = create<CartState>()(
       lines: [],
       isOpen: false,
       _savedAt: 0,
-      add: (line, quantity = 1) => {
+      add: (line, quantity = 1, options) => {
         set((state) => {
           const existing = state.lines.find((l) => l.productId === line.productId);
           if (existing) {
@@ -40,7 +48,7 @@ export const useCart = create<CartState>()(
           return { lines: [...state.lines, { ...line, quantity }], _savedAt: Date.now() };
         });
         // Premium, non-intrusive feedback instead of force-opening the drawer.
-        useToast.getState().notify();
+        if (!options?.silent) useToast.getState().notify();
       },
       remove: (productId) =>
         set((state) => ({

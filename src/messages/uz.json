@@ -23,10 +23,11 @@
     "requisites": "Rekvizitlar",
     "licenses": "Litsenziya va sertifikatlar",
     "aboutUs": "Biz haqimizda",
-    "goals": "Sog'liq maqsadlari",
+    "goals": "Maqsadlar",
     "symptoms": "Belgilar",
     "vitamins": "Vitaminlar",
-    "quiz": "AI konsultant"
+    "quiz": "AI konsultant",
+    "programs": "Dasturlar"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -854,5 +855,22 @@
     "doctorBody": "Javoblaringizda shifokor yoki farmatsevt bilan gaplashishni talab qiladigan holat bor: doimiy dori qabul qilish, homiladorlik yoki uzoq davom etgan charchoq. Vitamin qabul qilishdan oldin mutaxassisga murojaat qiling.",
     "doctorCta": "Shifokorlarimiz",
     "reviewedNote": "Test mantiqi shifokor tomonidan tekshirilgan"
+  },
+  "programs": {
+    "plural": "Dasturlar",
+    "indexTitle": "Sog'liq dasturlari",
+    "indexSubtitle": "Bitta mahsulot emas — maqsad ostida yig'ilgan to'plam. Bir oylik miqdor, bitta narx, bitta bosishda savatga.",
+    "empty": "Hozircha dasturlar qo'shilmagan.",
+    "duration": "{days} kun",
+    "forWhom": "Kimga mo'ljallangan",
+    "whatsInside": "To'plam tarkibi",
+    "howItWorks": "Qanday olib boriladi",
+    "keyNutrients": "Asosiy nutriyentlar",
+    "readMore": "Batafsil o'qish",
+    "bundlePrice": "To'plam narxi",
+    "youSave": "{amount} tejaysiz",
+    "includes": "{count} ta mahsulot · {days} kunlik miqdor",
+    "addProgram": "Dasturni savatga ({count})",
+    "cancelNote": "Har bir mahsulotni savatchada alohida o'zgartirishingiz mumkin"
   }
 }

@@ -26,6 +26,7 @@ const navItems = [
   { key: "quiz", href: "/quiz", badge: "hot" },
   { key: "goals", href: "/goals" },
   { key: "symptoms", href: "/symptoms" },
+  { key: "programs", href: "/programs" },
   { key: "vitamins", href: "/vitamins" },
   { key: "products", href: "/products" },
   { key: "experts", href: "/experts" },

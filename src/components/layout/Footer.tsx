@@ -33,10 +33,11 @@ export function Footer() {
           </FooterCol>
 
           <FooterCol title={health("goal.plural")}>
+            <FooterLink href="/quiz">{nav("quiz")}</FooterLink>
             <FooterLink href="/goals">{nav("goals")}</FooterLink>
             <FooterLink href="/symptoms">{nav("symptoms")}</FooterLink>
+            <FooterLink href="/programs">{nav("programs")}</FooterLink>
             <FooterLink href="/vitamins">{nav("vitamins")}</FooterLink>
-            <FooterLink href="/experts">{experts("badge")}</FooterLink>
           </FooterCol>
 
           <FooterCol title={t("company")}>
