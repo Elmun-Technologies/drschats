@@ -25,7 +25,8 @@
     "aboutUs": "Biz haqimizda",
     "goals": "Sog'liq maqsadlari",
     "symptoms": "Belgilar",
-    "vitamins": "Vitaminlar"
+    "vitamins": "Vitaminlar",
+    "quiz": "AI konsultant"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -825,5 +826,33 @@
     "allVitamins": "Barcha vitaminlar",
     "relatedProducts": "Tegishli mahsulotlar",
     "relatedTopics": "Shuningdek qarang"
+  },
+  "quiz": {
+    "eyebrow": "AI konsultant",
+    "title": "2 daqiqada shaxsiy vitamin rejasi",
+    "subtitle": "12 ta savol — turmush tarzingiz asosida qaysi nutriyentlarga e'tibor berish kerakligini ko'rsatamiz. Operator kerak emas.",
+    "stepOf": "{step} / {total}",
+    "progressLabel": "Test jarayoni",
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "skip": "O'tkazib yuborish",
+    "finish": "Natijani ko'rish",
+    "resultEyebrow": "Sizning rejangiz",
+    "resultTitle": "Shaxsiy tavsiya",
+    "resultSubtitle": "Javoblaringiz asosida tuzildi. Bu tashxis emas — nutriyentlarga e'tibor qaratish uchun yo'nalish.",
+    "resultEmpty": "Javoblar yetarli emas. Testni qayta o'tsangiz aniqroq tavsiya beramiz.",
+    "focusTitle": "Nimaga e'tibor berish kerak",
+    "focusSubtitle": "Javoblaringizda eng ko'p uchragan yo'nalishlar",
+    "nutrientsTitle": "Asosiy nutriyentlar",
+    "productsTitle": "Mos mahsulotlar",
+    "productsSubtitle": "Yuqoridagi nutriyentlar va yo'nalishlar bo'yicha tanlangan",
+    "whyLabel": "Nega",
+    "addPlan": "Rejani savatga ({count})",
+    "retake": "Testni qayta o'tish",
+    "browseAll": "Butun katalog",
+    "doctorTitle": "Avval shifokor bilan maslahatlashing",
+    "doctorBody": "Javoblaringizda shifokor yoki farmatsevt bilan gaplashishni talab qiladigan holat bor: doimiy dori qabul qilish, homiladorlik yoki uzoq davom etgan charchoq. Vitamin qabul qilishdan oldin mutaxassisga murojaat qiling.",
+    "doctorCta": "Shifokorlarimiz",
+    "reviewedNote": "Test mantiqi shifokor tomonidan tekshirilgan"
   }
 }
