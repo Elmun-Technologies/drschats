@@ -11,12 +11,13 @@ export function Footer() {
   const experts = useTranslations("experts");
   const loyalty = useTranslations("loyalty");
   const ingredients = useTranslations("ingredients_page");
+  const health = useTranslations("health");
   const year = new Date().getFullYear();
 
   return (
     <footer className="bg-[#0c1512] text-white/70">
       <Container className="py-16">
-        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-[1.3fr_1fr_1fr_1.1fr_1.1fr]">
+        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.2fr_1fr_1fr_1fr_1fr_1.1fr]">
           <div>
             <div className="text-2xl text-white">
               <Logo className="text-2xl" />
@@ -29,6 +30,13 @@ export function Footer() {
             <FooterLink href="/brands">{nav("brands")}</FooterLink>
             <FooterLink href="/ingredients">{ingredients("title")}</FooterLink>
             <FooterLink href="/licenses">{nav("licenses")}</FooterLink>
+          </FooterCol>
+
+          <FooterCol title={health("goal.plural")}>
+            <FooterLink href="/goals">{nav("goals")}</FooterLink>
+            <FooterLink href="/symptoms">{nav("symptoms")}</FooterLink>
+            <FooterLink href="/vitamins">{nav("vitamins")}</FooterLink>
+            <FooterLink href="/experts">{experts("badge")}</FooterLink>
           </FooterCol>
 
           <FooterCol title={t("company")}>
