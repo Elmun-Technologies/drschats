@@ -45,25 +45,27 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [categories, bestsellers, topRated, allProducts] = await Promise.all([
+  // "Popular, top 8" is the head of "popular, top 50" — one request, not two.
+  const [categories, popular, topRated] = await Promise.all([
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 8 }),
-    shopflow.getProducts({ locale, sort: "new", pageSize: 8 }),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }),
+    shopflow.getProducts({ locale, sort: "new", pageSize: 8 }),
   ]);
+
+  const bestsellers = popular.items.slice(0, 8);
 
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <HeroBento products={bestsellers.items} />
+      <HeroBento products={bestsellers} />
       <TopCategories categories={categories} />
       {/* Intent first: the consultant is the widest entry into the catalogue. */}
       <QuizPromo />
-      <FeaturedProducts products={bestsellers.items} />
+      <FeaturedProducts products={bestsellers} />
       <ProgramsRail locale={locale} />
-      <PersonalizedRail allProducts={allProducts.items} />
+      <PersonalizedRail allProducts={popular.items} />
       <PromoBanners />
-      <RecentlyViewed allProducts={allProducts.items} />
+      <RecentlyViewed allProducts={popular.items} />
       <ProductCarousel products={topRated.items} />
       <DoctorAdvice locale={locale} />
       <StatsBand />

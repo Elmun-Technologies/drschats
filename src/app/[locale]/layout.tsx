@@ -11,18 +11,16 @@ import { PromotionsProvider } from "@/lib/cart/promotions-context";
 import { SmoothScroll } from "@/components/animation/SmoothScroll";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { CartDrawer } from "@/components/cart/CartDrawer";
 import { CookieConsent } from "@/components/layout/CookieConsent";
+import { DeferredUi } from "@/components/layout/DeferredUi";
 import { Toaster } from "@/components/ui/Toaster";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, websiteLd, localBusinessLd } from "@/lib/seo/jsonld";
-import { ExitIntentPopup } from "@/components/exit-intent/ExitIntentPopup";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
-import { LivePurchaseToast } from "@/components/social-proof/LivePurchaseToast";
 
 const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
@@ -75,13 +73,11 @@ export default async function LocaleLayout({
               <Header />
               <main id="main-content" className="pb-16 md:pb-0">{children}</main>
               <Footer />
-              <CartDrawer />
               <CookieConsent />
               <Toaster />
               <BackToTop />
               <MobileBottomNav />
-              <ExitIntentPopup />
-              <LivePurchaseToast />
+              <DeferredUi />
             </SmoothScroll>
           </PromotionsProvider>
         </NextIntlClientProvider>

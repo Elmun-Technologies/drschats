@@ -85,6 +85,48 @@
   }
 }
 
+/*
+  Scroll-reveal without a JS animation library.
+
+  A listing page mounts dozens of revealed elements (24 product cards, article
+  grids, topic cards). Driving each one through framer-motion means dozens of
+  observers and animation loops on the main thread for what is a two-property
+  transition. `.reveal` is the CSS equivalent: hidden until a shared
+  IntersectionObserver adds `.reveal-in`, with the stagger passed as a custom
+  property.
+
+  No-JS and reduced-motion both fall back to fully visible content.
+*/
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+.reveal-in {
+  animation: reveal-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-in {
+    opacity: 1;
+    animation: none;
+  }
+}
+/* Content must never stay invisible if the observer never runs. */
+.no-js .reveal {
+  opacity: 1;
+}
+
 /* CSS-only route transition (no JS dependency → never hides content).
    `backwards` (not `both`): a filled-forwards transform leaves an identity
    matrix on the wrapper, which turns it into the containing block for every

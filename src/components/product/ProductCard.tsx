@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { motion } from "framer-motion";
 import { Link } from "@/lib/i18n/navigation";
+import { Reveal } from "@/components/animation/Reveal";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
 import { formatMoney } from "@/lib/utils";
@@ -34,11 +34,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
   }
 
   return (
-    <motion.article
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.45, delay: (index % 4) * 0.05, ease: [0.16, 1, 0.3, 1] }}
+    <Reveal
+      as="article"
+      index={index % 4}
       className="group flex h-full flex-col rounded-xl border border-line bg-ink p-3 transition-all duration-300 hover:border-line-strong hover:shadow-[0_14px_40px_-22px_rgba(15,26,20,0.3)]"
     >
       <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden rounded-lg bg-surface">
@@ -90,6 +88,6 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           {product.inStock ? t("addToCartShort") : t("outOfStock")}
         </button>
       </div>
-    </motion.article>
+    </Reveal>
   );
 }
