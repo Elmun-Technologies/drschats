@@ -45,7 +45,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
 
         <Reveal index={sections.length + 3}>
           <p className="mt-12 text-xs text-faint">
-            © 2026 Dr. Schatz Store · Alimkhanov Pharm Group
+            © 2026 Dr. Schatz Store · Go Vita
           </p>
         </Reveal>
       </Container>

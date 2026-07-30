@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import type { Product } from "@/lib/shopflow/types";
+import { cn } from "@/lib/utils";
 
 interface SlideCopy {
   eyebrow: string;
@@ -53,9 +53,14 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
   const b = useTranslations("home.bento");
   const slides = t.raw("slides") as SlideCopy[];
   const [i, setI] = useState(0);
+  // The first slide paints unanimated so it cannot delay LCP.
+  const [rotated, setRotated] = useState(false);
 
   useEffect(() => {
-    const id = setInterval(() => setI((v) => (v + 1) % slides.length), 6000);
+    const id = setInterval(() => {
+      setI((v) => (v + 1) % slides.length);
+      setRotated(true);
+    }, 6000);
     return () => clearInterval(id);
   }, [slides.length]);
 
@@ -67,15 +72,10 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           {/* Main rotating banner */}
           <div className="relative flex min-h-[360px] overflow-hidden rounded-2xl bg-pastel-beige sm:min-h-[440px]">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, x: 30 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -30 }}
-                transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                className="flex flex-1 items-center"
-              >
+            <div
+              key={i}
+              className={cn("flex flex-1 items-center", rotated && "hero-slide-in")}
+            >
                 <div className="max-w-sm p-8 sm:p-12">
                   <span className="inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent-strong">
                     {s.eyebrow}
@@ -99,13 +99,15 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
                     </span>
                   ))}
                 </div>
-              </motion.div>
-            </AnimatePresence>
+            </div>
             <div className="absolute bottom-5 left-8 flex gap-2 sm:left-12">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setI(idx)}
+                  onClick={() => {
+                    setI(idx);
+                    setRotated(true);
+                  }}
                   aria-label={`Slide ${idx + 1}`}
                   className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-ink" : "w-2 bg-ink/30"}`}
                 />

@@ -84,7 +84,7 @@ function StatCard() {
 function JoinCard({ label }: { label: string }) {
   return (
     <div className="flex flex-col items-center justify-center gap-4 rounded-3xl bg-gradient-to-br from-accent to-emerald-600 p-8 text-center">
-      <p className="font-display text-2xl font-bold text-white">Alimkhanov</p>
+      <p className="font-display text-2xl font-bold text-white">Go Vita</p>
       <Link href="/products" className={buttonVariants("primary") + " bg-white text-accent-strong hover:bg-white"}>
         {label}
       </Link>

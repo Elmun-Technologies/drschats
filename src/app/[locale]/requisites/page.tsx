@@ -11,7 +11,7 @@ export const revalidate = 3600;
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages.requisites" });
-  return buildPageMetadata({ locale, path: "/requisites", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
+  return buildPageMetadata({ locale, path: "/requisites", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
 export default async function RequisitesPage({ params }: { params: Promise<{ locale: Locale }> }) {

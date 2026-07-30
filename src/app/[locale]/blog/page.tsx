@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getArticles } from "@/lib/content/blog.sanity";
+import { usedCategoryKeys } from "@/lib/content/blog-categories";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { ArticleCard } from "@/components/blog/ArticleCard";
@@ -19,7 +20,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "blog" });
-  return buildPageMetadata({ locale, path: "/blog", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
+  return buildPageMetadata({ locale, path: "/blog", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
 export default async function BlogPage({
@@ -33,6 +34,7 @@ export default async function BlogPage({
   const articles = await getArticles(locale);
 
   const [featured, ...rest] = articles;
+  const categoryKeys = usedCategoryKeys(articles);
 
   return (
     <div className="pt-10">
@@ -45,6 +47,23 @@ export default async function BlogPage({
             <p className="mt-6 text-xl text-muted">{t("subtitle")}</p>
           </Reveal>
         </header>
+
+        {/* Knowledge Center taxonomy — each section is its own landing page. */}
+        {categoryKeys.length > 0 && (
+          <nav aria-label={t("categoriesTitle")} className="mt-8">
+            <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
+              {categoryKeys.map((key) => (
+                <Link
+                  key={key}
+                  href={`/blog/category/${key}`}
+                  className="shrink-0 rounded-full border border-line px-4 py-2 text-sm font-medium text-muted transition-colors hover:border-accent hover:text-accent-strong"
+                >
+                  {t(`categories.${key}`)}
+                </Link>
+              ))}
+            </div>
+          </nav>
+        )}
 
         {/* Featured article */}
         {featured && (

@@ -1,11 +1,11 @@
 {
-  "name": "Alimkhanov Pharm",
-  "short_name": "Alimkhanov",
-  "description": "Vitaminlar va sog'liqni saqlash mahsulotlari",
+  "name": "Go Vita",
+  "short_name": "Go Vita",
+  "description": "Vitaminlar, BAD va med-kosmetika onlayn platformasi",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0a0a0a",
-  "theme_color": "#0ea5e9",
+  "background_color": "#ffffff",
+  "theme_color": "#15b66a",
   "orientation": "portrait-primary",
   "icons": [
     {

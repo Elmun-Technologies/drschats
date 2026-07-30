@@ -6,13 +6,14 @@ import { JsonLd, organizationLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { PageHero } from "@/components/page/PageHero";
+import { QualityChain } from "@/components/page/QualityChain";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages.about" });
-  return buildPageMetadata({ locale, path: "/about", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
+  return buildPageMetadata({ locale, path: "/about", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
 const VALUE_ICONS = [
@@ -100,6 +101,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             ))}
           </div>
         </Reveal>
+
+        <QualityChain />
       </Container>
     </div>
   );

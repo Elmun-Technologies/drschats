@@ -6,6 +6,7 @@ export const allArticlesQuery = groq`*[_type == "blogPost"] | order(date desc) {
   readingMinutes,
   mainImage,
   "category": category[$locale],
+  categoryKey,
   "title": title[$locale],
   "excerpt": excerpt[$locale]
 }`;
@@ -16,6 +17,7 @@ export const articleBySlugQuery = groq`*[_type == "blogPost" && slug.current == 
   readingMinutes,
   mainImage,
   "category": category[$locale],
+  categoryKey,
   "title": title[$locale],
   "excerpt": excerpt[$locale],
   "sections": sections[] {

@@ -4,6 +4,8 @@ import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
+import { ContactChannels } from "@/components/contact/ContactChannels";
+import { BRAND } from "@/lib/brand";
 
 export const revalidate = 3600;
 
@@ -14,7 +16,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "contact" });
-  return buildPageMetadata({ locale, path: "/contact", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
+  return buildPageMetadata({ locale, path: "/contact", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
 export default async function ContactPage({
@@ -34,8 +36,8 @@ export default async function ContactPage({
         </svg>
       ),
       label: t("phone"),
-      value: "+998 71 200 00 00",
-      href: "tel:+998712000000",
+      value: BRAND.contact.phone,
+      href: `tel:${BRAND.contact.phoneHref}`,
       hint: t("workHours"),
     },
     {
@@ -46,8 +48,8 @@ export default async function ContactPage({
         </svg>
       ),
       label: t("email"),
-      value: "info@alimkhanov.com",
-      href: "mailto:info@alimkhanov.com",
+      value: BRAND.contact.email,
+      href: `mailto:${BRAND.contact.email}`,
       hint: t("emailHint"),
     },
     {
@@ -66,7 +68,7 @@ export default async function ContactPage({
 
   return (
     <div className="pt-10">
-      <Container size="narrow">
+      <Container>
         <Reveal>
           <h1 className="font-display text-4xl font-bold tracking-tight sm:text-6xl">{t("title")}</h1>
         </Reveal>
@@ -100,7 +102,7 @@ export default async function ContactPage({
         {/* Telegram CTA */}
         <Reveal index={3}>
           <a
-            href="https://t.me/alimkhanov_pharm"
+            href={BRAND.social.telegram}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 flex items-center gap-4 rounded-2xl border border-[#2AABEE]/30 bg-[#2AABEE]/5 p-6 transition-colors hover:border-[#2AABEE]/60"
@@ -120,7 +122,9 @@ export default async function ContactPage({
           </a>
         </Reveal>
 
-        <div className="mb-32" />
+        <ContactChannels />
+
+        <div className="mb-24" />
       </Container>
     </div>
   );

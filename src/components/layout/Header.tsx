@@ -55,7 +55,7 @@ export function Header() {
 
       {/* Main row */}
       <Container className="flex h-[72px] items-center gap-4">
-        <Link href="/" aria-label="Alimkhanov" className="shrink-0">
+        <Link href="/" aria-label="Go Vita" className="shrink-0">
           <Logo />
         </Link>
 

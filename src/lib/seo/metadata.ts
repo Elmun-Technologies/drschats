@@ -4,7 +4,7 @@ import { locales, type Locale } from "@/lib/i18n/routing";
 export const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
 
-export const SITE_NAME = "Alimkhanov";
+export const SITE_NAME = "Go Vita";
 
 /**
  * Build canonical + hreflang alternates for a localized page so search engines

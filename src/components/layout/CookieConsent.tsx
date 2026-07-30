@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
+import { STORAGE_KEYS } from "@/lib/storage-keys";
 
-const KEY = "alimkhanov-cookie-consent";
+const KEY = STORAGE_KEYS.cookieConsent;
 
 export function CookieConsent() {
   const t = useTranslations("cookie");

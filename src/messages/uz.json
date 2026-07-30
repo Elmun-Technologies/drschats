@@ -27,7 +27,8 @@
     "symptoms": "Belgilar",
     "vitamins": "Vitaminlar",
     "quiz": "AI konsultant",
-    "programs": "Dasturlar"
+    "programs": "Dasturlar",
+    "reviews": "Sharhlar"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -62,7 +63,7 @@
     "hero": {
       "eyebrow": "Shveytsariya, Germaniya va Rossiya sifati",
       "title": "Har kuningiz uchun isbotlangan nutriyentlar",
-      "subtitle": "Alimkhanov — laboratoriyada sinovdan o‘tgan vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, shaffof formulalar, eshigingizgacha yetkazib berish.",
+      "subtitle": "Go Vita — laboratoriyada sinovdan o‘tgan vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, shaffof formulalar, eshigingizgacha yetkazib berish.",
       "cta": "Do‘konni ko‘rish",
       "secondaryCta": "Mahsulotlar haqida"
     },
@@ -96,7 +97,7 @@
     },
     "voices": {
       "title": "Mijozlarimiz nima deydi",
-      "subtitle": "Minglab odam Alimkhanov’ga ishonadi",
+      "subtitle": "Minglab odam Go Vita’ga ishonadi",
       "member": "Mijoz",
       "join": "Hozir qo‘shilish"
     },
@@ -128,7 +129,7 @@
       "eyebrow": "Mahsulot kategoriyalari",
       "title": "Premium sifat",
       "subtitle": "Har bir ehtiyoj uchun aniq yechim",
-      "lead": "Alimkhanov mahsulotlari yetakchi sog‘liqni saqlash mutaxassislari tavsiyalari asosida, Yevropa sifat standartlarida ishlab chiqariladi.",
+      "lead": "Go Vita mahsulotlari yetakchi sog‘liqni saqlash mutaxassislari tavsiyalari asosida, Yevropa sifat standartlarida ishlab chiqariladi.",
       "viewAll": "Barcha kategoriyalar"
     },
     "bestsellers": {
@@ -178,6 +179,64 @@
       "title": "Yangi mahsulotlar",
       "subtitle": "Yangi kelgan mahsulotlar — allaqachon mavjud",
       "eyebrow": "Yangi"
+    },
+    "quizPromo": {
+      "title": "Qaysi vitamin sizga kerakligini bilmayapsizmi?",
+      "subtitle": "Turmush tarzingiz haqida bir necha savolga javob bering — sizga mos nutriyentlar, yo'nalishlar va mahsulotlarni ko'rsatamiz.",
+      "step1": "Savollarga javob bering",
+      "step2": "Shaxsiy rejani oling",
+      "step3": "Bitta bosishda savatga",
+      "cta": "Testni boshlash",
+      "meta": "{count} ta savol · 2 daqiqa · bepul"
+    },
+    "doctors": {
+      "eyebrow": "Tibbiy kengash",
+      "title": "Kontentni shifokorlar tekshiradi",
+      "subtitle": "Sog'liq haqidagi har bir sahifa ortida ismi va malakasi ko'rsatilgan mutaxassis turadi."
+    },
+    "faq": {
+      "eyebrow": "Savol-javob",
+      "title": "Ko'p so'raladigan savollar",
+      "subtitle": "Javobini topmadingizmi — bizga yozing, operator bog'lanadi.",
+      "items": [
+        {
+          "question": "Buyurtma qanday rasmiylashtiriladi?",
+          "answer": "Saytda savatchani to'ldirasiz va telefon raqamingizni qoldirasiz. Operator qo'ng'iroq qilib buyurtmani tasdiqlaydi, keyin yetkazib berishga topshiriladi."
+        },
+        {
+          "question": "Yetkazib berish qancha vaqt oladi?",
+          "answer": "Toshkent bo'ylab odatda 1–3 kun. Viloyatlarga muddat yetkazib berish xizmatiga bog'liq — operator tasdiqlashda aniq aytadi."
+        },
+        {
+          "question": "To'lovni qanday amalga oshirish mumkin?",
+          "answer": "Payme, Click, Uzum, shuningdek Visa va Mastercard kartalari qabul qilinadi."
+        },
+        {
+          "question": "Mahsulotlar original ekaniga qanday ishonch hosil qilaman?",
+          "answer": "Har bir mahsulot rasmiy yetkazib beruvchidan keladi. Sertifikatlar va litsenziyalar «Litsenziya va sertifikatlar» sahifasida joylashtirilgan."
+        },
+        {
+          "question": "Vitaminlarni shifokorsiz ichsa bo'ladimi?",
+          "answer": "Biologik faol qo'shimchalar dori vositasi emas, lekin doimiy dori qabul qilayotgan, homilador yoki surunkali kasalligi bo'lganlar avval shifokor bilan maslahatlashishi kerak."
+        },
+        {
+          "question": "Mahsulotni qaytarish mumkinmi?",
+          "answer": "Ochilmagan va butun qadoqdagi mahsulot 30 kun ichida qaytariladi. Batafsil shartlar «Kafolat» sahifasida."
+        }
+      ]
+    },
+    "newsletter": {
+      "eyebrow": "Xabardor bo'ling",
+      "title": "Yangi maqolalar va aksiyalar",
+      "subtitle": "Haftada bir marta: shifokorlar tayyorlagan materiallar va yopiq chegirmalar. Spam yo'q.",
+      "label": "Elektron pochtangiz",
+      "placeholder": "siz@example.com",
+      "submit": "Obuna bo'lish",
+      "success": "Obuna rasmiylashtirildi",
+      "successNote": "Birinchi xat yaqin kunlarda keladi.",
+      "error": "Yuborib bo'lmadi. Pochtani tekshirib, qayta urinib ko'ring.",
+      "privacy": "Istalgan vaqtda obunani bekor qilishingiz mumkin.",
+      "telegram": "Telegram kanalimiz"
     }
   },
   "product": {
@@ -242,7 +301,9 @@
     "priceTo": "gacha",
     "apply": "Qo‘llash",
     "clearFilters": "Filtrlarni tozalash",
-    "categoriesTitle": "Kategoriyalar"
+    "categoriesTitle": "Kategoriyalar",
+    "byGoal": "Maqsad bo'yicha",
+    "readGoal": "{goal} haqida batafsil"
   },
   "cart": {
     "title": "Savatcha",
@@ -318,9 +379,9 @@
     "language": "Til"
   },
   "about": {
-    "title": "Alimkhanov haqida",
+    "title": "Go Vita haqida",
     "lead": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitaminlar va biologik faol qo‘shimchalar yetkazib beruvchi.",
-    "body": "Alimkhanov Pharm Group Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qiladi. Biz har bir mahsulotni puxta tanlaymiz, sifatni kafolatlaymiz va mijozlarimizga ishonchli xizmat ko‘rsatamiz.",
+    "body": "Go Vita Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qiladi. Biz har bir mahsulotni puxta tanlaymiz, sifatni kafolatlaymiz va mijozlarimizga ishonchli xizmat ko‘rsatamiz.",
     "values": {
       "quality": {
         "title": "Sifat",
@@ -346,7 +407,35 @@
     "workHours": "Dushanba–Shanba, 09:00–18:00",
     "emailHint": "24 soat ichida javob beramiz",
     "telegramTitle": "Telegram kanalimiz",
-    "telegramHint": "Tez javob va yangiliklar uchun"
+    "telegramHint": "Tez javob va yangiliklar uchun",
+    "channels": {
+      "title": "Qaysi masala bo'yicha murojaat qilyapsiz?",
+      "subtitle": "Har bir yo'nalish uchun alohida kanal — javob tezroq keladi.",
+      "orders": {
+        "title": "Buyurtma va yetkazib berish",
+        "description": "Buyurtma holati, o'zgartirish, qaytarish."
+      },
+      "support": {
+        "title": "Mahsulot bo'yicha maslahat",
+        "description": "Qaysi mahsulot mos kelishi, tarkib va qabul tartibi."
+      },
+      "whatsapp": {
+        "title": "WhatsApp orqali yozish",
+        "description": "Qo'ng'iroq qilishga qulay bo'lmasa — yozib qoldiring."
+      },
+      "pharmacy": {
+        "title": "Dorixonalar uchun",
+        "description": "Ulgurji narxlar, assortiment va yetkazib berish shartlari."
+      },
+      "distributor": {
+        "title": "Distributorlik",
+        "description": "Viloyatlarda hamkorlik va rasmiy vakillik."
+      },
+      "corporate": {
+        "title": "Korporativ buyurtma (B2B)",
+        "description": "Xodimlar uchun to'plamlar, sovg'a va korporativ dasturlar."
+      }
+    }
   },
   "blog": {
     "title": "Sog‘liq blogi",
@@ -357,12 +446,25 @@
     "backToBlog": "Blogga qaytish",
     "relatedProducts": "Mos mahsulotlar",
     "eyebrow": "Yangiliklar",
-    "viewAll": "Barcha maqolalar"
+    "viewAll": "Barcha maqolalar",
+    "categoriesTitle": "Bo'limlar",
+    "categorySubtitle": "«{category}» bo'limidagi materiallar",
+    "categoryEmpty": "Bu bo'limda hozircha material yo'q.",
+    "categories": {
+      "nutrition": "Ovqatlanish",
+      "vitamins": "Vitaminlar",
+      "lifestyle": "Turmush tarzi",
+      "science": "Fan",
+      "research": "Tadqiqotlar",
+      "kids": "Bolalar",
+      "pregnancy": "Homiladorlik",
+      "sports": "Sport"
+    }
   },
   "meta": {
-    "homeTitle": "Alimkhanov — Vitaminlar va BAD O‘zbekistonda",
+    "homeTitle": "Go Vita — Vitaminlar va BAD O‘zbekistonda",
     "homeDescription": "Shveytsariya, Germaniya va Rossiya sifatidagi vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, tez yetkazib berish.",
-    "shopTitle": "Do‘kon — Alimkhanov vitaminlari va qo‘shimchalari",
+    "shopTitle": "Do‘kon — Go Vita vitaminlari va qo‘shimchalari",
     "shopDescription": "Sog‘liq va energiya uchun to‘liq vitamin va BAD katalogi. Bugun buyurtma bering."
   },
   "legal": {
@@ -506,7 +608,7 @@
     "about": {
       "crumb": "Biz haqimizda",
       "eyebrow": "Biz haqimizda",
-      "title": "Alimkhanov Pharm Group",
+      "title": "Go Vita",
       "subtitle": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitamin va BAD yetkazib beruvchi.",
       "intro": "Biz Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qilamiz, 2000+ dorixona va minglab mijozlarga xizmat ko‘rsatamiz.",
       "stats": [
@@ -542,13 +644,41 @@
           "text": "Har mijozga individual yondashuv."
         }
       ],
-      "certsLabel": "Sertifikatlar"
+      "certsLabel": "Sertifikatlar",
+      "quality": {
+        "eyebrow": "Sifat zanjiri",
+        "title": "Mahsulot javongacha nimalardan o'tadi",
+        "subtitle": "Har bir bosqichda hujjat qoladi. Quyida zanjirning har bir bo'g'ini nimani anglatishi tushuntirilgan.",
+        "origin": {
+          "title": "Kelib chiqishi",
+          "body": "Xomashyo va tayyor mahsulot qaysi mamlakatda ishlab chiqarilgani har bir mahsulot sahifasida ko'rsatiladi."
+        },
+        "production": {
+          "title": "Ishlab chiqarish",
+          "body": "Ishlab chiqarish cGMP talablariga javob beradigan korxonalarda amalga oshiriladi."
+        },
+        "laboratory": {
+          "title": "Laboratoriya nazorati",
+          "body": "Partiyalar tarkib mosligi, og'ir metallar va mikrobiologik ko'rsatkichlar bo'yicha tekshiriladi."
+        },
+        "certification": {
+          "title": "Sertifikatlash",
+          "body": "cGMP, ISO 22000, Halal va IFOS — mahsulot turiga qarab qo'llaniladigan standartlar."
+        },
+        "delivery": {
+          "title": "Saqlash va yetkazish",
+          "body": "Saqlash sharoiti va muddati nazorat qilinadi; mahsulot rasmiy yetkazib beruvchidan keladi."
+        },
+        "coaTitle": "Tahlil sertifikati (COA) so'rov bo'yicha",
+        "coaBody": "Aniq partiya bo'yicha laboratoriya natijasi kerak bo'lsa — so'rov yuboring, hujjatni taqdim etamiz.",
+        "coaCta": "Litsenziya va sertifikatlar"
+      }
     },
     "news": {
       "crumb": "Yangiliklar",
       "eyebrow": "Kompaniya yangiliklari",
       "title": "Yangiliklar",
-      "subtitle": "Alimkhanov hayotidan so‘nggi yangiliklar va e’lonlar.",
+      "subtitle": "Go Vita hayotidan so‘nggi yangiliklar va e’lonlar.",
       "items": [
         {
           "title": "Yangi Swiss Energy liniyasi keldi",
@@ -651,7 +781,7 @@
       "rows": [
         {
           "label": "Tashkilot nomi",
-          "value": "“Alimkhanov Pharm Group” MChJ"
+          "value": "“Go Vita” MChJ"
         },
         {
           "label": "Manzil",
@@ -872,5 +1002,20 @@
     "includes": "{count} ta mahsulot · {days} kunlik miqdor",
     "addProgram": "Dasturni savatga ({count})",
     "cancelNote": "Har bir mahsulotni savatchada alohida o'zgartirishingiz mumkin"
+  },
+  "reviews": {
+    "eyebrow": "Mijozlar tajribasi",
+    "title": "Sharhlar va tarixlar",
+    "subtitle": "Yulduzcha emas — haqiqiy tajriba: video sharhlar, holatlar va mahsulot sharhlari.",
+    "basedOn": "{count} ta sharh asosida",
+    "storiesTitle": "Mijozlar tarixi",
+    "productReviewsTitle": "Mahsulot sharhlari",
+    "empty": "Hozircha sharhlar yo'q. Birinchi bo'lib fikr qoldiring.",
+    "browse": "Katalogni ko'rish",
+    "kind": {
+      "video": "Video sharh",
+      "case": "Holat",
+      "transformation": "Natija"
+    }
   }
 }

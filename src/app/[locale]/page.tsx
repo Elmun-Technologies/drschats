@@ -12,6 +12,11 @@ import { PromoBanners } from "@/components/home/PromoBanners";
 import { StatsBand } from "@/components/home/StatsBand";
 import { BlogTeaser } from "@/components/home/BlogTeaser";
 import { HomeCTA } from "@/components/home/HomeCTA";
+import { QuizPromo } from "@/components/home/QuizPromo";
+import { ProgramsRail } from "@/components/home/ProgramsRail";
+import { DoctorAdvice } from "@/components/home/DoctorAdvice";
+import { HomeFaq } from "@/components/home/HomeFaq";
+import { NewsletterSignup } from "@/components/home/NewsletterSignup";
 import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
 import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
 
@@ -40,25 +45,33 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [categories, bestsellers, topRated, allProducts] = await Promise.all([
+  // "Popular, top 8" is the head of "popular, top 50" — one request, not two.
+  const [categories, popular, topRated] = await Promise.all([
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 8 }),
-    shopflow.getProducts({ locale, sort: "new", pageSize: 8 }),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }),
+    shopflow.getProducts({ locale, sort: "new", pageSize: 8 }),
   ]);
+
+  const bestsellers = popular.items.slice(0, 8);
 
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <HeroBento products={bestsellers.items} />
+      <HeroBento products={bestsellers} />
       <TopCategories categories={categories} />
-      <FeaturedProducts products={bestsellers.items} />
-      <PersonalizedRail allProducts={allProducts.items} />
+      {/* Intent first: the consultant is the widest entry into the catalogue. */}
+      <QuizPromo />
+      <FeaturedProducts products={bestsellers} />
+      <ProgramsRail locale={locale} />
+      <PersonalizedRail allProducts={popular.items} />
       <PromoBanners />
-      <RecentlyViewed allProducts={allProducts.items} />
+      <RecentlyViewed allProducts={popular.items} />
       <ProductCarousel products={topRated.items} />
+      <DoctorAdvice locale={locale} />
       <StatsBand />
       <BlogTeaser locale={locale} />
+      <HomeFaq />
+      <NewsletterSignup />
       <HomeCTA />
     </>
   );

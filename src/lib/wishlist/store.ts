@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import { STORAGE_KEYS } from "@/lib/storage-keys";
 
 interface WishlistState {
   items: string[]; // productIds
@@ -19,6 +20,6 @@ export const useWishlist = create<WishlistState>()(
         })),
       has: (productId) => get().items.includes(productId),
     }),
-    { name: "alimkhanov-wishlist" },
+    { name: STORAGE_KEYS.wishlist },
   ),
 );

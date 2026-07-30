@@ -5,6 +5,7 @@ import { brand } from "./brand";
 import { synergyPair } from "./synergyPair";
 import { healthTopic } from "./healthTopic";
 import { program } from "./program";
+import { customerStory } from "./customerStory";
 
 export const schemaTypes = [
   blogPost,
@@ -14,4 +15,5 @@ export const schemaTypes = [
   synergyPair,
   healthTopic,
   program,
+  customerStory,
 ];

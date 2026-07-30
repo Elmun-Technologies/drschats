@@ -35,10 +35,10 @@ export default async function ProductsPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ sort?: string; q?: string; origin?: string; min?: string; max?: string; page?: string }>;
+  searchParams: Promise<{ sort?: string; q?: string; origin?: string; min?: string; max?: string; page?: string; goal?: string }>;
 }) {
   const { locale } = await params;
-  const { sort, q, origin, min, max, page } = await searchParams;
+  const { sort, q, origin, min, max, page, goal } = await searchParams;
   setRequestLocale(locale);
   const activeSort = valid.includes(sort as Sort) ? (sort as Sort) : "popular";
   const activePage = Math.max(1, Number(page) || 1);
@@ -46,6 +46,7 @@ export default async function ProductsPage({
     <ShopView
       locale={locale}
       sort={activeSort}
+      goal={goal?.trim() || undefined}
       search={q?.trim() || undefined}
       origin={origin || undefined}
       minPrice={toNum(min)}

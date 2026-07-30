@@ -50,7 +50,7 @@ const rawExperts: RawExpert[] = [
       uz: ["Tibbiyot fanlari nomzodi (PhD)", "Klinik farmakologiya bo'yicha sertifikat", "O'zbekiston shifokorlar reyestrida"],
       ru: ["Кандидат медицинских наук (PhD)", "Сертификат по клинической фармакологии", "В реестре врачей Узбекистана"],
     },
-    worksFor: "Alimkhanov Medical Review Board",
+    worksFor: "Go Vita Medical Review Board",
     sameAs: ["https://pubmed.ncbi.nlm.nih.gov/", "https://www.linkedin.com/"],
   },
   {
@@ -70,7 +70,7 @@ const rawExperts: RawExpert[] = [
       uz: ["Ro'yxatdan o'tgan diyetolog-nutritsiolog (RDN)", "Sport ovqatlanishi sertifikati"],
       ru: ["Зарегистрированный диетолог-нутрициолог (RDN)", "Сертификат по спортивному питанию"],
     },
-    worksFor: "Alimkhanov Medical Review Board",
+    worksFor: "Go Vita Medical Review Board",
     sameAs: ["https://pubmed.ncbi.nlm.nih.gov/", "https://www.linkedin.com/"],
   },
   {
@@ -90,7 +90,7 @@ const rawExperts: RawExpert[] = [
       uz: ["Farmatsevtika doktori (PharmD)", "GMP audit sertifikati"],
       ru: ["Доктор фармацевтики (PharmD)", "Сертификат GMP-аудитора"],
     },
-    worksFor: "Alimkhanov Medical Review Board",
+    worksFor: "Go Vita Medical Review Board",
     sameAs: ["https://pubmed.ncbi.nlm.nih.gov/", "https://www.linkedin.com/"],
   },
 ];
