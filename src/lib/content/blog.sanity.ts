@@ -15,6 +15,8 @@ export interface Article {
   readingMinutes: number;
   image: string;
   category: string;
+  /** Stable taxonomy slug; see lib/content/blog-categories.ts */
+  categoryKey?: string;
   title: string;
   excerpt: string;
   sections: { heading: string; paragraphs: string[] }[];
@@ -54,6 +56,7 @@ function mapArticle(raw: SanityRaw): Article {
     readingMinutes: (raw.readingMinutes ?? 5) as number,
     image: mapImage(raw),
     category: (raw.category ?? "") as string,
+    categoryKey: (raw.categoryKey as string) || undefined,
     title: (raw.title ?? "") as string,
     excerpt: (raw.excerpt ?? "") as string,
     sections,

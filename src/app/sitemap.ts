@@ -5,6 +5,7 @@ import { listArticleSlugs } from "@/lib/content/blog.sanity";
 import { listExpertSlugs } from "@/lib/content/experts.sanity";
 import { getHealthTopicIndex } from "@/lib/content/health-topics.sanity";
 import { getProgramSlugs } from "@/lib/content/programs.sanity";
+import { BLOG_CATEGORY_KEYS } from "@/lib/content/blog-categories";
 import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import type { Product } from "@/lib/shopflow/types";
@@ -37,8 +38,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
   const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);
   const topicPaths = healthTopics.map((t) => `${TOPIC_BASE_PATH[t.kind]}/${t.slug}`);
+  const blogCategoryPaths = BLOG_CATEGORY_KEYS.map((key) => `/blog/category/${key}`);
   const programPaths = programSlugs.map((slug) => `/programs/${slug}`);
-  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths, ...expertPaths, ...topicPaths, ...programPaths];
+  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths, ...expertPaths, ...topicPaths, ...programPaths, ...blogCategoryPaths];
 
   return allPaths.map((path) => {
     const languages: Record<string, string> = {};

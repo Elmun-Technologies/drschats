@@ -13,6 +13,7 @@ interface RawArticle {
   readingMinutes: number;
   imageSeed: string;
   category: L;
+  categoryKey?: string;
   title: L;
   excerpt: L;
   sections: ArticleSection[];
@@ -25,6 +26,7 @@ export interface Article {
   readingMinutes: number;
   image: string;
   category: string;
+  categoryKey?: string;
   title: string;
   excerpt: string;
   sections: { heading: string; paragraphs: string[] }[];
@@ -44,6 +46,7 @@ const rawArticles: RawArticle[] = [
     readingMinutes: 6,
     imageSeed: "blog-omega3",
     category: { uz: "Yurak sog'lig'i", ru: "Здоровье сердца" },
+    categoryKey: "nutrition",
     title: {
       uz: "Omega-3 nima uchun kerak va qanday tanlash kerak",
       ru: "Зачем нужна омега-3 и как её выбрать",
@@ -88,6 +91,7 @@ const rawArticles: RawArticle[] = [
     readingMinutes: 5,
     imageSeed: "blog-vitamind",
     category: { uz: "Immunitet", ru: "Иммунитет" },
+    categoryKey: "vitamins",
     title: {
       uz: "Qishda vitamin D: nega ko'pchilikda yetishmaydi",
       ru: "Витамин D зимой: почему его не хватает многим",
@@ -130,6 +134,7 @@ const rawArticles: RawArticle[] = [
     readingMinutes: 4,
     imageSeed: "blog-magnesium",
     category: { uz: "Uyqu va stress", ru: "Сон и стресс" },
+    categoryKey: "lifestyle",
     title: {
       uz: "Magniy va uyqu: tinchlik minerali",
       ru: "Магний и сон: минерал спокойствия",
@@ -164,6 +169,7 @@ function resolve(a: RawArticle, locale: Locale): Article {
     readingMinutes: a.readingMinutes,
     image: img(a.imageSeed),
     category: a.category[locale],
+    categoryKey: a.categoryKey,
     title: a.title[locale],
     excerpt: a.excerpt[locale],
     sections: a.sections.map((s) => ({

@@ -29,6 +29,24 @@ export const blogPost = defineType({
   type: "document",
   fields: [
     defineField({ name: "slug", title: "Slug", type: "slug", options: { source: "title.uz" } }),
+    defineField({
+      name: "categoryKey",
+      title: "Category",
+      type: "string",
+      description: "Stable taxonomy slug used in /blog/category/… URLs",
+      options: {
+        list: [
+          { title: "Nutrition", value: "nutrition" },
+          { title: "Vitamins", value: "vitamins" },
+          { title: "Lifestyle", value: "lifestyle" },
+          { title: "Science", value: "science" },
+          { title: "Research", value: "research" },
+          { title: "Kids", value: "kids" },
+          { title: "Pregnancy", value: "pregnancy" },
+          { title: "Sports", value: "sports" },
+        ],
+      },
+    }),
     defineField({ name: "date", title: "Date", type: "date" }),
     defineField({ name: "readingMinutes", title: "Reading Minutes", type: "number" }),
     defineField({ name: "mainImage", title: "Main Image", type: "image", options: { hotspot: true } }),

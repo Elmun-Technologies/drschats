@@ -446,7 +446,20 @@
     "backToBlog": "Blogga qaytish",
     "relatedProducts": "Mos mahsulotlar",
     "eyebrow": "Yangiliklar",
-    "viewAll": "Barcha maqolalar"
+    "viewAll": "Barcha maqolalar",
+    "categoriesTitle": "Bo'limlar",
+    "categorySubtitle": "«{category}» bo'limidagi materiallar",
+    "categoryEmpty": "Bu bo'limda hozircha material yo'q.",
+    "categories": {
+      "nutrition": "Ovqatlanish",
+      "vitamins": "Vitaminlar",
+      "lifestyle": "Turmush tarzi",
+      "science": "Fan",
+      "research": "Tadqiqotlar",
+      "kids": "Bolalar",
+      "pregnancy": "Homiladorlik",
+      "sports": "Sport"
+    }
   },
   "meta": {
     "homeTitle": "Alimkhanov — Vitaminlar va BAD O‘zbekistonda",
@@ -631,7 +644,35 @@
           "text": "Har mijozga individual yondashuv."
         }
       ],
-      "certsLabel": "Sertifikatlar"
+      "certsLabel": "Sertifikatlar",
+      "quality": {
+        "eyebrow": "Sifat zanjiri",
+        "title": "Mahsulot javongacha nimalardan o'tadi",
+        "subtitle": "Har bir bosqichda hujjat qoladi. Quyida zanjirning har bir bo'g'ini nimani anglatishi tushuntirilgan.",
+        "origin": {
+          "title": "Kelib chiqishi",
+          "body": "Xomashyo va tayyor mahsulot qaysi mamlakatda ishlab chiqarilgani har bir mahsulot sahifasida ko'rsatiladi."
+        },
+        "production": {
+          "title": "Ishlab chiqarish",
+          "body": "Ishlab chiqarish cGMP talablariga javob beradigan korxonalarda amalga oshiriladi."
+        },
+        "laboratory": {
+          "title": "Laboratoriya nazorati",
+          "body": "Partiyalar tarkib mosligi, og'ir metallar va mikrobiologik ko'rsatkichlar bo'yicha tekshiriladi."
+        },
+        "certification": {
+          "title": "Sertifikatlash",
+          "body": "cGMP, ISO 22000, Halal va IFOS — mahsulot turiga qarab qo'llaniladigan standartlar."
+        },
+        "delivery": {
+          "title": "Saqlash va yetkazish",
+          "body": "Saqlash sharoiti va muddati nazorat qilinadi; mahsulot rasmiy yetkazib beruvchidan keladi."
+        },
+        "coaTitle": "Tahlil sertifikati (COA) so'rov bo'yicha",
+        "coaBody": "Aniq partiya bo'yicha laboratoriya natijasi kerak bo'lsa — so'rov yuboring, hujjatni taqdim etamiz.",
+        "coaCta": "Litsenziya va sertifikatlar"
+      }
     },
     "news": {
       "crumb": "Yangiliklar",

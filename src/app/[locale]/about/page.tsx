@@ -6,6 +6,7 @@ import { JsonLd, organizationLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { PageHero } from "@/components/page/PageHero";
+import { QualityChain } from "@/components/page/QualityChain";
 
 export const revalidate = 3600;
 
@@ -100,6 +101,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             ))}
           </div>
         </Reveal>
+
+        <QualityChain />
       </Container>
     </div>
   );
