@@ -1,7 +1,6 @@
 "use client";
 
 import { useId, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import type { FaqItem } from "@/lib/shopflow/types";
 
 export function FaqAccordion({ items }: { items: FaqItem[] }) {
@@ -38,22 +37,21 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
                 </svg>
               </button>
             </h3>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  id={panelId}
-                  role="region"
-                  aria-labelledby={triggerId}
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: "auto", opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                  className="overflow-hidden"
-                >
-                  <p className="pb-5 text-muted">{item.answer}</p>
-                </motion.div>
-              )}
-            </AnimatePresence>
+            {/* The answer stays in the DOM so the panel can animate to its own
+                height, and `inert` keeps a collapsed one out of the
+                accessibility tree and the tab order. */}
+            <div
+              id={panelId}
+              role="region"
+              aria-labelledby={triggerId}
+              data-open={isOpen}
+              inert={!isOpen}
+              className="accordion-panel"
+            >
+              <div>
+                <p className="pb-5 text-muted">{item.answer}</p>
+              </div>
+            </div>
           </div>
         );
       })}

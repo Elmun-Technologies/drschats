@@ -86,6 +86,50 @@
 }
 
 /*
+  Accordion open/close without a JS animation runtime.
+
+  Animating to "auto" height is the one thing CSS historically could not do,
+  which is why this used a motion library. `grid-template-rows: 0fr → 1fr`
+  solves it: the row resolves to the content's natural height, and the
+  transition between the two fractions is smooth.
+*/
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.accordion-panel > * {
+  overflow: hidden;
+  min-height: 0;
+}
+.accordion-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+/*
+  Hero slide transition.
+
+  The hero carries the page's H1 and is almost certainly the LCP element, so
+  it must not wait for an animation runtime to hydrate before becoming
+  visible. The first slide therefore paints with no animation at all; only
+  subsequent slides get the enter transition, replayed by React's `key` remount.
+*/
+@keyframes hero-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-slide-in {
+  animation: hero-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/*
   Scroll-reveal without a JS animation library.
 
   A listing page mounts dozens of revealed elements (24 product cards, article
