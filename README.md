@@ -1,13 +1,18 @@
-# Alimkhanov — Cinematic SEO Storefront
+# Go Vita — health commerce storefront
 
-Premium, animation-rich, multilingual (UZ / RU / EN) storefront for **Alimkhanov
-Pharm Group** (vitamins & dietary supplements). The site's job is to attract
-customers via SEO + context ads and sell on-site. Commerce data (products,
-prices, promotions, upsells, orders) lives in the **Shopflow platform**; this
-app is the cinematic, SEO-optimized storefront layer that integrates with it.
+Multilingual (UZ / RU / EN) storefront for **Go Vita** — vitamins, dietary
+supplements and med-cosmetics for the Uzbek market. The site's job is to attract
+customers via SEO + context ads and sell on-site.
 
-> Visual benchmark: [whoop.com](https://www.whoop.com). Structure benchmarks:
-> Thorne, Vitamin World, Nature Made, Carlson Labs, NutraChamps.
+Navigation is organised around health goals, not just the product tree: goals,
+symptoms and vitamin guides (`/goals`, `/symptoms`, `/vitamins`), a rule-based
+consultant quiz (`/quiz`) and multi-week programs (`/programs`) sit alongside
+the catalogue and feed into it.
+
+Commerce data (products, prices, promotions, upsells, orders) comes from a
+catalog backend behind a single adapter interface — see
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the platform plan and
+[`docs/SHOPFLOW_API.md`](docs/SHOPFLOW_API.md) for the exact API contract.
 
 ## See it live (one-click deploy)
 
@@ -25,9 +30,13 @@ real Shopflow data.
 - **Next.js 15** (App Router) + **TypeScript** — SSR/SSG/ISR for SEO
 - **next-intl** — `/uz` `/ru` `/en` routing, hreflang, localized metadata
 - **Tailwind CSS v4** — CSS-first design tokens (`src/styles/globals.css`)
-- **Framer Motion + Lenis** — cinematic scroll animations & smooth scroll
+- **CSS animations** for anything on the critical path (reveals, accordion,
+  hero, card hover); **Framer Motion** only for interactive overlays
+  (drawers, modals, toasts) and **Lenis** for smooth scroll
 - **Zustand** — persisted cart; **Zod** — runtime validation
 - **react-hook-form** — checkout (zayavka) form
+- **Sanity** — optional CMS layer; every content module falls back to the
+  built-in static seed when Sanity env vars are absent
 
 ## Getting started
 
@@ -74,9 +83,9 @@ added in the platform render automatically via the template.
 
 ## Brand assets
 
-Currently a premium dark token system + placeholder imagery (Picsum). Real
-logo, brand colours, fonts and product photos plug into
-`src/styles/globals.css` (tokens) and the product image host in `next.config.ts`.
+A light token system (`@theme` in `src/styles/globals.css`) plus placeholder
+imagery. Real logo, brand colours, fonts and product photos plug into those
+tokens and the product image host in `next.config.ts`.
 
 Brand wiring is centralised in **`src/lib/brand.ts`** (logo path, wordmark,
 per-product photo overrides) and **`public/brand/`** — see that folder's README.

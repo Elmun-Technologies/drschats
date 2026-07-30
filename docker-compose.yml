@@ -1,0 +1,92 @@
+# Go Vita — backend infratuzilmasi (Faza 0).
+#
+# Bu fayl faqat ma'lumot xizmatlarini ko'taradi. FastAPI va Celery hali
+# yozilmagan — ular tayyor bo'lganda quyidagi `api` / `worker` izohlari
+# o'rniga qo'yiladi va shu tarmoqqa ulanadi.
+#
+# Frontend (Next.js) bu yerda yo'q: u Vercel'da qoladi. Sabab va umumiy
+# arxitektura — docs/ARCHITECTURE.md.
+#
+#   docker compose up -d
+#   docker compose ps
+#
+# Hech qanday sozlashsiz ishlaydi; ishlab chiqarishda parollarni .env orqali
+# almashtiring.
+
+name: govita
+
+services:
+  postgres:
+    # PGVector — alohida vektor bazasi o'rniga (docs/ARCHITECTURE.md §2.4).
+    image: pgvector/pgvector:pg17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-govita}
+      POSTGRES_USER: ${POSTGRES_USER:-govita}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-govita_dev}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-govita} -d ${POSTGRES_DB:-govita}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  redis:
+    # Ikki vazifa: kesh va Celery broker'i (§2.3).
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  meilisearch:
+    # Elasticsearch o'rniga — sabab docs/ARCHITECTURE.md §2.2.
+    image: getmeili/meilisearch:v1.11
+    restart: unless-stopped
+    environment:
+      MEILI_MASTER_KEY: ${MEILI_MASTER_KEY:-govita_dev_master_key}
+      MEILI_ENV: ${MEILI_ENV:-development}
+      MEILI_NO_ANALYTICS: "true"
+    ports:
+      - "${MEILI_PORT:-7700}:7700"
+    volumes:
+      - meili-data:/meili_data
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:7700/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  # Faza 1 — FastAPI. Katalog, auth (JWT), buyurtmalar.
+  # api:
+  #   build: ./backend
+  #   depends_on:
+  #     postgres: { condition: service_healthy }
+  #     redis: { condition: service_healthy }
+  #     meilisearch: { condition: service_healthy }
+  #   ports: ["8000:8000"]
+  #
+  # Faza 2 — Celery. Meilisearch indeksini sinxronlash, Telegram/SMS xabarlar,
+  # AI orqali rasm tahlili. Bir xil image, boshqa buyruq.
+  # worker:
+  #   build: ./backend
+  #   command: celery -A app.worker worker -l info
+  #   depends_on:
+  #     redis: { condition: service_healthy }
+
+volumes:
+  postgres-data:
+  redis-data:
+  meili-data:
