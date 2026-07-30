@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import type { CartLine } from "./pricing";
 import { useToast } from "@/lib/ui/toast";
+import { STORAGE_KEYS } from "@/lib/storage-keys";
 
 const CART_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -69,7 +70,7 @@ export const useCart = create<CartState>()(
       toggle: () => set((state) => ({ isOpen: !state.isOpen })),
     }),
     {
-      name: "alimkhanov-cart",
+      name: STORAGE_KEYS.cart,
       partialize: (state) => ({ lines: state.lines, _savedAt: state._savedAt }),
       merge: (persisted, current) => {
         const p = persisted as { lines: CartLine[]; _savedAt: number };

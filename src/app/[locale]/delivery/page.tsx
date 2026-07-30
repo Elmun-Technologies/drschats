@@ -17,7 +17,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "delivery" });
-  return buildPageMetadata({ locale, path: "/delivery", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
+  return buildPageMetadata({ locale, path: "/delivery", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
 const SHIPPING_ICONS = [

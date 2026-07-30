@@ -1,4 +1,5 @@
 import type { QuizQuestion } from "./questions";
+import { STORAGE_KEYS } from "@/lib/storage-keys";
 
 export type QuizAnswers = Record<string, string[]>;
 
@@ -63,7 +64,7 @@ export function buildQuizResult(questions: QuizQuestion[], answers: QuizAnswers)
   };
 }
 
-const STORAGE_KEY = "alimkhanov-quiz";
+const STORAGE_KEY = STORAGE_KEYS.quiz;
 
 export interface StoredQuiz {
   answers: QuizAnswers;

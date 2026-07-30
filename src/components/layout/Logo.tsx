@@ -11,7 +11,7 @@ export function Logo({ className }: { className?: string }) {
     return (
       <Image
         src={BRAND.logo}
-        alt="Alimkhanov"
+        alt="Go Vita"
         width={BRAND.logoWidth}
         height={BRAND.logoHeight}
         priority

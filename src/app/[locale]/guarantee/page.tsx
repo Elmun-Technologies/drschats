@@ -13,7 +13,7 @@ export const revalidate = 3600;
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages.guarantee" });
-  return buildPageMetadata({ locale, path: "/guarantee", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
+  return buildPageMetadata({ locale, path: "/guarantee", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
 const POINT_ICONS = [

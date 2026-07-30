@@ -63,7 +63,7 @@
     "hero": {
       "eyebrow": "Shveytsariya, Germaniya va Rossiya sifati",
       "title": "Har kuningiz uchun isbotlangan nutriyentlar",
-      "subtitle": "Alimkhanov — laboratoriyada sinovdan o‘tgan vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, shaffof formulalar, eshigingizgacha yetkazib berish.",
+      "subtitle": "Go Vita — laboratoriyada sinovdan o‘tgan vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, shaffof formulalar, eshigingizgacha yetkazib berish.",
       "cta": "Do‘konni ko‘rish",
       "secondaryCta": "Mahsulotlar haqida"
     },
@@ -97,7 +97,7 @@
     },
     "voices": {
       "title": "Mijozlarimiz nima deydi",
-      "subtitle": "Minglab odam Alimkhanov’ga ishonadi",
+      "subtitle": "Minglab odam Go Vita’ga ishonadi",
       "member": "Mijoz",
       "join": "Hozir qo‘shilish"
     },
@@ -129,7 +129,7 @@
       "eyebrow": "Mahsulot kategoriyalari",
       "title": "Premium sifat",
       "subtitle": "Har bir ehtiyoj uchun aniq yechim",
-      "lead": "Alimkhanov mahsulotlari yetakchi sog‘liqni saqlash mutaxassislari tavsiyalari asosida, Yevropa sifat standartlarida ishlab chiqariladi.",
+      "lead": "Go Vita mahsulotlari yetakchi sog‘liqni saqlash mutaxassislari tavsiyalari asosida, Yevropa sifat standartlarida ishlab chiqariladi.",
       "viewAll": "Barcha kategoriyalar"
     },
     "bestsellers": {
@@ -379,9 +379,9 @@
     "language": "Til"
   },
   "about": {
-    "title": "Alimkhanov haqida",
+    "title": "Go Vita haqida",
     "lead": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitaminlar va biologik faol qo‘shimchalar yetkazib beruvchi.",
-    "body": "Alimkhanov Pharm Group Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qiladi. Biz har bir mahsulotni puxta tanlaymiz, sifatni kafolatlaymiz va mijozlarimizga ishonchli xizmat ko‘rsatamiz.",
+    "body": "Go Vita Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qiladi. Biz har bir mahsulotni puxta tanlaymiz, sifatni kafolatlaymiz va mijozlarimizga ishonchli xizmat ko‘rsatamiz.",
     "values": {
       "quality": {
         "title": "Sifat",
@@ -462,9 +462,9 @@
     }
   },
   "meta": {
-    "homeTitle": "Alimkhanov — Vitaminlar va BAD O‘zbekistonda",
+    "homeTitle": "Go Vita — Vitaminlar va BAD O‘zbekistonda",
     "homeDescription": "Shveytsariya, Germaniya va Rossiya sifatidagi vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, tez yetkazib berish.",
-    "shopTitle": "Do‘kon — Alimkhanov vitaminlari va qo‘shimchalari",
+    "shopTitle": "Do‘kon — Go Vita vitaminlari va qo‘shimchalari",
     "shopDescription": "Sog‘liq va energiya uchun to‘liq vitamin va BAD katalogi. Bugun buyurtma bering."
   },
   "legal": {
@@ -608,7 +608,7 @@
     "about": {
       "crumb": "Biz haqimizda",
       "eyebrow": "Biz haqimizda",
-      "title": "Alimkhanov Pharm Group",
+      "title": "Go Vita",
       "subtitle": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitamin va BAD yetkazib beruvchi.",
       "intro": "Biz Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qilamiz, 2000+ dorixona va minglab mijozlarga xizmat ko‘rsatamiz.",
       "stats": [
@@ -678,7 +678,7 @@
       "crumb": "Yangiliklar",
       "eyebrow": "Kompaniya yangiliklari",
       "title": "Yangiliklar",
-      "subtitle": "Alimkhanov hayotidan so‘nggi yangiliklar va e’lonlar.",
+      "subtitle": "Go Vita hayotidan so‘nggi yangiliklar va e’lonlar.",
       "items": [
         {
           "title": "Yangi Swiss Energy liniyasi keldi",
@@ -781,7 +781,7 @@
       "rows": [
         {
           "label": "Tashkilot nomi",
-          "value": "“Alimkhanov Pharm Group” MChJ"
+          "value": "“Go Vita” MChJ"
         },
         {
           "label": "Manzil",

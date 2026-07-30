@@ -5,8 +5,9 @@ import { useTranslations } from "next-intl";
 import { subscribeToNewsletter } from "@/app/actions/subscribe";
 import { track } from "@/lib/analytics/events";
 import { Container } from "@/components/ui/Container";
+import { BRAND } from "@/lib/brand";
 
-const TELEGRAM_URL = "https://t.me/alimkhanov_pharm";
+const TELEGRAM_URL = BRAND.social.telegram;
 
 export function NewsletterSignup() {
   const t = useTranslations("home.newsletter");

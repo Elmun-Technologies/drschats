@@ -13,7 +13,7 @@ export const revalidate = 3600;
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "pages.payment" });
-  return buildPageMetadata({ locale, path: "/payment", title: `${t("title")} — Alimkhanov`, description: t("subtitle") });
+  return buildPageMetadata({ locale, path: "/payment", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
 const METHOD_ICONS: Record<number, string> = {

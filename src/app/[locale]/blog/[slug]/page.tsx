@@ -39,7 +39,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale,
     path: `/blog/${slug}`,
-    title: `${article.title} — Alimkhanov`,
+    title: `${article.title} — Go Vita`,
     description: article.excerpt,
     image: article.image,
   });

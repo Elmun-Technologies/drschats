@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { Reveal } from "@/components/animation/Reveal";
+import { BRAND, WHATSAPP_URL } from "@/lib/brand";
 
-const PHONE = "+998712000000";
-const TELEGRAM = "https://t.me/alimkhanov_pharm";
-const WHATSAPP = "https://wa.me/998712000000";
+const TELEGRAM = BRAND.social.telegram;
+const WHATSAPP = WHATSAPP_URL;
 
 /*
   One page, several audiences: a customer chasing an order, a pharmacy asking
@@ -14,8 +14,8 @@ const WHATSAPP = "https://wa.me/998712000000";
 const CHANNELS = [
   {
     key: "orders",
-    href: `tel:${PHONE}`,
-    action: "+998 71 200 00 00",
+    href: `tel:${BRAND.contact.phoneHref}`,
+    action: BRAND.contact.phone,
     tone: "accent",
     icon: "M3 5a2 2 0 012-2h2l2 5-2 1a12 12 0 005 5l1-2 5 2v2a2 2 0 01-2 2A16 16 0 013 5z",
   },
@@ -37,22 +37,22 @@ const CHANNELS = [
   },
   {
     key: "pharmacy",
-    href: `mailto:b2b@alimkhanov.com?subject=Pharmacy`,
-    action: "b2b@alimkhanov.com",
+    href: `mailto:${BRAND.contact.b2bEmail}?subject=Pharmacy`,
+    action: BRAND.contact.b2bEmail,
     tone: "gold",
     icon: "M9 3h6l1 4h3a1 1 0 011 1v11a2 2 0 01-2 2H6a2 2 0 01-2-2V8a1 1 0 011-1h3l1-4z",
   },
   {
     key: "distributor",
-    href: `mailto:b2b@alimkhanov.com?subject=Distribution`,
-    action: "b2b@alimkhanov.com",
+    href: `mailto:${BRAND.contact.b2bEmail}?subject=Distribution`,
+    action: BRAND.contact.b2bEmail,
     tone: "gold",
     icon: "M3 7h11v8H3zM14 10h4l3 3v2h-7zM7 19a2 2 0 100-4 2 2 0 000 4zM18 19a2 2 0 100-4 2 2 0 000 4z",
   },
   {
     key: "corporate",
-    href: `mailto:b2b@alimkhanov.com?subject=Corporate`,
-    action: "b2b@alimkhanov.com",
+    href: `mailto:${BRAND.contact.b2bEmail}?subject=Corporate`,
+    action: BRAND.contact.b2bEmail,
     tone: "blue",
     icon: "M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6",
   },

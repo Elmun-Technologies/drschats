@@ -1,6 +1,7 @@
 import type { UserProfile, ViewEvent } from "./types";
+import { STORAGE_KEYS } from "@/lib/storage-keys";
 
-const STORAGE_KEY = "alimkhanov-user";
+const STORAGE_KEY = STORAGE_KEYS.user;
 const MAX_VIEWS = 50;
 const DEDUP_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
 

@@ -3,6 +3,7 @@ import type { Expert } from "@/lib/content/experts";
 import { SITE_NAME, SITE_URL } from "./metadata";
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
+import { BRAND } from "@/lib/brand";
 
 /** Renders a JSON-LD <script> for rich results / AI agents. */
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
@@ -38,11 +39,11 @@ export function organizationNode() {
   return {
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
-    name: "Alimkhanov Pharm Group",
+    name: "Go Vita",
     url: SITE_URL,
     logo: `${SITE_URL}/brand/logo.png`,
     description:
-      "Alimkhanov — premium vitamins and dietary supplements distributor in Uzbekistan.",
+      "Go Vita — premium vitamins and dietary supplements distributor in Uzbekistan.",
     contactPoint: {
       "@type": "ContactPoint",
       telephone: "+998-71-200-00-00",
@@ -52,7 +53,7 @@ export function organizationNode() {
     },
     sameAs: [
       "https://t.me/drschatsstorebot",
-      "https://instagram.com/alimkhanov_pharm",
+      BRAND.social.instagram,
     ],
   };
 }
@@ -89,7 +90,7 @@ export function productGraph({
         "@type": "MedicalWebPage",
         "@id": `${url}#webpage`,
         url,
-        name: `${product.name} — Alimkhanov`,
+        name: `${product.name} — Go Vita`,
         description: product.tagline,
         inLanguage: locale,
         datePublished: datePublished ?? "2025-01-01T09:00:00+05:00",
@@ -262,12 +263,12 @@ export function localBusinessLd() {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "PharmacyOrDrugstore"],
     "@id": `${SITE_URL}/#localbusiness`,
-    name: "Alimkhanov Pharm Group",
+    name: "Go Vita",
     url: SITE_URL,
     logo: `${SITE_URL}/brand/logo.png`,
     image: `${SITE_URL}/brand/logo.png`,
     telephone: "+998-71-200-00-00",
-    email: "info@alimkhanov.com",
+    email: BRAND.contact.email,
     priceRange: "$$",
     openingHours: "Mo-Sa 09:00-18:00",
     address: {
@@ -287,7 +288,7 @@ export function localBusinessLd() {
     },
     sameAs: [
       "https://t.me/drschatsstorebot",
-      "https://instagram.com/alimkhanov_pharm",
+      BRAND.social.instagram,
     ],
     parentOrganization: { "@id": `${SITE_URL}/#organization` },
   };

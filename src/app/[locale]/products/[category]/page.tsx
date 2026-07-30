@@ -37,7 +37,7 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale,
     path: `/products/${category}`,
-    title: `${cat.name} — Alimkhanov`,
+    title: `${cat.name} — Go Vita`,
     description: cat.description ?? cat.name,
   });
 }
