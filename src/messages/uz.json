@@ -237,6 +237,17 @@
       "error": "Yuborib bo'lmadi. Pochtani tekshirib, qayta urinib ko'ring.",
       "privacy": "Istalgan vaqtda obunani bekor qilishingiz mumkin.",
       "telegram": "Telegram kanalimiz"
+    },
+    "deal": {
+      "title": "Kun tovari",
+      "endsIn": "Tugashiga",
+      "save": "{amount} tejaysiz"
+    },
+    "discounts": {
+      "eyebrow": "{percent}% gacha chegirma",
+      "eyebrowPlain": "Chegirmalar",
+      "title": "Chegirmadagi mahsulotlar",
+      "subtitle": "Narxi tushgan vitamin va BADlar — omborda bor, bugun yetkazamiz."
     }
   },
   "product": {
