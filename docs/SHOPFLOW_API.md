@@ -1,7 +1,13 @@
-# Shopflow API — Specification for the Alimkhanov storefront
+# Catalog API — Specification for the Go Vita storefront
 
-This document is the **exact contract** the storefront expects from the Shopflow
-platform. It is generated from the code:
+> **Status.** This contract is backend-agnostic: it describes what the
+> storefront needs, not who serves it. If the catalog moves to the in-house
+> FastAPI service, this is the spec that service implements — the endpoint
+> shapes and the `SHOPFLOW_MODE=http` switch stay exactly as written here.
+> See `docs/ARCHITECTURE.md` for the platform plan.
+
+This document is the **exact contract** the storefront expects from the catalog
+backend. It is generated from the code:
 
 - Interface: `src/lib/shopflow/types.ts` (`ShopflowClient`)
 - Runtime validation: `src/lib/shopflow/schemas.ts` (Zod — responses are

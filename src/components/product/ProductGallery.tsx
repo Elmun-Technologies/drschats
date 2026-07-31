@@ -95,7 +95,7 @@ export function ProductGallery({
           </div>
 
           {discountPercent > 0 && (
-            <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-blue px-2.5 py-1 text-xs font-bold text-white">
+            <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-danger px-2.5 py-1 text-xs font-bold text-white">
               −{discountPercent}%
             </span>
           )}

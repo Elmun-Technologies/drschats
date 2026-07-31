@@ -111,14 +111,15 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
             {t("reviews", { count: product.reviewCount })}
           </a>
         )}
+        {/* Availability is state, not an action — hence signal green, not accent. */}
         <span
           className={`inline-flex items-center gap-1.5 text-sm font-medium ${
-            product.inStock ? "text-accent-strong" : "text-danger"
+            product.inStock ? "text-signal" : "text-danger"
           }`}
         >
           <span
             aria-hidden
-            className={`h-2 w-2 rounded-full ${product.inStock ? "bg-accent" : "bg-danger"}`}
+            className={`h-2 w-2 rounded-full ${product.inStock ? "bg-signal" : "bg-danger"}`}
           />
           {product.inStock ? t("inStock") : t("outOfStock")}
         </span>
@@ -131,13 +132,13 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         <div className="flex flex-wrap items-center gap-3">
           <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="lg" />
           {discountPercent > 0 && (
-            <span className="rounded-full bg-blue px-2.5 py-1 text-xs font-bold text-white">
+            <span className="rounded-full bg-danger px-2.5 py-1 text-xs font-bold text-white">
               −{discountPercent}%
             </span>
           )}
         </div>
         {product.oldPrice && (
-          <p className="mt-1 text-xs font-medium text-accent-strong">
+          <p className="mt-1 text-xs font-medium text-danger">
             {tp("youSave", { amount: formatMoney(product.oldPrice - product.price, locale) })}
           </p>
         )}
