@@ -1,36 +1,54 @@
 @import "tailwindcss";
 
 /*
-  Alimkhanov design tokens — bright, photo-rich e-commerce system
-  (NutraChamps / Vitamin World direction). Swap brand values here.
+  Go Vita design tokens — "Apteka Indigo".
+
+  A marketplace catalogue asks colour to carry three separate jobs, so each one
+  gets its own hue and they never borrow from each other:
+
+    accent  → action     (button, link, filter — "do something")
+    danger  → money      (price, discount, savings)
+    signal  → state      (in stock, natural, certified)
+
+  The previous single-green system used one hue for action *and* state, which
+  is legible on a 20-product site and stops being legible on a 2000-product one.
+
   Note: `ink` doubles as the page background AND the contrast colour placed on
   accent/gold buttons (white), so both stay white in this light theme.
 */
 @theme {
   /* Brand surfaces */
   --color-ink: #ffffff;
-  --color-surface: #f6f8f6;
-  --color-surface-2: #eef1ee;
-  --color-surface-3: #e3e8e3;
-  --color-line: rgba(15, 26, 20, 0.10);
-  --color-line-strong: rgba(15, 26, 20, 0.18);
+  --color-surface: #f5f6fb;
+  --color-surface-2: #edeff8;
+  --color-surface-3: #e1e5f3;
+  --color-line: rgba(19, 22, 50, 0.10);
+  --color-line-strong: rgba(19, 22, 50, 0.18);
+  /* Deep chrome: utility bar, footer, hero grounds */
+  --color-brand-deep: #171c4d;
 
   /* Foreground */
-  --color-fg: #0f1a14;
-  --color-muted: #51605a;
-  --color-faint: #8a948e;
+  --color-fg: #131632;
+  --color-muted: #5a6080;
+  --color-faint: #8b91ae;
 
-  /* Brand accents — "vital green" + warm gold (tuned for white bg) */
-  --color-accent: #15b66a;
-  --color-accent-soft: rgba(21, 182, 106, 0.12);
-  --color-accent-strong: #0f9a59;
-  --color-gold: #e0a32f;
-  --color-danger: #e5484d;
+  /* Action */
+  --color-accent: #3d4cdb;
+  --color-accent-soft: rgba(61, 76, 219, 0.10);
+  --color-accent-strong: #2c39b4;
 
-  /* HealthMart secondary palette */
-  --color-teal: #1faa78;
-  --color-blue: #2f55e6;
-  --color-blue-soft: rgba(47, 85, 230, 0.1);
+  /* State — deliberately still green: "omborda bor" must never read as a button */
+  --color-signal: #16a46a;
+  --color-signal-soft: rgba(22, 164, 106, 0.12);
+
+  /* Money + rating */
+  --color-gold: #e8a93a;
+  --color-danger: #e8253f;
+
+  /* Secondary palette */
+  --color-teal: #16a46a;
+  --color-blue: #3d4cdb;
+  --color-blue-soft: rgba(61, 76, 219, 0.1);
   /* pastel banner backgrounds */
   --color-pastel-beige: #ece4d8;
   --color-pastel-lilac: #e9e3f6;

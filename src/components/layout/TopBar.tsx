@@ -2,7 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 
-/** HealthMart-style teal announcement bar with utility links. */
+/** Utility bar: announcement + secondary links, on the deep brand ground. */
 export function TopBar() {
   const t = useTranslations("topbar");
   const nav = useTranslations("nav");
@@ -13,7 +13,7 @@ export function TopBar() {
     { key: "faqs", href: "/delivery", label: nav("faqs") },
   ];
   return (
-    <div className="hidden bg-teal text-white md:block">
+    <div className="hidden bg-brand-deep text-white md:block">
       <Container className="flex h-10 items-center justify-between gap-4 text-sm">
         <p className="font-medium">{t("announcement")}</p>
         <nav className="flex items-center gap-4">
