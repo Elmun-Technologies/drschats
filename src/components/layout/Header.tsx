@@ -10,6 +10,7 @@ import { TopBar } from "./TopBar";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
 import { CatalogMenu } from "./CatalogMenu";
+import { WishlistLink } from "./WishlistLink";
 import { Logo } from "./Logo";
 import type { Category } from "@/lib/shopflow/types";
 
@@ -90,6 +91,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
 
         <div className="ml-auto flex items-center gap-2 md:ml-0">
           <LocaleSwitcher className="hidden sm:block" />
+          <WishlistLink label={t("wishlist")} />
           <CartButton label={t("cart")} />
           <button
             onClick={() => setMenuOpen(true)}
