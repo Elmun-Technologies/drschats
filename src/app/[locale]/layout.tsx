@@ -44,9 +44,12 @@ export default async function LocaleLayout({
   if (!isLocale(locale)) notFound();
   setRequestLocale(locale);
 
-  const [messages, promotions, tc] = await Promise.all([
+  // Categories are layout data now that the header's catalogue menu lists
+  // them; the read is cached and revalidated like the promotions beside it.
+  const [messages, promotions, categories, tc] = await Promise.all([
     getMessages(),
     shopflow.getPromotions(locale as Locale).catch(() => []),
+    shopflow.getCategories(locale as Locale).catch(() => []),
     getTranslations("common"),
   ]);
 
@@ -70,7 +73,7 @@ export default async function LocaleLayout({
             </a>
             <ScrollProgress />
             <SmoothScroll>
-              <Header />
+              <Header categories={categories} />
               <main id="main-content" className="pb-16 md:pb-0">{children}</main>
               <Footer />
               <CookieConsent />

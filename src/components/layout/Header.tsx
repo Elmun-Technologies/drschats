@@ -9,7 +9,9 @@ import { Container } from "@/components/ui/Container";
 import { TopBar } from "./TopBar";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
+import { CatalogMenu } from "./CatalogMenu";
 import { Logo } from "./Logo";
+import type { Category } from "@/lib/shopflow/types";
 
 /*
   Navigation leads with health intent, not with the catalogue: visitors arrive
@@ -33,7 +35,7 @@ const navItems = [
   { key: "blog", href: "/blog" },
 ] as const;
 
-export function Header() {
+export function Header({ categories = [] }: { categories?: Category[] }) {
   const t = useTranslations("nav");
   const h = useTranslations("header");
   const badges = useTranslations("badges");
@@ -101,15 +103,11 @@ export function Header() {
         </div>
       </Container>
 
-      {/* Nav row (sticky) */}
+      {/* Nav row (sticky). `relative` anchors the catalogue panel, which drops
+          out of this row rather than out of the page. */}
       <div className="sticky top-0 z-40 hidden border-t border-line bg-ink/95 backdrop-blur lg:block">
-        <Container className="flex h-14 items-center gap-7">
-          <Link href="/products" className="flex items-center gap-2 rounded-full bg-blue px-5 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
-            </svg>
-            {t("shopByCategories")}
-          </Link>
+        <Container className="relative flex h-14 items-center gap-7">
+          <CatalogMenu categories={categories} />
           <nav className="flex items-center gap-7">
             {navItems.map((item) => {
               const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
@@ -170,12 +168,40 @@ export function Header() {
                 </button>
               </form>
             </div>
-            <nav className="container-px flex flex-col gap-1 pt-4">
+            <nav className="container-px flex flex-col gap-1 overflow-y-auto pb-10 pt-4">
               {navItems.map((item) => (
-                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="border-b border-line/50 py-4 font-display text-xl font-semibold last:border-0">
+                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="border-b border-line/50 py-4 font-display text-xl font-semibold">
                   {t(item.key)}
                 </Link>
               ))}
+
+              {/* The desktop catalogue panel has no mobile equivalent, so the
+                  categories are listed here instead of being reachable only
+                  through the shop page. */}
+              {categories.length > 0 && (
+                <>
+                  <p className="pt-6 text-xs font-bold uppercase tracking-widest text-faint">
+                    {t("shopByCategories")}
+                  </p>
+                  <ul className="flex flex-col">
+                    {categories.map((c) => (
+                      <li key={c.id}>
+                        <Link
+                          href={`/products/${c.slug}`}
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center justify-between gap-3 border-b border-line/50 py-3 text-base font-semibold"
+                        >
+                          {c.name}
+                          {c.productCount ? (
+                            <span className="text-xs tabular-nums text-faint">{c.productCount}</span>
+                          ) : null}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+
               <div className="pt-6">
                 <LocaleSwitcher />
               </div>
