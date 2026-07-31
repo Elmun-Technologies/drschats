@@ -28,7 +28,8 @@
     "vitamins": "Vitaminlar",
     "quiz": "AI konsultant",
     "programs": "Dasturlar",
-    "reviews": "Sharhlar"
+    "reviews": "Sharhlar",
+    "wishlist": "Sevimlilar"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -891,7 +892,12 @@
   "wishlist": {
     "add": "Sevimlilarga",
     "remove": "Sevimlilardan olib tashlash",
-    "added": "Sevimlilarga qo'shildi"
+    "added": "Sevimlilarga qo'shildi",
+    "title": "Sevimlilar",
+    "count": "{count} ta mahsulot",
+    "empty": "Sevimlilar ro‘yxati hozircha bo‘sh.",
+    "emptyCta": "Katalogga o‘tish",
+    "metaDescription": "Saqlangan vitamin va BADlaringiz."
   },
   "exit": {
     "title": "Ketmang! Sizga maxsus taklif bor",
