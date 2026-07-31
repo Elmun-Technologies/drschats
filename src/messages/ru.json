@@ -314,7 +314,11 @@
     "clearFilters": "Сбросить фильтры",
     "categoriesTitle": "Категории",
     "byGoal": "По цели",
-    "readGoal": "Подробнее о «{goal}»"
+    "readGoal": "Подробнее о «{goal}»",
+    "activeFilters": "Выбрано",
+    "removeFilter": "Убрать фильтр {name}",
+    "priceFromValue": "от {value}",
+    "priceToValue": "до {value}"
   },
   "cart": {
     "title": "Корзина",

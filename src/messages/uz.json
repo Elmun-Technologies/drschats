@@ -314,7 +314,11 @@
     "clearFilters": "Filtrlarni tozalash",
     "categoriesTitle": "Kategoriyalar",
     "byGoal": "Maqsad bo'yicha",
-    "readGoal": "{goal} haqida batafsil"
+    "readGoal": "{goal} haqida batafsil",
+    "activeFilters": "Tanlangan",
+    "removeFilter": "{name} filtrini olib tashlash",
+    "priceFromValue": "{value} dan",
+    "priceToValue": "{value} gacha"
   },
   "cart": {
     "title": "Savatcha",

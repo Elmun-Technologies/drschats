@@ -9,7 +9,7 @@ import { FilterBar } from "@/components/shop/FilterBar";
 import { Pagination } from "@/components/shop/Pagination";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
 import { paginateByGoal, toGoalFacets } from "@/lib/shop/goal-facets";
-import { cn } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 
 type Sort = NonNullable<ProductListParams["sort"]>;
 const sorts: Sort[] = ["popular", "price_asc", "price_desc", "new"];
@@ -92,6 +92,31 @@ export async function ShopView({
   }
 
   const sortQuery = (s: Sort) => buildQuery({ sort: s !== "popular" ? s : undefined, page: undefined });
+
+  /*
+    Applied filters, each one removable on its own.
+
+    Without this row the only record of an active filter is the sidebar, which
+    is off-screen on mobile and easy to scroll past on desktop — so a visitor
+    who filters into an empty result has no visible cause and no way back
+    except the browser button. Price is one chip rather than two: the range is
+    set as a pair, so it reads and clears as a pair.
+  */
+  const priceLabel =
+    minPrice != null && maxPrice != null
+      ? `${formatMoney(minPrice, locale)} – ${formatMoney(maxPrice, locale)}`
+      : minPrice != null
+        ? t("priceFromValue", { value: formatMoney(minPrice, locale) })
+        : maxPrice != null
+          ? t("priceToValue", { value: formatMoney(maxPrice, locale) })
+          : null;
+
+  const activeFilters = [
+    search ? { key: "q", label: `“${search}”`, clear: { q: undefined } } : null,
+    activeGoal ? { key: "goal", label: activeGoal.name, clear: { goal: undefined } } : null,
+    origin ? { key: "origin", label: origin, clear: { origin: undefined } } : null,
+    priceLabel ? { key: "price", label: priceLabel, clear: { min: undefined, max: undefined } } : null,
+  ].filter((f): f is NonNullable<typeof f> => f !== null);
 
   return (
     <>
@@ -195,7 +220,7 @@ export async function ShopView({
                   <li key={c.id}>
                     <Link href={`/products/${c.slug}`} className={cn("flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors", c.slug === activeCategory ? "bg-accent-soft font-semibold text-accent-strong" : "text-muted hover:bg-surface hover:text-fg")}>
                       {c.name}
-                      {c.productCount != null && <span className="text-xs text-faint">{c.productCount}</span>}
+                      {c.productCount ? <span className="text-xs tabular-nums text-faint">{c.productCount}</span> : null}
                     </Link>
                   </li>
                 ))}
@@ -216,6 +241,33 @@ export async function ShopView({
 
           {/* Main */}
           <div>
+            {activeFilters.length > 0 && (
+              <div className="mb-4 flex flex-wrap items-center gap-2">
+                <span className="text-sm font-semibold text-fg">{t("activeFilters")}:</span>
+                {activeFilters.map((f) => (
+                  <Link
+                    key={f.key}
+                    href={buildQuery({ ...f.clear, page: undefined })}
+                    aria-label={t("removeFilter", { name: f.label })}
+                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-accent hover:text-white"
+                  >
+                    {f.label}
+                    <svg viewBox="0 0 24 24" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+                      <path d="M6 6l12 12M18 6L6 18" />
+                    </svg>
+                  </Link>
+                ))}
+                {activeFilters.length > 1 && (
+                  <Link
+                    href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
+                    className="text-sm font-semibold text-muted underline-offset-4 hover:text-fg hover:underline"
+                  >
+                    {t("clearFilters")}
+                  </Link>
+                )}
+              </div>
+            )}
+
             <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-surface px-5 py-3">
               <span className="text-sm text-muted">{t("resultsCount", { count: result.total })}</span>
               <div className="flex flex-wrap items-center gap-2">
@@ -233,7 +285,19 @@ export async function ShopView({
             </div>
 
             {result.items.length === 0 ? (
-              <p className="py-24 text-center text-muted">{t("empty")}</p>
+              <div className="py-24 text-center">
+                <p className="text-muted">{t("empty")}</p>
+                {/* An empty result caused by filters needs a way out that is
+                    not the browser back button. */}
+                {activeFilters.length > 0 && (
+                  <Link
+                    href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
+                    className="mt-4 inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-accent-strong"
+                  >
+                    {t("clearFilters")}
+                  </Link>
+                )}
+              </div>
             ) : (
               <>
                 <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
