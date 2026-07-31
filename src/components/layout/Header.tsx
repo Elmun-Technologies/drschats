@@ -3,13 +3,14 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
-import { Link, usePathname, useRouter } from "@/lib/i18n/navigation";
+import { Link, usePathname } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Container } from "@/components/ui/Container";
 import { TopBar } from "./TopBar";
 import { LocaleSwitcher } from "./LocaleSwitcher";
 import { CartButton } from "./CartButton";
 import { CatalogMenu } from "./CatalogMenu";
+import { SearchBox } from "./SearchBox";
 import { WishlistLink } from "./WishlistLink";
 import { Logo } from "./Logo";
 import type { Category } from "@/lib/shopflow/types";
@@ -40,17 +41,8 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
   const t = useTranslations("nav");
   const h = useTranslations("header");
   const badges = useTranslations("badges");
-  const common = useTranslations("common");
   const pathname = usePathname();
-  const router = useRouter();
   const [menuOpen, setMenuOpen] = useState(false);
-  const [query, setQuery] = useState("");
-
-  function submitSearch(e: React.FormEvent) {
-    e.preventDefault();
-    const q = query.trim();
-    if (q) router.push({ pathname: "/products", query: { q } });
-  }
 
   return (
     <header className="border-b border-line bg-ink">
@@ -62,20 +54,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
           <Logo />
         </Link>
 
-        <form onSubmit={submitSearch} className="hidden flex-1 items-center rounded-full border border-line-strong bg-surface pl-5 pr-1.5 md:flex">
-          <input
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder={common("search") + "…"}
-            className="h-11 flex-1 bg-transparent text-sm text-fg outline-none placeholder:text-faint"
-          />
-          <button type="submit" aria-label={common("search")} className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-ink">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="11" cy="11" r="7" />
-              <path d="M21 21l-4-4" strokeLinecap="round" />
-            </svg>
-          </button>
-        </form>
+        <SearchBox categories={categories} className="hidden flex-1 md:block" />
 
         <div className="hidden items-center gap-2 lg:flex">
           <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
@@ -156,19 +135,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
               </button>
             </div>
             <div className="container-px pt-4">
-              <form onSubmit={submitSearch} className="flex items-center rounded-xl border border-line bg-surface px-4">
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder={common("search") + "…"}
-                  className="h-12 flex-1 bg-transparent text-sm text-fg outline-none placeholder:text-faint"
-                />
-                <button type="submit" aria-label={common("search")} onClick={() => setMenuOpen(false)}>
-                  <svg viewBox="0 0 24 24" className="h-5 w-5 text-muted" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" strokeLinecap="round" />
-                  </svg>
-                </button>
-              </form>
+              <SearchBox categories={categories} onNavigate={() => setMenuOpen(false)} />
             </div>
             <nav className="container-px flex flex-col gap-1 overflow-y-auto pb-10 pt-4">
               {navItems.map((item) => (
