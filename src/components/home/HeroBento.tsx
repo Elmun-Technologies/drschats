@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
+import { DealOfDay } from "@/components/home/DealOfDay";
 import type { Product } from "@/lib/shopflow/types";
 import { cn } from "@/lib/utils";
 
@@ -48,7 +49,16 @@ const DEAL_CARDS = [
   },
 ];
 
-export function HeroBento({ products = [] }: { products?: Product[] }) {
+export function HeroBento({
+  products = [],
+  deal,
+}: {
+  products?: Product[];
+  /* The real discounted product for the countdown panel. When the catalogue has
+     nothing on offer the decorative card takes its place, so the bento never
+     collapses to an empty column. */
+  deal?: Product;
+}) {
   const t = useTranslations("home");
   const b = useTranslations("home.bento");
   const slides = t.raw("slides") as SlideCopy[];
@@ -117,13 +127,17 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
 
           {/* Bento deal cards */}
           <div className="grid gap-4">
-            <DealCard
-              card={DEAL_CARDS[0]}
-              off={b(DEAL_CARDS[0].offKey)}
-              title={b(DEAL_CARDS[0].titleKey)}
-              cta={b("viewMore")}
-              product={products[0]}
-            />
+            {deal ? (
+              <DealOfDay product={deal} />
+            ) : (
+              <DealCard
+                card={DEAL_CARDS[0]}
+                off={b(DEAL_CARDS[0].offKey)}
+                title={b(DEAL_CARDS[0].titleKey)}
+                cta={b("viewMore")}
+                product={products[0]}
+              />
+            )}
             <div className="grid grid-cols-2 gap-4">
               <DealCard card={DEAL_CARDS[1]} off={b(DEAL_CARDS[1].offKey)} title={b(DEAL_CARDS[1].titleKey)} product={products[1]} />
               <DealCard card={DEAL_CARDS[2]} off={b(DEAL_CARDS[2].offKey)} title={b(DEAL_CARDS[2].titleKey)} product={products[2]} />

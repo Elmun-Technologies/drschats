@@ -6,6 +6,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
 import { HeroBento } from "@/components/home/HeroBento";
 import { TopCategories } from "@/components/home/TopCategories";
+import { DiscountRail } from "@/components/home/DiscountRail";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
 import { ProductCarousel } from "@/components/home/ProductCarousel";
 import { PromoBanners } from "@/components/home/PromoBanners";
@@ -19,6 +20,7 @@ import { HomeFaq } from "@/components/home/HomeFaq";
 import { NewsletterSignup } from "@/components/home/NewsletterSignup";
 import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
 import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
+import { byDeepestDiscount } from "@/lib/shop/discounts";
 
 export const revalidate = 300;
 
@@ -54,11 +56,18 @@ export default async function HomePage({
 
   const bestsellers = popular.items.slice(0, 8);
 
+  // One pass over the popular set feeds both the countdown panel and the rail;
+  // the deal is dropped from the rail so the same product is not sold twice on
+  // one screen.
+  const deals = byDeepestDiscount(popular.items);
+  const [deal, ...restOfDeals] = deals;
+
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <HeroBento products={bestsellers} />
+      <HeroBento products={bestsellers} deal={deal} />
       <TopCategories categories={categories} />
+      <DiscountRail products={restOfDeals.slice(0, 8)} />
       {/* Intent first: the consultant is the widest entry into the catalogue. */}
       <QuizPromo />
       <FeaturedProducts products={bestsellers} />
