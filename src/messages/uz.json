@@ -1038,5 +1038,48 @@
       "case": "Holat",
       "transformation": "Natija"
     }
+  },
+  "account": {
+    "title": "Shaxsiy kabinet",
+    "subtitle": "Buyurtmalaringiz, saqlangan mahsulotlar va sog‘liq rejangiz bir joyda.",
+    "login": "Kirish",
+    "register": "Ro‘yxatdan o‘tish",
+    "loginCta": "Kirish",
+    "registerCta": "Hisob yaratish",
+    "name": "Ismingiz",
+    "phone": "Telefon raqami",
+    "password": "Parol",
+    "passwordHint": "Kamida {count} ta belgi",
+    "errorGeneric": "Xatolik yuz berdi. Birozdan so‘ng qayta urining.",
+    "errorOrders": "Buyurtmalarni yuklab bo‘lmadi.",
+    "guestNote": "Hisobsiz ham buyurtma berishingiz mumkin. Ro‘yxatdan o‘tsangiz, shu telefon raqami bilan berilgan avvalgi buyurtmalaringiz avtomatik biriktiriladi.",
+    "greeting": "Xush kelibsiz",
+    "signOut": "Chiqish",
+    "shortcuts": "Tezkor havolalar",
+    "orders": "Buyurtmalarim",
+    "orderTotal": "Jami",
+    "noOrders": "Hozircha buyurtmangiz yo‘q.",
+    "noOrdersCta": "Katalogga o‘tish",
+    "status": {
+      "new": "Qabul qilindi",
+      "confirmed": "Tasdiqlandi",
+      "shipped": "Yo‘lda",
+      "delivered": "Yetkazildi",
+      "cancelled": "Bekor qilindi"
+    },
+    "shortcut": {
+      "wishlist": {
+        "title": "Sevimlilar",
+        "description": "Saqlangan mahsulotlaringiz"
+      },
+      "quiz": {
+        "title": "Sog‘liq testi",
+        "description": "Shaxsiy tavsiya oling"
+      },
+      "programs": {
+        "title": "Dasturlar",
+        "description": "Bir necha haftalik rejalar"
+      }
+    }
   }
 }

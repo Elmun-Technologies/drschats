@@ -23,6 +23,8 @@ export const STORAGE_KEYS = {
   user: `${PREFIX}user`,
   quiz: `${PREFIX}quiz`,
   cookieConsent: `${PREFIX}cookie-consent`,
+  // Post-rebrand, so it has no legacy counterpart to migrate.
+  session: `${PREFIX}session`,
 } as const;
 
 let migrated = false;

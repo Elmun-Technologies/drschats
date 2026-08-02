@@ -1,6 +1,8 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
+import { isApiConfigured } from "@/lib/api/client";
+import { AccountLink } from "./AccountLink";
 
 /** Utility bar: announcement + secondary links, on the deep brand ground. */
 export function TopBar() {
@@ -25,13 +27,9 @@ export function TopBar() {
               {i < links.length - 1 && <span className="text-white/40">|</span>}
             </span>
           ))}
-          <span className="flex items-center gap-1.5 opacity-90">
-            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 21a8 8 0 0116 0" strokeLinecap="round" />
-            </svg>
-            {nav("account")}
-          </span>
+          {/* Hidden until the API exists: an account entry that leads nowhere
+              is a promise the site cannot keep. */}
+          {isApiConfigured() && <AccountLink />}
         </nav>
       </Container>
     </div>
