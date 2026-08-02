@@ -59,7 +59,7 @@ export function Footer() {
           </FooterCol>
 
           <div>
-            <h3 className="mb-4 text-sm font-semibold text-white">{nav("contact")}</h3>
+            <h2 className="mb-4 text-sm font-semibold text-white">{nav("contact")}</h2>
             <ul className="space-y-3 text-sm">
               <li><a href={`tel:${BRAND.contact.phoneHref}`} className="transition-colors hover:text-accent">{BRAND.contact.phone}</a></li>
               <li><a href={`mailto:${BRAND.contact.email}`} className="transition-colors hover:text-accent">{BRAND.contact.email}</a></li>
@@ -102,7 +102,7 @@ export function Footer() {
 function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
-      <h3 className="mb-4 text-sm font-semibold text-white">{title}</h3>
+      <h2 className="mb-4 text-sm font-semibold text-white">{title}</h2>
       <ul className="space-y-3">{children}</ul>
     </div>
   );

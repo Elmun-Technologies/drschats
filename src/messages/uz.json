@@ -249,7 +249,8 @@
       "eyebrowPlain": "Chegirmalar",
       "title": "Chegirmadagi mahsulotlar",
       "subtitle": "Narxi tushgan vitamin va BADlar — omborda bor, bugun yetkazamiz."
-    }
+    },
+    "slideLabel": "{number}-slayd"
   },
   "product": {
     "breadcrumbHome": "Bosh sahifa",

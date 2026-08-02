@@ -28,6 +28,9 @@ export function CardGrid({
   withImage?: boolean;
 }) {
   const cols = { 2: "sm:grid-cols-2", 3: "sm:grid-cols-2 lg:grid-cols-3", 4: "sm:grid-cols-2 lg:grid-cols-4" }[columns];
+  /* Cards nest under the section heading when there is one, and under the page
+     h1 when there isn't — otherwise a headingless grid jumps h1 → h3. */
+  const CardTitle = heading ? "h3" : "h2";
   return (
     <section className="py-12">
       <Container>
@@ -47,7 +50,7 @@ export function CardGrid({
                 )}
                 <div className="flex flex-1 flex-col p-6">
                   {c.meta && <span className="mb-2 w-fit rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent-strong">{c.meta}</span>}
-                  <h3 className="font-display text-lg font-bold text-fg group-hover:text-accent-strong">{c.title}</h3>
+                  <CardTitle className="font-display text-lg font-bold text-fg group-hover:text-accent-strong">{c.title}</CardTitle>
                   {c.text && <p className="mt-2 text-sm text-muted">{c.text}</p>}
                 </div>
               </div>
