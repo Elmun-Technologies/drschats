@@ -79,13 +79,13 @@ export default async function IngredientsPage({
             {synergy.map((s, i) => (
               <Reveal key={i} index={i}>
                 <div className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-5">
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${s.type === "boost" ? "bg-accent-soft text-accent-strong" : "bg-gold/15 text-gold"}`}>
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${s.type === "boost" ? "bg-accent-soft text-accent-strong" : "bg-gold/15 text-gold-ink"}`}>
                     {s.type === "boost" ? "+" : "−"}
                   </span>
                   <div>
                     <p className="font-semibold text-fg">
                       {s.a} <span className="text-faint">{s.type === "boost" ? "+" : "×"}</span> {s.b}
-                      <span className={`ml-2 text-xs font-semibold ${s.type === "boost" ? "text-accent-strong" : "text-gold"}`}>
+                      <span className={`ml-2 text-xs font-semibold ${s.type === "boost" ? "text-accent-strong" : "text-gold-ink"}`}>
                         {s.type === "boost" ? t("boost") : t("block")}
                       </span>
                     </p>
