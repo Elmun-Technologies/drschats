@@ -110,17 +110,31 @@ export function HeroBento({
                   ))}
                 </div>
             </div>
-            <div className="absolute bottom-5 left-8 flex gap-2 sm:left-12">
+            {/*
+              The dot is 8px tall; the button around it is not. The indicator
+              stays small because that is what reads as a carousel dot, but the
+              thing a thumb has to hit is 24px square — the WCAG 2.2 minimum,
+              and roughly the difference between "works on a phone" and "works
+              on the third try".
+            */}
+            <div className="absolute bottom-3 left-6 flex sm:left-10">
               {slides.map((_, idx) => (
                 <button
                   key={idx}
+                  type="button"
                   onClick={() => {
                     setI(idx);
                     setRotated(true);
                   }}
-                  aria-label={`Slide ${idx + 1}`}
-                  className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-ink" : "w-2 bg-ink/30"}`}
-                />
+                  aria-label={t("slideLabel", { number: idx + 1 })}
+                  aria-current={idx === i}
+                  className="flex h-6 w-6 items-center justify-center"
+                >
+                  <span
+                    aria-hidden
+                    className={`h-2 rounded-full transition-all ${idx === i ? "w-6 bg-fg" : "w-2 bg-fg/30"}`}
+                  />
+                </button>
               ))}
             </div>
           </div>
@@ -192,7 +206,9 @@ function DealCard({
 
       <div className={`relative z-10 ${image && card.big ? "max-w-[58%]" : ""}`}>
         <p className="text-xs font-bold uppercase tracking-widest text-fg/60">{off}</p>
-        <h3 className={`mt-1 font-display font-extrabold leading-tight text-fg ${card.big ? "text-xl" : "text-base"}`}>{title}</h3>
+        {/* h2, not h3: these tiles sit beside the hero h1, with no intervening
+            section heading to nest under. */}
+        <h2 className={`mt-1 font-display font-extrabold leading-tight text-fg ${card.big ? "text-xl" : "text-base"}`}>{title}</h2>
         {cta && (
           <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-ink transition-gap group-hover:gap-2">
             {cta}

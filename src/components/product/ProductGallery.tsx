@@ -138,8 +138,10 @@ export function ProductGallery({
           )}
         </div>
 
+        {/* The visible dot stays 6px; the button around it is 24px square so
+            a thumb can actually land on it (WCAG 2.2 target size). */}
         {total > 1 && (
-          <div className="mt-3 flex justify-center gap-1.5 lg:hidden">
+          <div className="mt-3 flex justify-center lg:hidden">
             {images.map((img, i) => (
               <button
                 key={`dot-${img.url}-${i}`}
@@ -147,11 +149,16 @@ export function ProductGallery({
                 onClick={() => goTo(i)}
                 aria-label={t("thumb", { index: i + 1 })}
                 aria-current={i === active}
-                className={cn(
-                  "h-1.5 rounded-full transition-all",
-                  i === active ? "w-6 bg-accent" : "w-1.5 bg-surface-3",
-                )}
-              />
+                className="flex h-6 w-6 items-center justify-center"
+              >
+                <span
+                  aria-hidden
+                  className={cn(
+                    "h-1.5 rounded-full transition-all",
+                    i === active ? "w-6 bg-accent" : "w-1.5 bg-surface-3",
+                  )}
+                />
+              </button>
             ))}
           </div>
         )}

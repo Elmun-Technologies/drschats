@@ -80,7 +80,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                       <path d={VALUE_ICONS[i % VALUE_ICONS.length]} />
                     </svg>
                   </span>
-                  <h3 className="mt-5 font-display text-xl font-bold">{v.title}</h3>
+                  <h2 className="mt-5 font-display text-xl font-bold">{v.title}</h2>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{v.text}</p>
                 </div>
               </Reveal>
