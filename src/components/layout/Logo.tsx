@@ -6,7 +6,15 @@ import { cn } from "@/lib/utils";
  * Renders the brand logo image when BRAND.logo is set, otherwise the text
  * wordmark. Drop a file in /public/brand and point BRAND.logo at it to switch.
  */
-export function Logo({ className }: { className?: string }) {
+export function Logo({
+  className,
+  onDark = false,
+}: {
+  className?: string;
+  /** Lightens the accent half of the wordmark for the deep brand ground,
+      where the standard indigo measures 2.49:1 against 3:1 required. */
+  onDark?: boolean;
+}) {
   if (BRAND.logo) {
     return (
       <Image
@@ -22,7 +30,9 @@ export function Logo({ className }: { className?: string }) {
   return (
     <span className={cn("font-display text-xl font-bold tracking-tight", className)}>
       {BRAND.wordmark.lead}
-      <span className="text-accent">{BRAND.wordmark.accent}</span>
+      <span className={onDark ? "text-accent-on-dark" : "text-accent"}>
+        {BRAND.wordmark.accent}
+      </span>
     </span>
   );
 }

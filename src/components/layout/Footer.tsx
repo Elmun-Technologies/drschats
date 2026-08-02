@@ -21,7 +21,7 @@ export function Footer() {
         <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.2fr_1fr_1fr_1fr_1fr_1.1fr]">
           <div>
             <div className="text-2xl text-white">
-              <Logo className="text-2xl" />
+              <Logo className="text-2xl" onDark />
             </div>
             <p className="mt-4 max-w-xs text-sm text-white/55">{t("tagline")}</p>
           </div>

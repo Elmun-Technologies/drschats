@@ -48,7 +48,7 @@ export default async function LoyaltyPage({
       discount: "15%",
       threshold: "1 500 000",
       color: "border-gold/40 bg-gold/10",
-      badge: "text-gold",
+      badge: "text-gold-ink",
     },
   ];
 
@@ -105,7 +105,7 @@ export default async function LoyaltyPage({
 
           <Reveal index={1}>
             <div className="flex h-full flex-col rounded-3xl border border-gold/30 bg-gold/10 p-8">
-              <span className="w-fit rounded-full bg-gold/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-gold">B2B</span>
+              <span className="w-fit rounded-full bg-gold/20 px-3 py-1 text-xs font-bold uppercase tracking-wide text-gold-ink">B2B</span>
               <h2 className="mt-4 font-display text-2xl font-bold">{t("consultantTitle")}</h2>
               <p className="mt-3 flex-1 text-muted">{t("consultantDesc")}</p>
               <p className="mt-4 rounded-xl border border-gold/30 bg-gold/10 p-4 text-sm text-fg">{t("consultantLegal")}</p>

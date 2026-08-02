@@ -43,7 +43,7 @@ export function ImmunoComplex({ product, upsells }: BespokeProps) {
         <Container>
           <div className="mx-auto max-w-3xl py-32 text-center">
             <Reveal>
-              <p className="mb-5 inline-flex rounded-full border border-gold/40 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold">
+              <p className="mb-5 inline-flex rounded-full border border-gold/40 bg-gold/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-gold-ink">
                 {product.badges[0]}
               </p>
             </Reveal>
