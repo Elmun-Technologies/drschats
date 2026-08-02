@@ -291,7 +291,12 @@
     "reviewedBy": "Shifokor tomonidan tekshirilgan",
     "certifications": "Sertifikatlar va sifat",
     "sourcing": "Kelib chiqishi va shaffoflik",
-    "coaNote": "Har bir partiya og‘ir metallar va patogenlarga tekshiriladi. Tahlil sertifikati (COA) so‘rov bo‘yicha taqdim etiladi."
+    "coaNote": "Har bir partiya og‘ir metallar va patogenlarga tekshiriladi. Tahlil sertifikati (COA) so‘rov bo‘yicha taqdim etiladi.",
+    "healthContext": {
+      "title": "Bu mahsulot qanday maqsadlarga xizmat qiladi",
+      "subtitle": "Batafsil ma'lumot uchun tegishli bo'limga o'ting.",
+      "disclaimer": "Ushbu ma'lumot tanishtirish uchun va shifokor maslahatini almashtirmaydi. Qabul qilishdan oldin mutaxassis bilan maslahatlashing."
+    }
   },
   "shop": {
     "title": "Barcha mahsulotlar",
