@@ -2,22 +2,30 @@
 
 import { useState } from "react";
 
-const UZ_REGIONS = [
-  "Toshkent shahri",
-  "Toshkent viloyati",
-  "Samarqand viloyati",
-  "Farg'ona viloyati",
-  "Andijon viloyati",
-  "Namangan viloyati",
-  "Buxoro viloyati",
-  "Xorazm viloyati",
-  "Qashqadaryo viloyati",
-  "Surxondaryo viloyati",
-  "Sirdaryo viloyati",
-  "Jizzax viloyati",
-  "Navoiy viloyati",
-  "Qoraqalpog'iston Respublikasi",
-];
+/*
+  Regions are keyed, not hardcoded strings.
+
+  They used to be a flat Uzbek array, so a Russian-speaking customer met a
+  bilingual site that switched to Uzbek at the one field they cannot skip. The
+  key is what travels to the backend, so an order stays readable whichever
+  language it was placed in.
+*/
+const REGION_KEYS = [
+  "tashkentCity",
+  "tashkent",
+  "samarkand",
+  "fergana",
+  "andijan",
+  "namangan",
+  "bukhara",
+  "khorezm",
+  "kashkadarya",
+  "surkhandarya",
+  "syrdarya",
+  "jizzakh",
+  "navoi",
+  "karakalpakstan",
+] as const;
 
 import Image from "next/image";
 import { useForm } from "react-hook-form";
@@ -43,6 +51,7 @@ import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("checkout");
+  const tr = useTranslations("checkout.regions");
   const tc = useTranslations("cart");
   const router = useRouter();
   const { lines, add, setQuantity } = useCart();
@@ -145,8 +154,10 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
             <Field label={t("region")} error={errors.region?.message}>
               <select className={inputClass} {...register("region")}>
                 <option value="">{t("regionPlaceholder")}</option>
-                {UZ_REGIONS.map((r) => (
-                  <option key={r} value={r}>{r}</option>
+                {REGION_KEYS.map((key) => (
+                  <option key={key} value={tr(key)}>
+                    {tr(key)}
+                  </option>
                 ))}
               </select>
             </Field>
@@ -225,7 +236,13 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           </fieldset>
         )}
 
-        {serverError && <p className="text-sm text-danger">{serverError}</p>}
+        {/* role="alert": the submit failure appears after the button was
+            pressed, so it has to announce itself rather than wait to be found. */}
+        {serverError && (
+          <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm font-medium text-danger">
+            {serverError}
+          </p>
+        )}
 
         <div className="space-y-3">
           <Button type="submit" size="lg" className="w-full" disabled={submitting}>
@@ -247,10 +264,42 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium">{l.name}</p>
-                  <div className="mt-1 flex items-center gap-2 text-xs text-muted">
-                    <button type="button" onClick={() => setQuantity(l.productId, l.quantity - 1)} className="px-1.5 hover:text-accent">−</button>
-                    <span>{l.quantity}</span>
-                    <button type="button" onClick={() => setQuantity(l.productId, l.quantity + 1)} className="px-1.5 hover:text-accent">+</button>
+                  <div className="mt-1 flex items-center gap-1 text-xs text-muted">
+                    {/*
+                      Stopping at 1 rather than letting "−" fall through to 0.
+                      The store treats 0 as "remove", so one more press than
+                      intended deleted the product from the order with no
+                      warning and nothing to undo it with. Removing is now its
+                      own labelled control.
+                    */}
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(l.productId, l.quantity - 1)}
+                      disabled={l.quantity <= 1}
+                      aria-label={t("decreaseFor", { name: l.name })}
+                      className="rounded px-1.5 hover:text-accent-strong disabled:opacity-40"
+                    >
+                      −
+                    </button>
+                    <span aria-live="polite" className="min-w-4 text-center tabular-nums">
+                      {l.quantity}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(l.productId, l.quantity + 1)}
+                      aria-label={t("increaseFor", { name: l.name })}
+                      className="rounded px-1.5 hover:text-accent-strong"
+                    >
+                      +
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(l.productId, 0)}
+                      aria-label={t("removeFor", { name: l.name })}
+                      className="ml-2 rounded px-1.5 text-faint hover:text-danger"
+                    >
+                      {t("remove")}
+                    </button>
                   </div>
                 </div>
                 <span className="text-sm">{formatMoney(l.price * l.quantity, locale)}</span>

@@ -13,7 +13,8 @@ export function Badge({
   const tones = {
     default: "border-line-strong bg-surface-2 text-muted",
     accent: "border-accent/30 bg-accent-soft text-accent",
-    gold: "border-gold/30 bg-gold/10 text-gold",
+    // gold-ink, not gold: the fill colour on a 10%-gold ground is roughly 2:1.
+    gold: "border-gold/40 bg-gold/15 text-gold-ink",
     danger: "border-danger/30 bg-danger/10 text-danger",
   }[tone];
   return (

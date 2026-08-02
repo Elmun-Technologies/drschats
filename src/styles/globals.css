@@ -43,6 +43,10 @@
 
   /* Money + rating */
   --color-gold: #e8a93a;
+  /* Gold is a fill, not a text colour: #e8a93a on white is about 2:1, well
+     under the 4.5:1 needed for body text. This is the readable variant for
+     wording that has to sit on a light ground. */
+  --color-gold-ink: #8a5a00;
   --color-danger: #e8253f;
 
   /* Secondary palette */

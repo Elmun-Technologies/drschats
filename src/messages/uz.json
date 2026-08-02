@@ -386,7 +386,27 @@
       "trackBotDesc": "@drschatsstorebot orqali buyurtma holatini real vaqtda bilib turing"
     },
     "upsellAdd": "Qo'shish",
-    "upsellFree": "BEPUL 🎁"
+    "upsellFree": "BEPUL 🎁",
+    "regions": {
+      "tashkentCity": "Toshkent shahri",
+      "tashkent": "Toshkent viloyati",
+      "samarkand": "Samarqand viloyati",
+      "fergana": "Farg‘ona viloyati",
+      "andijan": "Andijon viloyati",
+      "namangan": "Namangan viloyati",
+      "bukhara": "Buxoro viloyati",
+      "khorezm": "Xorazm viloyati",
+      "kashkadarya": "Qashqadaryo viloyati",
+      "surkhandarya": "Surxondaryo viloyati",
+      "syrdarya": "Sirdaryo viloyati",
+      "jizzakh": "Jizzax viloyati",
+      "navoi": "Navoiy viloyati",
+      "karakalpakstan": "Qoraqalpog‘iston Respublikasi"
+    },
+    "decreaseFor": "{name}: sonini kamaytirish",
+    "increaseFor": "{name}: sonini oshirish",
+    "removeFor": "{name}: buyurtmadan olib tashlash",
+    "remove": "Olib tashlash"
   },
   "footer": {
     "tagline": "Sog‘lom hayot uchun isbotlangan nutriyentlar.",
