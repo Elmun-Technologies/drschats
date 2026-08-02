@@ -86,7 +86,10 @@ export function HeroBento({
               key={i}
               className={cn("flex flex-1 items-center", rotated && "hero-slide-in")}
             >
-                <div className="max-w-sm p-8 sm:p-12">
+                {/* The panel is ~800px at desktop; capping the copy at max-w-sm
+                    turned a long headline into a seven-line ribbon down the
+                    left edge with half the panel empty beside it. */}
+                <div className="max-w-md p-8 sm:p-12 lg:max-w-xl">
                   <span className="inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent-strong">
                     {s.eyebrow}
                   </span>
@@ -101,8 +104,9 @@ export function HeroBento({
                     </svg>
                   </Link>
                 </div>
-                {/* Decorative pill cluster */}
-                <div className="absolute right-6 top-1/2 hidden -translate-y-1/2 flex-col gap-3 sm:flex">
+                {/* Certification pills, along the bottom edge rather than
+                    stacked mid-right where they crowded the headline. */}
+                <div className="absolute bottom-4 right-6 hidden gap-2 sm:flex sm:right-10">
                   {["cGMP", "ISO", "Halal", "IFOS"].map((badge) => (
                     <span key={badge} className="rounded-full border border-fg/10 bg-fg/5 px-3 py-1.5 text-xs font-semibold text-fg/60 backdrop-blur-sm">
                       {badge}
@@ -183,28 +187,15 @@ function DealCard({
       href={product ? `/product/${product.slug}` : "/products"}
       className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl ${card.bg} ${card.big ? "min-h-[200px] p-7" : "min-h-[170px] p-5"} transition-all hover:-translate-y-0.5`}
     >
-      {/* Top row: icon, plus the product thumbnail on the compact cards where
-          there is no room for artwork alongside the copy. */}
       <div className="relative z-10 flex items-start justify-between gap-3">
         <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
             <path d={card.icon} />
           </svg>
         </span>
-        {image && !card.big && (
-          <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-ink/40 shadow-sm">
-            <Image
-              src={image}
-              alt=""
-              fill
-              sizes="64px"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-          </span>
-        )}
       </div>
 
-      <div className={`relative z-10 ${image && card.big ? "max-w-[58%]" : ""}`}>
+      <div className={`relative z-10 ${image ? (card.big ? "max-w-[58%]" : "sm:max-w-[62%]") : ""}`}>
         <p className="text-xs font-bold uppercase tracking-widest text-fg/60">{off}</p>
         {/* h2, not h3: these tiles sit beside the hero h1, with no intervening
             section heading to nest under. */}
@@ -219,8 +210,17 @@ function DealCard({
         )}
       </div>
 
-      {image && card.big && (
-        <div className="pointer-events-none absolute bottom-5 right-5 top-5 w-[34%] overflow-hidden rounded-xl bg-ink/40 shadow-sm">
+      {/* Artwork is anchored to the card's right edge rather than dropped in as
+          a thumbnail above the copy — the compact cards used to hold a 64px
+          square at the top with a dead band between it and the text. */}
+      {image && (
+        <div
+          /* The compact cards sit two-up on a phone, roughly 170px wide. Artwork
+             there would leave the copy a 105px column, so it starts at sm. */
+          className={`pointer-events-none absolute overflow-hidden rounded-xl bg-ink/40 shadow-sm ${
+            card.big ? "bottom-5 right-5 top-5 w-[34%]" : "hidden sm:block bottom-4 right-4 top-4 w-[32%]"
+          }`}
+        >
           <Image
             src={image}
             alt=""
