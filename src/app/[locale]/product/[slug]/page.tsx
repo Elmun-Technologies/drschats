@@ -6,6 +6,8 @@ import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
+import { getHealthTopics } from "@/lib/content/health-topics.sanity";
+import { topicsForProduct } from "@/lib/shop/product-topics";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { getBespokeComponent } from "@/components/bespoke/registry";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
@@ -46,11 +48,14 @@ export default async function ProductPage({
   const product = await shopflow.getProduct(slug, locale);
   if (!product) notFound();
 
-  const [upsells, allProducts, t] = await Promise.all([
+  const [upsells, allProducts, allTopics, t] = await Promise.all([
     shopflow.getUpsells(product.id, locale).catch(() => []),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }).catch(() => ({ items: [], total: 0, page: 1, pageSize: 50 })),
+    getHealthTopics(locale).catch(() => []),
     getTranslations("product"),
   ]);
+
+  const topics = topicsForProduct(product, allTopics);
 
   const Bespoke = getBespokeComponent(slug);
   const [reviewer, author] = await Promise.all([
@@ -73,7 +78,7 @@ export default async function ProductPage({
       {Bespoke ? (
         <Bespoke product={product} upsells={upsells} locale={locale} />
       ) : (
-        <ProductTemplate product={product} upsells={upsells} locale={locale} reviewer={reviewer} />
+        <ProductTemplate product={product} upsells={upsells} locale={locale} reviewer={reviewer} topics={topics} />
       )}
       <SimilarProducts currentProduct={product} allProducts={allProducts.items} />
     </>

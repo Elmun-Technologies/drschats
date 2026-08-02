@@ -11,17 +11,22 @@ import { UpsellRail } from "@/components/product/UpsellRail";
 import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { ProductTabs } from "@/components/product/ProductTabs";
 import { ProductReviews } from "@/components/product/ProductReviews";
+import { HealthContext } from "@/components/product/HealthContext";
+import type { HealthTopic } from "@/lib/content/health-topics";
 
 export async function ProductTemplate({
   product,
   upsells,
   locale,
   reviewer,
+  topics = [],
 }: {
   product: Product;
   upsells: UpsellOffer[];
   locale: Locale;
   reviewer?: Expert;
+  /** Health topics this product belongs to; empty hides the section. */
+  topics?: HealthTopic[];
 }) {
   const t = await getTranslations("product");
 
@@ -69,6 +74,8 @@ export async function ProductTemplate({
             </ul>
           </section>
         )}
+
+        <HealthContext topics={topics} />
 
         <section id="details" aria-label={t("tabsLabel")} className="mt-20 scroll-mt-28">
           <ProductTabs

@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, type CSSProperties, type ElementType, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  type CSSProperties,
+  type ElementType,
+  type HTMLAttributes,
+  type ReactNode,
+} from "react";
 import { cn } from "@/lib/utils";
 
 /*
@@ -31,7 +38,14 @@ function getObserver(): IntersectionObserver | null {
   return observer;
 }
 
-interface RevealProps {
+/*
+  Extra props are forwarded to the rendered element.
+
+  They used not to be, which meant `<Reveal as="section" aria-labelledby=…>`
+  compiled, rendered, and silently produced a section with no accessible name.
+  A wrapper that drops ARIA is worse than no wrapper.
+*/
+interface RevealProps extends HTMLAttributes<HTMLElement> {
   children: ReactNode;
   /** Stagger position — each step adds 80ms, capped so long lists stay snappy. */
   index?: number;
@@ -40,7 +54,7 @@ interface RevealProps {
 }
 
 /** Fade + slide-up on scroll into view. Reduced motion is handled in CSS. */
-export function Reveal({ children, index = 0, className, as = "div" }: RevealProps) {
+export function Reveal({ children, index = 0, className, as = "div", style, ...rest }: RevealProps) {
   const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
@@ -63,7 +77,8 @@ export function Reveal({ children, index = 0, className, as = "div" }: RevealPro
     <Component
       ref={ref}
       className={cn("reveal", className)}
-      style={{ "--reveal-delay": `${Math.min(index, 6) * 80}ms` } as CSSProperties}
+      style={{ ...style, "--reveal-delay": `${Math.min(index, 6) * 80}ms` } as CSSProperties}
+      {...rest}
     >
       {children}
     </Component>
