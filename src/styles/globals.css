@@ -161,6 +161,26 @@
 }
 
 /*
+  The bottom edge is crowded: a mobile tab bar, a scroll-to-top button, a
+  social-proof toast, the add-to-cart toast stack and the consent bar all want
+  to live there. Each one used to pick its own offset, so they landed on top of
+  each other — the scroll button sat squarely on the "home" tab.
+
+  One token instead. `--bottom-nav` is the space the mobile tab bar occupies
+  (zero once it hides at md), and everything pinned to the bottom offsets by it.
+  MobileBottomNav sets its own height from the same token, so the number cannot
+  drift out of sync with the thing it describes.
+*/
+:root {
+  --bottom-nav: 0px;
+}
+@media (max-width: 767.98px) {
+  :root {
+    --bottom-nav: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/*
   Scroll-reveal without a JS animation library.
 
   A listing page mounts dozens of revealed elements (24 product cards, article

@@ -23,7 +23,10 @@ export function BackToTop() {
           exit={{ opacity: 0, scale: 0.6 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label={t("backToTop")}
-          className="fixed bottom-4 left-4 z-[55] flex h-11 w-11 items-center justify-center rounded-full border border-line bg-ink text-fg shadow-lg transition-colors hover:border-accent hover:text-accent-strong"
+          /* Right side, clear of the mobile tab bar. It used to sit bottom-left
+             at a fixed offset, which put it exactly on top of the "home" tab
+             and on the social-proof toast that also lives bottom-left. */
+          className="fixed right-4 bottom-[calc(var(--bottom-nav)+1rem)] z-[45] flex h-11 w-11 items-center justify-center rounded-full border border-line bg-ink text-fg shadow-lg transition-colors hover:border-accent hover:text-accent-strong"
         >
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 19V5M6 11l6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />
