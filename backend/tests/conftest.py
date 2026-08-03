@@ -12,6 +12,7 @@ from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 _DB_FILE = os.path.join(tempfile.mkdtemp(), "test.db")
 os.environ["DATABASE_URL"] = f"sqlite+aiosqlite:///{_DB_FILE}"
 os.environ["JWT_SECRET"] = "test-secret"
+os.environ["MARKETING_API_KEY"] = "test-service-key"
 
 from app.db import Base, get_session  # noqa: E402
 from app.main import app  # noqa: E402
@@ -124,6 +125,12 @@ async def sign_in(client, db, telegram_stub):
         return res.json()["accessToken"]
 
     return _sign_in
+
+
+@pytest.fixture
+def service_headers() -> dict:
+    """What the storefront sends when it calls as itself, not as a customer."""
+    return {"X-Service-Key": os.environ["MARKETING_API_KEY"]}
 
 
 @pytest.fixture

@@ -56,11 +56,17 @@ def upgrade() -> None:
     op.drop_column("users", "password_hash")
     # A code proves the phone, not the name — accounts now start nameless and
     # checkout fills it in.
-    op.alter_column("users", "name", existing_type=sa.String(length=120), server_default="")
+    #
+    # Wrapped in batch_alter_table because SQLite has no ALTER COLUMN: without
+    # it the whole chain stops here, and `alembic upgrade head` is the first
+    # thing anyone runs against a local file database.
+    with op.batch_alter_table("users") as batch:
+        batch.alter_column("name", existing_type=sa.String(length=120), server_default="")
 
 
 def downgrade() -> None:
-    op.alter_column("users", "name", existing_type=sa.String(length=120), server_default=None)
+    with op.batch_alter_table("users") as batch:
+        batch.alter_column("name", existing_type=sa.String(length=120), server_default=None)
     # Restored empty: the original hashes are gone and cannot be recovered.
     op.add_column(
         "users",

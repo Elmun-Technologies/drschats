@@ -48,6 +48,8 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
   product/[slug]/          # mahsulot detail sahifasi
   cart/ checkout/          # savatcha, buyurtma, checkout/success/
   account/                 # kabinet — API sozlanmagan bo'lsa notFound()
+  profile/                 # sog'liq profili — API'siz ham ishlaydi (brauzerda)
+  email/preferences/       # obuna sozlamalari (xatdagi havolalar shu yerga tushadi)
   blog/ news/ experts/ brands/ ingredients/ reviews/ loyalty/
   lp/[campaign]/           # landing pages (kampaniyalar)
   [...rest]/               # catch-all → lokalizatsiyalangan 404
@@ -65,7 +67,12 @@ yuboradi va soft-404 hosil qiladi (bir marta shu sabab olib tashlangan).
 | `shopflow/` | Backend klient (mock/http), types, schemas, Zod validation |
 | `cart/` | Zustand store (localStorage TTL 30 kun), pricing (discount, shipping, upsell) |
 | `upsell/` | Savings Ladder algoritmi, Zustand upsell store |
-| `personalization/` | Viewtracker, recency-decay engine, recommendation scoring |
+| `personalization/` | Viewtracker, recency-decay engine, recommendation scoring, katalogni sog'liq signallariga solishtirish |
+| `profile/` | Sog'liq profili — foydalanuvchi o'zi kiritgan ma'lumot, eslatma qoidalari |
+| `email/` | Provayder, imzolangan havolalar, kampaniya matnlari (uz + ru) |
+| `subscription/` | Subscribe & Save shartlari — oraliqlar, chegirmalar |
+| `marketing/` | Backend'ning navbatiga server-to-server klient |
+| `notifications/` | Telegram — operator va mijoz kanallari |
 | `wishlist/` | Zustand persist store (`alimkhanov-wishlist`) |
 | `analytics/` | GTM dataLayer, Meta Pixel, Yandex Metrika events |
 | `i18n/` | next-intl routing, navigation helpers |
@@ -214,9 +221,43 @@ src/lib/personalization/tracker.ts — trackView(), trackPurchase()
 src/lib/personalization/engine.ts  — scoreProduct(), getRecommendations(), getSimilarProducts()
 ```
 
-- `alimkhanov-user` localStorage kaliti
+- `govita-user` localStorage kaliti
 - Recency decay: `weight = Math.exp(-0.05 * hoursAgo)`
 - Content-based filtering: category + ingredient affinity
+
+**Ikkinchi profil — `src/lib/profile/`** (`govita-profile`). Bu foydalanuvchi
+**o'zi aytgan** ma'lumot: ism, tug'ilgan kun, oila a'zolari, maqsadlar, kanal
+ruxsatlari. Ikkalasi atayin ajratilgan — birinchisi klikdan kelib chiqadi va
+hech qachon ko'rsatilmaydi, ikkinchisi `/profile` da to'liq ko'rinadi va
+o'chiriladi.
+
+Maqsadlar → mahsulot moslashuvi bitta joyda: `personalization/catalogue.ts`.
+Uni ham quiz, ham profil ishlatadi, shuning uchun "nega bu mahsulot" javobi
+har doim aniq ingredient yoki mavzu nomiga tayanadi.
+
+## Email va eslatmalar
+
+To'liq hujjat: **[`docs/MARKETING.md`](docs/MARKETING.md)**.
+
+- Matnlar: `src/lib/email/campaigns.ts` (uz + ru, bitta faylda — cron'da
+  next-intl konteksti yo'q)
+- Eslatma qoidalari: `src/lib/profile/reminders.ts` — sof funksiyalar, `now`
+  argument sifatida. Panel, email va Telegram **bir xil qoidani** o'qiydi
+- `RESEND_API_KEY` bo'lmasa `sendCampaign` log yozadi va davom etadi — checkout
+  hech qachon pochta tufayli sinmaydi
+- Marketing xatida har doim obunani bekor qilish havolasi bor, tranzaksionda —
+  yo'q
+
+## Obuna (Subscribe & Save)
+
+```
+src/lib/subscription/plans.ts — oraliqlar, chegirmalar, bepul yetkazish chegarasi
+```
+
+Birinchi buyurtmada −10%, keyingi yetkazishlarda −15%. Takrorlanadigan narx
+mahsulot sahifasidayoq ko'rsatiladi. `CartLine.subscription` → checkout →
+backend'da `subscriptions` jadvali. Boshqaruv `/account` da: to'xtatish,
+o'tkazib yuborish, oraliqni o'zgartirish, bekor qilish.
 
 ## Environment Variables
 
@@ -237,6 +278,18 @@ SHOPFLOW_API_KEY=your_key
 # Telegram bot (buyurtma xabarlari)
 TELEGRAM_BOT_TOKEN=your_token
 TELEGRAM_CHAT_ID=your_chat_id
+# Mijozning o'z Telegram kanali (bo'lmasa /profile da bu kanal ko'rsatilmaydi)
+NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=govita_bot
+
+# Email (bittasi butun dasturni yoqadi)
+RESEND_API_KEY=re_...
+EMAIL_FROM=Go Vita <no-reply@govita.uz>
+EMAIL_REPLY_TO=info@govita.uz
+EMAIL_TOKEN_SECRET=...        # production'da majburiy — bo'lmasa kod ishga tushmaydi
+
+# Eslatmalar cron'i
+CRON_SECRET=...               # bo'lmasa endpoint yopiq turadi
+MARKETING_API_KEY=...         # backend'da ham xuddi shu qiymat
 ```
 
 ## Ishlab chiqish qoidalari

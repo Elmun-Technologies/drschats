@@ -6,6 +6,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { AuthForm } from "./AuthForm";
 import { OrderHistory } from "./OrderHistory";
+import { MySubscriptions } from "./MySubscriptions";
 import { useSession } from "@/lib/auth/store";
 
 /*
@@ -18,6 +19,7 @@ import { useSession } from "@/lib/auth/store";
   order list.
 */
 const SHORTCUTS = [
+  { key: "profile", href: "/profile" },
   { key: "wishlist", href: "/wishlist" },
   { key: "quiz", href: "/quiz" },
   { key: "programs", href: "/programs" },
@@ -25,6 +27,7 @@ const SHORTCUTS = [
 
 export function AccountView() {
   const t = useTranslations("account");
+  const ts = useTranslations("subscription.manage");
   const user = useSession((s) => s.user);
   const token = useSession((s) => s.token);
   const signOut = useSession((s) => s.signOut);
@@ -75,7 +78,7 @@ export function AccountView() {
         </button>
       </header>
 
-      <nav aria-label={t("shortcuts")} className="mb-10 grid gap-3 sm:grid-cols-3">
+      <nav aria-label={t("shortcuts")} className="mb-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {SHORTCUTS.map((item) => (
           <Link
             key={item.key}
@@ -91,6 +94,16 @@ export function AccountView() {
           </Link>
         ))}
       </nav>
+
+      <section aria-labelledby="account-subscriptions" className="mb-10">
+        <h2
+          id="account-subscriptions"
+          className="mb-4 font-display text-xl font-extrabold tracking-tight"
+        >
+          {ts("title")}
+        </h2>
+        <MySubscriptions />
+      </section>
 
       <section aria-labelledby="account-orders">
         <h2 id="account-orders" className="mb-4 font-display text-xl font-extrabold tracking-tight">

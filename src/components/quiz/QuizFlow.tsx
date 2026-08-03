@@ -7,6 +7,7 @@ import { useRouter } from "@/lib/i18n/navigation";
 import { visibleQuestions, type QuizQuestion } from "@/lib/quiz/questions";
 import { buildQuizResult, saveQuiz, type QuizAnswers } from "@/lib/quiz/engine";
 import { encodeAnswers } from "@/lib/quiz/recommend";
+import { useProfile } from "@/lib/profile/store";
 import { track } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
@@ -26,6 +27,7 @@ export function QuizFlow({
   const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers ?? {});
   const [submitting, setSubmitting] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
+  const applyQuiz = useProfile((s) => s.applyQuiz);
 
   /*
     Recomputed from the answers rather than fixed up front, so going back and
@@ -90,6 +92,10 @@ export function QuizFlow({
     // and must not count against the answered total.
     const result = buildQuizResult(visible, answers);
     saveQuiz(answers, result);
+    // The consultant's conclusion is also a statement about the visitor, so it
+    // seeds the saved profile — otherwise someone who has just answered eleven
+    // questions about themselves arrives on /profile to an empty page.
+    applyQuiz(result.rankedTopics, result.rankedIngredients);
     track("quiz_complete", {
       answered: result.answeredCount,
       top_topic: result.rankedTopics[0] ?? null,

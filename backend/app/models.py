@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 
 from sqlalchemy import (
     BigInteger,
+    Boolean,
     DateTime,
     ForeignKey,
     Integer,
@@ -37,7 +38,179 @@ class User(Base):
     name: Mapped[str] = mapped_column(String(120), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
+    # Added later than the phone, and secondary to it: an address is something
+    # a customer offers so we can write to them, not something they sign in
+    # with. Indexed but not unique — two people share a family inbox, and until
+    # `email_verified_at` is set the value is only a claim anyway.
+    email: Mapped[str | None] = mapped_column(String(160), nullable=True, index=True)
+    email_verified_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    # `YYYY-MM-DD`, or `MM-DD` when the year was not given. Stored as text
+    # rather than a date because a birthday without a year is not a date, and
+    # inventing one to fit the column would put a wrong age in a greeting.
+    birthday: Mapped[str | None] = mapped_column(String(10), nullable=True)
+
+    locale: Mapped[str] = mapped_column(String(8), default="uz")
+
+    # Health signals the customer stated. Slugs, mirroring the storefront's
+    # health topics; kept as JSON because the set changes with content, not
+    # with schema.
+    goals: Mapped[list[str]] = mapped_column(JSON, default=list)
+
+    marketing_email: Mapped[bool] = mapped_column(Boolean, default=False)
+    marketing_telegram: Mapped[bool] = mapped_column(Boolean, default=False)
+    # Set on every consent decision, including a withdrawal — proving when
+    # someone opted *out* matters more than proving when they opted in.
+    consent_updated_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    # There is no telegram_chat_id here: `telegram_links` already holds the one
+    # chat a phone can be reached on, put there by the sign-in flow. A second
+    # copy would be a second thing to keep true.
+
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
+    household: Mapped[list["HouseholdMember"]] = relationship(
+        back_populates="user", cascade="all, delete-orphan", lazy="selectin"
+    )
+
+
+class HouseholdMember(Base):
+    """
+    Who else the customer buys for.
+
+    The single most useful thing a vitamin shop can be told: "for my child"
+    changes the dose, the format and what should be shown at all — and a birth
+    date here is what makes a reminder a service rather than an advert.
+    """
+
+    __tablename__ = "household_members"
+
+    id: Mapped[int] = mapped_column(BigIntPk, primary_key=True, autoincrement=True)
+    user_id: Mapped[int] = mapped_column(
+        ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+
+    relation: Mapped[str] = mapped_column(String(16))
+    name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    birthday: Mapped[str | None] = mapped_column(String(10), nullable=True)
+
+    user: Mapped["User"] = relationship(back_populates="household")
+
+
+class EmailSubscriber(Base):
+    """
+    The marketing list, including people who have no account.
+
+    Separate from `users` on purpose: someone who typed their address into the
+    newsletter box has consented to a mailing list, not created a relationship
+    with a pharmacy, and the two should not be conflated in either direction.
+    """
+
+    __tablename__ = "email_subscribers"
+
+    id: Mapped[int] = mapped_column(BigIntPk, primary_key=True, autoincrement=True)
+    email: Mapped[str] = mapped_column(String(160), unique=True, index=True)
+    name: Mapped[str | None] = mapped_column(String(120), nullable=True)
+    locale: Mapped[str] = mapped_column(String(8), default="uz")
+
+    # "pending" until the double opt-in link is clicked. Nothing is ever sent
+    # to a pending address except the confirmation itself.
+    status: Mapped[str] = mapped_column(String(16), default="pending", index=True)
+    confirmed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    unsubscribed_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class Subscription(Base):
+    """
+    A repeating order — Subscribe & Save.
+
+    Nullable `user_id`, like orders: checkout has no login, and a subscription
+    that could only be created by a signed-in customer would be a subscription
+    almost nobody starts. The phone claims it later.
+    """
+
+    __tablename__ = "subscriptions"
+
+    id: Mapped[int] = mapped_column(BigIntPk, primary_key=True, autoincrement=True)
+    user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True, index=True
+    )
+    customer_phone: Mapped[str] = mapped_column(String(32), index=True)
+    customer_name: Mapped[str] = mapped_column(String(120))
+    customer_email: Mapped[str | None] = mapped_column(String(160), nullable=True)
+
+    # active | paused | cancelled
+    status: Mapped[str] = mapped_column(String(16), default="active", index=True)
+    interval_days: Mapped[int] = mapped_column(Integer)
+    next_delivery_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True, index=True
+    )
+
+    locale: Mapped[str] = mapped_column(String(8), default="uz")
+    region: Mapped[str] = mapped_column(String(120))
+    address: Mapped[str] = mapped_column(Text)
+
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    cancelled_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
+
+    items: Mapped[list["SubscriptionItem"]] = relationship(
+        back_populates="subscription", cascade="all, delete-orphan", lazy="selectin"
+    )
+
+
+class SubscriptionItem(Base):
+    __tablename__ = "subscription_items"
+
+    id: Mapped[int] = mapped_column(BigIntPk, primary_key=True, autoincrement=True)
+    subscription_id: Mapped[int] = mapped_column(
+        ForeignKey("subscriptions.id", ondelete="CASCADE"), index=True
+    )
+
+    product_id: Mapped[str] = mapped_column(String(64))
+    slug: Mapped[str] = mapped_column(String(160))
+    name: Mapped[str] = mapped_column(String(255))
+    quantity: Mapped[int] = mapped_column(Integer)
+    # The recurring price, already discounted — what the customer was shown
+    # before subscribing, and therefore what they agreed to pay.
+    unit_price: Mapped[int] = mapped_column(BigInteger)
+
+    subscription: Mapped["Subscription"] = relationship(back_populates="items")
+
+
+class MarketingMessage(Base):
+    """
+    What has already been sent.
+
+    The whole point is `reminder_id`: it is unique per occurrence, so a cron
+    that runs twice, or a deploy that replays a batch, cannot wish anyone a
+    happy birthday twice in one morning.
+    """
+
+    __tablename__ = "marketing_messages"
+
+    id: Mapped[int] = mapped_column(BigIntPk, primary_key=True, autoincrement=True)
+    reminder_id: Mapped[str] = mapped_column(String(200), unique=True, index=True)
+    campaign: Mapped[str] = mapped_column(String(64), index=True)
+    channel: Mapped[str] = mapped_column(String(16))
+    user_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id"), nullable=True, index=True
+    )
+    # False when delivery failed; the row still exists so a permanently broken
+    # address is visible rather than silently retried forever.
+    delivered: Mapped[bool] = mapped_column(Boolean, default=False)
+    queued_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+    sent_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), nullable=True
+    )
 
 
 class TelegramLink(Base):
@@ -97,6 +270,9 @@ class Order(Base):
 
     customer_name: Mapped[str] = mapped_column(String(120))
     customer_phone: Mapped[str] = mapped_column(String(32), index=True)
+    # Optional at checkout, so optional here. Present means a confirmation was
+    # emailed and a reorder reminder has somewhere to go.
+    customer_email: Mapped[str | None] = mapped_column(String(160), nullable=True)
 
     region: Mapped[str] = mapped_column(String(120))
     address: Mapped[str] = mapped_column(Text)
@@ -139,5 +315,10 @@ class OrderItem(Base):
     name: Mapped[str] = mapped_column(String(255))
     quantity: Mapped[int] = mapped_column(Integer)
     unit_price: Mapped[int] = mapped_column(BigInteger)
+    # Set when this line was bought as a repeating delivery; the recurring
+    # order itself lives in `subscriptions`.
+    subscription_interval_days: Mapped[int | None] = mapped_column(
+        Integer, nullable=True
+    )
 
     order: Mapped["Order"] = relationship(back_populates="items")

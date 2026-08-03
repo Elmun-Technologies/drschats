@@ -98,6 +98,8 @@ export const orderRequestSchema = z.object({
   customer: z.object({
     name: z.string().min(2),
     phone: z.string().min(7),
+    email: z.string().email().max(160).optional(),
+    marketingOptIn: z.boolean().optional(),
   }),
   delivery: z.object({
     region: z.string().min(1),
@@ -113,6 +115,9 @@ export const orderRequestSchema = z.object({
         name: z.string(),
         quantity: z.number().int().positive(),
         unitPrice: z.number(),
+        subscription: z
+          .object({ intervalDays: z.number().int().min(7).max(365) })
+          .optional(),
       }),
     )
     .min(1),

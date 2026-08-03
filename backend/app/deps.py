@@ -1,8 +1,10 @@
+from hmac import compare_digest
 from typing import Annotated
 
 from fastapi import Depends, Header, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.config import get_settings
 from app.db import get_session
 from app.models import User
 from app.security import decode_access_token
@@ -45,3 +47,22 @@ async def current_user(
 
 CurrentUser = Annotated[User, Depends(current_user)]
 OptionalUser = Annotated[User | None, Depends(current_user_optional)]
+
+
+async def service_caller(
+    x_service_key: Annotated[str | None, Header()] = None,
+) -> None:
+    """
+    Guards the endpoints the storefront calls as itself rather than as a
+    customer: writing consent, marking an address verified, reading the send
+    queue.
+
+    An unset key locks the endpoints rather than opening them. Anything else
+    would mean a service that can email every customer ships with no door.
+    """
+    expected = get_settings().marketing_api_key
+    if not expected or not x_service_key or not compare_digest(x_service_key, expected):
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid service key")
+
+
+ServiceCaller = Annotated[None, Depends(service_caller)]

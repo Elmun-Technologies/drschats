@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import type { Locale } from "@/lib/i18n/routing";
 import { subscribeToNewsletter } from "@/app/actions/subscribe";
 import { track } from "@/lib/analytics/events";
 import { Container } from "@/components/ui/Container";
@@ -11,6 +12,7 @@ const TELEGRAM_URL = BRAND.social.telegram;
 
 export function NewsletterSignup() {
   const t = useTranslations("home.newsletter");
+  const locale = useLocale() as Locale;
   const [email, setEmail] = useState("");
   const [company, setCompany] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
@@ -19,7 +21,7 @@ export function NewsletterSignup() {
     e.preventDefault();
     if (state === "loading") return;
     setState("loading");
-    const result = await subscribeToNewsletter({ email, company });
+    const result = await subscribeToNewsletter({ email, company, locale });
     if (result.ok) {
       track("newsletter_subscribe", {});
       setState("done");

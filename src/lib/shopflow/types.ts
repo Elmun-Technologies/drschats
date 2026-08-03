@@ -119,6 +119,8 @@ export interface OrderRequestItem {
   name: string;
   quantity: number;
   unitPrice: Money;
+  /** Present when the line is a repeating delivery, with its rhythm in days. */
+  subscription?: { intervalDays: number };
 }
 
 export interface OrderAttribution {
@@ -133,6 +135,10 @@ export interface OrderRequest {
   customer: {
     name: string;
     phone: string;
+    /** Optional: used for the order confirmation, never required to order. */
+    email?: string;
+    /** True when the customer ticked the newsletter box on the order form. */
+    marketingOptIn?: boolean;
   };
   delivery: {
     region: string;

@@ -17,6 +17,19 @@ class Settings(BaseSettings):
 
     environment: str = "development"
 
+    # Shared secret for the storefront's server-to-server marketing calls
+    # (writing consent, reading the send queue). Empty means those endpoints
+    # refuse everything, which is the right default for a service that can
+    # email real people.
+    marketing_api_key: str = ""
+
+    # How far ahead a birthday reminder goes out. A greeting is worth little on
+    # the day itself if the customer wanted to order something for it.
+    birthday_lead_days: int = 7
+    # How far ahead a subscription delivery is announced, so it can still be
+    # skipped or re-timed.
+    subscription_notice_days: int = 3
+
     # Sign-in codes. A six-digit code is only 20 bits, so its safety is these
     # numbers rather than its length: short life, few guesses, hard cap per hour.
     otp_ttl_seconds: int = 300

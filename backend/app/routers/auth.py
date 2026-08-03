@@ -6,7 +6,7 @@ from sqlalchemy import select, update
 from app import telegram
 from app.config import get_settings
 from app.deps import CurrentUser, SessionDep
-from app.models import Order, TelegramLink, User
+from app.models import Order, Subscription, TelegramLink, User
 from app.otp import OtpError, consume_code, issue_code
 from app.schemas import (
     OtpRequest,
@@ -115,6 +115,14 @@ async def verify_otp(payload: OtpVerifyRequest, session: SessionDep) -> TokenRes
     await session.execute(
         update(Order)
         .where(Order.user_id.is_(None), Order.customer_phone == phone)
+        .values(user_id=user.id)
+    )
+    # Subscriptions started at checkout are claimed on the same evidence. Left
+    # unclaimed they would keep delivering with nobody able to pause them, and
+    # nobody to notify before each delivery.
+    await session.execute(
+        update(Subscription)
+        .where(Subscription.user_id.is_(None), Subscription.customer_phone == phone)
         .values(user_id=user.id)
     )
     await session.commit()

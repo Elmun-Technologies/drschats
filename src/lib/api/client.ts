@@ -92,6 +92,40 @@ export interface AccountOrder {
   items: AccountOrderLine[];
 }
 
+export type SubscriptionStatus = "active" | "paused" | "cancelled";
+
+export interface AccountSubscription {
+  id: number;
+  status: SubscriptionStatus;
+  intervalDays: number;
+  /** ISO date of the next planned delivery; null once cancelled. */
+  nextDeliveryAt: string | null;
+  items: AccountOrderLine[];
+  total: number;
+}
+
+export interface HouseholdMemberPayload {
+  relation: string;
+  name?: string;
+  birthday?: string;
+}
+
+export interface ProfilePayload {
+  email?: string;
+  birthday?: string;
+  locale: string;
+  goals: string[];
+  household: HouseholdMemberPayload[];
+  marketingEmail: boolean;
+  marketingTelegram: boolean;
+}
+
+/** What the account holds — the same fields, plus what only the server knows. */
+export interface StoredProfile extends Omit<ProfilePayload, "household"> {
+  emailVerified: boolean;
+  household: (HouseholdMemberPayload & { id: number })[];
+}
+
 export const api = {
   /*
     Ask for a sign-in code. Two possible answers, and "link_required" is not a
@@ -109,4 +143,26 @@ export const api = {
 
   myOrders: (token: string, signal?: AbortSignal) =>
     apiFetch<AccountOrder[]>("/api/v1/orders/me", { token, signal }),
+
+  mySubscriptions: (token: string, signal?: AbortSignal) =>
+    apiFetch<AccountSubscription[]>("/api/v1/subscriptions/me", { token, signal }),
+
+  /**
+   * Pause, resume, re-time, skip one delivery, or cancel.
+   *
+   * One endpoint for all five because they are one thing to the customer —
+   * "change my subscription" — and splitting them would mean five ways for the
+   * account page and the backend to disagree about the next delivery date.
+   */
+  updateSubscription: (
+    token: string,
+    id: number,
+    body: { status?: SubscriptionStatus; intervalDays?: number; skipNext?: boolean },
+  ) => apiFetch<AccountSubscription>(`/api/v1/subscriptions/${id}`, { method: "PATCH", token, body }),
+
+  myProfile: (token: string, signal?: AbortSignal) =>
+    apiFetch<StoredProfile>("/api/v1/profile/me", { token, signal }),
+
+  saveProfile: (token: string, body: ProfilePayload) =>
+    apiFetch<StoredProfile>("/api/v1/profile/me", { method: "PATCH", token, body }),
 };

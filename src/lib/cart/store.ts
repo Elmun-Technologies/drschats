@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { CartLine } from "./pricing";
+import { cartLineId, type CartLine } from "./pricing";
 import { useToast } from "@/lib/ui/toast";
 import { STORAGE_KEYS } from "@/lib/storage-keys";
 
@@ -15,12 +15,12 @@ interface CartState {
    * one notification of their own instead of one per product.
    */
   add: (
-    line: Omit<CartLine, "quantity">,
+    line: Omit<CartLine, "quantity" | "lineId">,
     quantity?: number,
     options?: { silent?: boolean },
   ) => void;
-  remove: (productId: string) => void;
-  setQuantity: (productId: string, quantity: number) => void;
+  remove: (lineId: string) => void;
+  setQuantity: (lineId: string, quantity: number) => void;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -34,35 +34,38 @@ export const useCart = create<CartState>()(
       isOpen: false,
       _savedAt: 0,
       add: (line, quantity = 1, options) => {
+        // The purchase mode is part of the key, so adding the same product
+        // one-off and on subscription produces two lines rather than one line
+        // whose mode depends on which of them was added first.
+        const lineId = cartLineId(line.productId, line.subscription);
         set((state) => {
-          const existing = state.lines.find((l) => l.productId === line.productId);
+          const existing = state.lines.find((l) => l.lineId === lineId);
           if (existing) {
             return {
               lines: state.lines.map((l) =>
-                l.productId === line.productId
-                  ? { ...l, quantity: l.quantity + quantity }
-                  : l,
+                l.lineId === lineId ? { ...l, quantity: l.quantity + quantity } : l,
               ),
               _savedAt: Date.now(),
             };
           }
-          return { lines: [...state.lines, { ...line, quantity }], _savedAt: Date.now() };
+          return {
+            lines: [...state.lines, { ...line, lineId, quantity }],
+            _savedAt: Date.now(),
+          };
         });
         // Premium, non-intrusive feedback instead of force-opening the drawer.
         if (!options?.silent) useToast.getState().notify();
       },
-      remove: (productId) =>
+      remove: (lineId) =>
         set((state) => ({
-          lines: state.lines.filter((l) => l.productId !== productId),
+          lines: state.lines.filter((l) => l.lineId !== lineId),
         })),
-      setQuantity: (productId, quantity) =>
+      setQuantity: (lineId, quantity) =>
         set((state) => ({
           lines:
             quantity <= 0
-              ? state.lines.filter((l) => l.productId !== productId)
-              : state.lines.map((l) =>
-                  l.productId === productId ? { ...l, quantity } : l,
-                ),
+              ? state.lines.filter((l) => l.lineId !== lineId)
+              : state.lines.map((l) => (l.lineId === lineId ? { ...l, quantity } : l)),
         })),
       clear: () => set({ lines: [] }),
       open: () => set({ isOpen: true }),
@@ -77,7 +80,13 @@ export const useCart = create<CartState>()(
         if (p._savedAt && Date.now() - p._savedAt > CART_TTL_MS) {
           return { ...current, lines: [], _savedAt: 0 };
         }
-        return { ...current, ...p };
+        // Carts saved before lines carried their own key still hold live
+        // baskets, so they are given one on read rather than emptied.
+        const lines = (p.lines ?? []).map((l) => ({
+          ...l,
+          lineId: l.lineId ?? cartLineId(l.productId, l.subscription),
+        }));
+        return { ...current, ...p, lines };
       },
     },
   ),
