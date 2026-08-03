@@ -155,6 +155,17 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
                 </Link>
               ))}
 
+              {/* Personal pages sit below the health navigation rather than in
+                  it: on desktop they are the icons in the header, and on
+                  mobile there is no header row to put them in. */}
+              <Link
+                href="/profile"
+                onClick={() => setMenuOpen(false)}
+                className="border-b border-line/50 py-4 font-display text-xl font-semibold"
+              >
+                {t("profile")}
+              </Link>
+
               {/* The desktop catalogue panel has no mobile equivalent, so the
                   categories are listed here instead of being reachable only
                   through the shop page. */}

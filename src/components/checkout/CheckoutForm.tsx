@@ -53,6 +53,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   const t = useTranslations("checkout");
   const tr = useTranslations("checkout.regions");
   const tc = useTranslations("cart");
+  const ts = useTranslations("subscription");
   const router = useRouter();
   const { lines, add, setQuantity } = useCart();
   const clear = useCart((s) => s.clear);
@@ -64,21 +65,28 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   const schema = z.object({
     name: z.string().min(2, t("errorRequired")),
     phone: z.string().min(7, t("errorPhone")),
+    // Optional: the phone is what an operator calls, and demanding an address
+    // as well would cost more orders than the confirmation email is worth.
+    email: z.union([z.string().email(t("errorEmail")), z.literal("")]).optional(),
     region: z.string().min(1, t("errorRequired")),
     address: z.string().min(3, t("errorRequired")),
     note: z.string().optional(),
     method: z.enum(["courier", "pickup"]),
+    subscribe: z.boolean().optional(),
   });
   type FormValues = z.infer<typeof schema>;
 
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { method: "courier" },
+    defaultValues: { method: "courier", subscribe: false },
   });
+
+  const emailEntered = Boolean(watch("email"));
 
   if (lines.length === 0) {
     return (
@@ -97,7 +105,15 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
     setSubmitting(true);
     setServerError(null);
     const payload: OrderRequest = {
-      customer: { name: values.name, phone: values.phone },
+      customer: {
+        name: values.name,
+        phone: values.phone,
+        email: values.email || undefined,
+        // Ticking the box on the order form is a marketing opt-in like any
+        // other, so it starts the same confirmation flow rather than adding
+        // the address to a list behind the customer's back.
+        marketingOptIn: Boolean(values.email && values.subscribe),
+      },
       delivery: {
         region: values.region,
         address: values.address,
@@ -110,6 +126,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
         name: l.name,
         quantity: l.quantity,
         unitPrice: l.price,
+        subscription: l.subscription,
       })),
       appliedUpsells: lines.filter((l) => l.upsellDiscountPercent).map((l) => l.productId),
       appliedPromotions: totals.appliedPromotions,
@@ -146,6 +163,26 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <Field label={t("phone")} error={errors.phone?.message}>
             <input className={inputClass} placeholder={t("phonePlaceholder")} inputMode="tel" {...register("phone")} />
           </Field>
+          <Field label={t("email")} error={errors.email?.message} hint={t("emailHint")}>
+            <input
+              className={inputClass}
+              placeholder={t("emailPlaceholder")}
+              type="email"
+              inputMode="email"
+              autoComplete="email"
+              {...register("email")}
+            />
+          </Field>
+          {emailEntered && (
+            <label className="flex items-start gap-3 text-sm text-muted">
+              <input
+                type="checkbox"
+                {...register("subscribe")}
+                className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--color-accent)]"
+              />
+              <span>{t("subscribeLabel")}</span>
+            </label>
+          )}
         </fieldset>
 
         <fieldset className="space-y-5">
@@ -320,6 +357,12 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               <span>{tc("total")}</span>
               <span>{formatMoney(totals.total, locale)}</span>
             </div>
+            {totals.hasSubscription && (
+              <p className="pt-1 text-xs text-muted">
+                {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })}{" "}
+                {ts("benefitControl")}
+              </p>
+            )}
           </div>
           <UpsellSavingsBar />
         </div>
@@ -344,20 +387,27 @@ const inputClass =
 function Field({
   label,
   error,
+  hint,
   children,
 }: {
   label: string;
   error?: string;
+  hint?: string;
   children: React.ReactNode;
 }) {
   const fieldId = useId();
   const errorId = `${fieldId}-error`;
+  const hintId = `${fieldId}-hint`;
+
+  // The hint stays announced even when an error appears: "we email the receipt
+  // here" is why the field exists, and losing it mid-correction is confusing.
+  const describedBy = [error ? errorId : null, hint ? hintId : null].filter(Boolean).join(" ");
 
   const control = isValidElement(children)
     ? cloneElement(children as ReactElement<Record<string, unknown>>, {
         id: fieldId,
         "aria-invalid": error ? true : undefined,
-        "aria-describedby": error ? errorId : undefined,
+        "aria-describedby": describedBy || undefined,
       })
     : children;
 
@@ -367,6 +417,11 @@ function Field({
         {label}
       </label>
       {control}
+      {hint && (
+        <span id={hintId} className="mt-1 block text-xs text-faint">
+          {hint}
+        </span>
+      )}
       {error && (
         <span id={errorId} role="alert" className="mt-1 block text-xs text-danger">
           {error}

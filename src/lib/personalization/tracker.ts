@@ -1,8 +1,9 @@
-import type { UserProfile, ViewEvent } from "./types";
+import type { PurchaseEvent, UserProfile, ViewEvent } from "./types";
 import { STORAGE_KEYS } from "@/lib/storage-keys";
 
 const STORAGE_KEY = STORAGE_KEYS.user;
 const MAX_VIEWS = 50;
+const MAX_PURCHASE_EVENTS = 100;
 const DEDUP_WINDOW_MS = 30 * 60 * 1000; // 30 minutes
 
 function read(): UserProfile | null {
@@ -55,13 +56,27 @@ export function trackView(slug: string, categorySlug: string, price: number): vo
   write(profile);
 }
 
-export function trackPurchase(slugs: string[]): void {
+export function trackPurchase(items: { slug: string; name?: string }[]): void {
+  const now = Date.now();
   const profile = read() ?? defaultProfile();
   const existing = new Set(profile.purchases);
-  for (const s of slugs) existing.add(s);
+  for (const item of items) existing.add(item.slug);
   profile.purchases = Array.from(existing);
-  profile.lastSeen = Date.now();
+
+  // Dated events sit alongside the slug set: recommendations only care *whether*
+  // something was bought, reorder reminders care *when*.
+  const events = [
+    ...(profile.purchaseEvents ?? []),
+    ...items.map(({ slug, name }) => ({ slug, name, ts: now })),
+  ];
+  profile.purchaseEvents = events.slice(-MAX_PURCHASE_EVENTS);
+  profile.lastSeen = now;
   write(profile);
+}
+
+/** Dated purchase history, oldest first. Empty for pre-existing profiles. */
+export function getPurchaseEvents(profile: UserProfile): PurchaseEvent[] {
+  return profile.purchaseEvents ?? [];
 }
 
 /**

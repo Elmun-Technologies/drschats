@@ -19,6 +19,7 @@ export function CartDrawer() {
   const locale = useLocale() as Locale;
   const t = useTranslations("cart");
   const tc = useTranslations("common");
+  const ts = useTranslations("subscription");
   const { lines, isOpen, close, setQuantity, remove } = useCart();
   const promotions = usePromotions();
   const totals = computeTotals(lines, promotions);
@@ -109,6 +110,11 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <p className="mt-1 text-sm text-accent">{formatMoney(l.price, locale)}</p>
+                        {l.subscription && (
+                          <p className="mt-0.5 text-xs font-semibold text-accent-strong">
+                            {ts("everyDays", { days: l.subscription.intervalDays })}
+                          </p>
+                        )}
                         <div className="mt-auto flex items-center gap-2 pt-2">
                           <QtyButton onClick={() => setQuantity(l.productId, l.quantity - 1)}>−</QtyButton>
                           <span className="w-6 text-center text-sm">{l.quantity}</span>
@@ -133,6 +139,13 @@ export function CartDrawer() {
                     <span>{t("total")}</span>
                     <span>{formatMoney(totals.total, locale)}</span>
                   </div>
+                  {/* What the repeating part costs next time, before anyone has
+                      committed to it — not after the second charge. */}
+                  {totals.hasSubscription && (
+                    <p className="text-xs text-muted">
+                      {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })}
+                    </p>
+                  )}
                   <Link
                     href="/checkout"
                     onClick={() => {

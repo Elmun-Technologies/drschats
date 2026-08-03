@@ -1,4 +1,9 @@
 import type { Promotion } from "@/lib/shopflow/types";
+import {
+  FIRST_ORDER_PERCENT,
+  RECURRING_PERCENT,
+  SUBSCRIPTION_FREE_SHIPPING_OVER,
+} from "@/lib/subscription/plans";
 
 export const DEFAULT_SHIPPING = 30000;
 
@@ -12,6 +17,8 @@ export interface CartLine {
   quantity: number;
   /** Set when the line was added via an upsell offer (extra discount). */
   upsellDiscountPercent?: number;
+  /** Set when the line was added as a repeating delivery. */
+  subscription?: { intervalDays: number };
 }
 
 export interface CartTotals {
@@ -24,6 +31,13 @@ export interface CartTotals {
   /** UZS still needed to unlock free shipping (0 if already unlocked). */
   freeShippingRemaining: number;
   freeShippingThreshold: number;
+  /** True when at least one line repeats. */
+  hasSubscription: boolean;
+  /**
+   * What the repeating part of this cart will cost on every later delivery,
+   * at the higher recurring discount. 0 when nothing repeats.
+   */
+  recurringTotal: number;
 }
 
 /**
@@ -48,8 +62,27 @@ export function computeTotals(
     }
   }
 
+  /*
+    Subscription lines.
+
+    The discount on this order is the smaller, first-order one; the recurring
+    figure is quoted separately rather than folded into the total, because the
+    customer is paying today's price today. Lines that arrived through an
+    upsell keep their own discount and do not stack — the deeper of the two
+    already applied above.
+  */
+  const subscriptionLines = lines.filter((l) => l.subscription);
+  let recurringTotal = 0;
+  for (const l of subscriptionLines) {
+    const lineTotal = l.price * l.quantity;
+    recurringTotal += Math.round((lineTotal * (100 - RECURRING_PERCENT)) / 100);
+    if (!l.upsellDiscountPercent) {
+      discount += Math.round((lineTotal * FIRST_ORDER_PERCENT) / 100);
+    }
+  }
+
   // Promotions
-  let freeShippingThreshold = Infinity;
+  let freeShippingThreshold = subscriptionLines.length > 0 ? SUBSCRIPTION_FREE_SHIPPING_OVER : Infinity;
   for (const promo of promotions) {
     if (promo.type === "percent_off" && promo.percent) {
       discount += Math.round((subtotal * promo.percent) / 100);
@@ -95,5 +128,7 @@ export function computeTotals(
     freeShippingThreshold: Number.isFinite(freeShippingThreshold)
       ? freeShippingThreshold
       : 0,
+    hasSubscription: subscriptionLines.length > 0,
+    recurringTotal,
   };
 }

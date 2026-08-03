@@ -30,7 +30,8 @@
     "programs": "Dasturlar",
     "reviews": "Sharhlar",
     "wishlist": "Sevimlilar",
-    "menu": "Menyu"
+    "menu": "Menyu",
+    "profile": "Mening profilim"
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -164,7 +165,9 @@
     "forYou": {
       "eyebrow": "Siz uchun",
       "title": "Siz uchun tanlangan",
-      "subtitle": "Ko'rish tarixingiz asosida maxsus tanlangan mahsulotlar"
+      "subtitle": "Ko'rish tarixingiz asosida maxsus tanlangan mahsulotlar",
+      "subtitleStated": "Profilingizda ko‘rsatgan maqsadlaringiz asosida",
+      "because": "Nega:"
     },
     "similar": {
       "eyebrow": "Tavsiya",
@@ -236,8 +239,8 @@
       "label": "Elektron pochtangiz",
       "placeholder": "siz@example.com",
       "submit": "Obuna bo'lish",
-      "success": "Obuna rasmiylashtirildi",
-      "successNote": "Birinchi xat yaqin kunlarda keladi.",
+      "success": "Deyarli tayyor",
+      "successNote": "Pochtangizga tasdiqlash havolasini yubordik. Havolani bosgach obuna faollashadi.",
       "error": "Yuborib bo'lmadi. Pochtani tekshirib, qayta urinib ko'ring.",
       "privacy": "Istalgan vaqtda obunani bekor qilishingiz mumkin.",
       "telegram": "Telegram kanalimiz"
@@ -410,7 +413,12 @@
     "decreaseFor": "{name}: sonini kamaytirish",
     "increaseFor": "{name}: sonini oshirish",
     "removeFor": "{name}: buyurtmadan olib tashlash",
-    "remove": "Olib tashlash"
+    "remove": "Olib tashlash",
+    "email": "Elektron pochta",
+    "emailPlaceholder": "siz@example.com",
+    "emailHint": "Ixtiyoriy. Buyurtma tasdig‘ini shu manzilga yuboramiz.",
+    "subscribeLabel": "Aksiya va yangiliklar haqida xat olib turaman",
+    "errorEmail": "Pochta manzili noto‘g‘ri"
   },
   "footer": {
     "tagline": "Sog‘lom hayot uchun isbotlangan nutriyentlar.",
@@ -1110,7 +1118,161 @@
       "programs": {
         "title": "Dasturlar",
         "description": "Bir necha haftalik rejalar"
+      },
+      "profile": {
+        "title": "Profilim",
+        "description": "Maqsadlar, oila, eslatmalar"
       }
+    },
+    "email": "Elektron pochta",
+    "emailHint": "Ixtiyoriy. Buyurtma holati va eslatmalar uchun.",
+    "verificationSent": "{email} manziliga tasdiqlash havolasini yubordik."
+  },
+  "profile": {
+    "eyebrow": "Shaxsiy yondashuv",
+    "title": "Mening profilim",
+    "titleNamed": "Salom, {name}!",
+    "subtitle": "Bu yerda siz aytgan ma’lumotlar saqlanadi: maqsadlar, oila a’zolari, tug‘ilgan kunlar. Tavsiyalar va eslatmalar shularga qarab tuziladi.",
+    "quizHint": "Hozircha ma’lumot yo‘q. Eng tez yo‘l — sog‘liq testidan o‘tish.",
+    "quizHintCta": "Testni boshlash",
+    "details": {
+      "title": "Asosiy ma’lumotlar",
+      "description": "Hech biri majburiy emas — har bir maydon nimadadir yordam beradi.",
+      "name": "Ismingiz",
+      "email": "Elektron pochta",
+      "emailHint": "Buyurtma tasdig‘i va eslatmalar shu manzilga keladi",
+      "birthday": "Tug‘ilgan kuningiz",
+      "birthdayHint": "Bir hafta oldin eslatamiz"
+    },
+    "goals": {
+      "title": "Sizni nima bezovta qiladi",
+      "description": "Tanlaganlaringiz katalogdagi tavsiyalarni o‘zgartiradi.",
+      "empty": "Hech narsa tanlanmagan",
+      "chosen": "{count} ta tanlandi"
+    },
+    "household": {
+      "title": "Kim uchun tanlaysiz",
+      "description": "Bola uchun doza ham, shakl ham boshqacha bo‘ladi. Tug‘ilgan sanani yozsangiz — oldindan eslatib turamiz.",
+      "addTitle": "Yangi a’zo qo‘shish",
+      "add": "Qo‘shish",
+      "name": "Ismi",
+      "birthday": "Tug‘ilgan sana",
+      "birthdayHint": "Ixtiyoriy",
+      "birthdayFor": "{name} uchun tug‘ilgan sana",
+      "unnamed": "Ismsiz",
+      "age": "{age} yosh",
+      "removeFor": "{name}ni ro‘yxatdan o‘chirish",
+      "relation": {
+        "child": "Farzandim",
+        "partner": "Turmush o‘rtog‘im",
+        "parent": "Ota-onam",
+        "other": "Boshqa"
+      }
+    },
+    "reminders": {
+      "title": "Eslatmalar",
+      "description": "Nimani va qachon eslatishimiz — quyida. Yuborilishidan oldin ko‘rasiz.",
+      "empty": "Hozircha eslatma yo‘q.",
+      "today": "Bugun",
+      "inDays": "{days} kundan keyin",
+      "birthdaySelf": "Tug‘ilgan kuningiz",
+      "birthdaySelfAge": "Tug‘ilgan kuningiz — {age} yosh",
+      "birthdayMember": "{name}ning tug‘ilgan kuni",
+      "birthdayMemberAge": "{name} {age} yoshga to‘ladi",
+      "school": "O‘quv yili boshlanmoqda",
+      "schoolNamed": "{name} uchun o‘quv yili boshlanmoqda",
+      "reorder": "Kursingiz tugayapti",
+      "reorderNamed": "«{name}» tugayapti",
+      "reorderCta": "Takrorlash",
+      "quizStale": "Test natijangiz eskirdi",
+      "quizCta": "Qayta o‘tish"
+    },
+    "consent": {
+      "title": "Xabarlar",
+      "description": "Faqat siz ruxsat bergan kanal orqali yozamiz. Istalgan vaqtda o‘chirishingiz mumkin.",
+      "email": "Elektron pochta",
+      "emailNote": "Eslatmalar, aksiyalar va yangi materiallar — oyiga 2–3 marta.",
+      "emailMissing": "Avval yuqorida pochta manzilini yozing.",
+      "emailSending": "Yuborilmoqda…",
+      "emailSent": "{email} manziliga tasdiqlash havolasini yubordik.",
+      "emailError": "Yuborib bo‘lmadi. Birozdan so‘ng qayta urining.",
+      "telegram": "Telegram",
+      "telegramNote": "Eslatmalar Telegram orqali keladi.",
+      "telegramConnect": "Telegram botni ulash",
+      "legal": "Ma’lumotlaringiz uchinchi shaxslarga berilmaydi. Har bir xatda obunani bekor qilish havolasi bor."
+    },
+    "offers": {
+      "title": "Maqsadlaringizga mos",
+      "description": "Ro‘yxat siz tanlagan maqsadlardan kelib chiqadi.",
+      "because": "Nega:"
+    },
+    "data": {
+      "title": "Ma’lumotlarim",
+      "description": "Bu sahifadagi hamma narsa shu brauzerda saqlanadi.",
+      "clear": "Profilni tozalash",
+      "confirm": "Hammasi o‘chiriladi. Davom etamizmi?",
+      "confirmYes": "Ha, o‘chirilsin",
+      "cancel": "Bekor qilish"
+    }
+  },
+  "emailPreferences": {
+    "title": "Obuna sozlamalari",
+    "saved": "Saqlandi.",
+    "error": "Xatolik yuz berdi. Birozdan so‘ng qayta urining.",
+    "profileHint": "Eslatmalarni profil sahifasida ham boshqarish mumkin.",
+    "profileLink": "Profilga o‘tish",
+    "status": {
+      "confirmed": "Obuna tasdiqlandi. Rahmat!",
+      "unsubscribed": "Obuna bekor qilindi. Endi bu manzilga marketing xatlari yubormaymiz.",
+      "verified": "Pochta manzili tasdiqlandi.",
+      "verify-pending": "Havola to‘g‘ri, lekin hozir saqlab bo‘lmadi. Birozdan so‘ng qayta urining.",
+      "invalid": "Havola eskirgan yoki noto‘g‘ri."
+    },
+    "manage": {
+      "title": "Obunani boshqarish",
+      "description": "Shu havola orqali obunani yoqish yoki o‘chirish mumkin.",
+      "subscribe": "Obunani yoqish",
+      "unsubscribe": "Obunani bekor qilish"
+    },
+    "resubscribe": {
+      "label": "Elektron pochta",
+      "description": "Manzilni kiriting — tasdiqlash havolasini yuboramiz.",
+      "submit": "Yuborish",
+      "sent": "Tasdiqlash havolasi yuborildi."
+    }
+  },
+  "subscription": {
+    "chooseMode": "Qanday sotib olasiz?",
+    "subscribe": "Obuna bilan — arzonroq",
+    "oneTime": "Bir martalik xarid",
+    "bestValue": "Eng foydali",
+    "perServing": "{price} / porsiya",
+    "benefitDiscount": "Bugun −{first}%, keyingi yetkazishlarda −{recurring}%",
+    "benefitShipping": "{amount} dan yuqori obuna buyurtmalari bepul yetkaziladi",
+    "benefitControl": "Istalgan vaqtda o‘zgartirish, to‘xtatish yoki bekor qilish mumkin",
+    "intervalLabel": "Yetkazib berish oralig‘i",
+    "everyDays": "Har {days} kunda",
+    "recurringNote": "Keyingi yetkazishlar: {price}, har {days} kunda",
+    "recurringSummary": "Keyingi yetkazib berish: {amount}.",
+    "addSubscription": "Obunani savatga qo‘shish",
+    "manage": {
+      "title": "Obunalarim",
+      "empty": "Hozircha obuna yo‘q.",
+      "emptyCta": "Katalogga o‘tish",
+      "error": "Obunalarni yuklab bo‘lmadi.",
+      "status": {
+        "active": "Faol",
+        "paused": "To‘xtatilgan",
+        "cancelled": "Bekor qilingan"
+      },
+      "next": "Keyingi yetkazish: {date}",
+      "perDelivery": "Har yetkazishda",
+      "interval": "Oraliq",
+      "everyDays": "Har {days} kunda",
+      "skip": "Bittasini o‘tkazib yuborish",
+      "pause": "To‘xtatish",
+      "resume": "Davom ettirish",
+      "cancel": "Bekor qilish"
     }
   }
 }

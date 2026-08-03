@@ -11,7 +11,9 @@ import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { useToast } from "@/lib/ui/toast";
-import { trackAddToCart, trackViewProduct } from "@/lib/analytics/events";
+import { track, trackAddToCart, trackViewProduct } from "@/lib/analytics/events";
+import { SubscribeToSave, type PurchaseMode } from "@/components/product/SubscribeToSave";
+import { DEFAULT_INTERVAL, type IntervalDays } from "@/lib/subscription/plans";
 import { reviewerForKey } from "@/lib/content/experts";
 import type { Expert } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
@@ -46,10 +48,13 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const tp = useTranslations("product.buyBox");
+  const ts = useTranslations("subscription");
   const add = useCart((s) => s.add);
   const openCart = useCart((s) => s.open);
   const notify = useToast((s) => s.notify);
   const [qty, setQty] = useState(1);
+  const [mode, setMode] = useState<PurchaseMode>("one-time");
+  const [intervalDays, setIntervalDays] = useState<IntervalDays>(DEFAULT_INTERVAL);
   const reviewer = reviewerProp ?? reviewerForKey(product.id, locale);
 
   const discountPercent = product.oldPrice
@@ -61,6 +66,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
   }, [product.slug, product.price]);
 
   function addToCart() {
+    const subscribing = mode === "subscription";
     add(
       {
         productId: product.id,
@@ -69,10 +75,14 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         image: product.images[0]?.url ?? "",
         price: product.price,
         oldPrice: product.oldPrice,
+        subscription: subscribing ? { intervalDays } : undefined,
       },
       qty,
     );
     trackAddToCart(product.slug, product.price, qty);
+    if (subscribing) {
+      track("subscription_add_to_cart", { slug: product.slug, intervalDays });
+    }
   }
 
   function handleAdd() {
@@ -169,6 +179,16 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         </div>
       )}
 
+      {product.inStock && (
+        <SubscribeToSave
+          product={product}
+          mode={mode}
+          intervalDays={intervalDays}
+          onModeChange={setMode}
+          onIntervalChange={setIntervalDays}
+        />
+      )}
+
       {/* Qty + CTAs */}
       <div id="buybox-cta" className="flex flex-col gap-3 scroll-mt-28">
         <div className="flex items-stretch gap-3">
@@ -196,7 +216,11 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
             </button>
           </div>
           <Button onClick={handleAdd} size="lg" className="flex-1" disabled={!product.inStock}>
-            {product.inStock ? t("addToCart") : t("outOfStock")}
+            {!product.inStock
+              ? t("outOfStock")
+              : mode === "subscription"
+                ? ts("addSubscription")
+                : t("addToCart")}
           </Button>
         </div>
 

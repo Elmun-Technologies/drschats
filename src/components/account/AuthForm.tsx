@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import type { Locale } from "@/lib/i18n/routing";
 import { api, ApiError } from "@/lib/api/client";
 import { useSession } from "@/lib/auth/store";
+import { useProfile } from "@/lib/profile/store";
+import { sendAccountVerification } from "@/app/actions/accountEmail";
 import { track } from "@/lib/analytics/events";
 
 type Mode = "login" | "register";
@@ -15,10 +18,14 @@ export function AuthForm() {
   const [mode, setMode] = useState<Mode>("login");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [verificationSent, setVerificationSent] = useState(false);
   const [busy, setBusy] = useState(false);
   const signIn = useSession((s) => s.signIn);
+  const locale = useLocale() as Locale;
+  const updateProfile = useProfile((s) => s.update);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,6 +42,20 @@ export function AuthForm() {
       const user = await api.me(accessToken);
       signIn(accessToken, user);
       track(mode === "login" ? "login" : "sign_up", {});
+
+      // Registration only: the address is stored in this browser's profile and
+      // sent one verification link. It is not attached to the account until
+      // that link is clicked, so a typo costs nothing.
+      if (mode === "register" && email.trim()) {
+        updateProfile({ name: name.trim() || undefined, email: email.trim() });
+        const sent = await sendAccountVerification({
+          userId: user.id,
+          email: email.trim(),
+          name: name.trim() || undefined,
+          locale,
+        });
+        setVerificationSent(sent.ok);
+      }
     } catch (err) {
       // The API's own message is the useful one — "Invalid phone or password",
       // "Phone already registered" — so it is shown rather than replaced with a
@@ -71,15 +92,26 @@ export function AuthForm() {
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {mode === "register" && (
-          <Field
-            id="account-name"
-            label={t("name")}
-            value={name}
-            onChange={setName}
-            autoComplete="name"
-            required
-            minLength={2}
-          />
+          <>
+            <Field
+              id="account-name"
+              label={t("name")}
+              value={name}
+              onChange={setName}
+              autoComplete="name"
+              required
+              minLength={2}
+            />
+            <Field
+              id="account-email"
+              label={t("email")}
+              type="email"
+              value={email}
+              onChange={setEmail}
+              autoComplete="email"
+              hint={t("emailHint")}
+            />
+          </>
         )}
 
         <Field
@@ -108,6 +140,12 @@ export function AuthForm() {
         {error && (
           <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm font-medium text-danger">
             {error}
+          </p>
+        )}
+
+        {verificationSent && (
+          <p role="status" className="rounded-lg bg-accent-soft px-3 py-2 text-sm font-medium text-accent-strong">
+            {t("verificationSent", { email })}
           </p>
         )}
 

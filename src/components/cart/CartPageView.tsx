@@ -13,6 +13,7 @@ import { buttonVariants } from "@/components/ui/Button";
 export function CartPageView() {
   const locale = useLocale() as Locale;
   const t = useTranslations("cart");
+  const ts = useTranslations("subscription");
   const { lines, setQuantity, remove } = useCart();
   const promotions = usePromotions();
   const totals = computeTotals(lines, promotions);
@@ -87,6 +88,11 @@ export function CartPageView() {
                 {l.oldPrice && (
                   <span className="text-xs text-faint line-through">{formatMoney(l.oldPrice, locale)}</span>
                 )}
+                {l.subscription && (
+                  <span className="mt-0.5 text-xs font-semibold text-accent-strong">
+                    {ts("everyDays", { days: l.subscription.intervalDays })}
+                  </span>
+                )}
                 <div className="mt-auto flex items-center gap-2">
                   <button
                     onClick={() => setQuantity(l.productId, l.quantity - 1)}
@@ -126,6 +132,11 @@ export function CartPageView() {
               <span>{t("total")}</span>
               <span>{formatMoney(totals.total, locale)}</span>
             </div>
+            {totals.hasSubscription && (
+              <p className="text-xs text-muted">
+                {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })}
+              </p>
+            )}
           </div>
           <Link href="/checkout" className={buttonVariants("primary", "lg") + " mt-5 w-full"}>
             {t("checkout")}
