@@ -17,6 +17,27 @@ class Settings(BaseSettings):
 
     environment: str = "development"
 
+    # Sign-in codes. A six-digit code is only 20 bits, so its safety is these
+    # numbers rather than its length: short life, few guesses, hard cap per hour.
+    otp_ttl_seconds: int = 300
+    otp_max_attempts: int = 5
+    otp_resend_cooldown_seconds: int = 60
+    otp_max_per_hour: int = 5
+
+    # Telegram delivers the codes. Without a token and username the API still
+    # runs and still issues codes — it just reports that no channel could
+    # deliver them, which is what a misconfigured deployment should say rather
+    # than silently accepting sign-ins nobody can complete.
+    telegram_bot_token: str = ""
+    telegram_bot_username: str = ""
+    # Telegram echoes this back in X-Telegram-Bot-Api-Secret-Token, and it is
+    # the only thing separating the webhook from anyone who guesses its URL.
+    telegram_webhook_secret: str = ""
+
+    # Development escape hatch: log codes instead of delivering them, so the
+    # flow can be exercised without a bot. Refused in production by main.py.
+    otp_debug_echo: bool = False
+
     # Browsers call this API directly from the storefront origin.
     cors_origins: str = "http://localhost:3000"
 

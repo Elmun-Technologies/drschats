@@ -78,15 +78,22 @@ class OrderOut(BaseModel):
 # --- auth ---------------------------------------------------------------
 
 
-class RegisterRequest(BaseModel):
-    name: str = Field(min_length=2, max_length=120)
+class OtpRequest(BaseModel):
     phone: str = Field(min_length=7, max_length=32)
-    password: str = Field(min_length=8, max_length=128)
 
 
-class LoginRequest(BaseModel):
-    phone: str
-    password: str
+class OtpRequestResponse(BaseModel):
+    # "sent" — a code is on its way. "link_required" — the bot has never spoken
+    # to this phone, so there is nowhere to send one until it has.
+    status: Literal["sent", "link_required"]
+    channel: Literal["telegram"]
+    telegramLink: str | None
+    expiresIn: int
+
+
+class OtpVerifyRequest(BaseModel):
+    phone: str = Field(min_length=7, max_length=32)
+    code: str = Field(min_length=4, max_length=8)
 
 
 class TokenResponse(BaseModel):

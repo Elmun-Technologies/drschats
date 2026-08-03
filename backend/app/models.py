@@ -31,11 +31,56 @@ class User(Base):
     # Phone, not email: in this market it is the identifier people actually
     # have and already type into checkout.
     phone: Mapped[str] = mapped_column(String(32), unique=True, index=True)
-    name: Mapped[str] = mapped_column(String(120))
-    password_hash: Mapped[str] = mapped_column(String(255))
+    # Empty until the customer tells us. Sign-in is a phone and a code, so
+    # there is no point in the flow where a name can be demanded — checkout
+    # fills it in, and until then the account is simply nameless.
+    name: Mapped[str] = mapped_column(String(120), default="")
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
 
     orders: Mapped[list["Order"]] = relationship(back_populates="user")
+
+
+class TelegramLink(Base):
+    """
+    Which Telegram chat a phone number can be reached on.
+
+    A bot cannot message a phone number — it can only reply to a chat someone
+    has already opened with it. So a code can only be delivered after the
+    customer has started the bot and shared their contact, and this table is
+    what that step produces. Everything about the sign-in flow follows from
+    that single constraint.
+    """
+
+    __tablename__ = "telegram_links"
+
+    id: Mapped[int] = mapped_column(BigIntPk, primary_key=True, autoincrement=True)
+    phone: Mapped[str] = mapped_column(String(32), unique=True, index=True)
+    chat_id: Mapped[int] = mapped_column(BigInteger, unique=True, index=True)
+    username: Mapped[str | None] = mapped_column(String(64), nullable=True)
+    linked_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class OtpCode(Base):
+    """
+    A one-time sign-in code.
+
+    The code itself is never stored — only an HMAC of it. A six-digit code is
+    trivially brute-forced offline, so a database copy must not be enough to
+    replay one; the server secret is what makes the stored value useless on its
+    own. Attempts are counted here rather than in a cache because the limit is
+    a correctness property, not an optimisation, and has to survive a restart.
+    """
+
+    __tablename__ = "otp_codes"
+
+    id: Mapped[int] = mapped_column(BigIntPk, primary_key=True, autoincrement=True)
+    phone: Mapped[str] = mapped_column(String(32), index=True)
+    code_hash: Mapped[str] = mapped_column(String(64))
+    channel: Mapped[str] = mapped_column(String(16))
+    attempts: Mapped[int] = mapped_column(Integer, default=0)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True)
+    consumed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
+    created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow, index=True)
 
 
 class Order(Base):
