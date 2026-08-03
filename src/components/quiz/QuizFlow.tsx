@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "@/lib/i18n/navigation";
-import type { QuizQuestion } from "@/lib/quiz/questions";
+import { visibleQuestions, type QuizQuestion } from "@/lib/quiz/questions";
 import { buildQuizResult, saveQuiz, type QuizAnswers } from "@/lib/quiz/engine";
 import { encodeAnswers } from "@/lib/quiz/recommend";
 import { track } from "@/lib/analytics/events";
@@ -18,10 +18,18 @@ export function QuizFlow({ questions }: { questions: QuizQuestion[] }) {
   const [submitting, setSubmitting] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
 
-  const question = questions[step];
+  /*
+    Recomputed from the answers rather than fixed up front, so going back and
+    changing an earlier answer can bring a later question back as well as
+    remove one. `step` indexes this list, and is clamped because the list can
+    shrink under it.
+  */
+  const visible = useMemo(() => visibleQuestions(questions, answers), [questions, answers]);
+  const stepIndex = Math.min(step, visible.length - 1);
+  const question = visible[stepIndex];
   const selected = useMemo(() => answers[question.id] ?? [], [answers, question.id]);
-  const progress = Math.round(((step + 1) / questions.length) * 100);
-  const isLast = step === questions.length - 1;
+  const progress = Math.round(((stepIndex + 1) / visible.length) * 100);
+  const isLast = stepIndex === visible.length - 1;
 
   function toggle(optionId: string) {
     setAnswers((prev) => {
@@ -64,12 +72,14 @@ export function QuizFlow({ questions }: { questions: QuizQuestion[] }) {
       return;
     }
     track("quiz_step", { step: step + 1, question_id: question.id });
-    setStep((s) => Math.min(questions.length - 1, s + 1));
+    setStep(() => Math.min(visible.length - 1, stepIndex + 1));
   }
 
   function finish() {
     setSubmitting(true);
-    const result = buildQuizResult(questions, answers);
+    // Only the questions actually asked — a skipped one has no answer
+    // and must not count against the answered total.
+    const result = buildQuizResult(visible, answers);
     saveQuiz(answers, result);
     track("quiz_complete", {
       answered: result.answeredCount,
@@ -81,7 +91,7 @@ export function QuizFlow({ questions }: { questions: QuizQuestion[] }) {
   return (
     <div className="mx-auto max-w-2xl">
       <div className="flex items-center justify-between text-sm text-muted">
-        <span>{t("stepOf", { step: step + 1, total: questions.length })}</span>
+        <span>{t("stepOf", { step: stepIndex + 1, total: visible.length })}</span>
         <span className="tabular-nums">{progress}%</span>
       </div>
       <div
