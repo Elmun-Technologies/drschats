@@ -274,7 +274,7 @@ Bularni men qila olaman — faqat "ha" deng:
 | ish | nima o'zgaradi |
 |---|---|
 | 404 sahifasiga `lang` atributi | root layout qayta quriladi — biroz xavfliroq o'zgarish |
-| Playwright'ni `devDependencies`ga | audit skriptlari CI'da yuradi, regressiya avtomatik tutiladi |
+| SMS zaxira kanali | hozir kirish faqat Telegram orqali — Telegramsiz odam kira olmaydi |
 | `en` tilini qo'shish | 638 ta kalit × 1 til tarjima kerak (yoki men taxminiy qilaman, siz tekshirasiz) |
 | Bo'sh menyu bo'limlarini vaqtincha yashirish | kontent tayyor bo'lguncha `/vitamins` menyudan olinadi |
 | Sharh/ijtimoiy-isbot namunalarini o'chirish | soxta ma'lumot yo'qoladi |
@@ -295,6 +295,10 @@ Eng qisqa yo'l — shu 6 tasi:
 Qolganini keyin ham qo'shsa bo'ladi.
 
 ---
+
+**Bajarildi:** Playwright `devDependencies` ga qo'shildi, audit to'plami
+`scripts/audit/` ga ko'chirildi va CI'da har bir PR'da yuradi. Endi sifat
+darajasi da'vo emas, tekshiriladigan narsa.
 
 *Bu fayl 2026-08-03 da yozilgan. Raqamlar o'sha kuni ishlab turgan production
 build'dan o'lchangan, taxmin emas.*
