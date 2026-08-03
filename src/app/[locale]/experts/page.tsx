@@ -53,7 +53,9 @@ export default async function ExpertsPage({
                 <div className="flex flex-1 flex-col p-6">
                   <h2 className="font-display text-xl font-bold group-hover:text-accent-strong">{e.name}</h2>
                   <p className="mt-1 text-sm text-accent-strong">{e.title}</p>
-                  <p className="mt-3 line-clamp-3 text-sm text-muted">{e.bio}</p>
+                  {/* flex-1 so the credential chips pin to the card's bottom
+                      edge instead of floating wherever the bio happens to end. */}
+                  <p className="mt-3 line-clamp-3 flex-1 text-sm text-muted">{e.bio}</p>
                   {e.credentials.length > 0 && (
                     <div className="mt-4 flex flex-wrap gap-1.5">
                       {e.credentials.slice(0, 3).map((c) => (
