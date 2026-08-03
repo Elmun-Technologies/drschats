@@ -33,7 +33,7 @@ export default async function ExpertsPage({
     <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
-          <p className="text-sm font-semibold text-accent-strong">{t("badge")}</p>
+          <p className="text-sm font-semibold text-accent-strong">{t("eyebrow")}</p>
           <Reveal>
             <h1 className="mt-3 font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">{t("title")}</h1>
           </Reveal>

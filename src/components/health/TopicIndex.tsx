@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import type { HealthTopic, HealthTopicKind } from "@/lib/content/health-topics";
 import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
 import { Link } from "@/lib/i18n/navigation";
@@ -5,7 +6,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 
-export function TopicIndex({
+export async function TopicIndex({
   kind,
   eyebrow,
   title,
@@ -20,6 +21,8 @@ export function TopicIndex({
   emptyLabel: string;
   topics: HealthTopic[];
 }) {
+  const nav = await getTranslations("nav");
+
   return (
     <div className="pt-10 pb-6">
       <Container>
@@ -31,8 +34,27 @@ export function TopicIndex({
           <p className="mt-4 text-lg text-muted">{subtitle}</p>
         </header>
 
+        {/* These sections are linked from the main nav, so an empty one is a
+            landing page, not a dead end — it offers the two routes that answer
+            the same question the section would have. */}
         {topics.length === 0 ? (
-          <p className="py-24 text-center text-muted">{emptyLabel}</p>
+          <div className="mt-12 rounded-2xl border border-line bg-surface px-6 py-16 text-center">
+            <p className="text-muted">{emptyLabel}</p>
+            <div className="mt-6 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/quiz"
+                className="rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-accent-strong"
+              >
+                {nav("quiz")}
+              </Link>
+              <Link
+                href="/products"
+                className="rounded-full border border-line bg-ink px-5 py-2.5 text-sm font-bold text-fg transition-colors hover:border-accent hover:text-accent-strong"
+              >
+                {nav("products")}
+              </Link>
+            </div>
+          </div>
         ) : (
           <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {topics.map((topic, i) => (

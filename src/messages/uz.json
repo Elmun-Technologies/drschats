@@ -522,7 +522,8 @@
     "credentials": "Malaka va sertifikatlar",
     "profiles": "Tashqi profillar",
     "reviewed": "Tekshiruvchi",
-    "back": "Kengashga qaytish"
+    "back": "Kengashga qaytish",
+    "eyebrow": "Tibbiy nazorat"
   },
   "delivery": {
     "title": "Yetkazib berish va to’lov",
@@ -984,7 +985,8 @@
       "plural": "Sog'liq maqsadlari",
       "indexTitle": "Sog'liq maqsadlari",
       "indexSubtitle": "Mahsulot bo'yicha emas — maqsad bo'yicha tanlang. Har bir maqsad uchun nutriyentlar, mahsulotlar va shifokor izohi.",
-      "empty": "Hozircha maqsadlar qo'shilmagan."
+      "empty": "Hozircha maqsadlar qo'shilmagan.",
+      "indexEyebrow": "Maqsad bo‘yicha katalog"
     },
     "symptom": {
       "singular": "Belgi",

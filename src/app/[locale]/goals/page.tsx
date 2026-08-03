@@ -46,7 +46,7 @@ export default async function HealthGoalsPage({
       />
       <TopicIndex
         kind="goal"
-        eyebrow={t("plural")}
+        eyebrow={t("indexEyebrow")}
         title={t("indexTitle")}
         subtitle={t("indexSubtitle")}
         emptyLabel={t("empty")}
