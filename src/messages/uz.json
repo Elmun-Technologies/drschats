@@ -253,7 +253,11 @@
       "title": "Chegirmadagi mahsulotlar",
       "subtitle": "Narxi tushgan vitamin va BADlar — omborda bor, bugun yetkazamiz."
     },
-    "slideLabel": "{number}-slayd"
+    "slideLabel": "{number}-slayd",
+    "audience": {
+      "subtitle": "Tanlang — konsultant qolgan savollarni beradi va shaxsiy reja tuzadi.",
+      "cta": "Boshlash"
+    }
   },
   "product": {
     "breadcrumbHome": "Bosh sahifa",

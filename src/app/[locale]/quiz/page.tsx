@@ -26,13 +26,25 @@ export async function generateMetadata({
 
 export default async function QuizPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<{ who?: string }>;
 }) {
   const { locale } = await params;
+  const { who } = await searchParams;
   setRequestLocale(locale);
   const t = await getTranslations("quiz");
   const questions = getQuizQuestions(locale);
+
+  /* The home page offers the first question as its own set of cards, so
+     arriving from one of those means it has already been answered — asking it
+     again would make the shortcut cost a step instead of saving one. */
+  const firstQuestion = questions[0];
+  const preset =
+    who && firstQuestion?.options.some((o) => o.id === who)
+      ? { [firstQuestion.id]: [who] }
+      : undefined;
 
   return (
     <div className="pt-10 pb-6">
@@ -48,7 +60,7 @@ export default async function QuizPage({
         </header>
 
         <div className="mt-12">
-          <QuizFlow questions={questions} />
+          <QuizFlow questions={questions} initialAnswers={preset} />
         </div>
 
         <div className="mx-auto mt-14 max-w-2xl">
