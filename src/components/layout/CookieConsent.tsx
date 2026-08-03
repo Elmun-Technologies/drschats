@@ -18,7 +18,7 @@ export function CookieConsent() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-3 z-50 mx-auto max-w-3xl rounded-2xl border border-line bg-ink p-4 shadow-2xl sm:flex sm:items-center sm:gap-4">
+    <div className="fixed inset-x-3 bottom-[calc(var(--bottom-nav)+0.75rem)] z-50 mx-auto max-w-3xl rounded-2xl border border-line bg-ink p-4 shadow-2xl sm:flex sm:items-center sm:gap-4">
       <p className="text-sm text-muted">
         {t("text")}{" "}
         <Link href="/privacy" className="text-accent-strong underline">

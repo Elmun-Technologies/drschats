@@ -73,8 +73,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           {values.map((v, i) => {
             const c = VALUE_COLORS[i % VALUE_COLORS.length];
             return (
-              <Reveal key={v.title} index={i}>
-                <div className={`rounded-2xl border ${c.border} bg-ink p-7`}>
+              <Reveal key={v.title} index={i} className="h-full">
+                <div className={`h-full rounded-2xl border ${c.border} bg-ink p-7`}>
                   <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${c.bg} ${c.text}`}>
                     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d={VALUE_ICONS[i % VALUE_ICONS.length]} />

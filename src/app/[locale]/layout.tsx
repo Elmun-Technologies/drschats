@@ -74,7 +74,11 @@ export default async function LocaleLayout({
             <ScrollProgress />
             <SmoothScroll>
               <Header categories={categories} />
-              <main id="main-content" className="pb-16 md:pb-0">{children}</main>
+              {/* The tab bar is fixed, so its height is reserved twice: here, so
+                  the seam between main and footer never rests under it, and
+                  again at the end of the footer, which is what actually runs
+                  beneath it when scrolled to the bottom. */}
+              <main id="main-content" className="pb-[var(--bottom-nav)]">{children}</main>
               <Footer />
               <CookieConsent />
               <Toaster />

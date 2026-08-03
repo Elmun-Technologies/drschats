@@ -67,11 +67,11 @@ export function MobileBottomNav() {
   ] as const;
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 border-t border-line bg-surface md:hidden">
-      <div className="grid grid-cols-4">
+    <nav className="fixed bottom-0 inset-x-0 z-40 h-[var(--bottom-nav)] border-t border-line bg-surface pb-[env(safe-area-inset-bottom,0px)] md:hidden">
+      <div className="grid h-full grid-cols-4">
         {tabs.map((tab) => {
           const active = tab.href ? isActive(tab.href) : false;
-          const cls = `flex flex-col items-center gap-1 py-3 text-[10px] font-medium transition-colors ${active ? "text-accent" : "text-muted"}`;
+          const cls = `flex flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors ${active ? "text-accent" : "text-muted"}`;
 
           if ("onClick" in tab && tab.onClick) {
             return (

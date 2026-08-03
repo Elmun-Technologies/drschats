@@ -11,7 +11,8 @@ export function Toaster() {
   const openCart = useCart((s) => s.open);
 
   return (
-    <div className="pointer-events-none fixed bottom-4 right-4 z-[60] flex flex-col items-end gap-2">
+    /* Stacks above the scroll-to-top button, which shares this corner. */
+    <div className="pointer-events-none fixed right-4 bottom-[calc(var(--bottom-nav)+4.75rem)] z-[60] flex flex-col items-end gap-2">
       <AnimatePresence>
         {toasts.map((toast) => (
           <motion.div

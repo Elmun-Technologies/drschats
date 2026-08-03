@@ -44,7 +44,10 @@ export function PromoBanners() {
             <Reveal key={i} index={i}>
               <Link
                 href={banner.href}
-                className={`group relative flex min-h-[160px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${banner.gradient} border border-line p-6 transition-all hover:border-accent/40 hover:-translate-y-0.5`}
+                /* h-full: the grid stretches the Reveal wrapper, but without
+                   this the card inside kept its content height, so a two-line
+                   title made one banner taller than its neighbours. */
+                className={`group relative flex h-full min-h-[160px] flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${banner.gradient} border border-line p-6 transition-all hover:border-accent/40 hover:-translate-y-0.5`}
               >
                 <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${banner.iconBg} ${banner.iconColor}`}>
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
