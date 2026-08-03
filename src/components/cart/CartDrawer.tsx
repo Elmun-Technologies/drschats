@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import type { Locale } from "@/lib/i18n/routing";
 import { useCart } from "@/lib/cart/store";
+import { useDialog } from "@/lib/ui/useDialog";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals } from "@/lib/cart/pricing";
 import { formatMoney } from "@/lib/utils";
@@ -17,9 +18,11 @@ import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 export function CartDrawer() {
   const locale = useLocale() as Locale;
   const t = useTranslations("cart");
+  const tc = useTranslations("common");
   const { lines, isOpen, close, setQuantity, remove } = useCart();
   const promotions = usePromotions();
   const totals = computeTotals(lines, promotions);
+  const dialogRef = useDialog<HTMLElement>(isOpen, close);
 
   return (
     <>
@@ -32,9 +35,15 @@ export function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={close}
+            aria-hidden
             className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm"
           />
           <motion.aside
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="cart-drawer-title"
+            tabIndex={-1}
             initial={{ x: "100%" }}
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
@@ -42,8 +51,10 @@ export function CartDrawer() {
             className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-line bg-surface"
           >
             <header className="flex items-center justify-between border-b border-line px-6 py-5">
-              <h2 className="font-display text-lg font-semibold">{t("title")}</h2>
-              <button onClick={close} aria-label={t("remove")} className="text-muted hover:text-fg">
+              <h2 id="cart-drawer-title" className="font-display text-lg font-semibold">{t("title")}</h2>
+              {/* Was labelled "remove" — the wrong verb for the control that
+                  closes the drawer. */}
+              <button onClick={close} aria-label={tc("close")} className="text-muted hover:text-fg">
                 <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>

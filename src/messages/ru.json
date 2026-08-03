@@ -58,7 +58,8 @@
     "notFoundTitle": "Страница не найдена",
     "notFoundDesc": "Sahifa topilmadi · Страница не найдена",
     "notFoundHome": "На главную",
-    "notFoundShop": "В магазин"
+    "notFoundShop": "В магазин",
+    "close": "Закрыть"
   },
   "home": {
     "hero": {

@@ -58,7 +58,8 @@
     "notFoundTitle": "Sahifa topilmadi",
     "notFoundDesc": "Sahifa topilmadi · Страница не найдена",
     "notFoundHome": "Bosh sahifaga qaytish",
-    "notFoundShop": "Do'konga o'tish"
+    "notFoundShop": "Do'konga o'tish",
+    "close": "Yopish"
   },
   "home": {
     "hero": {
