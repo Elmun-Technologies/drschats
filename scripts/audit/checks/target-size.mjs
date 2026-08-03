@@ -19,11 +19,23 @@ const AUDIT = `(() => {
   };
   const nameOf = (el) => (el.getAttribute('aria-label') || el.textContent || '').trim().slice(0, 34);
 
+  // Which layer a target lives on. A fixed bar floats over the page: at any
+  // given scroll offset it sits on top of unrelated content, and pairing the
+  // two measures the scroll position rather than the layout. Content trapped
+  // under that bar is a real defect, but it is the bottom-edge check's to
+  // report — and it reports it at max scroll, where the answer is stable.
+  const layerOf = (el) => {
+    for (let n = el; n && n !== document.body; n = n.parentElement) {
+      if (getComputedStyle(n).position === 'fixed') return n;
+    }
+    return null;
+  };
+
   const targets = [];
   for (const el of document.querySelectorAll('a[href], button, [role="button"], input, select')) {
     if (!visible(el)) continue;
     const r = el.getBoundingClientRect();
-    targets.push({ el, name: nameOf(el), x: r.x + r.width / 2, y: r.y + r.height / 2, w: r.width, h: r.height });
+    targets.push({ el, layer: layerOf(el), name: nameOf(el), x: r.x + r.width / 2, y: r.y + r.height / 2, w: r.width, h: r.height });
   }
 
   const fails = [];
@@ -37,6 +49,7 @@ const AUDIT = `(() => {
     let crowdedBy = null;
     for (const o of targets) {
       if (o === t) continue;
+      if (o.layer !== t.layer) continue;
       if (Math.hypot(t.x - o.x, t.y - o.y) < 24) { crowdedBy = o.name; break; }
     }
     if (!crowdedBy) continue;

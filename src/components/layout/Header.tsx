@@ -90,6 +90,14 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
         </div>
       </Container>
 
+      {/* Search, on mobile, in the header rather than two taps inside the
+          burger menu. A shop whose search is hidden behind a menu icon reads
+          as a shop without search — and phones are where most of this
+          catalogue is browsed. */}
+      <Container className="pb-3 md:hidden">
+        <SearchBox categories={categories} />
+      </Container>
+
       {/* Nav row (sticky). `relative` anchors the catalogue panel, which drops
           out of this row rather than out of the page. */}
       <div className="sticky top-0 z-40 hidden border-t border-line bg-ink/95 backdrop-blur lg:block">
