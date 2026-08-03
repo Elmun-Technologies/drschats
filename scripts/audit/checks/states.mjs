@@ -73,10 +73,13 @@ const STATES = [
     viewport: MOBILE,
     path: "",
     // Located by position rather than label: the label is translated, and a
-    // check that only works in one locale is a check that will rot.
+    // check that only works in one locale is a check that will rot. Buttons
+    // inside a form are skipped — the mobile search row put its submit button
+    // last in the header and this quietly started clicking that instead.
     open: (page) =>
       page.evaluate(() => {
         const visible = [...document.querySelectorAll("header button")].filter((b) => {
+          if (b.closest("form")) return false;
           const r = b.getBoundingClientRect();
           return r.width > 4 && r.height > 4;
         });

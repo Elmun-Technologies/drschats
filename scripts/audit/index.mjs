@@ -3,6 +3,7 @@ import * as a11y from "./checks/a11y.mjs";
 import * as contrast from "./checks/contrast.mjs";
 import * as targetSize from "./checks/target-size.mjs";
 import * as clipped from "./checks/clipped.mjs";
+import * as bottomEdge from "./checks/bottom-edge.mjs";
 import * as states from "./checks/states.mjs";
 
 /*
@@ -27,6 +28,7 @@ const PER_LOCALE = [
   ["colour contrast", contrast],
   ["target size (WCAG 2.2 spacing exception applied)", targetSize],
   ["text clipped inside its own box", clipped],
+  ["content trapped under the bottom bars", bottomEdge],
 ];
 
 const ONCE = [["overlays: names, dialog semantics, Escape", states]];
