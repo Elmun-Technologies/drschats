@@ -19,21 +19,47 @@ customer, doctor or partner cabinets.
 | `POST /api/v1/auth/register` | Name, phone, password → token |
 | `POST /api/v1/auth/login` | Phone, password → token |
 | `GET  /api/v1/auth/me` | Current user |
+| `GET  /api/v1/profile/me` | Goals, household, birthday, consent |
+| `PATCH /api/v1/profile/me` | Replaces the same. A changed address is an unverified address. |
+| `GET  /api/v1/subscriptions/me` | The caller's repeating orders |
+| `PATCH /api/v1/subscriptions/{id}` | Pause, resume, skip one, re-time, cancel |
 | `GET  /health` | Liveness |
+
+Service-to-service, authenticated with `X-Service-Key` rather than a customer
+token — the storefront calls these as itself:
+
+| | |
+|---|---|
+| `POST /api/v1/marketing/subscribers` | Double opt-in confirmed, or unsubscribed |
+| `POST /api/v1/marketing/verify-email` | The registration confirmation link was clicked |
+| `GET  /api/v1/marketing/due` | Who is due a message today |
+| `POST /api/v1/marketing/sent` | What was delivered, and what failed |
 
 Interactive docs at `/docs` once running.
 
-## Two decisions worth knowing
+## Four decisions worth knowing
 
-**Guest orders are first-class.** `orders.user_id` is nullable. Checkout has no
-login and adding one as a precondition would trade a working funnel for a
-database column. When someone registers later, orders matching their phone are
-claimed automatically, so "my orders" is useful on the first visit rather than
-empty.
+**Guest orders are first-class.** `orders.user_id` is nullable, and so is
+`subscriptions.user_id`. Checkout has no login and adding one as a precondition
+would trade a working funnel for a database column. When someone registers
+later, orders *and* subscriptions matching their phone are claimed
+automatically, so "my orders" is useful on the first visit rather than empty.
 
 **The phone is the identity.** It is what people in this market have and
 already type into checkout, and it is stored digits-only — so `+998 90 123 45
-67` at checkout and `998901234567` at signup are one customer, not two.
+67` at checkout and `998901234567` at signup are one customer, not two. The
+email address is secondary: something a customer offers so we can write to
+them, and worth nothing until `email_verified_at` is set.
+
+**This service decides who to message; it does not send.** The templates, the
+mail provider and the Telegram token live in the storefront, which is deployed.
+Consent is checked *here* — a row only reaches the queue if the person agreed
+and, for email, confirmed the address. See `docs/MARKETING.md`.
+
+**A message is logged before it is handed out.** `marketing_messages.reminder_id`
+is unique per occurrence, so a cron that runs twice cannot wish anyone a happy
+birthday twice. Recording after delivery instead would risk the opposite: the
+same greeting every minute until the send succeeds.
 
 ## Running it
 

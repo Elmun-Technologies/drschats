@@ -171,6 +171,36 @@ TELEGRAM_CHAT_ID=...
 @BotFather orqali bot yarating, guruhga qo'shing, chat ID'ni oling. Bularsiz
 buyurtma qabul qilinadi, lekin sizga xabar bormaydi.
 
+### 3c-bis. Pochta — email dasturi shusiz umuman yubormaydi 🔴
+
+```env
+RESEND_API_KEY=re_...
+EMAIL_FROM=Go Vita <no-reply@govita.uz>
+EMAIL_REPLY_TO=info@govita.uz
+EMAIL_TOKEN_SECRET=...
+```
+
+Kod tayyor: obunani tasdiqlash, xush kelibsiz, buyurtma tasdig'i, tug'ilgan
+kun, o'quv yili, kurs tugashi, obuna eslatmasi, ro'yxatdan o'tish tasdig'i —
+ikkala tilda. Kalit qo'yilmaguncha `[email] skipped …` log'ga yoziladi va
+**hech kimga hech narsa bormaydi**.
+
+Domenga **SPF, DKIM, DMARC** yozuvlari kerak, aks holda xatlar spamga tushadi.
+`EMAIL_TOKEN_SECRET` production'da majburiy — bo'lmasa server ishga tushmaydi.
+
+Eslatmalar navbati uchun qo'shimcha: `CRON_SECRET`, `MARKETING_API_KEY` (backend
+bilan bir xil). To'liq yo'riqnoma: **[`docs/MARKETING.md`](MARKETING.md)**.
+
+### 3c-ter. Telegram bot — mijozlar uchun (ixtiyoriy)
+
+```env
+NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=govita_bot
+```
+
+Bu bozorda Telegram pochtadan kuchliroq kanal. Kod tayyor, lekin **bot yozilmagan**:
+u foydalanuvchi suhbat boshlaganda `chat_id` ni backend'ga yozishi kerak.
+O'zgaruvchi qo'yilmasa kanal `/profile` da umuman ko'rsatilmaydi.
+
 ### 3d. Analitika
 
 ```env
@@ -288,6 +318,7 @@ Eng qisqa yo'l — shu 6 tasi:
 - [ ] `NEXT_PUBLIC_SITE_URL` = haqiqiy domen
 - [ ] `SHOPFLOW_MODE=http` + API kalitlari (yoki mock bilan qolish qarori)
 - [ ] Telegram bot — buyurtma xabarlari borishi uchun
+- [ ] `RESEND_API_KEY` + DNS yozuvlari — buyurtma tasdig'i mijozga borishi uchun
 - [ ] Kamida 10 ta sog'liq mavzusi matni (shifokor tasdig'i bilan)
 - [ ] Mahsulot fotolari
 - [ ] `BRAND.contact` — haqiqiy manzillar

@@ -12,6 +12,7 @@ import { HouseholdEditor } from "./HouseholdEditor";
 import { ReminderPanel } from "./ReminderPanel";
 import { ConsentPanel } from "./ConsentPanel";
 import { ProfileOffers } from "./ProfileOffers";
+import { ProfileSync } from "./ProfileSync";
 
 /*
   /profile — everything the visitor has told us, in one editable place.
@@ -44,6 +45,7 @@ export function ProfileView() {
 
   return (
     <Container className="py-10 sm:py-14">
+      <ProfileSync />
       <header className="mx-auto max-w-3xl">
         <p className="text-sm font-semibold text-accent-strong">{t("eyebrow")}</p>
         <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
