@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/lib/i18n/navigation";
 import { formatMoney } from "@/lib/utils";
+import { getCategoryIcon } from "@/lib/shop/category-icons";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Category } from "@/lib/shopflow/types";
 
@@ -16,7 +17,7 @@ interface Suggestion {
 }
 
 type Option =
-  | { kind: "category"; key: string; label: string; href: string }
+  | { kind: "category"; key: string; label: string; href: string; slug: string }
   | { kind: "product"; key: string; label: string; href: string; product: Suggestion };
 
 const MIN_QUERY = 2;
@@ -69,6 +70,7 @@ export function SearchBox({
             key: `c-${c.id}`,
             label: c.name,
             href: `/products/${c.slug}`,
+            slug: c.slug,
           }))
       : [];
 
@@ -84,6 +86,7 @@ export function SearchBox({
     key: `pop-${c.id}`,
     label: c.name,
     href: `/products/${c.slug}`,
+    slug: c.slug,
   }));
 
   const options: Option[] = isSearching
@@ -273,9 +276,12 @@ export function SearchBox({
                 </>
               ) : (
                 <>
+                  {/* The same glyph the category rail uses. One shared hamburger
+                      here made six different categories look like one row
+                      repeated. */}
                   <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface text-accent-strong">
-                    <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round">
-                      <path d="M4 7h16M4 12h16M4 17h16" />
+                    <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
+                      <path d={getCategoryIcon(opt.slug)} />
                     </svg>
                   </span>
                   <span className="min-w-0 flex-1 truncate text-sm font-semibold text-fg">
@@ -286,18 +292,21 @@ export function SearchBox({
             </li>
           ))}
 
-          {/* Always present, so a query with no suggestions still shows where
-              Enter is about to take you. */}
-          <li
-            role="presentation"
-            onPointerDown={(e) => {
-              e.preventDefault();
-              goToResults();
-            }}
-            className="mt-1 cursor-pointer border-t border-line px-4 pb-1 pt-3 text-sm font-semibold text-accent-strong"
-          >
-            {shop("searchResults", { query: trimmed })}
-          </li>
+          {/* Present whenever there is a query, so a search with no suggestions
+              still shows where Enter is about to take you. Without a query it
+              would read “ ” bo‘yicha natijalar and go nowhere on click. */}
+          {trimmed.length > 0 && (
+            <li
+              role="presentation"
+              onPointerDown={(e) => {
+                e.preventDefault();
+                goToResults();
+              }}
+              className="mt-1 cursor-pointer border-t border-line px-4 pb-1 pt-3 text-sm font-semibold text-accent-strong"
+            >
+              {shop("searchResults", { query: trimmed })}
+            </li>
+          )}
         </ul>
       )}
     </div>
