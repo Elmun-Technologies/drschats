@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { useRouter } from "@/lib/i18n/navigation";
@@ -16,6 +16,7 @@ export function QuizFlow({ questions }: { questions: QuizQuestion[] }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<QuizAnswers>({});
   const [submitting, setSubmitting] = useState(false);
+  const optionsRef = useRef<HTMLDivElement>(null);
 
   const question = questions[step];
   const selected = useMemo(() => answers[question.id] ?? [], [answers, question.id]);
@@ -33,6 +34,28 @@ export function QuizFlow({ questions }: { questions: QuizQuestion[] }) {
       }
       return { ...prev, [question.id]: [optionId] };
     });
+  }
+
+  /*
+    Arrow-key movement inside the radio group. The options already announce
+    themselves as radios, so a screen-reader user arrives expecting arrows to
+    move between them — without this the role promises a behaviour the widget
+    doesn't have. Checkbox questions keep plain Tab, which is their pattern.
+  */
+  function onOptionKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
+    if (question.multiSelect) return;
+    const keys = ["ArrowDown", "ArrowRight", "ArrowUp", "ArrowLeft"];
+    if (!keys.includes(event.key)) return;
+    const items = Array.from(
+      optionsRef.current?.querySelectorAll<HTMLButtonElement>('[role="radio"]') ?? [],
+    );
+    if (items.length === 0) return;
+    event.preventDefault();
+    const from = items.findIndex((el) => el === document.activeElement);
+    const forward = event.key === "ArrowDown" || event.key === "ArrowRight";
+    const next = from < 0 ? 0 : (from + (forward ? 1 : -1) + items.length) % items.length;
+    items[next].focus();
+    toggle(question.options[next].id);
   }
 
   function goNext() {
@@ -85,20 +108,36 @@ export function QuizFlow({ questions }: { questions: QuizQuestion[] }) {
           className="mt-8"
         >
           <fieldset>
-            <legend className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+            <legend id={`q-${question.id}`} className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
               {question.question}
             </legend>
             {question.hint && <p className="mt-2 text-sm text-muted">{question.hint}</p>}
 
-            <div className="mt-6 grid gap-3">
-              {question.options.map((option) => {
+            {/* role="radio" has to be owned by a radiogroup — a fieldset maps to
+                plain `group`, which leaves the radios unowned and costs the
+                "N of M" position a screen reader would otherwise announce. */}
+            <div
+              ref={optionsRef}
+              role={question.multiSelect ? undefined : "radiogroup"}
+              aria-labelledby={question.multiSelect ? undefined : `q-${question.id}`}
+              onKeyDown={onOptionKeyDown}
+              className="mt-6 grid gap-3"
+            >
+              {question.options.map((option, index) => {
                 const isSelected = selected.includes(option.id);
+                // Roving tabindex: Tab reaches the group once, arrows move within.
+                const roving = question.multiSelect
+                  ? undefined
+                  : isSelected || (selected.length === 0 && index === 0)
+                    ? 0
+                    : -1;
                 return (
                   <button
                     key={option.id}
                     type="button"
                     role={question.multiSelect ? "checkbox" : "radio"}
                     aria-checked={isSelected}
+                    tabIndex={roving}
                     onClick={() => toggle(option.id)}
                     className={cn(
                       "flex items-center gap-3 rounded-2xl border px-5 py-4 text-left text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
