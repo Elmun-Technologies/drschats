@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
 import { Link, usePathname } from "@/lib/i18n/navigation";
@@ -13,6 +13,7 @@ import { CatalogMenu } from "./CatalogMenu";
 import { SearchBox } from "./SearchBox";
 import { WishlistLink } from "./WishlistLink";
 import { Logo } from "./Logo";
+import { useDialog } from "@/lib/ui/useDialog";
 import type { Category } from "@/lib/shopflow/types";
 
 /*
@@ -43,6 +44,9 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
   const badges = useTranslations("badges");
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  // Stable identity, or useDialog's effect tears down and re-runs every render.
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  const menuRef = useDialog<HTMLDivElement>(menuOpen, closeMenu);
 
   return (
     <header className="border-b border-line bg-ink">
@@ -121,6 +125,11 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
       <AnimatePresence>
         {menuOpen && (
           <motion.div
+            ref={menuRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t("menu")}
+            tabIndex={-1}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -128,7 +137,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
           >
             <div className="container-px flex h-16 items-center justify-between border-b border-line">
               <Logo />
-              <button onClick={() => setMenuOpen(false)} aria-label={t("closeMenu")} className="flex h-10 w-10 items-center justify-center rounded-full border border-line">
+              <button onClick={closeMenu} aria-label={t("closeMenu")} className="flex h-10 w-10 items-center justify-center rounded-full border border-line">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
