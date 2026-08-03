@@ -14,6 +14,7 @@ import { SearchBox } from "./SearchBox";
 import { WishlistLink } from "./WishlistLink";
 import { Logo } from "./Logo";
 import { useDialog } from "@/lib/ui/useDialog";
+import { BRAND } from "@/lib/brand";
 import type { Category } from "@/lib/shopflow/types";
 
 /*
@@ -42,6 +43,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
   const t = useTranslations("nav");
   const h = useTranslations("header");
   const badges = useTranslations("badges");
+  const contact = useTranslations("contact");
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   // Stable identity, or useDialog's effect tears down and re-runs every render.
@@ -179,6 +181,23 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
                   </ul>
                 </>
               )}
+
+              {/* Hours, phone and address in the menu itself. For a pharmacy
+                  audience these answer "are they open and can I reach them"
+                  without a trip to the contact page. */}
+              <div className="mt-6 rounded-2xl border border-line bg-surface p-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-faint">
+                  {t("contact")}
+                </p>
+                <p className="mt-2 text-sm text-muted">{contact("workHours")}</p>
+                <a
+                  href={`tel:${BRAND.contact.phoneHref}`}
+                  className="mt-2 block text-base font-semibold text-fg transition-colors hover:text-accent-strong"
+                >
+                  {BRAND.contact.phone}
+                </a>
+                <p className="mt-1 text-sm text-muted">{contact("addressValue")}</p>
+              </div>
 
               <div className="pt-6">
                 <LocaleSwitcher />
