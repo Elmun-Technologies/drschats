@@ -5,6 +5,7 @@ from collections.abc import AsyncIterator
 import pytest
 import pytest_asyncio
 from httpx import ASGITransport, AsyncClient
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
 # Point the settings at a throwaway file before app modules import them.
@@ -41,18 +42,89 @@ async def client() -> AsyncIterator[AsyncClient]:
     app.dependency_overrides.clear()
 
 
-@pytest.fixture
-def db_sessions() -> async_sessionmaker:
+@pytest_asyncio.fixture
+async def db() -> AsyncIterator:
     """
-    Direct database access, for the few facts a test cannot state through the
-    API — chiefly "this order was placed a month ago", which no endpoint
-    accepts and no test can wait for.
+    A session on the same database the app under test is using.
 
-    Handed out as a fixture rather than imported: pytest loads this file as
-    `conftest`, so importing it as `tests.conftest` would build a second module
-    pointed at a second, empty database.
+    Offered as a fixture rather than by importing TestSession directly:
+    `from tests.conftest import ...` loads this file a second time under a
+    different module name, and `mkdtemp()` runs again with it — so the caller
+    ends up talking to an empty database in another directory.
     """
-    return TestSession
+    async with TestSession() as session:
+        yield session
+
+
+class TelegramStub:
+    """
+    Stands in for the Bot API and remembers what was sent.
+
+    The code only ever exists in transit — it is hashed before it is stored —
+    so intercepting delivery is the only way a test can learn it. That is also
+    the point: if this stub could read the code out of the database instead,
+    so could anyone who copied the database.
+    """
+
+    def __init__(self) -> None:
+        self.messages: list[tuple[int, str]] = []
+
+    async def send_message(self, chat_id: int, text: str) -> bool:
+        self.messages.append((chat_id, text))
+        return True
+
+    @property
+    def last_code(self) -> str:
+        import re
+
+        for _, text in reversed(self.messages):
+            match = re.search(r"\b(\d{6})\b", text)
+            if match:
+                return match.group(1)
+        raise AssertionError("no code was sent")
+
+
+@pytest.fixture
+def telegram_stub(monkeypatch) -> TelegramStub:
+    from app import telegram
+
+    stub = TelegramStub()
+    monkeypatch.setattr(telegram, "send_message", stub.send_message)
+    return stub
+
+
+@pytest_asyncio.fixture
+async def sign_in(client, db, telegram_stub):
+    """
+    Sign a phone in the way the product actually does, and hand back its token.
+
+    Tests that only need "a logged-in customer" shouldn't have to restate the
+    link-bot-then-code dance; when that flow changes, it changes here once.
+    """
+    from app.models import TelegramLink
+
+    chat_ids = iter(range(900_000_001, 900_001_000))
+
+    async def _sign_in(phone: str = "998901234567") -> str:
+        from app.security import normalise_phone
+
+        normalised = normalise_phone(phone)
+        existing = await db.scalar(
+            select(TelegramLink).where(TelegramLink.phone == normalised)
+        )
+        if existing is None:
+            db.add(TelegramLink(phone=normalised, chat_id=next(chat_ids)))
+            await db.commit()
+
+        await client.post("/api/v1/auth/otp/request", json={"phone": phone})
+        res = await client.post(
+            "/api/v1/auth/otp/verify",
+            json={"phone": phone, "code": telegram_stub.last_code},
+        )
+        assert res.status_code == 200, res.text
+        return res.json()["accessToken"]
+
+    return _sign_in
 
 
 @pytest.fixture

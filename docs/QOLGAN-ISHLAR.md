@@ -181,7 +181,7 @@ EMAIL_TOKEN_SECRET=...
 ```
 
 Kod tayyor: obunani tasdiqlash, xush kelibsiz, buyurtma tasdig'i, tug'ilgan
-kun, o'quv yili, kurs tugashi, obuna eslatmasi, ro'yxatdan o'tish tasdig'i —
+kun, o'quv yili, kurs tugashi, obuna eslatmasi, pochtani tasdiqlash —
 ikkala tilda. Kalit qo'yilmaguncha `[email] skipped …` log'ga yoziladi va
 **hech kimga hech narsa bormaydi**.
 
@@ -191,15 +191,16 @@ Domenga **SPF, DKIM, DMARC** yozuvlari kerak, aks holda xatlar spamga tushadi.
 Eslatmalar navbati uchun qo'shimcha: `CRON_SECRET`, `MARKETING_API_KEY` (backend
 bilan bir xil). To'liq yo'riqnoma: **[`docs/MARKETING.md`](MARKETING.md)**.
 
-### 3c-ter. Telegram bot — mijozlar uchun (ixtiyoriy)
+### 3c-ter. Telegram bot — mijozlar uchun
 
 ```env
 NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=govita_bot
 ```
 
-Bu bozorda Telegram pochtadan kuchliroq kanal. Kod tayyor, lekin **bot yozilmagan**:
-u foydalanuvchi suhbat boshlaganda `chat_id` ni backend'ga yozishi kerak.
-O'zgaruvchi qo'yilmasa kanal `/profile` da umuman ko'rsatilmaydi.
+Bot allaqachon bor — saytga kirish o'sha bot yuboradigan kod orqali ishlaydi,
+ya'ni kirgan har bir mijozning `chat_id` si bazada turadi. Eslatmalar navbati
+shuni o'qiydi, qo'shimcha ish kerak emas. O'zgaruvchi qo'yilmasa kanal
+`/profile` da ko'rsatilmaydi.
 
 ### 3d. Analitika
 
@@ -304,7 +305,7 @@ Bularni men qila olaman — faqat "ha" deng:
 | ish | nima o'zgaradi |
 |---|---|
 | 404 sahifasiga `lang` atributi | root layout qayta quriladi — biroz xavfliroq o'zgarish |
-| Playwright'ni `devDependencies`ga | audit skriptlari CI'da yuradi, regressiya avtomatik tutiladi |
+| SMS zaxira kanali | hozir kirish faqat Telegram orqali — Telegramsiz odam kira olmaydi |
 | `en` tilini qo'shish | 638 ta kalit × 1 til tarjima kerak (yoki men taxminiy qilaman, siz tekshirasiz) |
 | Bo'sh menyu bo'limlarini vaqtincha yashirish | kontent tayyor bo'lguncha `/vitamins` menyudan olinadi |
 | Sharh/ijtimoiy-isbot namunalarini o'chirish | soxta ma'lumot yo'qoladi |
@@ -326,6 +327,10 @@ Eng qisqa yo'l — shu 6 tasi:
 Qolganini keyin ham qo'shsa bo'ladi.
 
 ---
+
+**Bajarildi:** Playwright `devDependencies` ga qo'shildi, audit to'plami
+`scripts/audit/` ga ko'chirildi va CI'da har bir PR'da yuradi. Endi sifat
+darajasi da'vo emas, tekshiriladigan narsa.
 
 *Bu fayl 2026-08-03 da yozilgan. Raqamlar o'sha kuni ishlab turgan production
 build'dan o'lchangan, taxmin emas.*

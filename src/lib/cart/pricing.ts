@@ -8,6 +8,17 @@ import {
 export const DEFAULT_SHIPPING = 30000;
 
 export interface CartLine {
+  /**
+   * Identifies the line, not the product.
+   *
+   * A product bought once and the same product on a 30-day subscription are two
+   * different things to buy, at two different prices, and they have to be able
+   * to sit in the cart at the same time. Keying lines by product id alone made
+   * the second add silently inherit the first one's purchase mode — which, in
+   * the direction that mattered, signed someone up to a recurring order they
+   * did not ask for.
+   */
+  lineId: string;
   productId: string;
   slug: string;
   name: string;
@@ -38,6 +49,11 @@ export interface CartTotals {
    * at the higher recurring discount. 0 when nothing repeats.
    */
   recurringTotal: number;
+}
+
+/** The line key for a product bought in a given mode. */
+export function cartLineId(productId: string, subscription?: { intervalDays: number }): string {
+  return subscription ? `${productId}:sub${subscription.intervalDays}` : productId;
 }
 
 /**

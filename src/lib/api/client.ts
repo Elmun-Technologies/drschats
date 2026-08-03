@@ -64,6 +64,13 @@ export async function apiFetch<T>(path: string, options: RequestOptions = {}): P
 
 // --- shapes, mirroring backend/app/schemas.py ---------------------------
 
+export interface OtpRequestResult {
+  status: "sent" | "link_required";
+  channel: "telegram";
+  telegramLink: string | null;
+  expiresIn: number;
+}
+
 export interface SessionUser {
   id: number;
   name: string;
@@ -113,12 +120,23 @@ export interface ProfilePayload {
   marketingTelegram: boolean;
 }
 
-export const api = {
-  register: (body: { name: string; phone: string; password: string }) =>
-    apiFetch<{ accessToken: string }>("/api/v1/auth/register", { method: "POST", body }),
+/** What the account holds — the same fields, plus what only the server knows. */
+export interface StoredProfile extends Omit<ProfilePayload, "household"> {
+  emailVerified: boolean;
+  household: (HouseholdMemberPayload & { id: number })[];
+}
 
-  login: (body: { phone: string; password: string }) =>
-    apiFetch<{ accessToken: string }>("/api/v1/auth/login", { method: "POST", body }),
+export const api = {
+  /*
+    Ask for a sign-in code. Two possible answers, and "link_required" is not a
+    failure: a Telegram bot cannot message a phone it has never spoken to, so
+    a first-time visitor is handed a deep link to start the bot instead.
+  */
+  requestOtp: (body: { phone: string }) =>
+    apiFetch<OtpRequestResult>("/api/v1/auth/otp/request", { method: "POST", body }),
+
+  verifyOtp: (body: { phone: string; code: string }) =>
+    apiFetch<{ accessToken: string }>("/api/v1/auth/otp/verify", { method: "POST", body }),
 
   me: (token: string, signal?: AbortSignal) =>
     apiFetch<SessionUser>("/api/v1/auth/me", { token, signal }),
@@ -142,6 +160,9 @@ export const api = {
     body: { status?: SubscriptionStatus; intervalDays?: number; skipNext?: boolean },
   ) => apiFetch<AccountSubscription>(`/api/v1/subscriptions/${id}`, { method: "PATCH", token, body }),
 
+  myProfile: (token: string, signal?: AbortSignal) =>
+    apiFetch<StoredProfile>("/api/v1/profile/me", { token, signal }),
+
   saveProfile: (token: string, body: ProfilePayload) =>
-    apiFetch<{ ok: boolean }>("/api/v1/profile/me", { method: "PATCH", token, body }),
+    apiFetch<StoredProfile>("/api/v1/profile/me", { method: "PATCH", token, body }),
 };

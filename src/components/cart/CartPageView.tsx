@@ -69,7 +69,7 @@ export function CartPageView() {
 
         <div className="divide-y divide-line border-y border-line">
           {lines.map((l) => (
-            <div key={l.productId} className="flex gap-4 py-5">
+            <div key={l.lineId} className="flex gap-4 py-5">
               <div className="relative h-28 w-24 shrink-0 overflow-hidden rounded-xl bg-surface-2">
                 {l.image && <Image src={l.image} alt={l.name} fill sizes="96px" className="object-cover" />}
               </div>
@@ -78,7 +78,7 @@ export function CartPageView() {
                   <Link href={`/product/${l.slug}`} className="font-medium text-fg hover:text-accent">
                     {l.name}
                   </Link>
-                  <button onClick={() => remove(l.productId)} className="shrink-0 text-faint hover:text-danger" aria-label={t("remove")}>
+                  <button onClick={() => remove(l.lineId)} className="shrink-0 text-faint hover:text-danger" aria-label={t("remove")}>
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                     </svg>
@@ -95,12 +95,12 @@ export function CartPageView() {
                 )}
                 <div className="mt-auto flex items-center gap-2">
                   <button
-                    onClick={() => setQuantity(l.productId, l.quantity - 1)}
+                    onClick={() => setQuantity(l.lineId, l.quantity - 1)}
                     className="flex h-8 w-8 items-center justify-center rounded-full border border-line hover:border-accent"
                   >−</button>
                   <span className="w-8 text-center text-sm font-medium">{l.quantity}</span>
                   <button
-                    onClick={() => setQuantity(l.productId, l.quantity + 1)}
+                    onClick={() => setQuantity(l.lineId, l.quantity + 1)}
                     className="flex h-8 w-8 items-center justify-center rounded-full border border-line hover:border-accent"
                   >+</button>
                   <span className="ml-auto text-sm font-semibold text-fg">

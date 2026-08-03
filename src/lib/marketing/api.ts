@@ -20,8 +20,25 @@ export function isMarketingApiConfigured(): boolean {
   return API_URL.length > 0 && SERVICE_KEY.length > 0;
 }
 
-async function call<T>(path: string, body?: unknown, method: "GET" | "POST" = "POST"): Promise<T | null> {
-  if (!isMarketingApiConfigured()) return null;
+/**
+ * Outcome of a call, with success separated from payload.
+ *
+ * Success cannot be inferred from the body: these endpoints answer 204 with no
+ * body at all, so a bare `T | null` would make a successful write
+ * indistinguishable from a refused one — and the page that reports the result
+ * would tell the customer their click failed after it worked.
+ */
+export interface ApiOutcome<T> {
+  ok: boolean;
+  data: T | null;
+}
+
+async function call<T>(
+  path: string,
+  body?: unknown,
+  method: "GET" | "POST" = "POST",
+): Promise<ApiOutcome<T>> {
+  if (!isMarketingApiConfigured()) return { ok: false, data: null };
 
   try {
     const response = await fetch(`${API_URL}${path}`, {
@@ -36,13 +53,13 @@ async function call<T>(path: string, body?: unknown, method: "GET" | "POST" = "P
     });
     if (!response.ok) {
       console.error(`[marketing] ${method} ${path} failed: ${response.status}`);
-      return null;
+      return { ok: false, data: null };
     }
-    if (response.status === 204) return null;
-    return (await response.json()) as T;
+    if (response.status === 204) return { ok: true, data: null };
+    return { ok: true, data: (await response.json()) as T };
   } catch (error) {
     console.error(`[marketing] ${method} ${path} failed`, error);
-    return null;
+    return { ok: false, data: null };
   }
 }
 
@@ -59,6 +76,16 @@ export function recordSubscriber(input: {
 
 export function markAccountEmailVerified(input: { userId: string; email: string }) {
   return call("/api/v1/marketing/verify-email", input);
+}
+
+/**
+ * Materialise the deliveries that have come due into orders.
+ *
+ * Called before the queue is read, so an "upcoming delivery" notice describes
+ * the schedule as it now stands rather than one the run is about to change.
+ */
+export function runDueSubscriptions() {
+  return call<{ created: string[] }>("/api/v1/marketing/subscriptions/run");
 }
 
 /** One person, one message, due today. */

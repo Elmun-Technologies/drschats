@@ -306,6 +306,16 @@ MARKETING_API_KEY=...         # backend'da ham xuddi shu qiymat
 
 ## Sifat darajasi — nolda turadi
 
+```bash
+npm run build
+npx next start -p 3000 &
+BASE_URL=http://localhost:3000 npm run audit
+```
+
+`scripts/audit/` — CI'da har bir PR'da yuradi (`audit` job). **Production build
+kerak**: dev build boshqa CSS va boshqa vaqtlash bilan ishlaydi, ya'ni boshqa
+narsani o'lchaydi. Nuqson topilsa `npm run audit` nolmas kod bilan chiqadi.
+
 Quyidagilar o'lchangan va **nol** holatga keltirilgan. Yangi ish ularni buzmasin:
 
 | tekshiruv | holat |

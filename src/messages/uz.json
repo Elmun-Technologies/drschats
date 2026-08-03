@@ -256,7 +256,11 @@
       "title": "Chegirmadagi mahsulotlar",
       "subtitle": "Narxi tushgan vitamin va BADlar — omborda bor, bugun yetkazamiz."
     },
-    "slideLabel": "{number}-slayd"
+    "slideLabel": "{number}-slayd",
+    "audience": {
+      "subtitle": "Tanlang — konsultant qolgan savollarni beradi va shaxsiy reja tuzadi.",
+      "cta": "Boshlash"
+    }
   },
   "product": {
     "breadcrumbHome": "Bosh sahifa",
@@ -1081,14 +1085,8 @@
   "account": {
     "title": "Shaxsiy kabinet",
     "subtitle": "Buyurtmalaringiz, saqlangan mahsulotlar va sog‘liq rejangiz bir joyda.",
-    "login": "Kirish",
-    "register": "Ro‘yxatdan o‘tish",
-    "loginCta": "Kirish",
-    "registerCta": "Hisob yaratish",
     "name": "Ismingiz",
     "phone": "Telefon raqami",
-    "password": "Parol",
-    "passwordHint": "Kamida {count} ta belgi",
     "errorGeneric": "Xatolik yuz berdi. Birozdan so‘ng qayta urining.",
     "errorOrders": "Buyurtmalarni yuklab bo‘lmadi.",
     "guestNote": "Hisobsiz ham buyurtma berishingiz mumkin. Ro‘yxatdan o‘tsangiz, shu telefon raqami bilan berilgan avvalgi buyurtmalaringiz avtomatik biriktiriladi.",
@@ -1124,9 +1122,24 @@
         "description": "Maqsadlar, oila, eslatmalar"
       }
     },
-    "email": "Elektron pochta",
-    "emailHint": "Ixtiyoriy. Buyurtma holati va eslatmalar uchun.",
-    "verificationSent": "{email} manziliga tasdiqlash havolasini yubordik."
+    "otpIntro": "Telefon raqamingizni kiriting — Telegram orqali kirish kodini yuboramiz.",
+    "otpCta": "Kodni olish",
+    "code": "Kirish kodi",
+    "codeIntro": "{phone} raqamiga bog‘langan Telegram’ga kod yuborildi.",
+    "codeCta": "Kirish",
+    "changePhone": "Raqamni o‘zgartirish",
+    "resend": "Kodni qayta yuborish",
+    "resendIn": "Qayta yuborish — {seconds} s",
+    "linkIntro": "Kod Telegram orqali keladi. Buning uchun avval botni ishga tushiring va raqamingizni ulashing — bot o‘zi yozmagan raqamga xabar yubora olmaydi.",
+    "linkCta": "Telegram’da botni ochish",
+    "linkHint": "Botda «Raqamni ulashish» tugmasini bosing — kod o‘sha yerga keladi.",
+    "linkDone": "Bajardim, kodni kiritaman",
+    "errorPhone": "Telefon raqami to‘g‘ri emas.",
+    "errorCode": "Kod noto‘g‘ri yoki muddati o‘tgan. Qaytadan urinib ko‘ring.",
+    "errorCooldown": "Biroz kuting — kod yaqinda yuborilgan.",
+    "errorTooMany": "Juda ko‘p urinish. Keyinroq qayta urinib ko‘ring.",
+    "errorDelivery": "Kodni yuborib bo‘lmadi. Botni bloklamaganingizni tekshiring.",
+    "errorNoBot": "Telegram boti hali sozlanmagan."
   },
   "profile": {
     "eyebrow": "Shaxsiy yondashuv",
@@ -1142,7 +1155,11 @@
       "email": "Elektron pochta",
       "emailHint": "Buyurtma tasdig‘i va eslatmalar shu manzilga keladi",
       "birthday": "Tug‘ilgan kuningiz",
-      "birthdayHint": "Bir hafta oldin eslatamiz"
+      "birthdayHint": "Bir hafta oldin eslatamiz",
+      "verify": "Pochtani tasdiqlash",
+      "verifySending": "Yuborilmoqda…",
+      "verifySent": "{email} manziliga tasdiqlash havolasini yubordik.",
+      "verifyError": "Yuborib bo‘lmadi. Birozdan so‘ng qayta urining."
     },
     "goals": {
       "title": "Sizni nima bezovta qiladi",

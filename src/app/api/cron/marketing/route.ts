@@ -4,7 +4,13 @@ import { locales, type Locale } from "@/lib/i18n/routing";
 import { siteOrigin } from "@/lib/email/config";
 import { sendCampaign } from "@/lib/email/send";
 import { buildCampaign, type Campaign } from "@/lib/email/campaigns";
-import { fetchDueMessages, isMarketingApiConfigured, markMessagesSent, type DueMessage } from "@/lib/marketing/api";
+import {
+  fetchDueMessages,
+  isMarketingApiConfigured,
+  markMessagesSent,
+  runDueSubscriptions,
+  type DueMessage,
+} from "@/lib/marketing/api";
 import { notifyCustomer, notifyOperator } from "@/lib/notifications/operator";
 
 /*
@@ -150,9 +156,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ ok: true, skipped: "marketing-api-not-configured" });
   }
 
-  const due = await fetchDueMessages(BATCH);
+  // Deliveries first: a subscription that has come due becomes a real order
+  // here, and only then is the customer told what is on its way.
+  const run = await runDueSubscriptions();
+  const ordersCreated = run.data?.created.length ?? 0;
+
+  const { data: due } = await fetchDueMessages(BATCH);
   if (!due || due.length === 0) {
-    return NextResponse.json({ ok: true, sent: 0, failed: 0 });
+    return NextResponse.json({ ok: true, ordersCreated, sent: 0, failed: 0 });
   }
 
   const results: { reminderId: string; channel: string; ok: boolean }[] = [];
@@ -173,5 +184,5 @@ export async function GET(request: NextRequest) {
     await notifyOperator(`⚠️ Marketing dispatch: ${failed} ta xabar yuborilmadi (${results.length} tadan)`);
   }
 
-  return NextResponse.json({ ok: true, sent: results.length - failed, failed });
+  return NextResponse.json({ ok: true, ordersCreated, sent: results.length - failed, failed });
 }

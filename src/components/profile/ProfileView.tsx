@@ -13,6 +13,7 @@ import { ReminderPanel } from "./ReminderPanel";
 import { ConsentPanel } from "./ConsentPanel";
 import { ProfileOffers } from "./ProfileOffers";
 import { ProfileSync } from "./ProfileSync";
+import { VerifyEmail } from "./VerifyEmail";
 
 /*
   /profile — everything the visitor has told us, in one editable place.
@@ -75,14 +76,17 @@ export function ProfileView() {
               onChange={(name) => update({ name: name || undefined })}
               autoComplete="given-name"
             />
-            <ProfileField
-              label={t("details.email")}
-              type="email"
-              value={profile.email ?? ""}
-              onChange={(email) => update({ email: email.trim() || undefined })}
-              autoComplete="email"
-              hint={t("details.emailHint")}
-            />
+            <div className="flex flex-col gap-2">
+              <ProfileField
+                label={t("details.email")}
+                type="email"
+                value={profile.email ?? ""}
+                onChange={(email) => update({ email: email.trim() || undefined })}
+                autoComplete="email"
+                hint={t("details.emailHint")}
+              />
+              <VerifyEmail />
+            </div>
             <ProfileField
               label={t("details.birthday")}
               type="date"

@@ -295,7 +295,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <h2 className="mb-5 font-display text-lg font-semibold">{t("summary")}</h2>
           <div className="space-y-4">
             {lines.map((l) => (
-              <div key={l.productId} className="flex gap-3">
+              <div key={l.lineId} className="flex gap-3">
                 <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-surface-2">
                   {l.image && <Image src={l.image} alt={l.name} fill sizes="56px" className="object-cover" />}
                 </div>
@@ -311,7 +311,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     */}
                     <button
                       type="button"
-                      onClick={() => setQuantity(l.productId, l.quantity - 1)}
+                      onClick={() => setQuantity(l.lineId, l.quantity - 1)}
                       disabled={l.quantity <= 1}
                       aria-label={t("decreaseFor", { name: l.name })}
                       className="rounded px-1.5 hover:text-accent-strong disabled:opacity-40"
@@ -323,7 +323,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     </span>
                     <button
                       type="button"
-                      onClick={() => setQuantity(l.productId, l.quantity + 1)}
+                      onClick={() => setQuantity(l.lineId, l.quantity + 1)}
                       aria-label={t("increaseFor", { name: l.name })}
                       className="rounded px-1.5 hover:text-accent-strong"
                     >
@@ -331,7 +331,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setQuantity(l.productId, 0)}
+                      onClick={() => setQuantity(l.lineId, 0)}
                       aria-label={t("removeFor", { name: l.name })}
                       className="ml-2 rounded px-1.5 text-faint hover:text-danger"
                     >

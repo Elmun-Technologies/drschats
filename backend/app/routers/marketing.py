@@ -9,10 +9,19 @@ from app.models import (
     EmailSubscriber,
     MarketingMessage,
     Order,
+    OrderItem,
     Subscription,
+    TelegramLink,
     User,
 )
-from app.schemas import DueMessageOut, SentReport, SubscriberIn, VerifyEmailIn
+from app.routers.orders import PUBLIC_ID_OFFSET
+from app.schemas import (
+    DueMessageOut,
+    SentReport,
+    SubscriberIn,
+    SubscriptionRunOut,
+    VerifyEmailIn,
+)
 
 router = APIRouter(prefix="/api/v1/marketing", tags=["marketing"])
 
@@ -96,18 +105,23 @@ def _in_school_season(today: date) -> bool:
     return (start_month, start_day) <= (today.month, today.day) <= (end_month, end_day)
 
 
-def _channels(user: User) -> list[tuple[str, dict]]:
+def _channels(user: User, telegram_chats: dict[str, int]) -> list[tuple[str, dict]]:
     """
-    The channels this user has actually agreed to, in order of preference.
+    The channels this user has actually agreed to.
 
     Email needs both consent *and* a verified address: an unverified address is
     a claim, and sending marketing to a claim is how a domain gets blocked.
+
+    Telegram needs a linked chat, which only exists because the customer
+    started the bot during sign-in — a bot cannot message a phone number it has
+    never spoken to.
     """
     out: list[tuple[str, dict]] = []
     if user.marketing_email and user.email and user.email_verified_at is not None:
         out.append(("email", {"email": user.email}))
-    if user.marketing_telegram and user.telegram_chat_id:
-        out.append(("telegram", {"telegramChatId": user.telegram_chat_id}))
+    chat_id = telegram_chats.get(user.phone)
+    if user.marketing_telegram and chat_id is not None:
+        out.append(("telegram", {"telegramChatId": str(chat_id)}))
     return out
 
 
@@ -155,13 +169,28 @@ async def upsert_subscriber(
 async def verify_email(
     payload: VerifyEmailIn, session: SessionDep, _: ServiceCaller
 ) -> None:
-    """The click on the registration confirmation link."""
+    """
+    The click on the confirmation link.
+
+    The link is signed with both the account and the address, so clicking it
+    proves the pair — which means this is also where the address gets *attached*
+    to the account, not only stamped as verified. Requiring it to have been
+    saved first would make verification depend on whether a background sync
+    happened to land before the customer opened their inbox.
+
+    An account that has since moved to a different address is the one case that
+    is refused: that link is stale, and honouring it would resurrect an address
+    the customer replaced.
+    """
     user = await session.get(User, int(payload.userId))
-    # The address must still be the one the link was issued for; changing it in
-    # between invalidates the link rather than verifying the new value.
-    if user is not None and user.email and user.email.lower() == payload.email.lower():
-        user.email_verified_at = datetime.now(timezone.utc)
-        await session.commit()
+    if user is None:
+        return
+    if user.email and user.email.lower() != payload.email.lower():
+        return
+
+    user.email = str(payload.email)
+    user.email_verified_at = datetime.now(timezone.utc)
+    await session.commit()
 
 
 async def _already_queued(session, reminder_ids: list[str]) -> set[str]:
@@ -173,6 +202,94 @@ async def _already_queued(session, reminder_ids: list[str]) -> set[str]:
         )
     )
     return set(rows)
+
+
+@router.post("/subscriptions/run", response_model=SubscriptionRunOut)
+async def run_due_subscriptions(
+    session: SessionDep, _: ServiceCaller
+) -> SubscriptionRunOut:
+    """
+    Turn subscriptions that have come due into real orders, and advance them.
+
+    Without this a subscription is a promise the shop never keeps: the schedule
+    would sit on a date in the past and the second delivery would never happen.
+
+    The order is created exactly as a manual repeat order would be — same
+    table, same public id, `status="new"` — because delivery here is confirmed
+    by an operator on the phone and paid on the doorstep. There is no card to
+    charge, so "generate the order and let the operator call" *is* the
+    fulfilment step, not a placeholder for one.
+
+    Runs before the message queue is read, so the delivery notice a customer
+    receives is about the schedule as it now stands.
+    """
+    now = datetime.now(timezone.utc)
+
+    due = list(
+        await session.scalars(
+            select(Subscription).where(
+                Subscription.status == "active",
+                Subscription.next_delivery_at.is_not(None),
+                Subscription.next_delivery_at <= now,
+            )
+        )
+    )
+
+    created: list[str] = []
+    for subscription in due:
+        if not subscription.items:
+            # Nothing to deliver: cancel rather than roll an empty order
+            # forward every interval for ever.
+            subscription.status = "cancelled"
+            subscription.next_delivery_at = None
+            continue
+
+        subtotal = sum(item.unit_price * item.quantity for item in subscription.items)
+        order = Order(
+            user_id=subscription.user_id,
+            customer_name=subscription.customer_name,
+            customer_phone=subscription.customer_phone,
+            customer_email=subscription.customer_email,
+            region=subscription.region,
+            address=subscription.address,
+            note=None,
+            delivery_method="courier",
+            locale=subscription.locale,
+            subtotal=subtotal,
+            discount=0,
+            shipping=0,
+            total=subtotal,
+            applied_upsells=[],
+            applied_promotions=["subscription"],
+            attribution={"source": "subscription", "subscriptionId": subscription.id},
+            public_id="",
+            items=[
+                OrderItem(
+                    product_id=item.product_id,
+                    slug=item.slug,
+                    name=item.name,
+                    quantity=item.quantity,
+                    # Already the recurring price; the discount is in the number,
+                    # not applied again on top of it.
+                    unit_price=item.unit_price,
+                    subscription_interval_days=subscription.interval_days,
+                )
+                for item in subscription.items
+            ],
+        )
+        session.add(order)
+        await session.flush()
+        order.public_id = f"GV-{order.id + PUBLIC_ID_OFFSET}"
+        created.append(order.public_id)
+
+        # Advanced from the date that was due, not from now, so a cron that
+        # runs late does not push every future delivery late with it.
+        subscription.next_delivery_at = subscription.next_delivery_at + timedelta(
+            days=subscription.interval_days
+        )
+
+    await session.commit()
+    return SubscriptionRunOut(created=created)
 
 
 @router.get("/due", response_model=list[DueMessageOut])
@@ -194,7 +311,15 @@ async def due_messages(
             )
         )
     )
-    reachable = {user.id: _channels(user) for user in users}
+    telegram_chats = {
+        link.phone: link.chat_id
+        for link in await session.scalars(
+            select(TelegramLink).where(
+                TelegramLink.phone.in_([user.phone for user in users] or [""])
+            )
+        )
+    }
+    reachable = {user.id: _channels(user, telegram_chats) for user in users}
 
     def queue(user: User, reminder_id: str, campaign: str, data: dict) -> None:
         for channel, address in reachable.get(user.id, []):
@@ -270,41 +395,51 @@ async def due_messages(
             },
         )
 
-    # Reorder: the last order of a product, one course ago.
-    cutoff = now - timedelta(days=COURSE_DAYS - REORDER_LEAD_DAYS)
+    """
+    Reorder: the *latest* purchase of a product, one course ago.
+
+    The window is applied first and the age test afterwards, in that order and
+    not the other way round. Filtering on age in the query would hide a recent
+    repurchase, leaving the older order looking like the latest one — and the
+    customer would be told their course is running out days after they restocked.
+    """
     window = now - timedelta(days=REORDER_WINDOW_DAYS)
     orders = await session.scalars(
-        select(Order).where(
+        select(Order)
+        .where(
             Order.user_id.is_not(None),
-            Order.created_at <= cutoff,
             Order.created_at >= window,
             Order.status != "cancelled",
         )
+        .order_by(Order.created_at.asc())
     )
-    reminded_products: set[tuple[int, str]] = set()
+
+    latest_purchase: dict[tuple[int, str], tuple[date, str]] = {}
     for order in orders:
-        user = by_id.get(order.user_id)
-        if user is None or not reachable.get(user.id):
+        if not reachable.get(order.user_id):
             continue
-        elapsed = (today - order.created_at.date()).days
         for item in order.items:
-            # A product bought twice gets one reminder, from whichever order
-            # the loop reaches first; both are past the same course length.
-            key = (user.id, item.slug)
-            if key in reminded_products:
-                continue
-            reminded_products.add(key)
-            runs_out = order.created_at.date() + timedelta(days=COURSE_DAYS)
-            queue(
-                user,
-                f"reorder:{user.id}:{item.slug}:{runs_out.strftime('%Y-%m')}",
-                "reorder",
-                {
-                    "productSlug": item.slug,
-                    "productName": item.name,
-                    "daysLeft": max(0, COURSE_DAYS - elapsed),
-                },
-            )
+            # Ascending order, so a later row simply overwrites an earlier one.
+            latest_purchase[(order.user_id, item.slug)] = (order.created_at.date(), item.name)
+
+    for (user_id, slug), (purchased_on, name) in latest_purchase.items():
+        user = by_id.get(user_id)
+        if user is None:
+            continue
+        elapsed = (today - purchased_on).days
+        if elapsed < COURSE_DAYS - REORDER_LEAD_DAYS:
+            continue
+        runs_out = purchased_on + timedelta(days=COURSE_DAYS)
+        queue(
+            user,
+            f"reorder:{user.id}:{slug}:{runs_out.strftime('%Y-%m')}",
+            "reorder",
+            {
+                "productSlug": slug,
+                "productName": name,
+                "daysLeft": max(0, COURSE_DAYS - elapsed),
+            },
+        )
 
     seen = await _already_queued(session, [c.reminderId for c in candidates])
     fresh = [c for c in candidates if c.reminderId not in seen][:limit]

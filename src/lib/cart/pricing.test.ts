@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeTotals, DEFAULT_SHIPPING, type CartLine } from "./pricing";
+import { cartLineId, computeTotals, DEFAULT_SHIPPING, type CartLine } from "./pricing";
 import type { Promotion } from "@/lib/shopflow/types";
 import {
   FIRST_ORDER_PERCENT,
@@ -7,15 +7,19 @@ import {
   SUBSCRIPTION_FREE_SHIPPING_OVER,
 } from "@/lib/subscription/plans";
 
-const line = (over: Partial<CartLine> = {}): CartLine => ({
-  productId: "p1",
-  slug: "p1",
-  name: "Test",
-  image: "",
-  price: 100000,
-  quantity: 1,
-  ...over,
-});
+const line = (over: Partial<CartLine> = {}): CartLine => {
+  const productId = over.productId ?? "p1";
+  return {
+    lineId: cartLineId(productId, over.subscription),
+    productId,
+    slug: "p1",
+    name: "Test",
+    image: "",
+    price: 100000,
+    quantity: 1,
+    ...over,
+  };
+};
 
 const freeShipping: Promotion = {
   id: "ship",

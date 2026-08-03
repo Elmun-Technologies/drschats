@@ -14,6 +14,7 @@ import { StatsBand } from "@/components/home/StatsBand";
 import { BlogTeaser } from "@/components/home/BlogTeaser";
 import { HomeCTA } from "@/components/home/HomeCTA";
 import { QuizPromo } from "@/components/home/QuizPromo";
+import { AudienceDoors } from "@/components/home/AudienceDoors";
 import { ProgramsRail } from "@/components/home/ProgramsRail";
 import { DoctorAdvice } from "@/components/home/DoctorAdvice";
 import { HomeFaq } from "@/components/home/HomeFaq";
@@ -68,7 +69,10 @@ export default async function HomePage({
       <HeroBento products={bestsellers} deal={deal} />
       <TopCategories categories={categories} />
       <DiscountRail products={restOfDeals.slice(0, 8)} />
-      {/* Intent first: the consultant is the widest entry into the catalogue. */}
+      {/* Intent first: the consultant is the widest entry into the catalogue,
+          and these are its front door — the same question, asked one screen
+          earlier so choosing here skips a step rather than repeating one. */}
+      <AudienceDoors locale={locale} />
       <QuizPromo />
       <FeaturedProducts products={bestsellers} />
       <ProgramsRail locale={locale} />

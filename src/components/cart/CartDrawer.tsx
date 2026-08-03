@@ -96,14 +96,14 @@ export function CartDrawer() {
 
                 <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
                   {lines.map((l) => (
-                    <div key={l.productId} className="flex gap-3">
+                    <div key={l.lineId} className="flex gap-3">
                       <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-surface-2">
                         {l.image && <Image src={l.image} alt={l.name} fill sizes="64px" className="object-cover" />}
                       </div>
                       <div className="flex flex-1 flex-col">
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium text-fg">{l.name}</p>
-                          <button onClick={() => remove(l.productId)} className="text-faint hover:text-danger" aria-label={t("remove")}>
+                          <button onClick={() => remove(l.lineId)} className="text-faint hover:text-danger" aria-label={t("remove")}>
                             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
                               <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                             </svg>
@@ -116,9 +116,9 @@ export function CartDrawer() {
                           </p>
                         )}
                         <div className="mt-auto flex items-center gap-2 pt-2">
-                          <QtyButton onClick={() => setQuantity(l.productId, l.quantity - 1)}>−</QtyButton>
+                          <QtyButton onClick={() => setQuantity(l.lineId, l.quantity - 1)}>−</QtyButton>
                           <span className="w-6 text-center text-sm">{l.quantity}</span>
-                          <QtyButton onClick={() => setQuantity(l.productId, l.quantity + 1)}>+</QtyButton>
+                          <QtyButton onClick={() => setQuantity(l.lineId, l.quantity + 1)}>+</QtyButton>
                         </div>
                       </div>
                     </div>

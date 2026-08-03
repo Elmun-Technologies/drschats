@@ -11,11 +11,20 @@ import { useProfile } from "@/lib/profile/store";
 import { track } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
-export function QuizFlow({ questions }: { questions: QuizQuestion[] }) {
+export function QuizFlow({
+  questions,
+  initialAnswers,
+}: {
+  questions: QuizQuestion[];
+  /** Pre-filled from the URL when the visitor arrived having already answered. */
+  initialAnswers?: QuizAnswers;
+}) {
   const t = useTranslations("quiz");
   const router = useRouter();
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<QuizAnswers>({});
+  // Start past whatever arrived answered, so a shortcut saves a step instead
+  // of re-asking what the visitor just told us.
+  const [step, setStep] = useState(() => Object.keys(initialAnswers ?? {}).length);
+  const [answers, setAnswers] = useState<QuizAnswers>(initialAnswers ?? {});
   const [submitting, setSubmitting] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
   const applyQuiz = useProfile((s) => s.applyQuiz);

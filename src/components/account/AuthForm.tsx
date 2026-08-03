@@ -1,68 +1,98 @@
 "use client";
 
-import { useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import type { Locale } from "@/lib/i18n/routing";
-import { api, ApiError } from "@/lib/api/client";
+import { useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
+import { api, ApiError, type OtpRequestResult } from "@/lib/api/client";
 import { useSession } from "@/lib/auth/store";
-import { useProfile } from "@/lib/profile/store";
-import { sendAccountVerification } from "@/app/actions/accountEmail";
 import { track } from "@/lib/analytics/events";
 
-type Mode = "login" | "register";
+/*
+  Sign-in is a phone and a code — no password, and no separate registration.
+  The phone is the identity, the code proves it, so a first visit and a return
+  visit are the same two screens.
 
-const MIN_PASSWORD = 8;
+  There is a third screen because Telegram makes one unavoidable: a bot cannot
+  message a phone number it has never spoken to. Until someone has started the
+  bot and shared their contact there is nowhere to send a code, so instead of
+  failing we hand them the link that fixes it.
+*/
+type Step = "phone" | "link" | "code";
+
+const CODE_LENGTH = 6;
 
 export function AuthForm() {
   const t = useTranslations("account");
-  const [mode, setMode] = useState<Mode>("login");
-  const [name, setName] = useState("");
+  const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [code, setCode] = useState("");
+  const [telegramLink, setTelegramLink] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [verificationSent, setVerificationSent] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(0);
   const signIn = useSession((s) => s.signIn);
-  const locale = useLocale() as Locale;
-  const updateProfile = useProfile((s) => s.update);
+  const codeRef = useRef<HTMLInputElement>(null);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
+  // Move focus to whichever field the new step is asking about, so the flow
+  // stays usable without a mouse and a screen reader lands in the right place.
+  useEffect(() => {
+    if (step === "code") codeRef.current?.focus();
+  }, [step]);
+
+  useEffect(() => {
+    if (secondsLeft <= 0) return;
+    const id = setInterval(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
+    return () => clearInterval(id);
+  }, [secondsLeft]);
+
+  function describe(err: unknown): string {
+    if (!(err instanceof ApiError)) return t("errorGeneric");
+    // The API answers with stable reason codes rather than prose, so the
+    // wording lives here where it can be translated.
+    const known: Record<string, string> = {
+      invalid_phone: t("errorPhone"),
+      invalid_code: t("errorCode"),
+      cooldown: t("errorCooldown"),
+      too_many_requests: t("errorTooMany"),
+      delivery_failed: t("errorDelivery"),
+    };
+    return known[err.message] ?? t("errorGeneric");
+  }
+
+  async function askForCode(resend = false) {
     if (busy) return;
     setBusy(true);
     setError(null);
-
     try {
-      const { accessToken } =
-        mode === "login"
-          ? await api.login({ phone, password })
-          : await api.register({ name, phone, password });
-
-      const user = await api.me(accessToken);
-      signIn(accessToken, user);
-      track(mode === "login" ? "login" : "sign_up", {});
-
-      // Registration only: the address is stored in this browser's profile and
-      // sent one verification link. It is not attached to the account until
-      // that link is clicked, so a typo costs nothing.
-      if (mode === "register" && email.trim()) {
-        updateProfile({ name: name.trim() || undefined, email: email.trim() });
-        const sent = await sendAccountVerification({
-          userId: user.id,
-          email: email.trim(),
-          name: name.trim() || undefined,
-          locale,
-        });
-        setVerificationSent(sent.ok);
+      const result: OtpRequestResult = await api.requestOtp({ phone });
+      if (result.status === "link_required") {
+        setTelegramLink(result.telegramLink);
+        setStep("link");
+      } else {
+        setStep("code");
+        setSecondsLeft(60);
+        if (!resend) track("otp_requested", {});
       }
     } catch (err) {
-      // The API's own message is the useful one — "Invalid phone or password",
-      // "Phone already registered" — so it is shown rather than replaced with a
-      // generic failure that tells the customer nothing.
-      setError(
-        err instanceof ApiError && err.message ? err.message : t("errorGeneric"),
-      );
+      setError(describe(err));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function submitCode(event: React.FormEvent) {
+    event.preventDefault();
+    if (busy) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const { accessToken } = await api.verifyOtp({ phone, code });
+      const user = await api.me(accessToken);
+      signIn(accessToken, user);
+      track("login", {});
+    } catch (err) {
+      setError(describe(err));
+      setCode("");
+      codeRef.current?.focus();
     } finally {
       setBusy(false);
     }
@@ -70,96 +100,135 @@ export function AuthForm() {
 
   return (
     <div className="mx-auto max-w-md rounded-2xl border border-line bg-ink p-6 sm:p-8">
-      <div role="tablist" aria-label={t("title")} className="mb-6 flex gap-1 rounded-full bg-surface p-1">
-        {(["login", "register"] as const).map((m) => (
-          <button
-            key={m}
-            role="tab"
-            type="button"
-            aria-selected={mode === m}
-            onClick={() => {
-              setMode(m);
-              setError(null);
-            }}
-            className={`flex-1 rounded-full px-4 py-2 text-sm font-bold transition-colors ${
-              mode === m ? "bg-accent text-white" : "text-muted hover:text-fg"
-            }`}
-          >
-            {t(m)}
-          </button>
-        ))}
-      </div>
+      <h2 className="font-display text-xl font-bold text-fg">{t("title")}</h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {mode === "register" && (
-          <>
-            <Field
-              id="account-name"
-              label={t("name")}
-              value={name}
-              onChange={setName}
-              autoComplete="name"
-              required
-              minLength={2}
-            />
-            <Field
-              id="account-email"
-              label={t("email")}
-              type="email"
-              value={email}
-              onChange={setEmail}
-              autoComplete="email"
-              hint={t("emailHint")}
-            />
-          </>
-        )}
-
-        <Field
-          id="account-phone"
-          label={t("phone")}
-          type="tel"
-          value={phone}
-          onChange={setPhone}
-          autoComplete="tel"
-          placeholder="+998 90 123 45 67"
-          required
-        />
-
-        <Field
-          id="account-password"
-          label={t("password")}
-          type="password"
-          value={password}
-          onChange={setPassword}
-          autoComplete={mode === "login" ? "current-password" : "new-password"}
-          required
-          minLength={mode === "register" ? MIN_PASSWORD : undefined}
-          hint={mode === "register" ? t("passwordHint", { count: MIN_PASSWORD }) : undefined}
-        />
-
-        {error && (
-          <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm font-medium text-danger">
-            {error}
-          </p>
-        )}
-
-        {verificationSent && (
-          <p role="status" className="rounded-lg bg-accent-soft px-3 py-2 text-sm font-medium text-accent-strong">
-            {t("verificationSent", { email })}
-          </p>
-        )}
-
-        <button
-          type="submit"
-          disabled={busy}
-          className="rounded-full bg-accent px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
+      {step === "phone" && (
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            void askForCode();
+          }}
+          className="mt-5 flex flex-col gap-4"
         >
-          {busy ? "…" : t(mode === "login" ? "loginCta" : "registerCta")}
-        </button>
-      </form>
+          <p className="text-sm text-muted">{t("otpIntro")}</p>
+          <Field
+            id="account-phone"
+            label={t("phone")}
+            type="tel"
+            inputMode="tel"
+            value={phone}
+            onChange={setPhone}
+            autoComplete="tel"
+            placeholder="+998 90 123 45 67"
+            required
+          />
+          {error && <ErrorNote>{error}</ErrorNote>}
+          <SubmitButton busy={busy}>{t("otpCta")}</SubmitButton>
+        </form>
+      )}
+
+      {step === "link" && (
+        <div className="mt-5 flex flex-col gap-4">
+          <p className="text-sm text-muted">{t("linkIntro")}</p>
+          {telegramLink ? (
+            <a
+              href={telegramLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="rounded-full bg-accent px-6 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-accent-strong"
+            >
+              {t("linkCta")}
+            </a>
+          ) : (
+            <ErrorNote>{t("errorNoBot")}</ErrorNote>
+          )}
+          <p className="text-xs leading-relaxed text-faint">{t("linkHint")}</p>
+          <button
+            type="button"
+            onClick={() => setStep("code")}
+            className="text-sm font-semibold text-accent-strong hover:underline"
+          >
+            {t("linkDone")}
+          </button>
+        </div>
+      )}
+
+      {step === "code" && (
+        <form onSubmit={submitCode} className="mt-5 flex flex-col gap-4">
+          <p className="text-sm text-muted">{t("codeIntro", { phone })}</p>
+          <Field
+            ref={codeRef}
+            id="account-code"
+            label={t("code")}
+            value={code}
+            onChange={(v) => setCode(v.replace(/\D/g, "").slice(0, CODE_LENGTH))}
+            // one-time-code lets both iOS and Android offer the code from the
+            // notification, which is most of the reason this flow feels quick.
+            autoComplete="one-time-code"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            placeholder="123456"
+            required
+          />
+          {error && <ErrorNote>{error}</ErrorNote>}
+          <SubmitButton busy={busy} disabled={code.length < CODE_LENGTH}>
+            {t("codeCta")}
+          </SubmitButton>
+
+          <div className="flex items-center justify-between text-sm">
+            <button
+              type="button"
+              onClick={() => {
+                setStep("phone");
+                setCode("");
+                setError(null);
+              }}
+              className="font-semibold text-muted hover:text-fg"
+            >
+              {t("changePhone")}
+            </button>
+            <button
+              type="button"
+              disabled={secondsLeft > 0 || busy}
+              onClick={() => void askForCode(true)}
+              className="font-semibold text-accent-strong hover:underline disabled:text-faint disabled:no-underline"
+            >
+              {secondsLeft > 0 ? t("resendIn", { seconds: secondsLeft }) : t("resend")}
+            </button>
+          </div>
+        </form>
+      )}
 
       <p className="mt-5 text-xs leading-relaxed text-faint">{t("guestNote")}</p>
     </div>
+  );
+}
+
+function ErrorNote({ children }: { children: React.ReactNode }) {
+  return (
+    <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm font-medium text-danger">
+      {children}
+    </p>
+  );
+}
+
+function SubmitButton({
+  busy,
+  disabled,
+  children,
+}: {
+  busy: boolean;
+  disabled?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="submit"
+      disabled={busy || disabled}
+      className="rounded-full bg-accent px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
+    >
+      {busy ? "…" : children}
+    </button>
   );
 }
 
@@ -169,6 +238,7 @@ function Field({
   value,
   onChange,
   hint,
+  ref,
   ...rest
 }: {
   id: string;
@@ -176,7 +246,8 @@ function Field({
   value: string;
   onChange: (v: string) => void;
   hint?: string;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id">) {
+  ref?: React.Ref<HTMLInputElement>;
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id" | "ref">) {
   return (
     <div>
       <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-fg">
@@ -184,6 +255,7 @@ function Field({
       </label>
       <input
         id={id}
+        ref={ref}
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-describedby={hint ? `${id}-hint` : undefined}

@@ -7,8 +7,6 @@ from app.models import Order, Subscription
 
 pytestmark = pytest.mark.asyncio
 
-SIGNUP = {"name": "Aziz", "phone": "998901234567", "password": "correct horse"}
-
 
 def _in_days(days: int) -> str:
     """A `MM-DD` birthday that falls `days` from today, whatever today is."""
@@ -16,9 +14,9 @@ def _in_days(days: int) -> str:
     return f"{target.month:02d}-{target.day:02d}"
 
 
-async def _consenting_user(client, service_headers, **profile) -> dict:
-    """A registered, opted-in, verified customer — the only kind that is ever queued."""
-    token = (await client.post("/api/v1/auth/register", json=SIGNUP)).json()["accessToken"]
+async def _consenting_user(client, sign_in, service_headers, **profile) -> dict:
+    """A signed-in, opted-in, verified customer — the only kind that is ever queued."""
+    token = await sign_in()
     headers = {"Authorization": f"Bearer {token}"}
 
     await client.patch(
@@ -58,8 +56,8 @@ async def test_the_queue_is_shut_without_a_service_key(client):
     ).status_code == 401
 
 
-async def test_an_unverified_address_is_never_queued(client, service_headers):
-    token = (await client.post("/api/v1/auth/register", json=SIGNUP)).json()["accessToken"]
+async def test_an_unverified_address_is_never_queued(client, sign_in, service_headers):
+    token = await sign_in()
     await client.patch(
         "/api/v1/profile/me",
         json={
@@ -77,8 +75,8 @@ async def test_an_unverified_address_is_never_queued(client, service_headers):
     assert await _due(client, service_headers) == []
 
 
-async def test_a_birthday_inside_the_window_is_queued_once(client, service_headers):
-    await _consenting_user(client, service_headers, birthday=_in_days(3))
+async def test_a_birthday_inside_the_window_is_queued_once(client, sign_in, service_headers):
+    await _consenting_user(client, sign_in, service_headers, birthday=_in_days(3))
 
     first = await _due(client, service_headers)
     assert [m["campaign"] for m in first] == ["birthday"]
@@ -89,14 +87,15 @@ async def test_a_birthday_inside_the_window_is_queued_once(client, service_heade
     assert await _due(client, service_headers) == []
 
 
-async def test_a_distant_birthday_waits(client, service_headers):
-    await _consenting_user(client, service_headers, birthday=_in_days(60))
+async def test_a_distant_birthday_waits(client, sign_in, service_headers):
+    await _consenting_user(client, sign_in, service_headers, birthday=_in_days(60))
     assert await _due(client, service_headers) == []
 
 
-async def test_a_household_birthday_carries_the_name(client, service_headers):
+async def test_a_household_birthday_carries_the_name(client, sign_in, service_headers):
     await _consenting_user(
         client,
+        sign_in,
         service_headers,
         household=[{"relation": "child", "name": "Aziza", "birthday": _in_days(2)}],
     )
@@ -105,8 +104,8 @@ async def test_a_household_birthday_carries_the_name(client, service_headers):
     assert due[0]["data"]["memberName"] == "Aziza"
 
 
-async def test_withdrawn_consent_empties_the_queue(client, service_headers):
-    headers = await _consenting_user(client, service_headers, birthday=_in_days(1))
+async def test_withdrawn_consent_empties_the_queue(client, sign_in, service_headers):
+    headers = await _consenting_user(client, sign_in, service_headers, birthday=_in_days(1))
 
     await client.post(
         "/api/v1/marketing/subscribers",
@@ -137,22 +136,21 @@ async def test_confirming_the_list_creates_a_subscriber(client, service_headers)
 
 
 async def test_an_upcoming_delivery_is_announced_early_enough_to_skip(
-    client, service_headers, order_payload, db_sessions
+    client, sign_in, service_headers, order_payload, db
 ):
     order_payload["items"][0]["subscription"] = {"intervalDays": 30}
     await client.post("/api/v1/orders", json=order_payload)
-    await _consenting_user(client, service_headers)
+    await _consenting_user(client, sign_in, service_headers)
 
     # Nothing yet — the delivery is a month out.
     assert await _due(client, service_headers) == []
 
-    async with db_sessions() as session:
-        await session.execute(
-            update(Subscription).values(
-                next_delivery_at=datetime.now(timezone.utc) + timedelta(days=2)
-            )
+    await db.execute(
+        update(Subscription).values(
+            next_delivery_at=datetime.now(timezone.utc) + timedelta(days=2)
         )
-        await session.commit()
+    )
+    await db.commit()
 
     due = await _due(client, service_headers)
     assert [m["campaign"] for m in due] == ["subscription-upcoming"]
@@ -161,8 +159,8 @@ async def test_an_upcoming_delivery_is_announced_early_enough_to_skip(
     assert due[0]["data"]["items"][0]["name"].startswith("Vitamin D3")
 
 
-async def test_reporting_a_send_does_not_requeue_it(client, service_headers):
-    await _consenting_user(client, service_headers, birthday=_in_days(0))
+async def test_reporting_a_send_does_not_requeue_it(client, sign_in, service_headers):
+    await _consenting_user(client, sign_in, service_headers, birthday=_in_days(0))
     due = await _due(client, service_headers)
     assert len(due) == 1
 
@@ -175,8 +173,8 @@ async def test_reporting_a_send_does_not_requeue_it(client, service_headers):
     assert await _due(client, service_headers) == []
 
 
-async def test_a_failed_send_is_not_retried_the_same_day(client, service_headers):
-    await _consenting_user(client, service_headers, birthday=_in_days(0))
+async def test_a_failed_send_is_not_retried_the_same_day(client, sign_in, service_headers):
+    await _consenting_user(client, sign_in, service_headers, birthday=_in_days(0))
     due = await _due(client, service_headers)
 
     await client.post(
@@ -190,21 +188,42 @@ async def test_a_failed_send_is_not_retried_the_same_day(client, service_headers
 
 
 async def test_a_reorder_is_offered_as_the_course_runs_out(
-    client, service_headers, order_payload, db_sessions
+    client, sign_in, service_headers, order_payload, db
 ):
-    headers = await _consenting_user(client, service_headers)
+    headers = await _consenting_user(client, sign_in, service_headers)
 
     await client.post("/api/v1/orders", json=order_payload, headers=headers)
     # Fresh order: too early to nag.
     assert await _due(client, service_headers) == []
 
     # Age it past the course length, which is the one thing a test cannot wait for.
-    async with db_sessions() as session:
-        await session.execute(
-            update(Order).values(created_at=datetime.now(timezone.utc) - timedelta(days=27))
-        )
-        await session.commit()
+    await db.execute(
+        update(Order).values(created_at=datetime.now(timezone.utc) - timedelta(days=27))
+    )
+    await db.commit()
 
     due = await _due(client, service_headers)
     assert [m["campaign"] for m in due] == ["reorder"]
     assert due[0]["data"]["productSlug"] == "vitamin-d3"
+
+
+async def test_a_repurchase_silences_the_older_reorder_reminder(
+    client, sign_in, service_headers, order_payload, db
+):
+    """
+    The customer restocked. Filtering on age in SQL would hide the new order
+    and leave the old one looking like the latest purchase, so they would be
+    told their course is running out days after they refilled it.
+    """
+    headers = await _consenting_user(client, sign_in, service_headers)
+
+    await client.post("/api/v1/orders", json=order_payload, headers=headers)
+    await db.execute(
+        update(Order).values(created_at=datetime.now(timezone.utc) - timedelta(days=27))
+    )
+    await db.commit()
+
+    # Bought again today.
+    await client.post("/api/v1/orders", json=order_payload, headers=headers)
+
+    assert await _due(client, service_headers) == []

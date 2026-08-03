@@ -5,7 +5,7 @@ customer volunteers about themselves, who else they buy for, the newsletter
 list, repeating orders, and the log that stops a reminder being sent twice.
 
 Revision ID: 2f1c74a90b31
-Revises: 133ddaf0f9ce
+Revises: a1b2c3d4e5f6
 Create Date: 2026-08-03 07:10:00.000000
 
 """
@@ -16,7 +16,7 @@ import sqlalchemy as sa
 
 
 revision: str = '2f1c74a90b31'
-down_revision: str | None = '133ddaf0f9ce'
+down_revision: str | None = 'a1b2c3d4e5f6'
 branch_labels: str | Sequence[str] | None = None
 depends_on: str | Sequence[str] | None = None
 
@@ -36,7 +36,6 @@ def upgrade() -> None:
     op.add_column('users', sa.Column('marketing_email', sa.Boolean(), nullable=False, server_default=sa.false()))
     op.add_column('users', sa.Column('marketing_telegram', sa.Boolean(), nullable=False, server_default=sa.false()))
     op.add_column('users', sa.Column('consent_updated_at', sa.DateTime(timezone=True), nullable=True))
-    op.add_column('users', sa.Column('telegram_chat_id', sa.String(length=64), nullable=True))
     op.create_index(op.f('ix_users_email'), 'users', ['email'], unique=False)
 
     # --- orders: the address a confirmation goes to -----------------------
@@ -153,7 +152,6 @@ def downgrade() -> None:
     op.drop_column('orders', 'customer_email')
 
     op.drop_index(op.f('ix_users_email'), table_name='users')
-    op.drop_column('users', 'telegram_chat_id')
     op.drop_column('users', 'consent_updated_at')
     op.drop_column('users', 'marketing_telegram')
     op.drop_column('users', 'marketing_email')

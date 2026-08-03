@@ -2,8 +2,6 @@ import pytest
 
 pytestmark = pytest.mark.asyncio
 
-SIGNUP = {"name": "Aziz", "phone": "998901234567", "password": "correct horse"}
-
 PROFILE = {
     "email": "aziz@example.com",
     "birthday": "1990-03-20",
@@ -18,13 +16,8 @@ PROFILE = {
 }
 
 
-async def _register(client) -> str:
-    res = await client.post("/api/v1/auth/register", json=SIGNUP)
-    return res.json()["accessToken"]
-
-
-async def test_profile_round_trips(client):
-    token = await _register(client)
+async def test_profile_round_trips(client, sign_in):
+    token = await sign_in()
     headers = {"Authorization": f"Bearer {token}"}
 
     saved = await client.patch("/api/v1/profile/me", json=PROFILE, headers=headers)
@@ -38,8 +31,8 @@ async def test_profile_round_trips(client):
     assert body["household"][0]["name"] == "Aziza"
 
 
-async def test_a_new_address_is_not_a_verified_address(client, service_headers):
-    token = await _register(client)
+async def test_a_new_address_is_not_a_verified_address(client, sign_in, service_headers):
+    token = await sign_in()
     headers = {"Authorization": f"Bearer {token}"}
     await client.patch("/api/v1/profile/me", json=PROFILE, headers=headers)
 
@@ -61,8 +54,8 @@ async def test_a_new_address_is_not_a_verified_address(client, service_headers):
     assert after["emailVerified"] is False
 
 
-async def test_household_is_replaced_not_appended(client):
-    token = await _register(client)
+async def test_household_is_replaced_not_appended(client, sign_in):
+    token = await sign_in()
     headers = {"Authorization": f"Bearer {token}"}
 
     await client.patch("/api/v1/profile/me", json=PROFILE, headers=headers)
@@ -81,8 +74,8 @@ async def test_profile_needs_a_session(client):
     assert (await client.patch("/api/v1/profile/me", json=PROFILE)).status_code == 401
 
 
-async def test_verification_link_does_not_match_a_different_address(client, service_headers):
-    token = await _register(client)
+async def test_verification_link_does_not_match_a_different_address(client, sign_in, service_headers):
+    token = await sign_in()
     headers = {"Authorization": f"Bearer {token}"}
     await client.patch("/api/v1/profile/me", json=PROFILE, headers=headers)
     user_id = (await client.get("/api/v1/auth/me", headers=headers)).json()["id"]

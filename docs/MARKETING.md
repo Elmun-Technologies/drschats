@@ -50,7 +50,7 @@ Barcha matnlar: `src/lib/email/campaigns.ts` (uz + ru, bitta faylda).
 | `opt-in` | obuna so'ralganda | email | — (tasdiqlash xati) |
 | `welcome` | havola bosilgach | email | ✅ |
 | `order` | buyurtma qabul qilinganda | email | ❌ tranzaksion |
-| `account-verify` | ro'yxatdan o'tganda | email | ❌ tranzaksion |
+| `account-verify` | profilga pochta qo'shilganda | email | ❌ tranzaksion |
 | `birthday` | tug'ilgan kunga 7 kun qolganda | email, telegram | ✅ |
 | `child-season` | 10-avgust — 10-sentyabr | email, telegram | ✅ |
 | `reorder` | kurs tugashiga ~5 kun qolganda | email, telegram | ✅ |
@@ -89,6 +89,11 @@ qo'shsangiz shu chiziqni saqlang.
 allaqachon yuborilganlar logi o'sha yerda). **Nima** va **qanday** — storefront
 (shablonlar, provayder kaliti, Telegram tokeni o'sha yerda, va u deploy
 qilingan). Cron navbatni oladi, yuboradi, natijani qaytaradi.
+
+Cron har safar avval **muddati kelgan obunalarni buyurtmaga aylantiradi**
+(`POST /api/v1/marketing/subscriptions/run`), keyin xabarlarni yuboradi. Shu
+tartibda: mijozga keladigan "keyingi yetkazish" xabari allaqachon yangilangan
+jadvalni aks ettiradi.
 
 Har bir navbat yozuvida `reminder_id` bor va u **noyob**. Shuning uchun cron
 ikki marta ishlasa ham bir odam bir kunda ikkita tabrik olmaydi.
@@ -164,7 +169,7 @@ yuboradigan ochiq endpoint standart holat bo'lishi mumkin emas.
 darrov "skipped" qaytaradi. Bu xato emas — backend deploy qilinmaguncha normal
 holat.
 
-### 5c. Telegram (ixtiyoriy, lekin bu bozorda kuchli kanal)
+### 5c. Telegram — kanal allaqachon tayyor
 
 ```env
 TELEGRAM_BOT_TOKEN=...
@@ -172,14 +177,15 @@ TELEGRAM_CHAT_ID=...                      # operator guruhi
 NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=govita_bot
 ```
 
-Oxirgi o'zgaruvchi qo'yilmasa `/profile` sahifasida Telegram kanali **umuman
-ko'rsatilmaydi** — hech qachon kelmaydigan xabarni va'da qiladigan belgi
-yo'qdan yomonroq.
+Bu yerda qo'shimcha ish yo'q: saytga kirish allaqachon Telegram kodi orqali
+ishlaydi, ya'ni tizimga kirgan har bir mijozning `chat_id` si `telegram_links`
+jadvalida turadi. Eslatmalar navbati aynan o'sha jadvalni o'qiydi — ikkinchi
+nusxa saqlanmaydi.
 
-**Sizdan kerak bo'ladigan ish:** bot foydalanuvchi bilan suhbat boshlaganda
-uning `chat_id` sini `users.telegram_chat_id` ga yozishi kerak. Profil
-sahifasidagi havola `?start=<payload>` bilan ochiladi — bot shu payload'ni
-qaytarib oladi. Botning o'zi hali yozilmagan.
+Ya'ni mijoz `/profile` da Telegram kanalini yoqsa, eslatmalar darrov ishlaydi.
+`NEXT_PUBLIC_TELEGRAM_BOT_USERNAME` qo'yilmasa kanal `/profile` da umuman
+ko'rsatilmaydi — hech qachon kelmaydigan xabarni va'da qiladigan belgi yo'qdan
+yomonroq.
 
 ### 5d. Web push — ataylab qilinmadi
 
@@ -200,6 +206,8 @@ Deploy qilgandan keyin:
 - [ ] Havolani bosing → `/email/preferences?status=confirmed` va **welcome** xati
 - [ ] Xat pastidagi "Obunani bekor qilish" → darhol bekor bo'ladi, savol so'ramaydi
 - [ ] Checkout'da pochta yozib buyurtma bering → buyurtma tasdig'i keladi
+- [ ] `/profile` da pochtani yozib "Pochtani tasdiqlash" → havola keladi, bosilgach
+      `status=verified`
 - [ ] Mahsulot sahifasida "Obuna bilan" → savatchada "Har 30 kunda" va
       "Keyingi yetkazib berish: …" chiqadi
 - [ ] `curl -H "Authorization: Bearer $CRON_SECRET" https://.../api/cron/marketing`

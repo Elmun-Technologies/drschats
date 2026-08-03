@@ -33,3 +33,61 @@ jobs:
         run: npm run build
         env:
           SHOPFLOW_MODE: mock
+
+  # The quality table in CLAUDE.md claims a row of zeros. This is what keeps
+  # that claim true. Measured against a production build: a dev build has
+  # different CSS and different timing, so it would be measuring something else.
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build
+        run: npm run build
+        env:
+          SHOPFLOW_MODE: mock
+
+      - name: Serve and audit
+        run: |
+          npx next start -p 3000 &
+          npx --yes wait-on http://localhost:3000/uz --timeout 90000
+          npm run audit
+        env:
+          SHOPFLOW_MODE: mock
+          BASE_URL: http://localhost:3000
+
+  # Sign-in codes, their rate limits and the bot webhook are places where a
+  # regression is a security bug rather than a cosmetic one, so they get run
+  # on every change rather than trusted.
+  api:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Tests
+        run: python -m pytest -q

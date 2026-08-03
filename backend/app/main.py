@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.routers import auth, marketing, orders, profile, subscriptions
+from app.routers import auth, marketing, orders, profile, subscriptions, telegram_hook
 
 logging.basicConfig(level=logging.INFO)
 
@@ -13,6 +13,10 @@ settings = get_settings()
 if settings.is_production and settings.jwt_secret == "dev-only-change-me":
     # Fail at boot, not at the first forged token.
     raise RuntimeError("JWT_SECRET must be set in production")
+
+# Codes in the log are codes in anyone's hands who can read the log.
+if settings.is_production and settings.otp_debug_echo:
+    raise RuntimeError("OTP_DEBUG_ECHO must be off in production")
 
 app = FastAPI(
     title="Go Vita API",
@@ -33,6 +37,7 @@ app.include_router(orders.router)
 app.include_router(profile.router)
 app.include_router(subscriptions.router)
 app.include_router(marketing.router)
+app.include_router(telegram_hook.router)
 
 
 @app.get("/health", tags=["ops"])

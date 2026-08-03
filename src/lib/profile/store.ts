@@ -17,6 +17,7 @@ interface ProfileState {
   /** Merge quiz output in without discarding goals the visitor set by hand. */
   applyQuiz: (topics: string[], ingredients: string[]) => void;
   markSynced: () => void;
+  hydrate: (profile: HealthProfile) => void;
   /** Erase everything volunteered. Behavioural history is untouched. */
   reset: () => void;
 }
@@ -115,7 +116,14 @@ export const useProfile = create<ProfileState>()(
       markSynced: () =>
         set((state) => ({ profile: { ...state.profile, syncedAt: Date.now() } })),
 
-      reset: () => set({ profile: emptyProfile() }),
+      /** Replace the local profile with the account's copy, e.g. on a new device. */
+      hydrate: (profile) => set({ profile: { ...profile, syncedAt: Date.now() } }),
+
+      // `updatedAt` is stamped so clearing counts as an edit. Left at zero, the
+      // sync would treat an erased profile as "nothing to send" and the account
+      // would quietly keep the birthday, the household and the consent that the
+      // page just said were gone.
+      reset: () => set({ profile: { ...emptyProfile(), updatedAt: Date.now() } }),
     }),
     {
       name: STORAGE_KEYS.profile,

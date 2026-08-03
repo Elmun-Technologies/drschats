@@ -23,14 +23,14 @@ export async function GET(request: NextRequest) {
     return NextResponse.redirect(`${siteOrigin()}/${locale}/email/preferences?status=invalid`);
   }
 
-  const result = await markAccountEmailVerified({
+  const { ok } = await markAccountEmailVerified({
     userId: verified.subject,
     email: verified.email,
   });
 
-  // A null result means the accounts API is not configured or refused. The
-  // address is still proven, but nothing stored it, and saying "verified"
+  // A refusal means the accounts API is not configured, or would not take it.
+  // The address is still proven, but nothing stored it, and saying "verified"
   // would be a claim the system cannot back up.
-  const status = result === null ? "verify-pending" : "verified";
+  const status = ok ? "verified" : "verify-pending";
   return NextResponse.redirect(`${siteOrigin()}/${locale}/email/preferences?status=${status}`);
 }
