@@ -72,16 +72,32 @@ export function SearchBox({
           }))
       : [];
 
-  const options: Option[] = [
-    ...categoryMatches,
-    ...products.map((p) => ({
-      kind: "product" as const,
-      key: `p-${p.slug}`,
-      label: p.name,
-      href: `/product/${p.slug}`,
-      product: p,
-    })),
-  ];
+  const isSearching = trimmed.length >= MIN_QUERY;
+
+  /*
+    Before anyone types, the panel offers the top categories rather than
+    nothing. An empty search box is the commonest state it's in, and a blank
+    dropdown asks the visitor to already know what the catalogue is called.
+  */
+  const popular: Option[] = categories.slice(0, 6).map((c) => ({
+    kind: "category" as const,
+    key: `pop-${c.id}`,
+    label: c.name,
+    href: `/products/${c.slug}`,
+  }));
+
+  const options: Option[] = isSearching
+    ? [
+        ...categoryMatches,
+        ...products.map((p) => ({
+          kind: "product" as const,
+          key: `p-${p.slug}`,
+          label: p.name,
+          href: `/product/${p.slug}`,
+          product: p,
+        })),
+      ]
+    : popular;
 
   useEffect(() => {
     if (trimmed.length < MIN_QUERY) {
@@ -163,7 +179,7 @@ export function SearchBox({
     }
   }
 
-  const showList = open && trimmed.length >= MIN_QUERY;
+  const showList = open && options.length > 0;
   const optionId = (i: number) => `${listboxId}-opt-${i}`;
 
   return (
@@ -214,9 +230,9 @@ export function SearchBox({
           aria-label={t("search")}
           className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-2xl border border-line bg-ink py-2 shadow-[0_24px_48px_-24px_rgba(19,22,50,0.35)]"
         >
-          {categoryMatches.length > 0 && (
+          {(isSearching ? categoryMatches.length > 0 : popular.length > 0) && (
             <li role="presentation" className="px-4 pb-1 pt-2 text-xs font-bold uppercase tracking-widest text-faint">
-              {nav("shopByCategories")}
+              {isSearching ? nav("shopByCategories") : t("popularCategories")}
             </li>
           )}
 
