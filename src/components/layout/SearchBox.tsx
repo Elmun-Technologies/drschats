@@ -170,7 +170,10 @@ export function SearchBox({
     <div ref={rootRef} className={`relative ${className}`}>
       <form
         onSubmit={submit}
-        className="flex items-center rounded-full border border-line-strong bg-surface pl-5 pr-1.5"
+        /* The input clears its own outline, and nothing replaced it — tabbing
+           into search gave no visual signal at all. The ring goes on the form
+           so it traces the rounded field rather than the bare input. */
+        className="flex items-center rounded-full border border-line-strong bg-surface pl-5 pr-1.5 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-ink"
       >
         <input
           type="text"
