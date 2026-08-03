@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { cloneElement, isValidElement, useId, useState, type ReactElement } from "react";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -331,6 +331,16 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
 const inputClass =
   "w-full rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm text-fg outline-none transition-colors placeholder:text-faint focus:border-accent";
 
+/*
+  The error used to be a span inside the <label>, which made it part of the
+  control's accessible *name* — a screen reader announced the name field as
+  "Ism familiya Bu maydon majburiy" rather than reading the reason as a
+  description. Nothing was marked invalid either.
+
+  So the message moves out of the label and is tied to the control by id, and
+  the control gets aria-invalid. role="alert" so a message appearing after the
+  submit button was pressed is announced rather than waited for.
+*/
 function Field({
   label,
   error,
@@ -340,12 +350,29 @@ function Field({
   error?: string;
   children: React.ReactNode;
 }) {
+  const fieldId = useId();
+  const errorId = `${fieldId}-error`;
+
+  const control = isValidElement(children)
+    ? cloneElement(children as ReactElement<Record<string, unknown>>, {
+        id: fieldId,
+        "aria-invalid": error ? true : undefined,
+        "aria-describedby": error ? errorId : undefined,
+      })
+    : children;
+
   return (
-    <label className="block">
-      <span className="mb-2 block text-sm font-medium text-muted">{label}</span>
-      {children}
-      {error && <span className="mt-1 block text-xs text-danger">{error}</span>}
-    </label>
+    <div>
+      <label htmlFor={fieldId} className="mb-2 block text-sm font-medium text-muted">
+        {label}
+      </label>
+      {control}
+      {error && (
+        <span id={errorId} role="alert" className="mt-1 block text-xs text-danger">
+          {error}
+        </span>
+      )}
+    </div>
   );
 }
 
