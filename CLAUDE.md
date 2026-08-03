@@ -1,13 +1,28 @@
-# Alimkhanov Pharm — Storefront
+# Go Vita — Storefront
 
-Next.js 15 App Router e-commerce sayt. Vitaminlar va sog'liqni saqlash mahsulotlari, O'zbekiston bozori.
+Next.js 15 App Router sayt. Vitaminlar, BAD va med-kosmetika, O'zbekiston bozori.
+
+Oddiy internet-magazin emas: navigatsiya mahsulotlarga emas, foydalanuvchining
+sog'liq maqsadlariga quriladi (`/goals`, `/symptoms`, `/vitamins`, `/quiz`), va
+katalog o'sha yo'lning oxirida turadi.
 
 ## Loyiha haqida
 
-- **Stack**: Next.js 15, TypeScript, Tailwind CSS, Framer Motion, Zustand, next-intl, Zod, react-hook-form
-- **Tillar**: `uz` (default), `ru`, `en` — barcha content tarjima qilingan
-- **Backend**: Shopflow (`SHOPFLOW_MODE=mock` — mock data; `SHOPFLOW_MODE=http` — real API)
+- **Stack**: Next.js 15, TypeScript, Tailwind CSS v4, Framer Motion, Zustand, next-intl, Zod, react-hook-form
+- **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
+- **Katalog backend**: Shopflow adapteri (`SHOPFLOW_MODE=mock` — mock data; `SHOPFLOW_MODE=http` — real API)
+- **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa akkaunt UI umuman chizilmaydi (`isApiConfigured()`)
+- **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi
 - **Deploy**: Vercel
+
+## Hozirgi bo'shliqlar
+
+Kod emas, kontent va konfiguratsiya bo'shliqlari. To'liq ro'yxat va har birining
+qadamlari: **[`docs/QOLGAN-ISHLAR.md`](docs/QOLGAN-ISHLAR.md)**.
+
+Qisqacha: `/vitamins` 0 ta mavzu, `/symptoms` 1, `/goals` 2 — uchalasi ham asosiy
+menyuda. Mahsulot rasmlari placeholder SVG. `BRAND.contact` hali eski brend
+manzillari.
 
 ## Muhim buyruqlar
 
@@ -25,16 +40,23 @@ Build har doim `npm run build` orqali tekshirilsin — `npx next build` boshqa N
 ```
 src/app/[locale]/          # barcha sahifalar locale prefix bilan
   page.tsx                 # bosh sahifa
+  quiz/                    # AI konsultant (savol → tavsiya), quiz/result/
+  goals/ symptoms/ vitamins/   # sog'liq mavzulari — [slug] bilan
+  programs/                # 30 kunlik dasturlar, [slug] bilan
   products/page.tsx        # mahsulotlar katalogi (filter, sort, pagination)
   products/[category]/     # kategoriya sahifasi
   product/[slug]/          # mahsulot detail sahifasi
-  checkout/page.tsx        # buyurtma berish
-  checkout/success/        # muvaffaqiyatli buyurtma
-  cart/page.tsx            # savatcha sahifasi
-  blog/                    # blog
-  experts/                 # ekspertlar
+  cart/ checkout/          # savatcha, buyurtma, checkout/success/
+  account/                 # kabinet — API sozlanmagan bo'lsa notFound()
+  blog/ news/ experts/ brands/ ingredients/ reviews/ loyalty/
   lp/[campaign]/           # landing pages (kampaniyalar)
+  [...rest]/               # catch-all → lokalizatsiyalangan 404
+  not-found.tsx error.tsx
 ```
+
+`app/layout.tsx` — passthrough; haqiqiy `<html lang>` `[locale]/layout.tsx` da.
+`loading.tsx` **qo'shmang**: Suspense chegarasi status'ni `notFound()` dan oldin
+yuboradi va soft-404 hosil qiladi (bir marta shu sabab olib tashlangan).
 
 ### Lib katalogi (`src/lib/`)
 
@@ -228,3 +250,36 @@ TELEGRAM_CHAT_ID=your_chat_id
 - Server actions — `"use server"` + Zod validation + try/catch
 - Komment yozmaslik (obvious bo'lmasa) — kod o'zi gapirsin
 - Build tekshirish: `npm run build` — 0 xatolik
+
+## Sifat darajasi — nolda turadi
+
+Quyidagilar o'lchangan va **nol** holatga keltirilgan. Yangi ish ularni buzmasin:
+
+| tekshiruv | holat |
+|---|---|
+| WCAG kontrast (uz + ru) | 0 ta muvaffaqiyatsiz uslub |
+| Nomsiz interaktiv element | 0 |
+| `alt` yo'q rasm | 0 |
+| Sarlavha darajasi sakrashi | 0 |
+| Gorizontal overflow | 0 |
+| Tap-target (WCAG 2.2 + spacing istisnosi) | 0 |
+| Fokus ko'rinmaydigan element | 0 |
+| Kesilgan matn (uz + ru) | 0 |
+| Pastki chekka elementlari kesishuvi | 0 |
+
+Amaliy qoidalar, har biri haqiqiy nuqsondan chiqqan:
+
+- **Pastga biriktirilgan har qanday element** `--bottom-nav` tokenidan offset olsin
+  (`globals.css`). Beshta element o'z offsetini alohida tanlagani uchun
+  "yuqoriga" tugmasi mobil tab-barning ustida turgan edi.
+- **Modal/drawer/overlay** — `useDialog` hookiga ulansin (`src/lib/ui/useDialog.ts`):
+  Escape, fokusni ichkariga olish va qaytarish, Tab tuzog'i. Ustiga
+  `role="dialog"`, `aria-modal`, nom.
+- **Grid ichidagi karta** — o'ramchada `h-full` bo'lsin, aks holda grid o'ramchani
+  cho'zadi, karta esa o'z balandligida qoladi.
+- **Audit faqat o'zi yetgan holatni qamraydi.** Sahifa yuklanishini tekshirish
+  yetarli emas — menyu, drawer, modal ochilgan holatda ham tekshiring. Bir
+  klaviatura tuzog'i aynan shu sabab uzoq vaqt sezilmay qolgan.
+- **"Oldin/keyin" o'lchashda** eski `next start` serveriga qaytmang: u bir xil
+  `.next` papkasini o'qiydi va siz orada qayta build qilgan bo'lasiz. To'g'ri
+  yo'l — o'zgarishni stash qilib, qayta build qilib o'lchash.

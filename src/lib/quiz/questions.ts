@@ -35,12 +35,35 @@ export interface QuizOption {
   seeDoctor?: boolean;
 }
 
+/** Answers so far, keyed by question id. */
+export type QuizAnswerMap = Record<QuestionId, string[]>;
+
+/**
+ * When a question applies.
+ *
+ * Data, not a predicate function: the question list is built on the server and
+ * handed to a client component, and functions can't cross that boundary.
+ */
+export interface QuizCondition {
+  /** An earlier question's id. */
+  question: QuestionId;
+  /** Shown when that question's answer includes any of these option ids. */
+  includesAny: string[];
+}
+
 export interface QuizQuestion {
   id: QuestionId;
   question: string;
   hint?: string;
   multiSelect: boolean;
   options: QuizOption[];
+  /**
+   * Asked only when this matches. Absent means always asked.
+   *
+   * A consultant that asks a man whether he is pregnant has stopped being a
+   * consultant, so the few questions that apply to only some visitors say so.
+   */
+  showIf?: QuizCondition;
 }
 
 interface RawOption {
@@ -57,6 +80,7 @@ interface RawQuestion {
   hint?: L;
   multiSelect: boolean;
   options: RawOption[];
+  showIf?: QuizCondition;
 }
 
 const raw: RawQuestion[] = [
@@ -250,6 +274,10 @@ const raw: RawQuestion[] = [
       uz: "Homiladorlik yoki emizish davridamisiz?",
       ru: "Беременность или период кормления?",
     },
+    // Only when the visitor is choosing for herself. Asked of a man, a parent
+    // buying for a child, or someone buying for an elderly parent, the question
+    // is at best noise and at worst insulting.
+    showIf: { question: "who", includesAny: ["self-woman"] },
     multiSelect: false,
     options: [
       { id: "no", label: { uz: "Yo'q / tegishli emas", ru: "Нет / не относится" }, topics: {} },
@@ -284,7 +312,22 @@ export function getQuizQuestions(locale: Locale): QuizQuestion[] {
       ingredients: o.ingredients,
       seeDoctor: o.seeDoctor,
     })),
+    showIf: q.showIf,
   }));
+}
+
+/**
+ * The questions that apply given the answers so far.
+ *
+ * Called on every render rather than precomputed: changing an earlier answer
+ * has to be able to bring a later question back.
+ */
+export function visibleQuestions(all: QuizQuestion[], answers: QuizAnswerMap): QuizQuestion[] {
+  return all.filter((q) => {
+    if (!q.showIf) return true;
+    const given = answers[q.showIf.question] ?? [];
+    return q.showIf.includesAny.some((id) => given.includes(id));
+  });
 }
 
 export const QUIZ_LENGTH = raw.length;
