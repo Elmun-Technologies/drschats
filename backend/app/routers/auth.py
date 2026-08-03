@@ -1,30 +1,113 @@
+import logging
+
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select, update
 
+from app import telegram
+from app.config import get_settings
 from app.deps import CurrentUser, SessionDep
-from app.models import Order, User
-from app.schemas import LoginRequest, RegisterRequest, TokenResponse, UserOut
-from app.security import (
-    create_access_token,
-    hash_password,
-    normalise_phone,
-    verify_password,
+from app.models import Order, TelegramLink, User
+from app.otp import OtpError, consume_code, issue_code
+from app.schemas import (
+    OtpRequest,
+    OtpRequestResponse,
+    OtpVerifyRequest,
+    TokenResponse,
+    UserOut,
 )
+from app.security import create_access_token, normalise_phone
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/v1/auth", tags=["auth"])
 
 
-@router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
-async def register(payload: RegisterRequest, session: SessionDep) -> TokenResponse:
+@router.post("/otp/request", response_model=OtpRequestResponse)
+async def request_otp(
+    payload: OtpRequest, session: SessionDep
+) -> OtpRequestResponse:
+    """
+    Ask for a sign-in code.
+
+    Two outcomes, and the second is not an error. If the phone has a linked
+    Telegram chat, a code goes out. If it does not, no channel can reach this
+    person yet, so the answer is a deep link that starts the bot — a bot cannot
+    message a phone number it has never spoken to.
+    """
+    settings = get_settings()
     phone = normalise_phone(payload.phone)
 
-    existing = await session.scalar(select(User).where(User.phone == phone))
-    if existing is not None:
-        raise HTTPException(status.HTTP_409_CONFLICT, "Phone already registered")
+    if len(phone) < 9:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY, "invalid_phone")
 
-    user = User(phone=phone, name=payload.name, password_hash=hash_password(payload.password))
-    session.add(user)
-    await session.flush()
+    link = await session.scalar(select(TelegramLink).where(TelegramLink.phone == phone))
+
+    if link is None:
+        # Nothing is issued here on purpose: a code nobody can receive is just a
+        # spent slot against this phone's hourly budget.
+        return OtpRequestResponse(
+            status="link_required",
+            channel="telegram",
+            telegramLink=telegram.deep_link(phone),
+            expiresIn=0,
+        )
+
+    try:
+        code = await issue_code(session, phone, channel="telegram")
+    except OtpError as exc:
+        await session.commit()
+        # On the exception, not on the injected Response: raising discards
+        # whatever was set there, and the client needs the wait to show a timer.
+        raise HTTPException(
+            status.HTTP_429_TOO_MANY_REQUESTS,
+            exc.reason,
+            headers={"Retry-After": str(exc.retry_after)} if exc.retry_after else None,
+        ) from exc
+
+    delivered = await telegram.send_message(link.chat_id, telegram.code_message(code))
+
+    if settings.otp_debug_echo and not settings.is_production:
+        logger.warning("otp debug: phone=%s code=%s", phone, code)
+        delivered = True
+
+    # Commit either way: the code was issued, and pretending it wasn't would
+    # let an unlimited retry loop past the hourly cap.
+    await session.commit()
+
+    if not delivered:
+        raise HTTPException(status.HTTP_502_BAD_GATEWAY, "delivery_failed")
+
+    return OtpRequestResponse(
+        status="sent",
+        channel="telegram",
+        telegramLink=None,
+        expiresIn=settings.otp_ttl_seconds,
+    )
+
+
+@router.post("/otp/verify", response_model=TokenResponse)
+async def verify_otp(payload: OtpVerifyRequest, session: SessionDep) -> TokenResponse:
+    """
+    Exchange a code for a token, creating the account on a first visit.
+
+    There is no separate registration step. The phone is the identity and the
+    code proves it, so signing up and signing in are the same request — which is
+    also why nothing here asks for a name.
+    """
+    phone = normalise_phone(payload.phone)
+
+    try:
+        await consume_code(session, phone, payload.code)
+    except OtpError as exc:
+        await session.commit()
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, exc.reason) from exc
+
+    user = await session.scalar(select(User).where(User.phone == phone))
+
+    if user is None:
+        user = User(phone=phone, name="")
+        session.add(user)
+        await session.flush()
 
     # Orders placed before this account existed belong to the same person; the
     # phone is the only link, and claiming them here is what makes "my orders"
@@ -35,19 +118,6 @@ async def register(payload: RegisterRequest, session: SessionDep) -> TokenRespon
         .values(user_id=user.id)
     )
     await session.commit()
-
-    return TokenResponse(accessToken=create_access_token(user.id))
-
-
-@router.post("/login", response_model=TokenResponse)
-async def login(payload: LoginRequest, session: SessionDep) -> TokenResponse:
-    phone = normalise_phone(payload.phone)
-    user = await session.scalar(select(User).where(User.phone == phone))
-
-    # One message for both "no such phone" and "wrong password": splitting them
-    # turns the endpoint into a way to test which phone numbers are registered.
-    if user is None or not verify_password(payload.password, user.password_hash):
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, "Invalid phone or password")
 
     return TokenResponse(accessToken=create_access_token(user.id))
 
