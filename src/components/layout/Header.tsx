@@ -16,6 +16,7 @@ import { Logo } from "./Logo";
 import { useDialog } from "@/lib/ui/useDialog";
 import { BRAND } from "@/lib/brand";
 import type { Category } from "@/lib/shopflow/types";
+import { isNavigable } from "@/lib/content/nav-sections";
 
 /*
   Navigation leads with health intent, not with the catalogue: visitors arrive
@@ -39,7 +40,15 @@ const navItems = [
   { key: "blog", href: "/blog" },
 ] as const;
 
-export function Header({ categories = [] }: { categories?: Category[] }) {
+export function Header({
+  categories = [],
+  topicPaths = [],
+}: {
+  categories?: Category[];
+  /** Health families that have at least one published page — see nav-sections. */
+  topicPaths?: string[];
+}) {
+  const items = navItems.filter((item) => isNavigable(item.href, topicPaths));
   const t = useTranslations("nav");
   const h = useTranslations("header");
   const badges = useTranslations("badges");
@@ -102,9 +111,9 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
           out of this row rather than out of the page. */}
       <div className="sticky top-0 z-40 hidden border-t border-line bg-ink/95 backdrop-blur lg:block">
         <Container className="relative flex h-14 items-center gap-7">
-          <CatalogMenu categories={categories} />
+          <CatalogMenu categories={categories} topicPaths={topicPaths} />
           <nav className="flex items-center gap-7">
-            {navItems.map((item) => {
+            {items.map((item) => {
               const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
               return (
                 <Link
@@ -157,7 +166,7 @@ export function Header({ categories = [] }: { categories?: Category[] }) {
               <SearchBox categories={categories} onNavigate={() => setMenuOpen(false)} />
             </div>
             <nav className="container-px flex flex-col gap-1 overflow-y-auto pb-10 pt-4">
-              {navItems.map((item) => (
+              {items.map((item) => (
                 <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="border-b border-line/50 py-4 font-display text-xl font-semibold">
                   {t(item.key)}
                 </Link>

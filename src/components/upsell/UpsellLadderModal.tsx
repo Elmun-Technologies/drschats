@@ -172,11 +172,13 @@ export function UpsellLadderModal() {
                       is the product being offered. */}
                   <p id="upsell-offer-title" className="mt-0.5 font-medium text-fg">{step.product.name}</p>
 
-                  {/* Stars */}
-                  <div className="mt-1 flex items-center gap-1">
-                    <span className="text-xs text-gold-ink">{"★".repeat(Math.round(step.product.rating))}</span>
-                    <span className="text-xs text-faint">{step.product.reviewCount}</span>
-                  </div>
+                  {/* Stars, only where there are ratings to show. */}
+                  {step.product.rating > 0 && (
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="text-xs text-gold-ink">{"★".repeat(Math.round(step.product.rating))}</span>
+                      <span className="text-xs text-faint">{step.product.reviewCount}</span>
+                    </div>
+                  )}
 
                   {/* Price */}
                   <div className="mt-2 flex items-baseline gap-2">

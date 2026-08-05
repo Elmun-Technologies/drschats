@@ -1,6 +1,7 @@
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
+import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
 import type {
   Category,
   Product,
@@ -1533,6 +1534,14 @@ function resolveCategory(c: RawCategory, locale: Locale): Category {
   };
 }
 
+/*
+  The reviews and ratings below are sample copy, so they are withheld unless
+  someone explicitly turns them on. Stripping them here rather than at each
+  display site means the product page, the reviews page, the star ratings,
+  the sitemap's rating boost and the Product structured data all go quiet
+  together — there is no surface left that could still quote a number nobody
+  earned. `StarRating` already renders nothing at zero.
+*/
 function resolveProduct(p: RawProduct, locale: Locale): Product {
   return {
     id: p.id,
@@ -1545,8 +1554,8 @@ function resolveProduct(p: RawProduct, locale: Locale): Product {
     price: p.price,
     oldPrice: p.oldPrice,
     currency: "UZS",
-    rating: p.rating,
-    reviewCount: p.reviewCount,
+    rating: SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
+    reviewCount: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,
     inStock: p.inStock,
     images:
       BRAND.productImageOverrides[p.slug]?.length
@@ -1557,7 +1566,7 @@ function resolveProduct(p: RawProduct, locale: Locale): Product {
     ingredients: p.ingredients[locale],
     howToUse: p.howToUse[locale],
     faq: p.faq[locale],
-    reviews: p.reviews[locale],
+    reviews: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviews[locale] : [],
     badges: p.badges[locale],
     servings: p.servings[locale],
     origin: p.origin[locale],
@@ -1577,6 +1586,9 @@ function sortProducts(items: Product[], sort?: ProductListParams["sort"]): Produ
       return copy.reverse();
     case "popular":
     default:
+      // With review counts withheld this is a no-op on a stable sort, which
+      // leaves the catalogue in its curated order — the right fallback for
+      // "popular" on a shop that has no sales history to rank by.
       return copy.sort((a, b) => b.reviewCount - a.reviewCount);
   }
 }

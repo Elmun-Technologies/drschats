@@ -1,0 +1,82 @@
+import "@/styles/globals.css";
+import type { Metadata } from "next";
+import { Sora, Manrope } from "next/font/google";
+import Link from "next/link";
+import { localeHtmlLang, defaultLocale } from "@/lib/i18n/routing";
+import uz from "@/messages/uz.json";
+import ru from "@/messages/ru.json";
+
+/*
+  The 404 for URLs that never reach a locale.
+
+  Almost everything is rewritten to /uz/… or /ru/… by the middleware, and those
+  misses land on [locale]/not-found.tsx inside a document that already declares
+  its language. What is left over — paths the middleware matcher skips, and
+  anything requested before routing decides — used to fall through to Next's
+  built-in 404, which ships a bare document with no lang attribute. A screen
+  reader then reads Uzbek text in the voice of whatever language it defaulted
+  to, which is the one place on the site where that could still happen.
+
+  This file exists to close that gap, so it renders the whole document itself:
+  root layout is a passthrough and there is no locale segment above to provide
+  one. Because the URL carried no locale, there is nothing to guess from, and
+  the page answers in both languages with each line tagged for what it is —
+  which is what `lang` is for.
+*/
+
+const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
+const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
+
+export const metadata: Metadata = {
+  title: `${uz.common.notFoundTitle} · ${ru.common.notFoundTitle}`,
+  robots: { index: false, follow: false },
+};
+
+const LINK_BASE =
+  "inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-semibold transition-colors";
+
+export default function GlobalNotFound() {
+  return (
+    <html
+      lang={localeHtmlLang[defaultLocale]}
+      className={`${sora.variable} ${manrope.variable}`}
+    >
+      <body className="grain min-h-screen antialiased">
+        <main className="flex min-h-svh items-center justify-center px-6 py-16">
+          <div className="text-center">
+            <p
+              aria-hidden
+              className="font-display text-[120px] font-extrabold leading-none tracking-tight text-accent sm:text-[180px]"
+            >
+              404
+            </p>
+
+            <h1 lang="uz-UZ" className="mt-4 font-display text-2xl font-bold text-fg sm:text-3xl">
+              {uz.common.notFoundTitle}
+            </h1>
+            <p lang="ru-RU" className="mt-2 text-lg font-semibold text-muted">
+              {ru.common.notFoundTitle}
+            </p>
+
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+              <Link
+                href={`/${defaultLocale}`}
+                lang="ru-RU"
+                className={`${LINK_BASE} bg-accent text-ink hover:bg-accent-strong`}
+              >
+                {ru.common.notFoundHome}
+              </Link>
+              <Link
+                href="/uz"
+                lang="uz-UZ"
+                className={`${LINK_BASE} border border-line bg-surface text-fg hover:border-accent hover:text-accent`}
+              >
+                {uz.common.notFoundHome}
+              </Link>
+            </div>
+          </div>
+        </main>
+      </body>
+    </html>
+  );
+}

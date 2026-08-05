@@ -4,6 +4,12 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 
+/*
+  Sample data. Nobody in this list bought anything — the names exist to show
+  the component working, which is why `DeferredUi` only mounts it when
+  NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF is on. Replace this array with a real feed of
+  recent orders before turning it on anywhere a customer will look.
+*/
 const PURCHASES = [
   { name: "Anvar T.", city: "Toshkent", product: "Omega-3 Premium" },
   { name: "Malika S.", city: "Samarqand", product: "Vitamin D3+K2" },

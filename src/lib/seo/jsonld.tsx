@@ -107,11 +107,21 @@ export function productGraph({
         description: product.tagline,
         sku: product.id,
         brand: { "@type": "Brand", name: SITE_NAME },
-        aggregateRating: {
-          "@type": "AggregateRating",
-          ratingValue: product.rating,
-          reviewCount: product.reviewCount,
-        },
+        /*
+          Only claimed when there is something to claim. A product with no
+          reviews yet must not carry an AggregateRating node: zero stars out
+          of zero reviews is invalid structured data, and inventing the
+          numbers to fill it is what Google's policy calls a manual action.
+        */
+        ...(product.rating > 0 && product.reviewCount > 0
+          ? {
+              aggregateRating: {
+                "@type": "AggregateRating",
+                ratingValue: product.rating,
+                reviewCount: product.reviewCount,
+              },
+            }
+          : {}),
         offers: {
           "@type": "Offer",
           priceCurrency: "UZS",

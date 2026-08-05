@@ -14,6 +14,14 @@ export function Testimonials({ products }: { products: Product[] }) {
     .slice(0, 5);
   const tiles = ["/placeholders/p3.svg", "/placeholders/p1.svg", "/placeholders/p4.svg", "/placeholders/p5.svg"];
 
+  /*
+    Without quotes this section is a wall of placeholder gradients around a
+    hardcoded "4.6★ / 3M+" card, under a heading that promises customer
+    voices. An empty testimonial wall says less than no testimonial wall, so
+    the whole section stands down until there is something real in it.
+  */
+  if (quotes.length === 0) return null;
+
   return (
     <section className="bg-surface py-20 sm:py-24">
       <Container>

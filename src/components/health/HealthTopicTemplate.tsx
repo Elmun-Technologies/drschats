@@ -2,6 +2,7 @@ import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
+import { isNavigable, populatedTopicPaths } from "@/lib/content/nav-sections";
 import type { Ingredient } from "@/lib/content/ingredients.sanity";
 import type { Expert } from "@/lib/content/experts.sanity";
 import type { Product } from "@/lib/shopflow/types";
@@ -34,6 +35,7 @@ export async function HealthTopicTemplate({
   const nav = await getTranslations("nav");
   const prod = await getTranslations("product");
   const shown = products.slice(0, 8);
+  const populatedPaths = await populatedTopicPaths();
 
   return (
     <div className="pt-8 pb-6">
@@ -112,9 +114,14 @@ export async function HealthTopicTemplate({
                     </li>
                   ))}
                 </ul>
-                <Link href="/vitamins" className="mt-5 inline-flex text-sm font-semibold text-accent-strong hover:underline">
-                  {t("allVitamins")} →
-                </Link>
+                {/* Dropped while the vitamin family has no pages — an
+                    "all vitamins" link into an empty index is worse than no
+                    link under a list that already names the ingredients. */}
+                {isNavigable("/vitamins", populatedPaths) && (
+                  <Link href="/vitamins" className="mt-5 inline-flex text-sm font-semibold text-accent-strong hover:underline">
+                    {t("allVitamins")} →
+                  </Link>
+                )}
               </aside>
             )}
           </div>
