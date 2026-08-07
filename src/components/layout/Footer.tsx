@@ -3,8 +3,10 @@ import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { Logo } from "./Logo";
 import { BRAND } from "@/lib/brand";
+import { isNavigable } from "@/lib/content/nav-sections";
 
-export function Footer() {
+export function Footer({ topicPaths = [] }: { topicPaths?: string[] }) {
+  const show = (href: string) => isNavigable(href, topicPaths);
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
   const contact = useTranslations("contact");
@@ -35,10 +37,10 @@ export function Footer() {
 
           <FooterCol title={health("goal.plural")}>
             <FooterLink href="/quiz">{nav("quiz")}</FooterLink>
-            <FooterLink href="/goals">{nav("goals")}</FooterLink>
-            <FooterLink href="/symptoms">{nav("symptoms")}</FooterLink>
+            {show("/goals") && <FooterLink href="/goals">{nav("goals")}</FooterLink>}
+            {show("/symptoms") && <FooterLink href="/symptoms">{nav("symptoms")}</FooterLink>}
             <FooterLink href="/programs">{nav("programs")}</FooterLink>
-            <FooterLink href="/vitamins">{nav("vitamins")}</FooterLink>
+            {show("/vitamins") && <FooterLink href="/vitamins">{nav("vitamins")}</FooterLink>}
           </FooterCol>
 
           <FooterCol title={t("company")}>

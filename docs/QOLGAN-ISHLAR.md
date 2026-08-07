@@ -19,18 +19,25 @@ Hozirgi holat (ishlab turgan saytdan sanaldi):
 
 | bo'lim | hozir | asosiy menyuda? |
 |---|---|---|
-| `/vitamins` | **0 ta** | ha |
-| `/symptoms` | **1 ta** | ha |
-| `/goals` | **2 ta** | ha |
-| `/programs` | 7 ta | ha |
+| `/vitamins` | **0 ta** | **yo'q — avtomatik yashirilgan** |
+| `/symptoms` | 1 ta | ha |
+| `/goals` | 2 ta | ha |
+| `/programs` | 11 ta | ha |
 | `/ingredients` | 5 ta | yo'q |
-| `/blog` | 3 ta | ha |
+| `/blog` | 7 ta | ha |
 | `/news` | **0 ta** | yo'q |
 | `/brands` | **0 ta** | ha |
 
-Ya'ni foydalanuvchi menyudan "Vitaminlar"ga bosganda bo'sh sahifaga tushadi.
-(Hozir u yerda hech bo'lmasa "AI konsultant" va "Katalog" tugmalari chiqadi —
-boshi berk ko'cha emas, lekin bo'sh.)
+**Menyu endi o'zini o'zi tuzatadi.** Bitta ham sahifasi yo'q bo'lim menyuda,
+footerda, katalog panelida va sitemap'da ko'rsatilmaydi — birinchi mavzu
+yozilishi bilan hech qanday kod o'zgarishisiz qaytadi
+(`src/lib/content/nav-sections.ts`). Chegara — **bitta sahifa**: bitta mavzusi
+bor bo'lim yupqa, nolta mavzusi bori esa buzuq; faqat ikkinchisini yashirish
+mantiqiy.
+
+Marshrutlarning o'zi ochiq qoladi: `/uz/vitamins` havolasi bor odam 404
+olmaydi, shunchaki bo'sh holat panelini ko'radi ("AI konsultant" va "Katalog"
+tugmalari bilan).
 
 ### Har bir mavzu uchun nima yozilishi kerak
 
@@ -272,43 +279,69 @@ Xuddi shu `/uz/about` dagi ishlab chiqarish da'volari uchun ham.
 
 ---
 
-## 🟡 6. Sharhlar — kelib chiqishi
+## 🟡 6. Sharhlar va ijtimoiy-isbot — endi o'chirilgan
 
-`/reviews` da 18 ta sharh bor, mahsulotlarda ham reyting/sharhlar ko'rsatiladi.
-**Ular kod ichidagi namuna ma'lumot.**
+`/reviews` dagi sharhlar, mahsulot reytinglari va pastki chap burchakdagi
+"Malika S. — Samarqand, Vitamin D3+K2 sotib oldi" xabarlari (`LivePurchaseToast`)
+— hammasi **kod ichidagi namuna ma'lumot** edi. Endi **default holatda
+ko'rsatilmaydi**.
 
-Haqiqiy mijoz sharhlari bilan almashtirilishi kerak. Sotuv boshlanmagan bo'lsa —
-sharhlarni vaqtincha yashirish to'g'riroq bo'ladi. Ayting, qaysi biri.
+Bitta o'zgaruvchi ikkalasini ham boshqaradi:
+
+```env
+NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=on
+```
+
+Qo'yilmasa (production'dagi to'g'ri holat): sharhlar yo'q, yulduzchalar yo'q,
+"sotib oldi" xabarlari yo'q, `Product` JSON-LD ichida `aggregateRating` yo'q,
+bosh sahifadagi sharhlar bo'limi umuman chizilmaydi. Demo deploy'da ko'rsatmoqchi
+bo'lsangiz — `on` qiling.
+
+Nima uchun shunday: sotuv boshlanmagan saytda o'ylab topilgan sotuvlar va
+sharhlar ko'rsatish — optimizatsiya emas, yolg'on da'vo. Dorixona auditoriyasi
+uchun bu eng qimmat turadigan yolg'on. Google'ning structured-data siyosati ham
+soxta `aggregateRating` uchun jarima beradi.
+
+**Nima kerak:** haqiqiy mijoz sharhlari. Ular kelganda — Sanity'ga yoki
+`SHOPFLOW_MODE=http` orqali real API'dan. Ikkalasi ham bu filtrdan o'tmaydi,
+ya'ni haqiqiy sharh darrov ko'rinadi. `LivePurchaseToast` uchun esa
+`src/components/social-proof/LivePurchaseToast.tsx` dagi ro'yxatni haqiqiy
+buyurtmalar oqimiga almashtirish kerak.
 
 Men o'ylab topilgan mijoz sharhi yozmayman.
 
----
-
-## 🟢 7. Bosh sahifadagi ijtimoiy-isbot
-
-Pastki chap burchakda "Malika S. — Samarqand, Vitamin D3+K2 sotib oldi" kabi
-xabarlar chiqadi (`LivePurchaseToast`). **Bu ham namuna ma'lumot.**
-
-Ikki yo'l:
-1. Haqiqiy buyurtmalarga ulash (backend tayyor bo'lgach)
-2. O'chirish
-
-Hozirgi holat — sotuv boshlanmagan saytda soxta sotuvlar ko'rsatish — uzoq
-muddatda ishonchga zarar. Ayting, qaysi biri.
+**Diqqat:** `/about` sahifasidagi "2000+ dorixona", "50 000+ mijoz" kabi
+raqamlar — bu sizning brend da'volaringiz, men ularni o'chirmadim. Ular
+haqiqatga mos bo'lishi kerak (5-bo'limga qarang).
 
 ---
 
-## 🟢 8. Mening qo'limdan keladigan, lekin ruxsat kutayotgan ishlar
+## 🟢 7. Mening qo'limdan keladigan, lekin ruxsat kutayotgan ishlar
 
-Bularni men qila olaman — faqat "ha" deng:
+Bajarildi:
 
-| ish | nima o'zgaradi |
+| ish | holat |
 |---|---|
-| 404 sahifasiga `lang` atributi | root layout qayta quriladi — biroz xavfliroq o'zgarish |
-| SMS zaxira kanali | hozir kirish faqat Telegram orqali — Telegramsiz odam kira olmaydi |
-| `en` tilini qo'shish | 638 ta kalit × 1 til tarjima kerak (yoki men taxminiy qilaman, siz tekshirasiz) |
-| Bo'sh menyu bo'limlarini vaqtincha yashirish | kontent tayyor bo'lguncha `/vitamins` menyudan olinadi |
-| Sharh/ijtimoiy-isbot namunalarini o'chirish | soxta ma'lumot yo'qoladi |
+| Bo'sh menyu bo'limlarini yashirish | ✅ avtomatik — kontent kelganda o'zi qaytadi |
+| Sharh/ijtimoiy-isbot namunalarini o'chirish | ✅ default'da o'chiq, flag bilan yoqiladi |
+| 404 sahifasiga `lang` atributi | ✅ pastga qarang |
+
+`lang` haqida aniq holat: `/uz/...` va `/ru/...` ichidagi 404 sahifalari
+allaqachon to'g'ri `lang` bilan chiqardi (brauzerda o'lchandi:
+`document.documentElement.lang` = `uz-UZ` / `ru-RU`). Bo'shliq faqat
+locale'ga umuman yetib bormagan manzillarda edi — o'sha javob Next'ning
+ichki, `lang`siz va faqat inglizcha "This page could not be found" sahifasi
+bo'lardi. Endi `app/global-not-found.tsx` uni almashtiradi: `lang` bor, matn
+ikkala tilda. Eslatma: `next start` ba'zi mos kelmagan manzillarni hali ham
+o'zining ichki qobig'iga yo'naltiradi; generatsiya qilingan 404 hujjati
+(`.next/server/pages/404.html`) esa to'g'ri.
+
+Qolgani — hali ham sizning qaroringizni kutadi:
+
+| ish | nima kerak |
+|---|---|
+| SMS zaxira kanali | **provayder tanlash kerak** (Eskiz.uz, Play Mobile — API'lari har xil) + akkaunt. Hozir kirish faqat Telegram orqali; Telegramsiz odam kira olmaydi |
+| `en` tilini qo'shish | loyiha ataylab `uz` + `ru` ga qurilgan (`CLAUDE.md`). 638 ta kalit tarjima kerak. Sizning "ha"ngizsiz qilmayman — bu arxitektura qarori |
 
 ---
 
@@ -332,5 +365,5 @@ Qolganini keyin ham qo'shsa bo'ladi.
 `scripts/audit/` ga ko'chirildi va CI'da har bir PR'da yuradi. Endi sifat
 darajasi da'vo emas, tekshiriladigan narsa.
 
-*Bu fayl 2026-08-03 da yozilgan. Raqamlar o'sha kuni ishlab turgan production
-build'dan o'lchangan, taxmin emas.*
+*Bu fayl 2026-08-03 da yozilgan, 2026-08-05 da yangilangan. Raqamlar ishlab
+turgan production build'dan o'lchangan, taxmin emas.*

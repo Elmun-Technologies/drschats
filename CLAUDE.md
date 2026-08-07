@@ -20,9 +20,18 @@ katalog o'sha yo'lning oxirida turadi.
 Kod emas, kontent va konfiguratsiya bo'shliqlari. To'liq ro'yxat va har birining
 qadamlari: **[`docs/QOLGAN-ISHLAR.md`](docs/QOLGAN-ISHLAR.md)**.
 
-Qisqacha: `/vitamins` 0 ta mavzu, `/symptoms` 1, `/goals` 2 — uchalasi ham asosiy
-menyuda. Mahsulot rasmlari placeholder SVG. `BRAND.contact` hali eski brend
-manzillari.
+Qisqacha: `/vitamins` 0 ta mavzu, `/symptoms` 1, `/goals` 2. Mahsulot rasmlari
+placeholder SVG. `BRAND.contact` hali eski brend manzillari.
+
+Ikkita qoida shu bo'shliqlardan kelib chiqadi va kodda yozilgan:
+
+- **Bo'sh bo'lim menyuda ko'rinmaydi** (`src/lib/content/nav-sections.ts`).
+  Header, mobil menyu, footer, katalog paneli va sitemap bitta manbadan o'qiydi;
+  birinchi mavzu yozilishi bilan bo'lim o'zi qaytadi.
+- **Namuna sharh/reyting/"sotib oldi" xabarlari default'da chiqmaydi**
+  (`src/lib/content/sample-social-proof.ts`). Yoqish uchun
+  `NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=on`. Filtr mock katalogda turadi, shuning
+  uchun Sanity va real API'dan kelgan haqiqiy sharhlar undan o'tmaydi.
 
 ## Muhim buyruqlar
 
@@ -290,6 +299,9 @@ EMAIL_TOKEN_SECRET=...        # production'da majburiy — bo'lmasa kod ishga tu
 # Eslatmalar cron'i
 CRON_SECRET=...               # bo'lmasa endpoint yopiq turadi
 MARKETING_API_KEY=...         # backend'da ham xuddi shu qiymat
+
+# Namuna ijtimoiy-isbot (default: o'chiq)
+NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=on   # faqat demo deploy uchun
 ```
 
 ## Ishlab chiqish qoidalari

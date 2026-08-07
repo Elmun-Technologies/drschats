@@ -8,6 +8,7 @@ import { setRequestLocale, getMessages, getTranslations } from "next-intl/server
 import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { PromotionsProvider } from "@/lib/cart/promotions-context";
+import { populatedTopicPaths } from "@/lib/content/nav-sections";
 import { SmoothScroll } from "@/components/animation/SmoothScroll";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -46,10 +47,11 @@ export default async function LocaleLayout({
 
   // Categories are layout data now that the header's catalogue menu lists
   // them; the read is cached and revalidated like the promotions beside it.
-  const [messages, promotions, categories, tc] = await Promise.all([
+  const [messages, promotions, categories, topicPaths, tc] = await Promise.all([
     getMessages(),
     shopflow.getPromotions(locale as Locale).catch(() => []),
     shopflow.getCategories(locale as Locale).catch(() => []),
+    populatedTopicPaths(),
     getTranslations("common"),
   ]);
 
@@ -73,13 +75,13 @@ export default async function LocaleLayout({
             </a>
             <ScrollProgress />
             <SmoothScroll>
-              <Header categories={categories} />
+              <Header categories={categories} topicPaths={topicPaths} />
               {/* The tab bar is fixed, so its height is reserved twice: here, so
                   the seam between main and footer never rests under it, and
                   again at the end of the footer, which is what actually runs
                   beneath it when scrolled to the bottom. */}
               <main id="main-content" className="pb-[var(--bottom-nav)]">{children}</main>
-              <Footer />
+              <Footer topicPaths={topicPaths} />
               <CookieConsent />
               <Toaster />
               <BackToTop />

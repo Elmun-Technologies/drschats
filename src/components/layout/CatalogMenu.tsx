@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { getCategoryIcon } from "@/lib/shop/category-icons";
 import type { Category } from "@/lib/shopflow/types";
+import { isNavigable } from "@/lib/content/nav-sections";
 
 /*
   The catalogue button every marketplace has, and the one thing a nav bar full
@@ -24,7 +25,14 @@ const HEALTH_LINKS = [
   { key: "vitamins", href: "/vitamins" },
 ] as const;
 
-export function CatalogMenu({ categories }: { categories: Category[] }) {
+export function CatalogMenu({
+  categories,
+  topicPaths = [],
+}: {
+  categories: Category[];
+  topicPaths?: string[];
+}) {
+  const healthLinks = HEALTH_LINKS.filter((l) => isNavigable(l.href, topicPaths));
   const t = useTranslations("nav");
   const health = useTranslations("health");
   const [open, setOpen] = useState(false);
@@ -143,7 +151,7 @@ export function CatalogMenu({ categories }: { categories: Category[] }) {
                   {health("goal.plural")}
                 </p>
                 <ul className="mt-3 flex flex-col gap-1">
-                  {HEALTH_LINKS.map((item) => (
+                  {healthLinks.map((item) => (
                     <li key={item.key}>
                       <Link
                         href={item.href}

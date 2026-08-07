@@ -6,7 +6,7 @@ import { listExpertSlugs } from "@/lib/content/experts.sanity";
 import { getHealthTopicIndex } from "@/lib/content/health-topics.sanity";
 import { getProgramSlugs } from "@/lib/content/programs.sanity";
 import { BLOG_CATEGORY_KEYS } from "@/lib/content/blog-categories";
-import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
+import { TOPIC_BASE_PATH, TOPIC_KINDS } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import type { Product } from "@/lib/shopflow/types";
 
@@ -21,12 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     allProducts.items.map((p: Product) => [p.slug, p.rating]),
   );
 
-  const staticPaths = [
-    "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
-    "/loyalty", "/ingredients", "/brands", "/news", "/payment", "/guarantee",
-    "/requisites", "/licenses", "/goals", "/symptoms", "/vitamins", "/quiz", "/programs",
-    "/reviews",
-  ];
   const categoryPaths = categories.map((c) => `/products/${c.slug}`);
   const [blogSlugs, expertSlugs, healthTopics, programSlugs] = await Promise.all([
     listArticleSlugs(),
@@ -34,6 +28,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     getHealthTopicIndex(),
     getProgramSlugs(),
   ]);
+
+  // A topic family with nothing published is an empty page; submitting it is
+  // asking to be crawled for it. Listed only once it has something to show,
+  // which mirrors what the navigation does with the same fact.
+  const populatedFamilies = new Set(healthTopics.map((t) => TOPIC_BASE_PATH[t.kind]));
+
+  const staticPaths = [
+    "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
+    "/loyalty", "/ingredients", "/brands", "/news", "/payment", "/guarantee",
+    "/requisites", "/licenses", "/quiz", "/programs",
+    "/reviews",
+    ...TOPIC_KINDS.map((kind) => TOPIC_BASE_PATH[kind]).filter((p) => populatedFamilies.has(p)),
+  ];
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
   const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);

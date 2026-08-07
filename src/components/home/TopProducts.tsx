@@ -49,7 +49,7 @@ export function TopProducts({ products }: { products: Product[] }) {
                   featured ? "border-accent shadow-[0_24px_60px_-24px_rgba(21,182,106,0.45)] lg:-mt-4" : "border-line",
                 )}
               >
-                {featured && (
+                {featured && p.reviewCount > 0 && (
                   <span className="absolute right-5 top-5 z-10 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink">
                     ★ {common("reviews", { count: p.reviewCount })}
                   </span>

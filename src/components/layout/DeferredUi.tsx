@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart/store";
+import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
 
 /*
   Three widgets sit in the layout but none of them can be seen on first paint:
@@ -54,7 +55,10 @@ export function DeferredUi() {
     <>
       <CartDrawer />
       <ExitIntentPopup />
-      <LivePurchaseToast />
+      {/* The toast narrates purchases nobody made until the flag says a demo
+          deployment wants to see it working. Kept out of the dynamic import
+          above so its bundle is not even fetched when it will never render. */}
+      {SHOW_SAMPLE_SOCIAL_PROOF && <LivePurchaseToast />}
     </>
   );
 }

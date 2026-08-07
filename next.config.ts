@@ -6,6 +6,16 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   transpilePackages: ["sanity", "next-sanity", "@sanity/ui", "@sanity/vision"],
+  experimental: {
+    /*
+      Lets app/global-not-found.tsx own the document for locale-less 404s. The
+      root layout stays a passthrough — which is what makes per-locale <html
+      lang> possible — so without this flag those responses have no lang at all.
+      Nested not-found boundaries are unaffected: a notFound() inside [locale]
+      still renders that segment's page.
+    */
+    globalNotFound: true,
+  },
   async headers() {
     return [
       {
