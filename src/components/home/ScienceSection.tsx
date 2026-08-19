@@ -15,34 +15,47 @@ export function ScienceSection() {
   const points = ["tested", "transparent", "absorb"] as const;
 
   return (
-    <section className="relative border-t border-line py-28 sm:py-36">
+    <section className="relative border-t border-line/30 bg-ink py-24 sm:py-32">
       <Container>
-        <SectionHeading
-          eyebrow={t("eyebrow")}
-          title={t("title")}
-          subtitle={t("subtitle")}
-          align="center"
-        />
-        <div className="mt-20 grid gap-6 md:grid-cols-3">
+        <div className="text-center max-w-2xl mx-auto mb-16">
+          <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
+            Tibbiy Kafolat va Ilmiy Yondashuv
+          </span>
+          <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
+            {t("title")}
+          </h2>
+          <p className="mt-3 text-base text-muted">
+            Har bir ingredient va vitamin kompleksi xalqaro biologik standartlar hamda shifokorlar nazorati ostida yaratiladi
+          </p>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-3">
           {points.map((p, i) => (
             <Reveal key={p} index={i} className="h-full">
-              <div className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-surface transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl">
+              <div className="group relative flex h-full flex-col overflow-hidden rounded-[2.25rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30">
                 {/* Photographic Header */}
-                <div className="relative h-48 w-full overflow-hidden bg-surface-2">
+                <div className="relative h-56 w-full overflow-hidden bg-brand-deep">
                   <Image
                     src={IMAGES[p]}
                     alt={t(`points.${p}.title`)}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover opacity-85 transition-transform duration-1000 group-hover:scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/50 to-transparent" />
+                  
+                  <span className="absolute top-4 left-4 rounded-full bg-gold px-3 py-1 text-xs font-extrabold text-brand-deep shadow-md">
+                    0{i + 1}
+                  </span>
                 </div>
                 
-                <div className="relative flex flex-1 flex-col p-8 pt-4">
-                  <div className="mb-2 font-display text-sm font-bold text-accent-strong opacity-80">0{i + 1}</div>
-                  <h3 className="font-display text-2xl font-bold">{t(`points.${p}.title`)}</h3>
-                  <p className="mt-3 flex-1 text-muted">{t(`points.${p}.description`)}</p>
+                <div className="relative flex flex-1 flex-col p-8 pt-2">
+                  <h3 className="font-display text-2xl font-extrabold text-white transition-colors group-hover:text-gold">
+                    {t(`points.${p}.title`)}
+                  </h3>
+                  <p className="mt-3 flex-1 text-sm text-surface-2/80 leading-relaxed">
+                    {t(`points.${p}.description`)}
+                  </p>
                 </div>
               </div>
             </Reveal>

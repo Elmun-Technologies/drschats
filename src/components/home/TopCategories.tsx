@@ -17,6 +17,18 @@ const CAT_IMAGES: Record<string, string> = {
   "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
 };
 
+const CAT_HOOKS: Record<string, string> = {
+  "vitamins": "Tana energiyasi & Imunitet",
+  "immunity": "Mavsumiy himoya",
+  "beauty": "Teri, soch & tirnoqlar",
+  "kids": "O'sish va aqliy rivojlanish",
+  "effervescent": "Tez so'riluvchi formulalar",
+  "minerals": "Suyak va mushaklar mustahkamligi",
+  "medical-devices": "Aniq va xavfsiz monitoring",
+  "coffee": "Tabiiy energiya & antioksidantlar",
+  "default": "Ekspertlar tomonidan saralangan",
+};
+
 export function TopCategories({ categories }: { categories: Category[] }) {
   const t = useTranslations("home.categories");
 
@@ -25,18 +37,28 @@ export function TopCategories({ categories }: { categories: Category[] }) {
   return (
     <section className="bg-ink py-20 sm:py-28 border-t border-line/30">
       <Container>
-        <h2 className="mb-14 text-center font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
-          {t("title")}
-        </h2>
+        <div className="mb-14 text-center max-w-2xl mx-auto">
+          <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
+            Sog&apos;lik yo&apos;nalishlari
+          </span>
+          <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
+            {t("title")}
+          </h2>
+          <p className="mt-3 text-base text-muted">
+            Sizning salomatlik maqsadingizga mos ravishda tibbiy testdan o&apos;tgan va tasdiqlangan kategoriyalar
+          </p>
+        </div>
+
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
           {categories.slice(0, 8).map((c, i) => {
             const bgImage = CAT_IMAGES[c.slug] || CAT_IMAGES.default;
+            const hook = CAT_HOOKS[c.slug] || CAT_HOOKS.default;
             
             return (
               <Reveal key={c.id} index={Math.min(i, 6)} as="div" className="h-full">
                 <Link
                   href={`/products/${c.slug}`}
-                  className="group relative flex aspect-[3/4] md:aspect-[4/5] w-full flex-col justify-end overflow-hidden rounded-3xl bg-brand-deep transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-deep/20"
+                  className="group relative flex aspect-[3/4] md:aspect-[4/5] w-full flex-col justify-between overflow-hidden rounded-[2.25rem] bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30 border border-white/10"
                 >
                   <div className="absolute inset-0 z-0">
                     <Image 
@@ -44,18 +66,26 @@ export function TopCategories({ categories }: { categories: Category[] }) {
                       alt={c.name}
                       fill
                       sizes="(max-width: 768px) 50vw, 25vw"
-                      className="object-cover opacity-90 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-100"
+                      className="object-cover opacity-85 transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:opacity-100"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/40 to-transparent opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/60 to-transparent opacity-95 transition-opacity duration-300 group-hover:opacity-90" />
+                  </div>
+
+                  {/* Top Hook Badge */}
+                  <div className="relative z-10 p-5">
+                    <span className="inline-block rounded-full bg-white/15 backdrop-blur-md px-3 py-1 text-[11px] font-bold text-white border border-white/20 shadow-sm">
+                      {hook}
+                    </span>
                   </div>
                   
-                  <div className="relative z-10 flex flex-col items-center justify-end p-6 text-center h-full">
-                    <span className="font-display text-xl font-bold text-white drop-shadow-md transition-all duration-300 group-hover:-translate-y-2 group-hover:text-gold">
+                  {/* Bottom Title & CTA */}
+                  <div className="relative z-10 flex flex-col p-6 text-left">
+                    <span className="font-display text-xl font-extrabold text-white drop-shadow-md transition-colors duration-300 group-hover:text-gold">
                       {c.name}
                     </span>
-                    <span className="absolute bottom-6 inline-flex translate-y-4 items-center gap-1.5 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-                      <span className="text-xs font-bold uppercase tracking-widest text-white/80">Explore</span>
-                      <svg viewBox="0 0 20 20" className="h-4 w-4 text-gold" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold opacity-90 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
+                      Katalogga o&apos;tish
+                      <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </span>

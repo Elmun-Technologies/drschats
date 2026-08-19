@@ -26,46 +26,61 @@ const IMAGES: Record<string, string> = {
   parent: "https://images.unsplash.com/photo-1536640712-4d4c36ef0e52?auto=format&fit=crop&q=80&w=800",
 };
 
+const AUDIENCE_SUBTITLES: Record<string, string> = {
+  "self-woman": "Go&apos;zallik, gormonal balans & energiya",
+  "self-man": "Kuch-quvvat, streshga chidamlilik & tonus",
+  child: "Aqliy rivojlanish, bo&apos;y o&apos;sishi & imunitet",
+  parent: "Bo&apos;g&apos;imlar, yurak & uzoq umr ko&apos;rish",
+};
+
 export async function AudienceDoors({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.audience");
   const [first] = getQuizQuestions(locale);
   if (!first) return null;
 
   return (
-    <section className="py-12">
+    <section className="py-16 sm:py-24 border-t border-line/30 bg-ink">
       <Container>
         <Reveal>
-          <h2 className="font-display text-2xl font-extrabold tracking-tight text-balance sm:text-3xl">
-            {first.question}
-          </h2>
-          <p className="mt-2 text-sm text-muted">{t("subtitle")}</p>
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
+              Kim Uchun Saralayapmiz?
+            </span>
+            <h2 className="font-display text-3xl font-extrabold tracking-tight text-brand-deep sm:text-4xl">
+              {first.question}
+            </h2>
+            <p className="mt-3 text-base text-muted">{t("subtitle")}</p>
+          </div>
         </Reveal>
 
-        <ul className="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {first.options.map((option, index) => (
             <Reveal key={option.id} index={Math.min(index, 6)} as="li" className="h-full">
               <Link
                 href={{ pathname: "/quiz", query: { who: option.id } }}
-                className="group relative flex h-full min-h-[300px] flex-col justify-end overflow-hidden rounded-3xl bg-surface p-6 transition-all hover:-translate-y-1 hover:shadow-xl"
+                className="group relative flex h-full min-h-[340px] flex-col justify-end overflow-hidden rounded-[2.25rem] border border-white/10 bg-brand-deep p-7 transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30"
               >
                 {/* Background Image */}
-                <div className="absolute inset-0 z-0 bg-surface-2">
+                <div className="absolute inset-0 z-0 bg-brand-deep">
                   <Image 
                     src={IMAGES[option.id] ?? IMAGES.child} 
                     alt={option.label}
                     fill
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="object-cover opacity-85 transition-transform duration-1000 group-hover:scale-110"
                   />
                   {/* Dark gradient overlay so text is readable */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity group-hover:opacity-90" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/60 to-transparent opacity-95 transition-opacity group-hover:opacity-90" />
                 </div>
 
                 <div className="relative z-10">
-                  <span className="block font-display text-xl font-bold leading-snug text-white drop-shadow-md">
+                  <span className="block font-display text-2xl font-extrabold leading-snug text-white drop-shadow-md transition-colors duration-300 group-hover:text-gold">
                     {option.label}
                   </span>
-                  <span className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-white/90 transition-gap group-hover:gap-2 drop-shadow-sm">
+                  <p className="mt-2 text-xs text-surface-2/80 line-clamp-2">
+                    {AUDIENCE_SUBTITLES[option.id] ?? "Shaxsiy vitamin va mineral rejasi"}
+                  </p>
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-gold transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
                     {t("cta")}
                     <svg viewBox="0 0 20 20" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
