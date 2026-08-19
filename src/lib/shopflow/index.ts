@@ -18,7 +18,7 @@ export function getShopflow(): ShopflowClient {
   if (client) return client;
   // FORCE MOCK MODE FOR DEMO: 
   // const mode = process.env.SHOPFLOW_MODE ?? "mock";
-  const mode: "mock" | "http" = "mock"; 
+  const mode: string = process.env.SHOPFLOW_MODE || "mock"; 
   client = withResilientReads(
     mode === "http" ? new HttpShopflowClient() : new MockShopflowClient(),
   );
