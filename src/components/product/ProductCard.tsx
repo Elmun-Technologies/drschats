@@ -37,9 +37,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     <Reveal
       as="article"
       index={index % 4}
-      className="group flex h-full flex-col rounded-xl border border-line bg-ink p-3 transition-all duration-300 hover:border-line-strong hover:shadow-[0_14px_40px_-22px_rgba(15,26,20,0.3)]"
+      className="group relative flex h-full flex-col rounded-3xl border border-line/50 bg-ink p-3 transition-all duration-500 hover:border-gold/30 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.12)] hover:-translate-y-1 overflow-hidden"
     >
-      <Link href={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden rounded-lg bg-surface">
+      <Link href={`/product/${product.slug}`} className="relative block aspect-[4/5] w-full overflow-hidden rounded-2xl bg-surface/50 mix-blend-multiply">
         <Image
           src={product.images[0]?.url ?? ""}
           alt={product.images[0]?.alt ?? product.name}
@@ -48,13 +48,13 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           className="object-cover transition-transform duration-500 group-hover:scale-105"
         />
         {discount > 0 && (
-          <span className="absolute left-2 top-2 rounded bg-danger px-1.5 py-0.5 text-[11px] font-bold text-white">
+          <span className="absolute left-3 top-3 rounded-full bg-danger px-2.5 py-1 text-[11px] font-bold tracking-wide text-white shadow-sm">
             -{discount}%
           </span>
         )}
         {!product.inStock && (
-          <div className="absolute inset-0 flex items-center justify-center bg-ink/50 backdrop-blur-[2px]">
-            <span className="rounded-full bg-surface px-3 py-1 text-xs font-semibold text-muted">
+          <div className="absolute inset-0 flex items-center justify-center bg-white/40 backdrop-blur-[4px]">
+            <span className="rounded-full bg-white/90 px-4 py-1.5 text-xs font-bold tracking-wider text-muted shadow-sm">
               {t("outOfStock")}
             </span>
           </div>
@@ -62,31 +62,37 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <WishlistButton productId={product.id} className="absolute right-2 top-2 h-8 w-8 bg-surface/80 backdrop-blur-sm" />
       </Link>
 
-      <div className="flex flex-1 flex-col px-1 pt-3">
+      <div className="flex flex-1 flex-col px-2 pt-4 pb-2">
         <Link href={`/product/${product.slug}`} className="block">
-          <h3 className="line-clamp-2 min-h-[2.6em] text-[15px] font-semibold leading-snug text-fg transition-colors group-hover:text-accent-strong">
+          <h3 className="line-clamp-2 min-h-[2.8em] text-[15px] font-bold leading-snug text-brand-deep transition-colors group-hover:text-gold-ink">
             {product.name}
           </h3>
         </Link>
-        <StarRating rating={product.rating} className="mt-2" />
-        <div className="mt-2 mb-3 flex items-baseline gap-2">
-          {product.oldPrice && (
-            <span className="text-sm text-faint line-through">{formatMoney(product.oldPrice, locale)}</span>
-          )}
-          <span className="font-display text-base font-bold text-accent-strong">{formatMoney(product.price, locale)}</span>
+        
+        <div className="mt-auto pt-3">
+          <StarRating rating={product.rating} className="mb-2" />
+          <div className="flex items-baseline gap-2">
+            {product.oldPrice && (
+              <span className="text-xs text-faint line-through">{formatMoney(product.oldPrice, locale)}</span>
+            )}
+            <span className="font-display text-lg font-extrabold text-brand-deep">{formatMoney(product.price, locale)}</span>
+          </div>
         </div>
 
-        <button
-          onClick={handleAdd}
-          disabled={!product.inStock}
-          className="mt-auto flex w-full items-center justify-center gap-2 rounded-full bg-accent py-2.5 text-sm font-semibold text-ink transition-all hover:-translate-y-0.5 hover:bg-accent-strong disabled:bg-surface disabled:text-muted disabled:opacity-60 disabled:translate-y-0"
-        >
-          <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />
-            <path d="M3 6h18M16 10a4 4 0 01-8 0" strokeLinecap="round" />
-          </svg>
-          {product.inStock ? t("addToCartShort") : t("outOfStock")}
-        </button>
+        {/* Slide-up Add to Cart Button */}
+        <div className="absolute bottom-0 left-0 right-0 p-3 translate-y-[120%] opacity-0 transition-all duration-300 ease-out group-hover:translate-y-0 group-hover:opacity-100 z-20">
+          <button
+            onClick={handleAdd}
+            disabled={!product.inStock}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-deep py-3 text-sm font-bold text-white shadow-lg transition-all hover:bg-gold-ink disabled:bg-surface disabled:text-muted disabled:shadow-none"
+          >
+            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />
+              <path d="M3 6h18M16 10a4 4 0 01-8 0" strokeLinecap="round" />
+            </svg>
+            {product.inStock ? t("addToCartShort") : t("outOfStock")}
+          </button>
+        </div>
       </div>
     </Reveal>
   );

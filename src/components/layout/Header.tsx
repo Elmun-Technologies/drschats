@@ -60,7 +60,7 @@ export function Header({
   const menuRef = useDialog<HTMLDivElement>(menuOpen, closeMenu);
 
   return (
-    <header className="border-b border-line bg-ink">
+    <header className="sticky top-0 z-50 w-full border-b border-line/40 bg-ink/80 backdrop-blur-xl transition-all duration-300">
       <TopBar />
 
       {/* Main row */}
@@ -107,9 +107,8 @@ export function Header({
         <SearchBox categories={categories} />
       </Container>
 
-      {/* Nav row (sticky). `relative` anchors the catalogue panel, which drops
-          out of this row rather than out of the page. */}
-      <div className="sticky top-0 z-40 hidden border-t border-line bg-ink/95 backdrop-blur lg:block">
+      {/* Nav row. Since header is sticky, this row simply stays visible */}
+      <div className="hidden border-t border-line/40 lg:block">
         <Container className="relative flex h-14 items-center gap-7">
           <CatalogMenu categories={categories} topicPaths={topicPaths} />
           <nav className="flex items-center gap-7">
@@ -120,11 +119,16 @@ export function Header({
                   key={item.key}
                   href={item.href}
                   className={cn(
-                    "group relative flex items-center gap-1.5 text-sm font-semibold transition-colors",
-                    active ? "text-accent-strong" : "text-fg hover:text-accent-strong",
+                    "group relative flex items-center gap-1.5 text-sm font-semibold transition-colors overflow-hidden",
+                    active ? "text-accent-strong" : "text-fg/80 hover:text-accent-strong",
                   )}
                 >
                   {t(item.key)}
+                  {/* Animated Underline */}
+                  <span className={cn(
+                    "absolute bottom-0 left-0 h-0.5 bg-gold transition-all duration-300 ease-out",
+                    active ? "w-full" : "w-0 group-hover:w-full"
+                  )} />
                   {"badge" in item && item.badge && (
                     <span className={cn(
                       "rounded px-1.5 py-0.5 text-[9px] font-bold uppercase",

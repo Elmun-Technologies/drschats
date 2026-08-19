@@ -17,66 +17,58 @@
   accent/gold buttons (white), so both stay white in this light theme.
 */
 @theme {
-  /* Brand surfaces */
+  /* Brand surfaces - Sleek Light */
   --color-ink: #ffffff;
-  --color-surface: #f5f6fb;
-  --color-surface-2: #edeff8;
-  --color-surface-3: #e1e5f3;
-  --color-line: rgba(19, 22, 50, 0.10);
-  --color-line-strong: rgba(19, 22, 50, 0.18);
+  --color-surface: #f9fafa;
+  --color-surface-2: #f2f4f6;
+  --color-surface-3: #e8ebee;
+  --color-line: rgba(15, 23, 42, 0.08);
+  --color-line-strong: rgba(15, 23, 42, 0.15);
+  
   /* Deep chrome: utility bar, footer, hero grounds */
-  --color-brand-deep: #171c4d;
+  --color-brand-deep: #0f172a; /* Rich slate/midnight */
 
   /* Foreground */
-  --color-fg: #131632;
-  --color-muted: #5a6080;
-  /* Darkened from #8b91ae, which measured 2.88:1 on --color-surface —
-     under the 4.5:1 body-text floor on most of the site's secondary labels. */
-  --color-faint: #6c7087;
+  --color-fg: #0f172a;
+  --color-muted: #64748b;
+  --color-faint: #94a3b8;
 
-  /* Action */
-  --color-accent: #3d4cdb;
-  --color-accent-soft: rgba(61, 76, 219, 0.10);
-  --color-accent-strong: #2c39b4;
+  /* Action - Deep Premium Navy & Champagne Gold */
+  --color-accent: #1e293b;
+  --color-accent-soft: rgba(30, 41, 59, 0.05);
+  --color-accent-strong: #0f172a;
 
-  /* State — deliberately still green: "omborda bor" must never read as a button */
-  /* #16a46a measured 3.2:1 as text on white. The lighter value survives as
-     --color-signal-soft for fills, where contrast rules do not apply. */
-  --color-signal: #118254;
-  --color-signal-soft: rgba(22, 164, 106, 0.12);
+  /* State */
+  --color-signal: #059669; /* Emerald */
+  --color-signal-soft: rgba(5, 150, 105, 0.1);
 
-  /* Money + rating */
-  --color-gold: #e8a93a;
-  /* Gold is a fill, not a text colour: #e8a93a on white is about 2:1, well
-     under the 4.5:1 needed for body text. This is the readable variant for
-     wording that has to sit on a light ground. */
-  --color-gold-ink: #8a5a00;
-  /* Serves twice: as text on light, and as a fill under white text. #e8253f
-     failed both (4.08 and 4.40). This clears 4.5 in each direction. */
-  --color-danger: #d61f38;
+  /* Money + rating - Premium Champagne Gold */
+  --color-gold: #c5a059;
+  --color-gold-ink: #b2893f;
+  
+  --color-danger: #e11d48; /* Rose */
 
   /* Secondary palette */
-  --color-teal: #16a46a;
-  --color-blue: #3d4cdb;
-  /* The wordmark's accent on the deep footer ground: #3d4cdb measures 2.49:1
-     there, under the 3:1 large-text floor. */
-  --color-accent-on-dark: #8b96f5;
-  --color-blue-soft: rgba(61, 76, 219, 0.1);
-  /* pastel banner backgrounds */
-  --color-pastel-beige: #ece4d8;
-  --color-pastel-lilac: #e9e3f6;
-  --color-pastel-mint: #dcefe2;
-  --color-pastel-sky: #dceaf6;
+  --color-teal: #0d9488;
+  --color-blue: #1e293b;
+  --color-accent-on-dark: #cbd5e1;
+  --color-blue-soft: rgba(15, 23, 42, 0.05);
 
-  /* Typography (bound to next/font CSS vars in layout) */
+  /* Premium Mesh Backgrounds replacing pastels */
+  --color-pastel-beige: #f8f6f3;
+  --color-pastel-lilac: #f3f5f8;
+  --color-pastel-mint: #f0f7f4;
+  --color-pastel-sky: #f1f6fa;
+
+  /* Typography */
   --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
 
   /* Radii */
   --radius-sm: 0.5rem;
-  --radius-md: 0.875rem;
-  --radius-lg: 1.25rem;
-  --radius-xl: 2rem;
+  --radius-md: 1rem;
+  --radius-lg: 1.5rem;
+  --radius-xl: 2.5rem;
 
   /* Easing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -144,17 +136,32 @@
     animation: soft-glow 3s ease-in-out infinite;
   }
   .glass {
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+  }
+  .glass-panel {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 30px rgba(15, 23, 42, 0.05);
   }
   .hover-lift {
-    transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+    transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo), border-color 0.4s ease;
   }
   .hover-lift:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(19, 22, 50, 0.08);
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+  }
+  .hover-lift-premium {
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .hover-lift-premium:hover {
+    transform: translateY(-6px) scale(1.01);
+    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12);
+    border-color: rgba(197, 160, 89, 0.3); /* Gold border glow on hover */
   }
 }
 

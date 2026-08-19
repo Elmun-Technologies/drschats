@@ -18,9 +18,9 @@ interface SlideCopy {
 
 const DEAL_CARDS = [
   {
-    bg: "bg-pastel-lilac",
-    iconBg: "bg-[#6366f1]/15",
-    iconColor: "text-[#6366f1]",
+    bg: "bg-gradient-to-br from-surface to-surface-2",
+    iconBg: "bg-brand-deep/5",
+    iconColor: "text-brand-deep",
     icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
     offKey: "b1Off" as const,
     titleKey: "b1Title" as const,
@@ -28,9 +28,9 @@ const DEAL_CARDS = [
     big: true,
   },
   {
-    bg: "bg-pastel-mint",
-    iconBg: "bg-accent/15",
-    iconColor: "text-accent-strong",
+    bg: "bg-gradient-to-br from-surface to-surface-2",
+    iconBg: "bg-signal-soft",
+    iconColor: "text-signal",
     icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
     offKey: "b2Off" as const,
     titleKey: "b2Title" as const,
@@ -38,9 +38,9 @@ const DEAL_CARDS = [
     big: false,
   },
   {
-    bg: "bg-pastel-sky",
+    bg: "bg-gradient-to-br from-surface to-surface-2",
     iconBg: "bg-gold/15",
-    iconColor: "text-gold",
+    iconColor: "text-gold-ink",
     icon: "M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z",
     offKey: "b3Off" as const,
     titleKey: "b3Title" as const,
@@ -81,7 +81,9 @@ export function HeroBento({
       <Container>
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           {/* Main rotating banner */}
-          <div className="relative flex min-h-[360px] overflow-hidden rounded-2xl bg-pastel-beige sm:min-h-[440px]">
+          <div className="relative flex min-h-[360px] overflow-hidden rounded-3xl bg-gradient-to-br from-surface to-surface-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] sm:min-h-[440px]">
+            {/* Ambient background glow */}
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent opacity-80" />
             <div
               key={i}
               className={cn("flex flex-1 items-center", rotated && "hero-slide-in")}
@@ -93,22 +95,21 @@ export function HeroBento({
                   <span className="inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent-strong">
                     {s.eyebrow}
                   </span>
-                  <h1 className="mt-4 font-display text-3xl font-extrabold leading-[1.1] tracking-tight text-fg sm:text-5xl">
+                  <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-brand-deep sm:text-6xl drop-shadow-sm">
                     {s.title}
                   </h1>
-                  <p className="mt-4 text-sm text-fg/70">{s.subtitle}</p>
-                  <Link href="/products" className="mt-7 inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-bold text-ink shadow-sm transition-all hover:-translate-y-0.5 hover:bg-accent-strong">
+                  <p className="mt-5 text-base text-muted max-w-md leading-relaxed">{s.subtitle}</p>
+                  <Link href="/products" className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-deep px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover-lift-premium hover:bg-black">
                     {s.cta}
                     <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M4 10h12M10 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </Link>
                 </div>
-                {/* Certification pills, along the bottom edge rather than
-                    stacked mid-right where they crowded the headline. */}
-                <div className="absolute bottom-4 right-6 hidden gap-2 sm:flex sm:right-10">
+                {/* Certification pills */}
+                <div className="absolute bottom-6 right-6 hidden gap-2.5 sm:flex sm:right-10">
                   {["cGMP", "ISO", "Halal", "IFOS"].map((badge) => (
-                    <span key={badge} className="rounded-full border border-fg/10 bg-fg/5 px-3 py-1.5 text-xs font-semibold text-fg/60 backdrop-blur-sm">
+                    <span key={badge} className="rounded-full border border-white/40 bg-white/60 px-4 py-1.5 text-xs font-bold text-brand-deep/80 backdrop-blur-md shadow-sm">
                       {badge}
                     </span>
                   ))}
@@ -185,7 +186,7 @@ function DealCard({
   return (
     <Link
       href={product ? `/product/${product.slug}` : "/products"}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-2xl ${card.bg} ${card.big ? "min-h-[200px] p-7" : "min-h-[170px] p-5"} transition-all hover:-translate-y-0.5`}
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl ${card.bg} border border-line/30 ${card.big ? "min-h-[200px] p-8" : "min-h-[170px] p-6"} hover-lift-premium`}
     >
       <div className="relative z-10 flex items-start justify-between gap-3">
         <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
@@ -199,11 +200,11 @@ function DealCard({
         <p className="text-xs font-bold uppercase tracking-widest text-fg/60">{off}</p>
         {/* h2, not h3: these tiles sit beside the hero h1, with no intervening
             section heading to nest under. */}
-        <h2 className={`mt-1 font-display font-extrabold leading-tight text-fg ${card.big ? "text-xl" : "text-base"}`}>{title}</h2>
+        <h2 className={`mt-2 font-display font-extrabold leading-tight text-brand-deep ${card.big ? "text-2xl" : "text-lg"}`}>{title}</h2>
         {cta && (
-          <span className="mt-3 inline-flex items-center gap-1 rounded-full bg-accent px-4 py-1.5 text-xs font-bold text-ink transition-gap group-hover:gap-2">
+          <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-xs font-bold text-brand-deep shadow-sm transition-all group-hover:bg-brand-deep group-hover:text-white group-hover:shadow-md">
             {cta}
-            <svg viewBox="0 0 20 20" className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" stroke="currentColor" strokeWidth="2">
+            <svg viewBox="0 0 20 20" className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
