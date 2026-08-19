@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { loadProgramIndex } from "@/lib/content/program-loader";
+import { loadProgramIndex, getProgramImage } from "@/lib/content/program-loader";
 import { formatMoney } from "@/lib/utils";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
@@ -9,14 +9,6 @@ import { Reveal } from "@/components/animation/Reveal";
 import { buttonVariants } from "@/components/ui/Button";
 
 const MAX_ON_HOME = 3;
-
-const PROGRAM_IMAGES: Record<string, string> = {
-  "immunity-30": "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&q=80&w=600",
-  "stress-recovery": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&q=80&w=600",
-  "beauty-skin-hair": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600",
-  "kids-growth": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=600",
-  "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
-};
 
 export async function ProgramsRail({ locale }: { locale: Locale }) {
   const [t, common, entries] = await Promise.all([
@@ -53,7 +45,7 @@ export async function ProgramsRail({ locale }: { locale: Locale }) {
               >
                 <div className="absolute inset-0 z-0 bg-brand-deep">
                   <Image
-                    src={PROGRAM_IMAGES[program.slug] || PROGRAM_IMAGES.default}
+                    src={getProgramImage(program.slug)}
                     alt={program.name}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"

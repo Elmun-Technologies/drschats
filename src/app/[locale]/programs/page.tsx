@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { loadProgramIndex } from "@/lib/content/program-loader";
+import { loadProgramIndex, getProgramImage } from "@/lib/content/program-loader";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { JsonLd, itemListLd } from "@/lib/seo/jsonld";
 import { formatMoney } from "@/lib/utils";
@@ -10,14 +10,6 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import Image from "next/image";
-
-const PROGRAM_IMAGES: Record<string, string> = {
-  "immunity-30": "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&q=80&w=600",
-  "stress-recovery": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&q=80&w=600",
-  "beauty-skin-hair": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600",
-  "kids-growth": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=600",
-  "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
-};
 
 export const revalidate = 3600;
 
@@ -81,7 +73,7 @@ export default async function ProgramsPage({
                   >
                     <div className="absolute inset-0 z-0">
                       <Image
-                        src={PROGRAM_IMAGES[program.slug] || PROGRAM_IMAGES.default}
+                        src={getProgramImage(program.slug)}
                         alt={program.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"

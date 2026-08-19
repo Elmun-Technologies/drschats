@@ -20,8 +20,6 @@ import type {
 
 type L<T = string> = Record<Locale, T>;
 
-const PLACEHOLDERS = 6;
-
 /* Real product photos (AI-generated) keyed by slug fragment.
    When a product slug contains one of these keys, the real photo is used
    instead of a generic placeholder SVG. */

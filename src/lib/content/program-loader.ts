@@ -10,6 +10,18 @@ import type { HealthTopic } from "@/lib/content/health-topics";
 import { getProgram, getPrograms } from "@/lib/content/programs.sanity";
 import type { Program } from "@/lib/content/programs";
 
+export const PROGRAM_IMAGES: Record<string, string> = {
+  "immunity-30": "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&q=80&w=600",
+  "stress-recovery": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&q=80&w=600",
+  "beauty-skin-hair": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600",
+  "kids-growth": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=600",
+  "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
+};
+
+export function getProgramImage(slug: string): string {
+  return PROGRAM_IMAGES[slug] || PROGRAM_IMAGES.default;
+}
+
 const POOL_SIZE = 100;
 const MAX_PROGRAM_PRODUCTS = 6;
 
