@@ -24,8 +24,8 @@ const VALUE_ICONS = [
 
 const VALUE_COLORS = [
   { bg: "bg-accent-soft", text: "text-accent-strong", border: "border-accent/20" },
-  { bg: "bg-[#6366f1]/10", text: "text-[#6366f1]", border: "border-[#6366f1]/20" },
-  { bg: "bg-rose-500/10", text: "text-rose-500", border: "border-rose-500/20" },
+  { bg: "bg-gold/10", text: "text-gold-ink", border: "border-gold/20" },
+  { bg: "bg-danger/10", text: "text-danger", border: "border-danger/20" },
 ];
 
 const CERTS = ["cGMP", "ISO 22000", "Halal", "IFOS"];

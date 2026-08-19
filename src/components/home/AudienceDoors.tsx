@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
@@ -18,19 +19,12 @@ import type { Locale } from "@/lib/i18n/routing";
   audience there and it appears here, already translated.
 */
 
-const ICONS: Record<string, string> = {
-  "self-woman": "M12 2a5 5 0 015 5 5 5 0 01-5 5 5 5 0 01-5-5 5 5 0 015-5zM12 12v9M9 18h6",
-  "self-man": "M10 14a5 5 0 105-5 5 5 0 00-5 5zM14.5 9.5L20 4M20 4h-4.5M20 4v4.5",
-  child: "M12 3a3 3 0 100 6 3 3 0 000-6zM7 21v-5a5 5 0 0110 0v5M9 13.5h6",
-  parent: "M9 4a3 3 0 100 6 3 3 0 000-6zM4 20v-3.5A4.5 4.5 0 018.5 12M17 7a2.5 2.5 0 100 5 2.5 2.5 0 000-5zM14 20v-3a3 3 0 013-3h1a3 3 0 013 3v3",
+const IMAGES: Record<string, string> = {
+  "self-woman": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800",
+  "self-man": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=800",
+  child: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=800",
+  parent: "https://images.unsplash.com/photo-1536640712-4d4c36ef0e52?auto=format&fit=crop&q=80&w=800",
 };
-
-const TONES = [
-  "bg-pastel-lilac",
-  "bg-pastel-mint",
-  "bg-pastel-sky",
-  "bg-pastel-beige",
-];
 
 export async function AudienceDoors({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.audience");
@@ -52,33 +46,32 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
             <Reveal key={option.id} index={Math.min(index, 6)} as="li" className="h-full">
               <Link
                 href={{ pathname: "/quiz", query: { who: option.id } }}
-                className={`group flex h-full flex-col justify-between gap-6 rounded-2xl ${TONES[index % TONES.length]} p-6 transition-all hover:-translate-y-0.5`}
+                className="group relative flex h-full min-h-[300px] flex-col justify-end overflow-hidden rounded-3xl bg-surface p-6 transition-all hover:-translate-y-1 hover:shadow-xl"
               >
-                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-fg/10 text-fg">
-                  <svg
-                    viewBox="0 0 24 24"
-                    aria-hidden
-                    className="h-6 w-6"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth="1.7"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path d={ICONS[option.id] ?? ICONS.child} />
-                  </svg>
-                </span>
-                <span>
-                  <span className="block font-display text-lg font-bold leading-snug text-fg">
+                {/* Background Image */}
+                <div className="absolute inset-0 z-0 bg-surface-2">
+                  <Image 
+                    src={IMAGES[option.id] ?? IMAGES.child} 
+                    alt={option.label}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  {/* Dark gradient overlay so text is readable */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-80 transition-opacity group-hover:opacity-90" />
+                </div>
+
+                <div className="relative z-10">
+                  <span className="block font-display text-xl font-bold leading-snug text-white drop-shadow-md">
                     {option.label}
                   </span>
-                  <span className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-accent-strong transition-gap group-hover:gap-2">
+                  <span className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-white/90 transition-gap group-hover:gap-2 drop-shadow-sm">
                     {t("cta")}
-                    <svg viewBox="0 0 20 20" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg viewBox="0 0 20 20" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </span>
-                </span>
+                </div>
               </Link>
             </Reveal>
           ))}

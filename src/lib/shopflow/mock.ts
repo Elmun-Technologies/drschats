@@ -21,10 +21,50 @@ import type {
 type L<T = string> = Record<Locale, T>;
 
 const PLACEHOLDERS = 6;
+
+/* Real product photos (AI-generated) keyed by slug fragment.
+   When a product slug contains one of these keys, the real photo is used
+   instead of a generic placeholder SVG. */
+const REAL_PHOTOS: Record<string, string> = {
+  "omega": "/products/omega-3-premium.jpg",
+  "d3": "/products/vitamin-d3-k2.jpg",
+  "collagen": "/products/collagen-beauty.jpg",
+  "immuno": "/products/immuno-complex.jpg",
+  "magn": "/products/magnesium-b6.jpg",
+  "multivit": "/products/multivitamin-daily.jpg",
+  "vitamin-c": "/products/immuno-complex.jpg",
+  "hair-nail": "/products/collagen-beauty.jpg",
+  "gold-vitamin": "/products/vitamin-d3-k2.jpg",
+  "kids": "/products/multivitamin-daily.jpg",
+  "antistress": "/products/magnesium-b6.jpg",
+  "visiovit": "/products/omega-3-premium.jpg",
+  "safi": "/products/immuno-complex.jpg",
+  "delical": "/products/multivitamin-daily.jpg",
+  "coffee": "/products/omega-3-premium.jpg",
+  "peano": "/products/collagen-beauty.jpg",
+  "tonometr": "/products/vitamin-d3-k2.jpg",
+  "turbo": "/products/magnesium-b6.jpg",
+};
+
+const REAL_PHOTOS_FALLBACKS = [
+  "/products/omega-3-premium.jpg",
+  "/products/vitamin-d3-k2.jpg",
+  "/products/collagen-beauty.jpg",
+  "/products/immuno-complex.jpg",
+  "/products/magnesium-b6.jpg",
+  "/products/multivitamin-daily.jpg",
+];
+
 const img = (seed: string, alt: string) => {
+  // Try to match a real product photo first
+  const lc = seed.toLowerCase();
+  for (const [key, url] of Object.entries(REAL_PHOTOS)) {
+    if (lc.includes(key)) return { url, alt };
+  }
+  // Fallback to a real product photo instead of an SVG
   let h = 0;
   for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return { url: `/placeholders/p${(h % PLACEHOLDERS) + 1}.svg`, alt };
+  return { url: REAL_PHOTOS_FALLBACKS[h % REAL_PHOTOS_FALLBACKS.length], alt };
 };
 
 interface RawCategory {

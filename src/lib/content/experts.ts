@@ -96,11 +96,17 @@ const rawExperts: RawExpert[] = [
 ];
 
 function resolve(e: RawExpert, locale: Locale): Expert {
+  const realImages: Record<string, string> = {
+    "exp-alimov": "/experts/jasur.jpg",
+    "exp-karimova": "/experts/nodira.jpg",
+    "exp-yusupov": "/experts/bekzod.jpg",
+  };
+
   return {
     id: e.id,
     slug: e.slug,
     name: e.name,
-    image: img(e.photoSeed),
+    image: realImages[e.id] || img(e.photoSeed),
     title: e.title[locale],
     bio: e.bio[locale],
     credentials: e.credentials[locale],

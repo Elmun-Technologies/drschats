@@ -1,12 +1,13 @@
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/animation/Reveal";
 
-const icons: Record<string, string> = {
-  tested: "M9 12l2 2 4-4M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z",
-  transparent: "M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z M12 9a3 3 0 100 6 3 3 0 000-6z",
-  absorb: "M12 3v18M5 10l7 7 7-7",
+const IMAGES: Record<string, string> = {
+  tested: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=800",
+  transparent: "https://images.unsplash.com/photo-1532187863486-abf9dbad1b69?auto=format&fit=crop&q=80&w=800",
+  absorb: "https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80&w=800",
 };
 
 export function ScienceSection() {
@@ -25,17 +26,23 @@ export function ScienceSection() {
         <div className="mt-20 grid gap-6 md:grid-cols-3">
           {points.map((p, i) => (
             <Reveal key={p} index={i} className="h-full">
-              <div className="group relative h-full overflow-hidden rounded-3xl border border-line bg-surface p-10 transition-all duration-500 hover:-translate-y-1.5 hover:border-accent/40">
-                <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-accent/10 blur-3xl transition-opacity duration-500 group-hover:opacity-100" />
-                <div className="relative">
-                  <div className="mb-8 flex h-16 w-16 items-center justify-center rounded-2xl bg-accent-soft text-accent transition-transform duration-500 group-hover:scale-110">
-                    <svg viewBox="0 0 24 24" className="h-8 w-8" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={icons[p]} />
-                    </svg>
-                  </div>
-                  <div className="mb-2 font-display text-sm font-semibold text-faint">0{i + 1}</div>
-                  <h3 className="font-display text-2xl font-semibold">{t(`points.${p}.title`)}</h3>
-                  <p className="mt-3 text-muted">{t(`points.${p}.description`)}</p>
+              <div className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-surface transition-all duration-500 hover:-translate-y-1.5 hover:shadow-xl">
+                {/* Photographic Header */}
+                <div className="relative h-48 w-full overflow-hidden bg-surface-2">
+                  <Image
+                    src={IMAGES[p]}
+                    alt={t(`points.${p}.title`)}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-surface to-transparent opacity-90" />
+                </div>
+                
+                <div className="relative flex flex-1 flex-col p-8 pt-4">
+                  <div className="mb-2 font-display text-sm font-bold text-accent-strong opacity-80">0{i + 1}</div>
+                  <h3 className="font-display text-2xl font-bold">{t(`points.${p}.title`)}</h3>
+                  <p className="mt-3 flex-1 text-muted">{t(`points.${p}.description`)}</p>
                 </div>
               </div>
             </Reveal>

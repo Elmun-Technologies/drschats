@@ -13,10 +13,10 @@ import { useCart } from "@/lib/cart/store";
 import { trackAddToCart } from "@/lib/analytics/events";
 import { cn } from "@/lib/utils";
 
-const headers = [
-  "from-zinc-100 to-zinc-300",
-  "from-sky-100 to-indigo-200",
-  "from-emerald-100 to-teal-200",
+const ENV_IMAGES = [
+  "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?auto=format&fit=crop&q=80&w=800", // Dark green leaves
+  "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800", // Abstract dark liquid
+  "https://images.unsplash.com/photo-1550537687-c91072c4792d?auto=format&fit=crop&q=80&w=800", // Deep amber sunset
 ];
 
 export function TopProducts({ products }: { products: Product[] }) {
@@ -27,11 +27,11 @@ export function TopProducts({ products }: { products: Product[] }) {
   const items = products.slice(0, 3);
 
   return (
-    <section className="py-20 sm:py-24">
+    <section className="bg-surface py-20 sm:py-32">
       <Container>
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("title")}</h2>
-          <p className="mt-3 text-muted">{t("subtitle")}</p>
+        <div className="mb-16 text-center">
+          <h2 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h2>
+          <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
@@ -43,45 +43,58 @@ export function TopProducts({ products }: { products: Product[] }) {
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
-                transition={{ duration: 0.55, delay: i * 0.08, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
                 className={cn(
-                  "relative flex flex-col overflow-hidden rounded-[1.75rem] border bg-ink",
-                  featured ? "border-accent shadow-[0_24px_60px_-24px_rgba(21,182,106,0.45)] lg:-mt-4" : "border-line",
+                  "group relative flex flex-col overflow-hidden rounded-[2rem] min-h-[700px]",
+                  featured ? "lg:-mt-6 lg:min-h-[740px] shadow-2xl shadow-brand-deep/20" : "shadow-xl shadow-brand-deep/10"
                 )}
               >
+                {/* Background Environment Image */}
+                <div className="absolute inset-0 z-0">
+                  <Image 
+                    src={ENV_IMAGES[i]} 
+                    alt="Background" 
+                    fill 
+                    sizes="(max-width: 1024px) 100vw, 33vw" 
+                    className="object-cover transition-transform duration-1000 group-hover:scale-110" 
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/80 to-transparent" />
+                  <div className="absolute inset-0 bg-black/20" />
+                </div>
+
                 {featured && p.reviewCount > 0 && (
-                  <span className="absolute right-5 top-5 z-10 rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-wide text-ink">
+                  <span className="absolute right-6 top-6 z-20 rounded-full bg-gold/90 px-4 py-1.5 text-xs font-bold uppercase tracking-widest text-brand-deep backdrop-blur-md">
                     ★ {common("reviews", { count: p.reviewCount })}
                   </span>
                 )}
 
-                {/* header */}
-                <div className={cn("relative flex h-60 items-center justify-center bg-gradient-to-br", headers[i])}>
-                  <span className="absolute top-6 font-display text-2xl font-light uppercase tracking-[0.4em] text-fg/80">
+                {/* Floating Product Image */}
+                <div className="relative z-10 flex flex-1 flex-col items-center justify-start pt-16">
+                  <span className="mb-8 text-center font-display text-3xl font-light uppercase tracking-[0.3em] text-white/90 drop-shadow-lg">
                     {p.name.split(" ")[0]}
                   </span>
-                  <div className="relative mt-6 h-40 w-32 drop-shadow-xl">
-                    <Image src={p.images[0]?.url ?? ""} alt={p.name} fill sizes="128px" className="rounded-xl object-cover" />
+                  <div className="relative h-64 w-48 drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-4">
+                    <Image src={p.images[0]?.url ?? ""} alt={p.name} fill sizes="200px" className="rounded-2xl object-cover" />
                   </div>
                 </div>
 
-                {/* body */}
-                <div className="flex flex-1 flex-col p-7">
+                {/* Glassmorphic Details Card */}
+                <div className="relative z-20 mx-4 mb-4 flex flex-col rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-xl">
                   <div className="flex items-center justify-between">
                     <StarRating rating={p.rating} />
                     <div className="text-right">
                       {p.oldPrice && (
-                        <span className="mr-2 text-sm text-faint line-through">{formatMoney(p.oldPrice, locale)}</span>
+                        <span className="mr-2 text-sm text-white/50 line-through">{formatMoney(p.oldPrice, locale)}</span>
                       )}
-                      <span className="font-display text-xl font-bold">{formatMoney(p.price, locale)}</span>
+                      <span className="font-display text-2xl font-bold text-white">{formatMoney(p.price, locale)}</span>
                     </div>
                   </div>
 
-                  <p className="mt-5 text-sm font-semibold text-muted">{t("includes")}</p>
-                  <ul className="mt-3 space-y-3">
+                  <p className="mt-4 text-sm font-semibold text-white/70">{t("includes")}</p>
+                  <ul className="mt-3 flex-1 space-y-2.5">
                     {p.highlights.map((h) => (
-                      <li key={h} className="flex items-start gap-3 text-sm text-fg">
-                        <svg viewBox="0 0 20 20" className="mt-0.5 h-5 w-5 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="2">
+                      <li key={h} className="flex items-start gap-3 text-sm text-white/90">
+                        <svg viewBox="0 0 20 20" className="mt-0.5 h-4 w-4 shrink-0 text-gold" fill="none" stroke="currentColor" strokeWidth="2">
                           <circle cx="10" cy="10" r="9" className="opacity-20" />
                           <path d="M6 10l2.5 2.5L14 7.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -90,7 +103,7 @@ export function TopProducts({ products }: { products: Product[] }) {
                     ))}
                   </ul>
 
-                  <div className="mt-8 space-y-3">
+                  <div className="mt-6 space-y-3">
                     <button
                       onClick={() => {
                         add({
@@ -104,17 +117,17 @@ export function TopProducts({ products }: { products: Product[] }) {
                         trackAddToCart(p.slug, p.price, 1);
                       }}
                       className={cn(
-                        "w-full rounded-full px-6 py-3.5 text-sm font-bold uppercase tracking-wide transition-all duration-300",
+                        "w-full rounded-full px-6 py-4 text-sm font-bold uppercase tracking-widest transition-all duration-300",
                         featured
-                          ? "bg-accent text-ink hover:bg-accent-strong"
-                          : "bg-fg text-ink hover:opacity-90",
+                          ? "bg-gold text-brand-deep hover:bg-white"
+                          : "bg-white text-brand-deep hover:bg-gold hover:text-brand-deep",
                       )}
                     >
                       {t("buy")}
                     </button>
                     <Link
                       href={`/product/${p.slug}`}
-                      className="block w-full rounded-full border border-line-strong px-6 py-3.5 text-center text-sm font-bold uppercase tracking-wide text-fg transition-colors hover:border-accent hover:text-accent-strong"
+                      className="block w-full rounded-full border border-white/20 px-6 py-4 text-center text-sm font-bold uppercase tracking-widest text-white transition-colors hover:border-white/40 hover:bg-white/10"
                     >
                       {t("learn")}
                     </Link>

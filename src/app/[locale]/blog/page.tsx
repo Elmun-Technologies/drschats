@@ -70,30 +70,36 @@ export default async function BlogPage({
           <Reveal className="mt-14">
             <Link
               href={`/blog/${featured.slug}`}
-              className="group grid overflow-hidden rounded-2xl border border-line bg-surface transition-colors hover:border-line-strong md:grid-cols-[1.4fr_1fr]"
+              className="group relative block overflow-hidden rounded-[2.5rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-2xl hover:shadow-brand-deep/30 aspect-[16/9] md:aspect-[2/1] lg:aspect-[21/9]"
             >
-              <div className="relative aspect-[16/9] overflow-hidden bg-surface-2 md:aspect-auto md:min-h-[420px]">
+              <div className="absolute inset-0 z-0">
                 <Image
                   src={featured.image}
                   alt={featured.title}
                   fill
-                  sizes="(max-width:768px) 100vw, 60vw"
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="100vw"
+                  className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105"
                   priority
                 />
-                <div className="absolute left-5 top-5">
-                  <Badge tone="accent">{featured.category}</Badge>
-                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/80 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100" />
               </div>
-              <div className="flex flex-col justify-center p-8 lg:p-12">
-                <p className="text-xs text-faint">{t("minRead", { min: featured.readingMinutes })}</p>
-                <h2 className="mt-3 font-display text-2xl font-bold leading-tight text-fg transition-colors group-hover:text-accent sm:text-3xl">
-                  {featured.title}
-                </h2>
-                <p className="mt-4 line-clamp-3 text-muted">{featured.excerpt}</p>
-                <span className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-accent">
-                  {t("readMore")} →
-                </span>
+              <div className="relative z-10 flex h-full flex-col justify-end p-8 md:p-12 lg:p-16">
+                <div className="mb-6">
+                  <Badge tone="accent" className="bg-gold/20 text-gold backdrop-blur-md border-none px-4 py-1.5 text-sm">
+                    {featured.category}
+                  </Badge>
+                </div>
+                <div className="max-w-4xl">
+                  <p className="mb-4 text-sm font-bold uppercase tracking-widest text-white/60">
+                    {t("minRead", { min: featured.readingMinutes })}
+                  </p>
+                  <h2 className="font-display text-3xl font-extrabold leading-tight text-white transition-colors group-hover:text-gold drop-shadow-md sm:text-4xl md:text-5xl lg:text-6xl">
+                    {featured.title}
+                  </h2>
+                  <p className="mt-6 line-clamp-2 max-w-2xl text-lg font-medium text-white/80 drop-shadow-sm md:text-xl">
+                    {featured.excerpt}
+                  </p>
+                </div>
               </div>
             </Link>
           </Reveal>

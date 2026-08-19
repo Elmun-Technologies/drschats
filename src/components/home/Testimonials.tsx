@@ -12,7 +12,12 @@ export function Testimonials({ products }: { products: Product[] }) {
   const quotes = products
     .flatMap((p) => p.reviews.map((r) => ({ ...r, product: p.name })))
     .slice(0, 5);
-  const tiles = ["/placeholders/p3.svg", "/placeholders/p1.svg", "/placeholders/p4.svg", "/placeholders/p5.svg"];
+  const tiles = [
+    "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&q=80&w=600",
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600",
+  ];
 
   /*
     Without quotes this section is a wall of placeholder gradients around a
@@ -91,9 +96,9 @@ function StatCard() {
 
 function JoinCard({ label }: { label: string }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-4 rounded-3xl bg-gradient-to-br from-accent to-emerald-600 p-8 text-center">
+    <div className="flex flex-col items-center justify-center gap-4 rounded-3xl bg-gradient-to-br from-brand-deep to-accent p-8 text-center">
       <p className="font-display text-2xl font-bold text-white">Go Vita</p>
-      <Link href="/products" className={buttonVariants("primary") + " bg-white text-accent-strong hover:bg-white"}>
+      <Link href="/products" className={buttonVariants("primary") + " bg-gold text-brand-deep hover:bg-white"}>
         {label}
       </Link>
     </div>

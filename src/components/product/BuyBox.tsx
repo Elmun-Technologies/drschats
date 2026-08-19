@@ -273,7 +273,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
       </div>
 
       <div className="flex items-center gap-3 border-t border-line pt-4">
-        <WishlistButton productId={product.id} className="h-10 w-10 rounded-full border border-line hover:border-red-400" />
+        <WishlistButton productId={product.id} className="h-10 w-10 rounded-full border border-line hover:border-danger" />
         <ShareButton name={product.name} />
       </div>
 

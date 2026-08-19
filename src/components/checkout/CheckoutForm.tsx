@@ -224,7 +224,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                   key={step.product.id}
                   className={`flex items-center gap-4 rounded-xl border p-3 transition-all ${
                     step.stepType === "free_gift"
-                      ? "border-amber-400/50 bg-gradient-to-r from-amber-950/30 to-surface"
+                      ? "border-gold/50 bg-gradient-to-r from-gold/10 to-surface"
                       : "border-line bg-surface"
                   }`}
                 >
@@ -237,7 +237,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-sm text-faint line-through">{formatMoney(step.product.price, locale)}</span>
                       {step.stepType === "free_gift" ? (
-                        <span className="font-display text-sm font-bold text-amber-400">{t("upsellFree")}</span>
+                        <span className="font-display text-sm font-bold text-gold-ink">{t("upsellFree")}</span>
                       ) : (
                         <>
                           <span className="text-sm font-semibold text-accent">{formatMoney(step.discountedPrice, locale)}</span>
@@ -261,7 +261,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     }
                     className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
                       step.stepType === "free_gift"
-                        ? "bg-amber-400 text-ink hover:bg-amber-300"
+                        ? "bg-gold text-ink hover:bg-gold-ink"
                         : "bg-surface-3 text-fg hover:bg-accent hover:text-ink"
                     }`}
                   >

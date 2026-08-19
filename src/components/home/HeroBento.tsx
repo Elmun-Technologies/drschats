@@ -18,9 +18,9 @@ interface SlideCopy {
 
 const DEAL_CARDS = [
   {
-    bg: "bg-gradient-to-br from-surface to-surface-2",
-    iconBg: "bg-brand-deep/5",
-    iconColor: "text-brand-deep",
+    bgImage: "https://images.unsplash.com/photo-1557682250-33bd709cbe85?auto=format&fit=crop&q=80&w=600",
+    iconBg: "bg-brand-deep/20",
+    iconColor: "text-white",
     icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
     offKey: "b1Off" as const,
     titleKey: "b1Title" as const,
@@ -28,9 +28,9 @@ const DEAL_CARDS = [
     big: true,
   },
   {
-    bg: "bg-gradient-to-br from-surface to-surface-2",
-    iconBg: "bg-signal-soft",
-    iconColor: "text-signal",
+    bgImage: "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=600",
+    iconBg: "bg-signal-soft/30",
+    iconColor: "text-white",
     icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
     offKey: "b2Off" as const,
     titleKey: "b2Title" as const,
@@ -38,9 +38,9 @@ const DEAL_CARDS = [
     big: false,
   },
   {
-    bg: "bg-gradient-to-br from-surface to-surface-2",
-    iconBg: "bg-gold/15",
-    iconColor: "text-gold-ink",
+    bgImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600",
+    iconBg: "bg-gold/30",
+    iconColor: "text-white",
     icon: "M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z",
     offKey: "b3Off" as const,
     titleKey: "b3Title" as const,
@@ -81,12 +81,24 @@ export function HeroBento({
       <Container>
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           {/* Main rotating banner */}
-          <div className="relative flex min-h-[360px] overflow-hidden rounded-3xl bg-gradient-to-br from-surface to-surface-2 shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] sm:min-h-[440px]">
-            {/* Ambient background glow */}
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-gold/10 via-transparent to-transparent opacity-80" />
+          <div className="relative flex min-h-[360px] overflow-hidden rounded-3xl bg-surface shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] sm:min-h-[440px]">
+            {/* Stunning AI Lifestyle Image Background */}
+            <div className="absolute inset-0 z-0">
+              <Image 
+                src="/hero/beauty_wellness.jpg"
+                alt="Wellness & Beauty"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 800px"
+                className="object-cover object-[70%_30%] mix-blend-multiply opacity-90"
+              />
+              {/* Gradient mask to ensure text readability on the left */}
+              <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/95 to-transparent sm:via-surface/80" />
+            </div>
+            
             <div
               key={i}
-              className={cn("flex flex-1 items-center", rotated && "hero-slide-in")}
+              className={cn("relative z-10 flex flex-1 items-center", rotated && "hero-slide-in")}
             >
                 {/* The panel is ~800px at desktop; capping the copy at max-w-sm
                     turned a long headline into a seven-line ribbon down the
@@ -186,23 +198,27 @@ function DealCard({
   return (
     <Link
       href={product ? `/product/${product.slug}` : "/products"}
-      className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl ${card.bg} border border-line/30 ${card.big ? "min-h-[200px] p-8" : "min-h-[170px] p-6"} hover-lift-premium`}
+      className={`group relative flex flex-col justify-between overflow-hidden rounded-3xl border border-white/10 ${card.big ? "min-h-[200px] p-8" : "min-h-[170px] p-6"} hover-lift-premium shadow-lg`}
     >
+      <div className="absolute inset-0 z-0">
+        <Image src={card.bgImage} alt="" fill sizes="50vw" className="object-cover transition-transform duration-700 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-brand-deep/60 mix-blend-multiply" />
+        <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-transparent to-transparent opacity-80" />
+      </div>
+
       <div className="relative z-10 flex items-start justify-between gap-3">
-        <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${card.iconBg} ${card.iconColor}`}>
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+        <span className={`flex h-10 w-10 items-center justify-center rounded-xl backdrop-blur-md ${card.iconBg} ${card.iconColor}`}>
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d={card.icon} />
           </svg>
         </span>
       </div>
 
       <div className={`relative z-10 ${image ? (card.big ? "max-w-[58%]" : "sm:max-w-[62%]") : ""}`}>
-        <p className="text-xs font-bold uppercase tracking-widest text-fg/60">{off}</p>
-        {/* h2, not h3: these tiles sit beside the hero h1, with no intervening
-            section heading to nest under. */}
-        <h2 className={`mt-2 font-display font-extrabold leading-tight text-brand-deep ${card.big ? "text-2xl" : "text-lg"}`}>{title}</h2>
+        <p className="text-xs font-bold uppercase tracking-widest text-gold drop-shadow-sm">{off}</p>
+        <h2 className={`mt-2 font-display font-extrabold leading-tight text-white drop-shadow-md ${card.big ? "text-2xl" : "text-lg"}`}>{title}</h2>
         {cta && (
-          <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2 text-xs font-bold text-brand-deep shadow-sm transition-all group-hover:bg-brand-deep group-hover:text-white group-hover:shadow-md">
+          <span className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-gold px-5 py-2 text-xs font-bold text-brand-deep shadow-sm transition-all group-hover:bg-white group-hover:shadow-md">
             {cta}
             <svg viewBox="0 0 20 20" className="h-4 w-4 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
@@ -211,30 +227,27 @@ function DealCard({
         )}
       </div>
 
-      {/* Artwork is anchored to the card's right edge rather than dropped in as
-          a thumbnail above the copy — the compact cards used to hold a 64px
-          square at the top with a dead band between it and the text. */}
       {image && (
         <div
-          /* The compact cards sit two-up on a phone, roughly 170px wide. Artwork
-             there would leave the copy a 105px column, so it starts at sm. */
-          className={`pointer-events-none absolute overflow-hidden rounded-xl bg-ink/40 shadow-sm ${
+          className={`pointer-events-none absolute overflow-hidden rounded-2xl bg-white shadow-2xl p-3 ${
             card.big ? "bottom-5 right-5 top-5 w-[34%]" : "hidden sm:block bottom-4 right-4 top-4 w-[32%]"
           }`}
         >
-          <Image
-            src={image}
-            alt=""
-            fill
-            sizes="(max-width: 1024px) 40vw, 200px"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-          />
+          <div className="relative h-full w-full rounded-xl overflow-hidden bg-white">
+            <Image
+              src={image}
+              alt=""
+              fill
+              sizes="(max-width: 1024px) 40vw, 200px"
+              className="object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
+            />
+          </div>
         </div>
       )}
 
       {!image && (
-        <div className="pointer-events-none absolute bottom-0 right-3 opacity-[0.07]">
-          <svg viewBox="0 0 24 24" className={`${card.big ? "h-28 w-28" : "h-20 w-20"}`} fill="currentColor">
+        <div className="pointer-events-none absolute bottom-0 right-3 opacity-[0.15]">
+          <svg viewBox="0 0 24 24" className={`text-white ${card.big ? "h-28 w-28" : "h-20 w-20"}`} fill="currentColor">
             <path d={card.icon} />
           </svg>
         </div>

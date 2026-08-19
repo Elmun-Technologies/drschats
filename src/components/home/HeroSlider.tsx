@@ -16,9 +16,9 @@ interface SlideCopy {
 }
 
 const slides = [
-  { href: "/products", img: "/placeholders/p3.svg", bg: "from-emerald-50 to-teal-100", blob: "bg-emerald-200/50" },
-  { href: "/products", img: "/placeholders/p1.svg", bg: "from-orange-50 to-amber-100", blob: "bg-amber-200/50" },
-  { href: "/product/omega-3-premium", img: "/placeholders/p4.svg", bg: "from-sky-50 to-blue-100", blob: "bg-sky-200/50" },
+  { href: "/products", img: "/placeholders/p3.svg", bg: "from-surface-2 to-surface-3", blob: "bg-gold/20" },
+  { href: "/products", img: "/placeholders/p1.svg", bg: "from-pastel-beige to-surface-2", blob: "bg-gold/15" },
+  { href: "/product/omega-3-premium", img: "/placeholders/p4.svg", bg: "from-surface-2 to-pastel-sky", blob: "bg-accent-soft" },
 ];
 
 const AUTOPLAY = 6000;

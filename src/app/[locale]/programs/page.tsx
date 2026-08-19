@@ -9,6 +9,15 @@ import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { Disclaimer } from "@/components/legal/Disclaimer";
+import Image from "next/image";
+
+const PROGRAM_IMAGES: Record<string, string> = {
+  "immunity-30": "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&q=80&w=600",
+  "stress-recovery": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&q=80&w=600",
+  "beauty-skin-hair": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600",
+  "kids-growth": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=600",
+  "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
+};
 
 export const revalidate = 3600;
 
@@ -63,47 +72,61 @@ export default async function ProgramsPage({
           {entries.length === 0 ? (
             <p className="py-24 text-center text-muted">{t("empty")}</p>
           ) : (
-            <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {entries.map(({ program, products, pricing }, i) => (
                 <Reveal key={program.slug} index={Math.min(i, 6)} as="li" className="h-full">
                   <Link
                     href={`/programs/${program.slug}`}
-                    className="group flex h-full flex-col rounded-2xl border border-line bg-ink p-6 transition-all hover:-translate-y-0.5 hover:border-accent"
+                    className="group relative flex h-[460px] flex-col justify-end overflow-hidden rounded-[2rem] border border-white/10 bg-brand-deep transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-deep/20"
                   >
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-accent-strong">
-                        {t("duration", { days: program.durationDays })}
-                      </span>
-                      {program.discountPercent > 0 && (
-                        <span className="rounded-full bg-blue px-2.5 py-1 text-[11px] font-bold text-white">
-                          −{program.discountPercent}%
-                        </span>
-                      )}
+                    <div className="absolute inset-0 z-0">
+                      <Image
+                        src={PROGRAM_IMAGES[program.slug] || PROGRAM_IMAGES.default}
+                        alt={program.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-brand-deep/20 opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
                     </div>
 
-                    <h2 className="mt-4 font-display text-xl font-bold text-fg group-hover:text-accent-strong">
-                      {program.name}
-                    </h2>
-                    <p className="mt-2 text-sm font-medium text-accent-strong">{program.headline}</p>
-                    <p className="mt-3 line-clamp-3 flex-1 text-sm text-muted">{program.intro}</p>
-
-                    {products.length > 0 && (
-                      <div className="mt-5 border-t border-line pt-4">
-                        <p className="text-xs text-faint">
-                          {t("includes", { count: products.length, days: program.durationDays })}
-                        </p>
-                        <div className="mt-2 flex flex-wrap items-baseline gap-2">
-                          <span className="font-display text-lg font-bold text-accent-strong">
-                            {formatMoney(pricing.total, locale)}
+                    <div className="relative z-10 flex flex-col h-full justify-between p-6">
+                      <div className="flex flex-wrap items-center gap-2 mt-4">
+                        <span className="rounded-full bg-gold/20 backdrop-blur-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-gold">
+                          {t("duration", { days: program.durationDays })}
+                        </span>
+                        {program.discountPercent > 0 && (
+                          <span className="rounded-full bg-blue px-3 py-1.5 text-[11px] font-bold text-white shadow-lg">
+                            −{program.discountPercent}%
                           </span>
-                          {pricing.saved > 0 && (
-                            <span className="text-sm text-faint line-through">
-                              {formatMoney(pricing.subtotal, locale)}
-                            </span>
-                          )}
-                        </div>
+                        )}
                       </div>
-                    )}
+
+                      <div className="flex flex-col">
+                        <h2 className="font-display text-2xl font-bold text-white transition-colors group-hover:text-gold drop-shadow-md">
+                          {program.name}
+                        </h2>
+                        <p className="mt-2 text-sm font-medium text-white/90 drop-shadow-sm">{program.headline}</p>
+                        
+                        {products.length > 0 && (
+                          <div className="mt-5 border-t border-white/20 pt-4">
+                            <p className="text-[11px] uppercase tracking-widest font-bold text-white/50">
+                              {t("includes", { count: products.length, days: program.durationDays })}
+                            </p>
+                            <div className="mt-2 flex flex-wrap items-baseline gap-2">
+                              <span className="font-display text-xl font-bold text-white group-hover:text-gold transition-colors">
+                                {formatMoney(pricing.total, locale)}
+                              </span>
+                              {pricing.saved > 0 && (
+                                <span className="text-sm font-medium text-white/40 line-through">
+                                  {formatMoney(pricing.subtotal, locale)}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </Link>
                 </Reveal>
               ))}
