@@ -1,0 +1,371 @@
+@import "tailwindcss";
+
+/*
+  Go Vita design tokens — "Apteka Indigo".
+
+  A marketplace catalogue asks colour to carry three separate jobs, so each one
+  gets its own hue and they never borrow from each other:
+
+    accent  → action     (button, link, filter — "do something")
+    danger  → money      (price, discount, savings)
+    signal  → state      (in stock, natural, certified)
+
+  The previous single-green system used one hue for action *and* state, which
+  is legible on a 20-product site and stops being legible on a 2000-product one.
+
+  Note: `ink` doubles as the page background AND the contrast colour placed on
+  accent/gold buttons (white), so both stay white in this light theme.
+*/
+@theme {
+  /* Brand surfaces */
+  --color-ink: #ffffff;
+  --color-surface: #f5f6fb;
+  --color-surface-2: #edeff8;
+  --color-surface-3: #e1e5f3;
+  --color-line: rgba(19, 22, 50, 0.10);
+  --color-line-strong: rgba(19, 22, 50, 0.18);
+  /* Deep chrome: utility bar, footer, hero grounds */
+  --color-brand-deep: #171c4d;
+
+  /* Foreground */
+  --color-fg: #131632;
+  --color-muted: #5a6080;
+  /* Darkened from #8b91ae, which measured 2.88:1 on --color-surface —
+     under the 4.5:1 body-text floor on most of the site's secondary labels. */
+  --color-faint: #6c7087;
+
+  /* Action */
+  --color-accent: #3d4cdb;
+  --color-accent-soft: rgba(61, 76, 219, 0.10);
+  --color-accent-strong: #2c39b4;
+
+  /* State — deliberately still green: "omborda bor" must never read as a button */
+  /* #16a46a measured 3.2:1 as text on white. The lighter value survives as
+     --color-signal-soft for fills, where contrast rules do not apply. */
+  --color-signal: #118254;
+  --color-signal-soft: rgba(22, 164, 106, 0.12);
+
+  /* Money + rating */
+  --color-gold: #e8a93a;
+  /* Gold is a fill, not a text colour: #e8a93a on white is about 2:1, well
+     under the 4.5:1 needed for body text. This is the readable variant for
+     wording that has to sit on a light ground. */
+  --color-gold-ink: #8a5a00;
+  /* Serves twice: as text on light, and as a fill under white text. #e8253f
+     failed both (4.08 and 4.40). This clears 4.5 in each direction. */
+  --color-danger: #d61f38;
+
+  /* Secondary palette */
+  --color-teal: #16a46a;
+  --color-blue: #3d4cdb;
+  /* The wordmark's accent on the deep footer ground: #3d4cdb measures 2.49:1
+     there, under the 3:1 large-text floor. */
+  --color-accent-on-dark: #8b96f5;
+  --color-blue-soft: rgba(61, 76, 219, 0.1);
+  /* pastel banner backgrounds */
+  --color-pastel-beige: #ece4d8;
+  --color-pastel-lilac: #e9e3f6;
+  --color-pastel-mint: #dcefe2;
+  --color-pastel-sky: #dceaf6;
+
+  /* Typography (bound to next/font CSS vars in layout) */
+  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  /* Radii */
+  --radius-sm: 0.5rem;
+  --radius-md: 0.875rem;
+  --radius-lg: 1.25rem;
+  --radius-xl: 2rem;
+
+  /* Easing */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Animations */
+  --animate-marquee: marquee 28s linear infinite;
+  --animate-float: float 6s ease-in-out infinite;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+@keyframes pagein {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes soft-glow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(61, 76, 219, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(61, 76, 219, 0.3);
+  }
+}
+
+@layer utilities {
+  .animate-fade-in-up {
+    animation: fade-in-up 0.6s var(--ease-out-expo) forwards;
+  }
+  .animate-glow {
+    animation: soft-glow 3s ease-in-out infinite;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .hover-lift {
+    transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+  }
+  .hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(19, 22, 50, 0.08);
+  }
+}
+
+/*
+  Accordion open/close without a JS animation runtime.
+
+  Animating to "auto" height is the one thing CSS historically could not do,
+  which is why this used a motion library. `grid-template-rows: 0fr → 1fr`
+  solves it: the row resolves to the content's natural height, and the
+  transition between the two fractions is smooth.
+*/
+.accordion-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.accordion-panel > * {
+  overflow: hidden;
+  min-height: 0;
+}
+.accordion-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+/*
+  Hero slide transition.
+
+  The hero carries the page's H1 and is almost certainly the LCP element, so
+  it must not wait for an animation runtime to hydrate before becoming
+  visible. The first slide therefore paints with no animation at all; only
+  subsequent slides get the enter transition, replayed by React's `key` remount.
+*/
+@keyframes hero-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.hero-slide-in {
+  animation: hero-slide-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/*
+  The bottom edge is crowded: a mobile tab bar, a scroll-to-top button, a
+  social-proof toast, the add-to-cart toast stack and the consent bar all want
+  to live there. Each one used to pick its own offset, so they landed on top of
+  each other — the scroll button sat squarely on the "home" tab.
+
+  One token instead. `--bottom-nav` is the space the mobile tab bar occupies
+  (zero once it hides at md), and everything pinned to the bottom offsets by it.
+  MobileBottomNav sets its own height from the same token, so the number cannot
+  drift out of sync with the thing it describes.
+*/
+:root {
+  --bottom-nav: 0px;
+}
+@media (max-width: 767.98px) {
+  :root {
+    --bottom-nav: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+/*
+  Scroll-reveal without a JS animation library.
+
+  A listing page mounts dozens of revealed elements (24 product cards, article
+  grids, topic cards). Driving each one through framer-motion means dozens of
+  observers and animation loops on the main thread for what is a two-property
+  transition. `.reveal` is the CSS equivalent: hidden until a shared
+  IntersectionObserver adds `.reveal-in`, with the stagger passed as a custom
+  property.
+
+  No-JS and reduced-motion both fall back to fully visible content.
+*/
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.reveal {
+  opacity: 0;
+}
+.reveal-in {
+  animation: reveal-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: var(--reveal-delay, 0ms);
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .reveal-in {
+    opacity: 1;
+    animation: none;
+  }
+}
+/* Content must never stay invisible if the observer never runs. */
+.no-js .reveal {
+  opacity: 1;
+}
+
+/* CSS-only route transition (no JS dependency → never hides content).
+   `backwards` (not `both`): a filled-forwards transform leaves an identity
+   matrix on the wrapper, which turns it into the containing block for every
+   `position: fixed` descendant (sticky buy bar, drawers, popups). */
+.page-in {
+  animation: pagein 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+}
+
+:root {
+  color-scheme: light;
+}
+
+* {
+  border-color: var(--color-line);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-ink);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Lenis smooth scroll */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Utility layer */
+@layer utilities {
+  .container-px {
+    padding-inline: clamp(1.25rem, 5vw, 5rem);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
+  .gradient-accent {
+    background-image: linear-gradient(
+      135deg,
+      var(--color-accent) 0%,
+      var(--color-gold) 100%
+    );
+  }
+  .text-gradient {
+    background: linear-gradient(120deg, var(--color-fg) 0%, #1f8f5e 95%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* grain is a no-op in the light theme (kept so existing markup is harmless) */
+  .grain {
+    position: relative;
+  }
+}
+
+/* Respect reduced motion globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-ink);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-surface);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-3);
+  border-radius: 999px;
+}
+
+/* Hide scrollbars on horizontal carousels */
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

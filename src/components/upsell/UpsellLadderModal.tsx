@@ -1,0 +1,250 @@
+"use client";
+
+import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
+import type { Locale } from "@/lib/i18n/routing";
+import { useCart } from "@/lib/cart/store";
+import { useDialog } from "@/lib/ui/useDialog";
+import { useUpsell } from "@/lib/upsell/store";
+import { buildUpsellLadder } from "@/lib/upsell/ladder";
+import { getUpsellProducts } from "@/app/actions/getUpsellProducts";
+import { formatMoney } from "@/lib/utils";
+import { trackAddToCart, trackUpsellView, trackUpsellAccept, trackUpsellSkip } from "@/lib/analytics/events";
+
+export function UpsellLadderModal() {
+  const locale = useLocale() as Locale;
+  const t = useTranslations("upsell");
+  const tc = useTranslations("common");
+  const { lines, add } = useCart();
+  const { steps, currentStep, isOpen, cumulativeSavings, shown, openLadder, nextStep, skipStep, closeLadder } = useUpsell();
+  const prevLength = useRef(lines.length);
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, closeLadder);
+
+  // Track view when step changes
+  useEffect(() => {
+    if (isOpen && step) {
+      trackUpsellView(currentStep + 1, steps.length, step.product.id);
+    }
+  }, [isOpen, currentStep]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Watch for new items added to cart → trigger ladder once per session
+  useEffect(() => {
+    const current = lines.length;
+    if (current > prevLength.current && !shown && current === 1) {
+      // First item added — fetch products and build ladder
+      getUpsellProducts(locale).then((products) => {
+        const ladder = buildUpsellLadder(lines, products);
+        if (ladder.length >= 2) {
+          // Small delay so cart toast settles first
+          setTimeout(() => openLadder(ladder), 600);
+        }
+      });
+    }
+    prevLength.current = current;
+  }, [lines.length]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const step = steps[currentStep];
+  if (!step) return null;
+
+  // Track impression when step changes
+  // (we call it inline; effect would cause double-fire on strict mode)
+
+
+  const isFreeGift = step.stepType === "free_gift";
+  const totalSteps = steps.length;
+  const displaySavings = cumulativeSavings;
+
+  function handleAccept() {
+    trackUpsellAccept(currentStep + 1, step.product.id, step.savedAmount);
+    add(
+      {
+        productId: step.product.id,
+        slug: step.product.slug,
+        name: step.product.name,
+        image: step.product.images[0]?.url ?? "",
+        price: step.product.price,
+        oldPrice: step.product.oldPrice,
+        upsellDiscountPercent: step.discountPercent,
+      },
+      1,
+    );
+    trackAddToCart(step.product.slug, step.discountedPrice, 1);
+    nextStep(step.savedAmount);
+  }
+
+  return (
+    <AnimatePresence>
+      {isOpen && (
+        <>
+          {/* Backdrop */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeLadder}
+            aria-hidden
+            className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
+          />
+
+          {/* Modal. The dialog role sits on a stable wrapper because the inner
+              element is keyed by step and remounts on every advance — the ref
+              and focus management would be torn down with it. */}
+          <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="upsell-offer-title"
+            tabIndex={-1}
+            className="fixed inset-x-4 bottom-0 z-[61] mx-auto max-w-sm sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
+          >
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className={`overflow-hidden rounded-2xl border shadow-2xl ${isFreeGift ? "border-gold/50 bg-gradient-to-b from-gold/10 to-ink" : "border-line bg-surface"}`}>
+              {/* Header */}
+              <div className={`px-5 py-4 ${isFreeGift ? "bg-gold/10" : "bg-surface-2"}`}>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    {isFreeGift ? (
+                      <span className="text-xl">🎁</span>
+                    ) : (
+                      <span className="text-base font-semibold text-accent">
+                        {t("stepOf", { step: currentStep + 1, total: totalSteps })}
+                      </span>
+                    )}
+                    {isFreeGift && (
+                      <span className="font-display text-sm font-bold uppercase tracking-widest text-gold-ink">
+                        {t("freeGiftTitle")}
+                      </span>
+                    )}
+                  </div>
+                  <button onClick={closeLadder} aria-label={tc("close")} className="text-faint hover:text-fg">
+                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+                    </svg>
+                  </button>
+                </div>
+
+                {/* Savings display */}
+                {displaySavings > 0 && (
+                  <motion.p
+                    key={displaySavings}
+                    initial={{ opacity: 0, y: -4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className={`mt-2 text-sm font-semibold ${isFreeGift ? "text-gold-ink" : "text-accent"}`}
+                  >
+                    {isFreeGift
+                      ? t("freeGiftCovered", { amount: formatMoney(displaySavings, locale) })
+                      : t("savedSoFar", { amount: formatMoney(displaySavings, locale) })}
+                  </motion.p>
+                )}
+                {!isFreeGift && displaySavings === 0 && (
+                  <p className="mt-1 text-sm text-muted">{t("growSavings")}</p>
+                )}
+              </div>
+
+              {/* Product */}
+              <div className="flex gap-4 px-5 py-4">
+                <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-surface-2">
+                  <Image
+                    src={step.product.images[0]?.url ?? ""}
+                    alt={step.product.name}
+                    fill
+                    sizes="80px"
+                    className="object-contain p-2"
+                  />
+                  {isFreeGift && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-gold/20">
+                      <span className="text-2xl">🎁</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex flex-1 flex-col justify-center">
+                  <p className="text-xs text-muted">{step.reason}</p>
+                  {/* Names the dialog: what a screen reader announces on open
+                      is the product being offered. */}
+                  <p id="upsell-offer-title" className="mt-0.5 font-medium text-fg">{step.product.name}</p>
+
+                  {/* Stars, only where there are ratings to show. */}
+                  {step.product.rating > 0 && (
+                    <div className="mt-1 flex items-center gap-1">
+                      <span className="text-xs text-gold-ink">{"★".repeat(Math.round(step.product.rating))}</span>
+                      <span className="text-xs text-faint">{step.product.reviewCount}</span>
+                    </div>
+                  )}
+
+                  {/* Price */}
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-sm text-faint line-through">
+                      {formatMoney(step.product.price, locale)}
+                    </span>
+                    {isFreeGift ? (
+                      <span className="font-display text-lg font-bold text-gold-ink">
+                        {t("freeLabel")}
+                      </span>
+                    ) : (
+                      <>
+                        <span className="font-display text-base font-bold text-accent-strong">
+                          {formatMoney(step.discountedPrice, locale)}
+                        </span>
+                        <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold text-accent">
+                          −{step.discountPercent}%
+                        </span>
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Free gift coverage bar */}
+              {isFreeGift && displaySavings > 0 && (
+                <div className="px-5 pb-3">
+                  <div className="flex justify-between text-xs text-faint mb-1">
+                    <span>{t("savedSoFar", { amount: formatMoney(displaySavings, locale) })}</span>
+                    <span>{formatMoney(step.product.price, locale)}</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-surface-3">
+                    <motion.div
+                      initial={{ width: 0 }}
+                      animate={{ width: `${Math.min(100, (displaySavings / step.product.price) * 100)}%` }}
+                      transition={{ duration: 0.8, ease: "easeOut" }}
+                      className="h-full rounded-full bg-gold"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* CTA buttons */}
+              <div className="flex gap-3 px-5 pb-5">
+                <button
+                  onClick={handleAccept}
+                  className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                    isFreeGift
+                      ? "bg-gold text-fg hover:brightness-95"
+                      : "bg-accent text-white hover:bg-accent-strong"
+                  }`}
+                >
+                  {isFreeGift ? t("freeGiftCta") : t("accept")}
+                </button>
+                <button
+                  onClick={() => { trackUpsellSkip(currentStep + 1, step.product.id); skipStep(); }}
+                  className="rounded-full border border-line px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-fg"
+                >
+                  {t("skip")}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+          </div>
+        </>
+      )}
+    </AnimatePresence>
+  );
+}

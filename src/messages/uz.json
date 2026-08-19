@@ -1,0 +1,1295 @@
+{
+  "nav": {
+    "shop": "Do‘kon",
+    "products": "Mahsulotlar",
+    "about": "Kompaniya",
+    "blog": "Blog",
+    "contact": "Aloqa",
+    "cart": "Savatcha",
+    "openMenu": "Menyuni ochish",
+    "closeMenu": "Yopish",
+    "faqs": "Savol-javob",
+    "account": "Mening hisobim",
+    "shopByCategories": "Kategoriyalar bo‘yicha",
+    "allCategories": "Barcha kategoriyalar",
+    "topDeals": "Aksiyalar",
+    "home": "Bosh sahifa",
+    "ingredients": "Ingredientlar",
+    "experts": "Ekspertlar",
+    "brands": "Brendlar",
+    "news": "Yangiliklar",
+    "payment": "To‘lov",
+    "guarantee": "Kafolat",
+    "requisites": "Rekvizitlar",
+    "licenses": "Litsenziya va sertifikatlar",
+    "aboutUs": "Biz haqimizda",
+    "goals": "Maqsadlar",
+    "symptoms": "Belgilar",
+    "vitamins": "Vitaminlar",
+    "quiz": "AI konsultant",
+    "programs": "Dasturlar",
+    "reviews": "Sharhlar",
+    "wishlist": "Sevimlilar",
+    "menu": "Menyu",
+    "profile": "Mening profilim"
+  },
+  "common": {
+    "addToCart": "Savatga qo‘shish",
+    "buyNow": "Hozir buyurtma berish",
+    "viewAll": "Barchasini ko‘rish",
+    "learnMore": "Batafsil",
+    "from": "dan",
+    "reviews": "{count} ta sharh",
+    "inStock": "Sotuvda bor",
+    "outOfStock": "Sotuvda yo‘q",
+    "search": "Qidirish",
+    "quantity": "Miqdor",
+    "loading": "Yuklanmoqda…",
+    "origin": "Ishlab chiqarilgan",
+    "servings": "Hajmi",
+    "addedToCart": "Savatga qo‘shildi",
+    "viewCart": "Savatchaga o‘tish",
+    "backToTop": "Yuqoriga",
+    "addToCartShort": "Savatga",
+    "share": "Ulashish",
+    "skipToContent": "Asosiy qismga o'tish",
+    "errorTitle": "Xatolik yuz berdi",
+    "errorDesc": "Sahifani yuklashda muammo chiqdi. Qayta urinib ko'ring yoki bosh sahifaga qayting.",
+    "errorRetry": "Qayta urinish",
+    "errorHome": "Bosh sahifa",
+    "notFoundTitle": "Sahifa topilmadi",
+    "notFoundDesc": "Sahifa topilmadi · Страница не найдена",
+    "notFoundHome": "Bosh sahifaga qaytish",
+    "notFoundShop": "Do'konga o'tish",
+    "close": "Yopish",
+    "popularCategories": "Mashhur kategoriyalar"
+  },
+  "home": {
+    "hero": {
+      "eyebrow": "Shveytsariya, Germaniya va Rossiya sifati",
+      "title": "Har kuningiz uchun isbotlangan nutriyentlar",
+      "subtitle": "Go Vita — laboratoriyada sinovdan o‘tgan vitaminlar va biologik faol qo‘shimchalar. Sof tarkib, shaffof formulalar, eshigingizgacha yetkazib berish.",
+      "cta": "Do‘konni ko‘rish",
+      "secondaryCta": "Mahsulotlar haqida"
+    },
+    "slides": [
+      {
+        "eyebrow": "✦ Go Vita — Sog'liq uchun ishonchli hamkor",
+        "title": "Immunitetingizni kuchaytiring — bu qish sog' bo'ling",
+        "subtitle": "Shveytsariya sifatidagi vitamin va BADlar: ImmunoVit, Vitamin C+Zinc, Echinacea. Laboratoriyada sinalgan, natijalari isbotlangan.",
+        "cta": "Immunitet mahsulotlari"
+      },
+      {
+        "eyebrow": "✦ Ayollar uchun maxsus komplekslar",
+        "title": "Soch, teri va tirnoq — ichkaridan go'zal bo'ling",
+        "subtitle": "Biotin, Kollagen, Vitamin E — go'zallik vitaminlari birligida. 4–8 haftada ko'rinadigan natija.",
+        "cta": "Go'zallik vitaminlari"
+      },
+      {
+        "eyebrow": "✦ Butun oila uchun",
+        "title": "Boladan tortib kattaga — har bir yosh uchun vitamin",
+        "subtitle": "Bolalar multivitaminlari, D3 vitamini, Omega-3 va ota-onalar uchun maxsus komplekslar. Bepul maslahat bilan birga.",
+        "cta": "Oila vitaminlari"
+      }
+    ],
+    "pressTitle": "Ommaviy axborot vositalarida",
+    "top": {
+      "title": "Tepa mahsulotlar",
+      "subtitle": "Eng ko‘p tanlangan formulalar — taqqoslang va tanlang",
+      "buy": "Sotib olish",
+      "learn": "Batafsil",
+      "includes": "Tarkibida:"
+    },
+    "voices": {
+      "title": "Mijozlarimiz nima deydi",
+      "subtitle": "Minglab odam Go Vita’ga ishonadi",
+      "member": "Mijoz",
+      "join": "Hozir qo‘shilish"
+    },
+    "marquee": "Sertifikatlangan sifat · Hidsiz formulalar · Tez yetkazib berish · 30 kun kafolat",
+    "statement": {
+      "eyebrow": "Bizning falsafamiz",
+      "text": "Har bir formula laboratoriyada sinaladi, har bir tarkib isbotlangan. Biz ortiqcha narsalarni emas, natijani sotamiz."
+    },
+    "science": {
+      "eyebrow": "Fan va Sifat Asosida",
+      "title": "Evropa standartlaridagi sof va samarali formulalar.",
+      "subtitle": "Go Vita mahsulotlari ortiqcha kimyoviy qo'shimchalarsiz, maksimal so'rilish va xavfsizlik tamoyillari asosida ishlab chiqariladi.",
+      "points": {
+        "tested": {
+          "title": "Ko'p bosqichli tekshiruv",
+          "description": "Har bir partiya og'ir metallar, oksidlanish va tozalik bo'yicha ISO va GMP standartlariga muvofiq sinovdan o'tadi."
+        },
+        "transparent": {
+          "title": "100% Shaffof tarkib",
+          "description": "Yorliqdagi ma'lumot qadoq ichidagi tarkibga to'liq mos keladi. Yashirin qo'shimchalar va bo'yoqlarsiz."
+        },
+        "absorb": {
+          "title": "Maksimal biokirimlilik",
+          "description": "Biz faqat yuqori o'zlashtiriladigan shakllardan — xelat (bisglisinat), TG (triglitserid) va metillangan vitaminlardan foydalanamiz."
+        }
+      }
+    },
+    "categories": {
+      "eyebrow": "Mahsulot kategoriyalari",
+      "title": "Premium sifat",
+      "subtitle": "Har bir ehtiyoj uchun aniq yechim",
+      "lead": "Go Vita mahsulotlari yetakchi sog‘liqni saqlash mutaxassislari tavsiyalari asosida, Yevropa sifat standartlarida ishlab chiqariladi.",
+      "viewAll": "Barcha kategoriyalar"
+    },
+    "bestsellers": {
+      "title": "Eng ko‘p tanlanganlar",
+      "subtitle": "Mijozlarimiz eng ko‘p sevadigan mahsulotlar",
+      "eyebrow": "Mashhur"
+    },
+    "trust": {
+      "title": "Go Vita'ga nima uchun ishonishadi",
+      "stats": {
+        "customers": "Mamnun mijoz",
+        "rating": "O'rtacha baho",
+        "delivery": "ichida yetkazish",
+        "products": "Original mahsulot"
+      }
+    },
+    "cta": {
+      "eyebrow": "Sog’liq — eng katta boylik",
+      "title": "Sog’lig’ingizga bugun sarmoya kiriting",
+      "subtitle": "Bir necha daqiqada buyurtma bering — operatorimiz tasdiqlash uchun qo’ng’iroq qiladi.",
+      "button": "Do’konga o’tish",
+      "secondaryButton": "Ekspertlar bilan tanishing"
+    },
+    "recentlyViewed": {
+      "eyebrow": "Tarix",
+      "title": "So'nggi ko'rilgan mahsulotlar"
+    },
+    "forYou": {
+      "eyebrow": "Siz uchun",
+      "title": "Siz uchun tanlangan",
+      "subtitle": "Ko'rish tarixingiz asosida maxsus tanlangan mahsulotlar",
+      "subtitleStated": "Profilingizda ko‘rsatgan maqsadlaringiz asosida",
+      "because": "Nega:"
+    },
+    "similar": {
+      "eyebrow": "Tavsiya",
+      "title": "O'xshash mahsulotlar"
+    },
+    "bento": {
+      "b1Off": "45% gacha CHEGIRMA",
+      "b1Title": "Eksklyuziv tibbiy mahsulot chegirmalari",
+      "b2Off": "15% CHEGIRMA",
+      "b2Title": "Ayollar salomatligi",
+      "b3Off": "15% CHEGIRMA",
+      "b3Title": "Premium wellness mahsulotlar",
+      "viewMore": "Batafsil"
+    },
+    "newArrivals": {
+      "title": "Yangi mahsulotlar",
+      "subtitle": "Yangi kelgan mahsulotlar — allaqachon mavjud",
+      "eyebrow": "Yangi"
+    },
+    "quizPromo": {
+      "title": "Qaysi vitamin sizga kerakligini bilmayapsizmi?",
+      "subtitle": "Turmush tarzingiz haqida bir necha savolga javob bering — sizga mos nutriyentlar, yo'nalishlar va mahsulotlarni ko'rsatamiz.",
+      "step1": "Savollarga javob bering",
+      "step2": "Shaxsiy rejani oling",
+      "step3": "Bitta bosishda savatga",
+      "cta": "Testni boshlash",
+      "meta": "{count} ta savol · 2 daqiqa · bepul"
+    },
+    "doctors": {
+      "eyebrow": "Tibbiy kengash",
+      "title": "Kontentni shifokorlar tekshiradi",
+      "subtitle": "Sog'liq haqidagi har bir sahifa ortida ismi va malakasi ko'rsatilgan mutaxassis turadi."
+    },
+    "faq": {
+      "eyebrow": "Savol-javob",
+      "title": "Ko'p so'raladigan savollar",
+      "subtitle": "Javobini topmadingizmi — bizga yozing, operator bog'lanadi.",
+      "items": [
+        {
+          "question": "Buyurtma qanday rasmiylashtiriladi?",
+          "answer": "Saytda savatchani to'ldirasiz va telefon raqamingizni qoldirasiz. Operator qo'ng'iroq qilib buyurtmani tasdiqlaydi, keyin yetkazib berishga topshiriladi."
+        },
+        {
+          "question": "Yetkazib berish qancha vaqt oladi?",
+          "answer": "Toshkent bo'ylab odatda 1–3 kun. Viloyatlarga muddat yetkazib berish xizmatiga bog'liq — operator tasdiqlashda aniq aytadi."
+        },
+        {
+          "question": "To'lovni qanday amalga oshirish mumkin?",
+          "answer": "Payme, Click, Uzum, shuningdek Visa va Mastercard kartalari qabul qilinadi."
+        },
+        {
+          "question": "Mahsulotlar original ekaniga qanday ishonch hosil qilaman?",
+          "answer": "Har bir mahsulot rasmiy yetkazib beruvchidan keladi. Sertifikatlar va litsenziyalar «Litsenziya va sertifikatlar» sahifasida joylashtirilgan."
+        },
+        {
+          "question": "Vitaminlarni shifokorsiz ichsa bo'ladimi?",
+          "answer": "Biologik faol qo'shimchalar dori vositasi emas, lekin doimiy dori qabul qilayotgan, homilador yoki surunkali kasalligi bo'lganlar avval shifokor bilan maslahatlashishi kerak."
+        },
+        {
+          "question": "Mahsulotni qaytarish mumkinmi?",
+          "answer": "Ochilmagan va butun qadoqdagi mahsulot 30 kun ichida qaytariladi. Batafsil shartlar «Kafolat» sahifasida."
+        }
+      ]
+    },
+    "newsletter": {
+      "eyebrow": "Xabardor bo'ling",
+      "title": "Yangi maqolalar va aksiyalar",
+      "subtitle": "Haftada bir marta: shifokorlar tayyorlagan materiallar va yopiq chegirmalar. Spam yo'q.",
+      "label": "Elektron pochtangiz",
+      "placeholder": "siz@example.com",
+      "submit": "Obuna bo'lish",
+      "success": "Deyarli tayyor",
+      "successNote": "Pochtangizga tasdiqlash havolasini yubordik. Havolani bosgach obuna faollashadi.",
+      "error": "Yuborib bo'lmadi. Pochtani tekshirib, qayta urinib ko'ring.",
+      "privacy": "Istalgan vaqtda obunani bekor qilishingiz mumkin.",
+      "telegram": "Telegram kanalimiz"
+    },
+    "deal": {
+      "title": "Kun tovari",
+      "endsIn": "Tugashiga",
+      "save": "{amount} tejaysiz"
+    },
+    "discounts": {
+      "eyebrow": "{percent}% gacha chegirma",
+      "eyebrowPlain": "Chegirmalar",
+      "title": "Chegirmadagi mahsulotlar",
+      "subtitle": "Narxi tushgan vitamin va BADlar — omborda bor, bugun yetkazamiz."
+    },
+    "slideLabel": "{number}-slayd",
+    "audience": {
+      "subtitle": "Tanlang — konsultant qolgan savollarni beradi va shaxsiy reja tuzadi.",
+      "cta": "Boshlash"
+    }
+  },
+  "product": {
+    "breadcrumbHome": "Bosh sahifa",
+    "highlights": "Asosiy afzalliklar",
+    "benefits": "Foydalari",
+    "ingredients": "Tarkibi",
+    "ingredientName": "Nomi",
+    "ingredientAmount": "Miqdori",
+    "ingredientDV": "Kunlik me’yor",
+    "howToUse": "Qabul qilish tartibi",
+    "faq": "Ko‘p so‘raladigan savollar",
+    "reviews": "Mijozlar sharhlari",
+    "upsell": "Buni ham qo‘shing",
+    "upsellDiscount": "{percent}% chegirma",
+    "addUpsell": "Qo‘shish",
+    "buyBox": {
+      "guarantee": "30 kun kafolat",
+      "delivery": "1–3 kun yetkazish",
+      "secure": "Xavfsiz to'lov",
+      "youSave": "{amount} tejaysiz",
+      "payWith": "To'lov usullari",
+      "decrease": "Miqdorni kamaytirish",
+      "increase": "Miqdorni oshirish",
+      "total": "Jami"
+    },
+    "tabsLabel": "Mahsulot ma'lumotlari",
+    "showMoreReviews": "Yana {count} ta sharh",
+    "showLessReviews": "Yopish",
+    "verifiedBuyer": "Tasdiqlangan xarid",
+    "gallery": {
+      "label": "Mahsulot galereyasi",
+      "previous": "Oldingi rasm",
+      "next": "Keyingi rasm",
+      "thumb": "{index}-rasm",
+      "counter": "{index} / {total}"
+    },
+    "notFound": "Mahsulot topilmadi",
+    "backToShop": "Do‘konga qaytish",
+    "reviewedBy": "Shifokor tomonidan tekshirilgan",
+    "certifications": "Sertifikatlar va sifat",
+    "sourcing": "Kelib chiqishi va shaffoflik",
+    "coaNote": "Har bir partiya og‘ir metallar va patogenlarga tekshiriladi. Tahlil sertifikati (COA) so‘rov bo‘yicha taqdim etiladi.",
+    "healthContext": {
+      "title": "Bu mahsulot qanday maqsadlarga xizmat qiladi",
+      "subtitle": "Batafsil ma'lumot uchun tegishli bo'limga o'ting.",
+      "disclaimer": "Ushbu ma'lumot tanishtirish uchun va shifokor maslahatini almashtirmaydi. Qabul qilishdan oldin mutaxassis bilan maslahatlashing."
+    }
+  },
+  "shop": {
+    "title": "Barcha mahsulotlar",
+    "subtitle": "Sog‘liq va energiya uchun to‘liq katalog",
+    "all": "Barchasi",
+    "sort": "Saralash",
+    "sortPopular": "Ommabop",
+    "sortPriceAsc": "Narx: arzonidan",
+    "sortPriceDesc": "Narx: qimmatidan",
+    "sortNew": "Yangi",
+    "empty": "Mahsulot topilmadi",
+    "resultsCount": "{count} ta mahsulot",
+    "searchResults": "“{query}” bo‘yicha natijalar",
+    "searchPlaceholder": "Mahsulot qidirish…",
+    "filters": "Filtrlar",
+    "origin": "Ishlab chiqaruvchi",
+    "allOrigins": "Barchasi",
+    "priceFrom": "Narx, dan",
+    "priceTo": "gacha",
+    "apply": "Qo‘llash",
+    "clearFilters": "Filtrlarni tozalash",
+    "categoriesTitle": "Kategoriyalar",
+    "byGoal": "Maqsad bo'yicha",
+    "readGoal": "{goal} haqida batafsil",
+    "activeFilters": "Tanlangan",
+    "removeFilter": "{name} filtrini olib tashlash",
+    "priceFromValue": "{value} dan",
+    "priceToValue": "{value} gacha"
+  },
+  "cart": {
+    "title": "Savatcha",
+    "empty": "Savatchangiz bo’sh",
+    "emptyHint": "Mahsulotlarni ko’rib, sevimlilaringizni qo’shing",
+    "emptyCta": "Do’konga o’tish",
+    "summary": "Buyurtma xulosasi",
+    "subtotal": "Mahsulotlar",
+    "discount": "Chegirma",
+    "shipping": "Yetkazib berish",
+    "free": "Bepul",
+    "total": "Jami",
+    "checkout": "Buyurtmani rasmiylashtirish",
+    "remove": "O’chirish",
+    "continue": "Xaridni davom ettirish",
+    "freeShippingProgress": "Bepul yetkazib berishgacha {amount}",
+    "freeShippingUnlocked": "Bepul yetkazib berish ochildi!",
+    "trustGuarantee": "30 kunlik qoniqish kafolati",
+    "trustDelivery": "1–3 kun ichida yetkazib berish",
+    "trustSecure": "Xavfsiz to’lov"
+  },
+  "checkout": {
+    "title": "Buyurtmani rasmiylashtirish",
+    "contactSection": "Aloqa ma’lumotlari",
+    "name": "Ism familiya",
+    "namePlaceholder": "Ismingiz",
+    "phone": "Telefon raqami",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "deliverySection": "Yetkazib berish",
+    "region": "Viloyat / shahar",
+    "regionPlaceholder": "Viloyatni tanlang",
+    "address": "Manzil",
+    "addressPlaceholder": "Ko‘cha, uy, kvartira",
+    "note": "Izoh (ixtiyoriy)",
+    "notePlaceholder": "Qo‘shimcha ma’lumot",
+    "method": "Yetkazib berish usuli",
+    "methodCourier": "Kuryer orqali",
+    "methodPickup": "O‘zi olib ketish",
+    "paymentNote": "To‘lov yetkazib berishda — naqd yoki karta orqali.",
+    "summary": "Buyurtma tarkibi",
+    "submit": "Buyurtmani yuborish",
+    "submitting": "Yuborilmoqda…",
+    "operatorNote": "Buyurtma bergach, operatorimiz tasdiqlash uchun qo‘ng‘iroq qiladi.",
+    "upsellTitle": "Buyurtmangizga qo‘shing va tejang",
+    "errorRequired": "Bu maydon majburiy",
+    "errorPhone": "To‘g‘ri telefon raqamini kiriting",
+    "success": {
+      "title": "Buyurtmangiz qabul qilindi!",
+      "subtitle": "Tez orada operatorimiz siz bilan bog’lanadi.",
+      "orderId": "Buyurtma raqami",
+      "home": "Bosh sahifaga",
+      "whatsNext": "Keyingi qadam",
+      "stepLabel": "{n}-qadam",
+      "step1": "Operatorimiz 15–30 daqiqa ichida buyurtmangizni tasdiqlash uchun qo’ng’iroq qiladi",
+      "step2": "Buyurtma 24–48 soat ichida yig’ilib jo’natishga tayyorlanadi",
+      "step3": "Kuryer manzilingizga yetkazib beradi — to’lov qabul qilayotganda",
+      "continueShopping": "Xarid qilishni davom ettirish",
+      "trackBot": "Telegram orqali buyurtmani kuzatish",
+      "trackBotDesc": "@drschatsstorebot orqali buyurtma holatini real vaqtda bilib turing"
+    },
+    "upsellAdd": "Qo'shish",
+    "upsellFree": "BEPUL 🎁",
+    "regions": {
+      "tashkentCity": "Toshkent shahri",
+      "tashkent": "Toshkent viloyati",
+      "samarkand": "Samarqand viloyati",
+      "fergana": "Farg‘ona viloyati",
+      "andijan": "Andijon viloyati",
+      "namangan": "Namangan viloyati",
+      "bukhara": "Buxoro viloyati",
+      "khorezm": "Xorazm viloyati",
+      "kashkadarya": "Qashqadaryo viloyati",
+      "surkhandarya": "Surxondaryo viloyati",
+      "syrdarya": "Sirdaryo viloyati",
+      "jizzakh": "Jizzax viloyati",
+      "navoi": "Navoiy viloyati",
+      "karakalpakstan": "Qoraqalpog‘iston Respublikasi"
+    },
+    "decreaseFor": "{name}: sonini kamaytirish",
+    "increaseFor": "{name}: sonini oshirish",
+    "removeFor": "{name}: buyurtmadan olib tashlash",
+    "remove": "Olib tashlash",
+    "email": "Elektron pochta",
+    "emailPlaceholder": "siz@example.com",
+    "emailHint": "Ixtiyoriy. Buyurtma tasdig‘ini shu manzilga yuboramiz.",
+    "subscribeLabel": "Aksiya va yangiliklar haqida xat olib turaman",
+    "errorEmail": "Pochta manzili noto‘g‘ri"
+  },
+  "footer": {
+    "tagline": "Sog‘lom hayot uchun isbotlangan nutriyentlar.",
+    "shop": "Do‘kon",
+    "company": "Kompaniya",
+    "support": "Yordam",
+    "delivery": "Yetkazib berish",
+    "offer": "Ommaviy oferta",
+    "privacy": "Maxfiylik siyosati",
+    "rights": "Barcha huquqlar himoyalangan.",
+    "language": "Til"
+  },
+  "about": {
+    "title": "Go Vita haqida",
+    "lead": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitaminlar va biologik faol qo‘shimchalar yetkazib beruvchi.",
+    "body": "Go Vita Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qiladi. Biz har bir mahsulotni puxta tanlaymiz, sifatni kafolatlaymiz va mijozlarimizga ishonchli xizmat ko‘rsatamiz.",
+    "values": {
+      "quality": {
+        "title": "Sifat",
+        "description": "Faqat sertifikatlangan, laboratoriyada sinalgan mahsulotlar."
+      },
+      "trust": {
+        "title": "Ishonch",
+        "description": "2000+ dorixona va minglab mijozlar bizni tanlaydi."
+      },
+      "care": {
+        "title": "G‘amxo‘rlik",
+        "description": "Har bir mijoz uchun individual yondashuv."
+      }
+    }
+  },
+  "contact": {
+    "title": "Biz bilan bog’laning",
+    "subtitle": "Savollaringiz bormi? Biz yordam berishga tayyormiz.",
+    "phone": "Telefon",
+    "email": "Email",
+    "address": "Manzil",
+    "addressValue": "Toshkent shahri, O’zbekiston",
+    "workHours": "Dushanba–Shanba, 09:00–18:00",
+    "emailHint": "24 soat ichida javob beramiz",
+    "telegramTitle": "Telegram kanalimiz",
+    "telegramHint": "Tez javob va yangiliklar uchun",
+    "channels": {
+      "title": "Qaysi masala bo'yicha murojaat qilyapsiz?",
+      "subtitle": "Har bir yo'nalish uchun alohida kanal — javob tezroq keladi.",
+      "orders": {
+        "title": "Buyurtma va yetkazib berish",
+        "description": "Buyurtma holati, o'zgartirish, qaytarish."
+      },
+      "support": {
+        "title": "Mahsulot bo'yicha maslahat",
+        "description": "Qaysi mahsulot mos kelishi, tarkib va qabul tartibi."
+      },
+      "whatsapp": {
+        "title": "WhatsApp orqali yozish",
+        "description": "Qo'ng'iroq qilishga qulay bo'lmasa — yozib qoldiring."
+      },
+      "pharmacy": {
+        "title": "Dorixonalar uchun",
+        "description": "Ulgurji narxlar, assortiment va yetkazib berish shartlari."
+      },
+      "distributor": {
+        "title": "Distributorlik",
+        "description": "Viloyatlarda hamkorlik va rasmiy vakillik."
+      },
+      "corporate": {
+        "title": "Korporativ buyurtma (B2B)",
+        "description": "Xodimlar uchun to'plamlar, sovg'a va korporativ dasturlar."
+      }
+    }
+  },
+  "blog": {
+    "title": "Sog‘liq blogi",
+    "subtitle": "Vitaminlar va sog‘lom hayot haqida foydali maqolalar",
+    "comingSoon": "Maqolalar tez orada qo‘shiladi.",
+    "minRead": "{min} daqiqa o‘qish",
+    "readMore": "O‘qish",
+    "backToBlog": "Blogga qaytish",
+    "relatedProducts": "Mos mahsulotlar",
+    "eyebrow": "Yangiliklar",
+    "viewAll": "Barcha maqolalar",
+    "categoriesTitle": "Bo'limlar",
+    "categorySubtitle": "«{category}» bo'limidagi materiallar",
+    "categoryEmpty": "Bu bo'limda hozircha material yo'q.",
+    "categories": {
+      "nutrition": "Ovqatlanish",
+      "vitamins": "Vitaminlar",
+      "lifestyle": "Turmush tarzi",
+      "science": "Fan",
+      "research": "Tadqiqotlar",
+      "kids": "Bolalar",
+      "pregnancy": "Homiladorlik",
+      "sports": "Sport"
+    }
+  },
+  "meta": {
+    "homeTitle": "Go Vita — Evropa sifatidagi Vitaminlar va BAD",
+    "homeDescription": "Klinik tasdiqlangan, maksimal biokirimlilikka ega vitaminlar va biologik faol qo'shimchalar. O'zbekiston bo'ylab tezkor yetkazib berish va ekspert maslahati.",
+    "shopTitle": "Do‘kon — Go Vita Premium Vitaminlar va BAD",
+    "shopDescription": "Sog‘liq, immunitet va energiya uchun to‘liq vitamin va BAD katalogi. Laboratoriyada sinalgan sifat va shaffof formulalar."
+  },
+  "legal": {
+    "notMedicine": "Dori vositasi emas",
+    "warning": "Dori vositasi emas. Mutaxassis bilan maslahatlashing.",
+    "footer": "Biologik faol qo‘shimchalar dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing. Kontent faqat ma’lumiy xarakterga ega.",
+    "articleDisclaimer": "Ushbu maqola faqat ma’lumiy xarakterga ega va malakali shifokor maslahati hamda davolanishning o‘rnini bosmaydi. Har qanday qo‘shimchani qabul qilishdan oldin shifokor bilan maslahatlashing."
+  },
+  "experts": {
+    "badge": "Tibbiy ekspertlar kengashi",
+    "title": "Tibbiy ekspertlar kengashi",
+    "subtitle": "Saytdagi har bir mahsulot va maqola malakali mutaxassislar tomonidan tekshiriladi",
+    "credentials": "Malaka va sertifikatlar",
+    "profiles": "Tashqi profillar",
+    "reviewed": "Tekshiruvchi",
+    "back": "Kengashga qaytish",
+    "eyebrow": "Tibbiy nazorat"
+  },
+  "delivery": {
+    "title": "Yetkazib berish va to’lov",
+    "subtitle": "Toshkent va butun O’zbekiston bo’ylab tez va ishonchli yetkazib berish",
+    "eyebrow": "Yetkazib berish",
+    "freeBannerTitle": "300 000 so’mdan ortiq xaridga — bepul yetkazib berish",
+    "freeBannerDesc": "Toshkent bo’ylab. Viloyatlarga 700 000 so’mdan yuqori xaridlarda.",
+    "shippingTitle": "Yetkazib berish usullari",
+    "tashkentTitle": "Toshkent bo’ylab — kuryer",
+    "tashkentTime": "1–2 ish kuni",
+    "tashkentFree": "300 000 so’mdan ortiq xaridga bepul. Aks holda — 20 000 so’m.",
+    "regionsTitle": "Viloyatlarga — EMU pochta",
+    "regionsTime": "2–5 ish kuni",
+    "regionsFree": "700 000 so’mdan ortiq xaridga bepul. Aks holda — 30 000 so’m.",
+    "pickupTitle": "O’zi olib ketish",
+    "pickupTime": "Bepul",
+    "pickupFree": "Toshkent shahridagi omborimizdan.",
+    "paymentTitle": "To’lov usullari",
+    "payCod": "Naqd / karta yetkazishda",
+    "payClick": "Click",
+    "payPayme": "Payme",
+    "payInstallment": "Bo’lib to’lash",
+    "note": "Buyurtma tasdiqlangach, operator siz bilan bog’lanib, aniq vaqt va manzilni kelishadi.",
+    "contactCta": "Bog’lanish"
+  },
+  "loyalty": {
+    "title": "Sodiqlik dasturi",
+    "subtitle": "Doimiy mijozlar va hamkorlar uchun imtiyozlar",
+    "privilegedTitle": "Imtiyozli mijoz",
+    "privilegedDesc": "Xaridlardan 15% gacha keshbek, haftalik aksiyalar va yopiq sotuvlarga kirish.",
+    "privilegedClub": "“Doimiylik klubi”: oyiga 50 balldan barqaror xarid qilsangiz, 6 oydan so‘ng qimmatli brend to‘plamlari sovg‘a.",
+    "consultantTitle": "Brend konsultanti",
+    "consultantDesc": "O‘z referal tarmog‘ini rivojlantiruvchi professional hamkorlar uchun maqom.",
+    "consultantLegal": "Bonuslar faqat Yakka tartibdagi tadbirkor (YTT) sifatida ro‘yxatdan o‘tib, reklama xizmatlari shartnomasi tuzilgandan so‘ng to‘lanadi — bu biznesning to‘liq qonuniyligini kafolatlaydi.",
+    "pointsTitle": "Ballar tizimi",
+    "pointsDesc": "Optom aylanma ballarga aylantiriladi. Bir ballning qiymati mahsulot toifasiga qarab o‘zgaradi:",
+    "pointsNew": "Yangiliklar — 1 ball = 2 900 so‘m",
+    "pointsStandard": "Standart mahsulot — 1 ball = 2 750 so‘m",
+    "pointsPromo": "Aksiya mahsuloti — 1 ball = 2 050 so‘m",
+    "cta": "Hamkor bo‘lish",
+    "join": "Ro‘yxatdan o‘tish",
+    "discount": "chegirma",
+    "fromAmount": "{amount} so'mdan"
+  },
+  "ingredients_page": {
+    "title": "Ingredientlar va sertifikatlar",
+    "subtitle": "Faol moddalar shaffof ko‘rsatkichi — har biri laboratoriyada tekshiriladi",
+    "badge": "Shaffoflik",
+    "foundIn": "Tarkibida bor:",
+    "synergyTitle": "Moslik va sinergiya",
+    "synergyDesc": "Qaysi nutriyentlar bir-birini kuchaytiradi, qaysilari to‘sqinlik qiladi",
+    "boost": "Kuchaytiradi",
+    "block": "To‘sqinlik qiladi",
+    "coaTitle": "Tahlil sertifikati (COA)",
+    "coaDesc": "Har bir partiya og‘ir metallar va patogenlarga mustaqil laboratoriyada tekshiriladi. Sertifikat so‘rov bo‘yicha taqdim etiladi."
+  },
+  "upsell": {
+    "stepOf": "{step}/{total} qadam",
+    "savedSoFar": "Tejadingiz: {amount}!",
+    "growSavings": "Tejamkorligingizni oshiring",
+    "accept": "Ha, qo'shaman!",
+    "skip": "O'tkazib yuboraman",
+    "freeGiftTitle": "MAXSUS SOVG'A",
+    "freeGiftCovered": "Tejamkorligingiz ({amount}) uni qoplaydi!",
+    "freeGiftCta": "Sovg'amni olaman!",
+    "freeLabel": "BEPUL",
+    "progressLabel": "Tejamkorlik: {amount}",
+    "progressSteps": "{done}/{total} qadam"
+  },
+  "cookie": {
+    "text": "Biz saytdan foydalanishni yaxshilash uchun cookie fayllardan foydalanamiz.",
+    "accept": "Qabul qilaman",
+    "more": "Batafsil"
+  },
+  "topbar": {
+    "announcement": "300 000 so'mdan ortiq xaridga bepul yetkazib berish 🚀"
+  },
+  "header": {
+    "needHelp": "Yordam kerakmi?",
+    "phone": "+998 71 200 70 80"
+  },
+  "badges": {
+    "hot": "YANGI",
+    "sale": "AKSIYA"
+  },
+  "pages": {
+    "brands": {
+      "crumb": "Brendlar",
+      "eyebrow": "Ishonchli ishlab chiqaruvchilar",
+      "title": "Brendlar",
+      "subtitle": "Shveytsariya, Germaniya va Rossiyaning yetakchi farma ishlab chiqaruvchilari bilan hamkorlik qilamiz.",
+      "items": [
+        {
+          "title": "Swiss Energy",
+          "text": "Shveytsariyaning premium vitamin va shipuchi tabletkalari.",
+          "meta": "Shveytsariya"
+        },
+        {
+          "title": "Doppelherz",
+          "text": "Germaniyaning klassik vitamin va mineral komplekslari.",
+          "meta": "Germaniya"
+        },
+        {
+          "title": "Now Foods",
+          "text": "Sport ovqatlanishi va BADlar bo‘yicha jahon brendi.",
+          "meta": "AQSh"
+        },
+        {
+          "title": "Evalar",
+          "text": "Rossiyaning o‘simlik asosidagi qo‘shimchalari.",
+          "meta": "Rossiya"
+        },
+        {
+          "title": "Solgar",
+          "text": "Premium vitamin va minerallar, oltin standart.",
+          "meta": "AQSh"
+        },
+        {
+          "title": "Orzax",
+          "text": "Mahalliy ishonchli BAD ishlab chiqaruvchi.",
+          "meta": "O‘zbekiston"
+        }
+      ]
+    },
+    "about": {
+      "crumb": "Biz haqimizda",
+      "eyebrow": "Biz haqimizda",
+      "title": "Go Vita",
+      "subtitle": "10 yildan ortiq tajriba bilan O‘zbekistonda sifatli vitamin va BAD yetkazib beruvchi.",
+      "intro": "Biz Shveytsariya, Germaniya va Rossiyaning yetakchi ishlab chiqaruvchilari bilan hamkorlik qilamiz, 2000+ dorixona va minglab mijozlarga xizmat ko‘rsatamiz.",
+      "stats": [
+        {
+          "value": "10+",
+          "label": "Yillik tajriba"
+        },
+        {
+          "value": "2000+",
+          "label": "Hamkor dorixona"
+        },
+        {
+          "value": "50 000+",
+          "label": "Mijoz"
+        },
+        {
+          "value": "120+",
+          "label": "Mahsulot"
+        }
+      ],
+      "mission": "Bizning maqsadimiz — har bir o'zbek oilasiga dunyo standartidagi vitaminlar va biologik qo'shimchalarni qulay narxda yetkazib berish.",
+      "values": [
+        {
+          "title": "Sifat",
+          "text": "Faqat sertifikatlangan, laboratoriyada sinalgan mahsulotlar."
+        },
+        {
+          "title": "Ishonch",
+          "text": "Minglab mijoz va dorixona bizni tanlaydi."
+        },
+        {
+          "title": "G‘amxo‘rlik",
+          "text": "Har mijozga individual yondashuv."
+        }
+      ],
+      "certsLabel": "Sertifikatlar",
+      "quality": {
+        "eyebrow": "Sifat zanjiri",
+        "title": "Mahsulot javongacha nimalardan o'tadi",
+        "subtitle": "Har bir bosqichda hujjat qoladi. Quyida zanjirning har bir bo'g'ini nimani anglatishi tushuntirilgan.",
+        "origin": {
+          "title": "Kelib chiqishi",
+          "body": "Xomashyo va tayyor mahsulot qaysi mamlakatda ishlab chiqarilgani har bir mahsulot sahifasida ko'rsatiladi."
+        },
+        "production": {
+          "title": "Ishlab chiqarish",
+          "body": "Ishlab chiqarish cGMP talablariga javob beradigan korxonalarda amalga oshiriladi."
+        },
+        "laboratory": {
+          "title": "Laboratoriya nazorati",
+          "body": "Partiyalar tarkib mosligi, og'ir metallar va mikrobiologik ko'rsatkichlar bo'yicha tekshiriladi."
+        },
+        "certification": {
+          "title": "Sertifikatlash",
+          "body": "cGMP, ISO 22000, Halal va IFOS — mahsulot turiga qarab qo'llaniladigan standartlar."
+        },
+        "delivery": {
+          "title": "Saqlash va yetkazish",
+          "body": "Saqlash sharoiti va muddati nazorat qilinadi; mahsulot rasmiy yetkazib beruvchidan keladi."
+        },
+        "coaTitle": "Tahlil sertifikati (COA) so'rov bo'yicha",
+        "coaBody": "Aniq partiya bo'yicha laboratoriya natijasi kerak bo'lsa — so'rov yuboring, hujjatni taqdim etamiz.",
+        "coaCta": "Litsenziya va sertifikatlar"
+      }
+    },
+    "news": {
+      "crumb": "Yangiliklar",
+      "eyebrow": "Kompaniya yangiliklari",
+      "title": "Yangiliklar",
+      "subtitle": "Go Vita hayotidan so‘nggi yangiliklar va e’lonlar.",
+      "items": [
+        {
+          "title": "Yangi Swiss Energy liniyasi keldi",
+          "text": "Shveytsariyadan yangi shipuchi vitaminlar assortimenti.",
+          "meta": "2026-06-01"
+        },
+        {
+          "title": "Toshkentda yangi ombor ochildi",
+          "text": "Tezroq yetkazib berish uchun yangi logistika markazi.",
+          "meta": "2026-05-12"
+        },
+        {
+          "title": "2000-chi hamkor dorixona",
+          "text": "Hamkorlik tarmog‘imiz yana kengaydi.",
+          "meta": "2026-04-20"
+        }
+      ]
+    },
+    "payment": {
+      "crumb": "To’lov",
+      "eyebrow": "Qulay to’lov",
+      "title": "To’lov usullari",
+      "subtitle": "Sizga qulay bo’lgan har qanday usulda to’lashingiz mumkin.",
+      "secureTitle": "100% xavfsiz to’lov",
+      "secureNote": "Barcha onlayn to’lovlar Click va Payme shifrlangan shlyuzlari orqali amalga oshiriladi. Karta ma’lumotlari saqlanmaydi.",
+      "methods": [
+        {
+          "title": "Click",
+          "text": "Click ilovasi yoki USSD orqali onlayn to‘lov.",
+          "meta": "Onlayn"
+        },
+        {
+          "title": "Payme",
+          "text": "Payme orqali xavfsiz onlayn to‘lov.",
+          "meta": "Onlayn"
+        },
+        {
+          "title": "Naqd / karta",
+          "text": "Yetkazib berishda naqd yoki karta orqali.",
+          "meta": "Yetkazishda"
+        },
+        {
+          "title": "Bo‘lib to‘lash",
+          "text": "Asosiy banklar kartalari bilan bo‘lib to‘lash.",
+          "meta": "Rassrochka"
+        }
+      ],
+      "faq": [
+        {
+          "question": "To‘lov xavfsizmi?",
+          "answer": "Ha, barcha onlayn to‘lovlar Click va Payme shifrlangan shlyuzlari orqali amalga oshiriladi."
+        },
+        {
+          "question": "Yetkazib berishda to‘lasam bo‘ladimi?",
+          "answer": "Albatta — naqd yoki karta orqali kuryerga to‘lashingiz mumkin."
+        }
+      ]
+    },
+    "guarantee": {
+      "crumb": "Kafolat",
+      "eyebrow": "Bizning kafolatimiz",
+      "title": "Kafolat va qaytarish",
+      "subtitle": "Mahsulotlarimiz sifati va sof tarkibiga to’liq kafolat beramiz.",
+      "badgeLabel": "kun qaytarish kafolati",
+      "badgeDesc": "Qoniqmasangiz — hech qanday savolsiz qaytaramiz.",
+      "howToReturn": "Qaytarish tartibi",
+      "returnStep1": "Operatorga qo’ng’iroq qiling yoki Telegram orqali yozing.",
+      "returnStep2": "Mahsulotni asl qadoqda kuryerga topshiring.",
+      "returnStep3": "To’lovingiz 1–3 ish kunida qaytariladi.",
+      "points": [
+        {
+          "title": "30 kunlik kafolat",
+          "text": "Qoniqmasangiz, 30 kun ichida qaytaring."
+        },
+        {
+          "title": "Original mahsulot",
+          "text": "Faqat rasmiy, sertifikatlangan mahsulotlar."
+        },
+        {
+          "title": "Sifat nazorati",
+          "text": "Har partiya og‘ir metall va patogenlarga tekshiriladi."
+        }
+      ],
+      "faq": [
+        {
+          "question": "Mahsulotni qanday qaytaraman?",
+          "answer": "Operatorga qo‘ng‘iroq qiling — qaytarish 30 kun ichida amalga oshiriladi (ochilmagan qadoq)."
+        },
+        {
+          "question": "Pul qaytariladimi?",
+          "answer": "Ha, qaytarilgan mahsulot uchun to‘lovingiz to‘liq qaytariladi."
+        }
+      ]
+    },
+    "requisites": {
+      "crumb": "Rekvizitlar",
+      "eyebrow": "Yuridik ma’lumotlar",
+      "title": "Rekvizitlar",
+      "subtitle": "Kompaniyaning rasmiy yuridik va bank rekvizitlari.",
+      "rows": [
+        {
+          "label": "Tashkilot nomi",
+          "value": "“GO VITA HEALTHCARE” MChJ"
+        },
+        {
+          "label": "Manzil",
+          "value": "Toshkent shahri, Shayxontohur tumani, Navoiy ko‘chasi, 24-uy"
+        },
+        {
+          "label": "STIR (INN)",
+          "value": "309 845 210"
+        },
+        {
+          "label": "MFO",
+          "value": "00 440"
+        },
+        {
+          "label": "Hisob raqami",
+          "value": "2020 8000 0000 0000 0000"
+        },
+        {
+          "label": "Bank",
+          "value": "AT Bank, Toshkent"
+        },
+        {
+          "label": "Telefon",
+          "value": "+998 71 200 00 00"
+        },
+        {
+          "label": "Email",
+          "value": "info@alimkhanov.com"
+        }
+      ]
+    },
+    "licenses": {
+      "crumb": "Litsenziya va sertifikatlar",
+      "eyebrow": "Rasmiy hujjatlar",
+      "title": "Litsenziya va sertifikatlar",
+      "subtitle": "Faoliyatimiz qonuniy va sertifikatlangan — barcha hujjatlar ochiq.",
+      "items": [
+        {
+          "title": "Farmatsevtika faoliyati litsenziyasi",
+          "text": "O‘zbekiston Sog‘liqni saqlash vazirligi tomonidan berilgan.",
+          "meta": "So‘liqni saqlash vazirligi"
+        },
+        {
+          "title": "GMP sertifikati",
+          "text": "Xalqaro ishlab chiqarish standartlariga muvofiqlik.",
+          "meta": "GMP"
+        },
+        {
+          "title": "ISO 22000",
+          "text": "Oziq-ovqat xavfsizligi boshqaruv tizimi.",
+          "meta": "ISO"
+        },
+        {
+          "title": "Halal sertifikati",
+          "text": "Mahsulotlar halal talablariga mos.",
+          "meta": "Halal"
+        },
+        {
+          "title": "Davlat ro‘yxatidan o‘tish guvohnomasi",
+          "text": "Har bir BAD davlat reyestrida ro‘yxatdan o‘tgan.",
+          "meta": "Reyestr"
+        },
+        {
+          "title": "Tahlil sertifikati (COA)",
+          "text": "Har partiya uchun laboratoriya tahlili.",
+          "meta": "COA"
+        }
+      ]
+    },
+    "deliveryFaqTitle": "Ko’p so’raladigan savollar",
+    "deliveryFaq": [
+      {
+        "question": "Yetkazib berish qancha vaqt oladi?",
+        "answer": "Toshkent bo’ylab 1–2 ish kuni, viloyatlarga EMU orqali 2–5 ish kuni."
+      },
+      {
+        "question": "Yetkazib berish bepulmi?",
+        "answer": "Toshkentda 300 000 so’mdan, viloyatlarda 700 000 so’mdan ortiq xaridga bepul."
+      }
+    ]
+  },
+  "socialProof": {
+    "bought": "sotib oldi"
+  },
+  "countdown": {
+    "label": "Aksiya tugashiga:",
+    "days": "kun",
+    "hours": "soat",
+    "minutes": "daqiqa",
+    "seconds": "soniya"
+  },
+  "wishlist": {
+    "add": "Sevimlilarga",
+    "remove": "Sevimlilardan olib tashlash",
+    "added": "Sevimlilarga qo'shildi",
+    "title": "Sevimlilar",
+    "count": "{count} ta mahsulot",
+    "empty": "Sevimlilar ro‘yxati hozircha bo‘sh.",
+    "emptyCta": "Katalogga o‘tish",
+    "metaDescription": "Saqlangan vitamin va BADlaringiz."
+  },
+  "exit": {
+    "title": "Ketmang! Sizga maxsus taklif bor",
+    "body": "Birinchi buyurtmaga 10% chegirma. Telefon raqamingizni qoldiring — operatorimiz siz bilan bog’lanadi.",
+    "phonePlaceholder": "+998 90 000 00 00",
+    "cta": "Chegirma olish",
+    "dismiss": "Yo’q, kerak emas",
+    "successMessage": "Rahmat! Tez orada bog’lanamiz."
+  },
+  "outOfStock": {
+    "notify": "Bu mahsulot hozirda sotuvda yo’q. Telefon raqamingizni qoldiring — mahsulot kelganda xabar beramiz.",
+    "phone": "+998 90 000 00 00",
+    "submit": "Xabar ber",
+    "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz."
+  },
+  "privacy": {
+    "title": "Maxfiylik siyosati",
+    "effective": "Kuchga kirish sanasi: 2026 yil 28 iyun",
+    "intro": "Dr. Schatz Store sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday ma’lumotlarni to’plashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
+    "sections": [
+      {
+        "heading": "1. Qanday ma’lumotlarni to’playmiz",
+        "body": "Telegram-bot (@drschatsstorebot) orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi."
+      },
+      {
+        "heading": "2. Ma’lumotlardan qanday foydalanamiz",
+        "body": "• Buyurtmalarni qayta ishlash va yetkazib berish\n• Bot orqali buyurtma holati haqida xabarnomalar\n• Mijozlarga texnik yordam berish\n• Xizmat sifatini yaxshilash"
+      },
+      {
+        "heading": "3. Uchinchi tomonlarga uzatish",
+        "body": "Biz shaxsiy ma’lumotlaringizni uchinchi tomonlarga sotmaymiz va uzatmaymiz, bundan mustasno:\n• Yetkazib berish xizmati — buyurtmani bajarish uchun zarur bo’lgan ism, telefon va manzil.\n\nBarcha hamkorlar sizning ma’lumotlaringiz maxfiyligini ta’minlashga majbur."
+      },
+      {
+        "heading": "4. Ma’lumotlarni saqlash va himoya qilish",
+        "body": "Ma’lumotlar shifrlash bilan himoyalangan serverlarda saqlanadi. Ruxsatsiz kirish, o’zgartirish yoki tarqalishdan himoya qilish uchun texnik va tashkiliy choralar ko’ramiz.\n\nMa’lumotlar faqat buyurtmani bajarish va nizolarni hal qilish uchun zarur muddat davomida saqlanadi."
+      },
+      {
+        "heading": "5. Sizning huquqlaringiz",
+        "body": "Siz quyidagi huquqlarga egasiz:\n• O’z ma’lumotlaringizga kirish huquqi\n• Ma’lumotlarni tuzatish yoki o’chirish talabi\n• Ishlov berishga rozilikni qaytarib olish\n\nBuning uchun bot orqali /yordam buyrug’ini yuboring yoki do’kon administratori bilan bog’laning."
+      },
+      {
+        "heading": "6. Cookies va tahlil",
+        "body": "Sayt to’g’ri ishlashi va tahlil uchun cookies’dan foydalanadi (Google Tag Manager, Yandex.Metrika). Brauzer sozlamalarida cookies’ni o’chirib qo’yishingiz mumkin, lekin saytning ba’zi funksiyalari ishlamay qolishi mumkin."
+      },
+      {
+        "heading": "7. Siyosat o’zgarishlari",
+        "body": "Biz ushbu siyosatni yangilashimiz mumkin. Muhim o’zgarishlar bo’lsa, bot orqali xabardor qilamiz yoki saytda e’lon joylashtiramiz. Joriy versiya doimo ushbu sahifada mavjud bo’ladi."
+      },
+      {
+        "heading": "8. Aloqa",
+        "body": "Maxfiylik bo’yicha savollar uchun murojaat qiling:\n• Telegram-bot: @govita_bot → /yordam\n• Instagram: @govita_uz\n• Email: info@govita.uz"
+      }
+    ]
+  },
+  "health": {
+    "goal": {
+      "singular": "Sog'liq maqsadi",
+      "plural": "Sog'liq maqsadlari",
+      "indexTitle": "Sog'liq maqsadlari",
+      "indexSubtitle": "Mahsulot bo'yicha emas — maqsad bo'yicha tanlang. Har bir maqsad uchun nutriyentlar, mahsulotlar va shifokor izohi.",
+      "empty": "Hozircha maqsadlar qo'shilmagan.",
+      "indexEyebrow": "Maqsad bo‘yicha katalog"
+    },
+    "symptom": {
+      "singular": "Belgi",
+      "plural": "Belgilar",
+      "indexTitle": "Belgilar kutubxonasi",
+      "indexSubtitle": "Charchoq, uyqusizlik, soch to'kilishi — mumkin bo'lgan sabablar va qachon shifokorga murojaat qilish kerakligi.",
+      "empty": "Hozircha belgilar qo'shilmagan."
+    },
+    "vitamin": {
+      "singular": "Vitamin",
+      "plural": "Vitaminlar",
+      "indexTitle": "Vitaminlar qo'llanmasi",
+      "indexSubtitle": "Har bir nutriyent: bu nima, kimga kerak, qachon ichiladi va nima bilan birga qabul qilinadi.",
+      "empty": "Hozircha vitaminlar qo'shilmagan."
+    },
+    "keyIngredients": "Asosiy nutriyentlar",
+    "allVitamins": "Barcha vitaminlar",
+    "relatedProducts": "Tegishli mahsulotlar",
+    "relatedTopics": "Shuningdek qarang"
+  },
+  "quiz": {
+    "eyebrow": "AI konsultant",
+    "title": "2 daqiqada shaxsiy vitamin rejasi",
+    "subtitle": "12 ta savol — turmush tarzingiz asosida qaysi nutriyentlarga e'tibor berish kerakligini ko'rsatamiz. Operator kerak emas.",
+    "stepOf": "{step} / {total}",
+    "progressLabel": "Test jarayoni",
+    "back": "Orqaga",
+    "next": "Keyingi",
+    "skip": "O'tkazib yuborish",
+    "finish": "Natijani ko'rish",
+    "resultEyebrow": "Sizning rejangiz",
+    "resultTitle": "Shaxsiy tavsiya",
+    "resultSubtitle": "Javoblaringiz asosida tuzildi. Bu tashxis emas — nutriyentlarga e'tibor qaratish uchun yo'nalish.",
+    "resultEmpty": "Javoblar yetarli emas. Testni qayta o'tsangiz aniqroq tavsiya beramiz.",
+    "focusTitle": "Nimaga e'tibor berish kerak",
+    "focusSubtitle": "Javoblaringizda eng ko'p uchragan yo'nalishlar",
+    "nutrientsTitle": "Asosiy nutriyentlar",
+    "productsTitle": "Mos mahsulotlar",
+    "productsSubtitle": "Yuqoridagi nutriyentlar va yo'nalishlar bo'yicha tanlangan",
+    "whyLabel": "Nega",
+    "addPlan": "Rejani savatga ({count})",
+    "retake": "Testni qayta o'tish",
+    "browseAll": "Butun katalog",
+    "doctorTitle": "Avval shifokor bilan maslahatlashing",
+    "doctorBody": "Javoblaringizda shifokor yoki farmatsevt bilan gaplashishni talab qiladigan holat bor: doimiy dori qabul qilish, homiladorlik yoki uzoq davom etgan charchoq. Vitamin qabul qilishdan oldin mutaxassisga murojaat qiling.",
+    "doctorCta": "Shifokorlarimiz",
+    "reviewedNote": "Test mantiqi shifokor tomonidan tekshirilgan"
+  },
+  "programs": {
+    "plural": "Dasturlar",
+    "indexTitle": "Sog'liq dasturlari",
+    "indexSubtitle": "Bitta mahsulot emas — maqsad ostida yig'ilgan to'plam. Bir oylik miqdor, bitta narx, bitta bosishda savatga.",
+    "empty": "Hozircha dasturlar qo'shilmagan.",
+    "duration": "{days} kun",
+    "forWhom": "Kimga mo'ljallangan",
+    "whatsInside": "To'plam tarkibi",
+    "howItWorks": "Qanday olib boriladi",
+    "keyNutrients": "Asosiy nutriyentlar",
+    "readMore": "Batafsil o'qish",
+    "bundlePrice": "To'plam narxi",
+    "youSave": "{amount} tejaysiz",
+    "includes": "{count} ta mahsulot · {days} kunlik miqdor",
+    "addProgram": "Dasturni savatga ({count})",
+    "cancelNote": "Har bir mahsulotni savatchada alohida o'zgartirishingiz mumkin"
+  },
+  "reviews": {
+    "eyebrow": "Mijozlar tajribasi",
+    "title": "Sharhlar va tarixlar",
+    "subtitle": "Yulduzcha emas — haqiqiy tajriba: video sharhlar, holatlar va mahsulot sharhlari.",
+    "basedOn": "{count} ta sharh asosida",
+    "storiesTitle": "Mijozlar tarixi",
+    "productReviewsTitle": "Mahsulot sharhlari",
+    "empty": "Hozircha sharhlar yo'q. Birinchi bo'lib fikr qoldiring.",
+    "browse": "Katalogni ko'rish",
+    "kind": {
+      "video": "Video sharh",
+      "case": "Holat",
+      "transformation": "Natija"
+    }
+  },
+  "account": {
+    "title": "Shaxsiy kabinet",
+    "subtitle": "Buyurtmalaringiz, saqlangan mahsulotlar va sog‘liq rejangiz bir joyda.",
+    "name": "Ismingiz",
+    "phone": "Telefon raqami",
+    "errorGeneric": "Xatolik yuz berdi. Birozdan so‘ng qayta urining.",
+    "errorOrders": "Buyurtmalarni yuklab bo‘lmadi.",
+    "guestNote": "Hisobsiz ham buyurtma berishingiz mumkin. Ro‘yxatdan o‘tsangiz, shu telefon raqami bilan berilgan avvalgi buyurtmalaringiz avtomatik biriktiriladi.",
+    "greeting": "Xush kelibsiz",
+    "signOut": "Chiqish",
+    "shortcuts": "Tezkor havolalar",
+    "orders": "Buyurtmalarim",
+    "orderTotal": "Jami",
+    "noOrders": "Hozircha buyurtmangiz yo‘q.",
+    "noOrdersCta": "Katalogga o‘tish",
+    "status": {
+      "new": "Qabul qilindi",
+      "confirmed": "Tasdiqlandi",
+      "shipped": "Yo‘lda",
+      "delivered": "Yetkazildi",
+      "cancelled": "Bekor qilindi"
+    },
+    "shortcut": {
+      "wishlist": {
+        "title": "Sevimlilar",
+        "description": "Saqlangan mahsulotlaringiz"
+      },
+      "quiz": {
+        "title": "Sog‘liq testi",
+        "description": "Shaxsiy tavsiya oling"
+      },
+      "programs": {
+        "title": "Dasturlar",
+        "description": "Bir necha haftalik rejalar"
+      },
+      "profile": {
+        "title": "Profilim",
+        "description": "Maqsadlar, oila, eslatmalar"
+      }
+    },
+    "otpIntro": "Telefon raqamingizni kiriting — Telegram orqali kirish kodini yuboramiz.",
+    "otpCta": "Kodni olish",
+    "code": "Kirish kodi",
+    "codeIntro": "{phone} raqamiga bog‘langan Telegram’ga kod yuborildi.",
+    "codeCta": "Kirish",
+    "changePhone": "Raqamni o‘zgartirish",
+    "resend": "Kodni qayta yuborish",
+    "resendIn": "Qayta yuborish — {seconds} s",
+    "linkIntro": "Kod Telegram orqali keladi. Buning uchun avval botni ishga tushiring va raqamingizni ulashing — bot o‘zi yozmagan raqamga xabar yubora olmaydi.",
+    "linkCta": "Telegram’da botni ochish",
+    "linkHint": "Botda «Raqamni ulashish» tugmasini bosing — kod o‘sha yerga keladi.",
+    "linkDone": "Bajardim, kodni kiritaman",
+    "errorPhone": "Telefon raqami to‘g‘ri emas.",
+    "errorCode": "Kod noto‘g‘ri yoki muddati o‘tgan. Qaytadan urinib ko‘ring.",
+    "errorCooldown": "Biroz kuting — kod yaqinda yuborilgan.",
+    "errorTooMany": "Juda ko‘p urinish. Keyinroq qayta urinib ko‘ring.",
+    "errorDelivery": "Kodni yuborib bo‘lmadi. Botni bloklamaganingizni tekshiring.",
+    "errorNoBot": "Telegram boti hali sozlanmagan."
+  },
+  "profile": {
+    "eyebrow": "Shaxsiy yondashuv",
+    "title": "Mening profilim",
+    "titleNamed": "Salom, {name}!",
+    "subtitle": "Bu yerda siz aytgan ma’lumotlar saqlanadi: maqsadlar, oila a’zolari, tug‘ilgan kunlar. Tavsiyalar va eslatmalar shularga qarab tuziladi.",
+    "quizHint": "Hozircha ma’lumot yo‘q. Eng tez yo‘l — sog‘liq testidan o‘tish.",
+    "quizHintCta": "Testni boshlash",
+    "details": {
+      "title": "Asosiy ma’lumotlar",
+      "description": "Hech biri majburiy emas — har bir maydon nimadadir yordam beradi.",
+      "name": "Ismingiz",
+      "email": "Elektron pochta",
+      "emailHint": "Buyurtma tasdig‘i va eslatmalar shu manzilga keladi",
+      "birthday": "Tug‘ilgan kuningiz",
+      "birthdayHint": "Bir hafta oldin eslatamiz",
+      "verify": "Pochtani tasdiqlash",
+      "verifySending": "Yuborilmoqda…",
+      "verifySent": "{email} manziliga tasdiqlash havolasini yubordik.",
+      "verifyError": "Yuborib bo‘lmadi. Birozdan so‘ng qayta urining."
+    },
+    "goals": {
+      "title": "Sizni nima bezovta qiladi",
+      "description": "Tanlaganlaringiz katalogdagi tavsiyalarni o‘zgartiradi.",
+      "empty": "Hech narsa tanlanmagan",
+      "chosen": "{count} ta tanlandi"
+    },
+    "household": {
+      "title": "Kim uchun tanlaysiz",
+      "description": "Bola uchun doza ham, shakl ham boshqacha bo‘ladi. Tug‘ilgan sanani yozsangiz — oldindan eslatib turamiz.",
+      "addTitle": "Yangi a’zo qo‘shish",
+      "add": "Qo‘shish",
+      "name": "Ismi",
+      "birthday": "Tug‘ilgan sana",
+      "birthdayHint": "Ixtiyoriy",
+      "birthdayFor": "{name} uchun tug‘ilgan sana",
+      "unnamed": "Ismsiz",
+      "age": "{age} yosh",
+      "removeFor": "{name}ni ro‘yxatdan o‘chirish",
+      "relation": {
+        "child": "Farzandim",
+        "partner": "Turmush o‘rtog‘im",
+        "parent": "Ota-onam",
+        "other": "Boshqa"
+      }
+    },
+    "reminders": {
+      "title": "Eslatmalar",
+      "description": "Nimani va qachon eslatishimiz — quyida. Yuborilishidan oldin ko‘rasiz.",
+      "empty": "Hozircha eslatma yo‘q.",
+      "today": "Bugun",
+      "inDays": "{days} kundan keyin",
+      "birthdaySelf": "Tug‘ilgan kuningiz",
+      "birthdaySelfAge": "Tug‘ilgan kuningiz — {age} yosh",
+      "birthdayMember": "{name}ning tug‘ilgan kuni",
+      "birthdayMemberAge": "{name} {age} yoshga to‘ladi",
+      "school": "O‘quv yili boshlanmoqda",
+      "schoolNamed": "{name} uchun o‘quv yili boshlanmoqda",
+      "reorder": "Kursingiz tugayapti",
+      "reorderNamed": "«{name}» tugayapti",
+      "reorderCta": "Takrorlash",
+      "quizStale": "Test natijangiz eskirdi",
+      "quizCta": "Qayta o‘tish"
+    },
+    "consent": {
+      "title": "Xabarlar",
+      "description": "Faqat siz ruxsat bergan kanal orqali yozamiz. Istalgan vaqtda o‘chirishingiz mumkin.",
+      "email": "Elektron pochta",
+      "emailNote": "Eslatmalar, aksiyalar va yangi materiallar — oyiga 2–3 marta.",
+      "emailMissing": "Avval yuqorida pochta manzilini yozing.",
+      "emailSending": "Yuborilmoqda…",
+      "emailSent": "{email} manziliga tasdiqlash havolasini yubordik.",
+      "emailError": "Yuborib bo‘lmadi. Birozdan so‘ng qayta urining.",
+      "telegram": "Telegram",
+      "telegramNote": "Eslatmalar Telegram orqali keladi.",
+      "telegramConnect": "Telegram botni ulash",
+      "legal": "Ma’lumotlaringiz uchinchi shaxslarga berilmaydi. Har bir xatda obunani bekor qilish havolasi bor."
+    },
+    "offers": {
+      "title": "Maqsadlaringizga mos",
+      "description": "Ro‘yxat siz tanlagan maqsadlardan kelib chiqadi.",
+      "because": "Nega:"
+    },
+    "data": {
+      "title": "Ma’lumotlarim",
+      "description": "Bu sahifadagi hamma narsa shu brauzerda saqlanadi.",
+      "clear": "Profilni tozalash",
+      "confirm": "Hammasi o‘chiriladi. Davom etamizmi?",
+      "confirmYes": "Ha, o‘chirilsin",
+      "cancel": "Bekor qilish"
+    }
+  },
+  "emailPreferences": {
+    "title": "Obuna sozlamalari",
+    "saved": "Saqlandi.",
+    "error": "Xatolik yuz berdi. Birozdan so‘ng qayta urining.",
+    "profileHint": "Eslatmalarni profil sahifasida ham boshqarish mumkin.",
+    "profileLink": "Profilga o‘tish",
+    "status": {
+      "confirmed": "Obuna tasdiqlandi. Rahmat!",
+      "unsubscribed": "Obuna bekor qilindi. Endi bu manzilga marketing xatlari yubormaymiz.",
+      "verified": "Pochta manzili tasdiqlandi.",
+      "verify-pending": "Havola to‘g‘ri, lekin hozir saqlab bo‘lmadi. Birozdan so‘ng qayta urining.",
+      "invalid": "Havola eskirgan yoki noto‘g‘ri."
+    },
+    "manage": {
+      "title": "Obunani boshqarish",
+      "description": "Shu havola orqali obunani yoqish yoki o‘chirish mumkin.",
+      "subscribe": "Obunani yoqish",
+      "unsubscribe": "Obunani bekor qilish"
+    },
+    "resubscribe": {
+      "label": "Elektron pochta",
+      "description": "Manzilni kiriting — tasdiqlash havolasini yuboramiz.",
+      "submit": "Yuborish",
+      "sent": "Tasdiqlash havolasi yuborildi."
+    }
+  },
+  "subscription": {
+    "chooseMode": "Qanday sotib olasiz?",
+    "subscribe": "Obuna bilan — arzonroq",
+    "oneTime": "Bir martalik xarid",
+    "bestValue": "Eng foydali",
+    "perServing": "{price} / porsiya",
+    "benefitDiscount": "Bugun −{first}%, keyingi yetkazishlarda −{recurring}%",
+    "benefitShipping": "{amount} dan yuqori obuna buyurtmalari bepul yetkaziladi",
+    "benefitControl": "Istalgan vaqtda o‘zgartirish, to‘xtatish yoki bekor qilish mumkin",
+    "intervalLabel": "Yetkazib berish oralig‘i",
+    "everyDays": "Har {days} kunda",
+    "recurringNote": "Keyingi yetkazishlar: {price}, har {days} kunda",
+    "recurringSummary": "Keyingi yetkazib berish: {amount}.",
+    "addSubscription": "Obunani savatga qo‘shish",
+    "manage": {
+      "title": "Obunalarim",
+      "empty": "Hozircha obuna yo‘q.",
+      "emptyCta": "Katalogga o‘tish",
+      "error": "Obunalarni yuklab bo‘lmadi.",
+      "status": {
+        "active": "Faol",
+        "paused": "To‘xtatilgan",
+        "cancelled": "Bekor qilingan"
+      },
+      "next": "Keyingi yetkazish: {date}",
+      "perDelivery": "Har yetkazishda",
+      "interval": "Oraliq",
+      "everyDays": "Har {days} kunda",
+      "skip": "Bittasini o‘tkazib yuborish",
+      "pause": "To‘xtatish",
+      "resume": "Davom ettirish",
+      "cancel": "Bekor qilish"
+    }
+  }
+}
