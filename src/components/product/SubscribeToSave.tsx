@@ -49,101 +49,130 @@ export function SubscribeToSave({
   const pricing = subscriptionPricing(product.price);
   const perServing = pricePerServing(pricing.recurringPrice, product.servings);
 
-  const selected = mode === "subscription";
+  const isSub = mode === "subscription";
 
   return (
     <div role="radiogroup" aria-labelledby={`${groupId}-label`} className="flex flex-col gap-3">
-      <p id={`${groupId}-label`} className="text-sm font-semibold text-fg">
-        {t("chooseMode")}
-      </p>
+      <div className="flex items-center justify-between">
+        <p id={`${groupId}-label`} className="text-xs font-extrabold uppercase tracking-wider text-brand-deep">
+          Xarid Usulini Tanlang
+        </p>
+        <span className="rounded-full bg-gold/15 px-2.5 py-0.5 text-[11px] font-extrabold text-gold-ink border border-gold/30">
+          ⚡ Har oy avtomatik yetkazish
+        </span>
+      </div>
 
+      {/* Subscription Option Card */}
       <label
-        className={`flex cursor-pointer gap-3 rounded-2xl border p-4 transition-colors ${
-          selected ? "border-accent bg-accent-soft" : "border-line bg-surface hover:border-line-strong"
+        className={`relative flex cursor-pointer flex-col rounded-2xl border p-4 transition-all duration-300 ${
+          isSub
+            ? "border-gold bg-gradient-to-br from-gold/10 via-surface to-surface shadow-md ring-2 ring-gold/40"
+            : "border-line bg-surface hover:border-gold/50"
         }`}
       >
-        <input
-          type="radio"
-          name={groupId}
-          checked={selected}
-          onChange={() => onModeChange("subscription")}
-          className="mt-1 h-5 w-5 shrink-0 accent-[var(--color-accent)]"
-        />
-        <span className="flex-1">
-          <span className="flex flex-wrap items-baseline justify-between gap-2">
-            <span className="font-display text-base font-bold text-fg">{t("subscribe")}</span>
-            <span className="text-right">
-              <span className="block font-display text-lg font-extrabold text-fg">
-                {formatMoney(pricing.firstPrice, locale)}
-              </span>
-              {perServing !== null && (
-                <span className="block text-xs text-muted">
-                  {t("perServing", { price: formatMoney(perServing, locale) })}
+        <div className="flex items-start gap-3">
+          <input
+            type="radio"
+            name={groupId}
+            checked={isSub}
+            onChange={() => onModeChange("subscription")}
+            className="mt-1 h-5 w-5 shrink-0 accent-gold cursor-pointer"
+          />
+          <div className="flex-1">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="font-display text-base font-extrabold text-brand-deep">
+                  Obuna bo&apos;lish & Tejash
                 </span>
-              )}
-            </span>
-          </span>
+                <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-brand-deep shadow-xs">
+                  -{pricing.firstPercent}% TEJOV
+                </span>
+              </div>
+              <div className="text-right">
+                <span className="block font-display text-lg font-extrabold text-brand-deep">
+                  {formatMoney(pricing.firstPrice, locale)}
+                </span>
+                {product.price && (
+                  <span className="block text-xs text-faint line-through">
+                    {formatMoney(product.price, locale)}
+                  </span>
+                )}
+              </div>
+            </div>
 
-          <span className="mt-1 inline-flex rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-bold text-white">
-            {t("bestValue")}
-          </span>
+            {perServing !== null && (
+              <p className="mt-1 text-xs text-muted">
+                {t("perServing", { price: formatMoney(perServing, locale) })}
+              </p>
+            )}
 
-          <ul className="mt-3 flex flex-col gap-1.5 text-sm text-fg">
-            <li>{t("benefitDiscount", { first: pricing.firstPercent, recurring: pricing.recurringPercent })}</li>
-            <li>{t("benefitShipping", { amount: formatMoney(SUBSCRIPTION_FREE_SHIPPING_OVER, locale) })}</li>
-            <li>{t("benefitControl")}</li>
-          </ul>
+            {/* Benefits List */}
+            <div className="mt-3 rounded-xl bg-surface-2 p-3 border border-line/50">
+              <ul className="flex flex-col gap-1.5 text-xs font-semibold text-fg">
+                <li className="flex items-center gap-2">
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span>Birinchi buyurtmada {pricing.firstPercent}% chegirma ({formatMoney(pricing.firstPrice, locale)})</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span>Keyingi har bir buyurtmada {pricing.recurringPercent}% doimiy chegirma</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span>Istalgan vaqtda 1 bosish bilan bekor qilish mumkin</span>
+                </li>
+              </ul>
+            </div>
 
-          <span className="mt-3 block">
-            <span className="sr-only" id={`${groupId}-interval-label`}>
-              {t("intervalLabel")}
-            </span>
-            <select
-              aria-labelledby={`${groupId}-interval-label`}
-              value={intervalDays}
-              onChange={(e) => {
-                onIntervalChange(Number(e.target.value) as IntervalDays);
-                // Choosing a rhythm is choosing the subscription; making the
-                // customer then find the radio would be a needless second step.
-                onModeChange("subscription");
-              }}
-              className="h-11 w-full rounded-full border border-line bg-ink px-4 text-sm font-medium text-fg outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent"
-            >
-              {SUBSCRIPTION_INTERVALS.map((days) => (
-                <option key={days} value={days}>
-                  {t("everyDays", { days })}
-                </option>
-              ))}
-            </select>
-          </span>
-
-          <span className="mt-2 block text-xs text-muted">
-            {t("recurringNote", {
-              price: formatMoney(pricing.recurringPrice, locale),
-              days: intervalDays,
-            })}
-          </span>
-        </span>
+            {/* Interval Selector */}
+            <div className="mt-3.5 flex items-center gap-2">
+              <span className="text-xs font-bold text-muted shrink-0">Yetkazish davriyligi:</span>
+              <select
+                aria-labelledby={`${groupId}-interval-label`}
+                value={intervalDays}
+                onChange={(e) => {
+                  onIntervalChange(Number(e.target.value) as IntervalDays);
+                  onModeChange("subscription");
+                }}
+                className="h-10 flex-1 rounded-xl border border-line bg-surface-2 px-3 text-xs font-bold text-brand-deep outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+              >
+                {SUBSCRIPTION_INTERVALS.map((days) => (
+                  <option key={days} value={days}>
+                    Har {days} kunda (Avtomatik yetkazish)
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
       </label>
 
+      {/* One-Time Purchase Option Card */}
       <label
-        className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-4 transition-colors ${
-          selected ? "border-line bg-surface hover:border-line-strong" : "border-accent bg-accent-soft"
+        className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-4 transition-all duration-300 ${
+          !isSub
+            ? "border-brand-deep bg-surface-2 shadow-xs ring-1 ring-brand-deep/20"
+            : "border-line bg-surface hover:border-line-strong"
         }`}
       >
         <input
           type="radio"
           name={groupId}
-          checked={!selected}
+          checked={!isSub}
           onChange={() => onModeChange("one-time")}
-          className="h-5 w-5 shrink-0 accent-[var(--color-accent)]"
+          className="h-5 w-5 shrink-0 accent-brand-deep cursor-pointer"
         />
-        <span className="flex flex-1 flex-wrap items-baseline justify-between gap-2">
-          <span className="font-display text-base font-bold text-fg">{t("oneTime")}</span>
-          <span className="font-display text-lg font-extrabold text-fg">
+        <div className="flex flex-1 items-center justify-between">
+          <div>
+            <span className="font-display text-sm font-extrabold text-brand-deep block">
+              Bir martalik xarid
+            </span>
+            <span className="text-xs text-muted">Doimiy majburiyatlarsiz standart xarid</span>
+          </div>
+          <span className="font-display text-base font-extrabold text-brand-deep">
             {formatMoney(product.price, locale)}
           </span>
-        </span>
+        </div>
       </label>
     </div>
   );
