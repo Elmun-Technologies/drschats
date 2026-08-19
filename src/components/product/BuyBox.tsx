@@ -27,7 +27,7 @@ const PAYMENT_METHODS = ["Payme", "Click", "Uzum", "Visa", "Mastercard"];
 
 function PaymentIcon({ label }: { label: string }) {
   return (
-    <span className="inline-flex items-center rounded-md border border-line bg-surface px-2 py-1 text-[10px] font-bold tracking-wide text-muted">
+    <span className="inline-flex items-center rounded-xl border border-line/60 bg-surface-2 px-3 py-1.5 text-[11px] font-extrabold tracking-wider text-brand-deep shadow-xs transition-transform hover:scale-105">
       {label}
     </span>
   );
@@ -35,11 +35,11 @@ function PaymentIcon({ label }: { label: string }) {
 
 function TrustItem({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="flex flex-col items-center gap-1.5 text-center">
-      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft text-accent">
+    <div className="group flex flex-col items-center gap-2 text-center p-2 rounded-xl transition-all hover:bg-white/50">
+      <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gold/15 text-gold-ink shadow-xs transition-transform group-hover:scale-110">
         {children}
       </span>
-      <p className="text-[11px] font-medium leading-tight text-fg">{label}</p>
+      <p className="text-[11px] font-bold leading-tight text-fg">{label}</p>
     </div>
   );
 }

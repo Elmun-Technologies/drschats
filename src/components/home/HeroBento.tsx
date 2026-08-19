@@ -81,47 +81,45 @@ export function HeroBento({
       <Container>
         <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           {/* Main rotating banner */}
-          <div className="relative flex min-h-[360px] overflow-hidden rounded-3xl bg-surface shadow-[inset_0_1px_1px_rgba(255,255,255,0.4)] sm:min-h-[440px]">
+          <div className="relative flex min-h-[380px] overflow-hidden rounded-[2.5rem] bg-brand-deep border border-white/10 shadow-2xl shadow-brand-deep/30 sm:min-h-[460px]">
             {/* Stunning AI Lifestyle Image Background */}
             <div className="absolute inset-0 z-0">
               <Image 
-                src="/hero/beauty_wellness.jpg"
+                src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=1200"
                 alt="Wellness & Beauty"
                 fill
                 priority
                 sizes="(max-width: 1024px) 100vw, 800px"
-                className="object-cover object-[70%_30%] mix-blend-multiply opacity-90"
+                className="object-cover object-center opacity-85 transition-transform duration-1000 scale-105"
               />
               {/* Gradient mask to ensure text readability on the left */}
-              <div className="absolute inset-0 bg-gradient-to-r from-surface via-surface/95 to-transparent sm:via-surface/80" />
+              <div className="absolute inset-0 bg-gradient-to-r from-brand-deep via-brand-deep/90 to-brand-deep/30 sm:via-brand-deep/80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-transparent to-transparent" />
             </div>
             
             <div
               key={i}
               className={cn("relative z-10 flex flex-1 items-center", rotated && "hero-slide-in")}
             >
-                {/* The panel is ~800px at desktop; capping the copy at max-w-sm
-                    turned a long headline into a seven-line ribbon down the
-                    left edge with half the panel empty beside it. */}
-                <div className="max-w-md p-8 sm:p-12 lg:max-w-xl">
-                  <span className="inline-block rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent-strong">
+                <div className="max-w-md p-8 sm:p-14 lg:max-w-xl">
+                  <span className="inline-block rounded-full bg-gold/20 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30">
                     {s.eyebrow}
                   </span>
-                  <h1 className="mt-4 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-brand-deep sm:text-6xl drop-shadow-sm">
+                  <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-white sm:text-6xl drop-shadow-md">
                     {s.title}
                   </h1>
-                  <p className="mt-5 text-base text-muted max-w-md leading-relaxed">{s.subtitle}</p>
-                  <Link href="/products" className="mt-8 inline-flex items-center gap-2 rounded-full bg-brand-deep px-8 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover-lift-premium hover:bg-black">
+                  <p className="mt-5 text-base text-surface-2/80 max-w-md leading-relaxed">{s.subtitle}</p>
+                  <Link href="/products" className="mt-8 inline-flex items-center gap-2.5 rounded-full bg-gold px-8 py-4 text-xs font-extrabold uppercase tracking-widest text-brand-deep shadow-xl shadow-gold/20 transition-all duration-300 hover:bg-white hover:scale-105 active:scale-95">
                     {s.cta}
-                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
+                    <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M4 10h12M10 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </Link>
                 </div>
                 {/* Certification pills */}
                 <div className="absolute bottom-6 right-6 hidden gap-2.5 sm:flex sm:right-10">
-                  {["cGMP", "ISO", "Halal", "IFOS"].map((badge) => (
-                    <span key={badge} className="rounded-full border border-white/40 bg-white/60 px-4 py-1.5 text-xs font-bold text-brand-deep/80 backdrop-blur-md shadow-sm">
+                  {["cGMP", "ISO 22000", "Halal", "IFOS"].map((badge) => (
+                    <span key={badge} className="rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-bold text-white backdrop-blur-md shadow-sm">
                       {badge}
                     </span>
                   ))}

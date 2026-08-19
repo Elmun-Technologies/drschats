@@ -73,12 +73,12 @@ export function ProductGallery({
         <div className="relative">
           <div
             ref={trackRef}
-            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-2xl border border-line bg-surface-2"
+            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl border border-line/60 bg-gradient-to-b from-surface-2 to-surface shadow-xl"
           >
             {images.map((img, i) => (
               <div
                 key={`${img.url}-${i}`}
-                className="relative aspect-square w-full shrink-0 snap-center lg:aspect-[4/5]"
+                className="relative aspect-square w-full shrink-0 snap-center lg:aspect-[4/5] p-6 flex items-center justify-center"
                 aria-hidden={i !== active}
               >
                 <Image
@@ -88,14 +88,14 @@ export function ProductGallery({
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
                   sizes="(max-width: 1024px) 100vw, 45vw"
-                  className="object-cover"
+                  className="object-contain mix-blend-multiply transition-transform duration-700 hover:scale-105 p-4"
                 />
               </div>
             ))}
           </div>
 
           {discountPercent > 0 && (
-            <span className="pointer-events-none absolute left-3 top-3 rounded-full bg-danger px-2.5 py-1 text-xs font-bold text-white">
+            <span className="pointer-events-none absolute left-4 top-4 rounded-full bg-gold px-3.5 py-1.5 text-xs font-extrabold tracking-wider text-brand-deep shadow-lg shadow-gold/20">
               −{discountPercent}%
             </span>
           )}
