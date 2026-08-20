@@ -51,12 +51,15 @@ export function CartDrawer() {
             transition={{ type: "tween", duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-line bg-surface"
           >
-            <header className="flex items-center justify-between border-b border-line px-6 py-5">
-              <h2 id="cart-drawer-title" className="font-display text-lg font-semibold">{t("title")}</h2>
-              {/* Was labelled "remove" — the wrong verb for the control that
-                  closes the drawer. */}
-              <button onClick={close} aria-label={tc("close")} className="text-muted hover:text-fg">
-                <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <header className="flex items-center justify-between border-b border-line/60 px-6 py-5 bg-brand-deep text-white">
+              <div className="flex items-center gap-2">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold/20 text-gold font-bold text-xs">
+                  🛒
+                </span>
+                <h2 id="cart-drawer-title" className="font-display text-lg font-extrabold text-white">{t("title")}</h2>
+              </div>
+              <button onClick={close} aria-label={tc("close")} className="rounded-full bg-white/10 p-1 text-white/70 hover:bg-white/20 hover:text-white">
+                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
               </button>
@@ -77,15 +80,15 @@ export function CartDrawer() {
             ) : (
               <>
                 {totals.freeShippingThreshold > 0 && (
-                  <div className="border-b border-line px-6 py-4">
-                    <p className="mb-2 text-xs text-muted">
+                  <div className="border-b border-line/60 bg-surface-2 px-6 py-4">
+                    <p className="mb-2 text-xs font-bold text-brand-deep">
                       {totals.freeShippingRemaining > 0
                         ? t("freeShippingProgress", { amount: formatMoney(totals.freeShippingRemaining, locale) })
                         : t("freeShippingUnlocked")}
                     </p>
-                    <div className="h-1.5 overflow-hidden rounded-full bg-surface-3">
+                    <div className="h-2 overflow-hidden rounded-full bg-line/60">
                       <div
-                        className="h-full rounded-full bg-accent transition-all duration-500"
+                        className="h-full rounded-full bg-gold transition-all duration-700 shadow-sm"
                         style={{
                           width: `${Math.min(100, ((totals.subtotal) / totals.freeShippingThreshold) * 100)}%`,
                         }}

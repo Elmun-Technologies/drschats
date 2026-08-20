@@ -27,11 +27,16 @@ export function TopProducts({ products }: { products: Product[] }) {
   const items = products.slice(0, 3);
 
   return (
-    <section className="bg-surface py-20 sm:py-32">
+    <section className="bg-ink py-24 sm:py-32 border-t border-line/30">
       <Container>
-        <div className="mb-16 text-center">
-          <h2 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h2>
-          <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
+        <div className="mb-16 text-center max-w-2xl mx-auto">
+          <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
+            Top Tavsiyalar
+          </span>
+          <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
+            {t("title")}
+          </h2>
+          <p className="mt-3 text-base text-muted">{t("subtitle")}</p>
         </div>
 
         <div className="grid gap-6 lg:grid-cols-3">
@@ -68,12 +73,12 @@ export function TopProducts({ products }: { products: Product[] }) {
                   </span>
                 )}
 
-                {/* Floating Product Image */}
-                <div className="relative z-10 flex flex-1 flex-col items-center justify-start pt-16">
-                  <span className="mb-8 text-center font-display text-3xl font-light uppercase tracking-[0.3em] text-white/90 drop-shadow-lg">
-                    {p.name.split(" ")[0]}
+                {/* Floating Product Image & Title */}
+                <div className="relative z-10 flex flex-1 flex-col items-center justify-start pt-12 px-6">
+                  <span className="mb-6 text-center font-display text-2xl font-extrabold text-white drop-shadow-md">
+                    {p.name}
                   </span>
-                  <div className="relative h-64 w-48 drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-4">
+                  <div className="relative h-64 w-48 drop-shadow-2xl transition-transform duration-700 ease-out group-hover:-translate-y-3">
                     <Image src={p.images[0]?.url ?? ""} alt={p.name} fill sizes="200px" className="rounded-2xl object-cover" />
                   </div>
                 </div>

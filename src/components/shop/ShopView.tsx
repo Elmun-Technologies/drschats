@@ -120,49 +120,55 @@ export async function ShopView({
 
   return (
     <>
-      {/* Breadcrumb band */}
-      <div className="border-b border-line bg-surface">
-        <Container className="flex flex-wrap items-center gap-2 py-4 text-sm">
-          <Link href="/" className="text-muted hover:text-accent-strong">{prod("breadcrumbHome")}</Link>
-          <span className="text-faint">/</span>
-          <Link href="/products" className={active ? "text-muted hover:text-accent-strong" : "font-semibold text-fg"}>{nav("shop")}</Link>
-          {active && (
-            <>
-              <span className="text-faint">/</span>
-              <span className="font-semibold text-fg">{active.name}</span>
-            </>
-          )}
+      {/* Breadcrumb & Hero Header band */}
+      <div className="bg-brand-deep border-b border-white/10 text-white pt-6 pb-12">
+        <Container>
+          <div className="flex flex-wrap items-center gap-2 text-xs text-white/60 mb-6">
+            <Link href="/" className="hover:text-gold transition-colors">{prod("breadcrumbHome")}</Link>
+            <span>/</span>
+            <Link href="/products" className={active ? "hover:text-gold transition-colors" : "text-white font-bold"}>{nav("shop")}</Link>
+            {active && (
+              <>
+                <span>/</span>
+                <span className="text-gold font-bold">{active.name}</span>
+              </>
+            )}
+          </div>
+
+          <div className="max-w-3xl">
+            <span className="inline-block rounded-full bg-gold/20 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-3">
+              {result.total} ta Mahsulotlar Mavjud
+            </span>
+            <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl text-white drop-shadow-md">{heading}</h1>
+            <p className="mt-3 text-base text-surface-2/80">
+              {search
+                ? t("resultsCount", { count: result.total })
+                : activeGoal?.headline ?? active?.description ?? t("subtitle")}
+            </p>
+            {activeGoal && (
+              <Link
+                href={`/goals/${activeGoal.slug}`}
+                className="mt-4 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-gold hover:text-white transition-colors"
+              >
+                {t("readGoal", { goal: activeGoal.name })} →
+              </Link>
+            )}
+          </div>
         </Container>
       </div>
 
       <Container className="py-10">
-        <header className="mb-6">
-          <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{heading}</h1>
-          <p className="mt-2 text-muted">
-            {search
-              ? t("resultsCount", { count: result.total })
-              : activeGoal?.headline ?? active?.description ?? t("subtitle")}
-          </p>
-          {activeGoal && (
-            <Link
-              href={`/goals/${activeGoal.slug}`}
-              className="mt-3 inline-flex text-sm font-semibold text-accent-strong hover:underline"
-            >
-              {t("readGoal", { goal: activeGoal.name })} →
-            </Link>
-          )}
-        </header>
 
         {/* Goal facets — the visitor filters by intent, not by warehouse category. */}
         {goalFacets.length > 0 && (
           <nav aria-label={health("goal.plural")} className="mb-8">
-            <p className="mb-3 text-sm font-semibold text-fg">{t("byGoal")}</p>
+            <p className="mb-3 text-xs font-extrabold uppercase tracking-widest text-brand-deep">{t("byGoal")}</p>
             <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
               <Link
                 href={buildQuery({ goal: undefined, page: undefined })}
                 className={cn(
-                  "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
-                  !goal ? "border-accent bg-accent-soft text-accent-strong" : "border-line text-muted hover:border-line-strong hover:text-fg",
+                  "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
+                  !goal ? "border-gold bg-gold text-brand-deep shadow-md" : "border-line/60 bg-surface-2 text-fg hover:border-gold/50",
                 )}
               >
                 {t("all")}
@@ -172,14 +178,14 @@ export async function ShopView({
                   key={facet.slug}
                   href={buildQuery({ goal: facet.slug, page: undefined })}
                   className={cn(
-                    "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+                    "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
                     facet.slug === goal
-                      ? "border-accent bg-accent-soft text-accent-strong"
-                      : "border-line text-muted hover:border-line-strong hover:text-fg",
+                      ? "border-gold bg-gold text-brand-deep shadow-md"
+                      : "border-line/60 bg-surface-2 text-fg hover:border-gold/50",
                   )}
                 >
                   {facet.name}
-                  <span className="ml-1.5 text-xs text-faint">{facet.count}</span>
+                  <span className="ml-1.5 text-[11px] opacity-70">{facet.count}</span>
                 </Link>
               ))}
             </div>
