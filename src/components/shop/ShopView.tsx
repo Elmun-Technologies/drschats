@@ -168,7 +168,7 @@ export async function ShopView({
                 href={buildQuery({ goal: undefined, page: undefined })}
                 className={cn(
                   "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
-                  !goal ? "border-gold bg-gold text-brand-deep shadow-md" : "border-line/60 bg-surface-2 text-fg hover:border-gold/50",
+                  !goal ? "border-brand-deep bg-brand-deep text-white shadow-xs" : "border-line/80 bg-white text-brand-deep hover:border-gold/60",
                 )}
               >
                 {t("all")}
@@ -180,8 +180,8 @@ export async function ShopView({
                   className={cn(
                     "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
                     facet.slug === goal
-                      ? "border-gold bg-gold text-brand-deep shadow-md"
-                      : "border-line/60 bg-surface-2 text-fg hover:border-gold/50",
+                      ? "border-brand-deep bg-brand-deep text-white shadow-xs"
+                      : "border-line/80 bg-white text-brand-deep hover:border-gold/60",
                   )}
                 >
                   {facet.name}
@@ -306,7 +306,7 @@ export async function ShopView({
               </div>
             ) : (
               <>
-                <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                <div className="grid grid-cols-2 gap-5 sm:grid-cols-3">
                   {result.items.map((p, i) => (
                     <ProductCard key={p.id} product={p} index={i} />
                   ))}
