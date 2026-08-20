@@ -24,8 +24,6 @@ export function DealOfDay({ product }: { product: Product }) {
   const locale = useLocale() as Locale;
   const [endsAt, setEndsAt] = useState<Date | null>(null);
 
-  // Midnight in the visitor's own timezone, resolved after mount so the server
-  // and the client never disagree about when "today" ends.
   useEffect(() => {
     const end = new Date();
     end.setHours(24, 0, 0, 0);
@@ -36,52 +34,48 @@ export function DealOfDay({ product }: { product: Product }) {
   const image = product.images[0]?.url;
 
   return (
-    <div className="flex flex-col rounded-2xl border border-line bg-ink p-5">
+    <div className="flex flex-col rounded-[2rem] border border-white/10 bg-brand-deep p-6 text-white shadow-2xl shadow-brand-deep/30">
       <div className="flex items-center justify-between gap-3">
-        <span className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-danger">
-          <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+        <span className="inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-gold">
+          <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 text-gold" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
             <circle cx="12" cy="12" r="8.2" />
             <path d="M12 7.6V12l3 1.9" />
           </svg>
           {t("title")}
         </span>
         {discount > 0 && (
-          <span className="rounded-full bg-danger px-2.5 py-1 text-xs font-bold text-white">
+          <span className="rounded-full bg-gold px-3 py-1 text-xs font-extrabold text-brand-deep shadow-md shadow-gold/20">
             −{discount}%
           </span>
         )}
       </div>
 
-      {/* Height is reserved so the countdown appearing after mount does not
-          push the product down the panel. */}
       <div className="mt-3 min-h-[42px]">
         {endsAt && <CountdownTimer targetDate={endsAt} label={t("endsIn")} />}
       </div>
 
-      {/* `flex-1`: the panel's height is set by the cards beside it, so the
-          product row absorbs the slack rather than leaving a gap at the bottom. */}
-      <Link href={`/product/${product.slug}`} className="group mt-2 flex flex-1 items-center gap-4">
+      <Link href={`/product/${product.slug}`} className="group mt-4 flex flex-1 items-center gap-4">
         {image && (
-          <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl bg-surface">
+          <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white/10 border border-white/15 p-2">
             <Image
               src={image}
-              alt=""
+              alt={product.name}
               fill
               sizes="80px"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-cover transition-transform duration-700 group-hover:scale-110"
             />
           </span>
         )}
         <span className="min-w-0">
-          <span className="line-clamp-2 block font-display text-sm font-bold leading-snug text-fg transition-colors group-hover:text-accent-strong">
+          <span className="line-clamp-2 block font-display text-base font-extrabold leading-snug text-white transition-colors group-hover:text-gold">
             {product.name}
           </span>
-          <span className="mt-1.5 flex flex-wrap items-baseline gap-2">
-            <b className="font-display text-lg font-extrabold tabular-nums text-danger">
+          <span className="mt-2 flex flex-wrap items-baseline gap-2">
+            <b className="font-display text-xl font-extrabold tabular-nums text-white">
               {formatMoney(product.price, locale)}
             </b>
             {product.oldPrice && (
-              <s className="text-xs tabular-nums text-muted">
+              <s className="text-xs tabular-nums text-white/40 line-through">
                 {formatMoney(product.oldPrice, locale)}
               </s>
             )}
@@ -90,7 +84,7 @@ export function DealOfDay({ product }: { product: Product }) {
       </Link>
 
       {product.oldPrice && (
-        <p className="mt-4 rounded-lg bg-danger/10 px-3 py-2 text-xs font-semibold text-danger">
+        <p className="mt-4 rounded-xl bg-gold/15 border border-gold/30 px-3.5 py-2 text-xs font-extrabold text-gold text-center">
           {t("save", { amount: formatMoney(product.oldPrice - product.price, locale) })}
         </p>
       )}
