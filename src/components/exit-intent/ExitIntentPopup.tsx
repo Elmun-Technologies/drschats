@@ -29,11 +29,10 @@ export function ExitIntentPopup() {
       sessionStorage.setItem("exit-shown", "1");
     }
 
-    // Wait 5s before enabling to avoid triggering on accidental movement
     const timer = setTimeout(() => {
       document.addEventListener("mouseleave", handleMouseLeave);
       document.addEventListener("visibilitychange", handleVisibilityChange);
-    }, 5000);
+    }, 4000);
 
     return () => {
       clearTimeout(timer);
@@ -47,7 +46,7 @@ export function ExitIntentPopup() {
     if (phone.length < 7) return;
     track("exit_intent_lead", { phone });
     setSubmitted(true);
-    setTimeout(() => setIsOpen(false), 2000);
+    setTimeout(() => setIsOpen(false), 3000);
   }
 
   return (
@@ -59,18 +58,18 @@ export function ExitIntentPopup() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[70] bg-black/75 backdrop-blur-md"
           />
           <motion.div
-            initial={{ opacity: 0, y: 60 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 60 }}
-            transition={{ type: "spring", damping: 28, stiffness: 300 }}
-            className="fixed inset-x-4 bottom-6 z-[71] mx-auto max-w-sm rounded-2xl border border-line bg-surface p-6 shadow-2xl"
+            initial={{ opacity: 0, scale: 0.9, y: 40 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 40 }}
+            transition={{ type: "spring", damping: 25, stiffness: 280 }}
+            className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[71] mx-auto max-w-lg overflow-hidden rounded-[2.5rem] border border-gold/40 bg-gradient-to-br from-brand-deep via-brand-deep to-accent p-8 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.8)] text-white"
           >
             <button
               onClick={() => setIsOpen(false)}
-              className="absolute right-4 top-4 text-faint hover:text-fg"
+              className="absolute right-5 top-5 rounded-full bg-white/10 p-2 text-white/70 hover:bg-white/20 hover:text-white transition-colors"
               aria-label={t("dismiss")}
             >
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
@@ -79,35 +78,68 @@ export function ExitIntentPopup() {
             </button>
 
             {submitted ? (
-              <div className="py-4 text-center">
-                <p className="text-2xl">✅</p>
-                <p className="mt-2 font-semibold text-accent">{t("successMessage")}</p>
+              <div className="py-8 text-center">
+                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold/20 text-gold text-3xl mx-auto mb-4 border border-gold/40">
+                  🎁
+                </span>
+                <h3 className="font-display text-2xl font-extrabold text-white">Promo-kod taqdim etildi!</h3>
+                <p className="mt-2 text-sm text-surface-2/80">
+                  Sizga SMS orqali 50,000 so&apos;mlik promo-kod va shifokor konsultatsiyasi havolasi yuborildi.
+                </p>
               </div>
             ) : (
-              <>
-                <p className="text-xl">🎁</p>
-                <h3 className="mt-2 font-display text-lg font-bold">{t("title")}</h3>
-                <p className="mt-1 text-sm text-muted">{t("body")}</p>
-                <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
+              <div>
+                <div className="flex items-center gap-2 mb-3">
+                  <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-brand-deep shadow-md">
+                    🎁 MAXSUS SOVGA
+                  </span>
+                  <span className="text-xs text-gold font-bold">Faqat bugun</span>
+                </div>
+
+                <h3 className="font-display text-2xl sm:text-3xl font-extrabold leading-tight text-white drop-shadow-md">
+                  50,000 so&apos;m Vafdorlik Vaucheri & Bepul Vrach Konsultatsiyasi!
+                </h3>
+                
+                <p className="mt-3 text-sm text-surface-2/90 leading-relaxed">
+                  Ketishdan oldin telefon raqamingizni kiriting — biz sizga darhol 50,000 so&apos;mlik birinchi xarid promo-kodini hamda vrach-nutriologning bepul shaxsiy tavsiyasini yuboramiz.
+                </p>
+
+                <div className="mt-5 rounded-2xl bg-white/10 p-4 border border-white/15 backdrop-blur-md">
+                  <ul className="flex flex-col gap-2 text-xs font-semibold text-white/90">
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold font-bold">✓</span> Birinchi buyurtmaga 50,000 so&apos;m promo-kod
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold font-bold">✓</span> Bepul vrach-nutriolog konsultatsiyasi
+                    </li>
+                    <li className="flex items-center gap-2">
+                      <span className="text-gold font-bold">✓</span> Yopiq aksiyalar va VIP chegirmalar
+                    </li>
+                  </ul>
+                </div>
+
+                <form onSubmit={handleSubmit} className="mt-6 flex flex-col sm:flex-row gap-3">
                   <input
                     type="tel"
+                    required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder={t("phonePlaceholder")}
+                    placeholder="+998 90 123 45 67"
                     inputMode="tel"
-                    className="flex-1 rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm outline-none focus:border-accent"
+                    className="flex-1 rounded-2xl border border-white/20 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white placeholder-white/50 outline-none focus:border-gold focus:ring-1 focus:ring-gold"
                   />
                   <button
                     type="submit"
-                    className="rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-ink hover:bg-accent-strong"
+                    className="rounded-2xl bg-gold px-7 py-3.5 text-xs font-extrabold uppercase tracking-widest text-brand-deep shadow-xl shadow-gold/20 transition-all duration-300 hover:bg-white hover:scale-105 active:scale-95 shrink-0"
                   >
-                    {t("cta")}
+                    Vaucherni olish ➔
                   </button>
                 </form>
-                <button onClick={() => setIsOpen(false)} className="mt-3 w-full text-center text-xs text-faint hover:text-muted">
-                  {t("dismiss")}
-                </button>
-              </>
+
+                <p className="mt-3 text-center text-[11px] text-white/50">
+                  * 100% maxfiylik kafolatlanadi. Reklama yoki spam yuborilmaydi.
+                </p>
+              </div>
             )}
           </motion.div>
         </>
