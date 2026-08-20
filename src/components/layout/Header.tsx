@@ -23,22 +23,24 @@ import { isNavigable } from "@/lib/content/nav-sections";
   with "I can't sleep", not with "magnesium". Goals and symptoms therefore sit
   ahead of the shop, and the shop is what they funnel into.
 */
-const BADGE_TONE: Record<string, string> = {
-  sale: "bg-accent-soft text-accent-strong",
-  hot: "bg-danger/10 text-danger",
-};
-
 const navItems = [
-  { key: "home", href: "/" },
-  { key: "quiz", href: "/quiz", badge: "hot" },
-  { key: "goals", href: "/goals" },
-  { key: "symptoms", href: "/symptoms" },
-  { key: "programs", href: "/programs" },
-  { key: "vitamins", href: "/vitamins" },
-  { key: "products", href: "/products" },
-  { key: "experts", href: "/experts" },
-  { key: "blog", href: "/blog" },
+  { key: "home", href: "/", label: "Bosh sahifa" },
+  { key: "quiz", href: "/quiz", label: "AI Test (2 min)", badge: "hot", badgeLabel: "Eng yangi" },
+  { key: "goals", href: "/goals", label: "Maqsadlar", badge: "popular", badgeLabel: "Eng so'ralgan" },
+  { key: "symptoms", href: "/symptoms", label: "Semptomlar", badge: "new", badgeLabel: "Yangi" },
+  { key: "programs", href: "/programs", label: "Dasturlar (30 kun)" },
+  { key: "vitamins", href: "/vitamins", label: "Vitaminlar" },
+  { key: "products", href: "/products", label: "Barcha mahsulotlar" },
+  { key: "experts", href: "/experts", label: "Ekspertlar" },
+  { key: "blog", href: "/blog", label: "Foydali maqolalar" },
 ] as const;
+
+const BADGE_STYLES: Record<string, string> = {
+  hot: "bg-gold text-brand-deep",
+  popular: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
+  new: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
+  sale: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
+};
 
 export function Header({
   categories = [],
@@ -114,27 +116,28 @@ export function Header({
           <nav className="flex items-center gap-7">
             {items.map((item) => {
               const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              const hasBadge = "badge" in item && item.badge;
               return (
                 <Link
                   key={item.key}
                   href={item.href}
                   className={cn(
-                    "group relative flex items-center gap-1.5 text-sm font-semibold transition-colors overflow-hidden",
-                    active ? "text-accent-strong" : "text-fg/80 hover:text-accent-strong",
+                    "group relative flex items-center gap-2 text-sm font-semibold transition-colors overflow-hidden",
+                    active ? "text-gold" : "text-fg/80 hover:text-gold",
                   )}
                 >
-                  {t(item.key)}
+                  <span>{item.label}</span>
                   {/* Animated Underline */}
                   <span className={cn(
                     "absolute bottom-0 left-0 h-0.5 bg-gold transition-all duration-300 ease-out",
                     active ? "w-full" : "w-0 group-hover:w-full"
                   )} />
-                  {"badge" in item && item.badge && (
+                  {hasBadge && (
                     <span className={cn(
-                      "rounded px-1.5 py-0.5 text-[9px] font-bold uppercase",
-                      BADGE_TONE[item.badge],
+                      "rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase",
+                      BADGE_STYLES[item.badge],
                     )}>
-                      {badges(item.badge)}
+                      {item.badgeLabel}
                     </span>
                   )}
                 </Link>
@@ -171,8 +174,16 @@ export function Header({
             </div>
             <nav className="container-px flex flex-col gap-1 overflow-y-auto pb-10 pt-4">
               {items.map((item) => (
-                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="border-b border-line/50 py-4 font-display text-xl font-semibold">
-                  {t(item.key)}
+                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="border-b border-line/50 py-4 font-display text-xl font-semibold flex items-center justify-between">
+                  <span>{item.label}</span>
+                  {"badge" in item && item.badge && (
+                    <span className={cn(
+                      "rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase",
+                      BADGE_STYLES[item.badge],
+                    )}>
+                      {item.badgeLabel}
+                    </span>
+                  )}
                 </Link>
               ))}
 

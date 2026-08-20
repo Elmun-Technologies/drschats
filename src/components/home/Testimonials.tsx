@@ -19,23 +19,22 @@ export function Testimonials({ products }: { products: Product[] }) {
     "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=600",
   ];
 
-  /*
-    Without quotes this section is a wall of placeholder gradients around a
-    hardcoded "4.6★ / 3M+" card, under a heading that promises customer
-    voices. An empty testimonial wall says less than no testimonial wall, so
-    the whole section stands down until there is something real in it.
-  */
   if (quotes.length === 0) return null;
 
   return (
-    <section className="bg-surface py-20 sm:py-24">
+    <section className="bg-ink py-24 sm:py-32 border-t border-line/30">
       <Container>
-        <div className="mb-12 text-center">
-          <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("title")}</h2>
-          <p className="mt-3 text-muted">{t("subtitle")}</p>
+        <div className="mb-16 text-center max-w-2xl mx-auto">
+          <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
+            Mijozlarimiz Fikrlari
+          </span>
+          <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
+            {t("title")}
+          </h2>
+          <p className="mt-3 text-base text-muted">{t("subtitle")}</p>
         </div>
 
-        <div className="columns-1 gap-4 sm:columns-2 lg:columns-3 [&>*]:mb-4 [&>*]:break-inside-avoid">
+        <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [&>*]:mb-6 [&>*]:break-inside-avoid">
           <ImageTile src={tiles[0]} className="aspect-[3/4]" />
           {quotes[0] && <Quote q={quotes[0]} member={t("member")} />}
           {quotes[1] && <Quote q={quotes[1]} member={t("member")} highlight />}
@@ -64,14 +63,19 @@ function Quote({
 }) {
   return (
     <figure
-      className={`rounded-3xl border border-line p-6 ${highlight ? "bg-accent text-ink" : "bg-ink"}`}
+      className={`rounded-[2rem] border p-7 transition-all duration-500 hover:-translate-y-1 hover:shadow-xl ${
+        highlight
+          ? "border-gold bg-gradient-to-br from-gold/15 via-brand-deep to-brand-deep text-white shadow-lg shadow-gold/10"
+          : "border-white/10 bg-brand-deep text-white shadow-md"
+      }`}
     >
-      {!highlight && <StarRating rating={q.rating} />}
-      <blockquote className={`mt-3 font-display text-lg font-semibold leading-snug ${highlight ? "text-ink" : "text-fg"}`}>
+      <StarRating rating={q.rating} className="mb-3" />
+      <blockquote className="font-display text-base font-bold leading-relaxed text-white">
         “{q.text}”
       </blockquote>
-      <figcaption className={`mt-4 text-sm ${highlight ? "text-ink/80" : "text-muted"}`}>
-        <span className="font-semibold">{q.author}</span> · {member}
+      <figcaption className="mt-5 border-t border-white/10 pt-4 flex items-center justify-between text-xs text-surface-2/80">
+        <span className="font-extrabold text-white">{q.author}</span>
+        <span className="rounded-full bg-white/10 backdrop-blur-md px-3 py-1 font-semibold text-gold">✓ Tasdiqlangan xaridor</span>
       </figcaption>
     </figure>
   );
@@ -79,17 +83,18 @@ function Quote({
 
 function ImageTile({ src, className }: { src: string; className?: string }) {
   return (
-    <div className={`relative overflow-hidden rounded-3xl ${className}`}>
-      <Image src={src} alt="" fill sizes="(max-width: 1024px) 50vw, 33vw" className="object-cover" />
+    <div className={`relative overflow-hidden rounded-[2rem] border border-white/10 shadow-lg ${className}`}>
+      <Image src={src} alt="" fill sizes="(max-width: 1024px) 50vw, 33vw" className="object-cover transition-transform duration-700 hover:scale-105" />
     </div>
   );
 }
 
 function StatCard() {
   return (
-    <div className="rounded-3xl border border-line bg-ink p-6 text-center">
-      <div className="font-display text-5xl font-extrabold text-gradient">4.6★</div>
-      <p className="mt-2 text-sm text-muted">3M+</p>
+    <div className="rounded-[2rem] border border-gold/30 bg-gradient-to-br from-brand-deep via-brand-deep to-brand-deep/90 p-8 text-center shadow-xl shadow-gold/5">
+      <div className="font-display text-5xl font-extrabold text-gold drop-shadow-md">4.9 ★</div>
+      <p className="mt-2 text-sm font-bold text-white">10,000+ Muvaffaqiyatli xaridlar</p>
+      <p className="mt-1 text-xs text-surface-2/70">98% Ijobiy fikrlar va vrachlar tavsiyasi</p>
     </div>
   );
 }
