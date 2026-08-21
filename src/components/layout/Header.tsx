@@ -25,12 +25,10 @@ import { isNavigable } from "@/lib/content/nav-sections";
 */
 const navItems = [
   { key: "home", href: "/", label: "Bosh sahifa" },
-  { key: "quiz", href: "/quiz", label: "AI Test (2 min)", badge: "hot", badgeLabel: "Eng yangi" },
-  { key: "goals", href: "/goals", label: "Maqsadlar", badge: "popular", badgeLabel: "Eng so'ralgan" },
-  { key: "symptoms", href: "/symptoms", label: "Semptomlar", badge: "new", badgeLabel: "Yangi" },
-  { key: "programs", href: "/programs", label: "Dasturlar (30 kun)" },
-  { key: "vitamins", href: "/vitamins", label: "Vitaminlar" },
-  { key: "products", href: "/products", label: "Barcha mahsulotlar" },
+  { key: "products", href: "/products", label: "Barcha mahsulotlar", badge: "sale", badgeLabel: "Katalog" },
+  { key: "vitamins", href: "/vitamins", label: "Vitaminlar & Minerallar" },
+  { key: "programs", href: "/programs", label: "30 Kunlik To'plamlar", badge: "popular", badgeLabel: "Kompleks" },
+  { key: "quiz", href: "/quiz", label: "AI Diagnostika", badge: "hot", badgeLabel: "2 min" },
   { key: "experts", href: "/experts", label: "Ekspertlar" },
   { key: "blog", href: "/blog", label: "Foydali maqolalar" },
 ] as const;
