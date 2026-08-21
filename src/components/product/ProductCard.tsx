@@ -37,7 +37,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     <Reveal
       as="article"
       index={index % 4}
-      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-white border border-line/80 shadow-xs transition-all duration-300 hover:shadow-xl hover:border-gold/50"
+      className="group relative flex flex-col justify-between overflow-hidden rounded-2xl bg-surface border border-line/80 shadow-xs transition-all duration-300 hover:shadow-xl hover:border-gold/50"
     >
       {/* Light Clean Image Container */}
       <div className="relative aspect-square w-full overflow-hidden bg-surface-2/60 p-5 flex items-center justify-center">
@@ -80,11 +80,11 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       </div>
 
       {/* Clean White Body Content & Permanent Buy CTA */}
-      <div className="flex flex-1 flex-col justify-between p-4 bg-white text-brand-deep">
+      <div className="flex flex-1 flex-col justify-between p-4 bg-surface text-fg">
         <div>
           {/* Title */}
           <Link href={`/product/${product.slug}`} className="block group/title">
-            <h3 className="line-clamp-2 min-h-[2.6em] font-display text-sm sm:text-base font-bold leading-snug text-brand-deep transition-colors duration-200 group-hover/title:text-gold-ink">
+            <h3 className="line-clamp-2 min-h-[2.6em] font-display text-sm sm:text-base font-bold leading-snug text-fg transition-colors duration-200 group-hover/title:text-amber-500">
               {product.name}
             </h3>
           </Link>
@@ -101,7 +101,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
 
           {/* Price */}
           <div className="mt-2.5 flex items-baseline gap-2">
-            <span className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-brand-deep">
+            <span className="font-display text-lg sm:text-xl font-extrabold tracking-tight text-fg">
               {formatMoney(product.price, locale)}
             </span>
             {product.oldPrice && (
@@ -117,7 +117,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <button
             onClick={handleAdd}
             disabled={!product.inStock}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-brand-deep py-2.5 text-xs font-extrabold uppercase tracking-wider text-white shadow-xs transition-all duration-300 hover:bg-gold hover:text-brand-deep hover:shadow-md active:scale-[0.98] disabled:bg-surface-2 disabled:text-muted cursor-pointer disabled:cursor-not-allowed"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-accent py-2.5 text-xs font-bold uppercase tracking-wider text-ink shadow-xs transition-all duration-300 hover:opacity-95 active:scale-[0.98] disabled:bg-surface-2 disabled:text-muted cursor-pointer disabled:cursor-not-allowed"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />

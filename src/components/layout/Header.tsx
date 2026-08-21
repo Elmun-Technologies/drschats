@@ -121,13 +121,13 @@ export function Header({
                   href={item.href}
                   className={cn(
                     "group relative flex items-center gap-2 text-sm font-semibold transition-colors overflow-hidden",
-                    active ? "text-gold" : "text-fg/80 hover:text-gold",
+                    active ? "text-amber-500" : "text-fg/80 hover:text-amber-500",
                   )}
                 >
                   <span>{item.label}</span>
                   {/* Animated Underline */}
                   <span className={cn(
-                    "absolute bottom-0 left-0 h-0.5 bg-gold transition-all duration-300 ease-out",
+                    "absolute bottom-0 left-0 h-0.5 bg-amber-500 transition-all duration-300 ease-out",
                     active ? "w-full" : "w-0 group-hover:w-full"
                   )} />
                   {hasBadge && (
