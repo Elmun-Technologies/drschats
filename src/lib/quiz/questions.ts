@@ -55,6 +55,7 @@ export interface QuizQuestion {
   id: QuestionId;
   question: string;
   hint?: string;
+  guidance?: string;
   multiSelect: boolean;
   options: QuizOption[];
   /**
@@ -78,6 +79,7 @@ interface RawQuestion {
   id: QuestionId;
   question: L;
   hint?: L;
+  guidance?: L;
   multiSelect: boolean;
   options: RawOption[];
   showIf?: QuizCondition;
@@ -87,6 +89,10 @@ const raw: RawQuestion[] = [
   {
     id: "who",
     question: { uz: "Kim uchun tanlayapsiz?", ru: "Для кого подбираете?" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Yosh va jinsga qarab vitaminlarning so'rilish darajasi hamda sutkalik ehtiyoj me'yorlari keskin farq qiladi.",
+      ru: "Почему это важно? В зависимости от пола и возраста нормы потребления и усвояемость витаминов существенно различаются.",
+    },
     multiSelect: false,
     options: [
       {
@@ -118,6 +124,10 @@ const raw: RawQuestion[] = [
   {
     id: "age",
     question: { uz: "Yosh guruhi", ru: "Возрастная группа" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Yosh ulg'aygani sari kalsiy, D3 va B12 kabi nutriyentlarning biologik o'zlashtirilishi o'zgaradi.",
+      ru: "Почему это важно? С возрастом усвояемость таких нутриентов, как кальций, D3 и B12, существенно меняется.",
+    },
     multiSelect: false,
     options: [
       { id: "u18", label: { uz: "18 gacha", ru: "До 18" }, topics: { kids: 2 } },
@@ -133,6 +143,10 @@ const raw: RawQuestion[] = [
       ru: "Что беспокоит больше всего?",
     },
     hint: { uz: "Bir nechtasini tanlash mumkin", ru: "Можно выбрать несколько" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Charchoq, uyqu buzilishi va soch to'kilishi muayyan vitamin va minerallar yetishmovchiligining asosiy klinik belgilaridir.",
+      ru: "Почему это важно? Усталость, проблемы со сном и выпадение волос — ключевые клинические признаки дефицита нутриентов.",
+    },
     multiSelect: true,
     options: [
       {
@@ -188,6 +202,10 @@ const raw: RawQuestion[] = [
   {
     id: "sleep-hours",
     question: { uz: "Odatda necha soat uxlaysiz?", ru: "Сколько обычно спите?" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Uyqu rejimining buzilishi D3 vitamini va magniy metabolizmiga hamda gormonal muvozanatga bevosita ta'sir qiladi.",
+      ru: "Почему это важно? Нарушение режима сна напрямую влияет на метаболизм магния, витамина D3 и гормональный баланс.",
+    },
     multiSelect: false,
     options: [
       { id: "lt5", label: { uz: "5 soatdan kam", ru: "Меньше 5 часов" }, topics: { sleep: 2, fatigue: 2 } },
@@ -202,6 +220,10 @@ const raw: RawQuestion[] = [
       uz: "Kuniga qancha vaqt ochiq havoda bo'lasiz?",
       ru: "Сколько времени в день проводите на улице?",
     },
+    guidance: {
+      uz: "Nima uchun bu muhim? Quyosh nuri D3 vitaminining terida sintez bo'lishining asosiy manbai hisoblanadi.",
+      ru: "Почему это важно? Солнечный свет — главный источник естественного синтеза витамина D3 в коже.",
+    },
     multiSelect: false,
     options: [
       { id: "almost-none", label: { uz: "Deyarli chiqmayman", ru: "Почти не выхожу" }, ingredients: { "vitamin-d3": 3 }, topics: { fatigue: 1, bones: 1 } },
@@ -213,6 +235,10 @@ const raw: RawQuestion[] = [
   {
     id: "activity",
     question: { uz: "Jismoniy faollik", ru: "Физическая активность" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Jismoniy yuklama paytida magniy va aminokislotalar sarfi 2-3 baravarga ortadi.",
+      ru: "Почему это важно? При физических нагрузках расход магния и аминокислот увеличивается в 2-3 раза.",
+    },
     multiSelect: false,
     options: [
       { id: "sedentary", label: { uz: "Ko'proq o'tirib ishlayman", ru: "В основном сидячая работа" }, topics: { energy: 1, heart: 1 } },
@@ -224,6 +250,10 @@ const raw: RawQuestion[] = [
   {
     id: "diet",
     question: { uz: "Ovqatlanishingiz", ru: "Ваше питание" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Ovqatlanish ratsioni Omega-3, B12 va kalsiy yetishmovchiligi xavfini belgilab beradi.",
+      ru: "Почему это важно? Рацион питания определяет риски дефицита Омега-3, B12 и кальция.",
+    },
     multiSelect: true,
     options: [
       { id: "fish", label: { uz: "Haftada 2+ marta baliq yeyman", ru: "Ем рыбу 2+ раза в неделю" }, ingredients: { "epa-dha": -1.5 } },
@@ -235,6 +265,10 @@ const raw: RawQuestion[] = [
   {
     id: "screen",
     question: { uz: "Ekran oldida kuniga qancha vaqt?", ru: "Сколько времени за экраном в день?" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Ko'k nur (blue light) ko'z to'r pardasiga ta'sir qilib, lyutein va zeaksantin nutriyentlariga ehtiyojni oshiradi.",
+      ru: "Почему это важно? Синий свет увеличивает потребность глаз в антиоксидантах, лютеине и зеаксантине.",
+    },
     multiSelect: false,
     options: [
       { id: "lt4", label: { uz: "4 soatdan kam", ru: "Меньше 4 часов" }, topics: {} },
@@ -245,6 +279,10 @@ const raw: RawQuestion[] = [
   {
     id: "smoking",
     question: { uz: "Chekasizmi?", ru: "Курите?" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Chekish organizmdagi C vitaminining parchalanishini tezlashtiradi va antioksidantlarga ehtiyojni 50% ga oshiradi.",
+      ru: "Почему это важно? Курение ускоряет расход витамина C и повышает потребность в антиоксидантах на 50%.",
+    },
     multiSelect: false,
     options: [
       { id: "no", label: { uz: "Yo'q", ru: "Нет" }, topics: {} },
@@ -262,6 +300,10 @@ const raw: RawQuestion[] = [
       uz: "Bu javob tavsiyaga ta'sir qilmaydi — faqat farmatsevt bilan maslahatlashish kerakligini ko'rsatadi",
       ru: "Ответ не влияет на подбор — он лишь показывает, нужна ли консультация фармацевта",
     },
+    guidance: {
+      uz: "Nima uchun bu muhim? Ba'zi dori vositalari vitaminlar so'rilishini bloklaydi va farmatsevt konsultatsiyasini talab qiladi.",
+      ru: "Почему это важно? Некоторые лекарства блокируют всасывание витаминов и требуют консультации фармацевта.",
+    },
     multiSelect: false,
     options: [
       { id: "none", label: { uz: "Yo'q", ru: "Нет" }, topics: {} },
@@ -274,9 +316,10 @@ const raw: RawQuestion[] = [
       uz: "Homiladorlik yoki emizish davridamisiz?",
       ru: "Беременность или период кормления?",
     },
-    // Only when the visitor is choosing for herself. Asked of a man, a parent
-    // buying for a child, or someone buying for an elderly parent, the question
-    // is at best noise and at worst insulting.
+    guidance: {
+      uz: "Nima uchun bu muhim? Homiladorlikda foliy kislotasi va temir preparatlari faqat shifokor nazorati ostida tayinlanadi.",
+      ru: "Почему это важно? При беременности фолиевая кислота и железо назначаются только под контролем врача.",
+    },
     showIf: { question: "who", includesAny: ["self-woman"] },
     multiSelect: false,
     options: [
@@ -289,6 +332,10 @@ const raw: RawQuestion[] = [
     question: {
       uz: "Ilgari vitamin qabul qilganmisiz?",
       ru: "Принимали ли витамины раньше?",
+    },
+    guidance: {
+      uz: "Nima uchun bu muhim? Vitamin qabul qilish tajribangiz doza va kurs davomiyligini to'g'ri rejalashtirishga yordam beradi.",
+      ru: "Почему это важно? Ваш опыт приема витаминов помогает правильно рассчитать дозировку и курс.",
     },
     multiSelect: false,
     options: [
@@ -304,6 +351,7 @@ export function getQuizQuestions(locale: Locale): QuizQuestion[] {
     id: q.id,
     question: q.question[locale],
     hint: q.hint?.[locale],
+    guidance: q.guidance?.[locale],
     multiSelect: q.multiSelect,
     options: q.options.map((o) => ({
       id: o.id,
