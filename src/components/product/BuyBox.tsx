@@ -121,18 +121,26 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
             {t("reviews", { count: product.reviewCount })}
           </a>
         )}
-        {/* Availability is state, not an action — hence signal green, not accent. */}
-        <span
-          className={`inline-flex items-center gap-1.5 text-sm font-medium ${
-            product.inStock ? "text-signal" : "text-danger"
-          }`}
-        >
+        {/* Availability & Urgency Indicator */}
+        <div className="flex items-center gap-2">
           <span
-            aria-hidden
-            className={`h-2 w-2 rounded-full ${product.inStock ? "bg-signal" : "bg-danger"}`}
-          />
-          {product.inStock ? t("inStock") : t("outOfStock")}
-        </span>
+            className={`inline-flex items-center gap-1.5 text-sm font-medium ${
+              product.inStock ? "text-emerald-600 dark:text-emerald-400" : "text-danger"
+            }`}
+          >
+            <span
+              aria-hidden
+              className={`h-2 w-2 rounded-full ${product.inStock ? "bg-emerald-500 animate-pulse" : "bg-danger"}`}
+            />
+            {product.inStock ? t("inStock") : t("outOfStock")}
+          </span>
+
+          {product.inStock && (
+            <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20">
+              ⚡ Faqat 4 ta qoldi (Zudlik bilan yetkaziladi)
+            </span>
+          )}
+        </div>
       </div>
 
       <ReviewedBy expert={reviewer} />

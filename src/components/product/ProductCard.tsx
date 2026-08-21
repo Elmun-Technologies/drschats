@@ -89,9 +89,14 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             </h3>
           </Link>
 
-          {/* Star Rating */}
-          <div className="mt-2 flex items-center">
+          {/* Star Rating & Servings */}
+          <div className="mt-2 flex items-center justify-between gap-2">
             <StarRating rating={product.rating} className="scale-90 origin-left" />
+            {product.servings && (
+              <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md">
+                {product.servings} porsiya
+              </span>
+            )}
           </div>
 
           {/* Price */}

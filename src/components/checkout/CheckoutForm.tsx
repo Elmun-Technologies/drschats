@@ -211,7 +211,17 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <Field label={t("note")}>
             <textarea rows={3} className={inputClass} placeholder={t("notePlaceholder")} {...register("note")} />
           </Field>
-          <p className="text-sm text-muted">{t("paymentNote")}</p>
+          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 space-y-2">
+            <p className="text-xs font-bold text-fg uppercase tracking-wider">Qulay To&apos;lov Usullari:</p>
+            <div className="flex flex-wrap gap-2">
+              {["Click", "Payme", "Uzcard", "Humo", "Naqd (Kuryerga)"].map((pm) => (
+                <span key={pm} className="rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-bold text-fg shadow-xs">
+                  ✓ {pm}
+                </span>
+              ))}
+            </div>
+            <p className="text-xs text-muted pt-1">{t("paymentNote")}</p>
+          </div>
         </fieldset>
 
         {/* Upsell Ladder */}

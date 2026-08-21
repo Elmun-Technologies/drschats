@@ -5,6 +5,7 @@ import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
 import { HeroBento } from "@/components/home/HeroBento";
+import { TrustRibbon } from "@/components/home/TrustRibbon";
 import { TopCategories } from "@/components/home/TopCategories";
 import { DiscountRail } from "@/components/home/DiscountRail";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
@@ -71,12 +72,10 @@ export default async function HomePage({
     <>
       <JsonLd data={organizationLd()} />
       <HeroBento products={bestsellers} deal={deal} />
+      <TrustRibbon />
+      <AudienceDoors locale={locale} />
       <TopCategories categories={categories} />
       <DiscountRail products={restOfDeals.slice(0, 8)} />
-      {/* Intent first: the consultant is the widest entry into the catalogue,
-          and these are its front door — the same question, asked one screen
-          earlier so choosing here skips a step rather than repeating it. */}
-      <AudienceDoors locale={locale} />
       <QuizPromo />
       {/* Top 3 products with full feature breakdown — the most persuasive
           single section on the page for a health-conscious buyer. */}
