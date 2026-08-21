@@ -56,13 +56,13 @@ export function DealOfDay({ product }: { product: Product }) {
 
       <Link href={`/product/${product.slug}`} className="group mt-4 flex flex-1 items-center gap-4">
         {image && (
-          <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-white/10 border border-white/15 p-2">
+          <span className="relative h-20 w-20 shrink-0 overflow-hidden rounded-2xl bg-surface-2 p-2 flex items-center justify-center">
             <Image
               src={image}
               alt={product.name}
               fill
               sizes="80px"
-              className="object-cover transition-transform duration-700 group-hover:scale-110"
+              className="object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
             />
           </span>
         )}
