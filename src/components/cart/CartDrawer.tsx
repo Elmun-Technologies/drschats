@@ -113,6 +113,14 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <p className="mt-1 text-sm text-accent">{formatMoney(l.price, locale)}</p>
+                        {l.oldPrice && l.oldPrice > l.price && (
+                          <div className="mt-0.5 flex items-center gap-2">
+                            <span className="text-xs text-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
+                            <span className="rounded bg-gold/20 px-1.5 py-0 text-[10px] font-medium text-gold-ink">
+                              −{Math.round((1 - l.price / l.oldPrice) * 100)}%
+                            </span>
+                          </div>
+                        )}
                         {l.subscription && (
                           <p className="mt-0.5 text-xs font-semibold text-accent-strong">
                             {ts("everyDays", { days: l.subscription.intervalDays })}
@@ -149,6 +157,19 @@ export function CartDrawer() {
                       {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })}
                     </p>
                   )}
+                  {(() => {
+                    const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
+                    if (totalSavings > 0) {
+                      return (
+                        <div className="mt-2 rounded-xl border border-green-500/20 bg-green-500/10 p-2.5 text-center">
+                          <p className="text-xs font-semibold text-green-600 dark:text-green-500">
+                            Siz jami {formatMoney(totalSavings, locale)} tejadingiz! 🥳
+                          </p>
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
                   <Link
                     href="/checkout"
                     onClick={() => {

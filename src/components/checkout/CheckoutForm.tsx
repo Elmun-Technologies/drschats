@@ -290,7 +290,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
       </form>
 
       {/* Summary */}
-      <aside className="[order:1] lg:[order:2] lg:sticky lg:top-24 lg:self-start">
+      <aside className="[order:1] lg:[order:2] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div className="rounded-2xl border border-line bg-surface p-6">
           <h2 className="mb-5 font-display text-lg font-semibold">{t("summary")}</h2>
           <div className="space-y-4">
@@ -301,6 +301,14 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                 </div>
                 <div className="flex-1">
                   <p className="text-sm font-medium">{l.name}</p>
+                  {l.oldPrice && l.oldPrice > l.price && (
+                    <div className="mt-0.5 flex items-center gap-2">
+                      <span className="text-xs text-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
+                      <Badge tone="gold" className="px-1.5 py-0 text-[10px]">
+                        −{Math.round((1 - l.price / l.oldPrice) * 100)}%
+                      </Badge>
+                    </div>
+                  )}
                   <div className="mt-1 flex items-center gap-1 text-xs text-muted">
                     {/*
                       Stopping at 1 rather than letting "−" fall through to 0.
@@ -363,6 +371,19 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                 {ts("benefitControl")}
               </p>
             )}
+            {(() => {
+              const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
+              if (totalSavings > 0) {
+                return (
+                  <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/10 p-3 text-center">
+                    <p className="text-sm font-semibold text-green-600 dark:text-green-500">
+                      Siz jami {formatMoney(totalSavings, locale)} tejadingiz! 🥳
+                    </p>
+                  </div>
+                );
+              }
+              return null;
+            })()}
           </div>
           <UpsellSavingsBar />
         </div>
