@@ -156,28 +156,17 @@
       "viewAll": "Barcha kategoriyalar",
       "cta": "Katalogga o'tish",
       "hooks": {
-        "uz": {
-          "vitamins": "Tana energiyasi & Imunitet",
-          "immunity": "Mavsumiy himoya",
-          "beauty": "Teri, soch & tirnoqlar",
-          "kids": "O'sish va aqliy rivojlanish",
-          "effervescent": "Tez so'riluvchi formulalar",
-          "minerals": "Suyak va mushaklar mustahkamligi",
-          "medical-devices": "Aniq va xavfsiz monitoring",
-          "coffee": "Tabiiy energiya & antioksidantlar",
-          "default": "Ekspertlar tomonidan saralangan"
-        },
-        "ru": {
-          "vitamins": "Энергия и иммунитет",
-          "immunity": "Сезонная защита",
-          "beauty": "Кожа, волосы и ногти",
-          "kids": "Рост и умственное развитие",
-          "effervescent": "Быстрорастворимые формулы",
-          "minerals": "Крепость костей и мышц",
-          "medical-devices": "Точный и безопасный мониторинг",
-          "coffee": "Природная энергия и антиоксиданты",
-          "default": "Отобрано экспертами"
-        }
+        "vitamins": "Tana energiyasi & Imunitet",
+        "immunity": "Mavsumiy himoya",
+        "beauty": "Teri, soch & tirnoqlar",
+        "kids": "O'sish va aqliy rivojlanish",
+        "effervescent": "Tez so'riluvchi formulalar",
+        "minerals": "Suyak va mushaklar mustahkamligi",
+        "devices": "Aniq va xavfsiz monitoring",
+        "coffee": "Tabiiy energiya & antioksidantlar",
+        "nutrition": "Sog'lom ovqatlanish",
+        "skin": "Teri va go'zallik parvarishi",
+        "default": "Ekspertlar tomonidan saralangan"
       }
     },
     "bestsellers": {
@@ -351,7 +340,8 @@
         "badge": "100% KAFOLAT",
         "title": "Sertifikatlangan original mahsulotlar",
         "subtitle": "Yevropa va AQSh sifat standartlari"
-      }
+      },
+      "viewMore": "Batafsil"
     }
   },
   "product": {
@@ -614,7 +604,8 @@
       "kids": "Bolalar",
       "pregnancy": "Homiladorlik",
       "sports": "Sport"
-    }
+    },
+    "featuredLabel": "Tavsiya etilgan maqola"
   },
   "meta": {
     "homeTitle": "Go Vita — Evropa sifatidagi Vitaminlar va BAD",

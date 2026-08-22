@@ -156,28 +156,17 @@
       "viewAll": "Все категории",
       "cta": "Перейти в каталог",
       "hooks": {
-        "uz": {
-          "vitamins": "Tana energiyasi & Imunitet",
-          "immunity": "Mavsumiy himoya",
-          "beauty": "Teri, soch & tirnoqlar",
-          "kids": "O'sish va aqliy rivojlanish",
-          "effervescent": "Tez so'riluvchi formulalar",
-          "minerals": "Suyak va mushaklar mustahkamligi",
-          "medical-devices": "Aniq va xavfsiz monitoring",
-          "coffee": "Tabiiy energiya & antioksidantlar",
-          "default": "Ekspertlar tomonidan saralangan"
-        },
-        "ru": {
-          "vitamins": "Энергия и иммунитет",
-          "immunity": "Сезонная защита",
-          "beauty": "Кожа, волосы и ногти",
-          "kids": "Рост и умственное развитие",
-          "effervescent": "Быстрорастворимые формулы",
-          "minerals": "Крепость костей и мышц",
-          "medical-devices": "Точный и безопасный мониторинг",
-          "coffee": "Природная энергия и антиоксиданты",
-          "default": "Отобрано экспертами"
-        }
+        "vitamins": "Энергия и иммунитет",
+        "immunity": "Сезонная защита",
+        "beauty": "Кожа, волосы и ногти",
+        "kids": "Рост и умственное развитие",
+        "effervescent": "Быстрорастворимые формулы",
+        "minerals": "Крепость костей и мышц",
+        "devices": "Точный и безопасный мониторинг",
+        "coffee": "Природная энергия и антиоксиданты",
+        "nutrition": "Здоровое питание",
+        "skin": "Уход за кожей и красота",
+        "default": "Отобрано экспертами"
       }
     },
     "bestsellers": {
@@ -351,7 +340,8 @@
         "badge": "ГАРАНТИЯ 100%",
         "title": "Сертифицированные оригинальные товары",
         "subtitle": "Стандарты качества Европы и США"
-      }
+      },
+      "viewMore": "Подробнее"
     }
   },
   "product": {
@@ -614,7 +604,8 @@
       "kids": "Дети",
       "pregnancy": "Беременность",
       "sports": "Спорт"
-    }
+    },
+    "featuredLabel": "Рекомендуемая статья"
   },
   "meta": {
     "homeTitle": "Go Vita — Витамины и БАД европейского качества",

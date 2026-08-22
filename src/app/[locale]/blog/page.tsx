@@ -92,8 +92,8 @@ export default async function BlogPage({
         {featured && (
           <Reveal>
             <div className="mb-6">
-              <span className="text-xs font-bold uppercase tracking-widest text-gold">
-                Tavsiya etilgan maqola
+              <span className="text-xs font-bold uppercase tracking-widest text-gold-ink">
+                {t("featuredLabel")}
               </span>
             </div>
             <Link
