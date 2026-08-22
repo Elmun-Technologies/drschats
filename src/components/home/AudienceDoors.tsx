@@ -60,7 +60,7 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
             <Reveal key={option.id} index={Math.min(index, 6)} as="li" className="h-full">
               <Link
                 href={{ pathname: "/quiz", query: { who: option.id } }}
-                className="group relative flex h-full min-h-[340px] flex-col justify-end overflow-hidden rounded-[2.25rem] border border-white/10 bg-brand-deep p-7 transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30"
+                className="group relative flex h-full min-h-[340px] flex-col justify-end overflow-hidden rounded-t-[5rem] rounded-b-[1.5rem] border border-white/10 bg-brand-deep p-7 transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30"
               >
                 {/* Background Image */}
                 <div className="absolute inset-0 z-0 bg-brand-deep">

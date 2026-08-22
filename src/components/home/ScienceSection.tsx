@@ -1,7 +1,6 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/Container";
-import { SectionHeading } from "@/components/ui/SectionHeading";
 import { Reveal } from "@/components/animation/Reveal";
 
 const IMAGES: Record<string, string> = {
@@ -19,20 +18,20 @@ export function ScienceSection() {
       <Container>
         <div className="text-center max-w-2xl mx-auto mb-16">
           <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
-            Tibbiy Kafolat va Ilmiy Yondashuv
+            {t("eyebrow")}
           </span>
           <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
             {t("title")}
           </h2>
           <p className="mt-3 text-base text-muted">
-            Har bir ingredient va vitamin kompleksi xalqaro biologik standartlar hamda shifokorlar nazorati ostida yaratiladi
+            {t("subtitle")}
           </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3">
           {points.map((p, i) => (
             <Reveal key={p} index={i} className="h-full">
-              <div className="group relative flex h-full flex-col overflow-hidden rounded-[2.25rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30">
+              <div className="group relative flex h-full flex-col overflow-hidden rounded-t-[4.5rem] rounded-b-[1.5rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30">
                 {/* Photographic Header */}
                 <div className="relative h-56 w-full overflow-hidden bg-brand-deep">
                   <Image
