@@ -2,7 +2,7 @@ import { defineRouting } from "next-intl/routing";
 
 export const locales = ["ru", "uz"] as const;
 export type Locale = (typeof locales)[number];
-export const defaultLocale: Locale = "ru";
+export const defaultLocale: Locale = "uz";
 
 export const localeNames: Record<Locale, string> = {
   ru: "Русский",

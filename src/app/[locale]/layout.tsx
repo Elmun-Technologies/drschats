@@ -59,7 +59,7 @@ export default async function LocaleLayout({
     <html lang={localeHtmlLang[locale as Locale]} className={`${sora.variable} ${manrope.variable}`}>
       <head>
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#3d4cdb" />
+        <meta name="theme-color" content="#0f172a" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className="grain min-h-screen antialiased">

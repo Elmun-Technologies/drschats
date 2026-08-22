@@ -61,7 +61,7 @@ const CHANNELS = [
 const TONES: Record<string, string> = {
   accent: "bg-accent-soft text-accent-strong",
   blue: "bg-blue-soft text-blue",
-  gold: "bg-gold/15 text-gold",
+  gold: "bg-gold/15 text-gold-ink",
 };
 
 export async function ContactChannels() {

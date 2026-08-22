@@ -111,22 +111,22 @@ export function SubscribeToSave({
               <ul className="flex flex-col gap-1.5 text-xs font-semibold text-fg">
                 <li className="flex items-center gap-2">
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
-                  <span>Birinchi buyurtmada {pricing.firstPercent}% chegirma ({formatMoney(pricing.firstPrice, locale)})</span>
+                  <span>{t("benefitFirst", { first: pricing.firstPercent, price: formatMoney(pricing.firstPrice, locale) })}</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
-                  <span>Keyingi har bir buyurtmada {pricing.recurringPercent}% doimiy chegirma</span>
+                  <span>{t("benefitRecurring", { recurring: pricing.recurringPercent })}</span>
                 </li>
                 <li className="flex items-center gap-2">
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
-                  <span>Istalgan vaqtda 1 bosish bilan bekor qilish mumkin</span>
+                  <span>{t("benefitCancel")}</span>
                 </li>
               </ul>
             </div>
 
             {/* Interval Selector */}
             <div className="mt-3.5 flex items-center gap-2">
-              <span className="text-xs font-bold text-muted shrink-0">Yetkazish davriyligi:</span>
+              <span className="text-xs font-bold text-muted shrink-0">{t("deliveryInterval")}</span>
               <select
                 aria-labelledby={`${groupId}-interval-label`}
                 value={intervalDays}
@@ -165,9 +165,9 @@ export function SubscribeToSave({
         <div className="flex flex-1 items-center justify-between">
           <div>
             <span className="font-display text-sm font-extrabold text-brand-deep block">
-              Bir martalik xarid
+              {t("oneTime")}
             </span>
-            <span className="text-xs text-muted">Doimiy majburiyatlarsiz standart xarid</span>
+            <span className="text-xs text-muted">{t("oneTimeNote")}</span>
           </div>
           <span className="font-display text-base font-extrabold text-brand-deep">
             {formatMoney(product.price, locale)}

@@ -15,6 +15,7 @@ import { WishlistButton } from "@/components/product/WishlistButton";
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
+  const tp = useTranslations("product");
   const add = useCart((s) => s.add);
 
   const discount = product.oldPrice
@@ -84,7 +85,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <div>
           {/* Title */}
           <Link href={`/product/${product.slug}`} className="block group/title">
-            <h3 className="line-clamp-2 min-h-[2.6em] font-display text-sm sm:text-base font-bold leading-snug text-fg transition-colors duration-200 group-hover/title:text-amber-500">
+            <h3 className="line-clamp-2 min-h-[2.6em] font-display text-sm sm:text-base font-bold leading-snug text-fg transition-colors duration-200 group-hover/title:text-gold-ink">
               {product.name}
             </h3>
           </Link>
@@ -93,8 +94,8 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <div className="mt-2 flex items-center justify-between gap-2">
             <StarRating rating={product.rating} className="scale-90 origin-left" />
             {product.servings && (
-              <span className="text-[11px] font-semibold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md">
-                {product.servings} porsiya
+              <span className="text-[11px] font-semibold text-brand-deep bg-gold/15 px-2 py-0.5 rounded-md">
+                {tp("servingsLabel", { count: product.servings })}
               </span>
             )}
           </div>
@@ -117,7 +118,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <button
             onClick={handleAdd}
             disabled={!product.inStock}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-accent py-2.5 text-xs font-bold uppercase tracking-wider text-ink shadow-xs transition-all duration-300 hover:opacity-95 active:scale-[0.98] disabled:bg-surface-2 disabled:text-muted cursor-pointer disabled:cursor-not-allowed"
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-2.5 text-xs font-bold uppercase tracking-wider text-ink shadow-xs transition-all duration-300 hover:bg-accent-strong active:scale-[0.98] disabled:bg-surface-2 disabled:text-muted cursor-pointer disabled:cursor-not-allowed"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />

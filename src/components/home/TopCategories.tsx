@@ -17,18 +17,6 @@ const CAT_IMAGES: Record<string, string> = {
   "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
 };
 
-const CAT_HOOKS: Record<string, string> = {
-  "vitamins": "Tana energiyasi & Imunitet",
-  "immunity": "Mavsumiy himoya",
-  "beauty": "Teri, soch & tirnoqlar",
-  "kids": "O'sish va aqliy rivojlanish",
-  "effervescent": "Tez so'riluvchi formulalar",
-  "minerals": "Suyak va mushaklar mustahkamligi",
-  "medical-devices": "Aniq va xavfsiz monitoring",
-  "coffee": "Tabiiy energiya & antioksidantlar",
-  "default": "Ekspertlar tomonidan saralangan",
-};
-
 export function TopCategories({ categories }: { categories: Category[] }) {
   const t = useTranslations("home.categories");
 
@@ -52,7 +40,7 @@ export function TopCategories({ categories }: { categories: Category[] }) {
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
           {categories.slice(0, 8).map((c, i) => {
             const bgImage = CAT_IMAGES[c.slug] || CAT_IMAGES.default;
-            const hook = CAT_HOOKS[c.slug] || CAT_HOOKS.default;
+            const hook = t(`hooks.${c.slug}`) || t("hooks.default");
             
             return (
               <Reveal key={c.id} index={Math.min(i, 6)} as="div" className="h-full">
@@ -84,7 +72,7 @@ export function TopCategories({ categories }: { categories: Category[] }) {
                       {c.name}
                     </span>
                     <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold opacity-90 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
-                      Katalogga o&apos;tish
+                      {t("cta")}
                       <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>

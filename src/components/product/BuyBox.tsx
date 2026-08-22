@@ -121,11 +121,13 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
             {t("reviews", { count: product.reviewCount })}
           </a>
         )}
-        {/* Availability & Urgency Indicator */}
+        {/* Availability — the catalogue exposes `inStock` as a boolean and no
+            quantity, so a "only N left" counter would be invented. State is
+            enough; scarcity is withheld until the backend returns real stock. */}
         <div className="flex items-center gap-2">
           <span
             className={`inline-flex items-center gap-1.5 text-sm font-medium ${
-              product.inStock ? "text-emerald-600 dark:text-emerald-400" : "text-danger"
+              product.inStock ? "text-emerald-500" : "text-danger"
             }`}
           >
             <span
@@ -134,12 +136,6 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
             />
             {product.inStock ? t("inStock") : t("outOfStock")}
           </span>
-
-          {product.inStock && (
-            <span className="rounded-full bg-amber-500/10 px-2.5 py-0.5 text-xs font-bold text-amber-600 dark:text-amber-400 border border-amber-500/20">
-              ⚡ Faqat 4 ta qoldi (Zudlik bilan yetkaziladi)
-            </span>
-          )}
         </div>
       </div>
 

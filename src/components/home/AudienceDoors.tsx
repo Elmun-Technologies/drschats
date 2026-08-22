@@ -26,17 +26,19 @@ const IMAGES: Record<string, string> = {
   parent: "https://images.unsplash.com/photo-1536640712-4d4c36ef0e52?auto=format&fit=crop&q=80&w=800",
 };
 
-const AUDIENCE_SUBTITLES: Record<string, string> = {
-  "self-woman": "Go&apos;zallik, gormonal balans & energiya",
-  "self-man": "Kuch-quvvat, streshga chidamlilik & tonus",
-  child: "Aqliy rivojlanish, bo&apos;y o&apos;sishi & imunitet",
-  parent: "Bo&apos;g&apos;imlar, yurak & uzoq umr ko&apos;rish",
+const SUBTITLE_KEYS: Record<string, string> = {
+  "self-woman": "subSelfWoman",
+  "self-man": "subSelfMan",
+  child: "subChild",
+  parent: "subParent",
 };
 
 export async function AudienceDoors({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.audience");
   const [first] = getQuizQuestions(locale);
   if (!first) return null;
+  const subtitleFor = (id: string) =>
+    t(SUBTITLE_KEYS[id] ?? "subtitleFallback");
 
   return (
     <section className="py-16 sm:py-24 border-t border-line/30 bg-ink">
@@ -44,7 +46,7 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
         <Reveal>
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
-              Kim Uchun Saralayapmiz?
+              {t("eyebrow")}
             </span>
             <h2 className="font-display text-3xl font-extrabold tracking-tight text-brand-deep sm:text-4xl">
               {first.question}
@@ -78,7 +80,7 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
                     {option.label}
                   </span>
                   <p className="mt-2 text-xs text-surface-2/80 line-clamp-2">
-                    {AUDIENCE_SUBTITLES[option.id] ?? "Shaxsiy vitamin va mineral rejasi"}
+                    {subtitleFor(option.id)}
                   </p>
                   <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-gold transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
                     {t("cta")}

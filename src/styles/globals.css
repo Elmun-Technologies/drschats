@@ -30,8 +30,8 @@
 
   /* Foreground */
   --color-fg: #0f172a;
-  --color-muted: #64748b;
-  --color-faint: #94a3b8;
+  --color-muted: #55616f;
+  --color-faint: #626d80;
 
   /* Action - Deep Premium Navy & Champagne Gold */
   --color-accent: #1e293b;
@@ -42,9 +42,12 @@
   --color-signal: #059669; /* Emerald */
   --color-signal-soft: rgba(5, 150, 105, 0.1);
 
-  /* Money + rating - Premium Champagne Gold */
+  /* Money + rating - Premium Champagne Gold.
+     `gold` reads on dark surfaces (CTA, hero), so it stays light. `gold-ink`
+     is the accessible gold for text on light surfaces: it clears WCAG AA
+     (≥4.5:1) on white, surface and surface-2. */
   --color-gold: #c5a059;
-  --color-gold-ink: #b2893f;
+  --color-gold-ink: #8a6a2e;
   
   --color-danger: #e11d48; /* Rose */
 

@@ -154,7 +154,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   return (
     <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
       {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10 [order:2] lg:[order:1]">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10 [order:1] lg:[order:1]">
         <fieldset className="space-y-5">
           <legend className="mb-2 font-display text-xl font-semibold">{t("contactSection")}</legend>
           <Field label={t("name")} error={errors.name?.message}>
@@ -211,14 +211,17 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <Field label={t("note")}>
             <textarea rows={3} className={inputClass} placeholder={t("notePlaceholder")} {...register("note")} />
           </Field>
-          <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-4 space-y-2">
-            <p className="text-xs font-bold text-fg uppercase tracking-wider">Qulay To&apos;lov Usullari:</p>
+          <div className="rounded-2xl border border-line/60 bg-surface p-4 space-y-2">
+            <p className="text-xs font-bold text-fg uppercase tracking-wider">{t("paymentMethodsTitle")}:</p>
             <div className="flex flex-wrap gap-2">
-              {["Click", "Payme", "Uzcard", "Humo", "Naqd (Kuryerga)"].map((pm) => (
-                <span key={pm} className="rounded-xl border border-line bg-surface px-3 py-1.5 text-xs font-bold text-fg shadow-xs">
+              {["Click", "Payme", "Uzcard", "Humo"].map((pm) => (
+                <span key={pm} className="rounded-xl border border-line bg-surface-2 px-3 py-1.5 text-xs font-bold text-fg shadow-xs">
                   ✓ {pm}
                 </span>
               ))}
+              <span className="rounded-xl border border-line bg-surface-2 px-3 py-1.5 text-xs font-bold text-fg shadow-xs">
+                ✓ {t("paymentCash")}
+              </span>
             </div>
             <p className="text-xs text-muted pt-1">{t("paymentNote")}</p>
           </div>
@@ -300,7 +303,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
       </form>
 
       {/* Summary */}
-      <aside className="[order:1] lg:[order:2] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+      <aside className="[order:2] lg:[order:2] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
         <div className="rounded-2xl border border-line bg-surface p-6">
           <h2 className="mb-5 font-display text-lg font-semibold">{t("summary")}</h2>
           <div className="space-y-4">
@@ -385,9 +388,9 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
               if (totalSavings > 0) {
                 return (
-                  <div className="mt-4 rounded-xl border border-green-500/20 bg-green-500/10 p-3 text-center">
-                    <p className="text-sm font-semibold text-green-600 dark:text-green-500">
-                      Siz jami {formatMoney(totalSavings, locale)} tejadingiz! 🥳
+                  <div className="mt-4 rounded-xl border border-gold/25 bg-gold/10 p-3 text-center">
+                    <p className="text-sm font-semibold text-brand-deep">
+                      {t("savings", { amount: formatMoney(totalSavings, locale) })}
                     </p>
                   </div>
                 );

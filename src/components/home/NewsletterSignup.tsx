@@ -38,13 +38,13 @@ export function NewsletterSignup() {
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <span className="inline-block rounded-full bg-gold/20 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-4">
-                👑 VIP Salomatlik Klubi
+                {t("eyebrow")}
               </span>
               <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white drop-shadow-md">
-                10% Chegirma va Shifokorlar Maslahatini Oling
+                {t("title")}
               </h2>
               <p className="mt-4 text-base text-surface-2/90 leading-relaxed max-w-xl">
-                VIP klubimizga a&apos;zo bo&apos;ling — haftalik yopiq chegirmalar, shifokorlar tayyorlagan salomatlik ko&apos;rsatmalari hamda yangi kelgan BADlar haqida birinchilardan bo&apos;lib xabar oling.
+                {t("subtitle")}
               </p>
 
               <div className="mt-6 flex flex-wrap gap-4">
@@ -58,7 +58,7 @@ export function NewsletterSignup() {
                   <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="currentColor">
                     <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.608c-.15.675-.546.84-1.107.522l-3.063-2.257-1.478 1.42c-.163.163-.3.3-.617.3l.22-3.118 5.67-5.12c.247-.22-.054-.342-.383-.122L7.04 14.572l-3.007-.94c-.653-.204-.666-.653.137-.966l11.732-4.522c.545-.197 1.02.133.66.104z" />
                   </svg>
-                  <span>Telegram kanalimizga qo&apos;shilish</span>
+                  <span>{t("telegramCta")}</span>
                 </a>
               </div>
             </div>
@@ -69,13 +69,13 @@ export function NewsletterSignup() {
                   <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gold text-brand-deep text-2xl font-bold mx-auto mb-3">
                     ✓
                   </span>
-                  <p className="font-display text-xl font-extrabold text-white">Tabriklaymiz! Siz VIP klubdasiz</p>
-                  <p className="mt-2 text-sm text-surface-2/80">Pochtangizga promo-kod va tasdiqlash xati yuborildi.</p>
+                  <p className="font-display text-xl font-extrabold text-white">{t("successTitle")}</p>
+                  <p className="mt-2 text-sm text-surface-2/80">{t("successNote")}</p>
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="rounded-3xl border border-white/20 bg-white/10 p-7 backdrop-blur-md shadow-xl">
                   <label htmlFor="newsletter-email" className="block text-xs font-extrabold uppercase tracking-widest text-gold mb-3">
-                    Elektron pochtangizni kiriting:
+                    {t("emailLabel")}
                   </label>
                   <div className="flex flex-col gap-3 sm:flex-row">
                     <input
@@ -84,7 +84,7 @@ export function NewsletterSignup() {
                       required
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="email@example.com"
+                      placeholder={t("emailPlaceholder")}
                       autoComplete="email"
                       className="flex-1 rounded-2xl border border-white/20 bg-brand-deep/80 px-5 py-4 text-sm font-semibold text-white placeholder-white/50 outline-none focus:border-gold focus:ring-1 focus:ring-gold"
                     />
@@ -93,7 +93,7 @@ export function NewsletterSignup() {
                       disabled={state === "loading"}
                       className="rounded-2xl bg-gold px-8 py-4 text-xs font-extrabold uppercase tracking-widest text-brand-deep shadow-xl shadow-gold/20 transition-all duration-300 hover:bg-white hover:scale-105 active:scale-95 disabled:opacity-60 shrink-0"
                     >
-                      {state === "loading" ? "…" : "A&apos;zo bo&apos;lish ➔"}
+                      {state === "loading" ? "…" : `${t("submit")} ➔`}
                     </button>
                   </div>
 
@@ -114,7 +114,7 @@ export function NewsletterSignup() {
                     </p>
                   )}
                   <p className="mt-4 text-[11px] text-white/50">
-                    * Spam yuborilmaydi. Istalgan vaqtda bir tugma bilan obunani bekor qilishingiz mumkin.
+                    {t("privacyNote")}
                   </p>
                 </form>
               )}

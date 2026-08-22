@@ -25,18 +25,10 @@
   anything the real Shopflow API returns in `SHOPFLOW_MODE=http`, are untouched:
   those are somebody's actual words, and hiding them would be the opposite
   mistake.
-*/
 
-/*
-  Demo / preview deployments: show the sample reviews and ratings by default
-  so the UI is never empty. Production teams should set this env var explicitly
-  and flip it off once real customer reviews start flowing in from the backend.
-
-  NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=off  ← production (real data only)
-  NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=on   ← staging / demo (sample data shown)
-
-  When the env var is absent (local dev, Vercel preview) we default to `true`
-  so developers and stakeholders see a fully populated UI out of the box.
+  The flag is strictly opt-in: absent (local dev, Vercel preview) and "off"
+  both mean the fabricated ratings, reviews and toasts are hidden. Only the
+  literal "on" shows them. This keeps an unconfigured deployment honest.
 */
 export const SHOW_SAMPLE_SOCIAL_PROOF =
-  process.env.NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF !== "off";
+  process.env.NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF === "on";

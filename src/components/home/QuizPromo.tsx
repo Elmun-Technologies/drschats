@@ -23,10 +23,10 @@ export async function QuizPromo() {
               <div className="relative z-10 p-8 sm:p-14 lg:w-7/12 lg:py-16">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
                   <span className="rounded-full bg-gold/20 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30">
-                    AI Diagnostic System
+                    {home("badge")}
                   </span>
                   <span className="rounded-full bg-emerald-500/20 backdrop-blur-md px-3.5 py-1 text-xs font-bold text-emerald-300 border border-emerald-500/30">
-                    ✓ 98.4% Aniq natija
+                    ✓ {home("accuracy")}
                   </span>
                 </div>
 
@@ -34,7 +34,7 @@ export async function QuizPromo() {
                   {home("title")}
                 </h2>
                 <p className="mt-4 text-base text-surface-2/80 max-w-xl leading-relaxed">
-                  Organizmingiz ehtiyojlarini aniqlash va keraksiz qo&apos;shimchalarga pul sarflamaslik uchun 6 ta oddiy savolga javob bering.
+                  {home("body")}
                 </p>
 
                 {/* 3 Step Visual Process */}
@@ -43,22 +43,22 @@ export async function QuizPromo() {
                     <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gold text-brand-deep font-extrabold text-sm mb-3">
                       1
                     </span>
-                    <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1">Qadam 1</p>
-                    <p className="text-sm font-semibold text-white">Semptom va maqsadni tanlang</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1">{home("stepLabel", { n: 1 })}</p>
+                    <p className="text-sm font-semibold text-white">{home("step1Title")}</p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
                     <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gold text-brand-deep font-extrabold text-sm mb-3">
                       2
                     </span>
-                    <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1">Qadam 2</p>
-                    <p className="text-sm font-semibold text-white">AI Algoritmi tahlil qiladi</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1">{home("stepLabel", { n: 2 })}</p>
+                    <p className="text-sm font-semibold text-white">{home("step2Title")}</p>
                   </div>
                   <div className="rounded-2xl border border-white/10 bg-white/5 p-4 backdrop-blur-md">
                     <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-gold text-brand-deep font-extrabold text-sm mb-3">
                       3
                     </span>
-                    <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1">Qadam 3</p>
-                    <p className="text-sm font-semibold text-white">Shaxsiy vitamin kartasini oling</p>
+                    <p className="text-xs font-bold uppercase tracking-wider text-gold mb-1">{home("stepLabel", { n: 3 })}</p>
+                    <p className="text-sm font-semibold text-white">{home("step3Title")}</p>
                   </div>
                 </div>
 
@@ -67,7 +67,7 @@ export async function QuizPromo() {
                     href="/quiz" 
                     className="inline-flex items-center gap-2.5 rounded-full bg-gold px-8 py-4 text-xs font-extrabold uppercase tracking-widest text-brand-deep shadow-xl shadow-gold/20 transition-all duration-300 hover:bg-white hover:scale-105 active:scale-95"
                   >
-                    <span>Testni boshlash (Bepul)</span>
+                    <span>{home("cta")}</span>
                     <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M4 10h12M10 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -77,7 +77,7 @@ export async function QuizPromo() {
                       <circle cx="12" cy="12" r="10" />
                       <path d="M12 6v6l4 2" />
                     </svg>
-                    <span>Faqat 2 daqiqa vaqtingizni oladi</span>
+                    <span>{home("timeNote")}</span>
                   </div>
                 </div>
               </div>
@@ -86,7 +86,7 @@ export async function QuizPromo() {
               <div className="relative min-h-[340px] lg:w-5/12 overflow-hidden">
                 <Image 
                   src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&q=80&w=800"
-                  alt="Medical Consultation & AI Diagnostics"
+                  alt={home("imageAlt")}
                   fill
                   sizes="(max-width: 1024px) 100vw, 40vw"
                   className="object-cover object-center"
@@ -100,8 +100,8 @@ export async function QuizPromo() {
                       <Image src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=200" alt="Doctor" width={40} height={40} className="object-cover" />
                     </div>
                     <div>
-                      <p className="text-xs font-extrabold text-white">Dr. Jasur Alimov</p>
-                      <p className="text-[11px] text-gold">Nutriolog & Tibbiyot eksperti</p>
+                      <p className="text-xs font-extrabold text-white">{home("doctorName")}</p>
+                      <p className="text-[11px] text-gold">{home("doctorRole")}</p>
                     </div>
                   </div>
                 </div>

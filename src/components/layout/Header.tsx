@@ -24,13 +24,13 @@ import { isNavigable } from "@/lib/content/nav-sections";
   ahead of the shop, and the shop is what they funnel into.
 */
 const navItems = [
-  { key: "home", href: "/", label: "Bosh sahifa" },
-  { key: "products", href: "/products", label: "Barcha mahsulotlar", badge: "sale", badgeLabel: "Katalog" },
-  { key: "vitamins", href: "/vitamins", label: "Vitaminlar & Minerallar" },
-  { key: "programs", href: "/programs", label: "30 Kunlik To'plamlar", badge: "popular", badgeLabel: "Kompleks" },
-  { key: "quiz", href: "/quiz", label: "AI Diagnostika", badge: "hot", badgeLabel: "2 min" },
-  { key: "experts", href: "/experts", label: "Ekspertlar" },
-  { key: "blog", href: "/blog", label: "Foydali maqolalar" },
+  { key: "home", href: "/" },
+  { key: "products", href: "/products", badge: "sale" },
+  { key: "vitamins", href: "/vitamins" },
+  { key: "programs", href: "/programs", badge: "popular" },
+  { key: "quiz", href: "/quiz", badge: "hot" },
+  { key: "experts", href: "/experts" },
+  { key: "blog", href: "/blog" },
 ] as const;
 
 const BADGE_STYLES: Record<string, string> = {
@@ -51,7 +51,6 @@ export function Header({
   const items = navItems.filter((item) => isNavigable(item.href, topicPaths));
   const t = useTranslations("nav");
   const h = useTranslations("header");
-  const badges = useTranslations("badges");
   const contact = useTranslations("contact");
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -121,13 +120,13 @@ export function Header({
                   href={item.href}
                   className={cn(
                     "group relative flex items-center gap-2 text-sm font-semibold transition-colors overflow-hidden",
-                    active ? "text-amber-500" : "text-fg/80 hover:text-amber-500",
+                    active ? "text-gold-ink" : "text-fg/80 hover:text-gold-ink",
                   )}
                 >
-                  <span>{item.label}</span>
+                  <span>{t(`menu.${item.key}`)}</span>
                   {/* Animated Underline */}
                   <span className={cn(
-                    "absolute bottom-0 left-0 h-0.5 bg-amber-500 transition-all duration-300 ease-out",
+                    "absolute bottom-0 left-0 h-0.5 bg-gold-ink transition-all duration-300 ease-out",
                     active ? "w-full" : "w-0 group-hover:w-full"
                   )} />
                   {hasBadge && (
@@ -135,7 +134,7 @@ export function Header({
                       "rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase",
                       BADGE_STYLES[item.badge],
                     )}>
-                      {item.badgeLabel}
+                      {t(`badge.${item.badge}`)}
                     </span>
                   )}
                 </Link>
@@ -173,13 +172,13 @@ export function Header({
             <nav className="container-px flex flex-col gap-1 overflow-y-auto pb-10 pt-4">
               {items.map((item) => (
                 <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="border-b border-line/50 py-4 font-display text-xl font-semibold flex items-center justify-between">
-                  <span>{item.label}</span>
+                  <span>{t(`menu.${item.key}`)}</span>
                   {"badge" in item && item.badge && (
                     <span className={cn(
                       "rounded-full px-2 py-0.5 text-[10px] font-extrabold uppercase",
                       BADGE_STYLES[item.badge],
                     )}>
-                      {item.badgeLabel}
+                      {t(`badge.${item.badge}`)}
                     </span>
                   )}
                 </Link>

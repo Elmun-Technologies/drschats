@@ -52,7 +52,7 @@ export function ReminderPanel() {
               key={reminder.id}
               className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-line bg-surface px-4 py-3"
             >
-              <span className="rounded-full bg-gold/15 px-3 py-1 text-xs font-bold text-gold">
+              <span className="rounded-full bg-gold/15 px-3 py-1 text-xs font-bold text-gold-ink">
                 {reminder.daysUntil === 0 ? t("today") : t("inDays", { days: reminder.daysUntil })}
               </span>
               <span className="text-sm text-fg">{describe(reminder, t)}</span>

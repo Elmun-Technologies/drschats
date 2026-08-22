@@ -7,29 +7,23 @@ import { Reveal } from "@/components/animation/Reveal";
 const BANNERS = [
   {
     bgImage: "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=600",
-    badge: "15% CHEGIRMA",
-    title: "Obuna bo'ling & Har oy tejang",
-    subtitle: "Doimiy avtomatik yetkazib berish xizmati",
+    key: "b1",
     href: "/products",
   },
   {
     bgImage: "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=600",
-    badge: "BEPUL YETKAZISH",
-    title: "500,000 so'mdan yuqori xaridlarga",
-    subtitle: "O'zbekiston bo'ylab tezkor kuryerlik",
+    key: "b2",
     href: "/products",
   },
   {
     bgImage: "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=600",
-    badge: "100% KAFOLAT",
-    title: "Sertifikatlangan original mahsulotlar",
-    subtitle: "Yevropa va AQSh sifat standartlari",
+    key: "b3",
     href: "/products",
   },
 ];
 
 export function PromoBanners() {
-  const b = useTranslations("home.bento");
+  const b = useTranslations("home.promo");
 
   return (
     <section className="bg-ink py-10 border-t border-line/30">
@@ -44,7 +38,7 @@ export function PromoBanners() {
                 <div className="absolute inset-0 z-0">
                   <Image 
                     src={banner.bgImage}
-                    alt={banner.title}
+                    alt={b(`${banner.key}.title`)}
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover opacity-80 transition-transform duration-700 group-hover:scale-110"
@@ -54,15 +48,15 @@ export function PromoBanners() {
 
                 <div className="relative z-10">
                   <span className="inline-block rounded-full bg-gold px-3 py-1 text-[10px] font-extrabold tracking-wider text-brand-deep shadow-sm">
-                    {banner.badge}
+                    {b(`${banner.key}.badge`)}
                   </span>
                 </div>
 
                 <div className="relative z-10 mt-4">
                   <h3 className="font-display text-lg font-extrabold text-white group-hover:text-gold transition-colors">
-                    {banner.title}
+                    {b(`${banner.key}.title`)}
                   </h3>
-                  <p className="mt-1 text-xs text-surface-2/80">{banner.subtitle}</p>
+                  <p className="mt-1 text-xs text-surface-2/80">{b(`${banner.key}.subtitle`)}</p>
                   <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-gold group-hover:text-white transition-all duration-300 group-hover:translate-x-1">
                     {b("viewMore")}
                     <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">

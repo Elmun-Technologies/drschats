@@ -26,7 +26,7 @@ export async function ProgramsRail({ locale }: { locale: Locale }) {
         <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div className="max-w-xl">
             <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
-              Kompaniyaning Kompleks Dasturlari
+              {t("railEyebrow")}
             </span>
             <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
               {t("indexTitle")}
@@ -63,7 +63,7 @@ export async function ProgramsRail({ locale }: { locale: Locale }) {
                     </span>
                     {program.discountPercent > 0 && (
                       <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-extrabold text-brand-deep shadow-md">
-                        −{program.discountPercent}% Tejov
+                        {t("savePercent", { percent: program.discountPercent })}
                       </span>
                     )}
                   </div>
