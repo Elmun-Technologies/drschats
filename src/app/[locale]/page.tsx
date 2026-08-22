@@ -62,20 +62,19 @@ export default async function HomePage({
 
   const bestsellers = popular.items.slice(0, 8);
 
-  // One pass over the popular set feeds both the countdown panel and the rail;
-  // the deal is dropped from the rail so the same product is not sold twice on
-  // one screen.
+  // One pass over the popular set produces the discounted catalogue rail.
+  // The editorial hero deliberately stays focused on the brand story instead
+  // of duplicating a product promotion above the fold.
   const deals = byDeepestDiscount(popular.items);
-  const [deal, ...restOfDeals] = deals;
 
   return (
     <>
       <JsonLd data={organizationLd()} />
-      <HeroBento products={bestsellers} deal={deal} />
+      <HeroBento products={bestsellers} />
       <TrustRibbon />
       <AudienceDoors locale={locale} />
       <TopCategories categories={categories} />
-      <DiscountRail products={restOfDeals.slice(0, 8)} />
+      <DiscountRail products={deals.slice(0, 8)} />
       <QuizPromo />
       {/* Top 3 products with full feature breakdown — the most persuasive
           single section on the page for a health-conscious buyer. */}

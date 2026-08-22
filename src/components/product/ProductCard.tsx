@@ -85,10 +85,29 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <div>
           {/* Title */}
           <Link href={`/product/${product.slug}`} className="block group/title">
-            <h3 className="line-clamp-2 min-h-[2.6em] font-display text-sm sm:text-base font-bold leading-snug text-fg transition-colors duration-200 group-hover/title:text-gold-ink">
+            <h3 className="line-clamp-2 min-h-[2.6em] font-display text-sm font-bold leading-snug text-fg transition-colors duration-200 group-hover/title:text-gold-ink sm:text-base">
               {product.name}
             </h3>
           </Link>
+
+          {/* Small sourcing cue and one concise benefit mirror the catalogue
+              reading pattern: shoppers can scan provenance before price. */}
+          {(product.origin || product.highlights[0]) && (
+            <div className="mt-2 min-h-9">
+              {product.origin && (
+                <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-muted">
+                  <svg viewBox="0 0 24 24" aria-hidden className="h-3.5 w-3.5 text-gold-ink" fill="none" stroke="currentColor" strokeWidth="1.8">
+                    <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1116 0Z" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="12" cy="10" r="2.5" />
+                  </svg>
+                  {product.origin}
+                </span>
+              )}
+              {product.highlights[0] && (
+                <p className="mt-0.5 line-clamp-1 text-[11px] leading-relaxed text-muted">{product.highlights[0]}</p>
+              )}
+            </div>
+          )}
 
           {/* Star Rating & Servings */}
           <div className="mt-2 flex items-center justify-between gap-2">
@@ -118,7 +137,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <button
             onClick={handleAdd}
             disabled={!product.inStock}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-accent py-2.5 text-xs font-bold uppercase tracking-wider text-ink shadow-xs transition-all duration-300 hover:bg-accent-strong active:scale-[0.98] disabled:bg-surface-2 disabled:text-muted cursor-pointer disabled:cursor-not-allowed"
+            className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent py-2.5 text-xs font-bold uppercase tracking-wider text-ink shadow-[0_8px_18px_-14px_rgba(117,90,38,0.75)] transition-all duration-300 hover:bg-accent-strong hover:text-ink active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-muted"
           >
             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
               <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />

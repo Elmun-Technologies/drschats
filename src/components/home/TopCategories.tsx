@@ -46,7 +46,7 @@ export function TopCategories({ categories }: { categories: Category[] }) {
               <Reveal key={c.id} index={Math.min(i, 6)} as="div" className="h-full">
                 <Link
                   href={`/products/${c.slug}`}
-                  className="group relative flex aspect-[3/4] md:aspect-[4/5] w-full flex-col justify-between overflow-hidden rounded-[2.25rem] bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30 border border-white/10"
+                  className="group relative flex aspect-[3/4] w-full flex-col justify-between overflow-hidden rounded-t-[5.5rem] rounded-b-[1.5rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30 md:aspect-[4/5]"
                 >
                   <div className="absolute inset-0 z-0">
                     <Image 

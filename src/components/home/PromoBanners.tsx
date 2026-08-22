@@ -33,7 +33,7 @@ export function PromoBanners() {
             <Reveal key={i} index={i}>
               <Link
                 href={banner.href}
-                className="group relative flex h-full min-h-[190px] flex-col justify-between overflow-hidden rounded-[2rem] border border-white/10 bg-brand-deep p-6 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-deep/30"
+                className="group relative flex h-full min-h-[190px] flex-col justify-between overflow-hidden rounded-t-[3.75rem] rounded-b-[1.35rem] border border-white/10 bg-brand-deep p-6 transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-deep/30"
               >
                 <div className="absolute inset-0 z-0">
                   <Image 

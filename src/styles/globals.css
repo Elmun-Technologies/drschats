@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 /*
-  Go Vita design tokens — "Apteka Indigo".
+  Go Vita design tokens — "Warm Apothecary".
 
   A marketplace catalogue asks colour to carry three separate jobs, so each one
   gets its own hue and they never borrow from each other:
@@ -10,58 +10,63 @@
     danger  → money      (price, discount, savings)
     signal  → state      (in stock, natural, certified)
 
-  The previous single-green system used one hue for action *and* state, which
-  is legible on a 20-product site and stops being legible on a 2000-product one.
-
-  Note: `ink` doubles as the page background AND the contrast colour placed on
-  accent/gold buttons (white), so both stay white in this light theme.
+  `ink` is the light porcelain page ground and the contrast colour placed on
+  accent/gold buttons. The product UI stays clear and trustworthy while the
+  warmer palette keeps the health-and-beauty direction premium rather than
+  clinical.
 */
 @theme {
-  /* Brand surfaces - Sleek Light */
-  --color-ink: #ffffff;
-  --color-surface: #f9fafa;
-  --color-surface-2: #f2f4f6;
-  --color-surface-3: #e8ebee;
-  --color-line: rgba(15, 23, 42, 0.08);
-  --color-line-strong: rgba(15, 23, 42, 0.15);
-  
-  /* Deep chrome: utility bar, footer, hero grounds */
-  --color-brand-deep: #0f172a; /* Rich slate/midnight */
+  /*
+    Go Vita design tokens — warm apothecary.
+
+    The reference direction is deliberately light, calm and tactile: warm
+    porcelain surfaces, charcoal typography and one restrained champagne-gold
+    action colour.  The values below remain semantic so every existing page
+    receives the same visual language without tying components to a brand name.
+  */
+  --color-ink: #fffdf9;
+  --color-surface: #f8f6f1;
+  --color-surface-2: #f1eee7;
+  --color-surface-3: #e7e1d7;
+  --color-line: rgba(49, 43, 33, 0.10);
+  --color-line-strong: rgba(49, 43, 33, 0.18);
+
+  /* Warm charcoal replaces cold navy as the contrast ground. */
+  --color-brand-deep: #2d2a25;
 
   /* Foreground */
-  --color-fg: #0f172a;
-  --color-muted: #55616f;
-  --color-faint: #626d80;
+  --color-fg: #2d2a25;
+  --color-muted: #696259;
+  --color-faint: #8a8175;
 
-  /* Action - Deep Premium Navy & Champagne Gold */
-  --color-accent: #1e293b;
-  --color-accent-soft: rgba(30, 41, 59, 0.05);
-  --color-accent-strong: #0f172a;
+  /* Action — muted, accessible antique gold. */
+  --color-accent: #a8813a;
+  --color-accent-soft: rgba(168, 129, 58, 0.10);
+  --color-accent-strong: #725721;
 
   /* State */
-  --color-signal: #059669; /* Emerald */
-  --color-signal-soft: rgba(5, 150, 105, 0.1);
+  --color-signal: #2f7d62;
+  --color-signal-soft: rgba(47, 125, 98, 0.12);
 
-  /* Money + rating - Premium Champagne Gold.
-     `gold` reads on dark surfaces (CTA, hero), so it stays light. `gold-ink`
-     is the accessible gold for text on light surfaces: it clears WCAG AA
-     (≥4.5:1) on white, surface and surface-2. */
-  --color-gold: #c5a059;
-  --color-gold-ink: #8a6a2e;
-  
-  --color-danger: #e11d48; /* Rose */
+  /* Money + rating. `gold` is used as a surface/CTA, while `gold-ink` is the
+     darker accessible version for copy on porcelain backgrounds. */
+  --color-gold: #d1ac59;
+  --color-gold-ink: #755a26;
+  --color-gold-soft: #f6ecd7;
+
+  --color-danger: #bd4b55;
 
   /* Secondary palette */
-  --color-teal: #0d9488;
-  --color-blue: #1e293b;
-  --color-accent-on-dark: #cbd5e1;
-  --color-blue-soft: rgba(15, 23, 42, 0.05);
+  --color-teal: #357c73;
+  --color-blue: #536779;
+  --color-accent-on-dark: #f3dfb1;
+  --color-blue-soft: rgba(83, 103, 121, 0.08);
 
-  /* Premium Mesh Backgrounds replacing pastels */
-  --color-pastel-beige: #f8f6f3;
-  --color-pastel-lilac: #f3f5f8;
-  --color-pastel-mint: #f0f7f4;
-  --color-pastel-sky: #f1f6fa;
+  /* Soft editorial backgrounds */
+  --color-pastel-beige: #f8f4ec;
+  --color-pastel-lilac: #f4f1f0;
+  --color-pastel-mint: #eef5f0;
+  --color-pastel-sky: #eff4f5;
 
   /* Typography */
   --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
