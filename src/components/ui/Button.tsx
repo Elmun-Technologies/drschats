@@ -6,15 +6,15 @@ type Size = "sm" | "md" | "lg";
 
 export function buttonVariants(variant: Variant = "primary", size: Size = "md") {
   const base =
-    "inline-flex items-center justify-center gap-2 rounded-full font-semibold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50";
+    "inline-flex items-center justify-center gap-2 rounded-lg font-bold transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50";
 
   const variants: Record<Variant, string> = {
     primary:
-      "bg-accent text-ink hover:bg-accent-strong hover:-translate-y-0.5 hover:shadow-[0_12px_40px_-12px_rgba(31,209,123,0.6)]",
+      "bg-accent text-ink shadow-[0_8px_22px_-14px_rgba(117,90,38,0.75)] hover:bg-accent-strong hover:text-ink hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-14px_rgba(117,90,38,0.65)]",
     secondary:
-      "border border-line-strong bg-surface-2 text-fg hover:border-accent hover:bg-surface-3",
+      "border border-line-strong bg-ink text-fg hover:border-gold hover:bg-surface",
     ghost: "text-fg hover:bg-surface-2",
-    gold: "bg-gold text-ink hover:-translate-y-0.5 hover:shadow-[0_12px_40px_-12px_rgba(231,185,75,0.6)]",
+    gold: "bg-gold text-brand-deep shadow-[0_8px_22px_-14px_rgba(117,90,38,0.75)] hover:-translate-y-0.5 hover:bg-[#dfbc70] hover:shadow-[0_14px_28px_-14px_rgba(117,90,38,0.65)]",
   };
 
   const sizes: Record<Size, string> = {
