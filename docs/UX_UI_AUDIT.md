@@ -305,8 +305,16 @@ Ushbu bo'limda yuqoridagi muammolarni hal qilish uchun qilingan kod o'zgarishlar
 ### P2-5 — Checkout mobil tartib
 - `CheckoutForm.tsx` → form `[order:1]`, aside `[order:2]` (mobil'da forma birinchi).
 
+### Qo'shimcha ikkinchi pass (2026-08-22)
+Ikkinchi tekshiruvda ochiq fonda qolgan bir nechta `text-gold` (kontrast ~2.1:1) topilib tuzatildi:
+- `src/components/contact/ContactChannels.tsx` — `gold` tone → `text-gold-ink`.
+- `src/components/profile/ReminderPanel.tsx` — gold → `text-gold-ink`.
+- `src/app/[locale]/blog/page.tsx` — "Tavsiya etilgan maqola" gold → `text-gold-ink` (+ `blog.featuredLabel` uz/ru).
+- `src/components/home/TrustRibbon.tsx` — ikona ranglari gold → `text-gold-ink` (grafik objekti 3:1).
+- `src/messages/*.json` — kategoriya hook keys to'g'ri slug'larga moslashtirildi (`devices`, `nutrition`, `skin`), `home.promo.viewMore` qo'shildi.
+
 ### Tekshiruvlar
-- `npm run build` → **0 xato**.
+- `npm run build` → **0 xato**; `127/127` static page generate qilindi.
 - `npm test` → **46/46 o'tdi**.
 - `npm run lint` → **0 ogohlantirish/xato**.
-- SSR HTML `uz`/`ru` → qattiq kodlangan o'zbekcha matnlar va soxta ijtimoiy isbot **topilmadi**.
+- SSR HTML `uz`/`ru` → qattiq kodlangan o'zbekcha matnlar va soxta ijtimoiy isbot **topilmadi**; barcha RU sahifalar toza.
