@@ -41,6 +41,7 @@ export async function TopicIndex({
   topics: HealthTopic[];
 }) {
   const nav = await getTranslations("nav");
+  const health = await getTranslations("health");
 
   const heroImage = kind === "goal"
     ? "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=1400"
@@ -48,7 +49,12 @@ export async function TopicIndex({
       ? "https://images.unsplash.com/photo-1576086213369-97a306d36557?auto=format&fit=crop&q=80&w=1400"
       : "https://images.unsplash.com/photo-1584308666744-24d5c474f2ad?auto=format&fit=crop&q=80&w=1400";
 
-  const kindLabel = kind === "goal" ? "Sog'lik Maqsadlari" : kind === "symptom" ? "Belgilar Bo'yicha" : "Vitaminlar";
+  const kindLabel =
+    kind === "goal"
+      ? health("goal.plural")
+      : kind === "symptom"
+        ? health("symptom.plural")
+        : health("vitamin.plural");
 
   return (
     <div className="min-h-screen">
@@ -81,7 +87,7 @@ export async function TopicIndex({
                   href="/quiz"
                   className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-bold text-brand-deep transition-all hover:bg-white hover:scale-105"
                 >
-                  AI Testni boshlash
+                  {health("topicIndex.takeQuiz")}
                   <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                     <path d="M4 10h12M10 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -90,7 +96,7 @@ export async function TopicIndex({
                   href="/products"
                   className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 backdrop-blur-md px-6 py-3 text-sm font-bold text-white transition-all hover:bg-white/20"
                 >
-                  Mahsulotlarni ko&apos;rish
+                  {health("topicIndex.viewProducts")}
                 </Link>
               </div>
             )}
@@ -104,18 +110,18 @@ export async function TopicIndex({
           <Container>
             <div className="flex items-center justify-between mb-10">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-gold">
-                  {topics.length} ta yo&apos;nalish
+                <span className="text-xs font-bold uppercase tracking-widest text-gold-ink">
+                  {health("topicIndex.directionsCount", { count: topics.length })}
                 </span>
                 <h2 className="mt-1 font-display text-2xl font-extrabold text-brand-deep">
-                  O&apos;zingizga mos maqsadni tanlang
+                  {health("topicIndex.chooseDirection")}
                 </h2>
               </div>
               <Link
                 href="/quiz"
                 className="hidden sm:inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-deep transition-all hover:bg-white hover:scale-105"
               >
-                AI bilan topish
+                {health("topicIndex.findAI")}
                 <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                   <path d="M4 10h12M10 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
@@ -156,7 +162,7 @@ export async function TopicIndex({
                       )}
 
                       <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-gold opacity-80 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
-                        Batafsil
+                        {health("topicIndex.more")}
                         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>

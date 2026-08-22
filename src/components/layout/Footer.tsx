@@ -94,7 +94,7 @@ export function Footer({ topicPaths = [] }: { topicPaths?: string[] }) {
 
         <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/45">
           <span>© {year} Go Vita. {t("rights")}</span>
-          <span className="rounded-full border border-white/15 px-3 py-1 text-xs">EU / CH / RU quality</span>
+          <span className="rounded-full border border-white/15 px-3 py-1 text-xs">{t("qualityBadge")}</span>
         </div>
       </Container>
     </footer>

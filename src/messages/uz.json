@@ -30,8 +30,21 @@
     "programs": "Dasturlar",
     "reviews": "Sharhlar",
     "wishlist": "Sevimlilar",
-    "menu": "Menyu",
-    "profile": "Mening profilim"
+    "menu": {
+      "home": "Bosh sahifa",
+      "products": "Barcha mahsulotlar",
+      "vitamins": "Vitaminlar & Minerallar",
+      "programs": "30 Kunlik To'plamlar",
+      "quiz": "AI Diagnostika",
+      "experts": "Ekspertlar",
+      "blog": "Foydali maqolalar"
+    },
+    "profile": "Mening profilim",
+    "badge": {
+      "sale": "Katalog",
+      "popular": "Kompleks",
+      "hot": "2 min"
+    }
   },
   "common": {
     "addToCart": "Savatga qo‘shish",
@@ -104,7 +117,12 @@
       "title": "Mijozlarimiz nima deydi",
       "subtitle": "Minglab odam Go Vita’ga ishonadi",
       "member": "Mijoz",
-      "join": "Hozir qo‘shilish"
+      "join": "Hozir qo‘shilish",
+      "badge": "Mijozlarimiz fikrlari",
+      "verifiedBuyer": "Tasdiqlangan xaridor",
+      "statRating": "4.9 ★",
+      "statPurchases": "10,000+ Muvaffaqiyatli xaridlar",
+      "statFeedback": "98% Ijobiy fikrlar va vrachlar tavsiyasi"
     },
     "marquee": "Sertifikatlangan sifat · Hidsiz formulalar · Tez yetkazib berish · 30 kun kafolat",
     "statement": {
@@ -135,7 +153,32 @@
       "title": "Premium sifat",
       "subtitle": "Har bir ehtiyoj uchun aniq yechim",
       "lead": "Go Vita mahsulotlari yetakchi sog‘liqni saqlash mutaxassislari tavsiyalari asosida, Yevropa sifat standartlarida ishlab chiqariladi.",
-      "viewAll": "Barcha kategoriyalar"
+      "viewAll": "Barcha kategoriyalar",
+      "cta": "Katalogga o'tish",
+      "hooks": {
+        "uz": {
+          "vitamins": "Tana energiyasi & Imunitet",
+          "immunity": "Mavsumiy himoya",
+          "beauty": "Teri, soch & tirnoqlar",
+          "kids": "O'sish va aqliy rivojlanish",
+          "effervescent": "Tez so'riluvchi formulalar",
+          "minerals": "Suyak va mushaklar mustahkamligi",
+          "medical-devices": "Aniq va xavfsiz monitoring",
+          "coffee": "Tabiiy energiya & antioksidantlar",
+          "default": "Ekspertlar tomonidan saralangan"
+        },
+        "ru": {
+          "vitamins": "Энергия и иммунитет",
+          "immunity": "Сезонная защита",
+          "beauty": "Кожа, волосы и ногти",
+          "kids": "Рост и умственное развитие",
+          "effervescent": "Быстрорастворимые формулы",
+          "minerals": "Крепость костей и мышц",
+          "medical-devices": "Точный и безопасный мониторинг",
+          "coffee": "Природная энергия и антиоксиданты",
+          "default": "Отобрано экспертами"
+        }
+      }
     },
     "bestsellers": {
       "title": "Eng ko‘p tanlanganlar",
@@ -193,8 +236,19 @@
       "step1": "Savollarga javob bering",
       "step2": "Shaxsiy rejani oling",
       "step3": "Bitta bosishda savatga",
-      "cta": "Testni boshlash",
-      "meta": "{count} ta savol · 2 daqiqa · bepul"
+      "cta": "Testni boshlash (Bepul)",
+      "meta": "{count} ta savol · 2 daqiqa · bepul",
+      "badge": "AI Diagnostic System",
+      "accuracy": "Aniq diagnostika",
+      "body": "Organizmingiz ehtiyojlarini aniqlash va keraksiz qo'shimchalarga pul sarflamaslik uchun 6 ta oddiy savolga javob bering.",
+      "stepLabel": "Qadam {n}",
+      "step1Title": "Semptom va maqsadni tanlang",
+      "step2Title": "AI Algoritmi tahlil qiladi",
+      "step3Title": "Shaxsiy vitamin kartasini oling",
+      "timeNote": "Faqat 2 daqiqa vaqtingizni oladi",
+      "doctorName": "Dr. Jasur Alimov",
+      "doctorRole": "Nutriolog & Tibbiyot eksperti",
+      "imageAlt": "Tibbiy konsultatsiya va AI diagnostika"
     },
     "doctors": {
       "eyebrow": "Tibbiy kengash",
@@ -233,17 +287,22 @@
       ]
     },
     "newsletter": {
-      "eyebrow": "Xabardor bo'ling",
-      "title": "Yangi maqolalar va aksiyalar",
-      "subtitle": "Haftada bir marta: shifokorlar tayyorlagan materiallar va yopiq chegirmalar. Spam yo'q.",
+      "eyebrow": "👑 VIP Salomatlik Klubi",
+      "title": "10% Chegirma va Shifokorlar Maslahatini Oling",
+      "subtitle": "VIP klubimizga a'zo bo'ling — haftalik yopiq chegirmalar, shifokorlar tayyorlagan salomatlik ko'rsatmalari hamda yangi kelgan BADlar haqida birinchilardan bo'lib xabar oling.",
       "label": "Elektron pochtangiz",
       "placeholder": "siz@example.com",
-      "submit": "Obuna bo'lish",
+      "submit": "A'zo bo'lish",
       "success": "Deyarli tayyor",
-      "successNote": "Pochtangizga tasdiqlash havolasini yubordik. Havolani bosgach obuna faollashadi.",
+      "successNote": "Pochtangizga promo-kod va tasdiqlash xati yuborildi.",
       "error": "Yuborib bo'lmadi. Pochtani tekshirib, qayta urinib ko'ring.",
       "privacy": "Istalgan vaqtda obunani bekor qilishingiz mumkin.",
-      "telegram": "Telegram kanalimiz"
+      "telegram": "Telegram kanalimiz",
+      "telegramCta": "Telegram kanalimizga qo'shilish",
+      "emailLabel": "Elektron pochtangizni kiriting:",
+      "emailPlaceholder": "email@example.com",
+      "successTitle": "Tabriklaymiz! Siz VIP klubdasiz",
+      "privacyNote": "* Spam yuborilmaydi. Istalgan vaqtda bir tugma bilan obunani bekor qilishingiz mumkin."
     },
     "deal": {
       "title": "Kun tovari",
@@ -259,7 +318,40 @@
     "slideLabel": "{number}-slayd",
     "audience": {
       "subtitle": "Tanlang — konsultant qolgan savollarni beradi va shaxsiy reja tuzadi.",
-      "cta": "Boshlash"
+      "cta": "Boshlash",
+      "eyebrow": "Kim Uchun Saralayapmiz?",
+      "subtitleFallback": "Shaxsiy vitamin va mineral rejasi",
+      "subSelfWoman": "Go'zallik, gormonal balans & energiya",
+      "subSelfMan": "Kuch-quvvat, stressga chidamlilik & tonus",
+      "subChild": "Aqliy rivojlanish, bo'y o'sishi & imunitet",
+      "subParent": "Bo'g'imlar, yurak & uzoq umr ko'rish"
+    },
+    "trustRibbon": {
+      "t1": "100% Sertifikatlangan",
+      "t1d": "cGMP, ISO 22000 va Halal xalqaro standartlari",
+      "t2": "Laboratoriyada Sinalgan",
+      "t2d": "Har bir partiya ustidan 3 bosqichli sifat nazorati",
+      "t3": "Tibbiy Konsilium Nazorati",
+      "t3d": "Saytdagi barcha tavsiyalar shifokorlar tomonidan tasdiqlangan",
+      "t4": "Tezkor Yetkazib Berish",
+      "t4d": "Toshkent bo'ylab 24 soatda, viloyatlarga 2-3 kunda"
+    },
+    "promo": {
+      "b1": {
+        "badge": "15% CHEGIRMA",
+        "title": "Obuna bo'ling & Har oy tejang",
+        "subtitle": "Doimiy avtomatik yetkazib berish xizmati"
+      },
+      "b2": {
+        "badge": "BEPUL YETKAZISH",
+        "title": "500,000 so'mdan yuqori xaridlarga",
+        "subtitle": "O'zbekiston bo'ylab tezkor kuryerlik"
+      },
+      "b3": {
+        "badge": "100% KAFOLAT",
+        "title": "Sertifikatlangan original mahsulotlar",
+        "subtitle": "Yevropa va AQSh sifat standartlari"
+      }
     }
   },
   "product": {
@@ -307,7 +399,8 @@
       "title": "Bu mahsulot qanday maqsadlarga xizmat qiladi",
       "subtitle": "Batafsil ma'lumot uchun tegishli bo'limga o'ting.",
       "disclaimer": "Ushbu ma'lumot tanishtirish uchun va shifokor maslahatini almashtirmaydi. Qabul qilishdan oldin mutaxassis bilan maslahatlashing."
-    }
+    },
+    "servingsLabel": "{count} porsiya"
   },
   "shop": {
     "title": "Barcha mahsulotlar",
@@ -335,7 +428,8 @@
     "activeFilters": "Tanlangan",
     "removeFilter": "{name} filtrini olib tashlash",
     "priceFromValue": "{value} dan",
-    "priceToValue": "{value} gacha"
+    "priceToValue": "{value} gacha",
+    "productsAvailable": "{count} ta mahsulot mavjud"
   },
   "cart": {
     "title": "Savatcha",
@@ -422,7 +516,10 @@
     "emailPlaceholder": "siz@example.com",
     "emailHint": "Ixtiyoriy. Buyurtma tasdig‘ini shu manzilga yuboramiz.",
     "subscribeLabel": "Aksiya va yangiliklar haqida xat olib turaman",
-    "errorEmail": "Pochta manzili noto‘g‘ri"
+    "errorEmail": "Pochta manzili noto‘g‘ri",
+    "paymentMethodsTitle": "Qulay to'lov usullari",
+    "paymentCash": "Naqd (kuryerga)",
+    "savings": "Siz jami {amount} tejadingiz! 🎉"
   },
   "footer": {
     "tagline": "Sog‘lom hayot uchun isbotlangan nutriyentlar.",
@@ -433,7 +530,8 @@
     "offer": "Ommaviy oferta",
     "privacy": "Maxfiylik siyosati",
     "rights": "Barcha huquqlar himoyalangan.",
-    "language": "Til"
+    "language": "Til",
+    "qualityBadge": "EU / CH / RU sifat"
   },
   "about": {
     "title": "Go Vita haqida",
@@ -547,7 +645,10 @@
     "phoneLabel": "Telefon raqamingiz",
     "nameLabel": "Ismingiz",
     "submitBooking": "Konsultatsiya so'rash",
-    "successMsg": "Konsultatsiya so'rovingiz qabul qilindi! Shifokorimiz 15 daqiqa ichida siz bilan bog'lanadi."
+    "successMsg": "Konsultatsiya so'rovingiz qabul qilindi! Shifokorimiz 15 daqiqa ichida siz bilan bog'lanadi.",
+    "successTitle": "Muvaffaqiyatli buyurtma qilindi!",
+    "telegramCta": "Telegram orqali bog'lanish",
+    "close": "Yopish"
   },
   "delivery": {
     "title": "Yetkazib berish va to’lov",
@@ -951,12 +1052,20 @@
     "metaDescription": "Saqlangan vitamin va BADlaringiz."
   },
   "exit": {
-    "title": "Ketmang! Sizga maxsus taklif bor",
-    "body": "Birinchi buyurtmaga 10% chegirma. Telefon raqamingizni qoldiring — operatorimiz siz bilan bog’lanadi.",
-    "phonePlaceholder": "+998 90 000 00 00",
-    "cta": "Chegirma olish",
-    "dismiss": "Yo’q, kerak emas",
-    "successMessage": "Rahmat! Tez orada bog’lanamiz."
+    "title": "50,000 so'm Vafdorlik Vaucheri va Bepul Vrach Konsultatsiyasi!",
+    "body": "Ketishdan oldin telefon raqamingizni kiriting — biz sizga darhol 50,000 so'mlik birinchi xarid promo-kodini hamda vrach-nutriologning bepul shaxsiy tavsiyasini yuboramiz.",
+    "phonePlaceholder": "+998 90 123 45 67",
+    "cta": "Vaucherni olish",
+    "dismiss": "Yopish",
+    "successMessage": "Rahmat! Tez orada bog’lanamiz.",
+    "badge": "MAXSUS SOVGA",
+    "badgeNote": "Faqat bugun",
+    "perk1": "Birinchi buyurtmaga 50,000 so'm promo-kod",
+    "perk2": "Bepul vrach-nutriolog konsultatsiyasi",
+    "perk3": "Yopiq aksiyalar va VIP chegirmalar",
+    "promise": "* 100% maxfiylik kafolatlanadi. Reklama yoki spam yuborilmaydi.",
+    "successTitle": "Promo-kod taqdim etildi!",
+    "successBody": "Sizga SMS orqali 50,000 so'mlik promo-kod va shifokor konsultatsiyasi havolasi yuborildi."
   },
   "outOfStock": {
     "notify": "Bu mahsulot hozirda sotuvda yo’q. Telefon raqamingizni qoldiring — mahsulot kelganda xabar beramiz.",
@@ -1029,7 +1138,15 @@
     "keyIngredients": "Asosiy nutriyentlar",
     "allVitamins": "Barcha vitaminlar",
     "relatedProducts": "Tegishli mahsulotlar",
-    "relatedTopics": "Shuningdek qarang"
+    "relatedTopics": "Shuningdek qarang",
+    "topicIndex": {
+      "takeQuiz": "AI Testni boshlash",
+      "viewProducts": "Mahsulotlarni ko'rish",
+      "findAI": "AI bilan topish",
+      "more": "Batafsil",
+      "directionsCount": "{count} ta yo'nalish",
+      "chooseDirection": "O'zingizga mos yo'nalishni tanlang"
+    }
   },
   "quiz": {
     "eyebrow": "Dr. Chats AI va Tibbiy Konsilium Diagnostikasi",
@@ -1086,7 +1203,9 @@
     "youSave": "{amount} tejaysiz",
     "includes": "{count} ta mahsulot · {days} kunlik miqdor",
     "addProgram": "Dasturni savatga ({count})",
-    "cancelNote": "Har bir mahsulotni savatchada alohida o'zgartirishingiz mumkin"
+    "cancelNote": "Har bir mahsulotni savatchada alohida o'zgartirishingiz mumkin",
+    "railEyebrow": "Kompaniyaning Kompleks Dasturlari",
+    "savePercent": "−{percent}% Tejov"
   },
   "reviews": {
     "eyebrow": "Mijozlar tajribasi",
@@ -1311,6 +1430,11 @@
       "pause": "To‘xtatish",
       "resume": "Davom ettirish",
       "cancel": "Bekor qilish"
-    }
+    },
+    "benefitFirst": "Birinchi buyurtmada {first}% chegirma ({price})",
+    "benefitRecurring": "Keyingi har bir buyurtmada {recurring}% doimiy chegirma",
+    "benefitCancel": "Istalgan vaqtda 1 bosish bilan bekor qilish mumkin",
+    "deliveryInterval": "Yetkazish davriyligi:",
+    "oneTimeNote": "Doimiy majburiyatlarsiz standart xarid"
   }
 }

@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { AnimatedCounter } from "@/components/visual/AnimatedCounter";
+import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
 
 const ICONS = [
   "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
@@ -12,12 +13,57 @@ const ICONS = [
 
 export function StatsBand() {
   const t = useTranslations("home.trust");
-  const stats = [
+
+  type Stat = { value: number; suffix: string; key: string; decimals?: number };
+
+  // The customer count and average rating are illustrative, not sourced from a
+  // backend, so like the sample reviews they stay hidden unless a deployment
+  // explicitly opts in to demo data. The product count and delivery window are
+  // operational facts and always render.
+  if (!SHOW_SAMPLE_SOCIAL_PROOF) {
+    const stats: Stat[] = [
+      { value: 30, suffix: "+", key: "products" },
+      { value: 48, suffix: "h", key: "delivery" },
+    ];
+
+    return (
+      <section className="bg-surface py-20 sm:py-24">
+        <Container>
+          <Reveal>
+            <h2 className="mb-14 max-w-2xl font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+              {t("title")}
+            </h2>
+          </Reveal>
+          <div className="grid grid-cols-2 gap-6">
+            {stats.map((s, i) => (
+              <Reveal key={s.key} index={i}>
+                <div className="flex flex-col gap-4 rounded-2xl border border-line bg-ink p-6">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
+                      <path d={ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+                      <AnimatedCounter value={s.value} suffix={s.suffix} decimals={s.decimals ?? 0} />
+                    </div>
+                    <div className="mt-1.5 text-sm text-muted">{t(`stats.${s.key}`)}</div>
+                  </div>
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </Container>
+      </section>
+    );
+  }
+
+  const stats: Stat[] = [
     { value: 15000, suffix: "+", key: "customers" },
     { value: 30, suffix: "+", key: "products" },
     { value: 48, suffix: "h", key: "delivery" },
     { value: 4.8, decimals: 1, suffix: "★", key: "rating" },
-  ] as const;
+  ];
 
   return (
     <section className="bg-surface py-20 sm:py-24">
@@ -38,7 +84,7 @@ export function StatsBand() {
                 </div>
                 <div>
                   <div className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
-                    <AnimatedCounter value={s.value} suffix={s.suffix} decimals={"decimals" in s ? s.decimals : 0} />
+                    <AnimatedCounter value={s.value} suffix={s.suffix} decimals={s.decimals ?? 0} />
                   </div>
                   <div className="mt-1.5 text-sm text-muted">{t(`stats.${s.key}`)}</div>
                 </div>

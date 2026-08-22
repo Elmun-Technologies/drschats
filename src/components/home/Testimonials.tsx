@@ -26,7 +26,7 @@ export function Testimonials({ products }: { products: Product[] }) {
       <Container>
         <div className="mb-16 text-center max-w-2xl mx-auto">
           <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
-            Mijozlarimiz Fikrlari
+            {t("badge")}
           </span>
           <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
             {t("title")}
@@ -36,15 +36,19 @@ export function Testimonials({ products }: { products: Product[] }) {
 
         <div className="columns-1 gap-6 sm:columns-2 lg:columns-3 [&>*]:mb-6 [&>*]:break-inside-avoid">
           <ImageTile src={tiles[0]} className="aspect-[3/4]" />
-          {quotes[0] && <Quote q={quotes[0]} member={t("member")} />}
-          {quotes[1] && <Quote q={quotes[1]} member={t("member")} highlight />}
+          {quotes[0] && <Quote q={quotes[0]} member={t("member")} verifiedBuyer={t("verifiedBuyer")} />}
+          {quotes[1] && <Quote q={quotes[1]} member={t("member")} verifiedBuyer={t("verifiedBuyer")} highlight />}
           <ImageTile src={tiles[1]} className="aspect-square" />
-          <StatCard />
-          {quotes[2] && <Quote q={quotes[2]} member={t("member")} />}
+          <StatCard
+            rating={t("statRating")}
+            purchases={t("statPurchases")}
+            feedback={t("statFeedback")}
+          />
+          {quotes[2] && <Quote q={quotes[2]} member={t("member")} verifiedBuyer={t("verifiedBuyer")} />}
           <ImageTile src={tiles[2]} className="aspect-[4/5]" />
-          {quotes[3] && <Quote q={quotes[3]} member={t("member")} />}
+          {quotes[3] && <Quote q={quotes[3]} member={t("member")} verifiedBuyer={t("verifiedBuyer")} />}
           <JoinCard label={t("join")} />
-          {quotes[4] && <Quote q={quotes[4]} member={t("member")} />}
+          {quotes[4] && <Quote q={quotes[4]} member={t("member")} verifiedBuyer={t("verifiedBuyer")} />}
           <ImageTile src={tiles[3]} className="aspect-square" />
         </div>
       </Container>
@@ -55,10 +59,12 @@ export function Testimonials({ products }: { products: Product[] }) {
 function Quote({
   q,
   member,
+  verifiedBuyer,
   highlight,
 }: {
   q: { text: string; author: string; rating: number };
   member: string;
+  verifiedBuyer: string;
   highlight?: boolean;
 }) {
   return (
@@ -75,7 +81,7 @@ function Quote({
       </blockquote>
       <figcaption className="mt-5 border-t border-white/10 pt-4 flex items-center justify-between text-xs text-surface-2/80">
         <span className="font-extrabold text-white">{q.author}</span>
-        <span className="rounded-full bg-white/10 backdrop-blur-md px-3 py-1 font-semibold text-gold">✓ Tasdiqlangan xaridor</span>
+        <span className="rounded-full bg-white/10 backdrop-blur-md px-3 py-1 font-semibold text-gold">✓ {verifiedBuyer}</span>
       </figcaption>
     </figure>
   );
@@ -89,12 +95,20 @@ function ImageTile({ src, className }: { src: string; className?: string }) {
   );
 }
 
-function StatCard() {
+function StatCard({
+  rating,
+  purchases,
+  feedback,
+}: {
+  rating: string;
+  purchases: string;
+  feedback: string;
+}) {
   return (
     <div className="rounded-[2rem] border border-gold/30 bg-gradient-to-br from-brand-deep via-brand-deep to-brand-deep/90 p-8 text-center shadow-xl shadow-gold/5">
-      <div className="font-display text-5xl font-extrabold text-gold drop-shadow-md">4.9 ★</div>
-      <p className="mt-2 text-sm font-bold text-white">10,000+ Muvaffaqiyatli xaridlar</p>
-      <p className="mt-1 text-xs text-surface-2/70">98% Ijobiy fikrlar va vrachlar tavsiyasi</p>
+      <div className="font-display text-5xl font-extrabold text-gold drop-shadow-md">{rating}</div>
+      <p className="mt-2 text-sm font-bold text-white">{purchases}</p>
+      <p className="mt-1 text-xs text-surface-2/70">{feedback}</p>
     </div>
   );
 }

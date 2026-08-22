@@ -137,7 +137,7 @@ export async function ShopView({
 
           <div className="max-w-3xl">
             <span className="inline-block rounded-full bg-gold/20 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-3">
-              {result.total} ta Mahsulotlar Mavjud
+              {t("productsAvailable", { count: result.total })}
             </span>
             <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl text-white drop-shadow-md">{heading}</h1>
             <p className="mt-3 text-base text-surface-2/80">
@@ -274,8 +274,7 @@ export async function ShopView({
               </div>
             )}
 
-            <div className="mb-6 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-line bg-surface px-5 py-3">
-              <span className="text-sm text-muted">{t("resultsCount", { count: result.total })}</span>
+            <div className="mb-6 flex flex-wrap items-center justify-end gap-4 rounded-2xl border border-line bg-surface px-5 py-3">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm text-faint">{t("sort")}:</span>
                 {sorts.map((s) => (

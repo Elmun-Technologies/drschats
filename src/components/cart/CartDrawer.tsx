@@ -53,7 +53,7 @@ export function CartDrawer() {
           >
             <header className="flex items-center justify-between border-b border-line px-6 py-5 bg-surface text-fg">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-amber-500/15 text-amber-500 font-bold text-sm">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold/15 text-gold-ink font-bold text-sm">
                   🛒
                 </span>
                 <h2 id="cart-drawer-title" className="font-display text-lg font-extrabold text-fg">{t("title")}</h2>
