@@ -35,6 +35,7 @@ const exo2 = localFont({
   ],
   variable: "--font-exo2",
   display: "swap",
+  preload: false,
 });
 
 export const metadata: Metadata = {

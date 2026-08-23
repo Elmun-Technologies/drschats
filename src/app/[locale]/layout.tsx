@@ -34,6 +34,9 @@ const exo2 = localFont({
   ],
   variable: "--font-exo2",
   display: "swap",
+  // Six weight files share this declaration; preloading would fetch all of
+  // them on every page even though most routes only render one or two.
+  preload: false,
 });
 
 export function generateStaticParams() {
