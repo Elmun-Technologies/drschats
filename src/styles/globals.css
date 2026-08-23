@@ -69,8 +69,8 @@
   --color-pastel-sky: #eff4f5;
 
   /* Typography */
-  --font-display: var(--font-sora), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-exo2), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-exo2), ui-sans-serif, system-ui, sans-serif;
 
   /* Radii */
   --radius-sm: 0.5rem;

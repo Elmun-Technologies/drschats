@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Sora, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getMessages, getTranslations } from "next-intl/server";
 import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routing";
@@ -23,8 +23,18 @@ import { JsonLd, websiteLd, localBusinessLd } from "@/lib/seo/jsonld";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
 
-const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
+const exo2 = localFont({
+  src: [
+    { path: "../../fonts/exo2/exo2-regular.woff2", weight: "400", style: "normal" },
+    { path: "../../fonts/exo2/exo2-medium.woff2", weight: "500", style: "normal" },
+    { path: "../../fonts/exo2/exo2-semibold.woff2", weight: "600", style: "normal" },
+    { path: "../../fonts/exo2/exo2-bold.woff2", weight: "700", style: "normal" },
+    { path: "../../fonts/exo2/exo2-extrabold.woff2", weight: "800", style: "normal" },
+    { path: "../../fonts/exo2/exo2-black.woff2", weight: "900", style: "normal" },
+  ],
+  variable: "--font-exo2",
+  display: "swap",
+});
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -56,7 +66,7 @@ export default async function LocaleLayout({
   ]);
 
   return (
-    <html lang={localeHtmlLang[locale as Locale]} className={`${sora.variable} ${manrope.variable}`}>
+    <html lang={localeHtmlLang[locale as Locale]} className={exo2.variable}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2d2a25" />
