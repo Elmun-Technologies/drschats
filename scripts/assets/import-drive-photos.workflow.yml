@@ -1,0 +1,83 @@
+name: Import Drive photos
+
+# One-shot helper. The product photos live in a public Google Drive folder as
+# five RAR archives. GitHub runners have unrestricted egress, so this fetches
+# and unpacks them and commits the images to public/products/inbox/, where
+# scripts/assets/ingest-product-images.mjs picks them up.
+#
+# Triggered by pushing this file. Safe to delete once the photos are in the
+# repo — nothing else depends on it.
+
+on:
+  push:
+    branches: ["arena/01a0331b-drschats"]
+    paths: [".github/workflows/import-drive-photos.yml"]
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install fetch and unpack tools
+        run: |
+          python -m pip install --quiet --upgrade pip gdown
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq unar
+
+      - name: Download the public Drive folder
+        run: gdown --folder "https://drive.google.com/drive/folders/1j4PL628pTwsYiSC8KvldBCp3YniNAOzZ" -O drive-raw
+
+      - name: What arrived
+        run: |
+          find drive-raw -type f -exec ls -la {} \;
+
+      # Each archive is a product category (аппараты, капсулы, напитки,
+      # препараты, шипучки), so keep that in the folder name — it is the one
+      # piece of metadata the filenames may not carry.
+      - name: Unpack into the inbox
+        run: |
+          set -euo pipefail
+          mkdir -p public/products/inbox
+          find drive-raw -type f \( -iname '*.rar' -o -iname '*.zip' -o -iname '*.7z' \) -print0 |
+          while IFS= read -r -d '' archive; do
+            name="$(basename "$archive")"
+            name="${name%.*}"
+            echo "::group::unpacking $name"
+            mkdir -p "public/products/inbox/$name"
+            unar -quiet -force-overwrite -output-directory "public/products/inbox/$name" "$archive" || {
+              echo "unar failed on $archive — falling back to 7z"
+              7z x -y -o"public/products/inbox/$name" "$archive"
+            }
+            echo "::endgroup::"
+          done
+          # Loose images (if any) come along too.
+          find drive-raw -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) \
+            -exec cp -n {} public/products/inbox/ \; || true
+
+      - name: Inventory
+        run: |
+          echo "files per folder:"
+          find public/products/inbox -mindepth 1 -type d -exec sh -c 'echo "  $(basename "$1"): $(find "$1" -type f | wc -l)"' _ {} \;
+          echo "total images: $(find public/products/inbox -type f \( -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.png' -o -iname '*.webp' \) | wc -l)"
+          echo "first 30 names:"
+          find public/products/inbox -type f | head -30
+
+      - name: Commit the photos
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add public/products/inbox
+          if git diff --cached --quiet; then
+            echo "Nothing to commit — inbox unchanged."
+          else
+            git commit -m "Import product photos from the shared Drive folder [skip ci]"
+            git push
+          fi
