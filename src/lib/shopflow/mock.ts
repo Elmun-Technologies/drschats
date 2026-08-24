@@ -440,7 +440,7 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "250 g", ru: "250 г" },
     badges: { uz: ["Yangilik!", "Arabika 100%"], ru: ["Новинка!", "Арабика 100%"] },
-    name: { uz: "Swiss Energy Coffee Edel 250g", ru: "Swiss Energy Coffee Edel 250г" },
+    name: { uz: "Swiss Energy Coffee Edel 250g", ru: "Swiss Energy Coffee Edel 250г кофе эдель" },
     tagline: {
       uz: "Tabiiy maydalangan qahva, yangi qovurilgan, 100% arabika",
       ru: "Натуральный молотый кофе, свежеобжаренный, 100% арабика",
@@ -495,7 +495,7 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "500 g", ru: "500 г" },
     badges: { uz: ["Aksiya", "Arabika 100%"], ru: ["Акция", "Арабика 100%"] },
-    name: { uz: "Swiss Energy Coffee Edel 500g", ru: "Swiss Energy Coffee Edel 500г" },
+    name: { uz: "Swiss Energy Coffee Edel 500g", ru: "Swiss Energy Coffee Edel 500г кофе эдель" },
     tagline: {
       uz: "Tabiiy maydalangan qahva, 100% arabika, 500 g",
       ru: "Натуральный молотый кофе, 100% арабика, 500 г",
@@ -550,7 +550,7 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "500 g", ru: "500 г" },
     badges: { uz: ["Aksiya", "Arabika 90%"], ru: ["Акция", "Арабика 90%"] },
-    name: { uz: "Swiss Energy Coffee Crema 500g", ru: "Swiss Energy Coffee Crema 500г" },
+    name: { uz: "Swiss Energy Coffee Crema 500g", ru: "Swiss Energy Coffee Crema 500г кофе крема" },
     tagline: {
       uz: "Donli qahva, 90% arabika + 10% robusta, 500 g",
       ru: "Молотый кофе, 90% арабика + 10% робуста, 500 г",
@@ -610,7 +610,7 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "250 g", ru: "250 г" },
     badges: { uz: ["Yangilik!"], ru: ["Новинка!"] },
-    name: { uz: "Swiss Energy Coffee Crema 250g", ru: "Swiss Energy Coffee Crema 250г" },
+    name: { uz: "Swiss Energy Coffee Crema 250g", ru: "Swiss Energy Coffee Crema 250г кофе крема" },
     tagline: {
       uz: "Donli qahva, 90% arabika + 10% robusta, 250 g",
       ru: "Молотый кофе, 90% арабика + 10% робуста, 250 г",
@@ -764,7 +764,7 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "1 dona", ru: "1 штука" },
     badges: { uz: ["Aksiya", "Kattalar va bolalar uchun"], ru: ["Акция", "Для взрослых и детей"] },
-    name: { uz: "Dr. Frei Turbo Base Ingalyator", ru: "Dr. Frei Turbo Base Ингалятор" },
+    name: { uz: "Dr. Frei Turbo Base Ingalyator", ru: "Dr. Frei Turbo Base Турбобейс Ингалятор" },
     tagline: {
       uz: "Kompressorli nebulayzer — kattalar va bolalar uchun",
       ru: "Компрессорный небулайзер — для взрослых и детей",
@@ -827,18 +827,18 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Germaniya", ru: "Германия" },
     servings: { uz: "30 g", ru: "30 г" },
     badges: { uz: ["Aksiya", "Dermatologik"], ru: ["Акция", "Дерматологический"] },
-    name: { uz: "Peano Balzam 30g", ru: "Peano Бальзам 30г" },
+    name: { uz: "Peano Balzam 30g", ru: "Peano Пиано крем бальзам 30г" },
     tagline: {
-      uz: "Teri tiklanishi va bitishi uchun dermatologik malham",
-      ru: "Дерматологическая мазь для восстановления и заживления кожи",
+      uz: "Teri tiklanishi uchun balzam — 30 g, xushbo'ysiz va parabensiz",
+      ru: "Бальзам для кожи — 30 г, без отдушки и парабенов",
     },
     description: {
-      uz: "Peano Balzam — teri tiklanishi va bitishi uchun mo'ljallangan dermatologik malham. Yara, quyish va teri muammolarida samarali. 30 g.",
-      ru: "Peano Бальзам — дерматологическая мазь для восстановления и заживления кожи. Эффективен при ранах, ожогах и проблемах кожи. 30 г.",
+      uz: "Peano Balzam — dermatologik malham, 30 g. Tuproq va quti: «Teri tiklanishi uchun balzam», «Xushbo'y va Parabenlarsiz».",
+      ru: "Peano Balzam — дерматологическая мазь, 30 г. На тубе: «Teri tiklanishi uchun balzam», без отдушки и парабенов.",
     },
     highlights: {
-      uz: ["Dermatologik malham", "Teri tiklanishi", "30 g", "Tez ta'sir qiladi"],
-      ru: ["Дерматологическая мазь", "Восстановление кожи", "30 г", "Быстрое действие"],
+      uz: ["30 g", "Teri tiklanishi", "Xushbo'ysiz", "Parabensiz"],
+      ru: ["30 г", "Восстановление кожи", "Без отдушки", "Без парабенов"],
     },
     benefits: {
       uz: [
@@ -851,8 +851,16 @@ const rawProducts: RawProduct[] = [
       ],
     },
     ingredients: {
-      uz: [{ name: "Faol tarkiblar", amount: "30 g malham" }],
-      ru: [{ name: "Активные компоненты", amount: "30 г мази" }],
+      uz: [
+        { name: "Dermatologik asos", amount: "30 g" },
+        { name: "Xushbo'y", amount: "yo'q" },
+        { name: "Parabenlar", amount: "yo'q" },
+      ],
+      ru: [
+        { name: "Дерматологическая основа", amount: "30 г" },
+        { name: "Отдушка", amount: "нет" },
+        { name: "Парабены", amount: "нет" },
+      ],
     },
     howToUse: {
       uz: "Toza teriga kuniga 2–3 marta yupqa qatlam bilan suring. Bint bilan yopish mumkin.",
@@ -890,12 +898,12 @@ const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Ko'zlar uchun"], ru: ["Акция", "Для глаз"] },
     name: { uz: "Swiss Energy Visiovit 30", ru: "Swiss Energy Visiovit 30" },
     tagline: {
-      uz: "Ko'zlar uchun vitaminlar — lyutein, chernika va sink",
-      ru: "Витамины для глаз — лютеин, черника и цинк",
+      uz: "Visiovit — lyutein, chernika, zeaksantin, A, E, Zn. 30 kapsula",
+      ru: "Visiovit — лютеин, черника, зеаксантин, A, E, Zn. 30 капсул",
     },
     description: {
-      uz: "Swiss Energy Visiovit — ko'rish o'tkirligini qo'llab-quvvatlovchi kompleks. Lyutein, chernika ekstrakti, zeaksantin, A, E, Zn vitaminlari. Ko'zni tashqi omillardan himoya qiladi.",
-      ru: "Swiss Energy Visiovit — комплекс для поддержания остроты зрения. Лютеин, экстракт черники, зеаксантин, витамины A, E, Zn. Защищает глаза от внешних факторов.",
+      uz: "Swiss Energy Visiovit by Dr.Frei — 30 kapsula, sekin chiqarilish. Etiketka: Lutein + Blueberry Extract + Zeaxantin + A, E + Zn, «for healthy eyesight».",
+      ru: "Swiss Energy Visiovit by Dr.Frei — 30 капсул, sustained release. Этикетка: Lutein + Blueberry Extract + Zeaxantin + A, E + Zn.",
     },
     highlights: {
       uz: ["Lyutein + zeaksantin", "Chernika ekstrakti", "A va E vitamini + Sink", "30 kapsula"],
@@ -971,12 +979,12 @@ const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Immunitet"], ru: ["Акция", "Иммунитет"] },
     name: { uz: "Swiss Energy ImmunoVit 30", ru: "Swiss Energy ImmunoVit 30" },
     tagline: {
-      uz: "Immunitet uchun vitaminlar — echinacea, propolis, C va Zn",
-      ru: "Витамины для иммунитета — эхинацея, прополис, C и Zn",
+      uz: "ImmunoVit — echinacea + propolis + C + Zn, 30 kapsula",
+      ru: "ImmunoVit — эхинацея + прополис + C + Zn, 30 капсул",
     },
     description: {
-      uz: "Swiss Energy ImmunoVit — immun tizimni kuchaytiruvchi kompleks. Echinacea, propolis, vitamin C va sink. Mavsumiy himoya va umumiy salomatlik uchun.",
-      ru: "Swiss Energy ImmunoVit — комплекс для укрепления иммунной системы. Эхинацея, прополис, витамин C и цинк. Для сезонной защиты и общего здоровья.",
+      uz: "Swiss Energy ImmunoVit by Dr.Frei — 30 kapsula, sekin chiqarilish. Etiketka: Echinacea + Propolis + Vitamin C + Zn, «strengthening of immune system».",
+      ru: "Swiss Energy ImmunoVit by Dr.Frei — 30 капсул, sustained release. Этикетка: Echinacea + Propolis + Vitamin C + Zn.",
     },
     highlights: {
       uz: ["Echinacea + Propolis", "Vitamin C + Sink", "30 kapsula", "Mavsumiy himoya"],
@@ -1105,14 +1113,14 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "20 tabletka", ru: "20 таблеток" },
     badges: { uz: ["Aksiya", "Arzon narx kafolati"], ru: ["Акция", "Гарантия низкой цены"] },
-    name: { uz: "Dr. Frei Multivitamins + Biotin 20", ru: "Dr. Frei Multivitamins + Biotin 20" },
+    name: { uz: "Dr. Frei Multivitamins + Biotin 20", ru: "Dr. Frei Multivitamins + Biotin 20 Мульт" },
     tagline: {
-      uz: "Immunitetni mustahkamlash uchun shipuchi multivitaminlar",
-      ru: "Шипучие мультивитамины для укрепления иммунитета",
+      uz: "Multi + Biotin — A, B1–B12, C, D3, E, PP, H. 20 tabletka, 14+",
+      ru: "Multi + Biotin — A, B1–B12, C, D3, E, PP, H. 20 таблеток, 14+",
     },
     description: {
-      uz: "Dr. Frei Multivitamins + Biotin — A, B, C, D, E, PP vitaminlari va biotin bilan boyitilgan shipuchi tabletkalar. Immunitetni kuchaytiradi, energiya beradi. 14+ yoshdan.",
-      ru: "Dr. Frei Multivitamins + Biotin — шипучие таблетки, обогащённые витаминами A, B, C, D, E, PP и биотином. Укрепляет иммунитет, даёт энергию. С 14+ лет.",
+      uz: "Dr. Frei MULTI VITAMINS + Biotin — 20 shipuchi tabletka. Tuproqda: A, B, C, D3, E, PP, H va biotin; «strong and healthy». 14+ yosh.",
+      ru: "Dr. Frei MULTI VITAMINS + Biotin — 20 шипучих таблеток. На тубе: A, B, C, D3, E, PP, H и биотин. С 14 лет.",
     },
     highlights: {
       uz: ["A, B, C, D, E, PP + Biotin", "Shipuchi format", "14+ yoshdan", "20 tabletka"],
@@ -1243,12 +1251,12 @@ const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Ko'z va immunitet"], ru: ["Акция", "Зрение и иммунитет"] },
     name: { uz: "Dr. Frei Gold Vitaminlar 20", ru: "Dr. Frei Gold Витамины 20" },
     tagline: {
-      uz: "Ko'z va immunitet uchun eruvchan vitaminlar — lyutein, A, C, E, Zn",
-      ru: "Растворимые витамины для зрения и иммунитета — лютеин, A, C, E, Zn",
+      uz: "Gold — lyutein + A, C, E, Zn. 20 shipuchi tabletka, 14+",
+      ru: "Gold — лютеин + A, C, E, Zn. 20 шипучих таблеток, 14+",
     },
     description: {
-      uz: "Dr. Frei Gold — lyutein, vitamin A, C, E va sink bilan boyitilgan eruvchan vitaminlar. Ko'z va immunitet uchun kompleks qo'llab-quvvatlash. 14+ yoshdan.",
-      ru: "Dr. Frei Gold — растворимые витамины, обогащённые лютеином, витаминами A, C, E и цинком. Комплексная поддержка зрения и иммунитета. С 14+ лет.",
+      uz: "Dr. Frei GOLD — lyutein bilan vitamin va minerallar kompleksi. Tuproqda: vitamin A, C, E, sink; kunlik qo'llab-quvvatlash. 20 shipuchi tabletka, 14+.",
+      ru: "Dr. Frei GOLD — комплекс витаминов и минералов с лютеином. На тубе: A, C, E, цинк; ежедневная поддержка. 20 шипучих таблеток, 14+.",
     },
     highlights: {
       uz: ["Lyutein", "A, C, E vitamini + Sink", "Eruvchan format", "20 tabletka"],
@@ -1281,11 +1289,11 @@ const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "1 tabletkani 200 ml suvda eriting. Kuniga 1 marta iching.",
-      ru: "Растворите 1 таблетку в 200 мл воды. Пейте 1 раз в день.",
+      uz: "14+ yosh: 1 tabletkani 200 ml (1 stakan) suvda eriting. Kuniga 1 marta, ovqat paytida yoki keyin.",
+      ru: "С 14 лет: растворите одну таблетку в 200 мл воды. 1 раз в сутки во время или после еды.",
     },
     faq: {
-      uz: [{ question: "Visiovit bilan farqi?", answer: "Gold — eruvchan tabletka, Visiovit — kapsula. Tarkib o'xshash, format boshqa." }],
+      uz: [{ question: "Visiovit bilan farqi?", answer: "Gold — shipuchi tabletka (lyutein + A, C, E, Zn). Visiovit — ko'z kapsulasi." }],
       ru: [{ question: "В чём разница с Visiovit?", answer: "Gold — шипучая таблетка, Visiovit — капсула. Состав похожий, формат разный." }],
     },
     reviews: {
@@ -1412,12 +1420,12 @@ const rawProducts: RawProduct[] = [
     badges: { uz: ["Bestseller", "Apelsin ta'mi"], ru: ["Хит продаж", "Вкус апельсина"] },
     name: { uz: "Swiss Energy Vitamin C 550mg 20", ru: "Swiss Energy Витамин C 550мг 20" },
     tagline: {
-      uz: "Eriydigan Vitamin C 550mg — energiya va kuchli immunitet",
-      ru: "Растворимый Витамин C 550мг — энергия и крепкий иммунитет",
+      uz: "Vitamin C 550 mg — 20 shipuchi tabletka, apelsin ta'mi",
+      ru: "Витамин C 550 мг — 20 шипучих таблеток, вкус апельсина",
     },
     description: {
-      uz: "Swiss Energy Vitamin C 550mg — yuqori dozali eriydigan vitamin C. Apelsin ta'mi, energiya va jismoniy faollik uchun. 14+ yoshdan. 20 tabletka.",
-      ru: "Swiss Energy Витамин C 550мг — растворимый витамин C в высокой дозе. Вкус апельсина, для энергии и физической активности. С 14+ лет. 20 таблеток.",
+      uz: "Dr. Frei / Swiss Energy Vitamin C 550 mg — shipuchi tabletka. Qadoq: energiya va immunitet, jismoniy va aqliy faollik, apelsin ta'mi. 20 tabletka. Kuniga 1 marta, ovqat paytida yoki darhol keyin.",
+      ru: "Dr. Frei / Swiss Energy Витамин C 550 mg — шипучие таблетки. На баннере: энергия и иммунитет, физическая и умственная активность, вкус апельсина. 20 таблеток. 1 раз в день во время или сразу после еды.",
     },
     highlights: {
       uz: ["550 mg vitamin C", "Apelsin ta'mi", "Energiya va immunitet", "20 tabletka"],
@@ -1444,8 +1452,8 @@ const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "1 tabletkani 200 ml suvda eriting. Ovqat bilan yoki keyingi 1 marta iching. 14+ yoshdan.",
-      ru: "Растворите 1 таблетку в 200 мл воды. Принимайте во время или после еды 1 раз в день. С 14+ лет.",
+      uz: "1 tabletkani suvda eriting. Kuniga 1 marta, ovqat paytida yoki darhol keyin.",
+      ru: "Растворите 1 таблетку в воде. 1 раз в день, во время или сразу после еды.",
     },
     faq: {
       uz: [
@@ -1551,6 +1559,696 @@ const rawProducts: RawProduct[] = [
       ],
     },
   },
+
+  // ─── New catalogue entries from real photo packs ─────────────────────────
+  {
+    id: "p-calcivit",
+    slug: "swiss-energy-calcivit-30",
+    categoryId: "cat-minerals",
+    categorySlug: "minerals",
+    price: 255150,
+    rating: 4.8,
+    reviewCount: 24,
+    inStock: true,
+    imageSeeds: ["calcivit-a"],
+    bespoke: true,
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
+    servings: { uz: "30 kapsula", ru: "30 капсул" },
+    badges: { uz: ["Kalsiy + D3 + K2", "Sustained release"], ru: ["Кальций + D3 + K2", "Sustained release"] },
+    name: { uz: "Swiss Energy Calcivit 30", ru: "Swiss Energy Calcivit Кальцивит 30" },
+    tagline: {
+      uz: "Kalsiy + D3 + K2 + Zn, B, Cu, Mn — 30 kapsula",
+      ru: "Кальций + D3 + K2 + Zn, B, Cu, Mn — 30 капсул",
+    },
+    description: {
+      uz: "Swiss Energy Calcivit by Dr.Frei — 30 kapsula, sekin chiqarilish. Etiketka: Calcium + D3 + K2 + Zn + B + Cu + Mn, «strong bones and teeth». Qadoq: suyak, tish va mushaklar; bo'g'im va xaftaga to'qimasi (reklama).",
+      ru: "Swiss Energy Calcivit by Dr.Frei — 30 капсул, sustained release. Этикетка: Calcium + D3 + K2 + Zn + B + Cu + Mn, «strong bones and teeth». На баннере: кости, зубы, мышцы, суставы и хрящ.",
+    },
+    highlights: {
+      uz: ["30 kapsula", "Kalsiy + D3 + K2", "Zn + B + Cu + Mn", "Sustained release"],
+      ru: ["30 капсул", "Кальций + D3 + K2", "Zn + B + Cu + Mn", "Sustained release"],
+    },
+    benefits: {
+      uz: [
+        { icon: "shield", title: "Suyak va tish", description: "Qadoq: mustahkam suyaklar va sog'lom tishlar." },
+        { icon: "sparkle", title: "D3 + K2", description: "Kompleks vitamin D3 va K2 bilan." },
+        { icon: "heart", title: "Bo'g'imlar", description: "Reklama: bo'g'im va xaftaga to'qimasi." },
+      ],
+      ru: [
+        { icon: "shield", title: "Кости и зубы", description: "На упаковке: крепкие кости и здоровые зубы." },
+        { icon: "sparkle", title: "D3 + K2", description: "Комплекс с витаминами D3 и K2." },
+        { icon: "heart", title: "Суставы", description: "На баннере: суставы и хрящевая ткань." },
+      ],
+    },
+    ingredients: {
+      uz: [
+        { name: "Kalsiy", amount: "Calcivit" },
+        { name: "Vitamin D3", amount: "etiketka" },
+        { name: "Vitamin K2", amount: "etiketka" },
+        { name: "Sink (Zn)", amount: "etiketka" },
+        { name: "B guruhi", amount: "etiketka" },
+        { name: "Mis (Cu)", amount: "etiketka" },
+        { name: "Marganets (Mn)", amount: "etiketka" },
+      ],
+      ru: [
+        { name: "Кальций", amount: "Calcivit" },
+        { name: "Витамин D3", amount: "на этикетке" },
+        { name: "Витамин K2", amount: "на этикетке" },
+        { name: "Цинк (Zn)", amount: "на этикетке" },
+        { name: "Витамины B", amount: "на этикетке" },
+        { name: "Медь (Cu)", amount: "на этикетке" },
+        { name: "Марганец (Mn)", amount: "на этикетке" },
+      ],
+    },
+    howToUse: {
+      uz: "Bankadagi ko'rsatma bo'yicha. Sekin chiqariladigan kapsula, 30 kunlik hajm.",
+      ru: "По инструкции на банке. Капсулы замедленного высвобождения, упаковка на 30 дней.",
+    },
+    faq: {
+      uz: [
+        { question: "Nechta kapsula?", answer: "30 kapsula." },
+        { question: "Nima kiradi?", answer: "Kalsiy, D3, K2, Zn, B, Cu, Mn — etiketkada." },
+      ],
+      ru: [
+        { question: "Сколько капсул?", answer: "30 капсул." },
+        { question: "Что в составе?", answer: "Кальций, D3, K2, Zn, B, Cu, Mn — на этикетке." },
+      ],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-neuroforce",
+    slug: "swiss-energy-neuroforce-30",
+    categoryId: "cat-vitamins",
+    categorySlug: "vitamins",
+    price: 255150,
+    rating: 4.7,
+    reviewCount: 18,
+    inStock: true,
+    imageSeeds: ["neuroforce-a"],
+    bespoke: true,
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
+    servings: { uz: "30 kapsula", ru: "30 капсул" },
+    badges: { uz: ["B-kompleks", "Sustained release"], ru: ["B-комплекс", "Sustained release"] },
+    name: { uz: "Swiss Energy NeuroForce 30", ru: "Swiss Energy NeuroForce Нейрофорс 30" },
+    tagline: {
+      uz: "B1+B2+B3+B5+B6+B7+B9+B12 — asab tizimi, 30 kapsula",
+      ru: "B1+B2+B3+B5+B6+B7+B9+B12 — нервная система, 30 капсул",
+    },
+    description: {
+      uz: "Swiss Energy NeuroForce by Dr.Frei — Vitamin B-Complex, 30 kapsula, sekin chiqarilish, «for healthy nervous system». Reklama: charchoq va asabiy taranglik, tinchlik, diqqat, stressni yengish, B yetishmovchiligida tavsiya.",
+      ru: "Swiss Energy NeuroForce by Dr.Frei — Vitamin B-Complex, 30 капсул, sustained release, «for healthy nervous system». На баннере: нервная система, концентрация, ясность мышления, стресс, дефицит витаминов B.",
+    },
+    highlights: {
+      uz: ["B1–B12", "30 kapsula", "Asab tizimi", "Sustained release"],
+      ru: ["B1–B12", "30 капсул", "Нервная система", "Sustained release"],
+    },
+    benefits: {
+      uz: [
+        { icon: "moon", title: "Asab tizimi", description: "Qadoq: sog'lom asab tizimi uchun." },
+        { icon: "bolt", title: "Diqqat", description: "Reklama: konsentratsiya va diqqat." },
+        { icon: "shield", title: "B-kompleks", description: "Sakkizta B vitamini bir kapsulada." },
+      ],
+      ru: [
+        { icon: "moon", title: "Нервная система", description: "На этикетке: for healthy nervous system." },
+        { icon: "bolt", title: "Концентрация", description: "На баннере: внимание и ясность мышления." },
+        { icon: "shield", title: "B-комплекс", description: "Восемь витаминов группы B." },
+      ],
+    },
+    ingredients: {
+      uz: [
+        { name: "Vitamin B1", amount: "B-kompleks" },
+        { name: "Vitamin B2", amount: "B-kompleks" },
+        { name: "Vitamin B3", amount: "B-kompleks" },
+        { name: "Vitamin B5", amount: "B-kompleks" },
+        { name: "Vitamin B6", amount: "B-kompleks" },
+        { name: "Vitamin B7", amount: "B-kompleks" },
+        { name: "Vitamin B9", amount: "B-kompleks" },
+        { name: "Vitamin B12", amount: "B-kompleks" },
+      ],
+      ru: [
+        { name: "Витамин B1", amount: "B-комплекс" },
+        { name: "Витамин B2", amount: "B-комплекс" },
+        { name: "Витамин B3", amount: "B-комплекс" },
+        { name: "Витамин B5", amount: "B-комплекс" },
+        { name: "Витамин B6", amount: "B-комплекс" },
+        { name: "Витамин B7", amount: "B-комплекс" },
+        { name: "Витамин B9", amount: "B-комплекс" },
+        { name: "Витамин B12", amount: "B-комплекс" },
+      ],
+    },
+    howToUse: {
+      uz: "Bankadagi ko'rsatma bo'yicha. 30 kapsula — odatda bir oylik kurs hajmi.",
+      ru: "По инструкции на банке. 30 капсул — обычно курс на месяц.",
+    },
+    faq: {
+      uz: [
+        { question: "Qaysi vitaminlar?", answer: "B1, B2, B3, B5, B6, B7, B9, B12 — etiketkada." },
+        { question: "Nechta kapsula?", answer: "30 kapsula." },
+      ],
+      ru: [
+        { question: "Какие витамины?", answer: "B1, B2, B3, B5, B6, B7, B9, B12 — на этикетке." },
+        { question: "Сколько капсул?", answer: "30 капсул." },
+      ],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-potenton",
+    slug: "swiss-energy-potenton-30",
+    categoryId: "cat-vitamins",
+    categorySlug: "vitamins",
+    price: 255150,
+    rating: 4.6,
+    reviewCount: 12,
+    inStock: true,
+    imageSeeds: ["potenton-a"],
+    bespoke: true,
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
+    servings: { uz: "30 kapsula", ru: "30 капсул" },
+    badges: { uz: ["Erkaklar", "Long effect"], ru: ["Для мужчин", "Long effect"] },
+    name: { uz: "Swiss Energy Potenton 30", ru: "Swiss Energy Potenton Потентон 30" },
+    tagline: {
+      uz: "Potenton Happy man — kuniga 1 kapsula, 30 kunlik kurs",
+      ru: "Potenton Happy man — 1 капсула в день, курс 30 дней",
+    },
+    description: {
+      uz: "Swiss Energy Potenton Happy man — Made in Switzerland, 30 kapsula, sekin chiqarilish, Long effect. Qadoq: Sexual stimulant / jinsiy stimulyator. Reklama sxemasi: kuniga 1 kapsula, kurs 30 kun, to'planib boruvchi ta'sir; testosteron, ereksiya va libido (reklama matni).",
+      ru: "Swiss Energy Potenton Happy man — Made in Switzerland, 30 капсул, sustained release, Long effect. На упаковке: Sexual stimulant. Схема на баннере: 1 капсула в день, курс 30 дней, накопительный эффект; тестостерон, эрекция и либидо (реклама).",
+    },
+    highlights: {
+      uz: ["30 kapsula", "Kuniga 1 dona", "Kurs 30 kun", "Made in Switzerland"],
+      ru: ["30 капсул", "1 капсула в день", "Курс 30 дней", "Made in Switzerland"],
+    },
+    benefits: {
+      uz: [
+        { icon: "bolt", title: "Long effect", description: "Qadoq: uzoq / to'planib boruvchi ta'sir." },
+        { icon: "heart", title: "Kurs", description: "Reklama: 30 kun, kuniga 1 kapsula." },
+      ],
+      ru: [
+        { icon: "bolt", title: "Long effect", description: "На упаковке: длительный / накопительный эффект." },
+        { icon: "heart", title: "Курс", description: "На баннере: 30 дней, 1 капсула в сутки." },
+      ],
+    },
+    ingredients: {
+      uz: [{ name: "Potenton kompleksi (sekin chiqarilish)", amount: "30 kapsula" }],
+      ru: [{ name: "Комплекс Potenton (sustained release)", amount: "30 капсул" }],
+    },
+    howToUse: {
+      uz: "Reklama: kuniga 1 kapsula, 30 kun. Aniq vaqtni qadoq va shifokor bilan solishtiring.",
+      ru: "Баннер: 1 капсула в день, 30 дней. Сверьте время приёма с упаковкой и врачом.",
+    },
+    faq: {
+      uz: [
+        { question: "Qayerda ishlab chiqarilgan?", answer: "Qadoqda: Made in Switzerland." },
+        { question: "Necha kun?", answer: "Reklama: 30 kunlik kurs, 30 kapsula." },
+      ],
+      ru: [
+        { question: "Где произведён?", answer: "На упаковке: Made in Switzerland." },
+        { question: "Сколько дней?", answer: "На баннере: курс 30 дней, 30 капсул." },
+      ],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-prenatal",
+    slug: "swiss-energy-prenatal-forte-60",
+    categoryId: "cat-vitamins",
+    categorySlug: "vitamins",
+    price: 369000,
+    rating: 4.8,
+    reviewCount: 31,
+    inStock: true,
+    imageSeeds: ["prenatal-a"],
+    bespoke: true,
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
+    servings: { uz: "60 kapsula", ru: "60 капсул" },
+    badges: { uz: ["Homiladorlik", "Folat 400 mkg"], ru: ["Беременность", "Фолат 400 мкг"] },
+    name: { uz: "Swiss Energy Prenatal Forte 60", ru: "Swiss Energy Prenatal Forte Пренаталь 60" },
+    tagline: {
+      uz: "20 vitamin va mineral — folat 400 mkg, temir 14 mg, 60 kapsula",
+      ru: "20 витаминов и минералов — фолат 400 мкг, железо 14 мг, 60 капсул",
+    },
+    description: {
+      uz: "Swiss Energy Prenatal Forte, Platinum, Made in Switzerland. Etiketka: 20 Vitamins and Minerals, Folat 400 mcg, Iron 14 mg, 60 kapsula, sekin chiqarilish, «Support of healthy pregnancy». Qutida: A, B1, B9, B12, C, D2, K2, Se, F.",
+      ru: "Swiss Energy Prenatal Forte, Platinum, Made in Switzerland. Этикетка: 20 Vitamins and Minerals, Folat 400 mcg, Iron 14 mg, 60 капсул, sustained release, «Support of healthy pregnancy». На коробке: A, B1, B9, B12, C, D2, K2, Se, F.",
+    },
+    highlights: {
+      uz: ["60 kapsula", "20 vitamin va mineral", "Folat 400 mkg", "Temir 14 mg"],
+      ru: ["60 капсул", "20 витаминов и минералов", "Фолат 400 мкг", "Железо 14 мг"],
+    },
+    benefits: {
+      uz: [
+        { icon: "heart", title: "Folat 400 mkg", description: "Etiketkada aniq doza." },
+        { icon: "bolt", title: "Temir 14 mg", description: "Etiketka: Iron 14 mg." },
+        { icon: "shield", title: "20 ta komponent", description: "Vitamin va minerallar majmuasi." },
+      ],
+      ru: [
+        { icon: "heart", title: "Фолат 400 мкг", description: "Доза указана на этикетке." },
+        { icon: "bolt", title: "Железо 14 мг", description: "На этикетке: Iron 14 mg." },
+        { icon: "shield", title: "20 компонентов", description: "Комплекс витаминов и минералов." },
+      ],
+    },
+    ingredients: {
+      uz: [
+        { name: "Folat", amount: "400 mkg" },
+        { name: "Temir", amount: "14 mg" },
+        { name: "Vitamin A, C, D2, K2", amount: "qutida" },
+        { name: "B1, B9, B12", amount: "qutida" },
+        { name: "Selen (Se), Ftor (F)", amount: "qutida" },
+        { name: "Jami", amount: "20 vitamin va mineral" },
+      ],
+      ru: [
+        { name: "Фолат", amount: "400 мкг" },
+        { name: "Железо", amount: "14 мг" },
+        { name: "Витамины A, C, D2, K2", amount: "на коробке" },
+        { name: "B1, B9, B12", amount: "на коробке" },
+        { name: "Селен (Se), фтор (F)", amount: "на коробке" },
+        { name: "Всего", amount: "20 витаминов и минералов" },
+      ],
+    },
+    howToUse: {
+      uz: "Qadoq va shifokor ko'rsatmasi bo'yicha. 60 kapsula — kuniga 1 donada taxminan 2 oy.",
+      ru: "По инструкции на упаковке и рекомендации врача. 60 капсул — около 2 месяцев при 1 капсуле в день.",
+    },
+    faq: {
+      uz: [
+        { question: "Folat qancha?", answer: "400 mkg — etiketkada." },
+        { question: "Temir?", answer: "14 mg." },
+      ],
+      ru: [
+        { question: "Сколько фолата?", answer: "400 мкг — на этикетке." },
+        { question: "Железо?", answer: "14 мг." },
+      ],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-aminomorin",
+    slug: "aminomorin-forte-30",
+    categoryId: "cat-vitamins",
+    categorySlug: "vitamins",
+    price: 189000,
+    rating: 4.5,
+    reviewCount: 8,
+    inStock: true,
+    imageSeeds: ["aminomorin-a"],
+    bespoke: true,
+    origin: { uz: "Yaponiya texnologiyasi", ru: "Технология Японии" },
+    servings: { uz: "30 kapsula", ru: "30 капсул" },
+    badges: { uz: ["Aminokislotalar + vitaminlar"], ru: ["Аминокислоты + витамины"] },
+    name: { uz: "Aminomorin Forte 30", ru: "Аминоморин Форте 30" },
+    tagline: {
+      uz: "Aminokislota kompleksi vitaminlar bilan — 30 kapsula",
+      ru: "Аминокислотный комплекс с витаминами — 30 капсул",
+    },
+    description: {
+      uz: "Aminomorin Forte — 30 kapsula. Qadoq: aminokislota kompleksi vitaminlar bilan. Ishlab chiqarish: Shenjjen Vanxe. Texnologiya: Morishita Pharmaceutical (Osaka, Yaponiya). Huquq egasi: Evrofarm (AQSH). Shtrix-kod: 6941472701894.",
+      ru: "Аминоморин Форте — 30 капсул. На пачке: аминокислотный комплекс с витаминами. Производитель: Шэньчжэнь Ваньхэ. Технология: Моришита (Осака, Япония). Правообладатель: Еврофарм (США). Штрихкод: 6941472701894.",
+    },
+    highlights: {
+      uz: ["30 kapsula", "Aminokislotalar + vitaminlar", "Morishita", "Osaka"],
+      ru: ["30 капсул", "Аминокислоты + витамины", "Моришита", "Осака"],
+    },
+    benefits: {
+      uz: [
+        { icon: "bolt", title: "Kompleks", description: "Aminokislotalar va vitaminlar bir qutida." },
+        { icon: "shield", title: "Yaponiya texnologiyasi", description: "Morishita Pharmaceutical, Osaka." },
+      ],
+      ru: [
+        { icon: "bolt", title: "Комплекс", description: "Аминокислоты с витаминами." },
+        { icon: "shield", title: "Технология Японии", description: "Моришита Фармасьютикал, Осака." },
+      ],
+    },
+    ingredients: {
+      uz: [{ name: "Aminokislota + vitamin kompleksi", amount: "30 kapsula" }],
+      ru: [{ name: "Аминокислотный комплекс с витаминами", amount: "30 капсул" }],
+    },
+    howToUse: {
+      uz: "Ichki varaqa va qadoqdagi ko'rsatma bo'yicha.",
+      ru: "По вкладышу и инструкции на упаковке.",
+    },
+    faq: {
+      uz: [
+        { question: "Nechta kapsula?", answer: "30 kapsula." },
+        { question: "Qayerdan texnologiya?", answer: "Morishita, Osaka — qadoqda." },
+      ],
+      ru: [
+        { question: "Сколько капсул?", answer: "30 капсул." },
+        { question: "Чья технология?", answer: "Моришита, Осака — на пачке." },
+      ],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-collagen-nature",
+    slug: "swiss-energy-nature-collagen",
+    categoryId: "cat-collagen",
+    categorySlug: "collagen",
+    price: 289000,
+    rating: 4.7,
+    reviewCount: 16,
+    inStock: true,
+    imageSeeds: ["collagen-nature-a"],
+    bespoke: true,
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
+    servings: { uz: "Kukun, banka", ru: "Порошок, банка" },
+    badges: { uz: ["100% kollagen", "Shakarsiz"], ru: ["100% коллаген", "Без сахара"] },
+    name: { uz: "Swiss Energy Nature Collagen", ru: "Swiss Energy Nature Collagen Коллаген" },
+    tagline: {
+      uz: "Premium Formula — 100% sof kollagen, neytral ta'm, shakarsiz",
+      ru: "Premium Formula — 100% чистый коллаген, нейтральный вкус, без сахара",
+    },
+    description: {
+      uz: "Swiss Energy Nature Collagen by Dr.Frei, Made in Switzerland. Etiketka: Premium Formula, 100% Pure Collagen, Sugar free, Mix into any drink, Neutral taste. Qadoqda: teri, soch, tirnoq, suyak va bo'g'imlar.",
+      ru: "Swiss Energy Nature Collagen by Dr.Frei, Made in Switzerland. Этикетка: Premium Formula, 100% Pure Collagen, Sugar free, Mix into any drink, Neutral taste. На банке: кожа, волосы, ногти, кости и суставы.",
+    },
+    highlights: {
+      uz: ["100% sof kollagen", "Shakarsiz", "Neytral ta'm", "Istalgan ichimlikka"],
+      ru: ["100% чистый коллаген", "Без сахара", "Нейтральный вкус", "В любой напиток"],
+    },
+    benefits: {
+      uz: [
+        { icon: "sparkle", title: "Har qanday ichimlik", description: "Etiketka: mix into any drink." },
+        { icon: "shield", title: "Shakarsiz", description: "Sugar free." },
+        { icon: "heart", title: "Neytral ta'm", description: "Neutral taste." },
+      ],
+      ru: [
+        { icon: "sparkle", title: "Любой напиток", description: "На этикетке: mix into any drink." },
+        { icon: "shield", title: "Без сахара", description: "Sugar free." },
+        { icon: "heart", title: "Нейтральный вкус", description: "Neutral taste." },
+      ],
+    },
+    ingredients: {
+      uz: [{ name: "Sof kollagen", amount: "100%" }],
+      ru: [{ name: "Чистый коллаген", amount: "100%" }],
+    },
+    howToUse: {
+      uz: "Istalgan ichimlikka aralashtiring. Neytral ta'm, shakarsiz.",
+      ru: "Смешайте с любым напитком. Нейтральный вкус, без сахара.",
+    },
+    faq: {
+      uz: [
+        { question: "Shakar bormi?", answer: "Yo'q — sugar free." },
+        { question: "Qayerda ishlab chiqarilgan?", answer: "Made in Switzerland." },
+      ],
+      ru: [
+        { question: "Есть сахар?", answer: "Нет — sugar free." },
+        { question: "Где произведён?", answer: "Made in Switzerland." },
+      ],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-coffee-mokka-500",
+    slug: "swiss-energy-coffee-mokka-500g",
+    categoryId: "cat-coffee",
+    categorySlug: "coffee",
+    price: 315000,
+    rating: 4.6,
+    reviewCount: 7,
+    inStock: true,
+    imageSeeds: ["coffee-mokka-a"],
+    bespoke: true,
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
+    servings: { uz: "500 g", ru: "500 г" },
+    badges: { uz: ["80% arabika", "20% robusta"], ru: ["80% арабика", "20% робуста"] },
+    name: { uz: "Swiss Energy Coffee Mokka 500g", ru: "Swiss Energy Coffee Mokka 500г кофе мокка" },
+    tagline: {
+      uz: "Mokka — 500 g, 80% arabika + 20% robusta, St. Gallen",
+      ru: "Mokka — 500 г, 80% арабика + 20% робуста, St. Gallen",
+    },
+    description: {
+      uz: "Swiss Energy Coffee Mokka by TURM. Qop: St. Gallen, Switzerland, Since 1761, 500 g e, 80% Arabica / 20% Robusta, Anniversary 260 years.",
+      ru: "Swiss Energy Coffee Mokka by TURM. На пакете: St. Gallen, Switzerland, Since 1761, 500 g e, 80% Arabica / 20% Robusta, Anniversary 260 years.",
+    },
+    highlights: {
+      uz: ["500 g", "80% arabika", "20% robusta", "Since 1761"],
+      ru: ["500 г", "80% арабика", "20% робуста", "Since 1761"],
+    },
+    benefits: {
+      uz: [
+        { icon: "bolt", title: "Kuchliroq aralashma", description: "20% robusta qopda yozilgan." },
+        { icon: "sparkle", title: "St. Gallen", description: "Shveytsariya, 1761-yildan." },
+      ],
+      ru: [
+        { icon: "bolt", title: "Крепче смесь", description: "20% робусты указано на пакете." },
+        { icon: "sparkle", title: "St. Gallen", description: "Швейцария, с 1761 года." },
+      ],
+    },
+    ingredients: {
+      uz: [
+        { name: "Arabika", amount: "80%" },
+        { name: "Robusta", amount: "20%" },
+      ],
+      ru: [
+        { name: "Арабика", amount: "80%" },
+        { name: "Робуста", amount: "20%" },
+      ],
+    },
+    howToUse: {
+      uz: "1 choy qoshiqni 200 ml qaynoq suvda damlang. Ta'mga qarab sozlang.",
+      ru: "Заварите 1 чайную ложку в 200 мл горячей воды. Количество — по вкусу.",
+    },
+    faq: {
+      uz: [{ question: "Edel dan farqi?", answer: "Mokka — 80/20. Edel — 100% arabika." }],
+      ru: [{ question: "Чем отличается от Edel?", answer: "Mokka — 80/20. Edel — 100% арабика." }],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-thermo-t10",
+    slug: "dr-frei-thermometer-t10",
+    categoryId: "cat-devices",
+    categorySlug: "devices",
+    price: 89000,
+    rating: 4.7,
+    reviewCount: 11,
+    inStock: true,
+    imageSeeds: ["t10-a"],
+    bespoke: true,
+    origin: { uz: "Dr. Frei", ru: "Dr. Frei" },
+    servings: { uz: "1 dona", ru: "1 штука" },
+    badges: { uz: ["Elektron", "°C"], ru: ["Электронный", "°C"] },
+    name: { uz: "Dr. Frei Termometr T10", ru: "Dr. Frei Термометр T10" },
+    tagline: {
+      uz: "Elektron raqamli termometr — ON/OFF, displey °C, metall uchi",
+      ru: "Электронный цифровой термометр — ON/OFF, дисплей °C, металлический наконечник",
+    },
+    description: {
+      uz: "Dr. Frei T10 — oq korpusli elektron termometr. ON/OFF, °C displey, metall uchi. Simob yo'q.",
+      ru: "Dr. Frei T10 — электронный термометр в белом корпусе. ON/OFF, дисплей °C, металлический наконечник. Без ртути.",
+    },
+    highlights: {
+      uz: ["Raqamli °C", "ON/OFF", "Metall uchi", "Simobsiz"],
+      ru: ["Цифровой °C", "ON/OFF", "Металлический наконечник", "Без ртути"],
+    },
+    benefits: {
+      uz: [
+        { icon: "sparkle", title: "Raqamli o'qish", description: "Harorat displeyda °C da." },
+        { icon: "shield", title: "Simobsiz", description: "Elektron sensor." },
+      ],
+      ru: [
+        { icon: "sparkle", title: "Цифровое чтение", description: "Температура на дисплее в °C." },
+        { icon: "shield", title: "Без ртути", description: "Электронный сенсор." },
+      ],
+    },
+    ingredients: {
+      uz: [
+        { name: "Korpus", amount: "1 dona" },
+        { name: "Displey", amount: "°C" },
+        { name: "Uchi", amount: "metall" },
+      ],
+      ru: [
+        { name: "Корпус", amount: "1 шт." },
+        { name: "Дисплей", amount: "°C" },
+        { name: "Наконечник", amount: "металл" },
+      ],
+    },
+    howToUse: {
+      uz: "ON/OFF bosing, uchini qo'ying, displeydagi raqamni o'qing.",
+      ru: "Нажмите ON/OFF, приложите наконечник, считайте значение.",
+    },
+    faq: {
+      uz: [{ question: "Simob bormi?", answer: "Yo'q, elektron model." }],
+      ru: [{ question: "Есть ртуть?", answer: "Нет, электронная модель." }],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-thermo-t30",
+    slug: "dr-frei-thermometer-t30",
+    categoryId: "cat-devices",
+    categorySlug: "devices",
+    price: 99000,
+    rating: 4.8,
+    reviewCount: 14,
+    inStock: true,
+    imageSeeds: ["t30-a"],
+    bespoke: true,
+    origin: { uz: "Dr. Frei", ru: "Dr. Frei" },
+    servings: { uz: "1 dona", ru: "1 штука" },
+    badges: { uz: ["Bolalar", "Egiluvchan uchi"], ru: ["Детям", "Гибкий носик"] },
+    name: { uz: "Dr. Frei Termometr T30 kids", ru: "Dr. Frei Термометр T30 kids" },
+    tagline: {
+      uz: "Bolalar elektron termometri — egiluvchan uchi, simobsiz",
+      ru: "Детский электронный термометр — гибкий носик, без ртути",
+    },
+    description: {
+      uz: "Dr. Frei T30 — bolalar elektron termometri. Egiluvchan uchi, ON/OFF, °C, ayiqcha qopqoq. Reklama: 99% aniqlik, simob yo'q.",
+      ru: "Dr. Frei T30 — электронный термометр для детей. Гибкий носик, ON/OFF, дисплей °C, колпачок-мишка. На баннере: 99% точность, без ртути.",
+    },
+    highlights: {
+      uz: ["Egiluvchan uchi", "Simobsiz", "Bolalar uchun", "99% (reklama)"],
+      ru: ["Гибкий носик", "Без ртути", "Для детей", "99% (баннер)"],
+    },
+    benefits: {
+      uz: [
+        { icon: "sparkle", title: "Egiluvchan uchi", description: "Reklama: гибкий носик." },
+        { icon: "shield", title: "Simobsiz", description: "Reklama: не содержит ртуть." },
+      ],
+      ru: [
+        { icon: "sparkle", title: "Гибкий носик", description: "Указано на баннере." },
+        { icon: "shield", title: "Без ртути", description: "На баннере: не содержит ртуть." },
+      ],
+    },
+    ingredients: {
+      uz: [
+        { name: "Elektron termometr", amount: "1 dona" },
+        { name: "Uchi", amount: "egiluvchan" },
+      ],
+      ru: [
+        { name: "Электронный термометр", amount: "1 шт." },
+        { name: "Наконечник", amount: "гибкий" },
+      ],
+    },
+    howToUse: {
+      uz: "ON/OFF bosing, egiluvchan uchi bilan o'lchang, °C ni o'qing.",
+      ru: "Нажмите ON/OFF, измерьте гибким наконечником, считайте °C.",
+    },
+    faq: {
+      uz: [{ question: "Kattalar ishlatsa bo'ladimi?", answer: "Ha, lekin model bolalar uchun (egiluvchan uchi)." }],
+      ru: [{ question: "Можно взрослым?", answer: "Да, но позиционируется как детская модель." }],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-cooling-plaster",
+    slug: "hiew-cooling-plaster-16",
+    categoryId: "cat-devices",
+    categorySlug: "devices",
+    price: 65000,
+    rating: 4.6,
+    reviewCount: 9,
+    inStock: true,
+    imageSeeds: ["plaster-a"],
+    bespoke: true,
+    origin: { uz: "Yaponiya", ru: "Япония" },
+    servings: { uz: "16 dona", ru: "16 штук" },
+    badges: { uz: ["16 dona", "Yaponiya", "Bolalar"], ru: ["16 шт.", "Япония", "Детям"] },
+    name: { uz: "HIEW sovutuvchi plastir 16", ru: "HIEW пластырь от жара 16" },
+    tagline: {
+      uz: "Yapon isitma plastiri — 16 dona, 8 soat sovutish (qadoq)",
+      ru: "Японский пластырь от жара — 16 шт., охлаждение 8 часов",
+    },
+    description: {
+      uz: "HIEW (Yaponiya) isitma plastiri, bolalar uchun, 16 dona. Qadoq: teriga yumshoq, 8 soat sovutish. Reklama: 1 daqiqada sovitadi.",
+      ru: "HIEW (Япония) пластырь от жара, для детей, 16 шт. На упаковке: мягкий к коже, охлаждение 8 часов. Реклама: охлаждает за 1 минуту.",
+    },
+    highlights: {
+      uz: ["16 dona", "8 soat (qadoq)", "1 daqiqa (reklama)", "Bolalar"],
+      ru: ["16 шт.", "8 часов", "1 минута (реклама)", "Детям"],
+    },
+    benefits: {
+      uz: [
+        { icon: "sparkle", title: "Tez sovutish", description: "Reklama: 1 daqiqada." },
+        { icon: "moon", title: "8 soat", description: "Qadoqdagi 8 soatlik sovutish." },
+      ],
+      ru: [
+        { icon: "sparkle", title: "Быстрое охлаждение", description: "Реклама: за 1 минуту." },
+        { icon: "moon", title: "8 часов", description: "На упаковке — охлаждение 8 часов." },
+      ],
+    },
+    ingredients: {
+      uz: [{ name: "Sovutuvchi gel-plastir", amount: "16 dona" }],
+      ru: [{ name: "Охлаждающий гель-пластырь", amount: "16 шт." }],
+    },
+    howToUse: {
+      uz: "Himoya plyonkani oling, peshonaga yopishtiring. Qadoqdagi ogohlantirishlarga amal qiling.",
+      ru: "Снимите защитную плёнку, наклейте на лоб. Следуйте предупреждениям на упаковке.",
+    },
+    faq: {
+      uz: [{ question: "Nechta dona?", answer: "16 dona bir qutida." }],
+      ru: [{ question: "Сколько штук?", answer: "16 штук в упаковке." }],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+  {
+    id: "p-turbo-lex",
+    slug: "dr-frei-turbo-lex-ingalyator",
+    categoryId: "cat-devices",
+    categorySlug: "devices",
+    price: 489000,
+    rating: 4.7,
+    reviewCount: 6,
+    inStock: true,
+    imageSeeds: ["turbolex-a"],
+    bespoke: true,
+    origin: { uz: "Dr. Frei", ru: "Dr. Frei" },
+    servings: { uz: "1 dona", ru: "1 штука" },
+    badges: { uz: ["Kompressorli", "8 ml", "Bolalar"], ru: ["Компрессорный", "8 мл", "Детям"] },
+    name: { uz: "Dr. Frei Turbo Lex Ingalyator", ru: "Dr. Frei Turbo Lex Турболекс Ингалятор" },
+    tagline: {
+      uz: "Mashina shaklidagi kompressorli ingalyator — 8 ml, tinch ishlash",
+      ru: "Компрессорный ингалятор в форме машины — 8 мл, тихая работа",
+    },
+    description: {
+      uz: "Dr. Frei TURBO LEX — qizil poyga mashinasi korpusidagi kompressorli nebulayzer (g'ildirakda TURBO LEX, orqada I/O). Reklama: bolalar va kattalar, tinch ishlash, 8 ml rezervuar.",
+      ru: "Dr. Frei TURBO LEX — компрессорный небулайзер в красном корпусе-машинке (надпись TURBO LEX на колесе, выключатель I/O). На баннере: детям и взрослым, тихая работа, 8 мл.",
+    },
+    highlights: {
+      uz: ["Mashina korpusi", "8 ml", "Tinch ishlash", "I/O o'chirgich"],
+      ru: ["Корпус-машинка", "8 мл", "Тихая работа", "Выключатель I/O"],
+    },
+    benefits: {
+      uz: [
+        { icon: "shield", title: "Bolalar uchun qulay", description: "O'yinchoq mashina shakli." },
+        { icon: "sparkle", title: "8 ml", description: "Reklamada rezervuar hajmi." },
+        { icon: "moon", title: "Tinch", description: "Reklama: тихая работа." },
+      ],
+      ru: [
+        { icon: "shield", title: "Удобно детям", description: "Корпус в виде машинки." },
+        { icon: "sparkle", title: "8 мл", description: "Объём резервуара на баннере." },
+        { icon: "moon", title: "Тихо", description: "На баннере: тихая работа." },
+      ],
+    },
+    ingredients: {
+      uz: [
+        { name: "Kompressor-mashina", amount: "1 dona" },
+        { name: "Dori rezervuari", amount: "8 ml" },
+      ],
+      ru: [
+        { name: "Компрессор-машинка", amount: "1 шт." },
+        { name: "Резервуар", amount: "8 мл" },
+      ],
+    },
+    howToUse: {
+      uz: "Shifokor eritmasini soling, shlang va niqobni ulang, orqa I/O ni yoqing, tinch nafas oling.",
+      ru: "Налейте раствор врача, подключите шланг и маску, включите I/O сзади, дышите.",
+    },
+    faq: {
+      uz: [
+        { question: "Bu o'yinchoqmi?", answer: "Yo'q — kompressorli ingalyator, korpusi mashina shaklida." },
+        { question: "Kattalar ishlatsa bo'ladimi?", answer: "Reklamada bolalar va kattalar uchun." },
+      ],
+      ru: [
+        { question: "Это игрушка?", answer: "Нет — компрессорный ингалятор в корпусе-машинке." },
+        { question: "Можно взрослым?", answer: "На баннере: для детей и взрослых." },
+      ],
+    },
+    reviews: { uz: [], ru: [] },
+  },
+
 ];
 
 const rawPromotions: { id: string; type: Promotion["type"]; threshold?: number; percent?: number; title: L; description: L }[] = [

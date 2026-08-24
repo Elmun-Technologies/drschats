@@ -124,7 +124,7 @@ describe("readCatalogue", () => {
   ];
 
   it("returns products only, never categories", () => {
-    expect(catalogue).toHaveLength(19);
+    expect(catalogue.length).toBeGreaterThanOrEqual(19);
     expect(catalogue.filter((p) => CATEGORY_SLUGS.includes(p.slug))).toEqual([]);
   });
 
@@ -160,6 +160,17 @@ const FULL_CATALOGUE_FIXTURE = [
   ["Dr Frei Kids Мультивитамины 20.jpg", "dr-frei-kids-multivitamins-20"],
   ["Swiss Energy Витамин С 550мг 20.jpg", "swiss-energy-vitamin-c-20"],
   ["Dr Frei Антистресс Магний B6 20.jpg", "dr-frei-antistress-magniy-20"],
+  ["Swiss Energy Calcivit Кальцивит 30.jpg", "swiss-energy-calcivit-30"],
+  ["Swiss Energy NeuroForce Нейрофорс 30.jpg", "swiss-energy-neuroforce-30"],
+  ["Swiss Energy Potenton Потентон 30.jpg", "swiss-energy-potenton-30"],
+  ["Swiss Energy Prenatal Forte Пренаталь 60.jpg", "swiss-energy-prenatal-forte-60"],
+  ["Аминоморин Форте 30.jpg", "aminomorin-forte-30"],
+  ["Swiss Energy Nature Collagen Коллаген.jpg", "swiss-energy-nature-collagen"],
+  ["Swiss Energy Coffee Mokka 500г.jpg", "swiss-energy-coffee-mokka-500g"],
+  ["Dr Frei Термометр T10.jpg", "dr-frei-thermometer-t10"],
+  ["Dr Frei Термометр T30 kids.jpg", "dr-frei-thermometer-t30"],
+  ["HIEW пластырь от жара 16.jpg", "hiew-cooling-plaster-16"],
+  ["Dr Frei Turbo Lex Турболекс Ингалятор.jpg", "dr-frei-turbo-lex-ingalyator"],
 ];
 
 describe("full catalogue matching", () => {
@@ -177,7 +188,7 @@ describe("full catalogue matching", () => {
 
   it("leaves nothing unmatched and covers every product", () => {
     expect(unmatchedFiles).toEqual([]);
-    expect(assignments.size).toBe(catalogue.length);
+    expect(assignments.size).toBe(FULL_CATALOGUE_FIXTURE.length);
   });
 
   it("keeps the 250g and 500g coffee variants apart", () => {

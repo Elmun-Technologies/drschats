@@ -88,7 +88,7 @@ export function ProductGallery({
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
                   sizes="(max-width: 1024px) 100vw, 45vw"
-                  className="object-contain mix-blend-multiply transition-transform duration-700 hover:scale-105 p-4"
+                  className="object-contain transition-transform duration-700 hover:scale-105 p-4"
                 />
               </div>
             ))}
