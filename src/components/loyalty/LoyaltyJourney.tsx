@@ -65,9 +65,9 @@ function JourneyItem({ step, number, isLast }: { step: LoyaltyJourneyStep; numbe
           </span>
 
           <JourneyIcon type={step.icon} />
-          <h3 className="mt-7 max-w-[15rem] font-display text-xl font-extrabold leading-tight text-fg sm:text-2xl">
+          <h2 className="mt-7 max-w-[15rem] font-display text-xl font-extrabold leading-tight text-fg sm:text-2xl">
             {step.title}
-          </h3>
+          </h2>
           <p className="mt-4 max-w-[16rem] text-sm leading-relaxed text-muted sm:text-base">{step.description}</p>
         </article>
       </Reveal>

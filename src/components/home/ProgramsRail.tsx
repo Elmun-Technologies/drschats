@@ -58,7 +58,7 @@ export async function ProgramsRail({ locale }: { locale: Locale }) {
 
                 <div className="relative z-10">
                   <div className="mb-4 flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-gold/20 backdrop-blur-md px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-gold border border-gold/30">
+                    <span className="rounded-full bg-gold/15 backdrop-blur-md px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-gold border border-gold/30">
                       {t("duration", { days: program.durationDays })}
                     </span>
                     {program.discountPercent > 0 && (
@@ -83,7 +83,7 @@ export async function ProgramsRail({ locale }: { locale: Locale }) {
                           {formatMoney(pricing.total, locale)}
                         </span>
                         {pricing.saved > 0 && (
-                          <span className="text-xs text-white/40 line-through">
+                          <span className="text-xs text-white/60 line-through">
                             {formatMoney(pricing.subtotal, locale)}
                           </span>
                         )}

@@ -92,7 +92,7 @@ export function Footer({ topicPaths = [] }: { topicPaths?: string[] }) {
           <span className="font-semibold text-gold">{legal("notMedicine")}.</span> {legal("footer")}
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/45">
+        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/60">
           <span>© {year} Go Vita. {t("rights")}</span>
           <span className="rounded-full border border-white/15 px-3 py-1 text-xs">{t("qualityBadge")}</span>
         </div>

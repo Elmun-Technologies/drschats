@@ -24,7 +24,7 @@ export function TopBar() {
               <Link href={l.href} className="opacity-90 transition-opacity hover:opacity-100">
                 {l.label}
               </Link>
-              {i < links.length - 1 && <span className="text-white/40">|</span>}
+              {i < links.length - 1 && <span className="text-white/60">|</span>}
             </span>
           ))}
           {/* Hidden until the API exists: an account entry that leads nowhere

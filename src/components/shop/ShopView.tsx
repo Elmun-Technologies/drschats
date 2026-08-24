@@ -136,7 +136,7 @@ export async function ShopView({
           </div>
 
           <div className="max-w-3xl">
-            <span className="inline-block rounded-full bg-gold/20 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-3">
+            <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-3">
               {t("productsAvailable", { count: result.total })}
             </span>
             <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl text-white drop-shadow-md">{heading}</h1>

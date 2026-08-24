@@ -74,7 +74,7 @@ export function ExitIntentPopup() {
 
             {submitted ? (
               <div className="py-8 text-center">
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold/20 text-gold text-3xl mx-auto mb-4 border border-gold/40">
+                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold/15 text-gold text-3xl mx-auto mb-4 border border-gold/40">
                   🎁
                 </span>
                 <h3 className="font-display text-2xl font-extrabold text-white">{t("successTitle")}</h3>
