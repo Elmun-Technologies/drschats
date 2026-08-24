@@ -7,7 +7,11 @@
  *
  * - Brand COLOURS live in src/styles/globals.css (@theme tokens).
  * - FONTS are wired in src/app/[locale]/layout.tsx via next/font.
+ * - Real product PHOTOS are generated into src/lib/content/product-photos.ts
+ *   by scripts/assets/ingest-product-images.mjs.
  */
+
+import { PRODUCT_PHOTOS } from "@/lib/content/product-photos";
 
 export const BRAND = {
   /** Display name used in copy, metadata and structured data. */
@@ -49,7 +53,7 @@ export const BRAND = {
    * Real product photos keyed by product slug. When a slug is present here its
    * URLs replace the placeholder imagery (see src/lib/shopflow/mock.ts).
    */
-  productImageOverrides: {} as Record<string, string[]>,
+  productImageOverrides: PRODUCT_PHOTOS as Record<string, string[]>,
 } as const;
 
 /** WhatsApp deep link derived from the same number as the phone link. */
