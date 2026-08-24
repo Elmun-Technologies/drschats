@@ -15,7 +15,6 @@ import { WishlistButton } from "@/components/product/WishlistButton";
 export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
-  const tp = useTranslations("product");
   const add = useCart((s) => s.add);
 
   const discount = product.oldPrice
@@ -48,7 +47,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             alt={product.images[0]?.alt ?? product.name}
             fill
             sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover:scale-105"
+            className="object-contain transition-transform duration-500 ease-out group-hover:scale-105"
           />
         </Link>
 
@@ -114,7 +113,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             <StarRating rating={product.rating} className="scale-90 origin-left" />
             {product.servings && (
               <span className="text-[11px] font-semibold text-brand-deep bg-gold/15 px-2 py-0.5 rounded-md">
-                {tp("servingsLabel", { count: product.servings })}
+                {product.servings}
               </span>
             )}
           </div>
