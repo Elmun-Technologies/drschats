@@ -107,25 +107,15 @@ export function splitVariant(name) {
 /* ── catalogue ───────────────────────────────────────────────────────────── */
 
 /**
- * Reads slug + display names for the PRODUCTS in mock.ts, so the matcher
- * cannot drift from the real catalogue.
- *
- * Scoped to the rawProducts array deliberately: rawCategories entries have the
- * same `{ slug, name: { uz, ru } }` shape, and matching one of those would file
- * a photo under a slug that has no product page — a mapping entry that renders
- * nothing and looks like success.
+ * Reads slug + display names straight out of mock.ts, so the matcher cannot
+ * drift from the real catalogue.
  */
 export async function readCatalogue(file = CATALOG_FILE) {
   const src = await fs.readFile(file, "utf8");
-  const start = src.indexOf("const rawProducts: RawProduct[] = [");
-  if (start === -1) throw new Error(`rawProducts array not found in ${file}`);
-  const end = src.indexOf("\n];", start);
-  const block = src.slice(start, end === -1 ? src.length : end);
-
   const products = [];
   const re = /slug:\s*"([a-z0-9-]+)",[\s\S]{0,2000}?name:\s*\{\s*uz:\s*"([^"]+)",\s*ru:\s*"([^"]+)"/g;
   let m;
-  while ((m = re.exec(block))) products.push({ slug: m[1], uz: m[2], ru: m[3] });
+  while ((m = re.exec(src))) products.push({ slug: m[1], uz: m[2], ru: m[3] });
   return products;
 }
 
