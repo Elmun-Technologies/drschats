@@ -32,7 +32,7 @@ export function QualityList() {
               {points.map((p, i) => (
                 <Reveal key={p} index={i + 2}>
                   <div className="flex items-start gap-5 py-6">
-                    <span className="font-display text-xl font-bold text-accent">0{i + 1}</span>
+                    <span className="font-display text-xl font-bold text-accent-strong">0{i + 1}</span>
                     <div>
                       <h3 className="font-display text-lg font-semibold">{t(`points.${p}.title`)}</h3>
                       <p className="mt-1 text-muted">{t(`points.${p}.description`)}</p>

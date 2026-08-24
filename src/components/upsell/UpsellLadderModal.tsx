@@ -114,7 +114,7 @@ export function UpsellLadderModal() {
                     {isFreeGift ? (
                       <span className="text-xl">🎁</span>
                     ) : (
-                      <span className="text-base font-semibold text-accent">
+                      <span className="text-base font-semibold text-accent-strong">
                         {t("stepOf", { step: currentStep + 1, total: totalSteps })}
                       </span>
                     )}
@@ -137,7 +137,7 @@ export function UpsellLadderModal() {
                     key={displaySavings}
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`mt-2 text-sm font-semibold ${isFreeGift ? "text-gold-ink" : "text-accent"}`}
+                    className={`mt-2 text-sm font-semibold ${isFreeGift ? "text-gold-ink" : "text-accent-strong"}`}
                   >
                     {isFreeGift
                       ? t("freeGiftCovered", { amount: formatMoney(displaySavings, locale) })
@@ -194,7 +194,7 @@ export function UpsellLadderModal() {
                         <span className="font-display text-base font-bold text-accent-strong">
                           {formatMoney(step.discountedPrice, locale)}
                         </span>
-                        <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold text-accent">
+                        <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold text-accent-strong">
                           −{step.discountPercent}%
                         </span>
                       </>
@@ -228,7 +228,7 @@ export function UpsellLadderModal() {
                   className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
                     isFreeGift
                       ? "bg-gold text-fg hover:brightness-95"
-                      : "bg-accent text-white hover:bg-accent-strong"
+                      : "bg-accent text-brand-deep hover:bg-accent-strong hover:text-ink"
                   }`}
                 >
                   {isFreeGift ? t("freeGiftCta") : t("accept")}

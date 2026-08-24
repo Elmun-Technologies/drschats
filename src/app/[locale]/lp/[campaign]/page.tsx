@@ -33,7 +33,7 @@ export default async function CampaignLanding({
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_20%,rgba(31,209,123,0.18),transparent_60%)]" />
         <Container>
           <div className="mx-auto max-w-3xl py-24 text-center">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">
               {t("hero.eyebrow")}
             </p>
             <h1 className="font-display text-5xl font-bold leading-[1.05] tracking-tight text-balance sm:text-6xl">

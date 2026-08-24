@@ -255,7 +255,7 @@ export async function ShopView({
                     key={f.key}
                     href={buildQuery({ ...f.clear, page: undefined })}
                     aria-label={t("removeFilter", { name: f.label })}
-                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-accent hover:text-white"
+                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-accent hover:text-brand-deep"
                   >
                     {f.label}
                     <svg viewBox="0 0 24 24" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -281,7 +281,7 @@ export async function ShopView({
                   <Link
                     key={s}
                     href={sortQuery(s)}
-                    className={cn("rounded-full px-3 py-1.5 text-sm transition-colors", s === sort ? "bg-accent text-ink" : "text-muted hover:text-fg")}
+                    className={cn("rounded-full px-3 py-1.5 text-sm transition-colors", s === sort ? "bg-accent text-brand-deep" : "text-muted hover:text-fg")}
                   >
                     {t(sortLabelKey[s])}
                   </Link>
@@ -297,7 +297,7 @@ export async function ShopView({
                 {activeFilters.length > 0 && (
                   <Link
                     href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
-                    className="mt-4 inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-white transition-colors hover:bg-accent-strong"
+                    className="mt-4 inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
                   >
                     {t("clearFilters")}
                   </Link>

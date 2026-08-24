@@ -57,7 +57,7 @@ export default function GlobalNotFound() {
           <div className="text-center">
             <p
               aria-hidden
-              className="font-display text-[120px] font-extrabold leading-none tracking-tight text-accent sm:text-[180px]"
+              className="font-display text-[120px] font-extrabold leading-none tracking-tight text-accent-strong sm:text-[180px]"
             >
               404
             </p>
@@ -73,14 +73,14 @@ export default function GlobalNotFound() {
               <Link
                 href={`/${defaultLocale}`}
                 lang="ru-RU"
-                className={`${LINK_BASE} bg-accent text-ink hover:bg-accent-strong`}
+                className={`${LINK_BASE} bg-accent text-brand-deep hover:bg-accent-strong hover:text-ink`}
               >
                 {ru.common.notFoundHome}
               </Link>
               <Link
                 href="/uz"
                 lang="uz-UZ"
-                className={`${LINK_BASE} border border-line bg-surface text-fg hover:border-accent hover:text-accent`}
+                className={`${LINK_BASE} border border-line bg-surface text-fg hover:border-accent hover:text-accent-strong`}
               >
                 {uz.common.notFoundHome}
               </Link>

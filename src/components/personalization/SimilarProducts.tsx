@@ -27,7 +27,7 @@ export function SimilarProducts({ currentProduct, allProducts }: Props) {
     <section className="py-20 sm:py-24">
       <Container>
         <Reveal className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">{t("eyebrow")}</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">{t("eyebrow")}</p>
           <h2 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("title")}</h2>
         </Reveal>
 

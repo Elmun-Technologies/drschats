@@ -41,7 +41,7 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
         <motion.div style={{ y: textY }} className="w-full pb-24 pt-10">
           <Container>
             <Reveal>
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">
                 {product.badges[0]}
               </p>
             </Reveal>
@@ -63,7 +63,7 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
           <div className="grid gap-10 sm:grid-cols-3">
             {product.highlights.slice(0, 3).map((h, i) => (
               <Reveal key={h} index={i} className="text-center">
-                <div className="font-display text-3xl font-bold text-accent sm:text-4xl">{h.split(" ")[0]}</div>
+                <div className="font-display text-3xl font-bold text-accent-strong sm:text-4xl">{h.split(" ")[0]}</div>
                 <p className="mt-2 text-sm text-muted">{h.split(" ").slice(1).join(" ")}</p>
               </Reveal>
             ))}
@@ -184,7 +184,7 @@ function BenefitStory({ product, benefitsLabel }: { product: Product; benefitsLa
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
               className="group grid items-center gap-6 border-t border-line py-10 md:grid-cols-[80px_1fr_1.2fr]"
             >
-              <span className="font-display text-2xl font-bold text-faint transition-colors group-hover:text-accent">
+              <span className="font-display text-2xl font-bold text-faint transition-colors group-hover:text-accent-strong">
                 0{i + 1}
               </span>
               <h3 className="font-display text-2xl font-semibold">{b.title}</h3>

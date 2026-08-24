@@ -35,7 +35,7 @@ export function UpsellRail({ offers }: { offers: UpsellOffer[] }) {
                 </Badge>
                 <div className="mt-auto flex items-center justify-between pt-2">
                   <div className="flex items-baseline gap-1">
-                    <span className="text-sm font-semibold text-accent">{formatMoney(discounted, locale)}</span>
+                    <span className="text-sm font-semibold text-accent-strong">{formatMoney(discounted, locale)}</span>
                   </div>
                   <button
                     onClick={() => {
@@ -53,7 +53,7 @@ export function UpsellRail({ offers }: { offers: UpsellOffer[] }) {
                       );
                       trackAddToCart(product.slug, discounted, 1);
                     }}
-                    className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-ink transition-transform hover:scale-105"
+                    className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-brand-deep transition-transform hover:scale-105"
                   >
                     {t("addUpsell")}
                   </button>

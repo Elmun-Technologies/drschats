@@ -22,7 +22,7 @@ export function Pagination({ currentPage, totalPages, buildHref }: Props) {
   return (
     <nav className="mt-10 flex items-center justify-center gap-2" aria-label="Pagination">
       {currentPage > 1 && (
-        <Link href={buildHref(currentPage - 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-muted hover:border-accent hover:text-accent">
+        <Link href={buildHref(currentPage - 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-muted hover:border-accent hover:text-accent-strong">
           ‹
         </Link>
       )}
@@ -36,8 +36,8 @@ export function Pagination({ currentPage, totalPages, buildHref }: Props) {
             className={cn(
               "flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium transition-colors",
               p === currentPage
-                ? "border-accent bg-accent text-ink"
-                : "border-line text-muted hover:border-accent hover:text-accent",
+                ? "border-accent bg-accent text-brand-deep"
+                : "border-line text-muted hover:border-accent hover:text-accent-strong",
             )}
           >
             {p}
@@ -45,7 +45,7 @@ export function Pagination({ currentPage, totalPages, buildHref }: Props) {
         )
       )}
       {currentPage < totalPages && (
-        <Link href={buildHref(currentPage + 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-muted hover:border-accent hover:text-accent">
+        <Link href={buildHref(currentPage + 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-muted hover:border-accent hover:text-accent-strong">
           ›
         </Link>
       )}

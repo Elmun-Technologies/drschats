@@ -86,7 +86,7 @@ export default async function ContactPage({
                 <div className="flex-1">
                   <p className="text-xs font-semibold uppercase tracking-wide text-faint">{card.label}</p>
                   {card.href ? (
-                    <a href={card.href} className="mt-1 block text-lg font-semibold text-fg hover:text-accent">
+                    <a href={card.href} className="mt-1 block text-lg font-semibold text-fg hover:text-accent-strong">
                       {card.value}
                     </a>
                   ) : (

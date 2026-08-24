@@ -63,7 +63,7 @@ export function LivePurchaseToast() {
             <p className="text-xs text-muted leading-relaxed">
               <span className="font-semibold text-fg">{current.name}</span> — {current.city}
               <br />
-              <span className="text-accent">{current.product}</span> {t("bought")}
+              <span className="text-accent-strong">{current.product}</span> {t("bought")}
             </p>
           </div>
         </motion.div>

@@ -75,7 +75,7 @@ export function CartPageView() {
               </div>
               <div className="flex flex-1 flex-col">
                 <div className="flex items-start justify-between gap-3">
-                  <Link href={`/product/${l.slug}`} className="font-medium text-fg hover:text-accent">
+                  <Link href={`/product/${l.slug}`} className="font-medium text-fg hover:text-accent-strong">
                     {l.name}
                   </Link>
                   <button onClick={() => remove(l.lineId)} className="shrink-0 text-faint hover:text-danger" aria-label={t("remove")}>
@@ -84,7 +84,7 @@ export function CartPageView() {
                     </svg>
                   </button>
                 </div>
-                <span className="mt-1 text-sm font-semibold text-accent">{formatMoney(l.price, locale)}</span>
+                <span className="mt-1 text-sm font-semibold text-accent-strong">{formatMoney(l.price, locale)}</span>
                 {l.oldPrice && (
                   <span className="text-xs text-faint line-through">{formatMoney(l.oldPrice, locale)}</span>
                 )}
@@ -150,7 +150,7 @@ export function CartPageView() {
               { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", label: t("trustSecure") },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-2.5 text-xs text-muted">
-                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent-strong" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d={item.icon} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 {item.label}
@@ -167,7 +167,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <div className="flex items-center justify-between">
       <span className="text-muted">{label}</span>
-      <span className={accent ? "font-medium text-accent" : "text-fg"}>{value}</span>
+      <span className={accent ? "font-medium text-accent-strong" : "text-fg"}>{value}</span>
     </div>
   );
 }

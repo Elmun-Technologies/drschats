@@ -59,7 +59,7 @@ export function FilterBar({
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-fg">{t("filters")}</span>
         {hasActive && (
-          <button onClick={clearAll} className="text-xs text-accent hover:underline">
+          <button onClick={clearAll} className="text-xs text-accent-strong hover:underline">
             {t("clearFilters")}
           </button>
         )}
@@ -104,7 +104,7 @@ export function FilterBar({
         </label>
         <button
           type="submit"
-          className="h-10 rounded-lg bg-accent px-4 text-sm font-semibold text-ink transition-colors hover:bg-accent-strong"
+          className="h-10 rounded-lg bg-accent px-4 text-sm font-semibold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
         >
           {t("apply")}
         </button>

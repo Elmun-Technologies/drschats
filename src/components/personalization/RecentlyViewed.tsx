@@ -31,7 +31,7 @@ export function RecentlyViewed({ allProducts }: Props) {
     <section className="py-16 sm:py-20">
       <Container>
         <div className="mb-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent">{t("eyebrow")}</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">{t("eyebrow")}</p>
           <h2 className="mt-1 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("title")}</h2>
         </div>
 

@@ -217,7 +217,7 @@ export function SearchBox({
         <button
           type="submit"
           aria-label={t("search")}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-white transition-colors hover:bg-accent-strong"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
         >
           <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" />

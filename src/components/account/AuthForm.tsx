@@ -135,7 +135,7 @@ export function AuthForm() {
               href={telegramLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-accent px-6 py-3 text-center text-sm font-bold text-white transition-colors hover:bg-accent-strong"
+              className="rounded-full bg-accent px-6 py-3 text-center text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
             >
               {t("linkCta")}
             </a>
@@ -225,7 +225,7 @@ function SubmitButton({
     <button
       type="submit"
       disabled={busy || disabled}
-      className="rounded-full bg-accent px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-strong disabled:opacity-60"
+      className="rounded-full bg-accent px-6 py-3 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink disabled:opacity-60"
     >
       {busy ? "…" : children}
     </button>

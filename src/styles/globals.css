@@ -39,11 +39,14 @@
   --color-muted: #696259;
   --color-faint: #766f64;
 
-  /* Action — muted, accessible antique gold. Darkened from the original
-     #a8813a, which read as gold but failed WCAG AA both as a button fill
-     under white/ink text and as text on the porcelain surfaces (audit). */
-  --color-accent: #82642d;
-  --color-accent-soft: rgba(130, 100, 45, 0.10);
+  /* Action — antique gold. `accent` is deliberately light and stays a
+     background/border/decorative colour only — as a fill it pairs with dark
+     text (text-brand-deep), never white/ink, since a colour light enough to
+     read as "gold" can't hit 4.5:1 under light text. Anywhere the colour is
+     the text itself (price highlights, icons, eyebrows), use `accent-strong`
+     instead, which is dark enough to pass on the porcelain surfaces. */
+  --color-accent: #b48b3e;
+  --color-accent-soft: rgba(180, 139, 62, 0.10);
   --color-accent-strong: #725721;
 
   /* State */

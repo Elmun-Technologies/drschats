@@ -43,7 +43,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
                   onClick={() => switchTo(l)}
                   className={cn(
                     "flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors hover:bg-surface-3",
-                    l === locale ? "text-accent" : "text-fg",
+                    l === locale ? "text-accent-strong" : "text-fg",
                   )}
                 >
                   {localeNames[l]}

@@ -31,7 +31,7 @@ export function MultivitaminDaily({ product, upsells }: BespokeProps) {
           <Container>
             <div className="max-w-3xl py-32">
               <Reveal>
-                <p className="mb-5 inline-flex rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+                <p className="mb-5 inline-flex rounded-full border border-accent/30 bg-accent-soft px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-accent-strong">
                   {product.badges[0]}
                 </p>
               </Reveal>

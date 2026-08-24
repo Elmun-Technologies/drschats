@@ -30,7 +30,7 @@ export function Logo({
   return (
     <span className={cn("font-display text-xl font-bold tracking-tight", className)}>
       {BRAND.wordmark.lead}
-      <span className={onDark ? "text-accent-on-dark" : "text-accent"}>
+      <span className={onDark ? "text-accent-on-dark" : "text-accent-strong"}>
         {BRAND.wordmark.accent}
       </span>
     </span>

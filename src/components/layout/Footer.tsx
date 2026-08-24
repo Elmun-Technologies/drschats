@@ -63,8 +63,8 @@ export function Footer({ topicPaths = [] }: { topicPaths?: string[] }) {
           <div>
             <h2 className="mb-4 text-sm font-semibold text-white">{nav("contact")}</h2>
             <ul className="space-y-3 text-sm">
-              <li><a href={`tel:${BRAND.contact.phoneHref}`} className="transition-colors hover:text-accent">{BRAND.contact.phone}</a></li>
-              <li><a href={`mailto:${BRAND.contact.email}`} className="transition-colors hover:text-accent">{BRAND.contact.email}</a></li>
+              <li><a href={`tel:${BRAND.contact.phoneHref}`} className="transition-colors hover:text-accent-strong">{BRAND.contact.phone}</a></li>
+              <li><a href={`mailto:${BRAND.contact.email}`} className="transition-colors hover:text-accent-strong">{BRAND.contact.email}</a></li>
               <li className="text-white/55">{contact("addressValue")}</li>
             </ul>
             <div className="mt-5 flex gap-3">
