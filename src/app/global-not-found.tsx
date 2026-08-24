@@ -1,6 +1,6 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
-import { Sora, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import Link from "next/link";
 import { localeHtmlLang, defaultLocale } from "@/lib/i18n/routing";
 import uz from "@/messages/uz.json";
@@ -24,8 +24,19 @@ import ru from "@/messages/ru.json";
   which is what `lang` is for.
 */
 
-const sora = Sora({ subsets: ["latin"], variable: "--font-sora", display: "swap" });
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", display: "swap" });
+const exo2 = localFont({
+  src: [
+    { path: "../fonts/exo2/exo2-regular.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/exo2/exo2-medium.woff2", weight: "500", style: "normal" },
+    { path: "../fonts/exo2/exo2-semibold.woff2", weight: "600", style: "normal" },
+    { path: "../fonts/exo2/exo2-bold.woff2", weight: "700", style: "normal" },
+    { path: "../fonts/exo2/exo2-extrabold.woff2", weight: "800", style: "normal" },
+    { path: "../fonts/exo2/exo2-black.woff2", weight: "900", style: "normal" },
+  ],
+  variable: "--font-exo2",
+  display: "swap",
+  preload: false,
+});
 
 export const metadata: Metadata = {
   title: `${uz.common.notFoundTitle} · ${ru.common.notFoundTitle}`,
@@ -39,7 +50,7 @@ export default function GlobalNotFound() {
   return (
     <html
       lang={localeHtmlLang[defaultLocale]}
-      className={`${sora.variable} ${manrope.variable}`}
+      className={exo2.variable}
     >
       <body className="grain min-h-screen antialiased">
         <main className="flex min-h-svh items-center justify-center px-6 py-16">

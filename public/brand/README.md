@@ -10,5 +10,7 @@ Drop real brand files here, then point `src/lib/brand.ts` at them.
   Remember to allow the image host in `next.config.ts` (`uzum.uz` is already
   allowed).
 - **Colours**: edit the `@theme` tokens in `src/styles/globals.css`.
-- **Fonts**: swap the two `next/font` families in `src/app/[locale]/layout.tsx`
-  (keep the `--font-display` / `--font-sans` CSS variables).
+- **Fonts**: self-hosted via `next/font/local` in `src/app/[locale]/layout.tsx`
+  and `src/app/global-not-found.tsx`. Weight files live in `src/fonts/<family>/`
+  as `.woff2` (keep the `--font-display` / `--font-sans` CSS variables in
+  `src/styles/globals.css` pointed at the font's `variable`).
