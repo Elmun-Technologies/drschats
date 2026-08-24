@@ -67,7 +67,7 @@ export function ConsultationModal({
                 <Image src={expert.image} alt={expert.name} fill className="object-cover" />
               </div>
               <div>
-                <span className="text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                <span className="text-xs font-semibold uppercase tracking-widest text-amber-700">
                   {t("consultModalTitle")}
                 </span>
                 <h3 className="font-display text-xl font-bold">{expert.name}</h3>
@@ -113,7 +113,7 @@ export function ConsultationModal({
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "telegram"
-                        ? "border-amber-500 bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                        ? "border-amber-500 bg-amber-500/15 text-amber-700"
                         : "border-line bg-surface-2 text-muted",
                     )}
                   >
@@ -128,7 +128,7 @@ export function ConsultationModal({
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "phone"
-                        ? "border-amber-500 bg-amber-500/15 text-amber-600 dark:text-amber-400"
+                        ? "border-amber-500 bg-amber-500/15 text-amber-700"
                         : "border-line bg-surface-2 text-muted",
                     )}
                   >

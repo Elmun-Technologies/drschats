@@ -39,7 +39,7 @@ export async function QuizPlanView({
     <div className="pt-10 pb-12">
       <Container>
         <header className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-700">
             <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
@@ -60,7 +60,7 @@ export async function QuizPlanView({
               <div className="flex items-center gap-5">
                 <div className="relative flex h-24 w-24 shrink-0 items-center justify-center rounded-2xl bg-amber-500/20 border-2 border-amber-400/60 shadow-inner">
                   <div className="text-center">
-                    <span className="block font-display text-3xl font-black text-amber-600 dark:text-amber-400">
+                    <span className="block font-display text-3xl font-black text-amber-700">
                       {healthScore}
                     </span>
                     <span className="text-[10px] font-bold uppercase tracking-wider text-muted">
@@ -69,7 +69,7 @@ export async function QuizPlanView({
                   </div>
                 </div>
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-amber-700">
                     {t("healthScoreLabel")}
                   </span>
                   <h3 className="mt-1 font-display text-xl font-bold">
@@ -88,7 +88,7 @@ export async function QuizPlanView({
                     <Image src={reviewer.image} alt={reviewer.name} fill className="object-cover" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-600 dark:text-amber-400">
+                    <div className="flex items-center gap-1.5 text-xs font-semibold text-amber-700">
                       <svg className="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
@@ -129,7 +129,7 @@ export async function QuizPlanView({
             {products.length > 0 && (
               <div className="mt-10 flex flex-col gap-4 rounded-3xl border border-amber-500/40 bg-surface p-6 sm:flex-row sm:items-center sm:justify-between shadow-md">
                 <div>
-                  <span className="inline-block rounded-full bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-600 dark:text-amber-400">
+                  <span className="inline-block rounded-full bg-amber-500/15 px-3 py-1 text-xs font-bold text-amber-700">
                     -15% Maxsus Chegirma Rejasi
                   </span>
                   <h3 className="mt-2 font-display text-xl font-extrabold tracking-tight">
@@ -149,7 +149,7 @@ export async function QuizPlanView({
             {products.length > 0 && (
               <section aria-labelledby="daily-routine" className="mt-14">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-600 dark:text-amber-400 font-bold">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-500/15 text-amber-700 font-bold">
                     <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <rect x="3" y="4" width="18" height="16" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" />
                     </svg>
@@ -173,7 +173,7 @@ export async function QuizPlanView({
                       </div>
                       <div>
                         <h3 className="font-display text-lg font-bold text-fg">{t("morningStack")}</h3>
-                        <p className="text-xs text-amber-600 dark:text-amber-400 font-semibold">{t("morningDosage")}</p>
+                        <p className="text-xs text-amber-700 font-semibold">{t("morningDosage")}</p>
                       </div>
                     </div>
                     <div className="mt-4 space-y-3">
@@ -235,7 +235,7 @@ export async function QuizPlanView({
                         href={`${TOPIC_BASE_PATH[topic.kind]}/${topic.slug}`}
                         className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-amber-500"
                       >
-                        <span className="text-[11px] font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                        <span className="text-[11px] font-semibold uppercase tracking-widest text-amber-700">
                           {health(`${topic.kind}.singular`)}
                         </span>
                         <span className="mt-1 font-display text-lg font-bold text-fg group-hover:text-amber-500">
@@ -258,7 +258,7 @@ export async function QuizPlanView({
                   {ingredients.map((ing) => (
                     <li key={ing.slug} className="rounded-2xl border border-line bg-surface p-5">
                       <p className="font-display text-base font-bold text-fg">{ing.name}</p>
-                      <p className="text-xs font-semibold uppercase tracking-wide text-amber-600 dark:text-amber-400">{ing.role}</p>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-amber-700">{ing.role}</p>
                       <p className="mt-2 text-sm text-muted">{ing.description}</p>
                     </li>
                   ))}
@@ -284,7 +284,7 @@ export async function QuizPlanView({
                       <ProductCard product={product} index={i} />
                       {reasons.length > 0 && (
                         <p className="px-1 text-xs text-faint">
-                          <span className="font-semibold text-amber-600 dark:text-amber-400">{t("whyLabel")}:</span>{" "}
+                          <span className="font-semibold text-amber-700">{t("whyLabel")}:</span>{" "}
                           {reasons.join(" · ")}
                         </p>
                       )}
@@ -305,7 +305,7 @@ export async function QuizPlanView({
                   <Image src={reviewer.image} alt={reviewer.name} fill className="object-cover" />
                 </div>
                 <div>
-                  <span className="text-xs font-semibold uppercase tracking-widest text-amber-600 dark:text-amber-400">
+                  <span className="text-xs font-semibold uppercase tracking-widest text-amber-700">
                     1-on-1 Tibbiy Maslahat
                   </span>
                   <h3 className="font-display text-xl font-bold text-fg">{t("doctorConsultTrigger")}</h3>

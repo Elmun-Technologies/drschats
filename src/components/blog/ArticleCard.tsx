@@ -25,7 +25,7 @@ export function ArticleCard({ article, index = 0 }: { article: Article; index?: 
         </div>
         <div className="relative z-10 flex flex-1 flex-col justify-end p-6">
           <div className="mb-4">
-            <Badge tone="accent" className="bg-gold/20 text-gold backdrop-blur-md border-none">{article.category}</Badge>
+            <Badge tone="accent" className="bg-gold/15 text-gold backdrop-blur-md border-none">{article.category}</Badge>
           </div>
           <p className="text-xs font-bold uppercase tracking-widest text-white/60 mb-2">{t("minRead", { min: article.readingMinutes })}</p>
           <h3 className="font-display text-2xl font-bold leading-snug text-white transition-colors group-hover:text-gold drop-shadow-md">

@@ -127,7 +127,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         <div className="flex items-center gap-2">
           <span
             className={`inline-flex items-center gap-1.5 text-sm font-medium ${
-              product.inStock ? "text-emerald-500" : "text-danger"
+              product.inStock ? "text-emerald-700" : "text-danger"
             }`}
           >
             <span

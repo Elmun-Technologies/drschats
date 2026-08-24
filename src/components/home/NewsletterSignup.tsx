@@ -37,7 +37,7 @@ export function NewsletterSignup() {
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand-deep via-brand-deep to-accent p-8 sm:p-14 border border-gold/30 shadow-2xl shadow-brand-deep/40 text-white">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
-              <span className="inline-block rounded-full bg-gold/20 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-4">
+              <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-4">
                 {t("eyebrow")}
               </span>
               <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white drop-shadow-md">

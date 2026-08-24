@@ -40,7 +40,11 @@ export async function ProductTemplate({
       <Container>
         <Breadcrumb product={product} />
 
-        <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:items-start">
+        {/* [&>*]:min-w-0 overrides grid's default content-based minimum so
+            the gallery's snap-scroll slides (each one full track-width) stop
+            forcing the whole column — and the page — wider than the
+            viewport on mobile. */}
+        <div className="mt-8 grid gap-10 lg:grid-cols-2 lg:items-start [&>*]:min-w-0">
           <div className="lg:sticky lg:top-24">
             <ProductGallery
               images={product.images}

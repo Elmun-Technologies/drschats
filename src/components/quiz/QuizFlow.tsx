@@ -306,7 +306,7 @@ export function QuizFlow({
             {question.guidance && (
               <div className="mt-5 rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 text-xs sm:text-sm">
                 <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-600 dark:text-amber-400 font-bold">
+                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-amber-500/20 text-amber-800 font-bold">
                     i
                   </div>
                   <div>

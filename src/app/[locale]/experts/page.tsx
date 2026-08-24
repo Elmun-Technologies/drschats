@@ -40,7 +40,7 @@ export default async function ExpertsPage({
     <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
-          <p className="text-sm font-semibold text-amber-600 dark:text-amber-400 uppercase tracking-widest">{t("eyebrow")}</p>
+          <p className="text-sm font-semibold text-amber-700 uppercase tracking-widest">{t("eyebrow")}</p>
           <Reveal>
             <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h1>
           </Reveal>
@@ -55,7 +55,7 @@ export default async function ExpertsPage({
                   <Image src={e.image} alt={e.name} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
                   
                   {/* Status Badge */}
-                  <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-black/60 backdrop-blur-md px-3 py-1 text-xs font-semibold text-emerald-400">
+                  <div className="absolute left-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-black/75 backdrop-blur-md px-3 py-1 text-xs font-semibold text-emerald-400">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                       <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
@@ -64,14 +64,14 @@ export default async function ExpertsPage({
                   </div>
 
                   {/* Experience Tag */}
-                  <div className="absolute right-3 top-3 rounded-full border border-amber-500/40 bg-amber-500/90 px-3 py-1 text-[11px] font-bold text-ink shadow-sm">
+                  <div className="absolute right-3 top-3 rounded-full border border-amber-500/40 bg-amber-500/90 px-3 py-1 text-[11px] font-bold text-brand-deep shadow-sm">
                     {yearsMap[e.id] || "10+ yil tajriba"}
                   </div>
                 </div>
 
                 <div className="flex flex-1 flex-col p-6">
                   {/* Rating & Review counter */}
-                  <div className="flex items-center gap-2 text-xs font-semibold text-amber-500">
+                  <div className="flex items-center gap-2 text-xs font-semibold text-amber-700">
                     <span>★</span>
                     <span>{t("rating")}</span>
                   </div>
@@ -79,7 +79,7 @@ export default async function ExpertsPage({
                   <Link href={`/experts/${e.slug}`}>
                     <h2 className="mt-2 font-display text-xl font-bold group-hover:text-amber-500 transition-colors">{e.name}</h2>
                   </Link>
-                  <p className="mt-1 text-xs font-bold text-amber-600 dark:text-amber-400">{e.title}</p>
+                  <p className="mt-1 text-xs font-bold text-amber-700">{e.title}</p>
                   
                   <p className="mt-3 line-clamp-3 flex-1 text-sm text-muted leading-relaxed">{e.bio}</p>
 

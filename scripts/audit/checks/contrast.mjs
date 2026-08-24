@@ -7,14 +7,27 @@ import { context, DESKTOP, routesFor } from "../lib.mjs";
   written as fg/60 is measured as it actually paints. Elements sitting on a
   gradient or image are skipped rather than guessed at — a wrong number here
   would be worse than no number.
+
+  Tailwind v4 renders any opacity-modified colour (bg-brand-deep/80,
+  text-white/60, …) as oklab()/color-mix() rather than rgb(), which a
+  regex parse only handles for the unmodified form. A 1x1 canvas readback
+  resolves any CSS colour string — oklab, oklch, hsl, named, whatever a
+  future utility emits — to the sRGB bytes it actually paints, so parsing
+  never silently drops (and skips checking) every opacity-modified colour.
 */
 
 const AUDIT = `(() => {
+  const swatch = document.createElement('canvas');
+  swatch.width = 1; swatch.height = 1;
+  const swatchCtx = swatch.getContext('2d', { willReadFrequently: true });
   const parse = (c) => {
-    const m = c.match(/rgba?\\(([^)]+)\\)/);
-    if (!m) return null;
-    const p = m[1].split(',').map(s => parseFloat(s.trim()));
-    return { r: p[0], g: p[1], b: p[2], a: p.length > 3 ? p[3] : 1 };
+    if (!c) return null;
+    swatchCtx.clearRect(0, 0, 1, 1);
+    swatchCtx.fillStyle = c;
+    swatchCtx.fillRect(0, 0, 1, 1);
+    const [r, g, b, a] = swatchCtx.getImageData(0, 0, 1, 1).data;
+    if (a === 0) return null;
+    return { r, g, b, a: a / 255 };
   };
   const over = (fg, bg) => ({
     r: fg.r * fg.a + bg.r * (1 - fg.a),

@@ -50,7 +50,7 @@ export default async function IngredientsPage({
             <Reveal key={ing.slug} index={Math.min(i, 6)} className="h-full">
               <div className="flex h-full flex-col rounded-2xl border border-line bg-ink p-6">
                 <div className="flex items-center justify-between gap-3">
-                  <h2 className="font-display text-lg font-bold">{ing.name}</h2>
+                  <h2 className="min-w-0 font-display text-lg font-bold">{ing.name}</h2>
                   <span className="shrink-0 rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent-strong">{ing.role}</span>
                 </div>
                 <p className="mt-3 flex-1 text-sm text-muted">{ing.description}</p>
