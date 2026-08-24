@@ -57,7 +57,7 @@ export function WishlistView({ allProducts }: { allProducts: Product[] }) {
           <p className="text-muted">{t("empty")}</p>
           <Link
             href="/products"
-            className="mt-5 inline-flex rounded-full bg-accent px-6 py-3 text-sm font-bold text-white transition-colors hover:bg-accent-strong"
+            className="mt-5 inline-flex rounded-full bg-accent px-6 py-3 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
           >
             {t("emptyCta")}
           </Link>

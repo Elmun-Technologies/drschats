@@ -64,7 +64,7 @@ export default async function SuccessPage({
             <div className="mt-6 flex items-center gap-3 rounded-2xl border border-line bg-surface px-6 py-4">
               <div className="text-left">
                 <p className="text-xs text-faint">{t("orderId")}</p>
-                <p className="mt-0.5 font-mono text-xl font-bold tracking-widest text-accent">#{shortOrder}</p>
+                <p className="mt-0.5 font-mono text-xl font-bold tracking-widest text-accent-strong">#{shortOrder}</p>
               </div>
             </div>
           )}
@@ -75,7 +75,7 @@ export default async function SuccessPage({
               {steps.map((s, i) => (
                 <div key={s.key} className="relative rounded-2xl border border-line bg-surface p-5">
                   <div className="mb-3 flex items-center gap-3">
-                    <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                    <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
                       {s.icon}
                     </span>
                     <span className="text-xs font-bold text-faint">{t("stepLabel", { n: i + 1 })}</span>

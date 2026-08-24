@@ -202,7 +202,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
               onClick={() => setQty((q) => Math.max(1, q - 1))}
               disabled={qty <= 1}
               aria-label={tp("decrease")}
-              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:text-accent disabled:opacity-40"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:text-accent-strong disabled:opacity-40"
             >
               −
             </button>
@@ -214,7 +214,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
               onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
               disabled={qty >= MAX_QTY}
               aria-label={tp("increase")}
-              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:text-accent disabled:opacity-40"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:text-accent-strong disabled:opacity-40"
             >
               +
             </button>

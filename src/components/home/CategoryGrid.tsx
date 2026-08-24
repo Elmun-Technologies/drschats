@@ -54,7 +54,7 @@ export function CategoryGrid({ categories }: { categories: Category[] }) {
               href="/products"
               className="flex h-full min-h-[140px] flex-col items-center justify-center gap-2 rounded-2xl border border-dashed border-line-strong bg-surface p-6 text-center transition-colors hover:border-accent hover:text-accent-strong"
             >
-              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-ink">
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-accent text-brand-deep">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 12h14M13 6l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

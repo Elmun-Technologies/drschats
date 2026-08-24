@@ -253,7 +253,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                         <span className="font-display text-sm font-bold text-gold-ink">{t("upsellFree")}</span>
                       ) : (
                         <>
-                          <span className="text-sm font-semibold text-accent">{formatMoney(step.discountedPrice, locale)}</span>
+                          <span className="text-sm font-semibold text-accent-strong">{formatMoney(step.discountedPrice, locale)}</span>
                           <Badge tone="gold">−{step.discountPercent}%</Badge>
                         </>
                       )}
@@ -275,7 +275,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
                       step.stepType === "free_gift"
                         ? "bg-gold text-ink hover:bg-gold-ink"
-                        : "bg-surface-3 text-fg hover:bg-accent hover:text-ink"
+                        : "bg-surface-3 text-fg hover:bg-accent hover:text-brand-deep"
                     }`}
                   >
                     {step.stepType === "free_gift" ? t("upsellFree") : t("upsellAdd")}
@@ -469,7 +469,7 @@ function SummaryRow({ label, value, accent }: { label: string; value: string; ac
   return (
     <div className="flex items-center justify-between">
       <span className="text-muted">{label}</span>
-      <span className={accent ? "text-accent" : "text-fg"}>{value}</span>
+      <span className={accent ? "text-accent-strong" : "text-fg"}>{value}</span>
     </div>
   );
 }

@@ -40,12 +40,12 @@ export default async function GuaranteePage({ params }: { params: Promise<{ loca
         {/* Big guarantee badge */}
         <Reveal>
           <div className="mb-12 flex flex-col items-center gap-4 rounded-3xl border border-accent/30 bg-accent-soft py-12 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-ink">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-accent text-brand-deep">
               <svg viewBox="0 0 24 24" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </div>
-            <p className="font-display text-5xl font-extrabold text-accent">30</p>
+            <p className="font-display text-5xl font-extrabold text-accent-strong">30</p>
             <p className="font-display text-xl font-bold text-fg">{t("badgeLabel")}</p>
             <p className="max-w-sm text-sm text-muted">{t("badgeDesc")}</p>
           </div>
@@ -56,7 +56,7 @@ export default async function GuaranteePage({ params }: { params: Promise<{ loca
           {points.map((p, i) => (
             <Reveal key={p.title} index={i}>
               <div className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d={POINT_ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
@@ -75,7 +75,7 @@ export default async function GuaranteePage({ params }: { params: Promise<{ loca
             <div className="relative grid gap-6 sm:grid-cols-3">
               {[t("returnStep1"), t("returnStep2"), t("returnStep3")].map((step, i) => (
                 <div key={i} className="flex items-start gap-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-ink">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-sm font-bold text-brand-deep">
                     {i + 1}
                   </span>
                   <p className="text-sm text-muted">{step}</p>

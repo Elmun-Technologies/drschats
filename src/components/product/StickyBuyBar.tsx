@@ -106,7 +106,7 @@ export function StickyBuyBar({ product }: { product: Product }) {
             <button
               onClick={handleAdd}
               disabled={!product.inStock}
-              className="shrink-0 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-ink transition-all hover:bg-accent-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:opacity-50"
+              className="shrink-0 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-brand-deep transition-all hover:bg-accent-strong hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:opacity-50"
             >
               {product.inStock ? t("addToCart") : t("outOfStock")}
             </button>

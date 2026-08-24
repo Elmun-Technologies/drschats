@@ -28,7 +28,7 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden
-                  className={`h-5 w-5 shrink-0 text-accent transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                  className={`h-5 w-5 shrink-0 text-accent-strong transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"

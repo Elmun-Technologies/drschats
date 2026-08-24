@@ -48,7 +48,7 @@ export function MobileBottomNav() {
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           {cartCount > 0 && (
-            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-ink">
+            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-brand-deep">
               {cartCount > 9 ? "9+" : cartCount}
             </span>
           )}
@@ -71,7 +71,7 @@ export function MobileBottomNav() {
       <div className="grid h-full grid-cols-4">
         {tabs.map((tab) => {
           const active = tab.href ? isActive(tab.href) : false;
-          const cls = `flex flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors ${active ? "text-accent" : "text-muted"}`;
+          const cls = `flex flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors ${active ? "text-accent-strong" : "text-muted"}`;
 
           if ("onClick" in tab && tab.onClick) {
             return (

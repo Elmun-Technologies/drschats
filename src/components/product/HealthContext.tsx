@@ -13,7 +13,7 @@ import { TOPIC_BASE_PATH, type HealthTopic, type HealthTopicKind } from "@/lib/c
   offers it.
 */
 const KIND_STYLE: Record<HealthTopicKind, string> = {
-  goal: "bg-accent-soft text-accent-strong hover:bg-accent hover:text-white",
+  goal: "bg-accent-soft text-accent-strong hover:bg-accent hover:text-brand-deep",
   symptom: "bg-signal-soft text-signal hover:bg-signal hover:text-white",
   vitamin: "bg-surface-2 text-fg hover:bg-fg hover:text-ink",
 };

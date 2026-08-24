@@ -79,7 +79,7 @@ export function ProductTabs({ product, t }: Props) {
             onKeyDown={(e) => handleKeyDown(e, i)}
             className={cn(
               "shrink-0 snap-start whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent sm:flex-1 sm:shrink",
-              active === tab.id ? "bg-accent text-ink shadow-sm" : "text-muted hover:text-fg",
+              active === tab.id ? "bg-accent text-brand-deep shadow-sm" : "text-muted hover:text-fg",
             )}
           >
             {tab.label}
@@ -119,7 +119,7 @@ function BenefitsPanel({ product, t }: Props) {
       <div className="grid gap-4 sm:grid-cols-2">
         {product.benefits.map((b) => (
           <div key={b.title} className="h-full rounded-2xl border border-line bg-surface p-5">
-            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent-soft text-accent">
+            <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-accent-soft text-accent-strong">
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
                 <circle cx="12" cy="12" r="9" />
                 <path d="M8 12l2.5 2.5L16 9" strokeLinecap="round" strokeLinejoin="round" />

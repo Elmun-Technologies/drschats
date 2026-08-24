@@ -97,7 +97,7 @@ export function MySubscriptions() {
         <p className="text-muted">{t("empty")}</p>
         <Link
           href="/products"
-          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-bold text-white transition-colors hover:bg-accent-strong"
+          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
         >
           {t("emptyCta")}
         </Link>

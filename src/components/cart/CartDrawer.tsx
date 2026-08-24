@@ -112,7 +112,7 @@ export function CartDrawer() {
                             </svg>
                           </button>
                         </div>
-                        <p className="mt-1 text-sm text-accent">{formatMoney(l.price, locale)}</p>
+                        <p className="mt-1 text-sm text-accent-strong">{formatMoney(l.price, locale)}</p>
                         {l.oldPrice && l.oldPrice > l.price && (
                           <div className="mt-0.5 flex items-center gap-2">
                             <span className="text-xs text-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
@@ -195,7 +195,7 @@ function QtyButton({ children, onClick }: { children: React.ReactNode; onClick: 
   return (
     <button
       onClick={onClick}
-      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-accent hover:text-accent"
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-accent hover:text-accent-strong"
     >
       {children}
     </button>
@@ -206,7 +206,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-muted">{label}</span>
-      <span className={accent ? "text-accent" : "text-fg"}>{value}</span>
+      <span className={accent ? "text-accent-strong" : "text-fg"}>{value}</span>
     </div>
   );
 }

@@ -30,7 +30,7 @@ export function CookieConsent() {
           localStorage.setItem(KEY, "1");
           setShow(false);
         }}
-        className="mt-3 w-full shrink-0 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-accent-strong sm:mt-0 sm:w-auto"
+        className="mt-3 w-full shrink-0 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink sm:mt-0 sm:w-auto"
       >
         {t("accept")}
       </button>

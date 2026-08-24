@@ -74,7 +74,7 @@ export default async function DeliveryPage({
         {/* Free shipping banner */}
         <Reveal className="mt-10">
           <div className="flex items-center gap-4 rounded-2xl border border-accent/30 bg-accent-soft p-5">
-            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-ink">
+            <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-accent text-brand-deep">
               <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
@@ -95,13 +95,13 @@ export default async function DeliveryPage({
             {options.map((o, i) => (
               <Reveal key={o.title} index={i}>
                 <div className="flex h-full flex-col rounded-2xl border border-line bg-ink p-6">
-                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                  <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
                     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d={o.icon} strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </div>
                   <h3 className="font-display text-lg font-bold">{o.title}</h3>
-                  <p className="mt-1 font-semibold text-accent">{o.time}</p>
+                  <p className="mt-1 font-semibold text-accent-strong">{o.time}</p>
                   {o.free && <p className="mt-3 flex-1 text-sm text-muted">{o.free}</p>}
                 </div>
               </Reveal>
@@ -118,7 +118,7 @@ export default async function DeliveryPage({
             {payments.map((p, i) => (
               <Reveal key={p.label} index={i}>
                 <div className="flex items-center gap-3 rounded-2xl border border-line bg-surface p-5">
-                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-accent-strong">
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d={p.icon} strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -134,7 +134,7 @@ export default async function DeliveryPage({
         <Reveal className="mt-12">
           <div className="flex flex-col items-start gap-4 rounded-2xl border border-line bg-surface p-6 sm:flex-row sm:items-center">
             <p className="flex-1 text-sm text-muted">{t("note")}</p>
-            <Link href="/contact" className="shrink-0 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-ink transition-all hover:bg-accent-strong">
+            <Link href="/contact" className="shrink-0 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-deep transition-all hover:bg-accent-strong hover:text-ink">
               {t("contactCta")}
             </Link>
           </div>

@@ -47,7 +47,7 @@ export function CountdownTimer({ targetDate, label }: { targetDate: Date | strin
               <span className="font-display text-lg font-bold tabular-nums leading-none">{pad(v)}</span>
               <span className="text-[9px] uppercase tracking-wider text-faint">{l}</span>
             </span>
-            {i < units.length - 1 && <span className="font-bold text-accent">:</span>}
+            {i < units.length - 1 && <span className="font-bold text-accent-strong">:</span>}
           </span>
         ))}
       </div>

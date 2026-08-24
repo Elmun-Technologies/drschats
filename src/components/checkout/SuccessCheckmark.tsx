@@ -14,7 +14,7 @@ export function SuccessCheckmark() {
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.svg
           viewBox="0 0 24 24"
-          className="h-12 w-12 text-accent"
+          className="h-12 w-12 text-accent-strong"
           fill="none"
           stroke="currentColor"
           strokeWidth="2.5"

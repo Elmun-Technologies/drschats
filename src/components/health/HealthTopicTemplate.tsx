@@ -77,7 +77,7 @@ export async function HealthTopicTemplate({
                   key={b}
                   className="flex items-start gap-3 rounded-xl border border-line bg-surface p-5 text-sm font-medium text-fg"
                 >
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
                     <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
                       <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>

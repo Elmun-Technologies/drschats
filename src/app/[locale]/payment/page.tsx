@@ -30,7 +30,7 @@ const METHOD_COLORS = [
   "border-gold/30 bg-gold/10",
 ];
 
-const ICON_COLORS = ["text-[#00B9F2]", "text-[#00AAEE]", "text-accent", "text-gold"];
+const ICON_COLORS = ["text-[#00B9F2]", "text-[#00AAEE]", "text-accent-strong", "text-gold"];
 
 export default async function PaymentPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -69,7 +69,7 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
         {/* Security note */}
         <Reveal className="mt-10">
           <div className="flex items-start gap-4 rounded-2xl border border-accent/30 bg-accent-soft p-6">
-            <svg viewBox="0 0 24 24" className="mt-0.5 h-6 w-6 shrink-0 text-accent" fill="none" stroke="currentColor" strokeWidth="1.8">
+            <svg viewBox="0 0 24 24" className="mt-0.5 h-6 w-6 shrink-0 text-accent-strong" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
             <div>

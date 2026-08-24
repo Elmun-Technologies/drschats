@@ -24,7 +24,7 @@ export function UpsellSavingsBar() {
       className="border-t border-line px-6 py-3"
     >
       <div className="flex items-center justify-between text-xs">
-        <span className="font-semibold text-accent">
+        <span className="font-semibold text-accent-strong">
           {t("progressLabel", { amount: formatMoney(cumulativeSavings, locale) })}
         </span>
         <span className="text-faint">

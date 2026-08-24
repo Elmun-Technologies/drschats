@@ -89,7 +89,7 @@ export default async function ArticlePage({
 
       {/* Hero */}
       <Container size="narrow">
-        <Link href="/blog" className="text-sm text-muted hover:text-accent">
+        <Link href="/blog" className="text-sm text-muted hover:text-accent-strong">
           ← {t("backToBlog")}
         </Link>
         <div className="mt-6 flex flex-wrap items-center gap-3">

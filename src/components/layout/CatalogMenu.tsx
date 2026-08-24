@@ -172,7 +172,7 @@ export function CatalogMenu({
 }
 
 const TRIGGER_CLASS =
-  "flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-accent-strong";
+  "flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink";
 
 function BurgerIcon() {
   return (

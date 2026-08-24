@@ -38,7 +38,7 @@ export function StatsBand() {
             {stats.map((s, i) => (
               <Reveal key={s.key} index={i}>
                 <div className="flex flex-col gap-4 rounded-2xl border border-line bg-ink p-6">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
                     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d={ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -77,7 +77,7 @@ export function StatsBand() {
           {stats.map((s, i) => (
             <Reveal key={s.key} index={i}>
               <div className="flex flex-col gap-4 rounded-2xl border border-line bg-ink p-6">
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent">
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d={ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
                   </svg>

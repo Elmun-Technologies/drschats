@@ -71,7 +71,7 @@ export async function ProgramTemplate({
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                   {program.forWhom.map((item) => (
                     <li key={item} className="flex items-start gap-3 rounded-xl border border-line bg-surface p-4 text-sm font-medium text-fg">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
                         <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
                           <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>

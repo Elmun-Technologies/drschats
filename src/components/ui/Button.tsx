@@ -10,7 +10,7 @@ export function buttonVariants(variant: Variant = "primary", size: Size = "md") 
 
   const variants: Record<Variant, string> = {
     primary:
-      "bg-accent text-ink shadow-[0_8px_22px_-14px_rgba(117,90,38,0.75)] hover:bg-accent-strong hover:text-ink hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-14px_rgba(117,90,38,0.65)]",
+      "bg-accent text-brand-deep shadow-[0_8px_22px_-14px_rgba(117,90,38,0.75)] hover:bg-accent-strong hover:text-ink hover:-translate-y-0.5 hover:shadow-[0_14px_28px_-14px_rgba(117,90,38,0.65)]",
     secondary:
       "border border-line-strong bg-ink text-fg hover:border-gold hover:bg-surface",
     ghost: "text-fg hover:bg-surface-2",
