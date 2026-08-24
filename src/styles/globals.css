@@ -366,7 +366,7 @@ html.lenis body {
 
 ::selection {
   background: var(--color-accent);
-  color: var(--color-ink);
+  color: var(--color-brand-deep);
 }
 
 /* Custom scrollbar */
