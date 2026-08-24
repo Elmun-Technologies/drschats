@@ -84,7 +84,7 @@ export default async function ProgramsPage({
 
                     <div className="relative z-10 flex flex-col h-full justify-between p-6">
                       <div className="flex flex-wrap items-center gap-2 mt-4">
-                        <span className="rounded-full bg-gold/20 backdrop-blur-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-gold">
+                        <span className="rounded-full bg-gold/15 backdrop-blur-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-gold">
                           {t("duration", { days: program.durationDays })}
                         </span>
                         {program.discountPercent > 0 && (
@@ -110,7 +110,7 @@ export default async function ProgramsPage({
                                 {formatMoney(pricing.total, locale)}
                               </span>
                               {pricing.saved > 0 && (
-                                <span className="text-sm font-medium text-white/40 line-through">
+                                <span className="text-sm font-medium text-white/60 line-through">
                                   {formatMoney(pricing.subtotal, locale)}
                                 </span>
                               )}

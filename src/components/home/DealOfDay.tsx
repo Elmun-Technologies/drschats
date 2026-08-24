@@ -75,7 +75,7 @@ export function DealOfDay({ product }: { product: Product }) {
               {formatMoney(product.price, locale)}
             </b>
             {product.oldPrice && (
-              <s className="text-xs tabular-nums text-white/40 line-through">
+              <s className="text-xs tabular-nums text-white/60 line-through">
                 {formatMoney(product.oldPrice, locale)}
               </s>
             )}

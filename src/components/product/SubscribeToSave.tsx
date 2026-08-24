@@ -109,24 +109,24 @@ export function SubscribeToSave({
             {/* Benefits List */}
             <div className="mt-3 rounded-xl bg-surface-2 p-3 border border-line/50">
               <ul className="flex flex-col gap-1.5 text-xs font-semibold text-fg">
-                <li className="flex items-center gap-2">
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
-                  <span>{t("benefitFirst", { first: pricing.firstPercent, price: formatMoney(pricing.firstPrice, locale) })}</span>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span className="min-w-0">{t("benefitFirst", { first: pricing.firstPercent, price: formatMoney(pricing.firstPrice, locale) })}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
-                  <span>{t("benefitRecurring", { recurring: pricing.recurringPercent })}</span>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span className="min-w-0">{t("benefitRecurring", { recurring: pricing.recurringPercent })}</span>
                 </li>
-                <li className="flex items-center gap-2">
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
-                  <span>{t("benefitCancel")}</span>
+                <li className="flex items-start gap-2">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span className="min-w-0">{t("benefitCancel")}</span>
                 </li>
               </ul>
             </div>
 
             {/* Interval Selector */}
-            <div className="mt-3.5 flex items-center gap-2">
-              <span className="text-xs font-bold text-muted shrink-0">{t("deliveryInterval")}</span>
+            <div className="mt-3.5 flex flex-wrap items-center gap-2">
+              <span className="text-xs font-bold text-muted">{t("deliveryInterval")}</span>
               <select
                 aria-labelledby={`${groupId}-interval-label`}
                 value={intervalDays}
@@ -134,7 +134,7 @@ export function SubscribeToSave({
                   onIntervalChange(Number(e.target.value) as IntervalDays);
                   onModeChange("subscription");
                 }}
-                className="h-10 flex-1 rounded-xl border border-line bg-surface-2 px-3 text-xs font-bold text-brand-deep outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+                className="h-10 min-w-0 flex-1 basis-32 rounded-xl border border-line bg-surface-2 px-3 text-xs font-bold text-brand-deep outline-none focus:border-gold focus:ring-1 focus:ring-gold"
               >
                 {SUBSCRIPTION_INTERVALS.map((days) => (
                   <option key={days} value={days}>

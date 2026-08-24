@@ -53,7 +53,7 @@ export default async function BlogPage({
 
         <Container className="absolute inset-0 flex flex-col justify-center">
           <div className="max-w-2xl">
-            <span className="inline-block rounded-full bg-gold/20 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-4">
+            <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-4">
               Bilimlar Markazi
             </span>
             <h1 className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl drop-shadow-lg">
@@ -98,7 +98,7 @@ export default async function BlogPage({
             </div>
             <Link
               href={`/blog/${featured.slug}`}
-              className="group relative block overflow-hidden rounded-[2.5rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-2xl hover:shadow-brand-deep/30"
+              className="group relative block overflow-hidden rounded-[2.5rem] border border-line bg-surface transition-all duration-700 hover:shadow-2xl hover:shadow-brand-deep/10"
             >
               <div className="grid lg:grid-cols-2">
                 <div className="relative aspect-[16/9] lg:aspect-auto lg:h-[400px]">
@@ -113,7 +113,7 @@ export default async function BlogPage({
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-deep/50 lg:bg-gradient-to-r lg:from-transparent lg:to-brand-deep/30" />
                 </div>
                 <div className="relative flex flex-col justify-center p-8 lg:p-12">
-                  <Badge tone="accent" className="mb-4 bg-gold/20 text-gold backdrop-blur-md border-none px-4 py-1.5 w-fit">
+                  <Badge tone="accent" className="mb-4 bg-gold/15 text-gold-ink backdrop-blur-md border-none px-4 py-1.5 w-fit">
                     {featured.category}
                   </Badge>
                   <p className="text-xs font-bold uppercase tracking-widest text-muted mb-2">
@@ -125,7 +125,7 @@ export default async function BlogPage({
                   <p className="mt-4 text-base text-muted line-clamp-3">
                     {featured.excerpt}
                   </p>
-                  <span className="mt-6 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-gold transition-all group-hover:translate-x-1">
+                  <span className="mt-6 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-gold-ink transition-all group-hover:translate-x-1">
                     Maqolani o&apos;qish
                     <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                       <path d="M4 10h12M10 4l6 6-6 6" strokeLinecap="round" strokeLinejoin="round" />

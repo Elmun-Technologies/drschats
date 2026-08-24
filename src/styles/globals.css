@@ -37,16 +37,18 @@
   /* Foreground */
   --color-fg: #2d2a25;
   --color-muted: #696259;
-  --color-faint: #8a8175;
+  --color-faint: #766f64;
 
-  /* Action — muted, accessible antique gold. */
-  --color-accent: #a8813a;
-  --color-accent-soft: rgba(168, 129, 58, 0.10);
+  /* Action — muted, accessible antique gold. Darkened from the original
+     #a8813a, which read as gold but failed WCAG AA both as a button fill
+     under white/ink text and as text on the porcelain surfaces (audit). */
+  --color-accent: #82642d;
+  --color-accent-soft: rgba(130, 100, 45, 0.10);
   --color-accent-strong: #725721;
 
   /* State */
-  --color-signal: #2f7d62;
-  --color-signal-soft: rgba(47, 125, 98, 0.12);
+  --color-signal: #2b7159;
+  --color-signal-soft: rgba(43, 113, 89, 0.12);
 
   /* Money + rating. `gold` is used as a surface/CTA, while `gold-ink` is the
      darker accessible version for copy on porcelain backgrounds. */

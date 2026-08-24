@@ -85,7 +85,7 @@ export default async function ExpertPage({
             <div className="flex items-center gap-2 text-xs font-semibold text-amber-500 mb-1">
               <span>★ {t("rating")}</span>
             </div>
-            <p className="text-xs font-bold uppercase tracking-widest text-amber-600 dark:text-amber-400">{t("badge")}</p>
+            <p className="text-xs font-bold uppercase tracking-widest text-amber-700">{t("badge")}</p>
             <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{expert.name}</h1>
             <p className="mt-1 text-lg text-muted">{expert.title}</p>
             {expert.worksFor && (

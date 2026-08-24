@@ -33,11 +33,13 @@ const navItems = [
   { key: "blog", href: "/blog" },
 ] as const;
 
+// Light-header badges: dark -700 text over a pale tint, not the -400 text
+// meant for dark UI (which read as near-invisible pastel-on-pastel here).
 const BADGE_STYLES: Record<string, string> = {
   hot: "bg-gold text-brand-deep",
-  popular: "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30",
-  new: "bg-blue-500/20 text-blue-400 border border-blue-500/30",
-  sale: "bg-rose-500/20 text-rose-400 border border-rose-500/30",
+  popular: "bg-emerald-500/15 text-emerald-700 border border-emerald-500/30",
+  new: "bg-blue-500/15 text-blue-700 border border-blue-500/30",
+  sale: "bg-rose-500/15 text-rose-700 border border-rose-500/30",
 };
 
 export function Header({

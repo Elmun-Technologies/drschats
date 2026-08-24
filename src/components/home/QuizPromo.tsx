@@ -22,7 +22,7 @@ export async function QuizPromo() {
             <div className="flex flex-col lg:flex-row items-stretch">
               <div className="relative z-10 p-8 sm:p-14 lg:w-7/12 lg:py-16">
                 <div className="flex flex-wrap items-center gap-2 mb-4">
-                  <span className="rounded-full bg-gold/20 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30">
+                  <span className="rounded-full bg-gold/15 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30">
                     {home("badge")}
                   </span>
                   <span className="rounded-full bg-emerald-500/20 backdrop-blur-md px-3.5 py-1 text-xs font-bold text-emerald-300 border border-emerald-500/30">

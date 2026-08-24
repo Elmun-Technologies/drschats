@@ -53,7 +53,7 @@ export function TrustRibbon() {
                 {item.icon}
               </div>
               <div>
-                <h3 className="font-display text-sm font-bold text-fg">{item.title}</h3>
+                <p className="font-display text-sm font-bold text-fg">{item.title}</p>
                 <p className="text-xs text-muted leading-tight mt-0.5">{item.desc}</p>
               </div>
             </div>
