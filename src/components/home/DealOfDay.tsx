@@ -62,7 +62,7 @@ export function DealOfDay({ product }: { product: Product }) {
               alt={product.name}
               fill
               sizes="80px"
-              className="object-contain mix-blend-multiply transition-transform duration-700 group-hover:scale-110"
+              className="object-contain transition-transform duration-700 group-hover:scale-110"
             />
           </span>
         )}

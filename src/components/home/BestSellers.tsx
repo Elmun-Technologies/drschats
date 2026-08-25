@@ -6,8 +6,16 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { buttonVariants } from "@/components/ui/Button";
 import type { Product } from "@/lib/shopflow/types";
 
-export function BestSellers({ products }: { products: Product[] }) {
-  const t = useTranslations("home.bestsellers");
+export function BestSellers({
+  products,
+  namespace = "home.bestsellers",
+}: {
+  products: Product[];
+  /** Message namespace with `title`/`subtitle` — the home page fills the same
+      layout from a different slice of the catalogue, so the copy differs. */
+  namespace?: string;
+}) {
+  const t = useTranslations(namespace);
   const common = useTranslations("common");
 
   return (

@@ -31,19 +31,14 @@
     "reviews": "Sharhlar",
     "wishlist": "Sevimlilar",
     "menu": {
-      "home": "Bosh sahifa",
-      "products": "Barcha mahsulotlar",
-      "vitamins": "Vitaminlar & Minerallar",
-      "programs": "30 Kunlik To'plamlar",
-      "quiz": "AI Diagnostika",
+      "sale": "Aksiya",
+      "delivery": "Yetkazib berish",
       "experts": "Ekspertlar",
       "blog": "Foydali maqolalar"
     },
     "profile": "Mening profilim",
     "badge": {
-      "sale": "Katalog",
-      "popular": "Kompleks",
-      "hot": "2 min"
+      "sale": "-%"
     }
   },
   "common": {
@@ -342,6 +337,10 @@
         "subtitle": "Yevropa va AQSh sifat standartlari"
       },
       "viewMore": "Batafsil"
+    },
+    "catalog": {
+      "subtitle": "Katalog",
+      "title": "Sara mahsulotlar"
     }
   },
   "product": {
@@ -398,6 +397,7 @@
     "all": "Barchasi",
     "sort": "Saralash",
     "sortPopular": "Ommabop",
+    "sortDeals": "Chegirmada",
     "sortPriceAsc": "Narx: arzonidan",
     "sortPriceDesc": "Narx: qimmatidan",
     "sortNew": "Yangi",

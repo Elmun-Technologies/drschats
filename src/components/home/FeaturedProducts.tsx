@@ -25,7 +25,7 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
           </Link>
         </div>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {products.slice(0, 8).map((p, i) => (
+          {products.slice(0, 12).map((p, i) => (
             <ProductCard key={p.id} product={p} index={i} />
           ))}
         </div>

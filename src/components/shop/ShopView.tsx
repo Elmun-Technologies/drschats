@@ -12,9 +12,10 @@ import { paginateByGoal, toGoalFacets } from "@/lib/shop/goal-facets";
 import { cn, formatMoney } from "@/lib/utils";
 
 type Sort = NonNullable<ProductListParams["sort"]>;
-const sorts: Sort[] = ["popular", "price_asc", "price_desc", "new"];
+const sorts: Sort[] = ["popular", "deals", "price_asc", "price_desc", "new"];
 const sortLabelKey: Record<Sort, string> = {
   popular: "sortPopular",
+  deals: "sortDeals",
   price_asc: "sortPriceAsc",
   price_desc: "sortPriceDesc",
   new: "sortNew",

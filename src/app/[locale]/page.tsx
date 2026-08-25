@@ -8,9 +8,13 @@ import { HeroBento } from "@/components/home/HeroBento";
 import { TrustRibbon } from "@/components/home/TrustRibbon";
 import { TopCategories } from "@/components/home/TopCategories";
 import { DiscountRail } from "@/components/home/DiscountRail";
+import { DealOfDay } from "@/components/home/DealOfDay";
 import { FeaturedProducts } from "@/components/home/FeaturedProducts";
+import { BestSellers } from "@/components/home/BestSellers";
 import { TopProducts } from "@/components/home/TopProducts";
 import { ProductCarousel } from "@/components/home/ProductCarousel";
+import { ProductCard } from "@/components/product/ProductCard";
+import { Container } from "@/components/ui/Container";
 import { PromoBanners } from "@/components/home/PromoBanners";
 import { StatsBand } from "@/components/home/StatsBand";
 import { BlogTeaser } from "@/components/home/BlogTeaser";
@@ -74,13 +78,30 @@ export default async function HomePage({
       <TrustRibbon />
       <AudienceDoors locale={locale} />
       <TopCategories categories={categories} />
-      <DiscountRail products={deals.slice(0, 8)} />
+      {/* Deal of the day: the catalogue's deepest real discount, flanked by
+          the runners-up. The rail below carries the rest of the markdowns. */}
+      {deals.length > 0 && (
+        <section className="border-t border-line bg-surface-2/40 py-14 sm:py-16">
+          <Container>
+            <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
+              <DealOfDay product={deals[0]} />
+              {deals.slice(1, 3).map((p, i) => (
+                <ProductCard key={p.id} product={p} index={i + 1} />
+              ))}
+            </div>
+          </Container>
+        </section>
+      )}
+      <DiscountRail products={deals.slice(3, 11)} />
       <QuizPromo />
       {/* Top 3 products with full feature breakdown — the most persuasive
           single section on the page for a health-conscious buyer. */}
       <TopProducts products={bestsellers} />
-      <FeaturedProducts products={bestsellers} />
+      <FeaturedProducts products={popular.items} />
       <ProgramsRail locale={locale} />
+      {/* The catalogue past the bestsellers: another eight real products so
+          the home page shows most of what the shop actually stocks. */}
+      <BestSellers products={popular.items.slice(12, 20)} namespace="home.catalog" />
       <PersonalizedRail allProducts={popular.items} />
       <PromoBanners />
       {/* Social proof — only renders when there are real reviews to show. */}

@@ -8,7 +8,7 @@ import { ShopView } from "@/components/shop/ShopView";
 export const revalidate = 300;
 
 type Sort = NonNullable<ProductListParams["sort"]>;
-const valid: Sort[] = ["popular", "price_asc", "price_desc", "new"];
+const valid: Sort[] = ["popular", "price_asc", "price_desc", "new", "deals"];
 
 export async function generateMetadata({
   params,
