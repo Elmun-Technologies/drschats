@@ -45,9 +45,12 @@ export function CountdownTimer({ targetDate, label }: { targetDate: Date | strin
           <span key={l} className="flex items-center gap-1.5">
             <span className="flex flex-col items-center">
               <span className="font-display text-lg font-bold tabular-nums leading-none">{pad(v)}</span>
-              <span className="text-[9px] uppercase tracking-wider text-faint">{l}</span>
+              {/* Dark-surface tokens: the only panel hosting this timer is
+                  brand-deep, where `faint`/`accent-strong` (built for
+                  porcelain) measure 2–3:1 — the audit counts that. */}
+              <span className="text-[9px] uppercase tracking-wider text-white/60">{l}</span>
             </span>
-            {i < units.length - 1 && <span className="font-bold text-accent-strong">:</span>}
+            {i < units.length - 1 && <span className="font-bold text-gold">:</span>}
           </span>
         ))}
       </div>
