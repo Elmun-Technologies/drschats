@@ -18,6 +18,9 @@ function pad(n: number) {
   return String(n).padStart(2, "0");
 }
 
+// Renders only on dark panels (DealOfDay), so the unit labels and separator
+// take on-dark colours — the light-surface `faint`/`accent-strong` tokens fail
+// contrast against `brand-deep`.
 export function CountdownTimer({ targetDate, label }: { targetDate: Date | string; label?: string }) {
   const t = useTranslations("countdown");
   const target = typeof targetDate === "string" ? new Date(targetDate) : targetDate;
@@ -45,9 +48,9 @@ export function CountdownTimer({ targetDate, label }: { targetDate: Date | strin
           <span key={l} className="flex items-center gap-1.5">
             <span className="flex flex-col items-center">
               <span className="font-display text-lg font-bold tabular-nums leading-none">{pad(v)}</span>
-              <span className="text-[9px] uppercase tracking-wider text-faint">{l}</span>
+              <span className="text-[9px] uppercase tracking-wider text-white/75">{l}</span>
             </span>
-            {i < units.length - 1 && <span className="font-bold text-accent-strong">:</span>}
+            {i < units.length - 1 && <span className="font-bold text-accent-on-dark">:</span>}
           </span>
         ))}
       </div>

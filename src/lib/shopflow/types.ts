@@ -101,7 +101,7 @@ export interface ProductListParams {
   origin?: string;
   minPrice?: number;
   maxPrice?: number;
-  sort?: "popular" | "price_asc" | "price_desc" | "new";
+  sort?: "popular" | "price_asc" | "price_desc" | "new" | "deals";
   page?: number;
   pageSize?: number;
 }

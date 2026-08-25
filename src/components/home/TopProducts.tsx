@@ -84,7 +84,9 @@ export function TopProducts({ products }: { products: Product[] }) {
                       {p.name}
                     </span>
                     <div className="relative h-64 w-48 rounded-2xl bg-surface-2/60 p-4 flex items-center justify-center shadow-lg transition-transform duration-700 ease-out group-hover:-translate-y-2">
-                      <Image src={p.images[0]?.url ?? ""} alt={p.name} fill sizes="200px" className="object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" />
+                      {p.images[0]?.url && (
+                        <Image src={p.images[0].url} alt={p.name} fill sizes="200px" className="object-contain transition-transform duration-500 group-hover:scale-105" />
+                      )}
                     </div>
                   </div>
 

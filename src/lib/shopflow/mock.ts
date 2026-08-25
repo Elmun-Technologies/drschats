@@ -1,6 +1,7 @@
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
+import { discountPercent } from "@/lib/shop/discounts";
 import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
 import type {
   Category,
@@ -135,16 +136,6 @@ const rawCategories: RawCategory[] = [
     image: img("cat-effervescent", "Effervescent").url,
   },
   {
-    id: "cat-minerals",
-    slug: "minerals",
-    name: { uz: "Minerallar", ru: "Минералы" },
-    description: {
-      uz: "Magniy, sink va boshqa hayotiy minerallar.",
-      ru: "Магний, цинк и другие жизненно важные минералы.",
-    },
-    image: img("cat-minerals", "Minerals").url,
-  },
-  {
     id: "cat-devices",
     slug: "devices",
     name: { uz: "Tibbiy jihozlar", ru: "Медицинские устройства" },
@@ -175,6 +166,16 @@ const rawCategories: RawCategory[] = [
     image: img("cat-nutrition", "Nutrition").url,
   },
   {
+    id: "cat-minerals",
+    slug: "minerals",
+    name: { uz: "Minerallar", ru: "Минералы" },
+    description: {
+      uz: "Magniy, sink va boshqa hayotiy minerallar.",
+      ru: "Магний, цинк и другие жизненно важные минералы.",
+    },
+    image: img("cat-minerals", "Minerals").url,
+  },
+  {
     id: "cat-skin",
     slug: "skin",
     name: { uz: "Teri parvarishi", ru: "Уход за кожей" },
@@ -185,8 +186,8 @@ const rawCategories: RawCategory[] = [
     image: img("cat-skin", "Skin").url,
   },
   catSimple("cat-herbal", "herbal", "O'simlik vositalari", "Растительные средства"),
-  catSimple("cat-omega", "omega", "Omega va baliq yog'i", "Омега и рыбий жир"),
   catSimple("cat-collagen", "collagen", "Kollagen", "Коллаген"),
+  catSimple("cat-omega", "omega", "Omega va baliq yog'i", "Омега и рыбий жир"),
   catSimple("cat-sport", "sport", "Sport va fitnes", "Спорт и фитнес"),
   catSimple("cat-joints", "joints", "Bo'g'imlar", "Суставы"),
 ];
@@ -207,6 +208,12 @@ interface RawProduct {
   servings: L;
   badges: L<string[]>;
   name: L;
+  /**
+   * Extra words the product should be found by but never shown on the card:
+   * the Cyrillic spellings shoppers actually type ("кофе эдель", "турбобейс")
+   * after the printed name was cleaned to the label form.
+   */
+  searchAliases?: L<string[]>;
   tagline: L;
   description: L;
   highlights: L<string[]>;
@@ -440,7 +447,9 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "250 g", ru: "250 г" },
     badges: { uz: ["Yangilik!", "Arabika 100%"], ru: ["Новинка!", "Арабика 100%"] },
-    name: { uz: "Swiss Energy Coffee Edel 250g", ru: "Swiss Energy Coffee Edel 250г кофе эдель" },
+    name: { uz: "Swiss Energy Coffee Edel 250 g", ru: "Swiss Energy Coffee Edel 250 г" },
+    // Cyrillic search habits kept searchable without printing them on the card.
+    searchAliases: { uz: ["qahva edel", "edel qahva"], ru: ["кофе эдель", "эдель", "кофе"] },
     tagline: {
       uz: "Tabiiy maydalangan qahva, yangi qovurilgan, 100% arabika",
       ru: "Натуральный молотый кофе, свежеобжаренный, 100% арабика",
@@ -495,7 +504,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "500 g", ru: "500 г" },
     badges: { uz: ["Aksiya", "Arabika 100%"], ru: ["Акция", "Арабика 100%"] },
-    name: { uz: "Swiss Energy Coffee Edel 500g", ru: "Swiss Energy Coffee Edel 500г кофе эдель" },
+    name: { uz: "Swiss Energy Coffee Edel 500 g", ru: "Swiss Energy Coffee Edel 500 г" },
+    searchAliases: { uz: ["qahva edel", "edel qahva"], ru: ["кофе эдель", "эдель", "кофе"] },
     tagline: {
       uz: "Tabiiy maydalangan qahva, 100% arabika, 500 g",
       ru: "Натуральный молотый кофе, 100% арабика, 500 г",
@@ -550,7 +560,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "500 g", ru: "500 г" },
     badges: { uz: ["Aksiya", "Arabika 90%"], ru: ["Акция", "Арабика 90%"] },
-    name: { uz: "Swiss Energy Coffee Crema 500g", ru: "Swiss Energy Coffee Crema 500г кофе крема" },
+    name: { uz: "Swiss Energy Coffee Crema 500 g", ru: "Swiss Energy Coffee Crema 500 г" },
+    searchAliases: { uz: ["qahva crema", "krema qahva"], ru: ["кофе крема", "крема", "кофе"] },
     tagline: {
       uz: "Donli qahva, 90% arabika + 10% robusta, 500 g",
       ru: "Молотый кофе, 90% арабика + 10% робуста, 500 г",
@@ -610,7 +621,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "250 g", ru: "250 г" },
     badges: { uz: ["Yangilik!"], ru: ["Новинка!"] },
-    name: { uz: "Swiss Energy Coffee Crema 250g", ru: "Swiss Energy Coffee Crema 250г кофе крема" },
+    name: { uz: "Swiss Energy Coffee Crema 250 g", ru: "Swiss Energy Coffee Crema 250 г" },
+    searchAliases: { uz: ["qahva crema", "krema qahva"], ru: ["кофе крема", "крема", "кофе"] },
     tagline: {
       uz: "Donli qahva, 90% arabika + 10% robusta, 250 g",
       ru: "Молотый кофе, 90% арабика + 10% робуста, 250 г",
@@ -674,6 +686,7 @@ const rawProducts: RawProduct[] = [
     servings: { uz: "30 kapsula", ru: "30 капсул" },
     badges: { uz: ["Aksiya", "Original"], ru: ["Акция", "Original"] },
     name: { uz: "Swiss Energy Hair Nail & Skin 30", ru: "Swiss Energy Hair Nail & Skin 30" },
+    searchAliases: { uz: ["soch tirnoq teri", "hair nail skin"], ru: ["волосы ногти кожа", "hair nail skin"] },
     tagline: {
       uz: "Soch, tirnoq va teri uchun vitaminlar — 30 kapsula",
       ru: "Витамины для волос, ногтей и кожи — 30 капсул",
@@ -764,7 +777,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "1 dona", ru: "1 штука" },
     badges: { uz: ["Aksiya", "Kattalar va bolalar uchun"], ru: ["Акция", "Для взрослых и детей"] },
-    name: { uz: "Dr. Frei Turbo Base Ingalyator", ru: "Dr. Frei Turbo Base Турбобейс Ингалятор" },
+    name: { uz: "Dr. Frei Turbo Base ingalyator", ru: "Ингалятор Dr. Frei Turbo Base" },
+    searchAliases: { uz: ["turbobeys", "nebulayzer"], ru: ["турбобейс", "небулайзер", "ингалятор"] },
     tagline: {
       uz: "Kompressorli nebulayzer — kattalar va bolalar uchun",
       ru: "Компрессорный небулайзер — для взрослых и детей",
@@ -827,7 +841,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Germaniya", ru: "Германия" },
     servings: { uz: "30 g", ru: "30 г" },
     badges: { uz: ["Aksiya", "Dermatologik"], ru: ["Акция", "Дерматологический"] },
-    name: { uz: "Peano Balzam 30g", ru: "Peano Пиано крем бальзам 30г" },
+    name: { uz: "Peano balzam 30 g", ru: "Peano крем-бальзам 30 г" },
+    searchAliases: { uz: ["piano", "peano krem"], ru: ["пиано", "крем бальзам"] },
     tagline: {
       uz: "Teri tiklanishi uchun balzam — 30 g, xushbo'ysiz va parabensiz",
       ru: "Бальзам для кожи — 30 г, без отдушки и парабенов",
@@ -1113,7 +1128,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "20 tabletka", ru: "20 таблеток" },
     badges: { uz: ["Aksiya", "Arzon narx kafolati"], ru: ["Акция", "Гарантия низкой цены"] },
-    name: { uz: "Dr. Frei Multivitamins + Biotin 20", ru: "Dr. Frei Multivitamins + Biotin 20 Мульт" },
+    name: { uz: "Dr. Frei Multivitamins + Biotin 20", ru: "Dr. Frei Multivitamins + Biotin 20" },
+    searchAliases: { uz: ["multivitamin", "biotin"], ru: ["мульт", "мультивитамины", "биотин"] },
     tagline: {
       uz: "Multi + Biotin — A, B1–B12, C, D3, E, PP, H. 20 tabletka, 14+",
       ru: "Multi + Biotin — A, B1–B12, C, D3, E, PP, H. 20 таблеток, 14+",
@@ -1192,7 +1208,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Hindiston", ru: "Индия" },
     servings: { uz: "200 ml", ru: "200 мл" },
     badges: { uz: ["Aksiya", "O'simlik asosida"], ru: ["Акция", "На растительной основе"] },
-    name: { uz: "HAMDARD SAFI-Eks 200ml", ru: "HAMDARD SAFI-Экс 200мл" },
+    name: { uz: "Hamdard Safi 200 ml", ru: "Hamdard Safi 200 мл" },
+    searchAliases: { uz: ["safi", "safi-eks", "hamdard"], ru: ["сафи", "сафи-экс", "хамдард"] },
     tagline: {
       uz: "Qonni kompleks tozalash uchun o'simlik siropi",
       ru: "Растительный сироп для комплексного очищения крови",
@@ -1575,7 +1592,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "30 kapsula", ru: "30 капсул" },
     badges: { uz: ["Kalsiy + D3 + K2", "Sustained release"], ru: ["Кальций + D3 + K2", "Sustained release"] },
-    name: { uz: "Swiss Energy Calcivit 30", ru: "Swiss Energy Calcivit Кальцивит 30" },
+    name: { uz: "Swiss Energy Calcivit 30", ru: "Swiss Energy Calcivit 30" },
+    searchAliases: { uz: ["kalsivit", "kalsiy"], ru: ["кальцивит", "кальций"] },
     tagline: {
       uz: "Kalsiy + D3 + K2 + Zn, B, Cu, Mn — 30 kapsula",
       ru: "Кальций + D3 + K2 + Zn, B, Cu, Mn — 30 капсул",
@@ -1650,7 +1668,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "30 kapsula", ru: "30 капсул" },
     badges: { uz: ["B-kompleks", "Sustained release"], ru: ["B-комплекс", "Sustained release"] },
-    name: { uz: "Swiss Energy NeuroForce 30", ru: "Swiss Energy NeuroForce Нейрофорс 30" },
+    name: { uz: "Swiss Energy NeuroForce 30", ru: "Swiss Energy NeuroForce 30" },
+    searchAliases: { uz: ["neyrofors"], ru: ["нейрофорс"] },
     tagline: {
       uz: "B1+B2+B3+B5+B6+B7+B9+B12 — asab tizimi, 30 kapsula",
       ru: "B1+B2+B3+B5+B6+B7+B9+B12 — нервная система, 30 капсул",
@@ -1727,7 +1746,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "30 kapsula", ru: "30 капсул" },
     badges: { uz: ["Erkaklar", "Long effect"], ru: ["Для мужчин", "Long effect"] },
-    name: { uz: "Swiss Energy Potenton 30", ru: "Swiss Energy Potenton Потентон 30" },
+    name: { uz: "Swiss Energy Potenton 30", ru: "Swiss Energy Potenton 30" },
+    searchAliases: { uz: ["potenton"], ru: ["потентон"] },
     tagline: {
       uz: "Potenton Happy man — kuniga 1 kapsula, 30 kunlik kurs",
       ru: "Potenton Happy man — 1 капсула в день, курс 30 дней",
@@ -1784,7 +1804,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "60 kapsula", ru: "60 капсул" },
     badges: { uz: ["Homiladorlik", "Folat 400 mkg"], ru: ["Беременность", "Фолат 400 мкг"] },
-    name: { uz: "Swiss Energy Prenatal Forte 60", ru: "Swiss Energy Prenatal Forte Пренаталь 60" },
+    name: { uz: "Swiss Energy Prenatal Forte 60", ru: "Swiss Energy Prenatal Forte 60" },
+    searchAliases: { uz: ["prenatal", "homiladorlar uchun"], ru: ["пренатал", "пренаталь", "для беременных"] },
     tagline: {
       uz: "20 vitamin va mineral — folat 400 mkg, temir 14 mg, 60 kapsula",
       ru: "20 витаминов и минералов — фолат 400 мкг, железо 14 мг, 60 капсул",
@@ -1914,7 +1935,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "Kukun, banka", ru: "Порошок, банка" },
     badges: { uz: ["100% kollagen", "Shakarsiz"], ru: ["100% коллаген", "Без сахара"] },
-    name: { uz: "Swiss Energy Nature Collagen", ru: "Swiss Energy Nature Collagen Коллаген" },
+    name: { uz: "Swiss Energy Nature Collagen", ru: "Swiss Energy Nature Collagen" },
+    searchAliases: { uz: ["kollagen"], ru: ["коллаген"] },
     tagline: {
       uz: "Premium Formula — 100% sof kollagen, neytral ta'm, shakarsiz",
       ru: "Premium Formula — 100% чистый коллаген, нейтральный вкус, без сахара",
@@ -1973,7 +1995,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "500 g", ru: "500 г" },
     badges: { uz: ["80% arabika", "20% robusta"], ru: ["80% арабика", "20% робуста"] },
-    name: { uz: "Swiss Energy Coffee Mokka 500g", ru: "Swiss Energy Coffee Mokka 500г кофе мокка" },
+    name: { uz: "Swiss Energy Coffee Mokka 500 g", ru: "Swiss Energy Coffee Mokka 500 г" },
+    searchAliases: { uz: ["qahva mokka", "mokka qahva"], ru: ["кофе мокка", "мокка", "кофе"] },
     tagline: {
       uz: "Mokka — 500 g, 80% arabika + 20% robusta, St. Gallen",
       ru: "Mokka — 500 г, 80% арабика + 20% робуста, St. Gallen",
@@ -2197,7 +2220,8 @@ const rawProducts: RawProduct[] = [
     origin: { uz: "Dr. Frei", ru: "Dr. Frei" },
     servings: { uz: "1 dona", ru: "1 штука" },
     badges: { uz: ["Kompressorli", "8 ml", "Bolalar"], ru: ["Компрессорный", "8 мл", "Детям"] },
-    name: { uz: "Dr. Frei Turbo Lex Ingalyator", ru: "Dr. Frei Turbo Lex Турболекс Ингалятор" },
+    name: { uz: "Dr. Frei Turbo Lex ingalyator", ru: "Ингалятор Dr. Frei Turbo Lex" },
+    searchAliases: { uz: ["turboleks", "nebulayzer"], ru: ["турболекс", "небулайзер", "ингалятор"] },
     tagline: {
       uz: "Mashina shaklidagi kompressorli ingalyator — 8 ml, tinch ishlash",
       ru: "Компрессорный ингалятор в форме машины — 8 мл, тихая работа",
@@ -2307,10 +2331,16 @@ function resolveProduct(p: RawProduct, locale: Locale): Product {
     rating: SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
     reviewCount: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,
     inStock: p.inStock,
-    images:
-      BRAND.productImageOverrides[p.slug]?.length
-        ? BRAND.productImageOverrides[p.slug].map((url) => ({ url, alt: p.name[locale] }))
-        : p.imageSeeds.map((s) => img(s, p.name[locale])),
+    /*
+      A product with no photography of its own gets NO image rather than a
+      recycled photo of a different product — the catalogue card then falls
+      back to its plain placeholder, and the gallery simply stays away. Every
+      current SKU has real shots in BRAND.productImageOverrides, so this only
+      guards whatever is added next.
+    */
+    images: BRAND.productImageOverrides[p.slug]?.length
+      ? BRAND.productImageOverrides[p.slug].map((url) => ({ url, alt: p.name[locale] }))
+      : [],
     highlights: p.highlights[locale],
     benefits: p.benefits[locale],
     ingredients: p.ingredients[locale],
@@ -2334,6 +2364,9 @@ function sortProducts(items: Product[], sort?: ProductListParams["sort"]): Produ
       return copy.sort((a, b) => b.price - a.price);
     case "new":
       return copy.reverse();
+    case "deals":
+      // Deepest cut first; discounted or not, everything stays listed.
+      return copy.sort((a, b) => discountPercent(b) - discountPercent(a));
     case "popular":
     default:
       // With review counts withheld this is a no-op on a stable sort, which
@@ -2358,10 +2391,15 @@ export class MockShopflowClient implements ShopflowClient {
     if (maxPrice != null) items = items.filter((p) => p.price <= maxPrice);
     if (search) {
       const q = search.toLowerCase();
+      const aliasesFor = (slug: string) => {
+        const raw = rawProducts.find((r) => r.slug === slug);
+        return raw?.searchAliases ? Object.values(raw.searchAliases).flat() : [];
+      };
       items = items.filter(
         (p) =>
           p.name.toLowerCase().includes(q) ||
-          p.tagline.toLowerCase().includes(q),
+          p.tagline.toLowerCase().includes(q) ||
+          aliasesFor(p.slug).some((alias) => alias.toLowerCase().includes(q)),
       );
     }
     items = sortProducts(items, sort);

@@ -33,6 +33,9 @@ export function CatalogMenu({
   topicPaths?: string[];
 }) {
   const healthLinks = HEALTH_LINKS.filter((l) => isNavigable(l.href, topicPaths));
+  // A category with nothing in it links to an empty shop page; better the
+  // menu never offers it until stock (and its products) actually exist.
+  const visible = categories.filter((c) => c.productCount);
   const t = useTranslations("nav");
   const health = useTranslations("health");
   const [open, setOpen] = useState(false);
@@ -112,7 +115,7 @@ export function CatalogMenu({
             <div className="grid gap-8 p-7 lg:grid-cols-[1fr_260px]">
               <div>
                 <div className="grid gap-1 sm:grid-cols-2 xl:grid-cols-3">
-                  {categories.map((c) => (
+                  {visible.map((c) => (
                     <Link
                       key={c.id}
                       href={`/products/${c.slug}`}

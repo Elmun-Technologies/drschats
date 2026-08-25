@@ -38,9 +38,7 @@ export function DiscountRail({ products }: { products: Product[] }) {
             </h2>
             <p className="mt-3 text-muted">{t("subtitle")}</p>
           </div>
-          {/* Plain catalogue: the API's sort union has no "discount" option, and
-              linking to a parameter the backend does not accept is a dead end. */}
-          <Link href="/products" className={buttonVariants("secondary")}>
+          <Link href="/products?sort=deals" className={buttonVariants("secondary")}>
             {common("viewAll")}
           </Link>
         </div>

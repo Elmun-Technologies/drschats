@@ -126,7 +126,7 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
                       alt=""
                       fill
                       sizes="64px"
-                      className="object-contain mix-blend-multiply transition-transform duration-300 group-hover:scale-105"
+                      className="object-contain transition-transform duration-300 group-hover:scale-105"
                     />
                   </div>
                   <div className="min-w-0">

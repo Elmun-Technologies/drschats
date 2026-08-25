@@ -42,13 +42,26 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
       {/* Light Clean Image Container */}
       <div className="relative aspect-square w-full overflow-hidden bg-surface-2/60 p-5 flex items-center justify-center">
         <Link href={`/product/${product.slug}`} className="relative h-full w-full block">
-          <Image
-            src={product.images[0]?.url ?? ""}
-            alt={product.images[0]?.alt ?? product.name}
-            fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-contain transition-transform duration-500 ease-out group-hover:scale-105"
-          />
+          {product.images[0]?.url ? (
+            <Image
+              src={product.images[0].url}
+              alt={product.images[0].alt ?? product.name}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="object-contain transition-transform duration-500 ease-out group-hover:scale-105"
+            />
+          ) : (
+            /* Never an empty <img>: a missing photo degrades to a plain
+               placeholder, not to another product's picture. */
+            <span className="flex h-full w-full items-center justify-center rounded-xl border border-dashed border-line text-center">
+              <span className="flex flex-col items-center gap-2 px-3">
+                <svg viewBox="0 0 24 24" aria-hidden className="h-8 w-8 text-faint" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
+                  <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" />
+                </svg>
+                <span className="line-clamp-2 text-[11px] font-semibold text-faint">{product.name}</span>
+              </span>
+            </span>
+          )}
         </Link>
 
         {/* Badges */}

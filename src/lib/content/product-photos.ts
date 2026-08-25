@@ -6,10 +6,12 @@
  * Consumed by src/lib/brand.ts (BRAND.productImageOverrides).
  */
 export const PRODUCT_PHOTOS: Record<string, string[]> = {
-  "aminomorin-forte-30": ["/products/aminomorin-forte-30-1.webp", "/products/aminomorin-forte-30-2.webp", "/products/aminomorin-forte-30-4.webp", "/products/aminomorin-forte-30-3.webp"],
-  "delical-abrikos-200ml": ["/products/delical-abrikos-200ml-4.webp", "/products/delical-abrikos-200ml-3.webp", "/products/delical-abrikos-200ml-1.webp", "/products/delical-abrikos-200ml-2.webp"],
+  // Box front on white first; the foil close-up comes last.
+  "aminomorin-forte-30": ["/products/aminomorin-forte-30-4.webp", "/products/aminomorin-forte-30-2.webp", "/products/aminomorin-forte-30-1.webp", "/products/aminomorin-forte-30-3.webp"],
+  "delical-abrikos-200ml": ["/products/delical-abrikos-200ml-3.webp", "/products/delical-abrikos-200ml-4.webp", "/products/delical-abrikos-200ml-1.webp", "/products/delical-abrikos-200ml-2.webp"],
   "delical-shokolad-200ml": ["/products/delical-shokolad-200ml-3.webp", "/products/delical-shokolad-200ml-4.webp", "/products/delical-shokolad-200ml-1.webp", "/products/delical-shokolad-200ml-2.webp"],
-  "delical-vanil-200ml": ["/products/delical-vanil-200ml-4.webp", "/products/delical-vanil-200ml-3.webp", "/products/delical-vanil-200ml-1.webp", "/products/delical-vanil-200ml-2.webp"],
+  // No real white-background bottle shot exists yet, so a generated one leads.
+  "delical-vanil-200ml": ["/products/delical-vanil-200ml-white.jpg", "/products/delical-vanil-200ml-1.webp", "/products/delical-vanil-200ml-2.webp", "/products/delical-vanil-200ml-3.webp", "/products/delical-vanil-200ml-4.webp"],
   "dr-frei-antistress-magniy-20": ["/products/dr-frei-antistress-magniy-20-3.webp", "/products/dr-frei-antistress-magniy-20-4.webp", "/products/dr-frei-antistress-magniy-20-1.webp", "/products/dr-frei-antistress-magniy-20-2.webp"],
   "dr-frei-gold-vitamins-20": ["/products/dr-frei-gold-vitamins-20-2.webp", "/products/dr-frei-gold-vitamins-20-3.webp", "/products/dr-frei-gold-vitamins-20-4.webp", "/products/dr-frei-gold-vitamins-20-1.webp"],
   "dr-frei-kids-multivitamins-20": ["/products/dr-frei-kids-multivitamins-20-3.webp", "/products/dr-frei-kids-multivitamins-20-2.webp", "/products/dr-frei-kids-multivitamins-20-1.webp", "/products/dr-frei-kids-multivitamins-20-4.webp"],
@@ -17,22 +19,31 @@ export const PRODUCT_PHOTOS: Record<string, string[]> = {
   "dr-frei-thermometer-t10": ["/products/dr-frei-thermometer-t10-4.webp", "/products/dr-frei-thermometer-t10-2.webp", "/products/dr-frei-thermometer-t10-3.webp", "/products/dr-frei-thermometer-t10-1.jpg"],
   "dr-frei-thermometer-t30": ["/products/dr-frei-thermometer-t30-hero.webp", "/products/dr-frei-thermometer-t30-4.webp", "/products/dr-frei-thermometer-t30-3.webp", "/products/dr-frei-thermometer-t30-2.webp", "/products/dr-frei-thermometer-t30-1.webp"],
   "dr-frei-tonometr-a20": ["/products/dr-frei-tonometr-a20-4.webp", "/products/dr-frei-tonometr-a20-3.webp", "/products/dr-frei-tonometr-a20-1.webp", "/products/dr-frei-tonometr-a20-2.webp"],
-  "dr-frei-turbo-base-ingalyator": ["/products/dr-frei-turbo-base-ingalyator-3.webp", "/products/dr-frei-turbo-base-ingalyator-4.webp", "/products/dr-frei-turbo-base-ingalyator-2.webp", "/products/dr-frei-turbo-base-ingalyator-1.webp"],
+  // The compressor unit itself was only shot in lifestyle banners, so a
+  // generated white pack shot leads; the mask/photo frames follow.
+  "dr-frei-turbo-base-ingalyator": ["/products/dr-frei-turbo-base-ingalyator-white.jpg", "/products/dr-frei-turbo-base-ingalyator-3.webp", "/products/dr-frei-turbo-base-ingalyator-4.webp", "/products/dr-frei-turbo-base-ingalyator-2.webp", "/products/dr-frei-turbo-base-ingalyator-1.webp"],
   "dr-frei-turbo-lex-ingalyator": ["/products/dr-frei-turbo-lex-ingalyator-hero.webp", "/products/dr-frei-turbo-lex-ingalyator-3.webp", "/products/dr-frei-turbo-lex-ingalyator-4.webp", "/products/dr-frei-turbo-lex-ingalyator-2.webp", "/products/dr-frei-turbo-lex-ingalyator-1.webp"],
   "hamdard-safi-eks1-200ml": ["/products/hamdard-safi-eks1-200ml-2.webp", "/products/hamdard-safi-eks1-200ml-3.webp", "/products/hamdard-safi-eks1-200ml-1.webp", "/products/hamdard-safi-eks1-200ml-4.webp"],
   "hiew-cooling-plaster-16": ["/products/hiew-cooling-plaster-16-hero.webp", "/products/hiew-cooling-plaster-16-4.webp", "/products/hiew-cooling-plaster-16-3.webp", "/products/hiew-cooling-plaster-16-1.webp", "/products/hiew-cooling-plaster-16-2.webp"],
   "peano-balzam-30g": ["/products/peano-balzam-30g-3.webp", "/products/peano-balzam-30g-1.webp", "/products/peano-balzam-30g-2.webp", "/products/peano-balzam-30g-4.webp"],
   "swiss-energy-calcivit-30": ["/products/swiss-energy-calcivit-30-hero.webp", "/products/swiss-energy-calcivit-30-4.webp", "/products/swiss-energy-calcivit-30-2.webp", "/products/swiss-energy-calcivit-30-3.webp", "/products/swiss-energy-calcivit-30-1.webp"],
-  "swiss-energy-coffee-crema-250g": ["/products/swiss-energy-coffee-crema-250g-3.webp", "/products/swiss-energy-coffee-crema-250g-1.webp", "/products/swiss-energy-coffee-crema-250g-4.webp", "/products/swiss-energy-coffee-crema-250g-2.webp"],
+  // Bag front on white first; the back and the lifestyle frames follow.
+  "swiss-energy-coffee-crema-250g": ["/products/swiss-energy-coffee-crema-250g-1.webp", "/products/swiss-energy-coffee-crema-250g-3.webp", "/products/swiss-energy-coffee-crema-250g-2.webp", "/products/swiss-energy-coffee-crema-250g-4.webp"],
   "swiss-energy-coffee-crema-500g": ["/products/swiss-energy-coffee-crema-500g-hero.webp", "/products/swiss-energy-coffee-crema-500g-4.webp", "/products/swiss-energy-coffee-crema-500g-2.webp", "/products/swiss-energy-coffee-crema-500g-1.webp", "/products/swiss-energy-coffee-crema-500g-3.webp"],
-  "swiss-energy-coffee-edel-250g": ["/products/swiss-energy-coffee-edel-250g-1.webp", "/products/swiss-energy-coffee-edel-250g-2.webp", "/products/swiss-energy-coffee-edel-250g-3.webp", "/products/swiss-energy-coffee-edel-250g-4.webp"],
+  "swiss-energy-coffee-edel-250g": ["/products/swiss-energy-coffee-edel-250g-2.webp", "/products/swiss-energy-coffee-edel-250g-1.webp", "/products/swiss-energy-coffee-edel-250g-3.webp", "/products/swiss-energy-coffee-edel-250g-4.webp"],
   "swiss-energy-coffee-edel-500g": ["/products/swiss-energy-coffee-edel-500g-hero.webp", "/products/swiss-energy-coffee-edel-500g-4.webp", "/products/swiss-energy-coffee-edel-500g-2.webp", "/products/swiss-energy-coffee-edel-500g-1.webp", "/products/swiss-energy-coffee-edel-500g-3.webp"],
   "swiss-energy-coffee-mokka-500g": ["/products/swiss-energy-coffee-mokka-500g-hero.webp", "/products/swiss-energy-coffee-mokka-500g-4.webp", "/products/swiss-energy-coffee-mokka-500g-2.webp", "/products/swiss-energy-coffee-mokka-500g-1.webp", "/products/swiss-energy-coffee-mokka-500g-3.webp"],
+  // This SKU has no real photography at all; the generated white pack shot is
+  // better than borrowing another product's photo (which is what the old
+  // imageSeeds fallback did).
+  "swiss-energy-hair-nail-skin-30": ["/products/swiss-energy-hair-nail-skin-30.jpg"],
   "swiss-energy-immunovit-30": ["/products/swiss-energy-immunovit-30-hero.webp", "/products/swiss-energy-immunovit-30-4.webp", "/products/swiss-energy-immunovit-30-3.webp", "/products/swiss-energy-immunovit-30-1.webp", "/products/swiss-energy-immunovit-30-2.webp"],
   "swiss-energy-nature-collagen": ["/products/swiss-energy-nature-collagen.webp"],
-  "swiss-energy-neuroforce-30": ["/products/swiss-energy-neuroforce-30-4.webp", "/products/swiss-energy-neuroforce-30-3.webp", "/products/swiss-energy-neuroforce-30-2.webp", "/products/swiss-energy-neuroforce-30-1.webp"],
+  // Only the jar's back was photographed; the generated front leads.
+  "swiss-energy-neuroforce-30": ["/products/swiss-energy-neuroforce-30-front.jpg", "/products/swiss-energy-neuroforce-30-4.webp", "/products/swiss-energy-neuroforce-30-3.webp", "/products/swiss-energy-neuroforce-30-2.webp", "/products/swiss-energy-neuroforce-30-1.webp"],
   "swiss-energy-potenton-30": ["/products/swiss-energy-potenton-30-hero.webp", "/products/swiss-energy-potenton-30-4.webp", "/products/swiss-energy-potenton-30-3.webp", "/products/swiss-energy-potenton-30-2.webp", "/products/swiss-energy-potenton-30-1.webp"],
   "swiss-energy-prenatal-forte-60": ["/products/swiss-energy-prenatal-forte-60.webp"],
   "swiss-energy-visiovit-30": ["/products/swiss-energy-visiovit-30-2.jpg", "/products/swiss-energy-visiovit-30-3.jpg", "/products/swiss-energy-visiovit-30-1.jpg", "/products/swiss-energy-visiovit-30-4.webp"],
-  "swiss-energy-vitamin-c-20": ["/products/swiss-energy-vitamin-c-20-4.webp", "/products/swiss-energy-vitamin-c-20-2.webp", "/products/swiss-energy-vitamin-c-20-1.webp", "/products/swiss-energy-vitamin-c-20-3.webp"],
+  // Tube front on white first; the label text shots follow.
+  "swiss-energy-vitamin-c-20": ["/products/swiss-energy-vitamin-c-20-2.webp", "/products/swiss-energy-vitamin-c-20-4.webp", "/products/swiss-energy-vitamin-c-20-1.webp", "/products/swiss-energy-vitamin-c-20-3.webp"],
 };

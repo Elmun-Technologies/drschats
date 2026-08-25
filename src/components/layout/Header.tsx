@@ -19,16 +19,13 @@ import type { Category } from "@/lib/shopflow/types";
 import { isNavigable } from "@/lib/content/nav-sections";
 
 /*
-  Navigation leads with health intent, not with the catalogue: visitors arrive
-  with "I can't sleep", not with "magnesium". Goals and symptoms therefore sit
-  ahead of the shop, and the shop is what they funnel into.
+  One short, shop-first row: the logo already means "home", and the health
+  journeys (quiz, programs, goals) live one tap away inside the catalogue
+  panel instead of crowding the main line with badges.
 */
 const navItems = [
-  { key: "home", href: "/" },
-  { key: "products", href: "/products", badge: "sale" },
-  { key: "vitamins", href: "/vitamins" },
-  { key: "programs", href: "/programs", badge: "popular" },
-  { key: "quiz", href: "/quiz", badge: "hot" },
+  { key: "sale", href: "/products?sort=deals", badge: "sale" },
+  { key: "delivery", href: "/delivery" },
   { key: "experts", href: "/experts" },
   { key: "blog", href: "/blog" },
 ] as const;
@@ -36,9 +33,6 @@ const navItems = [
 // Light-header badges: dark -700 text over a pale tint, not the -400 text
 // meant for dark UI (which read as near-invisible pastel-on-pastel here).
 const BADGE_STYLES: Record<string, string> = {
-  hot: "bg-gold text-brand-deep",
-  popular: "bg-emerald-500/15 text-emerald-700 border border-emerald-500/30",
-  new: "bg-blue-500/15 text-blue-700 border border-blue-500/30",
   sale: "bg-rose-500/15 text-rose-700 border border-rose-500/30",
 };
 
@@ -114,7 +108,10 @@ export function Header({
           <CatalogMenu categories={categories} topicPaths={topicPaths} />
           <nav className="flex items-center gap-7">
             {items.map((item) => {
-              const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              // No bare "/" entry any more (the logo is home), and the deals
+              // link carries a query pathname never contains — so a plain
+              // prefix check is exactly right for the links that remain.
+              const active = pathname.startsWith(item.href);
               const hasBadge = "badge" in item && item.badge;
               return (
                 <Link
@@ -205,18 +202,16 @@ export function Header({
                   <p className="pt-6 text-xs font-bold uppercase tracking-widest text-faint">
                     {t("shopByCategories")}
                   </p>
-                  <ul className="flex flex-col">
-                    {categories.map((c) => (
+                  <ul className="grid grid-cols-2 gap-x-4">
+                    {categories.filter((c) => c.productCount).map((c) => (
                       <li key={c.id}>
                         <Link
                           href={`/products/${c.slug}`}
                           onClick={() => setMenuOpen(false)}
-                          className="flex items-center justify-between gap-3 border-b border-line/50 py-3 text-base font-semibold"
+                          className="flex items-start justify-between gap-2 border-b border-line/50 py-3 text-sm font-semibold"
                         >
-                          {c.name}
-                          {c.productCount ? (
-                            <span className="text-xs tabular-nums text-faint">{c.productCount}</span>
-                          ) : null}
+                          <span className="leading-snug">{c.name}</span>
+                          <span className="shrink-0 text-xs tabular-nums text-faint">{c.productCount}</span>
                         </Link>
                       </li>
                     ))}

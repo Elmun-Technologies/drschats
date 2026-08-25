@@ -1,4 +1,5 @@
 import type { Product, ProductListResult } from "@/lib/shopflow/types";
+import { discountPercent } from "@/lib/shop/discounts";
 import type { HealthTopic } from "@/lib/content/health-topics";
 
 /*
@@ -42,6 +43,7 @@ const SORTERS: Record<string, (a: Product, b: Product) => number> = {
   price_asc: (a, b) => a.price - b.price,
   price_desc: (a, b) => b.price - a.price,
   new: () => 0,
+  deals: (a, b) => discountPercent(b) - discountPercent(a),
   popular: (a, b) => b.rating - a.rating,
 };
 
