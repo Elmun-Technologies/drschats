@@ -12,7 +12,10 @@ export default function NotFound() {
       <Container size="narrow">
         <div className="text-center">
           <div className="relative inline-block">
-            <p className="font-display text-[120px] font-extrabold leading-none tracking-tight text-accent/10 sm:text-[180px]">
+            {/* Offset copy behind the solid one: decoration, so it is hidden
+                from assistive tech — and skipped by the contrast check, which
+                measures text people read. */}
+            <p aria-hidden className="font-display text-[120px] font-extrabold leading-none tracking-tight text-accent/10 sm:text-[180px]">
               404
             </p>
             <p className="absolute inset-0 flex items-center justify-center font-display text-[120px] font-extrabold leading-none tracking-tight text-fg sm:text-[180px]" aria-hidden>

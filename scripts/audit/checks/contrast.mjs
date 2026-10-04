@@ -67,6 +67,12 @@ const AUDIT = `(() => {
     const own = Array.from(el.childNodes).some(n => n.nodeType === 3 && n.textContent.trim());
     if (!own) continue;
 
+    // Text hidden from assistive tech is decoration or a duplicate of text
+    // that is exposed (the 404 page stacks a faint offset copy under the solid
+    // one). WCAG 1.4.3 exempts pure decoration, so measuring it would only
+    // produce a finding nobody can act on.
+    if (el.closest('[aria-hidden="true"]')) continue;
+
     const cs = getComputedStyle(el);
     if (cs.visibility === 'hidden' || cs.display === 'none' || parseFloat(cs.opacity) < 0.15) continue;
     const rect = el.getBoundingClientRect();

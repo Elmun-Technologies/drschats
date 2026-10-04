@@ -85,7 +85,7 @@ export async function TopicIndex({
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
                   href="/quiz"
-                  className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-6 py-3 text-sm font-bold text-fg transition-colors hover:bg-surface transition-all hover:bg-white"
+                  className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-6 py-3 text-sm font-bold text-brand-deep transition-colors hover:bg-surface-2"
                 >
                   {health("topicIndex.takeQuiz")}
                   <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -110,7 +110,7 @@ export async function TopicIndex({
           <Container>
             <div className="flex items-center justify-between mb-10">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-white/80">
+                <span className="text-xs font-bold uppercase tracking-widest text-faint">
                   {health("topicIndex.directionsCount", { count: topics.length })}
                 </span>
                 <h2 className="mt-1 font-display text-2xl font-extrabold text-brand-deep">{health("topicIndex.chooseDirection")}
@@ -118,7 +118,7 @@ export async function TopicIndex({
               </div>
               <Link
                 href="/quiz"
-                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-5 py-2.5 text-xs font-extrabold text-fg transition-colors hover:bg-surface uppercase tracking-wider text-brand-deep transition-all hover:bg-white"
+                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-deep transition-colors hover:bg-surface-2"
               >
                 {health("topicIndex.findAI")}
                 <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">

@@ -21,6 +21,11 @@
     accent  → action     (button, link, filter — "do something")
     danger  → money      (price, discount, savings)
     signal  → state      (in stock, natural, certified)
+                          #276650 is the value that clears 4.5:1 on the
+                          lightest ground the colour is read on — the soft
+                          chip over ink (4.99:1). The lighter #2b7159 looked
+                          right and measured 4.29:1 there, which is where the
+                          ✓ marks print.
 
   `ink` is the light porcelain page ground and the contrast colour placed on
   accent/gold buttons. The product UI stays clear and trustworthy while the
@@ -67,8 +72,8 @@
   --color-accent-strong: #725721;
 
   /* State */
-  --color-signal: #2b7159;
-  --color-signal-soft: rgba(43, 113, 89, 0.12);
+  --color-signal: #276650;
+  --color-signal-soft: rgba(39, 102, 80, 0.12);
 
   /* Money + rating. `gold` is used as a surface/CTA, while `gold-ink` is the
      darker accessible version for copy on porcelain backgrounds. */

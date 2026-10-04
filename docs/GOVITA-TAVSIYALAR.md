@@ -410,6 +410,34 @@ to'rda "142 890" va "800 000" yonma-yon tushib, ikki narx bo'lib o'qilardi.
 
 ---
 
+## 8. Kontrast va buzilgan rasmlar tuzatildi (CI auditini yashil qilish)
+
+`CI / audit` qizil bo'lgan edi (5 ta kontrast nuqsoni × 2 til). Hammasi
+lokal qayta tiklandi (CI'dagi bilan bir xil skript, bu muhitda Chromium
+npm orqali olindi) va tuzatildi:
+
+| Nuqson | Sabab | Tuzatish |
+|---|---|---|
+| 1.01:1 «10 ta yo'nalish» | `bg-ink` bo'lim ustidagi oq matn | `text-faint` |
+| 1.01:1 «Tavsiya etilgan maqola» | yorug' kartada oq sarlavha | `text-faint` |
+| 1.06:1 «Yurak sog'lig'i» | kartadagi «shisha» nishoni | `bg-surface-2` + `text-muted` |
+| 1.07:1 «Maqolani o'qish» | havola oq rangda | `text-brand-deep` + chizilgan |
+| 2.63:1 «|» ajratgich | 30 % oq glif | soch chizig'i (`bg-white/40`) |
+| 4.29:1 «✓» nishoni | signal rangi juda yorug' | signal `#2b7159` → `#276650` (4.99:1) |
+
+Audit ham kengaytirildi: endi **404 sahifasi ham o'lchanadi**
+(`/sahifa-yoq` marshruti) va `aria-hidden` bezak matni WCAG 1.4.3 bo'yicha
+o'lchovdan chiqariladi.
+
+Bundan tashqari **buzilgan rasm** topildi: bosh sahifadagi «Go'zallik»
+kategoriyasi `/products/swiss-energy-natural-collagen.webp` ga havola
+qilardi, fayl esa `...-nature-collagen.webp`. Tuzatildi. Saytdagi
+barcha 158 ta lokal rasm havolasi tekshirildi — boshqa yo'q fayl yo'q.
+
+Masofaviy rasmlar (Unsplash) saytda qolgan: ular tashqi manbaga bog'liq,
+shuning uchun foto-seans materiallari kelganda ular ham lokal fayllarga
+almashtirilishi kerak (§1).
+
 ## 9. Bu bosqichda qo'shildi (AI rasmlar · demo ekspertlar · aptekalar · huquqiy ma'lumot)
 
 ### 9.1 AI rasmlar

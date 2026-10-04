@@ -17,7 +17,7 @@ import type { Category } from "@/lib/shopflow/types";
 const CAT_IMAGES: Record<string, string> = {
   vitamins: "/products/dr-frei-gold-vitamins-20-2.webp",
   immunity: "/products/swiss-energy-immunovit-30-hero.webp",
-  beauty: "/products/swiss-energy-natural-collagen.webp",
+  beauty: "/products/swiss-energy-nature-collagen.webp",
   kids: "/products/dr-frei-kids-multivitamins-20-3.webp",
   effervescent: "/products/swiss-energy-vitamin-c-20-2.webp",
   coffee: "/products/swiss-energy-coffee-crema-500g-hero.webp",

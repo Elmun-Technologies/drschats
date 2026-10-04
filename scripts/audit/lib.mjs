@@ -30,6 +30,9 @@ export const PATHS = [
   "/wishlist",
   "/reviews",
   "/brands",
+  // A route that does not exist, so the 404 page is measured too — it is the
+  // one page every wrong URL lands on, and it was never in this list.
+  "/sahifa-yoq",
 ];
 
 export const routesFor = (locale) => PATHS.map((p) => `/${locale}${p}`);
