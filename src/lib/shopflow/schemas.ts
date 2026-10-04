@@ -70,6 +70,9 @@ export const productSchema = z.object({
   origin: z.string().optional(),
   certifications: z.array(z.string()).default([]),
   bespoke: z.boolean(),
+  // Optional: a real backend that does not model the assortment yet still
+  // parses, and everything is treated as core.
+  assortment: z.enum(["core", "addon", "unlisted"]).optional(),
 });
 
 export const promotionSchema = z.object({
@@ -107,6 +110,12 @@ export const orderRequestSchema = z.object({
     note: z.string().optional(),
     method: z.string(),
   }),
+  payment: z
+    .object({
+      method: z.enum(["online", "cod"]),
+      provider: z.enum(["payme", "click", "uzum"]).optional(),
+    })
+    .optional(),
   items: z
     .array(
       z.object({

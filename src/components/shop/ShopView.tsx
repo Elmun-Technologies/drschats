@@ -125,19 +125,19 @@ export async function ShopView({
       <div className="bg-brand-deep border-b border-white/10 text-white pt-6 pb-12">
         <Container>
           <div className="flex flex-wrap items-center gap-2 text-xs text-white/60 mb-6">
-            <Link href="/" className="hover:text-gold transition-colors">{prod("breadcrumbHome")}</Link>
+            <Link href="/" className="hover:text-white transition-colors">{prod("breadcrumbHome")}</Link>
             <span>/</span>
-            <Link href="/products" className={active ? "hover:text-gold transition-colors" : "text-white font-bold"}>{nav("shop")}</Link>
+            <Link href="/products" className={active ? "transition-colors" : "text-white font-bold"}>{nav("shop")}</Link>
             {active && (
               <>
                 <span>/</span>
-                <span className="text-gold font-bold">{active.name}</span>
+                <span className="text-white font-bold">{active.name}</span>
               </>
             )}
           </div>
 
           <div className="max-w-3xl">
-            <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-3">
+            <span className="inline-block rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-white/90 mb-3">
               {t("productsAvailable", { count: result.total })}
             </span>
             <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl text-white drop-shadow-md">{heading}</h1>
@@ -149,7 +149,7 @@ export async function ShopView({
             {activeGoal && (
               <Link
                 href={`/goals/${activeGoal.slug}`}
-                className="mt-4 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-gold hover:text-white transition-colors"
+                className="mt-4 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-white/85 transition-colors hover:text-white"
               >
                 {t("readGoal", { goal: activeGoal.name })} →
               </Link>
@@ -168,7 +168,7 @@ export async function ShopView({
               <Link
                 href={buildQuery({ goal: undefined, page: undefined })}
                 className={cn(
-                  "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
+            "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
                   !goal ? "border-brand-deep bg-brand-deep text-white shadow-xs" : "border-line/80 bg-white text-brand-deep hover:border-gold/60",
                 )}
               >
@@ -179,7 +179,7 @@ export async function ShopView({
                   key={facet.slug}
                   href={buildQuery({ goal: facet.slug, page: undefined })}
                   className={cn(
-                    "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
+            "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
                     facet.slug === goal
                       ? "border-brand-deep bg-brand-deep text-white shadow-xs"
                       : "border-line/80 bg-white text-brand-deep hover:border-gold/60",
@@ -197,7 +197,8 @@ export async function ShopView({
         <div className="mb-6 flex gap-2 overflow-x-auto pb-1 lg:hidden">
           <Link
             href="/products"
-            className={cn("shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", !activeCategory ? "border-accent bg-accent-soft text-accent-strong" : "border-line text-muted")}
+            className={cn(
+            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", !activeCategory ? "border-line-strong bg-surface-2 text-fg" : "border-line text-muted")}
           >
             {t("all")}
           </Link>
@@ -205,7 +206,8 @@ export async function ShopView({
             <Link
               key={c.id}
               href={`/products/${c.slug}`}
-              className={cn("shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", c.slug === activeCategory ? "border-accent bg-accent-soft text-accent-strong" : "border-line text-muted")}
+              className={cn(
+            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", c.slug === activeCategory ? "border-line-strong bg-surface-2 text-fg" : "border-line text-muted")}
             >
               {c.name}
             </Link>
@@ -219,13 +221,15 @@ export async function ShopView({
               <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-fg">{t("categoriesTitle")}</h2>
               <ul className="space-y-1">
                 <li>
-                  <Link href="/products" className={cn("block rounded-lg px-3 py-2 text-sm transition-colors", !activeCategory ? "bg-accent-soft font-semibold text-accent-strong" : "text-muted hover:bg-surface hover:text-fg")}>
+                  <Link href="/products" className={cn(
+            "block rounded-lg px-3 py-2 text-sm transition-colors", !activeCategory ? "bg-surface-2 font-semibold text-fg" : "text-muted hover:bg-surface hover:text-fg")}>
                     {t("all")}
                   </Link>
                 </li>
                 {categories.map((c) => (
                   <li key={c.id}>
-                    <Link href={`/products/${c.slug}`} className={cn("flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors", c.slug === activeCategory ? "bg-accent-soft font-semibold text-accent-strong" : "text-muted hover:bg-surface hover:text-fg")}>
+                    <Link href={`/products/${c.slug}`} className={cn(
+            "flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors", c.slug === activeCategory ? "bg-surface-2 font-semibold text-accent-strong" : "text-muted hover:bg-surface hover:text-fg")}>
                       {c.name}
                       {c.productCount ? <span className="text-xs tabular-nums text-faint">{c.productCount}</span> : null}
                     </Link>
@@ -256,7 +260,7 @@ export async function ShopView({
                     key={f.key}
                     href={buildQuery({ ...f.clear, page: undefined })}
                     aria-label={t("removeFilter", { name: f.label })}
-                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-accent-soft px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-accent hover:text-brand-deep"
+                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-surface-2 px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-fg hover:text-ink"
                   >
                     {f.label}
                     <svg viewBox="0 0 24 24" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -282,7 +286,8 @@ export async function ShopView({
                   <Link
                     key={s}
                     href={sortQuery(s)}
-                    className={cn("rounded-full px-3 py-1.5 text-sm transition-colors", s === sort ? "bg-accent text-brand-deep" : "text-muted hover:text-fg")}
+                    className={cn(
+            "rounded-full px-3 py-1.5 text-sm transition-colors", s === sort ? "bg-surface-2 font-semibold text-fg" : "text-muted hover:text-fg")}
                   >
                     {t(sortLabelKey[s])}
                   </Link>
@@ -298,7 +303,7 @@ export async function ShopView({
                 {activeFilters.length > 0 && (
                   <Link
                     href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
-                    className="mt-4 inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
+                    className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
                   >
                     {t("clearFilters")}
                   </Link>

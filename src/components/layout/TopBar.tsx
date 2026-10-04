@@ -17,14 +17,14 @@ export function TopBar() {
   return (
     <div className="hidden bg-brand-deep text-white md:block">
       <Container className="flex h-10 items-center justify-between gap-4 text-sm">
-        <p className="font-medium">{t("announcement")}</p>
+        <p className="truncate font-medium">{t("announcement")}</p>
         <nav className="flex items-center gap-4">
           {links.map((l, i) => (
             <span key={l.key} className="flex items-center gap-4">
-              <Link href={l.href} className="opacity-90 transition-opacity hover:opacity-100">
+              <Link href={l.href} className="text-white/85 transition-colors hover:text-white">
                 {l.label}
               </Link>
-              {i < links.length - 1 && <span className="text-white/60">|</span>}
+              {i < links.length - 1 && <span aria-hidden className="h-3 w-px bg-white/40" />}
             </span>
           ))}
           {/* Hidden until the API exists: an account entry that leads nowhere

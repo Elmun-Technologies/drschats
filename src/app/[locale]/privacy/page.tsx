@@ -23,7 +23,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
     <div className="pb-24 pt-10">
       <Container size="narrow">
         <Reveal>
-          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">{t("title")}</h1>
+          <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h1>
         </Reveal>
         <Reveal index={1}>
           <p className="mt-3 text-sm text-faint">{t("effective")}</p>

@@ -17,7 +17,7 @@ export default async function CartPage({
   return (
     <div className="pt-10">
       <Container>
-        <h1 className="mb-10 font-display text-4xl font-bold tracking-tight sm:text-5xl">
+        <h1 className="mb-10 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
           {t("title")}
         </h1>
         <CartPageView />

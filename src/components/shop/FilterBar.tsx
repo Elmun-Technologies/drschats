@@ -59,7 +59,7 @@ export function FilterBar({
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-fg">{t("filters")}</span>
         {hasActive && (
-          <button onClick={clearAll} className="text-xs text-accent-strong hover:underline">
+          <button onClick={clearAll} className="text-xs text-fg hover:underline">
             {t("clearFilters")}
           </button>
         )}
@@ -104,7 +104,7 @@ export function FilterBar({
         </label>
         <button
           type="submit"
-          className="h-10 rounded-lg bg-accent px-4 text-sm font-semibold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
+          className="h-10 rounded-lg bg-fg px-4 text-sm font-semibold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
         >
           {t("apply")}
         </button>
@@ -126,9 +126,9 @@ function Chip({
     <button
       onClick={onClick}
       className={cn(
-        "rounded-full border px-3 py-1.5 text-sm transition-colors",
+            "rounded-full border px-3 py-1.5 text-sm transition-colors",
         active
-          ? "border-accent bg-accent-soft text-accent-strong"
+          ? "border-line-strong bg-surface-2 text-fg"
           : "border-line text-muted hover:border-line-strong hover:text-fg",
       )}
     >

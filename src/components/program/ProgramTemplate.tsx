@@ -42,7 +42,7 @@ export async function ProgramTemplate({
         <div className="mt-8 grid gap-10 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start">
           <header>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold uppercase tracking-widest text-accent-strong">
+              <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold uppercase tracking-widest text-fg">
                 {t("duration", { days: program.durationDays })}
               </span>
               {program.discountPercent > 0 && (
@@ -65,13 +65,12 @@ export async function ProgramTemplate({
 
             {program.forWhom.length > 0 && (
               <section aria-labelledby="program-for" className="mt-10">
-                <h2 id="program-for" className="font-display text-xl font-bold tracking-tight">
-                  {t("forWhom")}
+                <h2 id="program-for" className="font-display text-lg font-bold text-fg tracking-tight">{t("forWhom")}
                 </h2>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                   {program.forWhom.map((item) => (
                     <li key={item} className="flex items-start gap-3 rounded-xl border border-line bg-surface p-4 text-sm font-medium text-fg">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg">
                         <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
                           <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
@@ -88,7 +87,7 @@ export async function ProgramTemplate({
           <aside className="rounded-2xl border border-line bg-surface p-6 lg:sticky lg:top-24">
             <p className="text-sm text-muted">{t("bundlePrice")}</p>
             <div className="mt-2 flex flex-wrap items-baseline gap-3">
-              <span className="font-display text-3xl font-extrabold text-accent-strong">
+              <span className="font-display text-3xl font-extrabold text-fg">
                 {formatMoney(pricing.total, locale)}
               </span>
               {pricing.saved > 0 && (
@@ -98,7 +97,7 @@ export async function ProgramTemplate({
               )}
             </div>
             {pricing.saved > 0 && (
-              <p className="mt-1 text-sm font-medium text-accent-strong">
+              <p className="mt-1 text-sm font-medium text-fg">
                 {t("youSave", { amount: formatMoney(pricing.saved, locale) })}
               </p>
             )}
@@ -117,8 +116,7 @@ export async function ProgramTemplate({
 
         {products.length > 0 && (
           <section aria-labelledby="program-products" className="mt-20">
-            <h2 id="program-products" className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {t("whatsInside")}
+            <h2 id="program-products" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("whatsInside")}
             </h2>
             <div
               className={cn(
@@ -135,14 +133,13 @@ export async function ProgramTemplate({
 
         {program.steps.length > 0 && (
           <section aria-labelledby="program-steps" className="mt-20">
-            <h2 id="program-steps" className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {t("howItWorks")}
+            <h2 id="program-steps" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("howItWorks")}
             </h2>
             <ol className="mt-6 grid gap-4 md:grid-cols-3">
               {program.steps.map((step, i) => (
                 <Reveal key={step.title} index={Math.min(i, 4)} as="li" className="h-full">
                   <div className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6">
-                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent-soft font-display text-sm font-bold text-accent-strong">
+                    <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-2 font-display text-sm font-bold text-fg">
                       {i + 1}
                     </span>
                     <h3 className="mt-4 font-display text-lg font-bold">{step.title}</h3>
@@ -156,14 +153,13 @@ export async function ProgramTemplate({
 
         {ingredients.length > 0 && (
           <section aria-labelledby="program-nutrients" className="mt-20">
-            <h2 id="program-nutrients" className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {t("keyNutrients")}
+            <h2 id="program-nutrients" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("keyNutrients")}
             </h2>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {ingredients.map((ing) => (
                 <li key={ing.slug} className="rounded-2xl border border-line bg-surface p-5">
                   <p className="font-display text-base font-bold text-fg">{ing.name}</p>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-accent-strong">{ing.role}</p>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-fg">{ing.role}</p>
                   <p className="mt-2 text-sm text-muted">{ing.description}</p>
                 </li>
               ))}
@@ -173,8 +169,7 @@ export async function ProgramTemplate({
 
         {program.faq.length > 0 && (
           <section aria-labelledby="program-faq" className="mt-20 max-w-3xl">
-            <h2 id="program-faq" className="mb-6 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {prod("faq")}
+            <h2 id="program-faq" className="mb-6 font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{prod("faq")}
             </h2>
             <FaqAccordion items={program.faq} />
           </section>
@@ -182,15 +177,14 @@ export async function ProgramTemplate({
 
         {topics.length > 0 && (
           <section aria-labelledby="program-topics" className="mt-20">
-            <h2 id="program-topics" className="mb-6 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {t("readMore")}
+            <h2 id="program-topics" className="mb-6 font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("readMore")}
             </h2>
             <div className="flex flex-wrap gap-3">
               {topics.map((topic) => (
                 <Link
                   key={topic.slug}
                   href={`${TOPIC_BASE_PATH[topic.kind]}/${topic.slug}`}
-                  className="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-accent hover:text-accent-strong"
+                  className="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-line-strong hover:text-fg"
                 >
                   {topic.name}
                 </Link>

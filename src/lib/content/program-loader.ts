@@ -39,7 +39,8 @@ export interface ProgramPageData {
   ingredients: Ingredient[];
   topics: HealthTopic[];
   pricing: ProgramPricing;
-  reviewer: Expert;
+  /** Null while the review board is empty — see content/experts.ts. */
+  reviewer: Expert | null;
 }
 
 export function priceProgram(products: Product[], discountPercent: number): ProgramPricing {

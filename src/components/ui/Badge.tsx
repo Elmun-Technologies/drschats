@@ -10,11 +10,18 @@ export function Badge({
   className?: string;
   tone?: "default" | "accent" | "gold" | "danger";
 }) {
+  /*
+    `accent` and `gold` both used to paint a gold-tinted pill. That made every
+    product tag ("Yangi", "Xit"), every blog category and every trust chip the
+    same colour as the buy button — so the one colour that means "spend money
+    here" was on screen a dozen times before the shopper reached a price. Both
+    tones are now neutral; `gold` is kept as an alias so call sites that mean
+    "this was a promotional label" still compile and read the same.
+  */
   const tones = {
     default: "border-line-strong bg-surface-2 text-muted",
-    accent: "border-accent/30 bg-accent-soft text-accent-strong",
-    // gold-ink, not gold: the fill colour on a 10%-gold ground is roughly 2:1.
-    gold: "border-gold/40 bg-gold/15 text-gold-ink",
+    accent: "border-line bg-surface-2 text-muted",
+    gold: "border-line bg-surface-2 text-muted",
     danger: "border-danger/30 bg-danger/10 text-danger",
   }[tone];
   return (

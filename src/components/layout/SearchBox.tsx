@@ -39,10 +39,13 @@ export function SearchBox({
   categories = [],
   onNavigate,
   className = "",
+  autoFocus = false,
 }: {
   categories?: Category[];
   onNavigate?: () => void;
   className?: string;
+  /** Set when the field was just reopened from its collapsed icon. */
+  autoFocus?: boolean;
 }) {
   const t = useTranslations("common");
   const shop = useTranslations("shop");
@@ -57,6 +60,11 @@ export function SearchBox({
 
   const listboxId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (autoFocus) inputRef.current?.focus();
+  }, [autoFocus]);
 
   const trimmed = query.trim();
 
@@ -192,9 +200,10 @@ export function SearchBox({
         /* The input clears its own outline, and nothing replaced it — tabbing
            into search gave no visual signal at all. The ring goes on the form
            so it traces the rounded field rather than the bare input. */
-        className="flex items-center rounded-full border border-line-strong bg-surface pl-5 pr-1.5 focus-within:ring-2 focus-within:ring-accent focus-within:ring-offset-2 focus-within:ring-offset-ink"
+        className="flex items-center rounded-full border border-line-strong bg-surface pl-5 pr-1.5 focus-within:ring-2 focus-within:ring-signal focus-within:ring-offset-2 focus-within:ring-offset-ink"
       >
         <input
+          ref={inputRef}
           type="text"
           role="combobox"
           aria-expanded={showList}
@@ -217,7 +226,7 @@ export function SearchBox({
         <button
           type="submit"
           aria-label={t("search")}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-fg text-ink transition-colors hover:bg-accent-strong hover:text-ink"
         >
           <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" />
@@ -231,7 +240,7 @@ export function SearchBox({
           id={listboxId}
           role="listbox"
           aria-label={t("search")}
-          className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-2xl border border-line bg-ink py-2 shadow-[0_24px_48px_-24px_rgba(19,22,50,0.35)]"
+          className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-2xl border border-line bg-ink py-2 shadow-[var(--shadow-pop)]"
         >
           {(isSearching ? categoryMatches.length > 0 : popular.length > 0) && (
             <li role="presentation" className="px-4 pb-1 pt-2 text-xs font-bold uppercase tracking-widest text-faint">
@@ -279,7 +288,7 @@ export function SearchBox({
                   {/* The same glyph the category rail uses. One shared hamburger
                       here made six different categories look like one row
                       repeated. */}
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface text-accent-strong">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface text-fg">
                     <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                       <path d={getCategoryIcon(opt.slug)} />
                     </svg>
@@ -302,7 +311,7 @@ export function SearchBox({
                 e.preventDefault();
                 goToResults();
               }}
-              className="mt-1 cursor-pointer border-t border-line px-4 pb-1 pt-3 text-sm font-semibold text-accent-strong"
+              className="mt-1 cursor-pointer border-t border-line px-4 pb-1 pt-3 text-sm font-semibold text-fg"
             >
               {shop("searchResults", { query: trimmed })}
             </li>

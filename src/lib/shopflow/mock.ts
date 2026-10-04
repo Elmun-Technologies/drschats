@@ -157,10 +157,10 @@ const rawCategories: RawCategory[] = [
   },
   {
     id: "cat-nutrition",
-    slug: "nutrition",
-    name: { uz: "Tibbiy ovqatlanish", ru: "Лечебное питание" },
+    slug: "clinical-nutrition",
+    name: { uz: "Tibbiy ovqatlanish", ru: "Специализированное питание" },
     description: {
-      uz: "Davolovchi va yuqori kaloriyali ichimliklar.",
+      uz: "Ixtisoslashgan, yuqori kaloriyali ichimliklar.",
       ru: "Лечебные и высококалорийные напитки.",
     },
     image: img("cat-nutrition", "Nutrition").url,
@@ -204,6 +204,8 @@ interface RawProduct {
   inStock: boolean;
   imageSeeds: string[];
   bespoke: boolean;
+  /** See Assortment in ./types — omitted means "core". */
+  kind?: "core" | "addon" | "unlisted";
   origin: L;
   servings: L;
   badges: L<string[]>;
@@ -230,29 +232,29 @@ const rawProducts: RawProduct[] = [
     id: "p-delical-vanil",
     slug: "delical-vanil-200ml",
     categoryId: "cat-nutrition",
-    categorySlug: "nutrition",
+    categorySlug: "clinical-nutrition",
     price: 118000,
-    oldPrice: 350000,
+    oldPrice: 129000,
     rating: 4.8,
     reviewCount: 42,
     inStock: true,
     imageSeeds: ["delical-vanil-a", "delical-vanil-b"],
     bespoke: true,
     origin: { uz: "Fransiya", ru: "Франция" },
-    servings: { uz: "200 ml × 1 shisha", ru: "200 мл × 1 бутылка" },
+    servings: { uz: "1 shisha · 200 ml", ru: "1 бутылка · 200 мл" },
     badges: { uz: ["Aksiya", "Laktozasiz"], ru: ["Акция", "Без лактозы"] },
     name: { uz: "Delical Vanil 200ml", ru: "Delical Ваниль 200мл" },
     tagline: {
-      uz: "Davolovchi ovqatlanish — 452 kcal, 200 ml",
-      ru: "Лечебное питание — 452 ккал, 200 мл",
+      uz: "Ixtisoslashgan ovqatlanish — 452 kcal, 200 ml",
+      ru: "Специализированное питание — 452 ккал, 200 мл",
     },
     description: {
-      uz: "Delical — yuqori kaloriyali pitательный kokteyл. Kasal va tuzalayotgan bemorlar uchun mo'ljallangan. 452 kcal, 200 ml, laktozasiz formula. Vanil ta'mi.",
+      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. Kam ishtaha va tiklanish davrida qo'llaniladi. 452 kcal, 200 ml, laktozasiz formula. Vanil ta'mi.",
       ru: "Delical — высококалорийный питательный коктейль. Предназначен для больных и выздоравливающих пациентов. 452 ккал, 200 мл, без лактозы. Вкус ванили.",
     },
     highlights: {
-      uz: ["452 kcal", "200 ml", "Laktozasiz", "Davolovchi formula"],
-      ru: ["452 ккал", "200 мл", "Без лактозы", "Лечебная формула"],
+      uz: ["452 kcal", "200 ml", "Laktozasiz", "Ixtisoslashgan formula"],
+      ru: ["452 ккал", "200 мл", "Без лактозы", "Специализированная формула"],
     },
     benefits: {
       uz: [
@@ -305,24 +307,24 @@ const rawProducts: RawProduct[] = [
     id: "p-delical-shokolad",
     slug: "delical-shokolad-200ml",
     categoryId: "cat-nutrition",
-    categorySlug: "nutrition",
+    categorySlug: "clinical-nutrition",
     price: 118000,
-    oldPrice: 350000,
+    oldPrice: 129000,
     rating: 4.8,
     reviewCount: 38,
     inStock: true,
     imageSeeds: ["delical-choc-a", "delical-choc-b"],
     bespoke: true,
     origin: { uz: "Fransiya", ru: "Франция" },
-    servings: { uz: "200 ml × 1 shisha", ru: "200 мл × 1 бутылка" },
+    servings: { uz: "1 shisha · 200 ml", ru: "1 бутылка · 200 мл" },
     badges: { uz: ["Aksiya", "Laktozasiz"], ru: ["Акция", "Без лактозы"] },
     name: { uz: "Delical Shokolad 200ml", ru: "Delical Шоколад 200мл" },
     tagline: {
-      uz: "Davolovchi ovqatlanish — 452 kcal, shokolad ta'mi",
-      ru: "Лечебное питание — 452 ккал, вкус шоколада",
+      uz: "Ixtisoslashgan ovqatlanish — 452 kcal, shokolad ta'mi",
+      ru: "Специализированное питание — 452 ккал, вкус шоколада",
     },
     description: {
-      uz: "Delical — yuqori kaloriyali pitательный kokteyл. 452 kcal, 200 ml, laktozasiz formula. Shokolad ta'mi.",
+      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. 452 kcal, 200 ml, laktozasiz formula. Shokolad ta'mi.",
       ru: "Delical — высококалорийный питательный коктейль. 452 ккал, 200 мл, без лактозы. Вкус шоколада.",
     },
     highlights: {
@@ -370,24 +372,24 @@ const rawProducts: RawProduct[] = [
     id: "p-delical-abrikos",
     slug: "delical-abrikos-200ml",
     categoryId: "cat-nutrition",
-    categorySlug: "nutrition",
+    categorySlug: "clinical-nutrition",
     price: 118000,
-    oldPrice: 350000,
+    oldPrice: 129000,
     rating: 4.7,
     reviewCount: 29,
     inStock: true,
     imageSeeds: ["delical-abr-a", "delical-abr-b"],
     bespoke: true,
     origin: { uz: "Fransiya", ru: "Франция" },
-    servings: { uz: "200 ml × 1 shisha", ru: "200 мл × 1 бутылка" },
+    servings: { uz: "1 shisha · 200 ml", ru: "1 бутылка · 200 мл" },
     badges: { uz: ["Aksiya", "Laktozasiz"], ru: ["Акция", "Без лактозы"] },
     name: { uz: "Delical Abrikos 200ml", ru: "Delical Абрикос 200мл" },
     tagline: {
-      uz: "Davolovchi ovqatlanish — 452 kcal, abrikos ta'mi",
-      ru: "Лечебное питание — 452 ккал, вкус абрикоса",
+      uz: "Ixtisoslashgan ovqatlanish — 452 kcal, abrikos ta'mi",
+      ru: "Специализированное питание — 452 ккал, вкус абрикоса",
     },
     description: {
-      uz: "Delical — yuqori kaloriyali pitательный kokteyл. 452 kcal, 200 ml, laktozasiz formula. Abrikos ta'mi.",
+      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. 452 kcal, 200 ml, laktozasiz formula. Abrikos ta'mi.",
       ru: "Delical — высококалорийный питательный коктейль. 452 ккал, 200 мл, без лактозы. Вкус абрикоса.",
     },
     highlights: {
@@ -477,7 +479,7 @@ const rawProducts: RawProduct[] = [
       ru: [{ name: "100% кофе арабика", amount: "250 г" }],
     },
     howToUse: {
-      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda dамлаб iching. Ta'mingizga qarab miqdorni sozlang.",
+      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda damlab iching. Ta'mingizga qarab miqdorni sozlang.",
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды. Регулируйте количество по вкусу.",
     },
     faq: {
@@ -495,7 +497,6 @@ const rawProducts: RawProduct[] = [
     categoryId: "cat-coffee",
     categorySlug: "coffee",
     price: 315000,
-    oldPrice: 475000,
     rating: 4.6,
     reviewCount: 10,
     inStock: true,
@@ -533,7 +534,7 @@ const rawProducts: RawProduct[] = [
       ru: [{ name: "100% кофе арабика", amount: "500 г" }],
     },
     howToUse: {
-      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda dамлаб iching.",
+      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda damlab iching.",
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды.",
     },
     faq: {
@@ -551,7 +552,6 @@ const rawProducts: RawProduct[] = [
     categoryId: "cat-coffee",
     categorySlug: "coffee",
     price: 315000,
-    oldPrice: 375000,
     rating: 4.9,
     reviewCount: 9,
     inStock: true,
@@ -595,7 +595,7 @@ const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda dамлаб iching.",
+      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda damlab iching.",
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды.",
     },
     faq: {
@@ -656,7 +656,7 @@ const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda dамлаб iching.",
+      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda damlab iching.",
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды.",
     },
     faq: {
@@ -675,8 +675,7 @@ const rawProducts: RawProduct[] = [
     slug: "swiss-energy-hair-nail-skin-30",
     categoryId: "cat-beauty",
     categorySlug: "beauty",
-    price: 255150,
-    oldPrice: 369000,
+    price: 265950,
     rating: 4.9,
     reviewCount: 79,
     inStock: true,
@@ -765,10 +764,10 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-inhaler-turbo",
     slug: "dr-frei-turbo-base-ingalyator",
+    kind: "addon",
     categoryId: "cat-devices",
     categorySlug: "devices",
     price: 502950,
-    oldPrice: 1000000,
     rating: 4.8,
     reviewCount: 4,
     inStock: true,
@@ -829,10 +828,10 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-peano-balzam",
     slug: "peano-balzam-30g",
+    kind: "addon",
     categoryId: "cat-skin",
     categorySlug: "skin",
     price: 142890,
-    oldPrice: 800000,
     rating: 5.0,
     reviewCount: 5,
     inStock: true,
@@ -848,8 +847,8 @@ const rawProducts: RawProduct[] = [
       ru: "Бальзам для кожи — 30 г, без отдушки и парабенов",
     },
     description: {
-      uz: "Peano Balzam — dermatologik malham, 30 g. Tuproq va quti: «Teri tiklanishi uchun balzam», «Xushbo'y va Parabenlarsiz».",
-      ru: "Peano Balzam — дерматологическая мазь, 30 г. На тубе: «Teri tiklanishi uchun balzam», без отдушки и парабенов.",
+      uz: "Peano Balzam — dermatologik malham, 30 g. Qadoqda: «Teri tiklanishi uchun balzam», «Xushbo'ysiz va parabensiz».",
+      ru: "Peano Balzam — дерматологическая мазь, 30 г. Без отдушки и парабенов.",
     },
     highlights: {
       uz: ["30 g", "Teri tiklanishi", "Xushbo'ysiz", "Parabensiz"],
@@ -901,8 +900,7 @@ const rawProducts: RawProduct[] = [
     slug: "swiss-energy-visiovit-30",
     categoryId: "cat-vitamins",
     categorySlug: "vitamins",
-    price: 255150,
-    oldPrice: 420000,
+    price: 265950,
     rating: 4.7,
     reviewCount: 63,
     inStock: true,
@@ -982,8 +980,7 @@ const rawProducts: RawProduct[] = [
     slug: "swiss-energy-immunovit-30",
     categoryId: "cat-immunity",
     categorySlug: "immunity",
-    price: 255150,
-    oldPrice: 500000,
+    price: 265950,
     rating: 4.8,
     reviewCount: 20,
     inStock: true,
@@ -1047,10 +1044,10 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-tonometr-a20",
     slug: "dr-frei-tonometr-a20",
+    kind: "addon",
     categoryId: "cat-devices",
     categorySlug: "devices",
     price: 242000,
-    oldPrice: 1000000,
     rating: 4.9,
     reviewCount: 15,
     inStock: true,
@@ -1065,7 +1062,7 @@ const rawProducts: RawProduct[] = [
       ru: "Механический тонометр для измерения давления — гарантия 2 года",
     },
     description: {
-      uz: "Dr. Frei A20 — klassik mexanik tonometr. Yuqori aniqlik, Shveytsariya sifati. 2 yillik kafolat. Uy va tibbiyot muassasalari uchun.",
+      uz: "Dr. Frei A20 — klassik mexanik tonometr. 2 yillik ishlab chiqaruvchi kafolati. Uy va tibbiyot muassasalari uchun.",
       ru: "Dr. Frei A20 — классический механический тонометр. Высокая точность, швейцарское качество. Гарантия 2 года. Для дома и медицинских учреждений.",
     },
     highlights: {
@@ -1118,8 +1115,8 @@ const rawProducts: RawProduct[] = [
     slug: "dr-frei-multivitamins-biotin-20",
     categoryId: "cat-effervescent",
     categorySlug: "effervescent",
-    price: 73500,
-    oldPrice: 107000,
+    price: 79000,
+    oldPrice: 89000,
     rating: 4.9,
     reviewCount: 154,
     inStock: true,
@@ -1196,10 +1193,10 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-safi-eks1",
     slug: "hamdard-safi-eks1-200ml",
+    kind: "unlisted",
     categoryId: "cat-herbal",
     categorySlug: "herbal",
     price: 142890,
-    oldPrice: 800000,
     rating: 5.0,
     reviewCount: 5,
     inStock: true,
@@ -1256,8 +1253,7 @@ const rawProducts: RawProduct[] = [
     slug: "dr-frei-gold-vitamins-20",
     categoryId: "cat-effervescent",
     categorySlug: "effervescent",
-    price: 66150,
-    oldPrice: 73500,
+    price: 69000,
     rating: 4.9,
     reviewCount: 68,
     inStock: true,
@@ -1329,14 +1325,14 @@ const rawProducts: RawProduct[] = [
     slug: "dr-frei-kids-multivitamins-20",
     categoryId: "cat-kids",
     categorySlug: "kids",
-    price: 73500,
-    oldPrice: 107000,
+    price: 79000,
+    oldPrice: 89000,
     rating: 4.9,
     reviewCount: 176,
     inStock: true,
     imageSeeds: ["drfrei-kids-a", "drfrei-kids-b"],
     bespoke: true,
-    origin: { uz: "Bolgariya (EU)", ru: "Болгария (ЕС)" },
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "20 shipuchi tabletka", ru: "20 шипучих таблеток" },
     badges: { uz: ["Aksiya", "7+ yosh", "Yevropa sifati"], ru: ["Акция", "7+ лет", "Европейское качество"] },
     name: { uz: "Dr. Frei Kids Multivitaminlar 20", ru: "Dr. Frei Kids Мультивитамины 20" },
@@ -1500,8 +1496,8 @@ const rawProducts: RawProduct[] = [
     slug: "dr-frei-antistress-magniy-20",
     categoryId: "cat-minerals",
     categorySlug: "minerals",
-    price: 73500,
-    oldPrice: 127000,
+    price: 79000,
+    oldPrice: 89000,
     rating: 4.9,
     reviewCount: 208,
     inStock: true,
@@ -1583,7 +1579,7 @@ const rawProducts: RawProduct[] = [
     slug: "swiss-energy-calcivit-30",
     categoryId: "cat-minerals",
     categorySlug: "minerals",
-    price: 255150,
+    price: 265950,
     rating: 4.8,
     reviewCount: 24,
     inStock: true,
@@ -1659,7 +1655,7 @@ const rawProducts: RawProduct[] = [
     slug: "swiss-energy-neuroforce-30",
     categoryId: "cat-vitamins",
     categorySlug: "vitamins",
-    price: 255150,
+    price: 265950,
     rating: 4.7,
     reviewCount: 18,
     inStock: true,
@@ -1737,7 +1733,7 @@ const rawProducts: RawProduct[] = [
     slug: "swiss-energy-potenton-30",
     categoryId: "cat-vitamins",
     categorySlug: "vitamins",
-    price: 255150,
+    price: 265950,
     rating: 4.6,
     reviewCount: 12,
     inStock: true,
@@ -1795,7 +1791,7 @@ const rawProducts: RawProduct[] = [
     slug: "swiss-energy-prenatal-forte-60",
     categoryId: "cat-vitamins",
     categorySlug: "vitamins",
-    price: 369000,
+    price: 379000,
     rating: 4.8,
     reviewCount: 31,
     inStock: true,
@@ -1875,7 +1871,7 @@ const rawProducts: RawProduct[] = [
     inStock: true,
     imageSeeds: ["aminomorin-a"],
     bespoke: true,
-    origin: { uz: "Yaponiya texnologiyasi", ru: "Технология Японии" },
+    origin: { uz: "Yaponiya", ru: "Япония" },
     servings: { uz: "30 kapsula", ru: "30 капсул" },
     badges: { uz: ["Aminokislotalar + vitaminlar"], ru: ["Аминокислоты + витамины"] },
     name: { uz: "Aminomorin Forte 30", ru: "Аминоморин Форте 30" },
@@ -1925,7 +1921,7 @@ const rawProducts: RawProduct[] = [
     id: "p-collagen-nature",
     slug: "swiss-energy-nature-collagen",
     categoryId: "cat-collagen",
-    categorySlug: "collagen",
+    categorySlug: "beauty",
     price: 289000,
     rating: 4.7,
     reviewCount: 16,
@@ -2042,6 +2038,7 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-thermo-t10",
     slug: "dr-frei-thermometer-t10",
+    kind: "addon",
     categoryId: "cat-devices",
     categorySlug: "devices",
     price: 89000,
@@ -2050,7 +2047,7 @@ const rawProducts: RawProduct[] = [
     inStock: true,
     imageSeeds: ["t10-a"],
     bespoke: true,
-    origin: { uz: "Dr. Frei", ru: "Dr. Frei" },
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "1 dona", ru: "1 штука" },
     badges: { uz: ["Elektron", "°C"], ru: ["Электронный", "°C"] },
     name: { uz: "Dr. Frei Termometr T10", ru: "Dr. Frei Термометр T10" },
@@ -2101,6 +2098,7 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-thermo-t30",
     slug: "dr-frei-thermometer-t30",
+    kind: "addon",
     categoryId: "cat-devices",
     categorySlug: "devices",
     price: 99000,
@@ -2109,7 +2107,7 @@ const rawProducts: RawProduct[] = [
     inStock: true,
     imageSeeds: ["t30-a"],
     bespoke: true,
-    origin: { uz: "Dr. Frei", ru: "Dr. Frei" },
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "1 dona", ru: "1 штука" },
     badges: { uz: ["Bolalar", "Egiluvchan uchi"], ru: ["Детям", "Гибкий носик"] },
     name: { uz: "Dr. Frei Termometr T30 kids", ru: "Dr. Frei Термометр T30 kids" },
@@ -2158,6 +2156,7 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-cooling-plaster",
     slug: "hiew-cooling-plaster-16",
+    kind: "addon",
     categoryId: "cat-devices",
     categorySlug: "devices",
     price: 65000,
@@ -2209,6 +2208,7 @@ const rawProducts: RawProduct[] = [
   {
     id: "p-turbo-lex",
     slug: "dr-frei-turbo-lex-ingalyator",
+    kind: "addon",
     categoryId: "cat-devices",
     categorySlug: "devices",
     price: 489000,
@@ -2217,7 +2217,7 @@ const rawProducts: RawProduct[] = [
     inStock: true,
     imageSeeds: ["turbolex-a"],
     bespoke: true,
-    origin: { uz: "Dr. Frei", ru: "Dr. Frei" },
+    origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "1 dona", ru: "1 штука" },
     badges: { uz: ["Kompressorli", "8 ml", "Bolalar"], ru: ["Компрессорный", "8 мл", "Детям"] },
     name: { uz: "Dr. Frei Turbo Lex ingalyator", ru: "Ингалятор Dr. Frei Turbo Lex" },
@@ -2350,8 +2350,16 @@ function resolveProduct(p: RawProduct, locale: Locale): Product {
     badges: p.badges[locale],
     servings: p.servings[locale],
     origin: p.origin[locale],
-    certifications: ["cGMP", "ISO 22000", "Halal"],
+    /*
+      Empty on purpose. Every card used to claim cGMP + ISO 22000 + Halal,
+      baked into the data layer, so the badge row on a product page advertised
+      three certificates for a shop that holds none of them and only resells
+      imports. Manufacturer certificates exist per batch and are sent on
+      request; that is a sentence in the copy, not a chip on 30 products.
+    */
+    certifications: [],
     bespoke: p.bespoke,
+    assortment: p.kind ?? "core",
   };
 }
 
@@ -2382,8 +2390,17 @@ export class MockShopflowClient implements ShopflowClient {
   }
 
   async getProducts(params: ProductListParams): Promise<ProductListResult> {
-    const { locale, category, search, origin, minPrice, maxPrice, sort, page = 1, pageSize = 12 } = params;
-    let items = rawProducts.map((p) => resolveProduct(p, locale));
+    const {
+      locale, category, search, origin, minPrice, maxPrice, sort,
+      assortment = "listed", page = 1, pageSize = 12,
+    } = params;
+    let items = rawProducts
+      // Products withdrawn from sale disappear from every listing unless a
+      // caller explicitly asks for the whole archive.
+      .filter((p) => assortment === "all" || (p.kind ?? "core") !== "unlisted")
+      .map((p) => resolveProduct(p, locale));
+
+    if (assortment === "core") items = items.filter((p) => p.assortment === "core");
 
     if (category) items = items.filter((p) => p.categorySlug === category);
     if (origin) items = items.filter((p) => p.origin === origin);

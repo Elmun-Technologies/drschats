@@ -47,8 +47,7 @@ export function ConsentPanel() {
 
   return (
     <section aria-labelledby="profile-consent">
-      <h2 id="profile-consent" className="font-display text-lg font-bold tracking-tight">
-        {t("title")}
+      <h2 id="profile-consent" className="font-display text-lg font-bold tracking-tight">{t("title")}
       </h2>
       <p className="mt-1 text-sm text-muted">{t("description")}</p>
 
@@ -69,7 +68,7 @@ export function ConsentPanel() {
             <span aria-live="polite" className="mt-2 block text-sm">
               {emailState === "sending" && <span className="text-muted">{t("emailSending")}</span>}
               {emailState === "sent" && (
-                <span className="font-medium text-accent-strong">
+                <span className="font-medium text-fg">
                   {t("emailSent", { email: profile.email ?? "" })}
                 </span>
               )}
@@ -98,7 +97,7 @@ export function ConsentPanel() {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => track("telegram_connect_click", { source: "profile" })}
-                  className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-accent-strong underline-offset-4 hover:underline"
+                  className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-fg underline-offset-4 hover:underline"
                 >
                   {t("telegramConnect")}
                 </a>

@@ -6,7 +6,7 @@ export function SuccessCheckmark() {
   return (
     <div className="relative mb-8">
       <motion.div
-        className="h-24 w-24 rounded-full bg-accent-soft"
+        className="h-24 w-24 rounded-full bg-surface-2"
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, duration: 0.5 }}
@@ -14,7 +14,7 @@ export function SuccessCheckmark() {
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.svg
           viewBox="0 0 24 24"
-          className="h-12 w-12 text-accent-strong"
+          className="h-12 w-12 text-fg"
           fill="none"
           stroke="currentColor"
           strokeWidth="2.5"

@@ -48,7 +48,7 @@ export function MobileBottomNav() {
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           {cartCount > 0 && (
-            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-accent text-[10px] font-bold text-brand-deep">
+            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-fg text-[10px] font-bold tabular-nums text-ink">
               {cartCount > 9 ? "9+" : cartCount}
             </span>
           )}
@@ -67,15 +67,22 @@ export function MobileBottomNav() {
   ] as const;
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-40 h-[var(--bottom-nav)] border-t border-line bg-surface pb-[env(safe-area-inset-bottom,0px)] md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 h-[var(--bottom-nav)] border-t border-line bg-ink/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur-lg md:hidden">
       <div className="grid h-full grid-cols-4">
         {tabs.map((tab) => {
           const active = tab.href ? isActive(tab.href) : false;
-          const cls = `flex flex-col items-center justify-center gap-1 text-[10px] font-medium transition-colors ${active ? "text-accent-strong" : "text-muted"}`;
+          const cls = `relative flex flex-col items-center justify-center gap-1 pt-1.5 text-[10px] font-semibold transition-colors ${active ? "text-fg" : "text-muted"}`;
+
+          // A hairline marks the active tab. It used to be gold text, which
+          // put the money colour on plain navigation.
+          const marker = active ? (
+            <span aria-hidden className="absolute top-0 h-0.5 w-8 rounded-full bg-signal" />
+          ) : null;
 
           if ("onClick" in tab && tab.onClick) {
             return (
               <button key={tab.label} onClick={tab.onClick} className={cls}>
+                {marker}
                 {tab.icon}
                 <span>{tab.label}</span>
               </button>
@@ -83,7 +90,8 @@ export function MobileBottomNav() {
           }
 
           return (
-            <Link key={tab.label} href={tab.href as string} className={cls}>
+            <Link key={tab.label} href={tab.href as string} className={cls} aria-current={active ? "page" : undefined}>
+              {marker}
               {tab.icon}
               <span>{tab.label}</span>
             </Link>

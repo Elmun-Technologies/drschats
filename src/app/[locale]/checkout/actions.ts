@@ -21,6 +21,9 @@ async function notifyOperatorOfOrder(order: OrderRequest, orderId: string) {
     order.customer.email ? `✉️ ${order.customer.email}` : "",
     `📍 ${order.delivery.region}, ${order.delivery.address}`,
     `🚚 ${order.delivery.method}`,
+    order.payment
+      ? `💳 ${order.payment.method === "online" ? `Onlayn to'lov: ${order.payment.provider}` : "Yetkazishda to'lov"}`
+      : "",
     `\n${items}`,
     `\n💰 Jami: ${order.totals.total.toLocaleString()} so'm`,
   ]

@@ -21,15 +21,15 @@ export function Toaster() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, x: 20, scale: 0.96 }}
             transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            className="pointer-events-auto flex items-center gap-3 rounded-full border border-line bg-ink py-2 pl-2 pr-4 shadow-[0_18px_44px_-20px_rgba(15,26,20,0.4)]"
+            className="pointer-events-auto flex items-center gap-3 rounded-full border border-line bg-ink py-2 pl-2 pr-4 shadow-[var(--shadow-pop)]"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-accent text-brand-deep">
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-fg text-ink">
               <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2.4">
                 <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </span>
             <span className="text-sm font-semibold text-fg">{t("addedToCart")}</span>
-            <button onClick={openCart} className="text-sm font-semibold text-accent-strong hover:underline">
+            <button onClick={openCart} className="text-sm font-semibold text-fg hover:underline">
               {t("viewCart")}
             </button>
           </motion.div>

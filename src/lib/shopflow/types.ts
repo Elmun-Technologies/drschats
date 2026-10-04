@@ -42,6 +42,18 @@ export interface Review {
   text: string;
 }
 
+/**
+ * How a product sits in the assortment.
+ *
+ * `core`   — the three brand lines the shop is built on (Swiss Energy, Dr.
+ *            Frei, Delical). These are what promotional rails may show.
+ * `addon`  — a real product that exists to grow the basket (balms, measuring
+ *            devices). Buyable and listed, never the subject of a campaign.
+ * `unlisted` — no longer sold: kept in the data so old links and orders still
+ *            resolve, hidden from the catalogue, rails and sitemap.
+ */
+export type Assortment = "core" | "addon" | "unlisted";
+
 export interface Product {
   id: string;
   slug: string;
@@ -70,6 +82,8 @@ export interface Product {
   certifications?: string[];
   /** Whether a hand-crafted bespoke page component exists for this product. */
   bespoke: boolean;
+  /** Position in the assortment — see {@link Assortment}. Absent = core. */
+  assortment?: Assortment;
 }
 
 export type PromotionType =
@@ -97,6 +111,12 @@ export interface UpsellOffer {
 export interface ProductListParams {
   locale: Locale;
   category?: string;
+  /**
+   * Which part of the assortment to return. Defaults to everything that is
+   * still on sale (core + addons); `"core"` is what the home-page rails ask
+   * for, so an accessory never becomes the face of a campaign.
+   */
+  assortment?: "listed" | "core" | "all";
   search?: string;
   origin?: string;
   minPrice?: number;
@@ -145,6 +165,14 @@ export interface OrderRequest {
     address: string;
     note?: string;
     method: string;
+  };
+  /**
+   * How the customer intends to pay. `online` names the provider the payment
+   * page belongs to; `cod` is cash or card on delivery.
+   */
+  payment?: {
+    method: "online" | "cod";
+    provider?: "payme" | "click" | "uzum";
   };
   items: OrderRequestItem[];
   appliedUpsells: string[];

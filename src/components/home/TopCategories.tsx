@@ -1,61 +1,79 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/animation/Reveal";
 import type { Category } from "@/lib/shopflow/types";
 
+/*
+  Category photography, from our own shelf.
+
+  These were Unsplash URLs, which meant the "Tibbiy qurilmalar" tile showed a
+  laboratory and a stock vegetable basket stood in for a supplement category —
+  images that belong to nobody and describe nothing. Each slug now maps to a
+  photograph of a real product in that category; anything without one falls
+  through to a typographic tile rather than to somebody else's picture.
+*/
 const CAT_IMAGES: Record<string, string> = {
-  "vitamins": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ad?auto=format&fit=crop&q=80&w=600", // Vitamins/pills
-  "immunity": "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&q=80&w=600", // Fresh citrus/health
-  "beauty": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600", // Spa/beauty
-  "kids": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=600", // Kids playing
-  "effervescent": "https://images.unsplash.com/photo-1550537687-c91072c4792d?auto=format&fit=crop&q=80&w=600", // Bubbling liquid
-  "minerals": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?auto=format&fit=crop&q=80&w=600", // Healthy greens/nature
-  "medical-devices": "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=600", // Medical lab/device
-  "coffee": "https://images.unsplash.com/photo-1497935586351-b67a49e012bf?auto=format&fit=crop&q=80&w=600", // Coffee beans
-  "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
+  vitamins: "/products/dr-frei-gold-vitamins-20-2.webp",
+  immunity: "/products/swiss-energy-immunovit-30-hero.webp",
+  beauty: "/products/swiss-energy-nature-collagen.webp",
+  kids: "/products/dr-frei-kids-multivitamins-20-3.webp",
+  effervescent: "/products/swiss-energy-vitamin-c-20-2.webp",
+  coffee: "/products/swiss-energy-coffee-crema-500g-hero.webp",
+  "clinical-nutrition": "/products/delical-vanil-200ml-3.webp",
+  minerals: "/products/swiss-energy-calcivit-30-hero.webp",
 };
 
 export function TopCategories({ categories }: { categories: Category[] }) {
   const t = useTranslations("home.categories");
+  /*
+    Read the whole hook map and look the slug up, rather than calling
+    t(`hooks.${slug}`). A missing key in next-intl is not `undefined` — it is
+    the key path itself, so `t(...) || t("hooks.default")` printed
+    "home.categories.hooks.clinical-nutrition" on the tile.
+  */
+  const hooks = t.raw("hooks") as Record<string, string>;
 
   if (categories.length === 0) return null;
 
   return (
-    <section className="bg-ink py-20 sm:py-28 border-t border-line/30">
-      <Container>
-        <div className="mb-14 text-center max-w-2xl mx-auto">
-          <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
-            Sog&apos;lik yo&apos;nalishlari
-          </span>
-          <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl text-brand-deep">
-            {t("title")}
+    <Section tone="surface" aria-labelledby="categories-heading">
+        <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
+          {/* Was a hardcoded Uzbek string, so the Russian home page said
+              "Sog'liq yo'nalishlari" over Russian cards. */}
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted">{t("eyebrow")}</p>
+          <h2 id="categories-heading" className="font-display text-2xl font-extrabold tracking-tight text-balance text-fg sm:text-3xl lg:text-4xl">{t("title")}
           </h2>
-          <p className="mt-3 text-base text-muted">
-            Sizning salomatlik maqsadingizga mos ravishda tibbiy testdan o&apos;tgan va tasdiqlangan kategoriyalar
-          </p>
+          <p className="mt-3 text-pretty text-base text-muted sm:text-lg">{t("subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
           {categories.slice(0, 8).map((c, i) => {
-            const bgImage = CAT_IMAGES[c.slug] || CAT_IMAGES.default;
-            const hook = t(`hooks.${c.slug}`) || t("hooks.default");
+            const bgImage = CAT_IMAGES[c.slug];
+            const hook = hooks[c.slug] ?? hooks.default ?? c.name;
             
             return (
               <Reveal key={c.id} index={Math.min(i, 6)} as="div" className="h-full">
                 <Link
                   href={`/products/${c.slug}`}
-                  className="group relative flex aspect-[3/4] w-full flex-col justify-between overflow-hidden rounded-t-[5.5rem] rounded-b-[1.5rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30 md:aspect-[4/5]"
+                  className="group relative flex aspect-[3/4] w-full flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-[var(--shadow-pop)] md:aspect-[4/5]"
                 >
                   <div className="absolute inset-0 z-0">
-                    <Image 
-                      src={bgImage}
-                      alt={c.name}
-                      fill
-                      sizes="(max-width: 768px) 50vw, 25vw"
-                      className="object-cover opacity-85 transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:opacity-100"
-                    />
+                    {/* No photo for this category yet → the tile stays a
+                        typographic card rather than borrowing a stranger's
+                        picture or showing an empty box. */}
+                    {bgImage ? (
+                      <Image
+                        src={bgImage}
+                        alt=""
+                        fill
+                        sizes="(max-width: 768px) 50vw, 25vw"
+                        className="object-cover opacity-85 transition-transform duration-1000 ease-out group- group-hover:opacity-100"
+                      />
+                    ) : (
+                      <div className="h-full w-full bg-brand-deep" />
+                    )}
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/60 to-transparent opacity-95 transition-opacity duration-300 group-hover:opacity-90" />
                   </div>
 
@@ -68,10 +86,13 @@ export function TopCategories({ categories }: { categories: Category[] }) {
                   
                   {/* Bottom Title & CTA */}
                   <div className="relative z-10 flex flex-col p-6 text-left">
-                    <span className="font-display text-xl font-extrabold text-white drop-shadow-md transition-colors duration-300 group-hover:text-gold">
+                    <span className="font-display text-xl font-extrabold text-white drop-shadow-md transition-colors duration-300 group-hover:text-accent-on-dark">
                       {c.name}
                     </span>
-                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-gold opacity-90 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
+                    {/* "Katalogga o'tish" is navigation, not a purchase, so it
+                        stays in the neutral palette — gold is reserved for
+                        add-to-cart and checkout. */}
+                    <span className="mt-2 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-widest text-white/75 transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
                       {t("cta")}
                       <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                         <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
@@ -83,7 +104,6 @@ export function TopCategories({ categories }: { categories: Category[] }) {
             );
           })}
         </div>
-      </Container>
-    </section>
+    </Section>
   );
 }

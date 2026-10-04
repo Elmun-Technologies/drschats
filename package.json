@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "audit": "node scripts/audit/index.mjs",
-    "assets:ingest": "node scripts/assets/ingest-product-images.mjs"
+    "assets:ingest": "node scripts/assets/ingest-product-images.mjs",
+    "videos:doctor": "node scripts/assets/fetch-doctor-videos.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

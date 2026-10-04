@@ -7,30 +7,19 @@ import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
 import { HeroBento } from "@/components/home/HeroBento";
 import { TrustRibbon } from "@/components/home/TrustRibbon";
 import { TopCategories } from "@/components/home/TopCategories";
-import { DiscountRail } from "@/components/home/DiscountRail";
 import { DealOfDay } from "@/components/home/DealOfDay";
-import { FeaturedProducts } from "@/components/home/FeaturedProducts";
-import { BestSellers } from "@/components/home/BestSellers";
-import { TopProducts } from "@/components/home/TopProducts";
-import { ProductCarousel } from "@/components/home/ProductCarousel";
 import { ProductCard } from "@/components/product/ProductCard";
-import { Container } from "@/components/ui/Container";
-import { PromoBanners } from "@/components/home/PromoBanners";
-import { StatsBand } from "@/components/home/StatsBand";
-import { BlogTeaser } from "@/components/home/BlogTeaser";
-import { HomeCTA } from "@/components/home/HomeCTA";
+import { Section } from "@/components/ui/Section";
+import { SectionHeading } from "@/components/ui/SectionHeading";
+import { buttonVariants } from "@/components/ui/Button";
+import { Link } from "@/lib/i18n/navigation";
 import { QuizPromo } from "@/components/home/QuizPromo";
 import { AudienceDoors } from "@/components/home/AudienceDoors";
-import { ProgramsRail } from "@/components/home/ProgramsRail";
-import { DoctorAdvice } from "@/components/home/DoctorAdvice";
 import { HomeFaq } from "@/components/home/HomeFaq";
 import { NewsletterSignup } from "@/components/home/NewsletterSignup";
-import { Testimonials } from "@/components/home/Testimonials";
 import { ScienceSection } from "@/components/home/ScienceSection";
-import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
-import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
 import { byDeepestDiscount } from "@/lib/shop/discounts";
-
+import { promotable } from "@/lib/shop/curation";
 
 export const revalidate = 300;
 
@@ -49,6 +38,36 @@ export async function generateMetadata({
   });
 }
 
+/*
+  The home page in eight blocks.
+
+  It used to be fourteen, and three of them were the same 30-SKU catalogue
+  sliced three ways: "Chegirmali mahsulotlar", "Top mahsulotlar" and "Xitlar"
+  each showed Delical, because with thirty products a second and third rail
+  cannot help but repeat the first. A shopper who scrolls fourteen sections has
+  not read fourteen sections.
+
+  The eight, in order:
+
+  1. hero + trust ribbon   — what the shop is, and the four facts about it
+  2. six audience doors    — the one piece of navigation that is ours
+  3. categories
+  4. products              — one grid, the deep-discount card first, and no
+                             product repeated anywhere on the page
+  5. vitamin quiz          — "Vitamin tanlash", the entry to the recommender
+  6. quality & documents   — trust, in the health colour
+  7. FAQ                   — delivery, returns, authenticity
+  8. Telegram club + CTA
+
+  Everything drawn from the catalogue asks for `assortment: "core"`, so a
+  thermometer or a balm can sit in the cart but never headline the page.
+
+  What is still missing on purpose: a hero photograph of a person holding a
+  product, and photographs of the six audience doors. Both need the Tashkent
+  shoot described in docs/GOVITA-TAVSIYALAR.md — until then the hero shows the
+  real pack shot, which is honest, rather than a stock model holding somebody
+  else's bottle.
+*/
 export default async function HomePage({
   params,
 }: {
@@ -57,64 +76,63 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  // "Popular, top 8" is the head of "popular, top 50" — one request, not two.
-  const [categories, popular, topRated] = await Promise.all([
+  const [categories, popular, t, common] = await Promise.all([
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }),
-    shopflow.getProducts({ locale, sort: "new", pageSize: 8 }),
+    shopflow.getProducts({ locale, sort: "popular", pageSize: 50, assortment: "core" }),
+    getTranslations({ locale, namespace: "home.catalog" }),
+    getTranslations({ locale, namespace: "common" }),
   ]);
 
-  const bestsellers = popular.items.slice(0, 8);
+  const catalogue = promotable(popular.items);
+  const deals = byDeepestDiscount(catalogue);
 
-  // One pass over the popular set produces the discounted catalogue rail.
-  // The editorial hero deliberately stays focused on the brand story instead
-  // of duplicating a product promotion above the fold.
-  const deals = byDeepestDiscount(popular.items);
+  /*
+    The deal card takes the deepest real discount, two more deals follow it,
+    and the grid continues with everything that has not been shown yet. The
+    page must never repeat a product: with one catalogue and one page, a
+    repeated card is not "more choice", it is padding.
+  */
+  const dealBlock = deals.slice(0, 3);
+  const shown = new Set(dealBlock.map((p) => p.id));
+  const grid = catalogue.filter((p) => !shown.has(p.id)).slice(0, 8);
 
   return (
     <>
-      <JsonLd data={organizationLd()} />
-      <HeroBento products={bestsellers} />
-      <TrustRibbon />
+      <JsonLd data={organizationLd(locale)} />
+      <div>
+        <HeroBento products={catalogue.slice(0, 3)} />
+        <TrustRibbon />
+      </div>
       <AudienceDoors locale={locale} />
       <TopCategories categories={categories} />
-      {/* Deal of the day: the catalogue's deepest real discount, flanked by
-          the runners-up. The rail below carries the rest of the markdowns. */}
-      {deals.length > 0 && (
-        <section className="border-t border-line bg-surface-2/40 py-14 sm:py-16">
-          <Container>
-            <div className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <DealOfDay product={deals[0]} />
-              {deals.slice(1, 3).map((p, i) => (
-                <ProductCard key={p.id} product={p} index={i + 1} />
-              ))}
+
+      <Section tone="ink">
+        <div className="flex flex-wrap items-end justify-between gap-6">
+          <SectionHeading eyebrow={t("subtitle")} title={t("title")} />
+          <Link href="/products" className={buttonVariants("secondary")}>
+            {common("viewAll")}
+          </Link>
+        </div>
+
+        <div className="mt-10 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+          {dealBlock[0] && (
+            <div className="col-span-2">
+              <DealOfDay product={dealBlock[0]} />
             </div>
-          </Container>
-        </section>
-      )}
-      <DiscountRail products={deals.slice(3, 11)} />
-      <QuizPromo />
-      {/* Top 3 products with full feature breakdown — the most persuasive
-          single section on the page for a health-conscious buyer. */}
-      <TopProducts products={bestsellers} />
-      <FeaturedProducts products={popular.items} />
-      <ProgramsRail locale={locale} />
-      {/* The catalogue past the bestsellers: another eight real products so
-          the home page shows most of what the shop actually stocks. */}
-      <BestSellers products={popular.items.slice(12, 20)} namespace="home.catalog" />
-      <PersonalizedRail allProducts={popular.items} />
-      <PromoBanners />
-      {/* Social proof — only renders when there are real reviews to show. */}
-      <Testimonials products={popular.items} />
+          )}
+          {dealBlock.slice(1).map((p, i) => (
+            <ProductCard key={p.id} product={p} index={i} />
+          ))}
+          {grid.map((p, i) => (
+            <ProductCard key={p.id} product={p} index={i + dealBlock.length} />
+          ))}
+        </div>
+      </Section>
+
+      <QuizPromo locale={locale} />
       <ScienceSection />
-      <RecentlyViewed allProducts={popular.items} />
-      <ProductCarousel products={topRated.items} />
-      <DoctorAdvice locale={locale} />
-      <StatsBand />
-      <BlogTeaser locale={locale} />
       <HomeFaq />
       <NewsletterSignup />
-      <HomeCTA />
     </>
   );
 }

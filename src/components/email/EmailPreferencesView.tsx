@@ -75,7 +75,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
             className={`mt-6 rounded-2xl border px-5 py-4 text-sm ${
               status === "invalid"
                 ? "border-danger/40 bg-danger/10 text-danger"
-                : "border-accent/40 bg-accent-soft text-fg"
+                : "border-accent/40 bg-surface-2 text-fg"
             }`}
           >
             {t(`status.${status}`)}
@@ -101,7 +101,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
             </div>
 
             <p aria-live="polite" className="mt-4 text-sm">
-              {busy === "done" && <span className="font-medium text-accent-strong">{t("saved")}</span>}
+              {busy === "done" && <span className="font-medium text-fg">{t("saved")}</span>}
               {busy === "error" && <span className="text-danger">{t("error")}</span>}
             </p>
           </section>
@@ -119,7 +119,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
                 autoComplete="email"
                 value={resubscribeEmail}
                 onChange={(e) => setResubscribeEmail(e.target.value)}
-                className="flex-1 rounded-xl border border-line bg-ink px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-accent"
+                className="flex-1 rounded-xl border border-line bg-ink px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
               />
               <Button type="submit" disabled={busy === "working"}>
                 {t("resubscribe.submit")}
@@ -127,7 +127,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
             </div>
             <p aria-live="polite" className="mt-4 text-sm">
               {busy === "done" && (
-                <span className="font-medium text-accent-strong">{t("resubscribe.sent")}</span>
+                <span className="font-medium text-fg">{t("resubscribe.sent")}</span>
               )}
               {busy === "error" && <span className="text-danger">{t("error")}</span>}
             </p>
@@ -136,7 +136,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
 
         <p className="mt-8 text-sm text-muted">
           {t("profileHint")}{" "}
-          <Link href="/profile" className="font-semibold text-accent-strong underline-offset-4 hover:underline">
+          <Link href="/profile" className="font-semibold text-fg underline-offset-4 hover:underline">
             {t("profileLink")}
           </Link>
         </p>

@@ -106,20 +106,20 @@ export function UpsellLadderModal() {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className={`overflow-hidden rounded-2xl border shadow-2xl ${isFreeGift ? "border-gold/50 bg-gradient-to-b from-gold/10 to-ink" : "border-line bg-surface"}`}>
+            <div className={`overflow-hidden rounded-2xl border border-line shadow-[var(--shadow-pop)] ${isFreeGift ? "bg-signal-soft" : "bg-surface"}`}>
               {/* Header */}
-              <div className={`px-5 py-4 ${isFreeGift ? "bg-gold/10" : "bg-surface-2"}`}>
+              <div className={`px-5 py-4 ${isFreeGift ? "bg-signal-soft/60" : "bg-surface-2"}`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {isFreeGift ? (
                       <span className="text-xl">🎁</span>
                     ) : (
-                      <span className="text-base font-semibold text-accent-strong">
+                      <span className="text-base font-semibold text-fg">
                         {t("stepOf", { step: currentStep + 1, total: totalSteps })}
                       </span>
                     )}
                     {isFreeGift && (
-                      <span className="font-display text-sm font-bold uppercase tracking-widest text-gold-ink">
+                      <span className="font-display text-sm font-bold uppercase tracking-widest text-signal">
                         {t("freeGiftTitle")}
                       </span>
                     )}
@@ -137,7 +137,7 @@ export function UpsellLadderModal() {
                     key={displaySavings}
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`mt-2 text-sm font-semibold ${isFreeGift ? "text-gold-ink" : "text-accent-strong"}`}
+                    className={`mt-2 text-sm font-semibold ${isFreeGift ? "text-signal" : "text-fg"}`}
                   >
                     {isFreeGift
                       ? t("freeGiftCovered", { amount: formatMoney(displaySavings, locale) })
@@ -160,7 +160,7 @@ export function UpsellLadderModal() {
                     className="object-contain p-2"
                   />
                   {isFreeGift && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-gold/20">
+                    <div className="absolute inset-0 flex items-center justify-center bg-signal-soft">
                       <span className="text-2xl">🎁</span>
                     </div>
                   )}
@@ -175,7 +175,7 @@ export function UpsellLadderModal() {
                   {/* Stars, only where there are ratings to show. */}
                   {step.product.rating > 0 && (
                     <div className="mt-1 flex items-center gap-1">
-                      <span className="text-xs text-gold-ink">{"★".repeat(Math.round(step.product.rating))}</span>
+                      <span className="text-xs text-signal">{"★".repeat(Math.round(step.product.rating))}</span>
                       <span className="text-xs text-faint">{step.product.reviewCount}</span>
                     </div>
                   )}
@@ -186,15 +186,15 @@ export function UpsellLadderModal() {
                       {formatMoney(step.product.price, locale)}
                     </span>
                     {isFreeGift ? (
-                      <span className="font-display text-lg font-bold text-gold-ink">
+                      <span className="font-display text-lg font-bold text-fg">
                         {t("freeLabel")}
                       </span>
                     ) : (
                       <>
-                        <span className="font-display text-base font-bold text-accent-strong">
+                        <span className="font-display text-base font-bold text-fg">
                           {formatMoney(step.discountedPrice, locale)}
                         </span>
-                        <span className="rounded bg-accent/20 px-1.5 py-0.5 text-xs font-bold text-accent-strong">
+                        <span className="rounded border border-line bg-surface-2 px-1.5 py-0.5 text-xs font-bold text-muted">
                           −{step.discountPercent}%
                         </span>
                       </>
@@ -215,7 +215,7 @@ export function UpsellLadderModal() {
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(100, (displaySavings / step.product.price) * 100)}%` }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
-                      className="h-full rounded-full bg-gold"
+                      className="h-full rounded-full bg-signal"
                     />
                   </div>
                 </div>

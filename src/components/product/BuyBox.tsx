@@ -5,7 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
 import { formatMoney } from "@/lib/utils";
-import { Price } from "@/components/ui/Price";
+import { DiscountBadge, Price } from "@/components/ui/Price";
 import { StarRating } from "@/components/ui/StarRating";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -14,6 +14,7 @@ import { useToast } from "@/lib/ui/toast";
 import { track, trackAddToCart, trackViewProduct } from "@/lib/analytics/events";
 import { SubscribeToSave, type PurchaseMode } from "@/components/product/SubscribeToSave";
 import { DEFAULT_INTERVAL, type IntervalDays } from "@/lib/subscription/plans";
+import { ONLINE_PROVIDERS } from "@/lib/config/payments";
 import { reviewerForKey } from "@/lib/content/experts";
 import type { Expert } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
@@ -23,20 +24,19 @@ import { WishlistButton } from "@/components/product/WishlistButton";
 import { ShareButton } from "@/components/product/ShareButton";
 
 const MAX_QTY = 20;
-const PAYMENT_METHODS = ["Payme", "Click", "Uzum", "Visa", "Mastercard"];
 
-function PaymentIcon({ label }: { label: string }) {
-  return (
-    <span className="inline-flex items-center rounded-xl border border-line/60 bg-surface-2 px-3 py-1.5 text-[11px] font-extrabold tracking-wider text-brand-deep shadow-xs transition-transform hover:scale-105">
-      {label}
-    </span>
-  );
-}
+/*
+  Trust marks, in the health colour.
 
+  These icons were champagne gold on a gold-tinted tile, which put the money
+  colour on delivery, returns and secure payment — three things a shopper is
+  not buying. They now use `signal`, the colour this site reserves for the
+  things it can actually prove.
+*/
 function TrustItem({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="group flex flex-col items-center gap-2 text-center p-2 rounded-xl transition-all hover:bg-white/50">
-      <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gold/15 text-gold-ink shadow-xs transition-transform group-hover:scale-110">
+    <div className="flex flex-col items-center gap-2 rounded-xl p-2 text-center">
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-signal-soft text-signal">
         {children}
       </span>
       <p className="text-[11px] font-bold leading-tight text-fg">{label}</p>
@@ -44,7 +44,7 @@ function TrustItem({ label, children }: { label: string; children: React.ReactNo
   );
 }
 
-export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; reviewer?: Expert }) {
+export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; reviewer?: Expert | null }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const tp = useTranslations("product.buyBox");
@@ -55,7 +55,10 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
   const [qty, setQty] = useState(1);
   const [mode, setMode] = useState<PurchaseMode>("one-time");
   const [intervalDays, setIntervalDays] = useState<IntervalDays>(DEFAULT_INTERVAL);
+  // Null when no verified expert is on file — the badge below is hidden then.
   const reviewer = reviewerProp ?? reviewerForKey(product.id, locale);
+  // Configured online providers only — see lib/config/payments.
+  const onlineProviderNames = ONLINE_PROVIDERS.map((p) => p.label);
 
   const discountPercent = product.oldPrice
     ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
@@ -117,7 +120,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <StarRating rating={product.rating} />
         {product.reviewCount > 0 && (
-          <a href="#reviews" className="text-sm text-muted underline-offset-4 hover:text-accent-strong hover:underline">
+          <a href="#reviews" className="text-sm text-muted underline decoration-line-strong underline-offset-4 hover:text-fg">
             {t("reviews", { count: product.reviewCount })}
           </a>
         )}
@@ -127,29 +130,28 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         <div className="flex items-center gap-2">
           <span
             className={`inline-flex items-center gap-1.5 text-sm font-medium ${
-              product.inStock ? "text-emerald-700" : "text-danger"
+              product.inStock ? "text-signal" : "text-danger"
             }`}
           >
             <span
               aria-hidden
-              className={`h-2 w-2 rounded-full ${product.inStock ? "bg-emerald-500 animate-pulse" : "bg-danger"}`}
+              className={`h-2.5 w-2.5 rounded-full ${product.inStock ? "bg-signal" : "bg-danger"}`}
             />
             {product.inStock ? t("inStock") : t("outOfStock")}
           </span>
         </div>
       </div>
 
-      <ReviewedBy expert={reviewer} />
+      {reviewer && <ReviewedBy expert={reviewer} />}
 
       {/* Price */}
       <div className="rounded-2xl border border-line bg-surface p-4">
         <div className="flex flex-wrap items-center gap-3">
           <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="lg" />
-          {discountPercent > 0 && (
-            <span className="rounded-full bg-danger px-2.5 py-1 text-xs font-bold text-white">
-              −{discountPercent}%
-            </span>
-          )}
+          {/* One discount badge across the whole site, and it is neutral: a red
+              pill beside a price reads as a warning, and a gold one competes
+              with the button the shopper is meant to press. */}
+          <DiscountBadge percent={discountPercent} />
         </div>
         {product.oldPrice && (
           <p className="mt-1 text-xs font-medium text-danger">
@@ -202,7 +204,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
               onClick={() => setQty((q) => Math.max(1, q - 1))}
               disabled={qty <= 1}
               aria-label={tp("decrease")}
-              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:text-accent-strong disabled:opacity-40"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:bg-surface-2 disabled:opacity-40"
             >
               −
             </button>
@@ -214,7 +216,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
               onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
               disabled={qty >= MAX_QTY}
               aria-label={tp("increase")}
-              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:text-accent-strong disabled:opacity-40"
+              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:bg-surface-2 disabled:opacity-40"
             >
               +
             </button>
@@ -267,12 +269,25 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         </TrustItem>
       </div>
 
+      {/*
+        Only the routes the checkout can actually take. This was five provider
+        pills — Payme, Click, Uzum, Visa, Mastercard — painted on every product
+        page, including the ones with no merchant account behind them.
+      */}
       <div>
         <p className="mb-2 text-xs text-muted">{tp("payWith")}</p>
         <div className="flex flex-wrap gap-1.5">
-          {PAYMENT_METHODS.map((p) => (
-            <PaymentIcon key={p} label={p} />
+          {onlineProviderNames.map((name) => (
+            <span
+              key={name}
+              className="inline-flex items-center rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-muted"
+            >
+              {name}
+            </span>
           ))}
+          <span className="inline-flex items-center rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-muted">
+            {tp("payCod")}
+          </span>
         </div>
       </div>
 

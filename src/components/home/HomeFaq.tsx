@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { FaqAccordion } from "@/components/product/FaqAccordion";
 import { JsonLd, faqLd } from "@/lib/seo/jsonld";
 
@@ -16,20 +16,17 @@ export async function HomeFaq() {
   if (!Array.isArray(items) || items.length === 0) return null;
 
   return (
-    <section className="border-t border-line py-20 sm:py-24">
+    <Section tone="surface">
       <JsonLd data={faqLd(items)} />
-      <Container>
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:items-start">
-          <div className="lg:sticky lg:top-24">
-            <p className="mb-2 text-sm font-semibold text-accent-strong">{t("eyebrow")}</p>
-            <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">
-              {t("title")}
-            </h2>
-            <p className="mt-3 text-muted">{t("subtitle")}</p>
-          </div>
-          <FaqAccordion items={items} />
+      <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:items-start">
+        <div className="lg:sticky lg:top-32">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted">{t("eyebrow")}</p>
+          <h2 className="font-display text-2xl font-extrabold tracking-tight text-balance text-fg sm:text-3xl">{t("title")}
+          </h2>
+          <p className="mt-3 text-pretty text-muted">{t("subtitle")}</p>
         </div>
-      </Container>
-    </section>
+        <FaqAccordion items={items} />
+      </div>
+    </Section>
   );
 }

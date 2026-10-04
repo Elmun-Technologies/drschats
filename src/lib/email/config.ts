@@ -1,4 +1,5 @@
 import { BRAND } from "@/lib/brand";
+import { SITE_URL } from "@/lib/config/site";
 
 /*
   Email configuration, in one place, with the same "one variable turns it on"
@@ -25,10 +26,11 @@ export function isEmailConfigured(): boolean {
 /**
  * Absolute site origin, needed because every link in an email must be absolute.
  *
- * Falls back to localhost so a developer's confirmation link is clickable
- * rather than broken; production sets NEXT_PUBLIC_SITE_URL for the sitemap
- * already, so this is the same value the canonical tags use.
+ * Falls back to the production domain, not localhost: a marketing email sent
+ * from a deployment that forgot NEXT_PUBLIC_SITE_URL used to carry
+ * `http://localhost:3000` links, which are dead for every recipient. The same
+ * value drives canonical tags (see src/lib/config/site.ts).
  */
 export function siteOrigin(): string {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+  return SITE_URL;
 }

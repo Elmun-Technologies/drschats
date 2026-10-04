@@ -34,32 +34,67 @@ function personNode(expert: Expert) {
   };
 }
 
-/** Authoritative Organization node — reused across the graph. */
-export function organizationNode() {
+/*
+  The Organization node, and the three things that were wrong with it.
+
+  1. It published a phone number (+998-71-200-00-00) that appears nowhere else
+     on the site — not the number in the header, the footer or any invoice. A
+     structured-data contact that nobody answers is worse than none, so it now
+     reads from BRAND like every other surface.
+  2. It pointed `logo` at /brand/logo.png, a file that does not exist; the
+     public/brand folder holds only a README. Google rejects a broken image in
+     an Organization node, and an app icon is the honest substitute until a
+     real logo file lands.
+  3. It declared a Telegram bot handle that is not this shop's (drschatsstorebot).
+     `sameAs` is a strongest-form identity claim — it now lists only the
+     accounts BRAND actually owns.
+
+  Legal identifiers are appended when configured: a STIR and a registered
+  address are what makes a pharmacy's Organization node worth trusting.
+*/
+/*
+  Descriptions in the page's own language.
+
+  The Organization and WebSite nodes carried one Uzbek sentence, so the
+  Russian home page shipped Uzbek structured data in the middle of an
+  otherwise Russian document. Search engines read the JSON-LD exactly like
+  body text.
+*/
+const ORG_DESCRIPTION: Record<string, string> = {
+  uz: "Vitaminlar, biologik faol qo'shimchalar va tibbiy mahsulotlarni O'zbekistonga rasmiy import qiluvchi va yetkazib beruvchi.",
+  ru: "Официальный импорт витаминов, биологически активных добавок и медицинских товаров в Узбекистан.",
+};
+
+export function organizationNode(locale: Locale = "uz") {
   return {
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
-    name: "Go Vita",
+    name: BRAND.name,
+    legalName: BRAND.legalName,
     url: SITE_URL,
-    logo: `${SITE_URL}/brand/logo.png`,
-    description:
-      "Go Vita — premium vitamins and dietary supplements distributor in Uzbekistan.",
+    logo: `${SITE_URL}/icons/icon-512.png`,
+    description: `${BRAND.name} — ${ORG_DESCRIPTION[locale] ?? ORG_DESCRIPTION.uz}`,
+    ...(BRAND.legal.stir ? { vatID: BRAND.legal.stir } : {}),
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: BRAND.legal.address,
+      addressCountry: "UZ",
+      addressLocality: "Toshkent",
+    },
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+998-71-200-00-00",
+      telephone: BRAND.contact.phone,
+      email: BRAND.contact.email,
       contactType: "customer service",
       areaServed: "UZ",
       availableLanguage: ["Uzbek", "Russian"],
     },
-    sameAs: [
-      "https://t.me/drschatsstorebot",
-      BRAND.social.instagram,
-    ],
+    sameAs: [BRAND.social.telegram, BRAND.social.instagram, BRAND.social.facebook],
   };
 }
 
-export function organizationLd() {
-  return { "@context": "https://schema.org", ...organizationNode() };
+export function organizationLd(locale: Locale = "uz") {
+  return { "@context": "https://schema.org", ...organizationNode(locale) };
 }
 
 /**
@@ -77,8 +112,9 @@ export function productGraph({
 }: {
   product: Product;
   locale: Locale;
-  reviewer: Expert;
-  author: Expert;
+  /** Null while the review board is empty — see content/experts.ts. */
+  reviewer: Expert | null;
+  author: Expert | null;
   datePublished?: string;
   dateModified?: string;
 }) {
@@ -96,8 +132,8 @@ export function productGraph({
         datePublished: datePublished ?? "2025-01-01T09:00:00+05:00",
         dateModified: dateModified ?? "2026-06-27T09:00:00+05:00",
         isPartOf: { "@id": `${SITE_URL}/#organization` },
-        author: personNode(author),
-        reviewedBy: personNode(reviewer),
+        ...(author ? { author: personNode(author) } : {}),
+        ...(reviewer ? { reviewedBy: personNode(reviewer) } : {}),
       },
       {
         "@type": "Product",
@@ -152,7 +188,7 @@ export function productGraph({
           },
         },
       },
-      organizationNode(),
+      organizationNode(locale),
     ],
   };
 }
@@ -176,8 +212,8 @@ export function articleGraph({
   datePublished: string;
   dateModified: string;
   locale: Locale;
-  author: Expert;
-  reviewer: Expert;
+  author: Expert | null;
+  reviewer: Expert | null;
 }) {
   return {
     "@context": "https://schema.org",
@@ -193,15 +229,15 @@ export function articleGraph({
         datePublished,
         dateModified,
         isPartOf: { "@id": `${SITE_URL}/#organization` },
-        author: personNode(author),
-        reviewedBy: personNode(reviewer),
+        ...(author ? { author: personNode(author) } : {}),
+        ...(reviewer ? { reviewedBy: personNode(reviewer) } : {}),
         publisher: { "@id": `${SITE_URL}/#organization` },
         speakable: {
           "@type": "SpeakableSpecification",
           cssSelector: ["h1", "h2", ".article-excerpt"],
         },
       },
-      organizationNode(),
+      organizationNode(locale),
     ],
   };
 }
@@ -253,8 +289,7 @@ export function websiteLd(locale: Locale) {
     "@id": `${SITE_URL}/#website`,
     url: SITE_URL,
     name: SITE_NAME,
-    description:
-      "Premium vitamins and dietary supplements distributor in Uzbekistan. Lab-tested, certified quality.",
+    description: ORG_DESCRIPTION[locale] ?? ORG_DESCRIPTION.uz,
     inLanguage: locales as unknown as string[],
     potentialAction: {
       "@type": "SearchAction",
@@ -273,33 +308,25 @@ export function localBusinessLd() {
     "@context": "https://schema.org",
     "@type": ["LocalBusiness", "PharmacyOrDrugstore"],
     "@id": `${SITE_URL}/#localbusiness`,
-    name: "Go Vita",
+    name: BRAND.name,
     url: SITE_URL,
-    logo: `${SITE_URL}/brand/logo.png`,
-    image: `${SITE_URL}/brand/logo.png`,
-    telephone: "+998-71-200-00-00",
+    image: `${SITE_URL}/icons/icon-512.png`,
+    telephone: BRAND.contact.phone,
     email: BRAND.contact.email,
     priceRange: "$$",
     openingHours: "Mo-Sa 09:00-18:00",
     address: {
       "@type": "PostalAddress",
+      streetAddress: BRAND.legal.address,
       addressCountry: "UZ",
       addressLocality: "Toshkent",
       addressRegion: "Toshkent",
-    },
-    geo: {
-      "@type": "GeoCoordinates",
-      latitude: 41.2995,
-      longitude: 69.2401,
     },
     areaServed: {
       "@type": "Country",
       name: "Uzbekistan",
     },
-    sameAs: [
-      "https://t.me/drschatsstorebot",
-      BRAND.social.instagram,
-    ],
+    sameAs: [BRAND.social.telegram, BRAND.social.instagram],
     parentOrganization: { "@id": `${SITE_URL}/#organization` },
   };
 }

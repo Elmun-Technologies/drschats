@@ -7,7 +7,7 @@ export function LegalPage({ title, body }: { title: string; body: string }) {
     <div className="pt-10">
       <Container size="narrow">
         <Reveal>
-          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-5xl">{title}</h1>
+          <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
         </Reveal>
         <Reveal index={1}>
           <p className="my-16 whitespace-pre-line text-muted">{body}</p>

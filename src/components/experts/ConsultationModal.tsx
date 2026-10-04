@@ -6,11 +6,27 @@ import { useTranslations } from "next-intl";
 import type { Expert } from "@/lib/content/experts.sanity";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
+import { BRAND } from "@/lib/brand";
+
+/*
+  Booking a consultation with an expert.
+
+  Two things to know before this can be shown to a customer:
+
+  1. It is reachable only from an expert page, and there are no expert pages
+     while `rawExperts` in src/lib/content/experts.ts is empty.
+  2. The form below does not yet post anywhere — `handleSubmit` only flips a
+     local flag. Publishing the first real expert therefore also means wiring
+     this to a channel that a human actually reads, and rewriting the success
+     message to match whatever that channel really does.
+
+  Until then it is dead code, kept so the plumbing does not have to be rebuilt.
+  Contact links point at the public Go Vita channel, never the corporate one.
+*/
 
 export function ConsultationModal({
   expert,
   buttonText,
-  variant = "primary",
 }: {
   expert: Expert;
   buttonText?: string;
@@ -41,8 +57,8 @@ export function ConsultationModal({
         type="button"
         onClick={() => setIsOpen(true)}
         className={cn(
-          buttonVariants(variant === "primary" ? "primary" : "secondary"),
-          "w-full justify-center gap-2 font-bold shadow-md",
+          buttonVariants("secondary"),
+          "w-full justify-center gap-2",
         )}
       >
         <svg className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.2">
@@ -53,7 +69,7 @@ export function ConsultationModal({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-amber-500/30 bg-surface p-6 sm:p-8 shadow-2xl">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-line bg-surface p-6 sm:p-8 shadow-[var(--shadow-pop)]">
             <button
               type="button"
               onClick={handleClose}
@@ -63,21 +79,21 @@ export function ConsultationModal({
             </button>
 
             <div className="flex items-center gap-4 border-b border-line pb-5">
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-amber-500">
+              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-signal">
                 <Image src={expert.image} alt={expert.name} fill className="object-cover" />
               </div>
               <div>
-                <span className="text-xs font-semibold uppercase tracking-widest text-amber-700">
+                <span className="text-xs font-semibold uppercase tracking-widest text-signal">
                   {t("consultModalTitle")}
                 </span>
-                <h3 className="font-display text-xl font-bold">{expert.name}</h3>
+                <h3 className="font-display text-lg font-bold">{expert.name}</h3>
                 <p className="text-xs text-muted truncate">{expert.title}</p>
               </div>
             </div>
 
             {submitted ? (
               <div className="py-8 text-center">
-                <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-500/20 text-emerald-500 mb-4">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-signal-soft text-signal">
                   <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
@@ -86,10 +102,10 @@ export function ConsultationModal({
                 <p className="mt-2 text-sm text-muted leading-relaxed">{t("successMsg")}</p>
                 <div className="mt-6 flex flex-col gap-3">
                   <a
-                    href="https://t.me/DrChats_Support"
+                    href={BRAND.social.telegram}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={cn(buttonVariants("primary"), "w-full justify-center gap-2 bg-gradient-to-r from-amber-500 to-accent text-ink font-bold")}
+                    className={cn(buttonVariants("secondary"), "w-full justify-center gap-2")}
                   >
                     <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
@@ -113,14 +129,14 @@ export function ConsultationModal({
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "telegram"
-                        ? "border-amber-500 bg-amber-500/15 text-amber-700"
+                        ? "border-signal bg-signal-soft text-signal"
                         : "border-line bg-surface-2 text-muted",
                     )}
                   >
                     <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
                       <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.74-.55 2.92-1.27 4.86-2.11 5.83-2.51 2.78-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .38z" />
                     </svg>
-                    Telegram Chat
+                    {t("methodTelegram")}
                   </button>
                   <button
                     type="button"
@@ -128,14 +144,14 @@ export function ConsultationModal({
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "phone"
-                        ? "border-amber-500 bg-amber-500/15 text-amber-700"
+                        ? "border-signal bg-signal-soft text-signal"
                         : "border-line bg-surface-2 text-muted",
                     )}
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                       <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
                     </svg>
-                    Telefon Qo&apos;ng&apos;irog&apos;i
+                    {t("methodPhone")}
                   </button>
                 </div>
 
@@ -146,8 +162,8 @@ export function ConsultationModal({
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder="Masalan: Jamshid"
-                    className="w-full rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-amber-500 focus:outline-none"
+                    placeholder={t("namePlaceholder")}
+                    className="w-full rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
                   />
                 </div>
 
@@ -158,14 +174,14 @@ export function ConsultationModal({
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    placeholder="+998 90 123 45 67"
-                    className="w-full rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-amber-500 focus:outline-none"
+                    placeholder={t("phonePlaceholder")}
+                    className="w-full rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className={cn(buttonVariants("primary"), "w-full justify-center bg-gradient-to-r from-amber-500 to-accent text-ink font-bold py-3")}
+                  className={cn(buttonVariants("secondary"), "w-full justify-center py-3")}
                 >
                   {t("submitBooking")}
                 </button>

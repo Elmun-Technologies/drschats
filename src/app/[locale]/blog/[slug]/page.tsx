@@ -89,7 +89,7 @@ export default async function ArticlePage({
 
       {/* Hero */}
       <Container size="narrow">
-        <Link href="/blog" className="text-sm text-muted hover:text-accent-strong">
+        <Link href="/blog" className="text-sm text-muted hover:text-fg">
           ← {t("backToBlog")}
         </Link>
         <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -101,12 +101,12 @@ export default async function ArticlePage({
             </time>
           )}
         </div>
-        <h1 className="mt-4 font-display text-4xl font-bold tracking-tight text-balance sm:text-5xl">
+        <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
           {article.title}
         </h1>
         <p className="mt-5 text-xl text-muted">{article.excerpt}</p>
         <div className="mt-6 flex items-center justify-between gap-4">
-          <ReviewedBy expert={reviewer} />
+          {reviewer && <ReviewedBy expert={reviewer} />}
         </div>
       </Container>
 
@@ -117,7 +117,7 @@ export default async function ArticlePage({
       </Container>
 
       {/* Body */}
-      <Container size="narrow" className="py-16">
+      <Container size="narrow" className="section-y-tight">
         <div className="space-y-12">
           {article.sections.map((section, i) => (
             <Reveal key={i} index={i}>
@@ -139,7 +139,7 @@ export default async function ArticlePage({
       {relatedProducts.length > 0 && (
         <section className="border-t border-line py-20">
           <Container>
-            <h2 className="mb-10 font-display text-3xl font-bold tracking-tight">{t("relatedProducts")}</h2>
+            <h2 className="mb-10 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("relatedProducts")}</h2>
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
               {relatedProducts.map((p, i) => (
                 <ProductCard key={p.id} product={p} index={i} />

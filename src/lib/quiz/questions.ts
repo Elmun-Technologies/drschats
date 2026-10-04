@@ -90,35 +90,81 @@ const raw: RawQuestion[] = [
     id: "who",
     question: { uz: "Kim uchun tanlayapsiz?", ru: "Для кого подбираете?" },
     guidance: {
-      uz: "Nima uchun bu muhim? Yosh va jinsga qarab vitaminlarning so'rilish darajasi hamda sutkalik ehtiyoj me'yorlari keskin farq qiladi.",
-      ru: "Почему это важно? В зависимости от пола и возраста нормы потребления и усвояемость витаминов существенно различаются.",
+      uz: "Nima uchun bu muhim? Yosh va jinsga qarab sutkalik ehtiyoj me'yorlari farq qiladi.",
+      ru: "Почему это важно? В зависимости от пола и возраста суточные нормы потребления различаются.",
     },
     multiSelect: false,
+    /*
+      Six doors, not four.
+
+      "O'zim uchun (ayol / erkak)" used to be the only way to say "for myself",
+      which left out the two audiences the shop actually sells to: someone
+      buying for a parent over 60, and someone recovering from an illness or an
+      operation. Both were reachable only by picking "o'zim uchun" and reading
+      the result loosely. The doors are the question, so the question has to
+      offer them.
+
+      The "for myself or as a gift" distinction, which the home page used to ask
+      with its own pair of buttons, is now the question right after this one —
+      one place instead of two.
+    */
     options: [
       {
         id: "self-woman",
-        label: { uz: "O'zim uchun (ayol)", ru: "Для себя (женщина)" },
+        label: { uz: "Ayolga", ru: "Женщине" },
         topics: { beauty: 1, immunity: 0.5 },
         ingredients: { collagen: 1, biotin: 1 },
       },
       {
         id: "self-man",
-        label: { uz: "O'zim uchun (erkak)", ru: "Для себя (мужчина)" },
+        label: { uz: "Erkakka", ru: "Мужчине" },
         topics: { energy: 1, immunity: 0.5 },
         ingredients: { magnesium: 1 },
       },
       {
+        id: "expectant",
+        label: { uz: "Bo'lajak onaga", ru: "Будущей маме" },
+        topics: { pregnancy: 3, immunity: 1 },
+        ingredients: { "vitamin-d3": 1, iron: 1 },
+        seeDoctor: true,
+      },
+      {
         id: "child",
-        label: { uz: "Bolam uchun", ru: "Для ребёнка" },
+        label: { uz: "Bolaga", ru: "Ребёнку" },
         topics: { kids: 2, immunity: 1 },
         ingredients: { "vitamin-d3": 1, "vitamin-c": 1 },
       },
       {
         id: "parent",
-        label: { uz: "Keksa ota-onam uchun", ru: "Для пожилых родителей" },
+        label: { uz: "60+ ota-onaga", ru: "Родителям 60+" },
         topics: { bones: 2, heart: 1 },
         ingredients: { "vitamin-d3": 1, "vitamin-k2": 1, "epa-dha": 1 },
       },
+      {
+        id: "recovery",
+        label: { uz: "Kasallik yoki operatsiyadan keyin", ru: "После болезни или операции" },
+        topics: { fatigue: 2, immunity: 1 },
+        ingredients: { "omega-3": 1, "vitamin-c": 1 },
+        seeDoctor: true,
+      },
+    ],
+  },
+  {
+    /*
+      "For yourself, or as a gift" — lifted off the home page, where it was a
+      second, competing way to ask the audience question. It changes only the
+      wording of the result, so it carries no scoring weights.
+    */
+    id: "recipient",
+    question: { uz: "O'zingiz uchunmi yoki sovg'a?", ru: "Для себя или в подарок?" },
+    guidance: {
+      uz: "Nima uchun bu muhim? Sovg'a uchun natijada taklifnoma va qadoqlash haqidagi ma'lumot ko'rsatiladi.",
+      ru: "Почему это важно? Для подарка в результате появятся подсказки об упаковке.",
+    },
+    multiSelect: false,
+    options: [
+      { id: "self", label: { uz: "O'zim uchun", ru: "Для себя" }, topics: {} },
+      { id: "gift", label: { uz: "Sovg'a uchun", ru: "В подарок" }, topics: {} },
     ],
   },
   {
@@ -203,8 +249,15 @@ const raw: RawQuestion[] = [
     id: "sleep-hours",
     question: { uz: "Odatda necha soat uxlaysiz?", ru: "Сколько обычно спите?" },
     guidance: {
-      uz: "Nima uchun bu muhim? Uyqu rejimining buzilishi D3 vitamini va magniy metabolizmiga hamda gormonal muvozanatga bevosita ta'sir qiladi.",
-      ru: "Почему это важно? Нарушение режима сна напрямую влияет на метаболизм магния, витамина D3 и гормональный баланс.",
+      /*
+        Medical copy belongs to the client's doctor, not to the template — see
+        docs/GOVITA-TAVSIYALAR.md §5. This line used to explain what a sleep
+        deficit does to magnesium, D3 and "hormonal balance"; the mechanism was
+        an unverifiable claim in a shop quiz. Until the doctor writes the
+        replacement, the guidance only says why the question is asked.
+      */
+      uz: "Nima uchun bu muhim? Javobingiz kundalik tanlovga ta'sir qiladi.",
+      ru: "Почему это важно? Ваш ответ влияет на подборку.",
     },
     multiSelect: false,
     options: [
@@ -320,7 +373,7 @@ const raw: RawQuestion[] = [
       uz: "Nima uchun bu muhim? Homiladorlikda foliy kislotasi va temir preparatlari faqat shifokor nazorati ostida tayinlanadi.",
       ru: "Почему это важно? При беременности фолиевая кислота и железо назначаются только под контролем врача.",
     },
-    showIf: { question: "who", includesAny: ["self-woman"] },
+    showIf: { question: "who", includesAny: ["self-woman", "expectant"] },
     multiSelect: false,
     options: [
       { id: "no", label: { uz: "Yo'q / tegishli emas", ru: "Нет / не относится" }, topics: {} },

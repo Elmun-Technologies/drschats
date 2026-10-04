@@ -70,7 +70,7 @@ export default async function ContactPage({
     <div className="pt-10">
       <Container>
         <Reveal>
-          <h1 className="font-display text-4xl font-bold tracking-tight sm:text-6xl">{t("title")}</h1>
+          <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">{t("title")}</h1>
         </Reveal>
         <Reveal index={1}>
           <p className="mt-6 text-xl text-muted">{t("subtitle")}</p>
@@ -80,13 +80,13 @@ export default async function ContactPage({
           {cards.map((card, i) => (
             <Reveal key={i} index={i}>
               <div className="flex items-center gap-5 rounded-2xl border border-line bg-surface p-6">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-accent-soft text-accent-strong">
+                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-fg">
                   {card.icon}
                 </span>
                 <div className="flex-1">
                   <p className="text-xs font-semibold uppercase tracking-wide text-faint">{card.label}</p>
                   {card.href ? (
-                    <a href={card.href} className="mt-1 block text-lg font-semibold text-fg hover:text-accent-strong">
+                    <a href={card.href} className="mt-1 block text-lg font-semibold text-fg hover:text-fg">
                       {card.value}
                     </a>
                   ) : (

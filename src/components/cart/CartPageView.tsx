@@ -32,7 +32,7 @@ export function CartPageView() {
           <p className="font-display text-xl font-bold text-fg">{t("empty")}</p>
           <p className="mt-1 text-sm text-muted">{t("emptyHint")}</p>
         </div>
-        <Link href="/products" className={buttonVariants("primary", "lg")}>
+        <Link href="/products" className={buttonVariants("dark", "lg")}>
           {t("emptyCta")}
         </Link>
       </div>
@@ -60,7 +60,7 @@ export function CartPageView() {
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-surface-2">
               <div
-                className="h-full rounded-full bg-accent transition-all duration-500"
+                className="h-full rounded-full bg-signal transition-[width] duration-500 ease-out"
                 style={{ width: `${freeShippingPct}%` }}
               />
             </div>
@@ -75,7 +75,7 @@ export function CartPageView() {
               </div>
               <div className="flex flex-1 flex-col">
                 <div className="flex items-start justify-between gap-3">
-                  <Link href={`/product/${l.slug}`} className="font-medium text-fg hover:text-accent-strong">
+                  <Link href={`/product/${l.slug}`} className="font-medium text-fg hover:text-fg">
                     {l.name}
                   </Link>
                   <button onClick={() => remove(l.lineId)} className="shrink-0 text-faint hover:text-danger" aria-label={t("remove")}>
@@ -84,24 +84,24 @@ export function CartPageView() {
                     </svg>
                   </button>
                 </div>
-                <span className="mt-1 text-sm font-semibold text-accent-strong">{formatMoney(l.price, locale)}</span>
+                <span className="mt-1 text-sm font-semibold text-fg">{formatMoney(l.price, locale)}</span>
                 {l.oldPrice && (
                   <span className="text-xs text-faint line-through">{formatMoney(l.oldPrice, locale)}</span>
                 )}
                 {l.subscription && (
-                  <span className="mt-0.5 text-xs font-semibold text-accent-strong">
+                  <span className="mt-0.5 text-xs font-semibold text-fg">
                     {ts("everyDays", { days: l.subscription.intervalDays })}
                   </span>
                 )}
                 <div className="mt-auto flex items-center gap-2">
                   <button
                     onClick={() => setQuantity(l.lineId, l.quantity - 1)}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-line hover:border-accent"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-line hover:border-line-strong"
                   >−</button>
                   <span className="w-8 text-center text-sm font-medium">{l.quantity}</span>
                   <button
                     onClick={() => setQuantity(l.lineId, l.quantity + 1)}
-                    className="flex h-8 w-8 items-center justify-center rounded-full border border-line hover:border-accent"
+                    className="flex h-8 w-8 items-center justify-center rounded-full border border-line hover:border-line-strong"
                   >+</button>
                   <span className="ml-auto text-sm font-semibold text-fg">
                     {formatMoney(l.price * l.quantity, locale)}
@@ -150,7 +150,7 @@ export function CartPageView() {
               { icon: "M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z", label: t("trustSecure") },
             ].map((item) => (
               <div key={item.label} className="flex items-center gap-2.5 text-xs text-muted">
-                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-accent-strong" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-fg" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d={item.icon} strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 {item.label}
@@ -167,7 +167,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <div className="flex items-center justify-between">
       <span className="text-muted">{label}</span>
-      <span className={accent ? "font-medium text-accent-strong" : "text-fg"}>{value}</span>
+      <span className={accent ? "font-semibold text-fg" : "text-muted"}>{value}</span>
     </div>
   );
 }

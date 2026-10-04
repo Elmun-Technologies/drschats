@@ -15,7 +15,8 @@ export interface HealthTopicPageData {
   products: Product[];
   ingredients: Ingredient[];
   related: HealthTopic[];
-  reviewer: Expert;
+  /** Null while the review board is empty — see content/experts.ts. */
+  reviewer: Expert | null;
 }
 
 /**

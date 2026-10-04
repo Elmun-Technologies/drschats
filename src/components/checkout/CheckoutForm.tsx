@@ -47,6 +47,7 @@ import { submitOrder } from "@/app/[locale]/checkout/actions";
 import { getAttribution, trackLead } from "@/lib/analytics/events";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
+import { PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 
 export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   const locale = useLocale() as Locale;
@@ -72,8 +73,20 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
     address: z.string().min(3, t("errorRequired")),
     note: z.string().optional(),
     method: z.enum(["courier", "pickup"]),
+    payment: z.enum(["online", "cod"]),
+    /** Which provider's page will take the money, when paying online. */
+    provider: z.enum(["payme", "click", "uzum"]).optional(),
     subscribe: z.boolean().optional(),
-  });
+  }).refine(
+    /*
+      Online payment without a provider is an order nobody can pay. The check
+      lives here as well as in the UI because the UI can be bypassed by an
+      autofill or a stale tab, and an unpaid "online" order would sit in the
+      operator queue looking paid.
+    */
+    (values) => values.payment !== "online" || Boolean(values.provider),
+    { path: ["provider"], message: t("errorRequired") },
+  );
   type FormValues = z.infer<typeof schema>;
 
   const {
@@ -83,16 +96,22 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
-    defaultValues: { method: "courier", subscribe: false },
+    defaultValues: {
+      method: "courier",
+      payment: onlinePaymentAvailable() ? "online" : "cod",
+      provider: onlinePaymentAvailable() ? PAYMENT_PROVIDERS.find((p) => p.configured)?.id : undefined,
+      subscribe: false,
+    },
   });
 
   const emailEntered = Boolean(watch("email"));
+  const provider = watch("provider");
 
   if (lines.length === 0) {
     return (
       <div className="flex flex-col items-center gap-5 py-24 text-center">
         <p className="text-lg text-muted">{tc("empty")}</p>
-        <Link href="/products" className={buttonVariants("primary")}>
+        <Link href="/products" className={buttonVariants("dark")}>
           {tc("emptyCta")}
         </Link>
       </div>
@@ -114,6 +133,10 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
         // the address to a list behind the customer's back.
         marketingOptIn: Boolean(values.email && values.subscribe),
       },
+      payment:
+        values.payment === "online" && provider
+          ? { method: "online" as const, provider }
+          : { method: "cod" as const },
       delivery: {
         region: values.region,
         address: values.address,
@@ -211,20 +234,87 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <Field label={t("note")}>
             <textarea rows={3} className={inputClass} placeholder={t("notePlaceholder")} {...register("note")} />
           </Field>
-          <div className="rounded-2xl border border-line/60 bg-surface p-4 space-y-2">
-            <p className="text-xs font-bold text-fg uppercase tracking-wider">{t("paymentMethodsTitle")}:</p>
-            <div className="flex flex-wrap gap-2">
-              {["Click", "Payme", "Uzcard", "Humo"].map((pm) => (
-                <span key={pm} className="rounded-xl border border-line bg-surface-2 px-3 py-1.5 text-xs font-bold text-fg shadow-xs">
-                  ✓ {pm}
-                </span>
-              ))}
-              <span className="rounded-xl border border-line bg-surface-2 px-3 py-1.5 text-xs font-bold text-fg shadow-xs">
-                ✓ {t("paymentCash")}
+          {/*
+            A real choice instead of a row of logos.
+
+            The provider badges that used to sit here were decorative: no
+            merchant account behind them, and the order still ended in a
+            confirmation call. Now the customer picks a route, the choice
+            travels with the order, and a provider with no merchant id
+            configured is shown as unavailable rather than advertised.
+          */}
+          <fieldset className="rounded-2xl border border-line/60 bg-surface p-4">
+            <legend className="px-1 text-xs font-bold uppercase tracking-wider text-fg">
+              {t("paymentTitle")}
+            </legend>
+
+            {onlinePaymentAvailable() && (
+              <div className="mt-2 space-y-2">
+                <div className="flex items-start gap-3 rounded-xl border border-line bg-ink p-3">
+                  <input
+                    id="payment-online"
+                    type="radio"
+                    value="online"
+                    {...register("payment")}
+                    className="mt-0.5 h-4 w-4 accent-brand-deep"
+                  />
+                  <div className="min-w-0">
+                    <label htmlFor="payment-online" className="block cursor-pointer text-sm font-semibold text-fg">
+                      {t("payOnline")}
+                    </label>
+                    <p className="mt-0.5 text-xs text-muted">{t("payOnlineNote")}</p>
+                    {/* Providers are radios of their own — nesting them inside
+                        the parent's <label> made one click select two things. */}
+                    <div className="mt-2 flex flex-wrap gap-2">
+                      {PAYMENT_PROVIDERS.map((p) => (
+                        <label
+                          key={p.id}
+                          htmlFor={`provider-${p.id}`}
+                          className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-bold ${
+                            p.configured
+                              ? "cursor-pointer border-line-strong bg-surface text-fg"
+                              : "border-line bg-surface-2 text-faint"
+                          }`}
+                        >
+                          <input
+                            id={`provider-${p.id}`}
+                            type="radio"
+                            value={p.id}
+                            disabled={!p.configured}
+                            {...register("provider")}
+                            className="h-3.5 w-3.5 accent-brand-deep"
+                          />
+                          {p.label}
+                          {!p.configured && <span className="font-medium">— {t("paySoon")}</span>}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <label className="mt-2 flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-ink p-3">
+              <input
+                type="radio"
+                value="cod"
+                {...register("payment")}
+                className="mt-0.5 h-4 w-4 accent-brand-deep"
+              />
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-fg">{t("payCod")}</span>
               </span>
-            </div>
-            <p className="text-xs text-muted pt-1">{t("paymentNote")}</p>
-          </div>
+            </label>
+
+            <p className="pt-2 text-xs text-muted">
+              {onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}
+            </p>
+            {errors.provider?.message && (
+              <p role="alert" className="pt-1 text-xs font-semibold text-danger">
+                {errors.provider.message}
+              </p>
+            )}
+          </fieldset>
         </fieldset>
 
         {/* Upsell Ladder */}
@@ -237,7 +327,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                   key={step.product.id}
                   className={`flex items-center gap-4 rounded-xl border p-3 transition-all ${
                     step.stepType === "free_gift"
-                      ? "border-gold/50 bg-gradient-to-r from-gold/10 to-surface"
+                      ? "border-line-strong bg-surface-2"
                       : "border-line bg-surface"
                   }`}
                 >
@@ -250,10 +340,10 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     <div className="mt-1 flex items-center gap-2">
                       <span className="text-sm text-faint line-through">{formatMoney(step.product.price, locale)}</span>
                       {step.stepType === "free_gift" ? (
-                        <span className="font-display text-sm font-bold text-gold-ink">{t("upsellFree")}</span>
+                        <span className="font-display text-sm font-bold text-signal">{t("upsellFree")}</span>
                       ) : (
                         <>
-                          <span className="text-sm font-semibold text-accent-strong">{formatMoney(step.discountedPrice, locale)}</span>
+                          <span className="text-sm font-semibold text-fg">{formatMoney(step.discountedPrice, locale)}</span>
                           <Badge tone="gold">−{step.discountPercent}%</Badge>
                         </>
                       )}
@@ -274,8 +364,8 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     }
                     className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
                       step.stepType === "free_gift"
-                        ? "bg-gold text-ink hover:bg-gold-ink"
-                        : "bg-surface-3 text-fg hover:bg-accent hover:text-brand-deep"
+                        ? "bg-accent text-brand-deep hover:bg-accent-strong hover:text-ink"
+                        : "border border-line-strong bg-surface-2 text-fg hover:bg-surface-3"
                     }`}
                   >
                     {step.stepType === "free_gift" ? t("upsellFree") : t("upsellAdd")}
@@ -335,7 +425,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                       onClick={() => setQuantity(l.lineId, l.quantity - 1)}
                       disabled={l.quantity <= 1}
                       aria-label={t("decreaseFor", { name: l.name })}
-                      className="rounded px-1.5 hover:text-accent-strong disabled:opacity-40"
+                      className="rounded px-1.5 hover:text-fg disabled:opacity-40"
                     >
                       −
                     </button>
@@ -346,7 +436,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                       type="button"
                       onClick={() => setQuantity(l.lineId, l.quantity + 1)}
                       aria-label={t("increaseFor", { name: l.name })}
-                      className="rounded px-1.5 hover:text-accent-strong"
+                      className="rounded px-1.5 hover:text-fg"
                     >
                       +
                     </button>
@@ -388,7 +478,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
               if (totalSavings > 0) {
                 return (
-                  <div className="mt-4 rounded-xl border border-gold/25 bg-gold/10 p-3 text-center">
+                  <div className="mt-4 rounded-xl border border-line bg-surface-2 p-3 text-centerter">
                     <p className="text-sm font-semibold text-brand-deep">
                       {t("savings", { amount: formatMoney(totalSavings, locale) })}
                     </p>
@@ -469,7 +559,7 @@ function SummaryRow({ label, value, accent }: { label: string; value: string; ac
   return (
     <div className="flex items-center justify-between">
       <span className="text-muted">{label}</span>
-      <span className={accent ? "text-accent-strong" : "text-fg"}>{value}</span>
+      <span className={accent ? "font-semibold text-fg" : "text-muted"}>{value}</span>
     </div>
   );
 }

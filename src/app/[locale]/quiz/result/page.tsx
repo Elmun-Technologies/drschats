@@ -38,10 +38,12 @@ export default async function QuizResultPage({
   setRequestLocale(locale);
 
   const answers = decodeAnswers(a);
-  const [plan, reviewer] = await Promise.all([
+  const [plan, reviewerResult] = await Promise.all([
     buildQuizPlan(answers, locale),
     reviewerForKey("quiz", locale),
   ]);
+  // Null while there is no verified expert; QuizPlanView hides the block then.
+  const reviewer = reviewerResult ?? undefined;
 
   return <QuizPlanView plan={plan} reviewer={reviewer} locale={locale} />;
 }

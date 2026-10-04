@@ -39,9 +39,9 @@ export function GoalPicker() {
               role="checkbox"
               aria-checked={active}
               onClick={() => toggle(option.id)}
-              className={`min-h-11 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+              className={`min-h-11 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal ${
                 active
-                  ? "border-accent bg-accent-soft text-accent-strong"
+                  ? "border-line-strong bg-surface-2 text-fg"
                   : "border-line bg-surface text-fg hover:border-line-strong"
               }`}
             >

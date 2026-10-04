@@ -73,7 +73,7 @@ export async function TopicIndex({
 
         <Container className="absolute inset-0 flex flex-col justify-center">
           <div className="max-w-2xl">
-            <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-4">
+            <span className="inline-block rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-white/90 mb-4">
               {kindLabel}
             </span>
             <h1 className="font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl drop-shadow-lg">
@@ -85,7 +85,7 @@ export async function TopicIndex({
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
                   href="/quiz"
-                  className="inline-flex items-center gap-2 rounded-full bg-gold px-6 py-3 text-sm font-bold text-brand-deep transition-all hover:bg-white hover:scale-105"
+                  className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-6 py-3 text-sm font-bold text-brand-deep transition-colors hover:bg-surface-2"
                 >
                   {health("topicIndex.takeQuiz")}
                   <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -110,16 +110,15 @@ export async function TopicIndex({
           <Container>
             <div className="flex items-center justify-between mb-10">
               <div>
-                <span className="text-xs font-bold uppercase tracking-widest text-gold-ink">
+                <span className="text-xs font-bold uppercase tracking-widest text-faint">
                   {health("topicIndex.directionsCount", { count: topics.length })}
                 </span>
-                <h2 className="mt-1 font-display text-2xl font-extrabold text-brand-deep">
-                  {health("topicIndex.chooseDirection")}
+                <h2 className="mt-1 font-display text-2xl font-extrabold text-brand-deep">{health("topicIndex.chooseDirection")}
                 </h2>
               </div>
               <Link
                 href="/quiz"
-                className="hidden sm:inline-flex items-center gap-2 rounded-full bg-gold px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-deep transition-all hover:bg-white hover:scale-105"
+                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-deep transition-colors hover:bg-surface-2"
               >
                 {health("topicIndex.findAI")}
                 <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -133,7 +132,7 @@ export async function TopicIndex({
                 <Reveal key={topic.slug} index={Math.min(i, 6)} as="li" className="h-full">
                   <Link
                     href={`${TOPIC_BASE_PATH[kind]}/${topic.slug}`}
-                    className="group relative flex h-[420px] flex-col justify-end overflow-hidden rounded-[2.25rem] border border-white/10 bg-brand-deep transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30"
+                    className="group relative flex h-[420px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-[var(--shadow-pop)]"
                   >
                     <div className="absolute inset-0 z-0">
                       <Image
@@ -141,14 +140,13 @@ export async function TopicIndex({
                         alt={topic.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover opacity-85 transition-transform duration-1000 ease-out group-hover:scale-110"
+                        className="object-cover opacity-85 transition-transform duration-1000 ease-out"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-transparent opacity-95" />
                     </div>
 
                     <div className="relative z-10 p-7 flex flex-col justify-end h-full">
-                      <h2 className="font-display text-2xl font-extrabold text-white transition-colors group-hover:text-gold drop-shadow-md">
-                        {topic.name}
+                      <h2 className="font-display text-2xl font-extrabold text-white transition-colors group-hover:text-white/90 drop-shadow-md">{topic.name}
                       </h2>
                       <p className="mt-2 text-sm font-medium text-surface-2/90 drop-shadow-sm">{topic.headline}</p>
                       {topic.bullets.length > 0 && (
@@ -161,7 +159,7 @@ export async function TopicIndex({
                         </div>
                       )}
 
-                      <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-gold opacity-80 transition-all duration-300 group-hover:opacity-100 group-hover:translate-x-1">
+                      <span className="mt-5 inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-white/80 transition-colors duration-200 group-hover:text-white">
                         {health("topicIndex.more")}
                         <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
                           <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
