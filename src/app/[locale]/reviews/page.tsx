@@ -69,7 +69,7 @@ export default async function ReviewsPage({
     <div className="pt-10 pb-6">
       <Container>
         <header className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent-strong">
+          <p className="text-sm font-semibold uppercase tracking-widest text-fg">
             {t("eyebrow")}
           </p>
           <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
@@ -92,8 +92,7 @@ export default async function ReviewsPage({
 
         {stories.length > 0 && (
           <section aria-labelledby="stories" className="mt-16">
-            <h2 id="stories" className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {t("storiesTitle")}
+            <h2 id="stories" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("storiesTitle")}
             </h2>
             <ul className="mt-6 grid gap-6 lg:grid-cols-2">
               {stories.map((story, i) => (
@@ -106,8 +105,7 @@ export default async function ReviewsPage({
         )}
 
         <section aria-labelledby="product-reviews" className="mt-16">
-          <h2 id="product-reviews" className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-            {t("productReviewsTitle")}
+          <h2 id="product-reviews" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("productReviewsTitle")}
           </h2>
 
           {productReviews.length === 0 ? (
@@ -133,7 +131,7 @@ export default async function ReviewsPage({
                       <span className="block text-sm font-medium text-fg">{review.author}</span>
                       <Link
                         href={`/product/${review.product.slug}`}
-                        className="mt-1 block text-xs text-accent-strong hover:underline"
+                        className="mt-1 block text-xs text-fg hover:underline"
                       >
                         {review.product.name}
                       </Link>
@@ -185,7 +183,7 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
       )}
 
       <div className="flex flex-1 flex-col p-6">
-        <span className="w-fit rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-accent-strong">
+        <span className="w-fit rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-fg">
           {kindLabel}
         </span>
         {story.rating != null && <StarRating rating={story.rating} className="mt-3" />}

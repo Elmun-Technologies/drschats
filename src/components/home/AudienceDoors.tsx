@@ -1,99 +1,132 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
-import { Container } from "@/components/ui/Container";
+import { Section } from "@/components/ui/Section";
 import { Reveal } from "@/components/animation/Reveal";
 import { getQuizQuestions } from "@/lib/quiz/questions";
 import type { Locale } from "@/lib/i18n/routing";
 
 /*
-  "Who are you choosing for?" as its own set of doors on the home page.
+  "Who are you choosing for?" as its own row of doors on the home page.
 
-  Competitors give this its own row of categories — for men, for women, for
-  children, for parents — and it is a real way people arrive. We already ask
-  exactly that as the consultant's first question, so rather than invent a
-  parallel taxonomy the cards *are* that question, lifted onto the home page
-  and deep-linked so answering here skips the step rather than repeating it.
+  The doors *are* the consultant's first question, deep-linked so answering here
+  skips the step rather than repeating it. Reading the options from the quiz
+  means the two can never drift: add an audience there and it appears here
+  already translated.
 
-  Reading the options from the quiz means the two can never drift: add an
-  audience there and it appears here, already translated.
+  The photographs in `/public/images/audience` are AI-generated placeholders,
+  made in one session and one style so the row does not look assembled from
+  different sites: warm daylight, milky-beige ground, a plain unlabelled bottle,
+  no white coats and no hospital. They are also deliberately not our products —
+  a generated label would be a made-up package on a page about what we sell.
+
+  They exist to hold the layout until the Tashkent shoot happens; that shoot
+  replaces these six files and nothing else has to change. The shoot list, the
+  rules (one lens, one light, model consent, image rights to the company) and
+  the file names are in docs/GOVITA-TAVSIYALAR.md §1.
 */
 
-const IMAGES: Record<string, string> = {
-  "self-woman": "https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&q=80&w=800",
-  "self-man": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?auto=format&fit=crop&q=80&w=800",
-  child: "https://images.unsplash.com/photo-1519689680058-324335c77eba?auto=format&fit=crop&q=80&w=800",
-  parent: "https://images.unsplash.com/photo-1536640712-4d4c36ef0e52?auto=format&fit=crop&q=80&w=800",
+const PHOTOS: Record<string, string> = {
+  "self-woman": "/images/audience/woman.jpg",
+  "self-man": "/images/audience/man.jpg",
+  expectant: "/images/audience/pregnancy.jpg",
+  child: "/images/audience/child.jpg",
+  parent: "/images/audience/senior.jpg",
+  recovery: "/images/audience/recovery.jpg",
 };
 
 const SUBTITLE_KEYS: Record<string, string> = {
   "self-woman": "subSelfWoman",
   "self-man": "subSelfMan",
+  expectant: "subExpectant",
   child: "subChild",
-  parent: "subParent",
+  parent: "subSenior",
+  recovery: "subIllness",
+};
+
+const ICONS: Record<string, string> = {
+  "self-woman": "M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-7 2.5-7 6v2h14v-2c0-3.5-3-6-7-6z",
+  "self-man": "M12 12a4 4 0 100-8 4 4 0 000 8zm0 2c-4 0-7 2.5-7 6v2h14v-2c0-3.5-3-6-7-6z",
+  expectant: "M12 3a3 3 0 110 6 3 3 0 010-6zm-1.5 8h3A4.5 4.5 0 0118 15.5c0 2.5-2 4.5-4.5 4.5h-3A4.5 4.5 0 016 15.5 4.5 4.5 0 0110.5 11z",
+  child: "M9 4a2.5 2.5 0 115 0 2.5 2.5 0 01-5 0zm-2 8a5 5 0 1110 0v3a5 5 0 01-10 0v-3zm3 8h4v4H10v-4z",
+  parent: "M12 11a4 4 0 100-8 4 4 0 000 8zm-7 11c0-4 3-6.5 7-6.5s7 2.5 7 6.5v1H5v-1z",
+  recovery: "M12 21s-7-4.3-7-9.5A4.5 4.5 0 0112 8a4.5 4.5 0 017 3.5C19 16.7 12 21 12 21z",
 };
 
 export async function AudienceDoors({ locale }: { locale: Locale }) {
   const t = await getTranslations("home.audience");
-  const [first] = getQuizQuestions(locale);
-  if (!first) return null;
-  const subtitleFor = (id: string) =>
-    t(SUBTITLE_KEYS[id] ?? "subtitleFallback");
+  const audience = getQuizQuestions(locale).find((q) => q.id === "who");
+  if (!audience) return null;
 
   return (
-    <section className="py-16 sm:py-24 border-t border-line/30 bg-ink">
-      <Container>
+    <Section tone="ink" aria-labelledby="audience-heading">
+      <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted">{t("eyebrow")}</p>
         <Reveal>
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold-ink border border-gold/30 mb-3">
-              {t("eyebrow")}
-            </span>
-            <h2 className="font-display text-3xl font-extrabold tracking-tight text-brand-deep sm:text-4xl">
-              {first.question}
-            </h2>
-            <p className="mt-3 text-base text-muted">{t("subtitle")}</p>
-          </div>
+          <h2
+            id="audience-heading"
+            className="font-display text-2xl font-extrabold tracking-tight text-balance text-fg sm:text-3xl lg:text-4xl"
+          >
+            {audience.question}
+          </h2>
         </Reveal>
+        <p className="mt-3 text-pretty text-base text-muted sm:text-lg">{t("subtitle")}</p>
+      </div>
 
-        <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {first.options.map((option, index) => (
-            <Reveal key={option.id} index={Math.min(index, 6)} as="li" className="h-full">
-              <Link
-                href={{ pathname: "/quiz", query: { who: option.id } }}
-                className="group relative flex h-full min-h-[340px] flex-col justify-end overflow-hidden rounded-t-[5rem] rounded-b-[1.5rem] border border-white/10 bg-brand-deep p-7 transition-all duration-700 hover:-translate-y-1.5 hover:shadow-2xl hover:shadow-brand-deep/30"
-              >
-                {/* Background Image */}
-                <div className="absolute inset-0 z-0 bg-brand-deep">
-                  <Image 
-                    src={IMAGES[option.id] ?? IMAGES.child} 
-                    alt={option.label}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                    className="object-cover opacity-85 transition-transform duration-1000 group-hover:scale-110"
-                  />
-                  {/* Dark gradient overlay so text is readable */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/60 to-transparent opacity-95 transition-opacity group-hover:opacity-90" />
-                </div>
+      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {audience.options.map((option, index) => (
+          <Reveal key={option.id} index={Math.min(index, 6)} as="li" className="h-full">
+            <Link
+              href={{ pathname: "/quiz", query: { who: option.id } }}
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors duration-300 hover:border-line-strong"
+            >
+              <span className="relative block aspect-[4/3] overflow-hidden bg-surface-2">
+                <Image
+                  src={PHOTOS[option.id] ?? PHOTOS["self-woman"]}
+                  alt=""
+                  fill
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  className="object-cover"
+                />
+                <span className="absolute left-3 top-3 flex h-10 w-10 items-center justify-center rounded-xl bg-ink/85 text-signal backdrop-blur-sm">
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden
+                    className="h-5 w-5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path d={ICONS[option.id] ?? ICONS["self-woman"]} />
+                  </svg>
+                </span>
+              </span>
 
-                <div className="relative z-10">
-                  <span className="block font-display text-2xl font-extrabold leading-snug text-white drop-shadow-md transition-colors duration-300 group-hover:text-gold">
-                    {option.label}
-                  </span>
-                  <p className="mt-2 text-xs text-surface-2/80 line-clamp-2">
-                    {subtitleFor(option.id)}
-                  </p>
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-extrabold uppercase tracking-widest text-gold transition-all duration-300 group-hover:translate-x-1 group-hover:text-white">
-                    {t("cta")}
-                    <svg viewBox="0 0 20 20" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </span>
-                </div>
-              </Link>
-            </Reveal>
-          ))}
-        </ul>
-      </Container>
-    </section>
+              <span className="flex flex-1 flex-col gap-2 p-6">
+                <span className="font-display text-xl font-extrabold leading-snug text-brand-deep">
+                  {option.label}
+                </span>
+                <span className="text-sm text-muted">{t(SUBTITLE_KEYS[option.id] ?? "subtitleFallback")}</span>
+                <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-xs font-extrabold uppercase tracking-widest text-muted transition-colors group-hover:text-fg">
+                  {t("cta")}
+                  <svg
+                    viewBox="0 0 20 20"
+                    aria-hidden
+                    className="h-4 w-4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                  >
+                    <path d="M7 10h6M10 7l3 3-3 3" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </span>
+              </span>
+            </Link>
+          </Reveal>
+        ))}
+      </ul>
+    </Section>
   );
 }

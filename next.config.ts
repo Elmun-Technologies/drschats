@@ -5,6 +5,8 @@ const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  // Harmless header, free information for anyone fingerprinting the stack.
+  poweredByHeader: false,
   transpilePackages: ["sanity", "next-sanity", "@sanity/ui", "@sanity/vision"],
   experimental: {
     /*
@@ -25,6 +27,14 @@ const nextConfig: NextConfig = {
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+          /*
+            The site carries a checkout form. Vercel terminates TLS, but without
+            HSTS an http:// visit is only redirected — it is not pinned, so a
+            first-visit downgrade is still possible. includeSubDomains stays on;
+            `preload` deliberately does not, since it is effectively permanent
+            and belongs to a domain decision, not a code change.
+          */
+          { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
         ],
       },
     ];

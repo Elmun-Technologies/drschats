@@ -75,7 +75,7 @@ export default async function BlogCategoryPage({
         </nav>
 
         <header className="mt-8 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent-strong">
+          <p className="text-sm font-semibold uppercase tracking-widest text-fg">
             {t("title")}
           </p>
           <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">

@@ -22,13 +22,13 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-4 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="flex w-full items-center justify-between gap-4 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
               >
                 <span className="font-medium text-fg">{item.question}</span>
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden
-                  className={`h-5 w-5 shrink-0 text-accent-strong transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                  className={`h-5 w-5 shrink-0 text-fg transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
                   fill="none"
                   stroke="currentColor"
                   strokeWidth="2"

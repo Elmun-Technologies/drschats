@@ -24,7 +24,7 @@ export function UpsellSavingsBar() {
       className="border-t border-line px-6 py-3"
     >
       <div className="flex items-center justify-between text-xs">
-        <span className="font-semibold text-accent-strong">
+        <span className="font-semibold text-fg">
           {t("progressLabel", { amount: formatMoney(cumulativeSavings, locale) })}
         </span>
         <span className="text-faint">
@@ -36,7 +36,7 @@ export function UpsellSavingsBar() {
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="h-full rounded-full bg-accent"
+          className="h-full rounded-full bg-signal"
         />
       </div>
     </motion.div>

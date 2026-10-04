@@ -42,15 +42,15 @@ export function CardGrid({
         <div className={`grid grid-cols-1 gap-5 ${cols}`}>
           {items.map((c, i) => (
             <Reveal key={c.title + i} index={Math.min(i, 6)} className="h-full">
-              <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink transition-all duration-300 hover:-translate-y-1 hover:border-accent/40 hover:shadow-[0_18px_44px_-24px_rgba(15,26,20,0.3)]">
+              <div className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-ink transition-all duration-300 hover:border-line-strong hover:shadow-[var(--shadow-card)]">
                 {withImage && (
                   <div className="relative aspect-[16/10] overflow-hidden bg-surface">
-                    <Image src={c.image ?? ph(c.title)} alt="" fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <Image src={c.image ?? ph(c.title)} alt="" fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover transition-transform duration-500" />
                   </div>
                 )}
                 <div className="flex flex-1 flex-col p-6">
-                  {c.meta && <span className="mb-2 w-fit rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent-strong">{c.meta}</span>}
-                  <CardTitle className="font-display text-lg font-bold text-fg group-hover:text-accent-strong">{c.title}</CardTitle>
+                  {c.meta && <span className="mb-2 w-fit rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-muted">{c.meta}</span>}
+                  <CardTitle className="font-display text-lg font-bold text-fg group-hover:text-fg">{c.title}</CardTitle>
                   {c.text && <p className="mt-2 text-sm text-muted">{c.text}</p>}
                 </div>
               </div>

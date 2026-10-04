@@ -97,7 +97,7 @@ export function MySubscriptions() {
         <p className="text-muted">{t("empty")}</p>
         <Link
           href="/products"
-          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-accent px-5 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
+          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-fg px-5 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
         >
           {t("emptyCta")}
         </Link>
@@ -115,7 +115,7 @@ export function MySubscriptions() {
         return (
           <li key={subscription.id} className="rounded-2xl border border-line bg-ink p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold text-accent-strong">
+              <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
                 {t(`status.${subscription.status}`)}
               </span>
               {subscription.nextDeliveryAt && !cancelled && (
@@ -128,7 +128,7 @@ export function MySubscriptions() {
             <ul className="mt-3 space-y-1.5 border-t border-line pt-3">
               {subscription.items.map((item) => (
                 <li key={item.slug} className="flex items-baseline justify-between gap-3 text-sm">
-                  <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-accent-strong">
+                  <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-fg">
                     {item.name}
                   </Link>
                   <span className="shrink-0 tabular-nums text-muted">
@@ -155,7 +155,7 @@ export function MySubscriptions() {
                   value={subscription.intervalDays}
                   disabled={busy}
                   onChange={(e) => change(subscription.id, { intervalDays: Number(e.target.value) })}
-                  className="h-11 rounded-full border border-line bg-surface px-4 text-sm font-medium outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent"
+                  className="h-11 rounded-full border border-line bg-surface px-4 text-sm font-medium outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
                 >
                   {SUBSCRIPTION_INTERVALS.map((days) => (
                     <option key={days} value={days}>
@@ -210,10 +210,10 @@ function Action({
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 ${
+      className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal disabled:opacity-50 ${
         danger
           ? "border-line text-muted hover:border-danger hover:text-danger"
-          : "border-line text-fg hover:border-accent hover:text-accent-strong"
+          : "border-line text-fg hover:border-line-strong hover:text-fg"
       }`}
     >
       {children}

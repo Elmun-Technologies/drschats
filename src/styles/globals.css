@@ -1,6 +1,18 @@
 @import "tailwindcss";
 
 /*
+  Docs and notes are not UI.
+
+  Tailwind scans everything in the project that is not ignored, and the audit
+  notes in `docs/` list utility names as plain text — which is how
+  `.text-amber-500` and `.from-amber-500` ended up shipped in the CSS bundle
+  after every amber class had been removed from the components. Two stray
+  colour utilities is not a rendering bug, but the bundle should only contain
+  classes the app actually uses.
+*/
+@source not "../../docs";
+
+/*
   Go Vita design tokens — "Warm Apothecary".
 
   A marketplace catalogue asks colour to carry three separate jobs, so each one
@@ -34,10 +46,15 @@
   /* Warm charcoal replaces cold navy as the contrast ground. */
   --color-brand-deep: #2d2a25;
 
-  /* Foreground */
+  /* Foreground.
+     Both greys are checked against the three light grounds the site paints
+     (ink #fffdf9, surface #f8f6f1, surface-2 #f1eee7, surface-3 #e7e1d7):
+     muted clears 5.3:1 on the darkest of them, faint 4.6:1. The old faint
+     (#766f64) measured 4.29:1 on surface-2 — under the 4.5 floor, exactly
+     where card metadata (origin, servings, "12 dona") is printed. */
   --color-fg: #2d2a25;
-  --color-muted: #696259;
-  --color-faint: #766f64;
+  --color-muted: #5f594f;
+  --color-faint: #6a6359;
 
   /* Action — antique gold. `accent` is deliberately light and stays a
      background/border/decorative colour only — as a fill it pairs with dark
@@ -86,6 +103,20 @@
   /* Easing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
+  /*
+    Shadows, on the warm axis.
+
+    The site had three unrelated shadow colours — a navy rgba(15,23,42,…), a
+    cold slate rgba(19,22,50,…) and one warm brown — so two cards side by side
+    could cast differently coloured shade. Everything now derives from the
+    graphite brand colour, which is what a warm porcelain ground expects.
+  */
+  --shadow-xs: 0 1px 2px rgba(45, 42, 37, 0.05);
+  --shadow-sm: 0 2px 6px -2px rgba(45, 42, 37, 0.10);
+  --shadow-card: 0 10px 30px -22px rgba(45, 42, 37, 0.35);
+  --shadow-pop: 0 24px 48px -24px rgba(45, 42, 37, 0.35);
+  --shadow-cta: 0 8px 22px -14px rgba(101, 76, 33, 0.7);
+
   /* Animations */
   --animate-marquee: marquee 28s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
@@ -132,49 +163,35 @@
   }
 }
 
-@keyframes soft-glow {
-  0%, 100% {
-    box-shadow: 0 0 15px rgba(61, 76, 219, 0.1);
-  }
-  50% {
-    box-shadow: 0 0 30px rgba(61, 76, 219, 0.3);
-  }
-}
-
 @layer utilities {
   .animate-fade-in-up {
     animation: fade-in-up 0.6s var(--ease-out-expo) forwards;
   }
-  .animate-glow {
-    animation: soft-glow 3s ease-in-out infinite;
+
+  /*
+    One hero backdrop for every product page.
+
+    Each flagship page used to paint its own full-screen scene: a pink radial,
+    an orange radial, a blue radial, a rainbow conic sweep, a gold sun, a green
+    radial, plus a moon, fourteen drifting stars and three rotating rings. Six
+    products, six colour schemes, none of them related to anything the shopper
+    can verify — and a dark ground behind text written for a light one.
+
+    A product hero now shares a single warm wash on the porcelain ground, so
+    the product photo is the only thing on screen that is allowed to be a
+    different colour.
+  */
+  .product-hero {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(70% 60% at 50% 0%, rgba(180, 139, 62, 0.10), transparent 70%),
+      radial-gradient(50% 45% at 85% 20%, rgba(43, 113, 89, 0.06), transparent 70%);
   }
-  .glass {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-  }
-  .glass-panel {
-    background: linear-gradient(145deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 100%);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 30px rgba(15, 23, 42, 0.05);
-  }
-  .hover-lift {
-    transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo), border-color 0.4s ease;
-  }
-  .hover-lift:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
-  }
-  .hover-lift-premium {
-    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  .hover-lift-premium:hover {
-    transform: translateY(-6px) scale(1.01);
-    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.12);
-    border-color: rgba(197, 160, 89, 0.3); /* Gold border glow on hover */
+
+  /* The flat stage a product photo sits on, so cards and heroes agree. */
+  .product-stage {
+    background: var(--color-surface-2);
   }
 }
 
@@ -300,6 +317,61 @@
   border-color: var(--color-line);
 }
 
+/*
+  Tailwind v4 no longer sets `cursor: pointer` on buttons (v3 did), so every
+  button on the site — add to cart, quantity steppers, the quiz options, the
+  menu — showed the plain arrow a text field shows. One rule puts the hand
+  back, and `not-allowed` stays for disabled controls.
+*/
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [aria-disabled="true"] {
+    cursor: not-allowed;
+  }
+
+  /*
+    Keyboard focus, visible everywhere.
+
+    Components that set their own Tailwind ring keep it; this is the fallback
+    for the custom buttons that only reset the outline. Signal green rather
+    than gold: focus is a state, not a call to spend money.
+  */
+  :focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+
+  /* Anchors reached from the buy box or the FAQ must not hide under the
+     sticky header (72px row + 40px utility bar + 56px nav row at lg). */
+  :target,
+  [id] {
+    scroll-margin-top: 8.5rem;
+  }
+}
+
+/*
+  Section rhythm.
+
+  Home and the long marketing pages alternated between py-16/20/24 sections
+  with four different desktop paddings, which is what makes a long page feel
+  hand-assembled. One utility, used by the Section component, so every band
+  breathes by the same amount.
+*/
+@layer utilities {
+  .section-y {
+    padding-block: clamp(3.25rem, 6vw, 5.5rem);
+  }
+  .section-y-tight {
+    padding-block: clamp(2.5rem, 4.5vw, 4rem);
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -333,18 +405,8 @@ html.lenis body {
   .text-balance {
     text-wrap: balance;
   }
-  .gradient-accent {
-    background-image: linear-gradient(
-      135deg,
-      var(--color-accent) 0%,
-      var(--color-gold) 100%
-    );
-  }
-  .text-gradient {
-    background: linear-gradient(120deg, var(--color-fg) 0%, #1f8f5e 95%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+  .text-pretty {
+    text-wrap: pretty;
   }
   /* grain is a no-op in the light theme (kept so existing markup is harmless) */
   .grain {

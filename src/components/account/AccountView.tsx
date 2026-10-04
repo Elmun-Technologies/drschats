@@ -39,7 +39,7 @@ export function AccountView() {
 
   if (!hydrated) {
     return (
-      <Container className="py-16">
+      <Container className="section-y-tight">
         <div className="mx-auto h-64 max-w-md animate-pulse rounded-2xl bg-surface" />
       </Container>
     );
@@ -63,7 +63,7 @@ export function AccountView() {
     <Container className="py-10 sm:py-14">
       <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-sm font-semibold text-accent-strong">{t("greeting")}</p>
+          <p className="text-sm font-semibold text-fg">{t("greeting")}</p>
           <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             {user.name}
           </h1>
@@ -83,7 +83,7 @@ export function AccountView() {
           <Link
             key={item.key}
             href={item.href}
-            className="rounded-2xl border border-line bg-surface px-5 py-4 transition-colors hover:border-accent"
+            className="rounded-2xl border border-line bg-surface px-5 py-4 transition-colors hover:border-line-strong"
           >
             <span className="block font-display text-base font-bold text-fg">
               {t(`shortcut.${item.key}.title`)}
@@ -98,16 +98,13 @@ export function AccountView() {
       <section aria-labelledby="account-subscriptions" className="mb-10">
         <h2
           id="account-subscriptions"
-          className="mb-4 font-display text-xl font-extrabold tracking-tight"
-        >
-          {ts("title")}
+          className="mb-4 font-display text-xl font-extrabold tracking-tight">{ts("title")}
         </h2>
         <MySubscriptions />
       </section>
 
       <section aria-labelledby="account-orders">
-        <h2 id="account-orders" className="mb-4 font-display text-xl font-extrabold tracking-tight">
-          {t("orders")}
+        <h2 id="account-orders" className="mb-4 font-display text-xl font-extrabold tracking-tight">{t("orders")}
         </h2>
         <OrderHistory />
       </section>

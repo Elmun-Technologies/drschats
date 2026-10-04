@@ -32,6 +32,10 @@ export async function healthTopicMetadata(
  * MedicalWebPage carries the doctor who reviewed the copy, which is the whole
  * point of the E-E-A-T layer: health pages that name a credentialed reviewer
  * are treated very differently from anonymous ones.
+ *
+ * `reviewer` is null while no verified expert is on file (see
+ * content/experts.ts) and `reviewedBy` is then omitted entirely — a page must
+ * not credit a person who does not exist.
  */
 export async function HealthTopicJsonLd({
   topic,
@@ -40,7 +44,7 @@ export async function HealthTopicJsonLd({
 }: {
   topic: HealthTopic;
   locale: Locale;
-  reviewer?: Expert;
+  reviewer?: Expert | null;
 }) {
   const t = await getTranslations("health");
   const prod = await getTranslations("product");
@@ -78,7 +82,7 @@ export async function HealthTopicJsonLd({
             }
           : {}),
       },
-      organizationNode(),
+      organizationNode(locale),
     ],
   };
 

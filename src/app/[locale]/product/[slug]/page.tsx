@@ -48,20 +48,34 @@ export default async function ProductPage({
   const product = await shopflow.getProduct(slug, locale);
   if (!product) notFound();
 
-  const [upsells, allProducts, allTopics, t] = await Promise.all([
+  const [upsells, allProducts, allTopics, categories, t] = await Promise.all([
     shopflow.getUpsells(product.id, locale).catch(() => []),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }).catch(() => ({ items: [], total: 0, page: 1, pageSize: 50 })),
     getHealthTopics(locale).catch(() => []),
+    shopflow.getCategories(locale).catch(() => []),
     getTranslations("product"),
   ]);
+
+  /*
+    The breadcrumb used to print `product.categorySlug` — the English slug, so
+    the Russian page said "nutrition" between two Russian crumbs. Resolve the
+    category record instead: it carries the translated name and the canonical
+    slug the link should use.
+  */
+  const category = categories.find((c) => c.id === product.categoryId)
+    ?? categories.find((c) => c.slug === product.categorySlug);
 
   const topics = topicsForProduct(product, allTopics);
 
   const Bespoke = getBespokeComponent(slug);
-  const [reviewer, author] = await Promise.all([
+  const [reviewerResult, authorResult] = await Promise.all([
     reviewerForKey(product.id, locale),
     reviewerForKey(product.slug, locale),
   ]);
+  // Null while no real expert is on file: the page must not print an empty
+  // name or attribute its medical claims to somebody who never saw it.
+  const reviewer = reviewerResult ?? null;
+  const author = authorResult ?? null;
 
   return (
     <>
@@ -70,7 +84,9 @@ export default async function ProductPage({
       <JsonLd
         data={breadcrumbLd([
           { name: t("breadcrumbHome"), url: `${SITE_URL}/${locale}` },
-          { name: product.categorySlug ?? "", url: `${SITE_URL}/${locale}/products/${product.categorySlug ?? ""}` },
+          ...(category
+            ? [{ name: category.name, url: `${SITE_URL}/${locale}/products/${category.slug}` }]
+            : []),
           { name: product.name, url: `${SITE_URL}/${locale}/product/${slug}` },
         ])}
       />

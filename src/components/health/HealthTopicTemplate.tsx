@@ -28,7 +28,7 @@ export async function HealthTopicTemplate({
   products: Product[];
   ingredients: Ingredient[];
   related: HealthTopic[];
-  reviewer?: Expert;
+  reviewer?: Expert | null;
   locale: Locale;
 }) {
   const t = await getTranslations("health");
@@ -53,7 +53,7 @@ export async function HealthTopicTemplate({
         </nav>
 
         <header className="mt-8 max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-accent-strong">
+          <p className="text-sm font-semibold uppercase tracking-widest text-fg">
             {t(`${topic.kind}.singular`)}
           </p>
           <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
@@ -77,7 +77,7 @@ export async function HealthTopicTemplate({
                   key={b}
                   className="flex items-start gap-3 rounded-xl border border-line bg-surface p-5 text-sm font-medium text-fg"
                 >
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg">
                     <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
                       <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -95,7 +95,7 @@ export async function HealthTopicTemplate({
               {topic.sections.map((section) => (
                 <Reveal key={section.title}>
                   <section>
-                    <h2 className="font-display text-2xl font-bold tracking-tight">{section.title}</h2>
+                    <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{section.title}</h2>
                     <p className="mt-3 text-muted">{section.body}</p>
                   </section>
                 </Reveal>
@@ -109,7 +109,7 @@ export async function HealthTopicTemplate({
                   {ingredients.map((ing) => (
                     <li key={ing.slug}>
                       <p className="text-sm font-semibold text-fg">{ing.name}</p>
-                      <p className="text-xs font-medium uppercase tracking-wide text-accent-strong">{ing.role}</p>
+                      <p className="text-xs font-medium uppercase tracking-wide text-fg">{ing.role}</p>
                       <p className="mt-1 text-sm text-muted">{ing.description}</p>
                     </li>
                   ))}
@@ -118,7 +118,7 @@ export async function HealthTopicTemplate({
                     "all vitamins" link into an empty index is worse than no
                     link under a list that already names the ingredients. */}
                 {isNavigable("/vitamins", populatedPaths) && (
-                  <Link href="/vitamins" className="mt-5 inline-flex text-sm font-semibold text-accent-strong hover:underline">
+                  <Link href="/vitamins" className="mt-5 inline-flex text-sm font-semibold text-fg hover:underline">
                     {t("allVitamins")} →
                   </Link>
                 )}
@@ -130,8 +130,7 @@ export async function HealthTopicTemplate({
         {products.length > 0 && (
           <section aria-labelledby="topic-products" className="mt-20">
             <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-              <h2 id="topic-products" className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                {t("relatedProducts")}
+              <h2 id="topic-products" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("relatedProducts")}
               </h2>
               <Link href="/products" className={buttonVariants("secondary")}>
                 {nav("shop")}
@@ -154,8 +153,7 @@ export async function HealthTopicTemplate({
 
         {topic.faq.length > 0 && (
           <section aria-labelledby="topic-faq" className="mt-20 max-w-3xl">
-            <h2 id="topic-faq" className="mb-6 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {prod("faq")}
+            <h2 id="topic-faq" className="mb-6 font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{prod("faq")}
             </h2>
             <FaqAccordion items={topic.faq} />
           </section>
@@ -163,15 +161,14 @@ export async function HealthTopicTemplate({
 
         {related.length > 0 && (
           <section aria-labelledby="topic-related" className="mt-20">
-            <h2 id="topic-related" className="mb-6 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-              {t("relatedTopics")}
+            <h2 id="topic-related" className="mb-6 font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("relatedTopics")}
             </h2>
             <div className="flex flex-wrap gap-3">
               {related.map((r) => (
                 <Link
                   key={r.slug}
                   href={`${TOPIC_BASE_PATH[r.kind]}/${r.slug}`}
-                  className="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-accent hover:text-accent-strong"
+                  className="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-line-strong hover:text-fg"
                 >
                   {r.name}
                 </Link>

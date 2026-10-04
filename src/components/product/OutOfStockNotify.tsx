@@ -23,8 +23,8 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
 
   if (submitted) {
     return (
-      <div className="rounded-2xl border border-accent/40 bg-accent/10 px-5 py-4 text-center">
-        <p className="text-sm font-semibold text-accent-strong">{t("success")}</p>
+      <div className="rounded-2xl border border-line bg-surface-2 px-5 py-4 text-center">
+        <p className="text-sm font-semibold text-fg">{t("success")}</p>
       </div>
     );
   }
@@ -44,7 +44,7 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
         <button
           type="submit"
           disabled={loading}
-          className="rounded-xl bg-accent px-4 py-2.5 text-sm font-semibold text-brand-deep disabled:opacity-60 hover:bg-accent-strong hover:text-ink"
+          className="rounded-xl bg-fg px-4 py-2.5 text-sm font-semibold text-ink disabled:opacity-60 hover:bg-accent-strong hover:text-ink"
         >
           {loading ? "..." : t("submit")}
         </button>

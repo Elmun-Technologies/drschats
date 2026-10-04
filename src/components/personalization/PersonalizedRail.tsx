@@ -84,7 +84,7 @@ export function PersonalizedRail({ allProducts, excludeSlugs = [] }: Props) {
     <section className="py-20 sm:py-24">
       <Container>
         <Reveal className="mb-10">
-          <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">{t("eyebrow")}</p>
+          <p className="text-xs font-semibold uppercase tracking-widest text-fg">{t("eyebrow")}</p>
           <h2 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("title")}</h2>
           <p className="mt-2 text-muted">{stated ? t("subtitleStated") : t("subtitle")}</p>
         </Reveal>
@@ -99,7 +99,7 @@ export function PersonalizedRail({ allProducts, excludeSlugs = [] }: Props) {
               </div>
               {entry.reasons.length > 0 && (
                 <p className="px-1 text-xs leading-snug text-muted">
-                  <span className="font-semibold text-accent-strong">{t("because")}</span>{" "}
+                  <span className="font-semibold text-fg">{t("because")}</span>{" "}
                   {entry.reasons.join(" · ")}
                 </p>
               )}

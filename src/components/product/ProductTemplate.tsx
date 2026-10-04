@@ -12,6 +12,7 @@ import { StickyBuyBar } from "@/components/product/StickyBuyBar";
 import { ProductTabs } from "@/components/product/ProductTabs";
 import { ProductReviews } from "@/components/product/ProductReviews";
 import { HealthContext } from "@/components/product/HealthContext";
+import { DoctorVideo } from "@/components/product/DoctorVideo";
 import type { HealthTopic } from "@/lib/content/health-topics";
 
 export async function ProductTemplate({
@@ -24,7 +25,7 @@ export async function ProductTemplate({
   product: Product;
   upsells: UpsellOffer[];
   locale: Locale;
-  reviewer?: Expert;
+  reviewer?: Expert | null;
   /** Health topics this product belongs to; empty hides the section. */
   topics?: HealthTopic[];
 }) {
@@ -58,15 +59,14 @@ export async function ProductTemplate({
         {product.highlights.length > 0 && (
           <section aria-labelledby="highlights-heading" className="mt-20">
             <Reveal>
-              <h2 id="highlights-heading" className="mb-6 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                {t("highlights")}
+              <h2 id="highlights-heading" className="mb-6 font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("highlights")}
               </h2>
             </Reveal>
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {product.highlights.map((h, i) => (
                 <Reveal key={h} index={i} as="li">
                   <div className="flex h-full items-start gap-3 rounded-xl border border-line bg-surface p-5">
-                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-accent-soft text-accent-strong">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg">
                       <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
                         <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
@@ -78,6 +78,10 @@ export async function ProductTemplate({
             </ul>
           </section>
         )}
+
+        {/* Renders nothing until a clip has consent and an OTC product behind
+            it — see lib/content/doctor-videos.ts. */}
+        {await DoctorVideo({ slug: product.slug, locale })}
 
         <HealthContext topics={topics} />
 
@@ -106,8 +110,7 @@ export async function ProductTemplate({
         {product.reviews.length > 0 && (
           <section id="reviews" aria-labelledby="reviews-heading" className="mt-20 scroll-mt-28">
             <Reveal>
-              <h2 id="reviews-heading" className="mb-8 font-display text-2xl font-bold tracking-tight sm:text-3xl">
-                {t("reviews")}
+              <h2 id="reviews-heading" className="mb-8 font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("reviews")}
               </h2>
             </Reveal>
             <ProductReviews

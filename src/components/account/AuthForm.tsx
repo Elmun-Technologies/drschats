@@ -100,7 +100,7 @@ export function AuthForm() {
 
   return (
     <div className="mx-auto max-w-md rounded-2xl border border-line bg-ink p-6 sm:p-8">
-      <h2 className="font-display text-xl font-bold text-fg">{t("title")}</h2>
+      <h2 className="font-display text-lg font-bold text-fg text-fg">{t("title")}</h2>
 
       {step === "phone" && (
         <form
@@ -135,7 +135,7 @@ export function AuthForm() {
               href={telegramLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-accent px-6 py-3 text-center text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
+              className="rounded-full bg-fg px-6 py-3 text-center text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
             >
               {t("linkCta")}
             </a>
@@ -146,7 +146,7 @@ export function AuthForm() {
           <button
             type="button"
             onClick={() => setStep("code")}
-            className="text-sm font-semibold text-accent-strong hover:underline"
+            className="text-sm font-semibold text-fg hover:underline"
           >
             {t("linkDone")}
           </button>
@@ -191,7 +191,7 @@ export function AuthForm() {
               type="button"
               disabled={secondsLeft > 0 || busy}
               onClick={() => void askForCode(true)}
-              className="font-semibold text-accent-strong hover:underline disabled:text-faint disabled:no-underline"
+              className="font-semibold text-fg hover:underline disabled:text-faint disabled:no-underline"
             >
               {secondsLeft > 0 ? t("resendIn", { seconds: secondsLeft }) : t("resend")}
             </button>
@@ -225,7 +225,7 @@ function SubmitButton({
     <button
       type="submit"
       disabled={busy || disabled}
-      className="rounded-full bg-accent px-6 py-3 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink disabled:opacity-60"
+      className="rounded-full bg-fg px-6 py-3 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink disabled:opacity-60"
     >
       {busy ? "…" : children}
     </button>

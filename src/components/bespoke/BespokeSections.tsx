@@ -27,12 +27,12 @@ export function BespokeSections({
   accent?: "accent" | "gold";
 }) {
   const t = useTranslations("product");
-  const numberColor = accent === "gold" ? "text-gold/40" : "text-faint";
+  const numberColor = "text-faint";
 
   return (
     <>
       {/* Buy */}
-      <section className="border-t border-line py-24">
+      <section className="border-t border-line section-y">
         <Container>
           <Breadcrumb product={product} />
           <div className="mt-8 grid gap-12 lg:grid-cols-2 lg:items-start">
@@ -53,12 +53,12 @@ export function BespokeSections({
       </section>
 
       {/* Ingredients + how to use */}
-      <section className="border-t border-line py-24">
+      <section className="border-t border-line section-y">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2">
             <Reveal>
               <div>
-                <h2 className="font-display text-3xl font-bold tracking-tight">{t("ingredients")}</h2>
+                <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("ingredients")}</h2>
                 <div className="mt-8 overflow-hidden rounded-2xl border border-line">
                   <table className="w-full text-left text-sm">
                     <tbody className="divide-y divide-line">
@@ -75,7 +75,7 @@ export function BespokeSections({
             </Reveal>
             <Reveal index={1}>
               <div className="h-full rounded-2xl border border-line bg-surface p-8">
-                <h3 className="font-display text-xl font-semibold">{t("howToUse")}</h3>
+                <h3 className="font-display text-lg font-bold">{t("howToUse")}</h3>
                 <p className="mt-3 text-muted">{product.howToUse}</p>
                 <ul className="mt-6 space-y-2">
                   {product.highlights.map((h, i) => (
@@ -92,7 +92,7 @@ export function BespokeSections({
       </section>
 
       {/* Upsell */}
-      <section className="border-t border-line py-16">
+      <section className="border-t border-line section-y-tight">
         <Container>
           <UpsellRail offers={upsells} />
         </Container>
@@ -100,10 +100,10 @@ export function BespokeSections({
 
       {/* FAQ */}
       {product.faq.length > 0 && (
-        <section className="border-t border-line py-24">
+        <section className="border-t border-line section-y">
           <Container size="narrow">
             <Reveal>
-              <h2 className="mb-8 font-display text-3xl font-bold tracking-tight">{t("faq")}</h2>
+              <h2 className="mb-8 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("faq")}</h2>
             </Reveal>
             <FaqAccordion items={product.faq} />
           </Container>
@@ -112,10 +112,10 @@ export function BespokeSections({
 
       {/* Reviews */}
       {product.reviews.length > 0 && (
-        <section className="border-t border-line py-24">
+        <section className="border-t border-line section-y">
           <Container>
             <Reveal>
-              <h2 className="mb-8 font-display text-3xl font-bold tracking-tight">{t("reviews")}</h2>
+              <h2 className="mb-8 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("reviews")}</h2>
             </Reveal>
             <div className="grid gap-4 md:grid-cols-2">
               {product.reviews.map((r, i) => (

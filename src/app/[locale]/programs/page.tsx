@@ -52,7 +52,7 @@ export default async function ProgramsPage({
       <div className="pt-10 pb-6">
         <Container>
           <header className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-widest text-accent-strong">
+            <p className="text-sm font-semibold uppercase tracking-widest text-fg">
               {t("plural")}
             </p>
             <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
@@ -69,7 +69,7 @@ export default async function ProgramsPage({
                 <Reveal key={program.slug} index={Math.min(i, 6)} as="li" className="h-full">
                   <Link
                     href={`/programs/${program.slug}`}
-                    className="group relative flex h-[460px] flex-col justify-end overflow-hidden rounded-[2rem] border border-white/10 bg-brand-deep transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl hover:shadow-brand-deep/20"
+                    className="group relative flex h-[460px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-500 hover:shadow-[var(--shadow-pop)]"
                   >
                     <div className="absolute inset-0 z-0">
                       <Image
@@ -77,14 +77,14 @@ export default async function ProgramsPage({
                         alt={program.name}
                         fill
                         sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        className="object-cover transition-transform duration-700"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-brand-deep/20 opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
                     </div>
 
                     <div className="relative z-10 flex flex-col h-full justify-between p-6">
                       <div className="flex flex-wrap items-center gap-2 mt-4">
-                        <span className="rounded-full bg-gold/15 backdrop-blur-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-gold">
+                        <span className="rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white/90">
                           {t("duration", { days: program.durationDays })}
                         </span>
                         {program.discountPercent > 0 && (
@@ -95,8 +95,7 @@ export default async function ProgramsPage({
                       </div>
 
                       <div className="flex flex-col">
-                        <h2 className="font-display text-2xl font-bold text-white transition-colors group-hover:text-gold drop-shadow-md">
-                          {program.name}
+                        <h2 className="font-display text-2xl font-bold text-white transition-colors group-hover:text-white/90 drop-shadow-md">{program.name}
                         </h2>
                         <p className="mt-2 text-sm font-medium text-white/90 drop-shadow-sm">{program.headline}</p>
                         
@@ -106,7 +105,7 @@ export default async function ProgramsPage({
                               {t("includes", { count: products.length, days: program.durationDays })}
                             </p>
                             <div className="mt-2 flex flex-wrap items-baseline gap-2">
-                              <span className="font-display text-xl font-bold text-white group-hover:text-gold transition-colors">
+                              <span className="font-display text-xl font-bold text-white group-hover:text-white/90 transition-colors">
                                 {formatMoney(pricing.total, locale)}
                               </span>
                               {pricing.saved > 0 && (

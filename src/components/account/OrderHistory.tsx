@@ -74,7 +74,7 @@ export function OrderHistory() {
         <p className="text-muted">{t("noOrders")}</p>
         <Link
           href="/products"
-          className="mt-4 inline-flex rounded-full bg-accent px-5 py-2.5 text-sm font-bold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink"
+          className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
         >
           {t("noOrdersCta")}
         </Link>
@@ -88,7 +88,7 @@ export function OrderHistory() {
         <li key={order.orderId} className="rounded-2xl border border-line bg-ink p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <span className="font-display text-base font-bold text-fg">{order.orderId}</span>
-            <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold text-accent-strong">
+            <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
               {KNOWN_STATUSES.has(order.status) ? status(order.status) : order.status}
             </span>
           </div>
@@ -98,7 +98,7 @@ export function OrderHistory() {
           <ul className="mt-3 space-y-1.5 border-t border-line pt-3">
             {order.items.map((item) => (
               <li key={item.slug} className="flex items-baseline justify-between gap-3 text-sm">
-                <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-accent-strong">
+                <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-fg">
                   {item.name}
                 </Link>
                 <span className="shrink-0 tabular-nums text-muted">

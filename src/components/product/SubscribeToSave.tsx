@@ -7,7 +7,6 @@ import type { Product } from "@/lib/shopflow/types";
 import { formatMoney } from "@/lib/utils";
 import {
   SUBSCRIPTION_INTERVALS,
-  SUBSCRIPTION_FREE_SHIPPING_OVER,
   pricePerServing,
   subscriptionPricing,
   type IntervalDays,
@@ -54,11 +53,14 @@ export function SubscribeToSave({
   return (
     <div role="radiogroup" aria-labelledby={`${groupId}-label`} className="flex flex-col gap-3">
       <div className="flex items-center justify-between">
+        {/* These two strings were hardcoded Uzbek, so the Russian product page
+            switched language at the buy box — the one block a shopper has to
+            understand before paying. */}
         <p id={`${groupId}-label`} className="text-xs font-extrabold uppercase tracking-wider text-brand-deep">
-          Xarid Usulini Tanlang
+          {t("chooseMode")}
         </p>
-        <span className="rounded-full bg-gold/15 px-2.5 py-0.5 text-[11px] font-extrabold text-gold-ink border border-gold/30">
-          ⚡ Har oy avtomatik yetkazish
+        <span className="rounded-full border border-line-strong bg-surface-2 px-2.5 py-0.5 text-[11px] font-extrabold text-muted">
+          {t("autoDelivery")}
         </span>
       </div>
 
@@ -66,8 +68,8 @@ export function SubscribeToSave({
       <label
         className={`relative flex cursor-pointer flex-col rounded-2xl border p-4 transition-all duration-300 ${
           isSub
-            ? "border-gold bg-gradient-to-br from-gold/10 via-surface to-surface shadow-md ring-2 ring-gold/40"
-            : "border-line bg-surface hover:border-gold/50"
+            ? "border-brand-deep bg-surface-2 shadow-sm ring-1 ring-brand-deep/20"
+            : "border-line bg-surface hover:border-line-strong"
         }`}
       >
         <div className="flex items-start gap-3">
@@ -82,10 +84,10 @@ export function SubscribeToSave({
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <div className="flex items-center gap-2">
                 <span className="font-display text-base font-extrabold text-brand-deep">
-                  Obuna bo&apos;lish & Tejash
+                  {t("subscribe")}
                 </span>
-                <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-brand-deep shadow-xs">
-                  -{pricing.firstPercent}% TEJOV
+                <span className="rounded-full border border-line-strong bg-ink px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-brand-deep">
+                  {t("saveBadge", { percent: pricing.firstPercent })}
                 </span>
               </div>
               <div className="text-right">
@@ -110,15 +112,15 @@ export function SubscribeToSave({
             <div className="mt-3 rounded-xl bg-surface-2 p-3 border border-line/50">
               <ul className="flex flex-col gap-1.5 text-xs font-semibold text-fg">
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-signal-soft text-signal font-bold text-[10px]">✓</span>
                   <span className="min-w-0">{t("benefitFirst", { first: pricing.firstPercent, price: formatMoney(pricing.firstPrice, locale) })}</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-signal-soft text-signal font-bold text-[10px]">✓</span>
                   <span className="min-w-0">{t("benefitRecurring", { recurring: pricing.recurringPercent })}</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold-ink font-bold text-[10px]">✓</span>
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-signal-soft text-signal font-bold text-[10px]">✓</span>
                   <span className="min-w-0">{t("benefitCancel")}</span>
                 </li>
               </ul>
@@ -134,11 +136,11 @@ export function SubscribeToSave({
                   onIntervalChange(Number(e.target.value) as IntervalDays);
                   onModeChange("subscription");
                 }}
-                className="h-10 min-w-0 flex-1 basis-32 rounded-xl border border-line bg-surface-2 px-3 text-xs font-bold text-brand-deep outline-none focus:border-gold focus:ring-1 focus:ring-gold"
+                className="h-10 min-w-0 flex-1 basis-32 rounded-xl border border-line bg-surface-2 px-3 text-xs font-bold text-brand-deep outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep/30"
               >
                 {SUBSCRIPTION_INTERVALS.map((days) => (
                   <option key={days} value={days}>
-                    Har {days} kunda (Avtomatik yetkazish)
+                    {t("everyDays", { days })}
                   </option>
                 ))}
               </select>

@@ -59,9 +59,9 @@ const CHANNELS = [
 ] as const;
 
 const TONES: Record<string, string> = {
-  accent: "bg-accent-soft text-accent-strong",
+  accent: "bg-surface-2 text-fg",
   blue: "bg-blue-soft text-blue",
-  gold: "bg-gold/15 text-gold-ink",
+  gold: "bg-signal-soft text-signal",
 };
 
 export async function ContactChannels() {
@@ -69,8 +69,7 @@ export async function ContactChannels() {
 
   return (
     <section aria-labelledby="contact-channels" className="mt-16">
-      <h2 id="contact-channels" className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-        {t("title")}
+      <h2 id="contact-channels" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("title")}
       </h2>
       <p className="mt-2 text-muted">{t("subtitle")}</p>
 
@@ -82,7 +81,7 @@ export async function ContactChannels() {
               {...("external" in channel && channel.external
                 ? { target: "_blank", rel: "noopener noreferrer" }
                 : {})}
-              className="group flex h-full gap-4 rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-accent"
+              className="group flex h-full gap-4 rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-line-strong"
             >
               <span
                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${TONES[channel.tone]}`}
@@ -92,11 +91,11 @@ export async function ContactChannels() {
                 </svg>
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block font-display text-base font-bold text-fg group-hover:text-accent-strong">
+                <span className="block font-display text-base font-bold text-fg group-hover:text-fg">
                   {t(`${channel.key}.title`)}
                 </span>
                 <span className="mt-1 block text-sm text-muted">{t(`${channel.key}.description`)}</span>
-                <span className="mt-2 block truncate text-sm font-semibold text-accent-strong">
+                <span className="mt-2 block truncate text-sm font-semibold text-fg">
                   {channel.action}
                 </span>
               </span>

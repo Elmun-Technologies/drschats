@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { PageHero } from "@/components/page/PageHero";
 import { QualityChain } from "@/components/page/QualityChain";
+import { BRAND } from "@/lib/brand";
 
 export const revalidate = 3600;
 
@@ -23,12 +24,19 @@ const VALUE_ICONS = [
 ];
 
 const VALUE_COLORS = [
-  { bg: "bg-accent-soft", text: "text-accent-strong", border: "border-accent/20" },
-  { bg: "bg-gold/10", text: "text-gold-ink", border: "border-gold/20" },
+  { bg: "bg-surface-2", text: "text-fg", border: "border-line" },
+  { bg: "bg-signal-soft", text: "text-signal", border: "border-signal/25" },
   { bg: "bg-danger/10", text: "text-danger", border: "border-danger/20" },
 ];
 
-const CERTS = ["cGMP", "ISO 22000", "Halal", "IFOS"];
+/*
+  These chips used to be a permanent "we are certified" strip: cGMP, ISO 22000,
+  Halal, IFOS. The shop holds none of those certificates — its manufacturers may
+  hold some, and the customer is entitled to see which one applies to which
+  product rather than a row of unexplained logos. So the strip now states the
+  one thing that is always true: the paperwork exists and is available on
+  request, with a link to ask for it.
+*/
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -39,7 +47,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   return (
     <div className="pb-24">
-      <JsonLd data={organizationLd()} />
+      <JsonLd data={organizationLd(locale)} />
       <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/about` }])} />
       <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
 
@@ -54,7 +62,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           {stats.map((s, i) => (
             <Reveal key={s.label} index={i}>
               <div className="rounded-2xl border border-line bg-ink p-6 text-center">
-                <div className="font-display text-3xl font-extrabold text-accent-strong sm:text-4xl">{s.value}</div>
+                <div className="font-display text-3xl font-extrabold text-fg sm:text-4xl">{s.value}</div>
                 <div className="mt-2 text-sm font-medium text-muted">{s.label}</div>
               </div>
             </Reveal>
@@ -63,8 +71,8 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
         {/* Mission banner */}
         <Reveal index={4}>
-          <div className="mt-6 rounded-2xl border border-accent/20 bg-accent-soft px-6 py-5">
-            <p className="text-sm font-medium leading-relaxed text-accent-strong">{t("mission")}</p>
+          <div className="mt-6 rounded-2xl border border-accent/20 bg-surface-2 px-6 py-5">
+            <p className="text-sm font-medium leading-relaxed text-fg">{t("mission")}</p>
           </div>
         </Reveal>
 
@@ -80,7 +88,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
                       <path d={VALUE_ICONS[i % VALUE_ICONS.length]} />
                     </svg>
                   </span>
-                  <h2 className="mt-5 font-display text-xl font-bold">{v.title}</h2>
+                  <h2 className="mt-5 font-display text-lg font-bold text-fg">{v.title}</h2>
                   <p className="mt-2 text-sm leading-relaxed text-muted">{v.text}</p>
                 </div>
               </Reveal>
@@ -94,11 +102,13 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             <span className="mr-2 text-xs font-semibold uppercase tracking-widest text-faint">
               {t("certsLabel")}
             </span>
-            {CERTS.map((c) => (
-              <span key={c} className="rounded-full border border-line bg-ink px-4 py-1.5 text-sm font-semibold text-fg">
-                {c}
-              </span>
-            ))}
+            <p className="text-sm leading-relaxed text-muted">{t("certsNote")}</p>
+            <a
+              href={`mailto:${BRAND.contact.email}?subject=Sertifikat%20so'rovi`}
+              className="rounded-full border border-line-strong bg-ink px-4 py-1.5 text-sm font-semibold text-fg transition-colors hover:border-brand-deep/40"
+            >
+              {t("certsCta")}
+            </a>
           </div>
         </Reveal>
 

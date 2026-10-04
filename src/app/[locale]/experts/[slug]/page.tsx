@@ -66,31 +66,38 @@ export default async function ExpertPage({
     <div className="pt-10">
       <JsonLd data={personLd} />
       <Container size="narrow">
-        <Link href="/experts" className="text-sm text-muted hover:text-amber-500">
+        <Link href="/experts" className="text-sm text-muted hover:text-fg">
           ← {t("back")}
         </Link>
 
+        {expert.isDemo && (
+          <p className="mt-6 rounded-2xl border border-signal/25 bg-signal-soft px-5 py-4 text-sm leading-relaxed text-muted">
+            <span className="mr-2 rounded-full border border-signal/30 bg-ink px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-signal">
+              {t("demoChip")}
+            </span>
+            {t("demoBanner")}
+          </p>
+        )}
+
         <div className="mt-8 flex flex-col gap-8 sm:flex-row sm:items-start">
-          <div className="relative h-44 w-44 shrink-0 overflow-hidden rounded-3xl border-2 border-amber-500/40 bg-surface shadow-xl">
+          <div className="relative h-44 w-44 shrink-0 overflow-hidden rounded-2xl border border-line bg-surface shadow-[var(--shadow-card)]">
             <Image src={expert.image} alt={expert.name} fill sizes="176px" className="object-cover" />
-            <div className="absolute left-2.5 top-2.5 inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-black/70 backdrop-blur-md px-2.5 py-0.5 text-[10px] font-semibold text-emerald-400">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span>{t("onlineStatus")}</span>
-            </div>
+            {/*
+              No "online now" pill. It claimed the named doctor was reachable at
+              that moment — a status the site cannot know — and on a placeholder
+              profile it would be a live-looking signal on invented data.
+            */}
           </div>
           <div className="flex-1">
-            <div className="flex items-center gap-2 text-xs font-semibold text-amber-500 mb-1">
-              <span>★ {t("rating")}</span>
-            </div>
-            <p className="text-xs font-bold uppercase tracking-widest text-amber-700">{t("badge")}</p>
+            {/* A star rating used to sit above the name ("★ O'rtacha baho").
+                Nothing on this site collects or stores ratings for a doctor,
+                so the number only existed in the markup. */}
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-signal">{t("badge")}</p>
             <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{expert.name}</h1>
             <p className="mt-1 text-lg text-muted">{expert.title}</p>
             {expert.worksFor && (
               <p className="mt-2 flex items-center gap-2 text-sm text-muted">
-                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-signal" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
                   <rect x="2" y="7" width="20" height="14" rx="2" /><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2M12 12v4M10 14h4" />
                 </svg>
                 {expert.worksFor}
@@ -106,11 +113,11 @@ export default async function ExpertPage({
         <p className="mt-8 text-lg leading-relaxed text-muted">{expert.bio}</p>
 
         <section className="mt-10">
-          <h2 className="font-display text-xl font-semibold">{t("credentials")}</h2>
+          <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("credentials")}</h2>
           <ul className="mt-4 space-y-3">
             {expert.credentials.map((c) => (
               <li key={c} className="flex items-start gap-3 text-fg">
-                <svg viewBox="0 0 20 20" className="mt-0.5 h-5 w-5 shrink-0 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2">
+                <svg viewBox="0 0 20 20" className="mt-0.5 h-5 w-5 shrink-0 text-signal" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
                 {c}
@@ -120,8 +127,8 @@ export default async function ExpertPage({
         </section>
 
         {expert.sameAs.length > 0 && (
-          <section className="mb-32 mt-10">
-            <h2 className="font-display text-xl font-semibold">{t("profiles")}</h2>
+          <section className="mb-20 mt-10">
+            <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("profiles")}</h2>
             <div className="mt-4 flex flex-wrap gap-3">
               {expert.sameAs.map((url) => (
                 <a
@@ -129,7 +136,7 @@ export default async function ExpertPage({
                   href={url}
                   target="_blank"
                   rel="noopener noreferrer nofollow"
-                  className="rounded-full border border-line px-4 py-2 text-sm text-muted transition-colors hover:border-amber-500 hover:text-amber-500"
+                  className="rounded-full border border-line px-4 py-2 text-sm text-muted transition-colors hover:border-line-strong hover:text-fg"
                 >
                   {new URL(url).hostname.replace("www.", "")}
                 </a>

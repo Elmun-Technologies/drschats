@@ -20,7 +20,7 @@ export function PageHero({
     <>
       <div className="border-b border-line bg-surface">
         <Container className="flex flex-wrap items-center gap-2 py-4 text-sm">
-          <Link href="/" className="text-muted hover:text-accent-strong">{t("breadcrumbHome")}</Link>
+          <Link href="/" className="text-muted hover:text-fg">{t("breadcrumbHome")}</Link>
           <span className="text-faint">/</span>
           <span className="font-semibold text-fg">{crumb}</span>
         </Container>
@@ -29,7 +29,7 @@ export function PageHero({
         <div className="max-w-2xl">
           {eyebrow && (
             <Reveal>
-              <p className="text-sm font-semibold text-accent-strong">{eyebrow}</p>
+              <p className="text-sm font-semibold text-fg">{eyebrow}</p>
             </Reveal>
           )}
           <Reveal index={1}>

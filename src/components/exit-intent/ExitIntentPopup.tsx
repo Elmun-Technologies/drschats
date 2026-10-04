@@ -3,13 +3,24 @@
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { track } from "@/lib/analytics/events";
+import { BRAND } from "@/lib/brand";
 
+/*
+  The leaving-visitor card.
+
+  It used to promise "50,000 so'm voucher + free doctor consultation", gate it
+  behind a phone number, and then do nothing with the number except hand it to
+  the analytics tracker. A shop that never sends the voucher and never calls
+  has taught the visitor that its other promises are worth the same.
+
+  What is left is the one thing we can actually deliver at the moment somebody
+  is about to close the tab: the Telegram channel, where order status, intake
+  reminders and club offers already live. No phone field, no countdown, no
+  "only today".
+*/
 export function ExitIntentPopup() {
   const t = useTranslations("exit");
   const [isOpen, setIsOpen] = useState(false);
-  const [phone, setPhone] = useState("");
-  const [submitted, setSubmitted] = useState(false);
 
   useEffect(() => {
     if (sessionStorage.getItem("exit-shown")) return;
@@ -36,14 +47,6 @@ export function ExitIntentPopup() {
     };
   }, []);
 
-  function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (phone.length < 7) return;
-    track("exit_intent_lead", { phone });
-    setSubmitted(true);
-    setTimeout(() => setIsOpen(false), 3000);
-  }
-
   return (
     <AnimatePresence>
       {isOpen && (
@@ -53,89 +56,57 @@ export function ExitIntentPopup() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-[70] bg-black/75 backdrop-blur-md"
+            className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm"
           />
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 40 }}
+            initial={{ opacity: 0, scale: 0.96, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 40 }}
-            transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="fixed inset-x-4 top-1/2 -translate-y-1/2 z-[71] mx-auto max-w-lg overflow-hidden rounded-[2.5rem] border border-gold/40 bg-gradient-to-br from-brand-deep via-brand-deep to-accent p-8 shadow-[0_25px_60px_-15px_rgba(15,23,42,0.8)] text-white"
+            exit={{ opacity: 0, scale: 0.96, y: 24 }}
+            transition={{ type: "spring", damping: 26, stiffness: 300 }}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="exit-title"
+            className="fixed inset-x-4 top-1/2 z-[71] mx-auto max-w-md -translate-y-1/2 overflow-hidden rounded-3xl border border-line bg-ink p-7 shadow-[var(--shadow-pop)] sm:p-8"
           >
             <button
+              type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute right-5 top-5 rounded-full bg-white/10 p-2 text-white/70 hover:bg-white/20 hover:text-white transition-colors"
+              className="absolute right-4 top-4 rounded-full bg-surface-2 p-2 text-muted transition-colors hover:text-fg"
               aria-label={t("dismiss")}
             >
-              <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
               </svg>
             </button>
 
-            {submitted ? (
-              <div className="py-8 text-center">
-                <span className="flex h-16 w-16 items-center justify-center rounded-full bg-gold/15 text-gold text-3xl mx-auto mb-4 border border-gold/40">
-                  🎁
-                </span>
-                <h3 className="font-display text-2xl font-extrabold text-white">{t("successTitle")}</h3>
-                <p className="mt-2 text-sm text-surface-2/80">
-                  {t("successBody")}
-                </p>
-              </div>
-            ) : (
-              <div>
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="rounded-full bg-gold px-3 py-1 text-[11px] font-extrabold uppercase tracking-widest text-brand-deep shadow-md">
-                    🎁 {t("badge")}
+            <p className="text-xs font-bold uppercase tracking-widest text-signal">{t("badge")}</p>
+
+            <h2 id="exit-title" className="mt-3 font-display text-2xl font-extrabold leading-tight text-fg">{t("title")}
+            </h2>
+
+            <p className="mt-3 text-sm leading-relaxed text-muted">{t("body")}</p>
+
+            <ul className="mt-5 flex flex-col gap-2.5 rounded-2xl border border-line bg-surface p-4 text-sm text-fg">
+              {[t("perk1"), t("perk2"), t("perk3")].map((perk) => (
+                <li key={perk} className="flex items-start gap-2.5">
+                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-signal-soft text-[10px] font-bold text-signal">
+                    ✓
                   </span>
-                  <span className="text-xs text-gold font-bold">{t("badgeNote")}</span>
-                </div>
+                  <span className="leading-snug">{perk}</span>
+                </li>
+              ))}
+            </ul>
 
-                <h3 className="font-display text-2xl sm:text-3xl font-extrabold leading-tight text-white drop-shadow-md">
-                  {t("title")}
-                </h3>
+            <a
+              href={BRAND.social.telegram}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-signal px-6 py-3.5 text-xs font-extrabold uppercase tracking-widest text-white transition-colors hover:bg-signal/90"
+            >
+              {t("cta")}
+            </a>
 
-                <p className="mt-3 text-sm text-surface-2/90 leading-relaxed">
-                  {t("body")}
-                </p>
-
-                <div className="mt-5 rounded-2xl bg-white/10 p-4 border border-white/15 backdrop-blur-md">
-                  <ul className="flex flex-col gap-2 text-xs font-semibold text-white/90">
-                    <li className="flex items-center gap-2">
-                      <span className="text-gold font-bold">✓</span> {t("perk1")}
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-gold font-bold">✓</span> {t("perk2")}
-                    </li>
-                    <li className="flex items-center gap-2">
-                      <span className="text-gold font-bold">✓</span> {t("perk3")}
-                    </li>
-                  </ul>
-                </div>
-
-                <form onSubmit={handleSubmit} className="mt-6 flex flex-col sm:flex-row gap-3">
-                  <input
-                    type="tel"
-                    required
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    placeholder={t("phonePlaceholder")}
-                    inputMode="tel"
-                    className="flex-1 rounded-2xl border border-white/20 bg-white/10 px-5 py-3.5 text-sm font-semibold text-white placeholder-white/50 outline-none focus:border-gold focus:ring-1 focus:ring-gold"
-                  />
-                  <button
-                    type="submit"
-                    className="rounded-2xl bg-gold px-7 py-3.5 text-xs font-extrabold uppercase tracking-widest text-brand-deep shadow-xl shadow-gold/20 transition-all duration-300 hover:bg-white hover:scale-105 active:scale-95 shrink-0"
-                  >
-                    {t("cta")} ➔
-                  </button>
-                </form>
-
-                <p className="mt-3 text-center text-[11px] text-white/50">
-                  {t("promise")}
-                </p>
-              </div>
-            )}
+            <p className="mt-3 text-center text-[11px] leading-relaxed text-muted">{t("promise")}</p>
           </motion.div>
         </>
       )}

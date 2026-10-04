@@ -50,12 +50,15 @@ export default async function QuizPage({
     <div className="pt-10 pb-6">
       <Container>
         <header className="mx-auto max-w-2xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-amber-500/30 bg-amber-500/10 px-4 py-1.5 text-xs font-semibold text-amber-700">
-            <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0 text-amber-500" fill="none" stroke="currentColor" strokeWidth="2">
+          {/* Was "Dr. Chats AI and Medical Consilium Diagnostics" — a claimed
+              AI diagnosis, hard-coded in Uzbek, on a test that diagnoses
+              nothing. The honest eyebrow is the test's own name. */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-signal/25 bg-signal-soft px-4 py-1.5 text-xs font-semibold text-signal">
+            <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
               <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-            <span>Dr. Chats Sun&apos;iy Intellekt va Tibbiy Konsilium Diagnostikasi</span>
+            <span>{t("eyebrow")}</span>
           </div>
           <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
             {t("title")}
@@ -63,7 +66,7 @@ export default async function QuizPage({
           <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
         </header>
 
-        <div className="mt-12">
+        <div className="mt-10 sm:mt-12">
           <QuizFlow questions={questions} initialAnswers={preset} />
         </div>
 

@@ -53,7 +53,7 @@ export function CartDrawer() {
           >
             <header className="flex items-center justify-between border-b border-line px-6 py-5 bg-surface text-fg">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-gold/15 text-gold-ink font-bold text-sm">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-signal-soft text-signal font-bold text-sm">
                   🛒
                 </span>
                 <h2 id="cart-drawer-title" className="font-display text-lg font-extrabold text-fg">{t("title")}</h2>
@@ -73,7 +73,7 @@ export function CartDrawer() {
                   </svg>
                 </div>
                 <p className="text-muted">{t("empty")}</p>
-                <Link href="/products" onClick={close} className={buttonVariants("primary")}>
+                <Link href="/products" onClick={close} className={buttonVariants("dark")}>
                   {t("emptyCta")}
                 </Link>
               </div>
@@ -88,7 +88,7 @@ export function CartDrawer() {
                     </p>
                     <div className="h-2 overflow-hidden rounded-full bg-line/60">
                       <div
-                        className="h-full rounded-full bg-gold transition-all duration-700 shadow-sm"
+                        className="h-full rounded-full bg-signal transition-[width] duration-700 ease-out"
                         style={{
                           width: `${Math.min(100, ((totals.subtotal) / totals.freeShippingThreshold) * 100)}%`,
                         }}
@@ -112,17 +112,17 @@ export function CartDrawer() {
                             </svg>
                           </button>
                         </div>
-                        <p className="mt-1 text-sm text-accent-strong">{formatMoney(l.price, locale)}</p>
+                        <p className="mt-1 text-sm text-fg">{formatMoney(l.price, locale)}</p>
                         {l.oldPrice && l.oldPrice > l.price && (
                           <div className="mt-0.5 flex items-center gap-2">
                             <span className="text-xs text-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
-                            <span className="rounded bg-gold/20 px-1.5 py-0 text-[10px] font-medium text-gold-ink">
+                            <span className="rounded border border-line bg-surface-2 px-1.5 py-0 text-[10px] font-medium text-muted">
                               −{Math.round((1 - l.price / l.oldPrice) * 100)}%
                             </span>
                           </div>
                         )}
                         {l.subscription && (
-                          <p className="mt-0.5 text-xs font-semibold text-accent-strong">
+                          <p className="mt-0.5 text-xs font-semibold text-fg">
                             {ts("everyDays", { days: l.subscription.intervalDays })}
                           </p>
                         )}
@@ -161,9 +161,9 @@ export function CartDrawer() {
                     const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
                     if (totalSavings > 0) {
                       return (
-                        <div className="mt-2 rounded-xl border border-green-500/20 bg-green-500/10 p-2.5 text-center">
-                          <p className="text-xs font-semibold text-green-600 dark:text-green-500">
-                            Siz jami {formatMoney(totalSavings, locale)} tejadingiz! 🥳
+                        <div className="mt-2 rounded-xl border border-signal/25 bg-signal-soft p-2.5 text-center">
+                          <p className="text-xs font-semibold text-signal">
+                            {tc("savings", { amount: formatMoney(totalSavings, locale) })}
                           </p>
                         </div>
                       );
@@ -195,7 +195,7 @@ function QtyButton({ children, onClick }: { children: React.ReactNode; onClick: 
   return (
     <button
       onClick={onClick}
-      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-accent hover:text-accent-strong"
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-line-strong hover:text-fg"
     >
       {children}
     </button>
@@ -206,7 +206,7 @@ function Row({ label, value, accent }: { label: string; value: string; accent?: 
   return (
     <div className="flex items-center justify-between text-sm">
       <span className="text-muted">{label}</span>
-      <span className={accent ? "text-accent-strong" : "text-fg"}>{value}</span>
+      <span className={accent ? "font-semibold text-fg" : "text-muted"}>{value}</span>
     </div>
   );
 }

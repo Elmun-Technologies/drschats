@@ -68,12 +68,12 @@ export function ProductGallery({
             goTo(active - 1);
           }
         }}
-        className="min-w-0 flex-1 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+        className="min-w-0 flex-1 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
       >
         <div className="relative">
           <div
             ref={trackRef}
-            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl border border-line/60 bg-gradient-to-b from-surface-2 to-surface shadow-xl"
+            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl border border-line/60 bg-surface-2"
           >
             {images.map((img, i) => (
               <div
@@ -88,14 +88,14 @@ export function ProductGallery({
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
                   sizes="(max-width: 1024px) 100vw, 45vw"
-                  className="object-contain transition-transform duration-700 hover:scale-105 p-4"
+                  className="object-contain transition-transform duration-700 p-4"
                 />
               </div>
             ))}
           </div>
 
           {discountPercent > 0 && (
-            <span className="pointer-events-none absolute left-4 top-4 rounded-full bg-gold px-3.5 py-1.5 text-xs font-extrabold tracking-wider text-brand-deep shadow-lg shadow-gold/20">
+            <span className="pointer-events-none absolute left-4 top-4 rounded-full border border-line-strong bg-surface-2 px-3.5 py-1.5 text-xs font-extrabold tracking-wider text-brand-deep">
               −{discountPercent}%
             </span>
           )}
@@ -154,8 +154,8 @@ export function ProductGallery({
                 <span
                   aria-hidden
                   className={cn(
-                    "h-1.5 rounded-full transition-all",
-                    i === active ? "w-6 bg-accent" : "w-1.5 bg-surface-3",
+            "h-1.5 rounded-full transition-all",
+                    i === active ? "w-6 bg-fg" : "w-1.5 bg-surface-3",
                   )}
                 />
               </button>
@@ -178,7 +178,7 @@ export function ProductGallery({
               aria-label={t("thumb", { index: i + 1 })}
               aria-current={i === active}
               className={cn(
-                "relative h-20 w-16 shrink-0 overflow-hidden rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent",
+            "relative h-20 w-16 shrink-0 overflow-hidden rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
                 i === active ? "border-accent" : "border-line hover:border-line-strong",
               )}
             >

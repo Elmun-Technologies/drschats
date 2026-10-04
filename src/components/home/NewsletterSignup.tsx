@@ -1,124 +1,76 @@
-"use client";
-
-import { useState } from "react";
-import { useLocale, useTranslations } from "next-intl";
-import type { Locale } from "@/lib/i18n/routing";
-import { subscribeToNewsletter } from "@/app/actions/subscribe";
-import { track } from "@/lib/analytics/events";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { BRAND } from "@/lib/brand";
 
-const TELEGRAM_URL = BRAND.social.telegram;
+/*
+  The VIP club, as a Telegram bot.
 
-export function NewsletterSignup() {
-  const t = useTranslations("home.newsletter");
-  const locale = useLocale() as Locale;
-  const [email, setEmail] = useState("");
-  const [company, setCompany] = useState("");
-  const [state, setState] = useState<"idle" | "loading" | "done" | "error">("idle");
+  The block used to be an email capture form headed "👑 VIP Salomatlik Klubi ·
+  10% chegirma va shifokorlar maslahatini oling" — three claims, none of them
+  true: the crown was decoration, the 10% was the ordinary first-order discount
+  every visitor already gets, and no doctor consultation existed behind the
+  address. It also asked for an email address as the price of joining, when the
+  channel this shop actually talks to customers on is Telegram — every order
+  confirmation already goes there.
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    if (state === "loading") return;
-    setState("loading");
-    const result = await subscribeToNewsletter({ email, company, locale });
-    if (result.ok) {
-      track("newsletter_subscribe", {});
-      setState("done");
-      setEmail("");
-    } else {
-      setState("error");
-    }
-  }
+  So: one button, the real bot, and a promise the bot can keep (order status,
+  intake reminders, club offers). Email stays available on its own page for
+  people who prefer it, at the same price and with the same opt-in rules.
+*/
+export async function NewsletterSignup() {
+  const t = await getTranslations("home.newsletter");
+  const bot = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME;
+  const href = bot ? `https://t.me/${bot.replace(/^@/, "")}` : BRAND.social.telegram;
 
   return (
-    <section className="border-t border-line/30 bg-ink py-20 sm:py-28">
+    <section className="section-y bg-ink">
       <Container>
-        <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-brand-deep via-brand-deep to-accent p-8 sm:p-14 border border-gold/30 shadow-2xl shadow-brand-deep/40 text-white">
+        <div className="relative overflow-hidden rounded-3xl border border-line-strong bg-brand-deep p-8 text-white sm:p-14">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
-              <span className="inline-block rounded-full bg-gold/15 backdrop-blur-md px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-gold border border-gold/30 mb-4">
+              <span className="mb-4 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-white/80">
                 {t("eyebrow")}
               </span>
-              <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl text-white drop-shadow-md">
-                {t("title")}
+              <h2 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl">{t("title")}
               </h2>
-              <p className="mt-4 text-base text-surface-2/90 leading-relaxed max-w-xl">
+              <p className="mt-4 max-w-xl text-base leading-relaxed text-surface-2/85">
                 {t("subtitle")}
               </p>
-
-              <div className="mt-6 flex flex-wrap gap-4">
-                <a
-                  href={TELEGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => track("telegram_click", { source: "home" })}
-                  className="inline-flex items-center gap-2.5 rounded-full border border-gold/40 bg-gold/15 backdrop-blur-md px-6 py-3.5 text-xs font-extrabold uppercase tracking-widest text-gold transition-all duration-300 hover:bg-gold hover:text-brand-deep hover:scale-105 shadow-lg"
-                >
-                  <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="currentColor">
-                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.608c-.15.675-.546.84-1.107.522l-3.063-2.257-1.478 1.42c-.163.163-.3.3-.617.3l.22-3.118 5.67-5.12c.247-.22-.054-.342-.383-.122L7.04 14.572l-3.007-.94c-.653-.204-.666-.653.137-.966l11.732-4.522c.545-.197 1.02.133.66.104z" />
-                  </svg>
-                  <span>{t("telegramCta")}</span>
-                </a>
-              </div>
             </div>
 
-            <div>
-              {state === "done" ? (
-                <div className="rounded-3xl border border-gold/40 bg-gold/10 p-8 text-center backdrop-blur-md">
-                  <span className="flex h-14 w-14 items-center justify-center rounded-full bg-gold text-brand-deep text-2xl font-bold mx-auto mb-3">
-                    ✓
-                  </span>
-                  <p className="font-display text-xl font-extrabold text-white">{t("successTitle")}</p>
-                  <p className="mt-2 text-sm text-surface-2/80">{t("successNote")}</p>
-                </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="rounded-3xl border border-white/20 bg-white/10 p-7 backdrop-blur-md shadow-xl">
-                  <label htmlFor="newsletter-email" className="block text-xs font-extrabold uppercase tracking-widest text-gold mb-3">
-                    {t("emailLabel")}
-                  </label>
-                  <div className="flex flex-col gap-3 sm:flex-row">
-                    <input
-                      id="newsletter-email"
-                      type="email"
-                      required
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      placeholder={t("emailPlaceholder")}
-                      autoComplete="email"
-                      className="flex-1 rounded-2xl border border-white/20 bg-brand-deep/80 px-5 py-4 text-sm font-semibold text-white placeholder-white/50 outline-none focus:border-gold focus:ring-1 focus:ring-gold"
-                    />
-                    <button
-                      type="submit"
-                      disabled={state === "loading"}
-                      className="rounded-2xl bg-gold px-8 py-4 text-xs font-extrabold uppercase tracking-widest text-brand-deep shadow-xl shadow-gold/20 transition-all duration-300 hover:bg-white hover:scale-105 active:scale-95 disabled:opacity-60 shrink-0"
-                    >
-                      {state === "loading" ? "…" : `${t("submit")} ➔`}
-                    </button>
-                  </div>
-
-                  <input
-                    type="text"
-                    name="company"
-                    value={company}
-                    onChange={(e) => setCompany(e.target.value)}
-                    tabIndex={-1}
-                    autoComplete="off"
-                    aria-hidden
-                    className="absolute left-[-9999px] h-0 w-0 opacity-0"
-                  />
-
-                  {state === "error" && (
-                    <p role="alert" className="mt-3 text-xs font-bold text-rose-400">
-                      {t("error")}
-                    </p>
-                  )}
-                  <p className="mt-4 text-[11px] text-white/50">
-                    {t("privacyNote")}
-                  </p>
-                </form>
-              )}
+            <div className="rounded-3xl border border-white/15 bg-white/5 p-7">
+              <a
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex w-full items-center justify-center gap-2.5 rounded-2xl bg-white px-6 py-4 text-xs font-extrabold uppercase tracking-widest text-brand-deep shadow-lg transition-transform duration-300 hover:scale-[1.02] active:scale-95"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="currentColor">
+                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.608c-.15.675-.546.84-1.107.522l-3.063-2.257-1.478 1.42c-.163.163-.3.3-.617.3l.22-3.118 5.67-5.12c.247-.22-.054-.342-.383-.122L7.04 14.572l-3.007-.94c-.653-.204-.666-.653.137-.966l11.732-4.522c.545-.197 1.02.133.66.104z" />
+                </svg>
+                {t("telegramCta")}
+              </a>
+              <p className="mt-4 text-[11px] leading-relaxed text-white/55">{t("privacyNote")}</p>
+              <Link
+                href="/email/preferences"
+                className="mt-3 inline-block text-[11px] font-semibold text-white/70 underline underline-offset-2 transition-colors hover:text-white"
+              >
+                {t("emailPreferences")}
+              </Link>
             </div>
+          </div>
+
+          <div className="mt-10 flex flex-col gap-4 border-t border-white/15 pt-8 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-xl text-sm leading-relaxed text-surface-2/80">
+              {t("firstOrderNote")}
+            </p>
+            <Link
+              href="/products"
+              className="inline-flex shrink-0 items-center justify-center rounded-2xl border border-white/25 bg-white/10 px-6 py-3.5 text-xs font-extrabold uppercase tracking-widest text-white transition-colors hover:bg-white/20"
+            >
+              {t("catalogCta")}
+            </Link>
           </div>
         </div>
       </Container>

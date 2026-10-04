@@ -108,7 +108,7 @@ export function CatalogMenu({
             id={panelId}
             role="group"
             aria-label={t("shopByCategories")}
-            className="absolute inset-x-0 top-full z-40 rounded-b-2xl border border-line bg-ink shadow-[0_24px_48px_-24px_rgba(19,22,50,0.35)]"
+            className="absolute inset-x-0 top-full z-40 rounded-b-2xl border border-line bg-ink shadow-[var(--shadow-pop)]"
           >
             {/* No <Container> here: the panel already spans the container, and
                 nesting one would pad the contents twice. */}
@@ -121,12 +121,12 @@ export function CatalogMenu({
                       href={`/products/${c.slug}`}
                       className="group flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors hover:bg-surface"
                     >
-                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface text-fg transition-colors group-hover:bg-accent-soft group-hover:text-accent-strong">
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-surface text-fg transition-colors group-hover:bg-surface-2 group-hover:text-fg">
                         <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                           <path d={getCategoryIcon(c.slug)} />
                         </svg>
                       </span>
-                      <span className="min-w-0 flex-1 text-sm font-semibold text-fg group-hover:text-accent-strong">
+                      <span className="min-w-0 flex-1 text-sm font-semibold text-fg group-hover:text-fg">
                         {c.name}
                       </span>
                       {/* Truthy, not `!= null`: a bare "0" beside a category
@@ -140,7 +140,7 @@ export function CatalogMenu({
 
                 <Link
                   href="/products"
-                  className="mt-4 inline-flex items-center gap-1.5 px-3 text-sm font-bold text-accent-strong hover:underline"
+                  className="mt-4 inline-flex items-center gap-1.5 px-3 text-sm font-bold text-fg hover:underline"
                 >
                   {t("allCategories")}
                   <svg viewBox="0 0 20 20" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -158,7 +158,7 @@ export function CatalogMenu({
                     <li key={item.key}>
                       <Link
                         href={item.href}
-                        className="block rounded-lg px-2 py-1.5 text-sm font-semibold text-fg transition-colors hover:bg-ink hover:text-accent-strong"
+                        className="block rounded-lg px-2 py-1.5 text-sm font-semibold text-fg transition-colors hover:bg-ink hover:text-fg"
                       >
                         {t(item.key)}
                       </Link>
@@ -175,7 +175,7 @@ export function CatalogMenu({
 }
 
 const TRIGGER_CLASS =
-  "flex items-center gap-2 rounded-full bg-accent px-5 py-2.5 text-sm font-semibold text-brand-deep transition-colors hover:bg-accent-strong hover:text-ink";
+  "flex items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-accent-strong hover:text-ink";
 
 function BurgerIcon() {
   return (

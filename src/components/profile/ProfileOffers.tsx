@@ -36,8 +36,7 @@ export function ProfileOffers() {
 
   return (
     <section aria-labelledby="profile-offers">
-      <h2 id="profile-offers" className="font-display text-lg font-bold tracking-tight">
-        {t("title")}
+      <h2 id="profile-offers" className="font-display text-lg font-bold tracking-tight">{t("title")}
       </h2>
       <p className="mt-1 text-sm text-muted">{t("description")}</p>
 
@@ -49,7 +48,7 @@ export function ProfileOffers() {
             </div>
             {offer.reasons.length > 0 && (
               <p className="px-1 text-xs leading-snug text-muted">
-                <span className="font-semibold text-accent-strong">{t("because")}</span>{" "}
+                <span className="font-semibold text-fg">{t("because")}</span>{" "}
                 {offer.reasons.join(" · ")}
               </p>
             )}

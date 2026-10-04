@@ -13,6 +13,8 @@ export interface Expert {
   id: string;
   slug: string;
   name: string;
+  /** Placeholder profile — never shown as a product's medical reviewer. */
+  isDemo: boolean;
   image: string;
   title: string;
   bio: string;
@@ -38,6 +40,9 @@ function mapExpert(raw: SR): Expert {
     id: raw.id ?? raw.slug ?? "",
     slug: raw.slug ?? "",
     name: raw.name ?? "",
+    // Records written by hand in Sanity are real people; the flag only comes
+    // from the static demo list.
+    isDemo: Boolean(raw.demo),
     image,
     title: raw.title ?? "",
     bio: raw.bio ?? "",
@@ -88,15 +93,16 @@ export async function listExpertSlugs(): Promise<string[]> {
 }
 
 /** Deterministic reviewer assignment — same hash as the static version */
-export async function reviewerForKey(key: string, locale: Locale): Promise<Expert> {
+export async function reviewerForKey(key: string, locale: Locale): Promise<Expert | null> {
   if (!isSanityConfigured()) {
     const { reviewerForKey: staticFn } = await import("./experts");
     return staticFn(key, locale);
   }
-  const all = await fetchAll(locale);
+  const all = await fetchAll(locale).then((list) => list.filter((e) => !e.isDemo));
   if (!all.length) {
-    const { reviewerForKey: staticFn } = await import("./experts");
-    return staticFn(key, locale);
+    // No review board yet: hide the block rather than attribute the page to
+    // somebody who did not write or check it.
+    return null;
   }
   let h = 0;
   for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;

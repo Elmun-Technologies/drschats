@@ -51,7 +51,7 @@ export function ProductReviews({
                   <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77l-5.2 2.73.99-5.78-4.21-4.1 5.82-.85L10 1.5z" />
                 </svg>
                 <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-surface-3">
-                  <span className="block h-full rounded-full bg-gold" style={{ width: `${percent}%` }} />
+                  <span className="block h-full rounded-full bg-signal" style={{ width: `${percent}%` }} />
                 </span>
                 <span className="w-8 text-right tabular-nums">{percent}%</span>
               </div>
@@ -72,7 +72,7 @@ export function ProductReviews({
                 <blockquote className="mt-4 flex-1 text-muted">&ldquo;{r.text}&rdquo;</blockquote>
                 <figcaption className="mt-4 flex items-center gap-2 text-sm font-medium text-fg">
                   {r.author}
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-accent-strong">
+                  <span className="inline-flex items-center gap-1 text-xs font-medium text-fg">
                     <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
@@ -89,7 +89,7 @@ export function ProductReviews({
             type="button"
             onClick={() => setExpanded((v) => !v)}
             aria-expanded={expanded}
-            className="mt-6 w-full rounded-full border border-line-strong bg-surface-2 py-3 text-sm font-semibold text-fg transition-colors hover:border-accent hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="mt-6 w-full rounded-full border border-line-strong bg-surface-2 py-3 text-sm font-semibold text-fg transition-colors hover:border-line-strong hover:bg-surface-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
           >
             {expanded ? t("showLessReviews") : t("showMoreReviews", { count: reviews.length - INITIAL_COUNT })}
           </button>

@@ -39,7 +39,7 @@ export default async function IngredientsPage({
     <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
-          <p className="text-sm font-semibold text-accent-strong">{t("badge")}</p>
+          <p className="text-sm font-semibold text-fg">{t("badge")}</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">{t("title")}</h1>
           <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
         </header>
@@ -51,7 +51,7 @@ export default async function IngredientsPage({
               <div className="flex h-full flex-col rounded-2xl border border-line bg-ink p-6">
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="min-w-0 font-display text-lg font-bold">{ing.name}</h2>
-                  <span className="shrink-0 rounded-full bg-accent-soft px-2.5 py-1 text-[11px] font-semibold text-accent-strong">{ing.role}</span>
+                  <span className="shrink-0 rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-muted">{ing.role}</span>
                 </div>
                 <p className="mt-3 flex-1 text-sm text-muted">{ing.description}</p>
                 {ing.inProducts.length > 0 && (
@@ -59,7 +59,7 @@ export default async function IngredientsPage({
                     <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-faint">{t("foundIn")}</p>
                     <div className="flex flex-wrap gap-2">
                       {ing.inProducts.map((slug) => (
-                        <Link key={slug} href={`/product/${slug}`} className="rounded-full border border-line px-3 py-1 text-xs text-fg transition-colors hover:border-accent hover:text-accent-strong">
+                        <Link key={slug} href={`/product/${slug}`} className="rounded-full border border-line px-3 py-1 text-xs text-fg transition-colors hover:border-line-strong hover:text-fg">
                           {nameBySlug.get(slug) ?? slug}
                         </Link>
                       ))}
@@ -79,13 +79,13 @@ export default async function IngredientsPage({
             {synergy.map((s, i) => (
               <Reveal key={i} index={i}>
                 <div className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-5">
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${s.type === "boost" ? "bg-accent-soft text-accent-strong" : "bg-gold/15 text-gold-ink"}`}>
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${s.type === "boost" ? "bg-surface-2 text-fg" : "bg-surface-2 text-muted"}`}>
                     {s.type === "boost" ? "+" : "−"}
                   </span>
                   <div>
                     <p className="font-semibold text-fg">
                       {s.a} <span className="text-faint">{s.type === "boost" ? "+" : "×"}</span> {s.b}
-                      <span className={`ml-2 text-xs font-semibold ${s.type === "boost" ? "text-accent-strong" : "text-gold-ink"}`}>
+                      <span className={`ml-2 text-xs font-semibold ${s.type === "boost" ? "text-fg" : "text-muted"}`}>
                         {s.type === "boost" ? t("boost") : t("block")}
                       </span>
                     </p>
@@ -99,7 +99,7 @@ export default async function IngredientsPage({
 
         {/* COA */}
         <section className="mt-16 rounded-2xl border border-line bg-surface p-8">
-          <h2 className="font-display text-xl font-bold">{t("coaTitle")}</h2>
+          <h2 className="font-display text-lg font-bold text-fg">{t("coaTitle")}</h2>
           <p className="mt-3 max-w-2xl text-muted">{t("coaDesc")}</p>
         </section>
 

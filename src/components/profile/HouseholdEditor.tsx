@@ -49,8 +49,7 @@ export function HouseholdEditor() {
 
   return (
     <section aria-labelledby="profile-household">
-      <h2 id="profile-household" className="font-display text-lg font-bold tracking-tight">
-        {t("title")}
+      <h2 id="profile-household" className="font-display text-lg font-bold tracking-tight">{t("title")}
       </h2>
       <p className="mt-1 text-sm text-muted">{t("description")}</p>
 
@@ -63,7 +62,7 @@ export function HouseholdEditor() {
                 key={member.id}
                 className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface px-4 py-3"
               >
-                <span className="rounded-full bg-accent-soft px-3 py-1 text-xs font-bold text-accent-strong">
+                <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
                   {t(`relation.${member.relation}`)}
                 </span>
                 <span className="font-semibold text-fg">{member.name || t("unnamed")}</span>
@@ -77,7 +76,7 @@ export function HouseholdEditor() {
                     max={today.toISOString().slice(0, 10)}
                     aria-label={t("birthdayFor", { name: member.name || t("unnamed") })}
                     onChange={(e) => updateMember(member.id, { birthday: e.target.value || undefined })}
-                    className="rounded-lg border border-line bg-ink px-3 py-2 text-sm outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-accent"
+                    className="rounded-lg border border-line bg-ink px-3 py-2 text-sm outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
                   />
                 </label>
 
@@ -85,7 +84,7 @@ export function HouseholdEditor() {
                   type="button"
                   onClick={() => removeMember(member.id)}
                   aria-label={t("removeFor", { name: member.name || t("unnamed") })}
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-faint transition-colors hover:bg-danger/10 hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-faint transition-colors hover:bg-danger/10 hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
                 >
                   <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
@@ -109,9 +108,9 @@ export function HouseholdEditor() {
                 role="radio"
                 aria-checked={relation === value}
                 onClick={() => setRelation(value)}
-                className={`min-h-11 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                className={`min-h-11 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal ${
                   relation === value
-                    ? "border-accent bg-accent-soft text-accent-strong"
+                    ? "border-line-strong bg-surface-2 text-fg"
                     : "border-line bg-ink text-fg hover:border-line-strong"
                 }`}
               >
