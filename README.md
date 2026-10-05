@@ -1,6 +1,6 @@
 # Go Vita — health commerce storefront
 
-Multilingual (UZ / RU / EN) storefront for **Go Vita** — vitamins, dietary
+Multilingual (UZ / RU) storefront for **Go Vita** — vitamins, dietary
 supplements and med-cosmetics for the Uzbek market. The site's job is to attract
 customers via SEO + context ads and sell on-site.
 
@@ -13,6 +13,9 @@ Commerce data (products, prices, promotions, upsells, orders) comes from a
 catalog backend behind a single adapter interface — see
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the platform plan and
 [`docs/SHOPFLOW_API.md`](docs/SHOPFLOW_API.md) for the exact API contract.
+
+UI/UX optimizatsiya auditi (karta rasmlari, narx halolligi, rasmsiz plitkalar,
+kontrast, tezlik) — [`docs/UI-OPTIMIZATSIYA.md`](docs/UI-OPTIMIZATSIYA.md).
 
 ## See it live (one-click deploy)
 
