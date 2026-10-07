@@ -55,13 +55,29 @@ ko'rsatish uchun bayroqni atayin yoqish kerak.
 ```bash
 npm run dev         # development server
 npm run build       # production build (TypeScript + ESLint tekshiradi)
-npm run lint        # ESLint
+npm run lint        # eslint . (flat config: eslint.config.mjs)
 npm test            # unit testlar (vitest)
 npm run audit       # render sifati auditi — production build kerak
 npm run audit:deps  # dependency auditi (baseline bilan)
 ```
 
 Build har doim `npm run build` orqali tekshirilsin — `npx next build` boshqa Next.js versiyasini yuklab olishi mumkin.
+
+**Lint `next lint` emas, `eslint .`.** `next lint` Next 16 da olib tashlanadi va
+15.5.27 da ham har ishga tushishda migratsiya xabarini chop etardi. Konfiguratsiya
+ESLint 9 flat config (`eslint.config.mjs`); `eslint-config-next` hali faqat
+eslintrc shaklida chiqadi, shuning uchun `FlatCompat` ko'prigi ishlatiladi va
+faqat `next/core-web-vitals` extends qilinadi — `.eslintrc.json` dagidek,
+qoidalar to'plami o'zgarmagan.
+
+Qamrov **kengaygan**: `next lint` faqat `/src`, `/app`, `/pages`, `/components`,
+`/lib` ni ko'rardi; ESLint CLI ignore qilinmagan hammani ko'radi, ya'ni
+`scripts/` (audit harness va dep ratchet) va ildizdagi konfiguratsiyalar ham
+endi lint qilinadi. Yangi fayl qo'shganda buni hisobga oling.
+
+`eslint.config.mjs` `@eslint/eslintrc` ni import qiladi — u `devDependencies`
+da **ochiq e'lon qilingan**. U faqat `eslint` orqali keladigan bo'lsa (phantom
+dependency), ESLint yangilanishi lint'ni va CI'ni sindirishi mumkin edi.
 
 ## Arxitektura
 

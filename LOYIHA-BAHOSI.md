@@ -168,12 +168,21 @@ ishlayapti.
 
 Ustuvorlik: 🔴 relizni to'sadi · 🟡 jiddiy · 🟢 keyin bo'lsa ham bo'ladi
 
-> **Holat (2026-10-07): quyidagi 🔴 va 🟡 topilmalarning hammasi shu branch'da
-> tuzatilgan va production build ustida jonli o'lchangan.** Har bir bo'lim oxirida
-> tuzatish va o'lchov natijasi keltirilgan. 🟢 bo'limlardan 4.11 va 4.13 ham
-> yopilgan; 4.8 (CSP) va 4.12 (test qamrovi) ochiq qoldi — ikkalasi ham relizni
-> to'smaydi, sabablari o'z bo'limlarida. Yangi topilgan muammolar — 4.15, 4.16, 4.17, 4.18 va 4.19 — oxirida
-> qo'shilgan; 4.18 dastlab 4.14 da kichik kuzatuv, 4.19 esa 4.8 ning o'zi edi.
+> **Holat (2026-10-07): uchala 🔴 topilma va to'qqizta 🟡 topilmaning
+> yettitasi shu branch'da tuzatildi va production build ustida jonli o'lchandi.** Har bir
+> bo'lim oxirida tuzatish va o'lchov natijasi keltirilgan. 🟢 bo'limlardan 4.11 va 4.13 ham
+> yopilgan. 4.8 (CSP) va 4.14 dagi `next lint` kuzatuvi keyinroq yopildi —
+> 4.19 va 4.20 ga qarang.
+>
+> **Kodda tuzatib bo'lmaydigan, mijoz ma'lumoti yoki qarorini kutayotgan uchta
+> band qoldi:** 4.6 (`.git` tarixi 72 MB — `filter-repo` barcha hash'larni
+> o'zgartiradi, jamoa bilan kelishish kerak; fayllarning o'zi o'chirilgan),
+> 4.16 (haqiqiy tibbiy ekspert — ism, foto, yozma rozilik) va 🟢 4.12
+> (test qamrovi yupqa). Uchalasi ham relizni to'smaydi; ikkinchisi mijozsiz
+> yechilmaydi.
+>
+> Yangi topilgan muammolar — 4.15–4.20 — oxirida qo'shilgan; 4.18 va 4.20
+> dastlab 4.14 da kichik kuzatuv, 4.19 esa 4.8 ning o'zi edi.
 >
 > Bu hisobot audit **kunidagi** holatni saqlaydi: raqamlar va iqtiboslar tuzatishdan
 > oldin o'lchangan, shuning uchun bo'limlarni "nima topilgandi" deb o'qish kerak.
@@ -686,6 +695,8 @@ ko'rinadi.
   qoidani bostirmas edi). Build logi endi **butunlay toza** — 0 ogohlantirish.
 - **`next lint` deprecated.** Next.js 16 da olib tashlanadi. CI shu buyruqqa
   tayanadi, ya'ni Next 16 ga o'tishdan oldin ESLint CLI'ga migratsiya kerak.
+  **Tuzatildi (4.20 ga qarang):** `npm run lint` endi `eslint .`, `.eslintrc.json`
+  o'rniga `eslint.config.mjs` (ESLint 9 flat config). Deprekatsiya xabari yo'qolgan.
 
 ---
 
@@ -992,6 +1003,79 @@ ro'yxatdan foydalanishi (drift ga qarshi).
 
 ---
 
+### 🟢 4.20 `next lint` → ESLint CLI: deprecated buyruq va yashirin phantom dependency *(4.14 dan)*
+
+4.14 da `next lint` deprecated ekanligi va Next 16 da olib tashlanishi qayd
+etilgan edi, lekin tuzatilmagan edi. CI har push'da `npm run lint` ni chaqiradi,
+`npm run lint` esa `next lint` edi — ya'ni CI **deprecated buyruqqa** tayanar,
+u esa har ishga tushishda migratsiya xabarini chop etar edi:
+
+```
+For existing projects, migrate to the ESLint CLI:
+npx @next/codemod@canary next-lint-to-eslint-cli .
+```
+
+**Nima qilindi.** `.eslintrc.json` o'chirildi, o'rniga `eslint.config.mjs`
+(ESLint 9 flat config) yozildi, `npm run lint` endi `eslint .`.
+
+`eslint-config-next@15.5.27` hali ham faqat eslintrc shaklidagi konfiguratsiyani
+beradi (`index.js`, `core-web-vitals.js` — flat fayl yo'q), shuning uchun
+qoidalar qo'lda qayta yozilmadi, `FlatCompat` ko'prigi ishlatildi. Qoidalar
+ro'yxatini qo'lda terish — aynan `@next/next/*` va React Hook qoidalarini
+sezmasdan yo'qotishning oson yo'li, ya'ni preset'ni extends qilishdan maqsad
+o'sha qoidalar edi. Faqat `next/core-web-vitals` extends qilindi, `.eslintrc.json`
+dagidek — `next/typescript` avval ham yo'q edi va bu yerda ham qo'shilmadi,
+shuning uchun **qoidalar to'plami bu migratsiyadan o'zgarmadi**.
+
+**Bitta narsa atayin o'zgardi: qamrov.** Next'ning o'z yordam matni:
+
+> `next lint` — "Runs ESLint for all files in the `/src`, `/app`, `/pages`,
+> `/components`, and `/lib` directories."
+
+ESLint CLI esa ignore qilinmagan hammani tekshiradi. O'lchandi: endi **314 ta
+fayl** lint qilinadi, shu jumladan:
+
+| Papka | Fayl | Avval lint qilinganmi |
+|---|---|---|
+| `scripts/audit/` | 653-qatorli Playwright harness, 7 ta check, dep ratchet | **Yo'q** |
+| `scripts/assets/` | rasm va video ingest skriptlari | **Yo'q** |
+| ildiz | `next.config.ts`, `sanity.config.ts`, `vitest.config.ts`, `postcss.config.mjs` | **Yo'q** |
+| `public/sw.js` | service worker | **Yo'q** |
+
+Bularning hammasi CI'da har push'da ishlaydigan kod, lekin hech qachon lint
+qilinmagan. Kengaytirilgan qamrov **0 xato** berdi — ya'ni bu yaxshi yangilik,
+lekin uni o'lchamasdan "toza bo'lsa kerak" deb yozish noto'g'ri bo'lar edi.
+
+**Yo'l-yo'lakay topilgan phantom dependency.** `eslint.config.mjs`
+`@eslint/eslintrc` ni import qiladi. Tekshiruv:
+
+```
+$ npm ls @eslint/eslintrc
+govita-storefront@0.1.0
+`-- eslint@9.39.4
+  `-- @eslint/eslintrc@3.3.5
+```
+
+Ya'ni u **faqat `eslint` orqali** kelar, `package.json` da e'lon qilinmagan
+edi. Bunday import mo'rt: ESLint'ning keyingi versiyasi bu paketni tashlab
+yutsa yoki ichki qilib qo'ysa, `npm run lint` va butun CI **lint o'zgarmagan
+holatda ham** sinadi — va sababini topish qiyin, chunki hech kim dependency
+qo'shmagan bo'ladi. `devDependencies` ga ochiq qo'shildi (`^3.3.7`), npm uni
+eslint'ning nusxasi bilan bitta versiyaga dedupe qildi.
+
+Bu 4.19 dagi xulosaning amaldagi ko'rinishi: siyosatni yozish yetarli emas,
+uning qanday qilib ishlayotganini o'lchash kerak. Migratsiya o'zi bir qator
+o'zgarish edi; tekshiruv undagi ikkinchi, ko'rinmas muammoni chiqardi.
+
+**Tekshiruvlar:** `eslint .` → 314 fayl, **0 xato/ogohlantirish** · `next build`
+ichki lint qadami ("Linting and checking validity of types") flat config bilan
+ham o'tadi · `npm ci --dry-run` lock faylni `package.json` bilan mos topdi (CI
+`npm ci` ishlatadi, shuning uchun bu hal qiluvchi) · `audit:deps` → 19 baselined,
+**0 actionable, 0 stale** (yangi dev dependency zaiflik qo'shmadi) · deprekatsiya
+xabari yo'qoldi.
+
+---
+
 ## 5. Bu branch'da nima o'zgartirildi
 
 Audit kuni bu bo'limda faqat bitta band bor edi — 4.2 dependency patch'ini
@@ -1036,6 +1120,7 @@ va 6 ta RAR arxiv — 5 tasi `public/products/`, 1 tasi ildizdagi duplikat.
 | `src/sanity/image.ts` | Named export — build logi 0 ogohlantirish (4.14) |
 | `README.md`, `CLAUDE.md`, `docs/QOLGAN-ISHLAR.md`, `.env.example` | Haqiqatga keltirildi (4.13) |
 | `src/lib/security/csp.ts`, `src/instrumentation.ts` | **Yangi**: CSP siyosati konfiguratsiyadan hisoblanadi; boot'da build va runtime rejimini taqqoslaydi (4.19) |
+| `eslint.config.mjs`, `package.json`, `.eslintrc.json` | **Yangi/o'chirildi**: `next lint` → `eslint .` (ESLint 9 flat config); qamrov 314 faylga kengaydi, phantom dependency e'lon qilindi (4.20) |
 | `src/messages/{uz,ru}.json` | Restock formasi uchun 2 ta yangi kalit; uchta qotirilgan son olib tashlandi — brendlar, kviz savollari, namunaviy ekspertlar (4.17). Paritet 919 = 919 |
 | `package.json` + lock | `next@15.5.27`, `eslint-config-next@15.5.27`, `react-is@19.2.8`; `gsap` va `@tanstack/react-query` olib tashlandi (4.2, 4.11) |
 
@@ -1089,11 +1174,10 @@ o'zgaruvchini to'ldirish kerakligi yozilgan. Qisqasi:
 8. **`.git` tarixi (4.6)** — 72 MB, RAR'lar tarixda qolgan. `git filter-repo`
    talab qiladi va barcha commit hash'larini o'zgartiradi → jamoa bilan kelishib.
 9. **Sanity 6 migratsiyasi** — 19 ta baselined zaiflikning yagona yechim yo'li.
-10. **`next lint` deprecated** — Next 16 ga o'tishdan oldin ESLint CLI'ga
-    migratsiya kerak; CI shu buyruqqa tayanadi.
 
-*(Avval bu ro'yxatda `backend/app/otp.py` dagi kalit ajratish ham bor edi —
-u bajarildi, 4.18 ga qarang.)*
+*(Avval bu ro'yxatda ikkita band bor edi va ikkalasi ham bajarildi:
+`backend/app/otp.py` dagi kalit ajratish — 4.18, va `next lint` deprecated —
+4.20. CSP ham shu ro'yxatdan chiqdi, 4.19.)*
 
 ---
 
