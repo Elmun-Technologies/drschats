@@ -153,8 +153,8 @@ Ustuvorlik: 🔴 relizni to'sadi · 🟡 jiddiy · 🟢 keyin bo'lsa ham bo'ladi
 > tuzatilgan va production build ustida jonli o'lchangan.** Har bir bo'lim oxirida
 > tuzatish va o'lchov natijasi keltirilgan. 🟢 bo'limlardan 4.11 va 4.13 ham
 > yopilgan; 4.8 (CSP) va 4.12 (test qamrovi) ochiq qoldi — ikkalasi ham relizni
-> to'smaydi, sabablari o'z bo'limlarida. Yangi topilgan ikki muammo — 4.15 va
-> 4.16 — oxirida qo'shilgan va ikkalasi ham tuzatilgan.
+> to'smaydi, sabablari o'z bo'limlarida. Yangi topilgan uchta muammo — 4.15, 4.16 va
+> 4.17 — oxirida qo'shilgan.
 >
 > Bu hisobot audit **kunidagi** holatni saqlaydi: raqamlar va iqtiboslar tuzatishdan
 > oldin o'lchangan, shuning uchun bo'limlarni "nima topilgandi" deb o'qish kerak.
@@ -736,6 +736,79 @@ Batafsil: `docs/QOLGAN-ISHLAR.md` §2 va `docs/GOVITA-TAVSIYALAR.md` §Ekspertla
 
 ---
 
+### 🟡 4.17 Uchta sahifada qotirilgan son haqiqatga zid keladi *(yakuniy tekshiruvda topildi)*
+
+Barcha tuzatishlar tugagach, hujjatlardagi **har bir raqamni** mexanik tekshirib
+chiqdim va shu jarayonda sayt matnlarida ham xuddi shu turdagi xatolarni topdim.
+Bu kontent nuqsoni — kod buzilmagan, lekin sayt o'zi haqida noto'g'ri narsa aytadi.
+
+**1. `/uz/about` — "katalogimiz uchta liniyadan iborat"**
+
+```
+pages.about.intro: "Katalogimiz uchta asosiy liniyadan iborat:
+                    Swiss Energy, Dr. Frei va Delical."
+```
+
+Lekin `/uz/brands` sahifasi — sarlavhasi *"Katalogdagi barcha brendlar"* —
+**6 ta** brendni ko'rsatadi:
+
+```
+Swiss Energy (Shveytsariya) · Dr. Frei (Shveytsariya) · Delical (Fransiya)
+Peano (Germaniya) · Aminomorin (Yaponiya) · HIEW
+```
+
+Ya'ni saytning bir sahifasi "uchta, iborat" (ya'ni tamom) deydi, ikkinchisi
+"barchasi" deb oltitani sanaydi. Mijoz ikkala sahifani yonma-yon ochsa,
+ziddiyatni ko'radi.
+
+Sabab: brendlar ro'yxati `pages.brands.items` ma'lumotidan (keyinchalik Sanity'dan)
+keladi, `about.intro` esa **sonni matn ichiga qotirib qo'ygan**. Ma'lumot
+o'zgarganda matn o'zgarmaydi.
+
+**Tuzatildi:** son olib tashlandi — *"Katalogimiz rasmiy import qilingan
+brendlardan tashkil topgan — Swiss Energy, Dr. Frei, Delical va boshqalar;
+to'liq ro'yxat Brendlar sahifasida."* Endi brendlar soni qanday o'zgarsa ham
+matn noto'g'ri bo'la olmaydi.
+
+**2. Bosh sahifa — "6 ta savolga javob bering", kvizda esa 12+**
+
+```
+home.quizPromo.body: "...uchun 6 ta oddiy savolga javob bering."
+```
+
+Jonli kviz: `1 / 12`. Va bu ham qotiriladigan son emas — `QuizFlow.tsx:210`
+`{t("stepOf", { step: stepIndex + 1, total: visible.length })}` ishlatadi,
+`questions.ts` da esa `showIf` shartlari bor: savollar foydalanuvchi javobiga
+qarab ko'rinadi yoki ko'rinmaydi. `raw` da 27 ta savol, ko'rinadigani yo'lga
+qarab o'zgaradi.
+
+Ya'ni **hech qanday** to'g'ri qotirilgan son mavjud emas — "12" ham boshqa yo'lda
+noto'g'ri bo'lardi. **Tuzatildi:** *"bir necha oddiy savolga javob bering."*
+
+**3. `/uz/experts` — "ikkita profil", aslida uchta**
+
+```
+experts.demoNoticeBody: "Quyidagi ikkita profil — dizayn uchun qo'yilgan namuna..."
+```
+
+Sahifada esa **3 ta** namunaviy profil chiziladi (`namuna-terapevt`,
+`namuna-farmatsevt`, `namuna-nutriyent-mutaxassisi`). Bu eng nozik holati:
+gap aynan *"biz o'ylab topmaymiz"* deb va'da beradigan xalqaro halollik
+blokining ichida edi — va o'sha blokning o'zi noto'g'ri son aytardi.
+**Tuzatildi:** *"Quyidagi profillar — dizayn uchun qo'yilgan namuna..."*
+
+Uchchalasi ham `uz.json` va `ru.json` da tuzatildi; kalit pariteti saqlandi
+(**919 = 919**). Jonli tekshiruv: 6/6 sahifa (`/uz` + `/ru` × about, home,
+experts) — eski matn yo'q, yangi matn bor.
+
+**Umumiy qoida (bu yerda chiqarilgan xulosa):** ma'lumotdan keladigan narsaning
+sonini nusxaga qotirib yozmaslik kerak. Uchta holatning hammasi bitta sababdan
+buzilgan: ro'yxat ma'lumotda, son esa matnda. Shu sababli tuzatishda son
+**to'g'ri qiymatga almashtirilmadi** — u **olib tashlandi**, chunki 6→3 yoki
+6→12 qilish keyingi o'zgarishda yana eskiradi.
+
+---
+
 ## 5. Bu branch'da nima o'zgartirildi
 
 Audit kuni bu bo'limda faqat bitta band bor edi — 4.2 dependency patch'ini
@@ -779,6 +852,7 @@ va 6 ta RAR arxiv — 5 tasi `public/products/`, 1 tasi ildizdagi duplikat.
 | `src/components/{profile,account,wishlist}/*View.tsx` | Sarlavha hydration gate'idan tashqariga chiqarildi (4.15) |
 | `src/sanity/image.ts` | Named export — build logi 0 ogohlantirish (4.14) |
 | `README.md`, `CLAUDE.md`, `docs/QOLGAN-ISHLAR.md`, `.env.example` | Haqiqatga keltirildi (4.13) |
+| `src/messages/{uz,ru}.json` | Restock formasi uchun 2 ta yangi kalit; uchta qotirilgan son olib tashlandi — brendlar, kviz savollari, namunaviy ekspertlar (4.17). Paritet 919 = 919 |
 | `package.json` + lock | `next@15.5.27`, `eslint-config-next@15.5.27`, `react-is@19.2.8`; `gsap` va `@tanstack/react-query` olib tashlandi (4.2, 4.11) |
 
 ### Yakuniy gate natijalari
@@ -886,6 +960,12 @@ haqiqiy ekspert, real sharhlar) va **ongli kechiktirilgan texnik qarorlar** (CSP
 E2E qamrovi, git tarixi, Sanity 6). Birinchilari kodsiz ham sayt to'liq bo'lishi
 uchun kerak — ro'yxati `docs/QOLGAN-ISHLAR.md` da, har biri uchun aniq qaysi
 o'zgaruvchi to'ldirilishi yozilgan.
+
+Tuzatish jarayonining o'zi uchta yangi muammoni ochdi — 4.15 (sarlavhasiz
+birinchi paint), 4.16 (tibbiy imzo yo'qligi) va 4.17 (sayt matnidagi qotirilgan
+sonlar haqiqatga zid). Uchalasi ham audit kunida ko'rinmagan edi, chunki ular
+buzilgan funksionallik emas, **noto'g'ri da'vo** edi — va bunday narsalar faqat
+har bir raqamni alohida o'lchaganda chiqadi.
 
 **Bir narsani alohida aytishim kerak.** Bu hisobotning dastlabki nusxasida bitta
 iqtibos men tomonidan o'ylab topilgan edi va men uni topib, haqiqiy manba matni
