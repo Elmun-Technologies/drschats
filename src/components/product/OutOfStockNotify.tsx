@@ -4,24 +4,43 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { notifyRestock } from "@/app/actions/notifyRestock";
 import { track } from "@/lib/analytics/events";
+import { ErrorNote } from "@/components/ui/ErrorNote";
 
 export function OutOfStockNotify({ productId, productName }: { productId: string; productName: string }) {
   const t = useTranslations("outOfStock");
   const [phone, setPhone] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [state, setState] = useState<"idle" | "loading" | "sent" | "failed">("idle");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (phone.length < 7) return;
-    setLoading(true);
-    await notifyRestock(productId, productName, phone);
-    track("restock_notify", { product_id: productId, phone });
-    setSubmitted(true);
-    setLoading(false);
+    if (phone.length < 7 || state === "loading") return;
+    setState("loading");
+
+    let result;
+    try {
+      result = await notifyRestock(productId, productName, phone);
+    } catch {
+      // A server action can throw on a network drop. Treat it like any other
+      // failure: say so, and let the person try again rather than leaving the
+      // form stuck on its spinner.
+      result = { ok: false as const, error: "unavailable" as const };
+    }
+
+    /*
+      Analytics only records a request that was actually recorded. Firing
+      `restock_notify` on a dropped submission would put demand in the report
+      that nobody is going to fulfil, and the number would then be used to
+      decide what to restock.
+    */
+    if (result.ok) {
+      track("restock_notify", { product_id: productId, value: 0 });
+      setState("sent");
+    } else {
+      setState("failed");
+    }
   }
 
-  if (submitted) {
+  if (state === "sent") {
     return (
       <div className="rounded-2xl border border-line bg-surface-2 px-5 py-4 text-center">
         <p className="text-sm font-semibold text-fg">{t("success")}</p>
@@ -31,24 +50,46 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
 
   return (
     <div className="rounded-2xl border border-line bg-surface-2 px-5 py-4">
-      <p className="mb-3 text-sm text-muted">{t("notify")}</p>
+      <label htmlFor="restock-phone" className="mb-3 block text-sm text-muted">
+        {t("notify")}
+      </label>
       <form onSubmit={handleSubmit} className="flex gap-2">
         <input
+          id="restock-phone"
+          name="phone"
           type="tel"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(e) => {
+            setPhone(e.target.value);
+            if (state === "failed") setState("idle");
+          }}
           placeholder={t("phone")}
           inputMode="tel"
+          autoComplete="tel"
+          required
+          minLength={9}
+          aria-describedby={state === "failed" ? "restock-error" : undefined}
+          aria-invalid={state === "failed" || undefined}
           className="flex-1 rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
         />
         <button
           type="submit"
-          disabled={loading}
+          disabled={state === "loading"}
           className="rounded-xl bg-fg px-4 py-2.5 text-sm font-semibold text-ink disabled:opacity-60 hover:bg-accent-strong hover:text-ink"
         >
-          {loading ? "..." : t("submit")}
+          {state === "loading" ? t("submitting") : t("submit")}
         </button>
       </form>
+      {/*
+        Told plainly, and in the same place as the field. A form that thanks
+        someone for a request it dropped is worse than one that admits it could
+        not take it: the first teaches them not to come back.
+      */}
+      {state === "failed" && (
+        <span id="restock-error" className="mt-3 block">
+          <ErrorNote>{t("error")}</ErrorNote>
+        </span>
+      )}
     </div>
   );
 }

@@ -37,9 +37,24 @@ export function AccountView() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  /*
+    The heading is rendered before hydration, matching the signed-out layout.
+
+    Whether a session exists is the only thing localStorage decides; the page
+    title does not depend on it. Same reasoning as ProfileView and WishlistView
+    — a gate that withholds the heading ships a <main> a screen reader user
+    cannot orient on. The container padding matches the signed-out branch so
+    the swap does not move the form.
+  */
   if (!hydrated) {
     return (
-      <Container className="section-y-tight">
+      <Container className="py-12 sm:py-16">
+        <header className="mb-8 text-center">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+            {t("title")}
+          </h1>
+          <p className="mt-2 text-muted">{t("subtitle")}</p>
+        </header>
         <div className="mx-auto h-64 max-w-md animate-pulse rounded-2xl bg-surface" />
       </Container>
     );

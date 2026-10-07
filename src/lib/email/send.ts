@@ -9,6 +9,7 @@ import {
 import { buildCampaign, isTransactional, type Campaign } from "./campaigns";
 import { renderEmail } from "./render";
 import { signToken } from "./token";
+import { redactEmail } from "@/lib/privacy";
 
 /*
   Sending, in one function.
@@ -58,7 +59,7 @@ export async function sendCampaign({ to, locale, campaign }: SendCampaignInput):
 
   if (!isEmailConfigured()) {
     // Loud enough to notice in a dev log, quiet enough not to break anything.
-    console.info(`[email] skipped "${campaign.type}" to ${to} — RESEND_API_KEY not set`);
+    console.info(`[email] skipped "${campaign.type}" to ${redactEmail(to)} — RESEND_API_KEY not set`);
     return { ok: false, reason: "not-configured" };
   }
 

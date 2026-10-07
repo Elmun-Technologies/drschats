@@ -1056,7 +1056,9 @@
     "notify": "Bu mahsulot hozirda sotuvda yo’q. Telefon raqamingizni qoldiring — mahsulot kelganda xabar beramiz.",
     "phone": "+998 90 000 00 00",
     "submit": "Xabar ber",
-    "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz."
+    "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz.",
+    "submitting": "Yuborilmoqda…",
+    "error": "Uzr, so‘rovni qabul qila olmadik. Iltimos, qayta urinib ko‘ring yoki biz bilan bog‘laning."
   },
   "privacy": {
     "title": "Maxfiylik siyosati",

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { api, ApiError, type OtpRequestResult } from "@/lib/api/client";
 import { useSession } from "@/lib/auth/store";
 import { track } from "@/lib/analytics/events";
+import { ErrorNote } from "@/components/ui/ErrorNote";
 
 /*
   Sign-in is a phone and a code — no password, and no separate registration.
@@ -201,14 +202,6 @@ export function AuthForm() {
 
       <p className="mt-5 text-xs leading-relaxed text-faint">{t("guestNote")}</p>
     </div>
-  );
-}
-
-function ErrorNote({ children }: { children: React.ReactNode }) {
-  return (
-    <p role="alert" className="rounded-lg bg-danger/10 px-3 py-2 text-sm font-medium text-danger">
-      {children}
-    </p>
   );
 }
 

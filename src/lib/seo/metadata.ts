@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { locales, type Locale } from "@/lib/i18n/routing";
+import { defaultLocale, locales, type Locale } from "@/lib/i18n/routing";
 import { SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/config/site";
 
 export { SITE_URL, SITE_NAME };
@@ -19,7 +19,18 @@ export function buildAlternates(locale: Locale, path: string): Metadata["alterna
   for (const l of locales) {
     languages[l] = `${SITE_URL}/${l}${clean}`;
   }
-  languages["x-default"] = `${SITE_URL}/${locales[0]}${clean}`;
+  /*
+    x-default is the locale a visitor gets when none of the alternates match
+    them, so it has to be the site's default locale — not whichever one happens
+    to sort first in the `locales` array. Those are not the same thing: the
+    array is ["ru", "uz"] while the default is "uz", and reading `locales[0]`
+    pointed every x-default on the site at Russian.
+
+    It also has to agree with sitemap.ts, which builds its own alternates from
+    `defaultLocale`. Two sources disagreeing is worse than either being wrong
+    on its own, because Google receives a contradiction rather than a mistake.
+  */
+  languages["x-default"] = `${SITE_URL}/${defaultLocale}${clean}`;
   return {
     canonical: `${SITE_URL}/${locale}${clean}`,
     languages,
