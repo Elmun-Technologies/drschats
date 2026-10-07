@@ -2,6 +2,13 @@ from functools import lru_cache
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+# Shortest OTP_HMAC_KEY accepted in production, in bytes. Chosen as the
+# HMAC-SHA256 output length: shorter keys are accepted by HMAC but contribute
+# less than the construction can use, and `secrets.token_urlsafe(32)` — the
+# command .env.example tells you to run — produces 43 characters, so this
+# rejects weak values without demanding anything unusual.
+OTP_HMAC_KEY_MIN_BYTES = 32
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
@@ -29,6 +36,21 @@ class Settings(BaseSettings):
     # How far ahead a subscription delivery is announced, so it can still be
     # skipped or re-timed.
     subscription_notice_days: int = 3
+
+    # Key used to hash sign-in codes. Deliberately not `jwt_secret`.
+    #
+    # The two protect different things with very different blast radii:
+    # jwt_secret signs a bearer token that stays valid for 30 days, this one
+    # keys a code that dies in 5 minutes. Sharing the key means a single leak
+    # breaks both systems, and jwt_secret is the one that travels furthest
+    # because every authenticated request touches it.
+    #
+    # Empty falls back to a key *derived* from jwt_secret (see otp._otp_key),
+    # which keeps `docker compose up` working with no configuration. Derivation
+    # separates the two values but not their fates — whoever holds one can
+    # compute the other — so main.py refuses to boot in production while this
+    # is empty, exactly as it refuses the placeholder JWT_SECRET.
+    otp_hmac_key: str = ""
 
     # Sign-in codes. A six-digit code is only 20 bits, so its safety is these
     # numbers rather than its length: short life, few guesses, hard cap per hour.

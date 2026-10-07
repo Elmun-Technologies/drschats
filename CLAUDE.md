@@ -266,8 +266,19 @@ chiqsa) audit yiqiladi va qatorni o'chirishni talab qiladi.
 
 Backend xavfsizligi `backend/app/` da: OTP kodi HMAC bilan va telefon bilan
 tuzilgan holda saqlanadi (`app/otp.py`), `hmac.compare_digest` — constant-time,
-`main.py` production'da `JWT_SECRET` va `OTP_DEBUG_ECHO` ni boot paytida
-tekshiradi. Batafsil: `backend/README.md`.
+`main.py` esa production'da uchta narsani **boot paytida** tekshiradi:
+`JWT_SECRET` placeholder bo'lmasligi, `OTP_DEBUG_ECHO` yopiqligi va
+`OTP_HMAC_KEY` o'rnatilgan hamda kamida 32 bayt ekanligi.
+
+**OTP kaliti JWT kalitidan ajratilgan.** `JWT_SECRET` 30 kun yashaydigan token'ni
+imzalaydi, `OTP_HMAC_KEY` esa 5 daqiqada o'ladigan kodni kalitlaydi — bitta
+kalit sizsa ikkala tizim ham zararlanadi, va `JWT_SECRET` har bir autentifikatsiya
+so'rovida ishlatilgani uchun u "eng uzoqqa sayohat qiladigan" kalit. Development'da
+`OTP_HMAC_KEY` bo'sh qoldirilsa, kalit `JWT_SECRET` dan domen ajratish belgisi
+ostida keltirib chiqariladi (`docker compose up` konfiguratsiyasiz ishlashi uchun).
+Keltirib chiqarish ikki kalitning **qiymatini** ajratadi, lekin **taqdirini** emas:
+`JWT_SECRET` ni bilgan odam keltirilgan kalitni ham hisoblay oladi. Shuning uchun
+production'da bu fallback rad etiladi. Batafsil: `backend/README.md`.
 
 ## Upsell Savings Ladder
 

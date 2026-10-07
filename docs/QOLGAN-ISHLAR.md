@@ -63,7 +63,7 @@ o'tib ketmaydi.
 ### 1b. Akkaunt backend (FastAPI) — yozilgan, deploy qilinmagan
 
 `backend/` papkasida: FastAPI + SQLAlchemy + Alembic; auth, orders, profile,
-subscriptions, marketing navbati va Telegram webhook — **51 ta test bilan**.
+subscriptions, marketing navbati va Telegram webhook — **64 ta test bilan**.
 `docker-compose.yml` da `api` xizmati bor.
 
 Deploy qilingandan keyin:
@@ -86,9 +86,32 @@ NEXT_PUBLIC_ACCOUNT_DEMO=on
 Production'da buni qo'ymang: mock kabinet istalgan telefon va istalgan kodni
 qabul qilib, birovning buyurtmalarini ko'rsatadi.
 
-Backend uchun alohida kerak: `DATABASE_URL`, `JWT_SECRET` (production'da
-majburiy — bo'lmasa server ishga tushmaydi), `MARKETING_API_KEY`,
-`OTP_DEBUG_ECHO=false`.
+Backend uchun alohida kerak: `DATABASE_URL`, `JWT_SECRET`, **`OTP_HMAC_KEY`**,
+`MARKETING_API_KEY`, `OTP_DEBUG_ECHO=false`.
+
+Uchala kalit ham production'da **majburiy** — bo'lmasa server ishga tushmaydi
+(boot paytida rad etiladi, birinchi so'rovda emas):
+
+| O'zgaruvchi | Nima uchun ajratilgan |
+|---|---|
+| `JWT_SECRET` | 30 kun yashaydigan kirish token'ini imzalaydi |
+| `OTP_HMAC_KEY` | 5 daqiqada o'ladigan kirish kodini kalitlaydi; **kamida 32 bayt** |
+| `MARKETING_API_KEY` | Do'kon serverlararo chaqiruvlarini tekshiradi |
+
+`OTP_HMAC_KEY` ni `JWT_SECRET` dan ajratishning sababi: bitta kalit sizsa,
+ikkala tizim ham zararlanadi — va `JWT_SECRET` har bir autentifikatsiya so'rovida
+ishlatilgani uchun u eng ko'p "sayohat qiladigan" kalit. Development'da bo'sh
+qoldirsangiz bo'ladi (kalit `JWT_SECRET` dan keltirib chiqariladi), lekin
+production'da bu rad etiladi.
+
+Yaratish:
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Kalitni almashtirish shu paytgacha berilgan kodlarni bekor qiladi — 5 daqiqalik
+TTL bilan bu uzilish emas, faqat noqulaylik.
 
 ### 1c. Telegram (buyurtma xabarlari)
 
@@ -350,7 +373,7 @@ qonuni nuqtai nazaridan eng arzon sug'urta — uni imkon qadar erta bering.
 Bu fayl yozilgandan beri da'volar o'lchanadigan bo'ldi. CI'da har bir PR'da
 uchta gate yuradi (`.github/workflows/ci.yml`):
 
-1. lint + typecheck + **113** unit test + **51** backend test + production build
+1. lint + typecheck + **113** unit test + **64** backend test + production build
 2. `npm run audit` — Playwright bilan render sifati: kontrast, nomlar, `alt`,
    sarlavha tartibi, tap-target, kesilgan matn, overflow, dialog semantikasi va
    **404 bo'lishi kerak URL'lar haqiqatan 404 qaytarishi**

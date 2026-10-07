@@ -33,7 +33,7 @@ Ayni paytda bir nechta muammo bor va ularning eng jiddiylari — loyiha o'zining
 | Backend xavfsizligi | **9 / 10** | OTP HMAC, bcrypt, production guard'lar — namunali |
 | SEO | **6.5 / 10** | asoslar kuchli, lekin 3 ta haqiqiy bug bor |
 | Dependency xavfsizligi | **4 / 10** | 2 ta kritik, 27 ta high; CI'da `npm audit` yo'q |
-| Test qamrovi | **6 / 10** | 151 test yashil (100 frontend + 51 backend), lekin ~37k LOC uchun yupqa; E2E yo'q. Hozir **164** (113 + 51) — §8 |
+| Test qamrovi | **6 / 10** | 151 test yashil (100 frontend + 51 backend), lekin ~37k LOC uchun yupqa; E2E yo'q. Hozir **177** (113 + 64) — §8 |
 | Repo gigienasi | **4 / 10** | 54.6 MB RAR arxivlar, shundan 46 MB ochiq tarqatiladi |
 | Dokumentatsiya | **6 / 10** | hajmi yaxshi, lekin muhim joylarda eskirgan |
 
@@ -172,8 +172,8 @@ Ustuvorlik: 🔴 relizni to'sadi · 🟡 jiddiy · 🟢 keyin bo'lsa ham bo'ladi
 > tuzatilgan va production build ustida jonli o'lchangan.** Har bir bo'lim oxirida
 > tuzatish va o'lchov natijasi keltirilgan. 🟢 bo'limlardan 4.11 va 4.13 ham
 > yopilgan; 4.8 (CSP) va 4.12 (test qamrovi) ochiq qoldi — ikkalasi ham relizni
-> to'smaydi, sabablari o'z bo'limlarida. Yangi topilgan uchta muammo — 4.15, 4.16 va
-> 4.17 — oxirida qo'shilgan.
+> to'smaydi, sabablari o'z bo'limlarida. Yangi topilgan to'rtta muammo — 4.15, 4.16, 4.17 va
+> 4.18 — oxirida qo'shilgan; 4.18 dastlab 4.14 da kichik kuzatuv edi.
 >
 > Bu hisobot audit **kunidagi** holatni saqlaydi: raqamlar va iqtiboslar tuzatishdan
 > oldin o'lchangan, shuning uchun bo'limlarni "nima topilgandi" deb o'qish kerak.
@@ -601,8 +601,8 @@ Lekin ~37 600 qator kod uchun bu yupqa:
   ichida qaytariladi, shuning uchun bir testning holati keyingisiga o'tmaydi.
   Test natijasi endi **toza** — hech qanday ogohlantirish chiqmaydi.
 
-**Tuzatishdan keyingi holat (4.12):** testlar 151 → **164** (113 frontend +
-51 backend). Yangilari: `storage-keys.test.ts` (`alimkhanov-` → `govita-`
+**Tuzatishdan keyingi holat (4.12):** testlar 151 → **177** (113 frontend +
+64 backend). Yangilari: `storage-keys.test.ts` (`alimkhanov-` → `govita-`
 migratsiyasi va kalit ro'yxati) va `public-hygiene.test.ts` (`public/` ostida
 binary damp paydo bo'lishini to'sadi). Test gigienasi muammosi yopildi.
 
@@ -674,6 +674,7 @@ ko'rinadi.
   `settings.jwt_secret` ishlatiladi. Ishlaydi, lekin kalitlarni ajratish
   (alohida `OTP_HMAC_KEY`) yaxshiroq amaliyot: bitta kalit sizsa, ikkala tizim
   ham zararlanadi.
+  **Tuzatildi (4.18 ga qarang).**
 - **Build ogohlantirishi:** `The default export of @sanity/image-url has been
   deprecated. Use the named export createImageUrlBuilder instead.` — ikki marta
   chiqadi. Hozir zararsiz, keyingi major versiyada sinadi.
@@ -828,6 +829,64 @@ buzilgan: ro'yxat ma'lumotda, son esa matnda. Shu sababli tuzatishda son
 
 ---
 
+### 🟢 4.18 OTP kaliti JWT kalitini qayta ishlatar edi *(4.14 dan ko'chirildi va tuzatildi)*
+
+4.14 da kichik kuzatuv sifatida yozilgan edi, lekin bu **haqiqiy xavfsizlik
+masalasi** va uni alohida bo'lim qilish to'g'ri: `app/otp.py` dagi `hash_code()`
+HMAC kaliti sifatida `settings.jwt_secret` ni ishlatar edi.
+
+Nima uchun bu muhim: ikki kalit ikki xil narsani, ikki xil **portlash doirasi**
+bilan himoya qiladi.
+
+| | `JWT_SECRET` | OTP kaliti |
+|---|---|---|
+| Nima imzalaydi | kirish token'i | kirish kodi |
+| Qancha yashaydi | **30 kun** | **5 daqiqa** |
+| Qanchalik tez-tez ishlatiladi | har bir autentifikatsiya so'rovida | kod berilganda va tekshirilganda |
+
+Bitta kalit ikkalasiga xizmat qilsa, bitta sizish **ikkala tizimni ham** buzadi —
+va `JWT_SECRET` aynan eng ko'p "sayohat qiladigan" kalit, chunki har bir so'rov
+unga tegadi. Shuningdek OTP hash'lari ma'lumotlar bazasida saqlanadi: bazaning
+nusxasi va bitta kalit birga sizsa, o'sha paytdagi barcha tirik kodlar tiklanadi.
+
+**Tuzatildi:**
+
+1. `OTP_HMAC_KEY` sozlamasi qo'shildi (`backend/app/config.py`).
+2. `app/otp.py` da `otp_key(settings)` — kalit o'rnatilgan bo'lsa to'g'ridan-to'g'ri
+   ishlatiladi; bo'sh bo'lsa `JWT_SECRET` dan **domen ajratish belgisi** ostida
+   keltirib chiqariladi (`hmac(jwt_secret, "govita:otp-hmac:v1")`).
+3. `main.py` production'da ikkita yangi boot-rad javobi: kalit **bo'sh** bo'lsa va
+   **32 baytdan qisqa** bo'lsa.
+
+Uchinchi band haqida alohida: keltirib chiqarish ikki kalitning **qiymatini**
+ajratadi, lekin **taqdirini** emas — `JWT_SECRET` ni bilgan odam keltirilgan
+kalitni ham hisoblay oladi. Shuning uchun fallback faqat development uchun
+(`docker compose up` konfiguratsiyasiz ishlashi kerak), production'da esa
+haqiqiy mustaqil kalit talab qilinadi. Bu kod bazasining mavjud falsafasiga
+mos: *"Fail at boot, not at the first forged token."*
+
+Uzunlik talabi ham shu sababli: **bor, lekin qisqa** kalit "o'rnatilganmi"
+tekshiruvidan o'tib ketadi va keyin har bir saqlangan kodni jim himoyasiz
+qoldiradi. 32 bayt — HMAC-SHA256 chiqish uzunligi va `.env.example` dagi
+`secrets.token_urlsafe(32)` buyrug'i aynan shuni beradi.
+
+**Testlar:** `backend/tests/test_otp_key.py` — 13 ta test, backend to'plami
+51 → **64**. Eng muhimi `test_a_stored_hash_does_not_verify_under_the_jwt_secret`:
+u `hash_code()` ni **ochiq funksiya orqali** tekshiradi, chunki agar kelajakda
+birov uni `settings.jwt_secret` ga qaytarsa, boshqa barcha test yashil qolgan
+holda aynan shu test qizil bo'ladi. Uchta boot-rad javobi subprocess orqali
+sinaldi (guard'lar modul darajasida, shuning uchun import qilish — sinovning
+o'zi).
+
+Kalitni almashtirish shu paytgacha berilgan kodlarni bekor qiladi; 5 daqiqalik
+TTL bilan bu uzilish emas.
+
+**Hujjatlar:** `backend/README.md` (jadval qatori endi noto'g'ri edi —
+*"keyed with `JWT_SECRET`"*), `backend/.env.example`, `docker-compose.yml`,
+`CLAUDE.md` va `docs/QOLGAN-ISHLAR.md` yangilandi.
+
+---
+
 ## 5. Bu branch'da nima o'zgartirildi
 
 Audit kuni bu bo'limda faqat bitta band bor edi — 4.2 dependency patch'ini
@@ -880,7 +939,7 @@ va 6 ta RAR arxiv — 5 tasi `public/products/`, 1 tasi ildizdagi duplikat.
 npm run lint        →  ✔ No ESLint warnings or errors      (0 xato, 0 ogohlantirish)
 npx tsc --noEmit    →  0 xato
 npm test            →  10 fayl / 113 test — hammasi yashil
-pytest              →  51 passed
+pytest              →  64 passed   (13 tasi yangi: backend/tests/test_otp_key.py)
 npm run build       →  ✓ Compiled successfully, ✓ 129/129 statik sahifa
                        build logida 0 ogohlantirish
 npm run audit:deps  →  exit 0 · 0 actionable · 19 baselined · 0 stale
@@ -923,10 +982,11 @@ o'zgaruvchini to'ldirish kerakligi yozilgan. Qisqasi:
 8. **`.git` tarixi (4.6)** — 72 MB, RAR'lar tarixda qolgan. `git filter-repo`
    talab qiladi va barcha commit hash'larini o'zgartiradi → jamoa bilan kelishib.
 9. **Sanity 6 migratsiyasi** — 19 ta baselined zaiflikning yagona yechim yo'li.
-10. **`backend/app/otp.py`** — OTP HMAC uchun `settings.jwt_secret` qayta
-    ishlatiladi. Ishlaydi, lekin alohida `OTP_HMAC_KEY` kalitlarni ajratadi.
-11. **`next lint` deprecated** — Next 16 ga o'tishdan oldin ESLint CLI'ga
+10. **`next lint` deprecated** — Next 16 ga o'tishdan oldin ESLint CLI'ga
     migratsiya kerak; CI shu buyruqqa tayanadi.
+
+*(Avval bu ro'yxatda `backend/app/otp.py` dagi kalit ajratish ham bor edi —
+u bajarildi, 4.18 ga qarang.)*
 
 ---
 
@@ -965,10 +1025,10 @@ tuzatildi va production build ustida jonli o'lchandi.
 | Kod sifati | 9 | **9** | o'zgarmadi (yuqori edi) |
 | Arxitektura | 9 | **9** | `demo.ts` konfiguratsiya qatlami qo'shildi |
 | Accessibililik | 9 | **9.5** | uchala hydration gate sarlavhali bo'ldi (4.15) |
-| Backend xavfsizligi | 9 | **9** | PII maskalash frontend log'lariga ham tarqaldi (4.9) |
+| Backend xavfsizligi | 9 | **9.5** | PII maskalash frontend log'lariga ham tarqaldi (4.9); OTP kaliti JWT kalitidan ajratildi va production'da majburiy qilindi (4.18) |
 | SEO | 6.5 | **9** | soft-404 yo'q, x-default to'g'ri, JSON-LD rasmlari absolyut — hammasi jonli tekshirildi |
 | Dependency xavfsizligi | 4 | **7.5** | 47 → 19 (qolgani `sanity@3` pin'ida, baseline + CI ratchet bilan nazoratda) |
-| Test qamrovi | 6 | **6.5** | 100 → 113 test, setup fayl va migratsiya testi; komponent/E2E hali yo'q |
+| Test qamrovi | 6 | **6.5** | 151 → 177 test (frontend 100→113, backend 51→64); komponent/E2E hali yo'q |
 | Repo gigienasi | 4 | **8** | 46 MB o'lik fayl deploy'dan chiqdi, ignore + test bilan qulflandi; `.git` tarixi ochiq masala |
 | Dokumentatsiya | 6 | **9** | `README`, `CLAUDE.md`, `QOLGAN-ISHLAR.md` haqiqatga moslashtirildi; build logi toza |
 
