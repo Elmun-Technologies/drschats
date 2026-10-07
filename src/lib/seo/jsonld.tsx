@@ -1,9 +1,27 @@
 import type { Product } from "@/lib/shopflow/types";
 import type { Expert } from "@/lib/content/experts";
 import { SITE_NAME, SITE_URL } from "./metadata";
+import { absoluteUrl } from "@/lib/config/site";
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
+
+/*
+  Structured-data image URLs, made absolute.
+
+  Google's Product rich result requires an absolute URL: a relative one is not
+  resolved against the page, it is reported as invalid and the product loses
+  the rich result. The catalogue serves its own photography from /products, so
+  every URL arriving here is relative — but a Sanity or Shopflow image can be
+  absolute already, and passing one of those through `absoluteUrl` would
+  produce "https://www.govita.uz/https://cdn.sanity.io/…".
+
+  og:image did not have this problem because it is built in metadata.ts, which
+  always absolutizes. Only this path was missed.
+*/
+function structuredDataImage(url: string): string {
+  return /^https?:\/\//i.test(url) ? url : absoluteUrl(url);
+}
 
 /** Renders a JSON-LD <script> for rich results / AI agents. */
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
@@ -139,7 +157,7 @@ export function productGraph({
         "@type": "Product",
         "@id": `${url}#product`,
         name: product.name,
-        image: product.images.map((i) => i.url),
+        image: product.images.map((i) => structuredDataImage(i.url)),
         description: product.tagline,
         sku: product.id,
         brand: { "@type": "Brand", name: SITE_NAME },
@@ -224,7 +242,7 @@ export function articleGraph({
         url,
         headline: title,
         description,
-        image: [image],
+        image: [structuredDataImage(image)],
         inLanguage: locale,
         datePublished,
         dateModified,

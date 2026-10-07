@@ -206,7 +206,7 @@
       "cta": "Testni boshlash (bepul)",
       "meta": "{count} ta savol · 2 daqiqa · bepul",
       "badge": "Savol-javob testi",
-      "body": "Organizmingiz ehtiyojlarini aniqlash va keraksiz qo'shimchalarga pul sarflamaslik uchun 6 ta oddiy savolga javob bering.",
+      "body": "Organizmingiz ehtiyojlarini aniqlash va keraksiz qo'shimchalarga pul sarflamaslik uchun bir necha oddiy savolga javob bering.",
       "stepLabel": "Qadam {n}",
       "step1Title": "Semptom va maqsadni tanlang",
       "step2Title": "Javoblar bo'yicha saralash",
@@ -605,7 +605,7 @@
     "namePlaceholder": "Masalan: Jamshid",
     "phonePlaceholder": "+998 90 123 45 67",
     "demoNoticeTitle": "Namuna profillar",
-    "demoNoticeBody": "Quyidagi ikkita profil — dizayn uchun qo'yilgan namuna: ekspertlar bo'limi qanday ko'rinishini ko'rsatadi. Ularda uydirilgan ilmiy daraja, tajriba yili va havolalar yo'q, va bu profillar hech qanday mahsulotni «tekshirgan mutaxassis» sifatida ko'rsatilmaydi. Haqiqiy mutaxassis ma'lumotlari (ism, mutaxassislik, ish joyi, foto, yozma rozilik) kelishi bilan shu o'rindiqlarga qo'yiladi.",
+    "demoNoticeBody": "Quyidagi profillar — dizayn uchun qo'yilgan namuna: ekspertlar bo'limi qanday ko'rinishini ko'rsatadi. Ularda uydirilgan ilmiy daraja, tajriba yili va havolalar yo'q, va bu profillar hech qanday mahsulotni «tekshirgan mutaxassis» sifatida ko'rsatilmaydi. Haqiqiy mutaxassis ma'lumotlari (ism, mutaxassislik, ish joyi, foto, yozma rozilik) kelishi bilan shu o'rindiqlarga qo'yiladi.",
     "demoChip": "Namuna",
     "demoBanner": "Bu namuna profil — sayt ishga tushishidan oldin haqiqiy mutaxassis ma'lumotlari bilan almashtiriladi. Bu yerdagi hech qanday ma'lumot tibbiy tavsiya emas."
   },
@@ -770,7 +770,7 @@
       "eyebrow": "Biz haqimizda",
       "title": "Go Vita",
       "subtitle": "Vitaminlar va biologik faol qo'shimchalarni O'zbekistonga rasmiy import qiluvchi va yetkazib beruvchi.",
-      "intro": "Katalogimiz uchta asosiy liniyadan iborat: Swiss Energy, Dr. Frei va Delical. Har bir mahsulot zavod hujjatlari bilan keladi, narx va yetkazish shartlari bitta — savatchada ko'rinadigan narx bilan bir xil. Rasmiy import qiluvchi — Alimkhanov Pharm Group.",
+      "intro": "Katalogimiz rasmiy import qilingan brendlardan tashkil topgan — Swiss Energy, Dr. Frei, Delical va boshqalar; to‘liq ro‘yxat Brendlar sahifasida. Har bir mahsulot zavod hujjatlari bilan keladi, narx va yetkazish shartlari bitta — savatchada ko‘rinadigan narx bilan bir xil. Rasmiy import qiluvchi — Alimkhanov Pharm Group.",
       "stats": [
         {
           "value": "3",
@@ -1056,7 +1056,9 @@
     "notify": "Bu mahsulot hozirda sotuvda yo’q. Telefon raqamingizni qoldiring — mahsulot kelganda xabar beramiz.",
     "phone": "+998 90 000 00 00",
     "submit": "Xabar ber",
-    "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz."
+    "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz.",
+    "submitting": "Yuborilmoqda…",
+    "error": "Uzr, so‘rovni qabul qila olmadik. Iltimos, qayta urinib ko‘ring yoki biz bilan bog‘laning."
   },
   "privacy": {
     "title": "Maxfiylik siyosati",

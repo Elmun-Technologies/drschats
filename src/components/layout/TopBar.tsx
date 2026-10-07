@@ -2,6 +2,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { isApiConfigured } from "@/lib/api/client";
+import { accountAreaAvailable } from "@/lib/config/demo";
 import { AccountLink } from "./AccountLink";
 
 /** Utility bar: announcement + secondary links, on the deep brand ground. */
@@ -27,9 +28,10 @@ export function TopBar() {
               {i < links.length - 1 && <span aria-hidden className="h-3 w-px bg-white/40" />}
             </span>
           ))}
-          {/* Hidden until the API exists: an account entry that leads nowhere
-              is a promise the site cannot keep. */}
-          {isApiConfigured() && <AccountLink />}
+          {/* Hidden until the account area can answer: an entry that leads
+              nowhere is a promise the site cannot keep. The link and the route
+              read the same predicate, so the link can never point at a 404. */}
+          {accountAreaAvailable(isApiConfigured()) && <AccountLink />}
         </nav>
       </Container>
     </div>

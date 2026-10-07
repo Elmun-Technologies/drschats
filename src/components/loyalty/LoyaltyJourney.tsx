@@ -45,7 +45,15 @@ export function LoyaltyJourney({
 
         <Reveal index={3}>
           <div className="mt-10 flex justify-center">
-            <Link href="/account" className={buttonVariants("dark", "md")}>
+            {/*
+              The label is "Go to the catalogue" in both languages, and the
+              journey above ends with "the discount applies itself in the cart"
+              — so this goes to the catalogue. It used to point at /account,
+              which made one page carry two identical buttons to two different
+              places, and made the loyalty CTA depend on an account area that
+              does not exist until the API is deployed.
+            */}
+            <Link href="/products" className={buttonVariants("dark", "md")}>
               {cta}
             </Link>
           </div>

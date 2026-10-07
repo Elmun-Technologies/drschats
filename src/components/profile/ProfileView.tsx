@@ -36,10 +36,30 @@ export function ProfileView() {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  /*
+    The heading is rendered before hydration, in its generic form.
+
+    The personalised title ("Sizning profilingiz, Malika") needs the stored
+    name, but the page's identity does not — so the first paint carries
+    t("title") and swaps to t("titleNamed") once the store has rehydrated.
+    Both renders happen with `hydrated` false on the server and on the client's
+    first pass, so this is an ordinary state update rather than a hydration
+    mismatch.
+
+    What it fixes: the skeleton-only first paint shipped a <main> with no
+    heading in it, which is a page a screen reader user cannot orient on.
+  */
   if (!hydrated) {
     return (
-      <Container className="section-y-tight">
-        <div className="mx-auto h-96 max-w-3xl animate-pulse rounded-2xl bg-surface" />
+      <Container className="py-10 sm:py-14">
+        <header className="mx-auto max-w-3xl">
+          <p className="text-sm font-semibold text-fg">{t("eyebrow")}</p>
+          <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+            {t("title")}
+          </h1>
+          <p className="mt-2 text-muted">{t("subtitle")}</p>
+        </header>
+        <div className="mx-auto mt-10 h-96 max-w-3xl animate-pulse rounded-2xl bg-surface" />
       </Container>
     );
   }

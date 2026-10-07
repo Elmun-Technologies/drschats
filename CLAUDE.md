@@ -11,8 +11,8 @@ katalog o'sha yo'lning oxirida turadi.
 - **Stack**: Next.js 15, TypeScript, Tailwind CSS v4, Framer Motion, Zustand, next-intl, Zod, react-hook-form
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
 - **Katalog backend**: Shopflow adapteri (`SHOPFLOW_MODE=mock` — mock data; `SHOPFLOW_MODE=http` — real API)
-- **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa akkaunt UI umuman chizilmaydi (`isApiConfigured()`)
-- **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi
+- **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
+- **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
 - **Deploy**: Vercel
 
 ## Hozirgi bo'shliqlar
@@ -20,10 +20,20 @@ katalog o'sha yo'lning oxirida turadi.
 Kod emas, kontent va konfiguratsiya bo'shliqlari. To'liq ro'yxat va har birining
 qadamlari: **[`docs/QOLGAN-ISHLAR.md`](docs/QOLGAN-ISHLAR.md)**.
 
-Qisqacha: `/vitamins` 0 ta mavzu, `/symptoms` 1, `/goals` 2. Mahsulot rasmlari
-placeholder SVG. `BRAND.contact` hali eski brend manzillari.
+Qisqacha (ishlab turgan saytdan sanaldi): `/vitamins` **10**, `/symptoms` **7**,
+`/goals` **10** mavzu; `/programs` 7, `/blog` 3, `/experts` 3, `/ingredients` 12,
+`/where-to-buy` 11 ta dorixona tarmog'i. Mahsulot rasmlari **haqiqiy** — 129 ta
+fayl `public/products/` da. `BRAND.contact` va `BRAND.social` Go Vita
+manzillariga o'tkazilgan.
 
-Ikkita qoida shu bo'shliqlardan kelib chiqadi va kodda yozilgan:
+Hali bo'sh: `/reviews` (halol bo'sh holat ko'rsatadi — o'ylab topilgan sharh
+yo'q), `BRAND.logo` (matnli wordmark chiziladi) va `BRAND.legal.licence`
+("yangilanmoqda" qatori chiziladi). Ikkalasi ham atayin: o'ylab topilgan
+litsenziya raqami yo'q raqamdan yomon.
+
+Uchta qoida shu bo'shliqlardan kelib chiqadi va kodda yozilgan. Uchalasining
+umumiy tamoyili: **o'ylab topilgan ma'lumot default'da ko'rinmaydi** — uni
+ko'rsatish uchun bayroqni atayin yoqish kerak.
 
 - **Bo'sh bo'lim menyuda ko'rinmaydi** (`src/lib/content/nav-sections.ts`).
   Header, mobil menyu, footer, katalog paneli va sitemap bitta manbadan o'qiydi;
@@ -32,16 +42,42 @@ Ikkita qoida shu bo'shliqlardan kelib chiqadi va kodda yozilgan:
   (`src/lib/content/sample-social-proof.ts`). Yoqish uchun
   `NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=on`. Filtr mock katalogda turadi, shuning
   uchun Sanity va real API'dan kelgan haqiqiy sharhlar undan o'tmaydi.
+- **Demo akkaunt kabineti default'da yo'q** (`src/lib/config/demo.ts`).
+  `NEXT_PUBLIC_API_URL` bo'sh va `NEXT_PUBLIC_ACCOUNT_DEMO=on` yo'q bo'lsa
+  `/account` `notFound()` qaytaradi. Mock kabinet istalgan telefon va istalgan
+  kodni qabul qilib, birovning buyurtmalarini ko'rsatadi — demo uchun yaxshi,
+  ishlayotgan do'kon uchun yolg'on. Havola va marshrut **bitta** predikatni
+  o'qiydi (`accountAreaAvailable`), shuning uchun havola hech qachon 404 ga
+  olib bormaydi.
 
 ## Muhim buyruqlar
 
 ```bash
-npm run dev      # development server
-npm run build    # production build (TypeScript + ESLint tekshiradi)
-npm run lint     # ESLint
+npm run dev         # development server
+npm run build       # production build (TypeScript + ESLint tekshiradi)
+npm run lint        # eslint . (flat config: eslint.config.mjs)
+npm test            # unit testlar (vitest)
+npm run audit       # render sifati auditi — production build kerak
+npm run audit:deps  # dependency auditi (baseline bilan)
 ```
 
 Build har doim `npm run build` orqali tekshirilsin — `npx next build` boshqa Next.js versiyasini yuklab olishi mumkin.
+
+**Lint `next lint` emas, `eslint .`.** `next lint` Next 16 da olib tashlanadi va
+15.5.27 da ham har ishga tushishda migratsiya xabarini chop etardi. Konfiguratsiya
+ESLint 9 flat config (`eslint.config.mjs`); `eslint-config-next` hali faqat
+eslintrc shaklida chiqadi, shuning uchun `FlatCompat` ko'prigi ishlatiladi va
+faqat `next/core-web-vitals` extends qilinadi — `.eslintrc.json` dagidek,
+qoidalar to'plami o'zgarmagan.
+
+Qamrov **kengaygan**: `next lint` faqat `/src`, `/app`, `/pages`, `/components`,
+`/lib` ni ko'rardi; ESLint CLI ignore qilinmagan hammani ko'radi, ya'ni
+`scripts/` (audit harness va dep ratchet) va ildizdagi konfiguratsiyalar ham
+endi lint qilinadi. Yangi fayl qo'shganda buni hisobga oling.
+
+`eslint.config.mjs` `@eslint/eslintrc` ni import qiladi — u `devDependencies`
+da **ochiq e'lon qilingan**. U faqat `eslint` orqali keladigan bo'lsa (phantom
+dependency), ESLint yangilanishi lint'ni va CI'ni sindirishi mumkin edi.
 
 ## Arxitektura
 
@@ -67,7 +103,11 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
 
 `app/layout.tsx` — passthrough; haqiqiy `<html lang>` `[locale]/layout.tsx` da.
 `loading.tsx` **qo'shmang**: Suspense chegarasi status'ni `notFound()` dan oldin
-yuboradi va soft-404 hosil qiladi (bir marta shu sabab olib tashlangan).
+yuboradi va soft-404 hosil qiladi. Bu qoida bir marta buzildi va
+`/uz/products/<istalgan-narsa>` 200 qaytara boshladi; endi
+`scripts/audit/checks/soft404.mjs` har bir PR'da tekshiradi va buzilsa CI
+yiqiladi. Skeleton kerak bo'lsa — uni sahifaning o'zida, `notFound()`
+chaqirilgandan **keyin** chizing.
 
 ### Lib katalogi (`src/lib/`)
 
@@ -82,11 +122,11 @@ yuboradi va soft-404 hosil qiladi (bir marta shu sabab olib tashlangan).
 | `subscription/` | Subscribe & Save shartlari — oraliqlar, chegirmalar |
 | `marketing/` | Backend'ning navbatiga server-to-server klient |
 | `notifications/` | Telegram — operator va mijoz kanallari |
-| `wishlist/` | Zustand persist store (`alimkhanov-wishlist`) |
+| `wishlist/` | Zustand persist store (`govita-wishlist`) |
 | `analytics/` | GTM dataLayer, Meta Pixel, Yandex Metrika events |
 | `i18n/` | next-intl routing, navigation helpers |
 | `seo/` | Metadata builder, JSON-LD (WebSite, LocalBusiness, Product, FAQ, Breadcrumb) |
-| `content/` | Blog, ekspertlar, ingredientlar — static content |
+| `content/` | Blog, ekspertlar, ingredientlar — static content. **Ekspert kengashi atayin bo'sh**: `/experts` dagi 3 ta profil `demo` belgili va `reviewerForKey()` ularni hech qachon tibbiy tekshiruvchi qaytarmaydi, shuning uchun `MedicalWebPage` JSON-LD `reviewedBy`/`author` ni umuman chiqarmaydi. Haqiqiy ekspert qo'shilganda ikkalasi o'zi paydo bo'ladi (`docs/QOLGAN-ISHLAR.md` §2) |
 | `ui/` | Toast Zustand store |
 
 ### Components katalogi (`src/components/`)
@@ -109,7 +149,12 @@ yuboradi va soft-404 hosil qiladi (bir marta shu sabab olib tashlangan).
 
 ## State Management
 
-### Cart Store (`alimkhanov-cart`)
+Barcha localStorage kalitlari `src/lib/storage-keys.ts` da. Rebrendda
+`alimkhanov-*` → `govita-*` o'zgardi; eski qiymatlar birinchi yuklashda
+ko'chiriladi, aks holda qaytgan mijozning savatchasi bo'shab qolardi.
+Migratsiya test qilingan (`src/lib/storage-keys.test.ts`).
+
+### Cart Store (`govita-cart`)
 ```typescript
 // src/lib/cart/store.ts
 useCart() → { lines, isOpen, add, remove, setQuantity, clear, open, close, toggle }
@@ -122,7 +167,7 @@ useCart() → { lines, isOpen, add, remove, setQuantity, clear, open, close, tog
 useUpsell() → { steps, currentStep, isOpen, cumulativeSavings, shown, openLadder, nextStep, skipStep, closeLadder }
 ```
 
-### Wishlist Store (`alimkhanov-wishlist`)
+### Wishlist Store (`govita-wishlist`)
 ```typescript
 // src/lib/wishlist/store.ts
 useWishlist() → { items, toggle, has }
@@ -152,10 +197,13 @@ SHOPFLOW_API_KEY=your_key
 ```
 src/messages/uz.json   # default til
 src/messages/ru.json
-src/messages/en.json
 ```
 
-**Namespace-lar:** `nav`, `common`, `home`, `product`, `cart`, `checkout`, `shop`, `upsell`, `exit`, `outOfStock`, `wishlist`, `socialProof`, `countdown`, `meta`, `blog`, `contact`, `legal`, `upsell`
+**`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
+ham 919 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+qo'shiladi.
+
+**Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
 
 ## SEO
 
@@ -204,11 +252,79 @@ TELEGRAM_CHAT_ID=your_chat_id
 
 ## Security
 
-`next.config.ts` headers:
+`next.config.ts` headers (barcha marshrutlarga, `/studio` bundan mustasno):
 - `X-Frame-Options: SAMEORIGIN`
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
+- `Strict-Transport-Security: max-age=63072000; includeSubDomains` — `preload`
+  atayin yo'q: u amalda qaytarib bo'lmaydigan va domen qaroriga tegishli
+- `Content-Security-Policy` (yoki `-Report-Only`) — `src/lib/security/csp.ts`
+  tomonidan **hisoblanadi**, pastda
+
+**CSP qotirilgan ro'yxat emas.** Har bir uchinchi tomon origin'i uni kerak
+qiladigan integratsiya yoqilgan bo'lsagina paydo bo'ladi: analytics host'i faqat
+o'z ID'si (`NEXT_PUBLIC_GTM_ID` va h.k.) o'rnatilganda, API origin'i faqat
+`NEXT_PUBLIC_API_URL` bo'lsa. Shuning uchun **yangi teg qo'shganda CSP'ni qo'lda
+yangilash shart emas** — ID'ni o'rnatishning o'zi siyosatni ham kengaytiradi.
+Aksincha, ID'ni o'chirish origin'ni siyosatdan ham olib tashlaydi.
+
+Rasm hostlari `images.remotePatterns` bilan bitta ro'yxatdan (`REMOTE_IMAGE_HOSTS`)
+olinadi, shuning uchun optimizator va `img-src` zid kela olmaydi. `csp.test.ts`
+buni drift ga qarshi ushlab turadi: `next.config.ts` da `hostname: "` literal
+qayta paydo bo'lsa, test qizil bo'ladi.
+
+`CSP_MODE` — `report-only` (sukut) | `enforce` | `off`. **Build paytida
+o'qiladi**: `headers()` build vaqtida yechilib routes manifest'iga yoziladi,
+shuning uchun ishlayotgan serverda o'zgartirish qayta build'gacha hech narsa
+qilmaydi. `src/instrumentation.ts` boot'da build rejimini runtime rejimi bilan
+taqqoslaydi va farq qilsa ogohlantiradi — ko'rinadigan lekin ishlamaydigan
+o'zgaruvchi bo'lmasligi uchun. Vercel har deploy'da qayta build qiladi, shuning
+uchun u yerda bu muammo emas.
+
+Siyosat `'unsafe-inline'` talab qiladi (sahifada 1000+ inline RSC skripti va
+400+ inline `style=` bor), ya'ni **u ichkariga kiritilgan inline skriptni
+to'xtatmaydi** — faqat boshqa joydan yuklanadigan skriptni, clickjacking'ni,
+`<base>` hijack'ni, plaginlarni va forma ma'lumotini tashqariga chiqarishni.
+`enforce` ga o'tishdan oldin haqiqiy analytics teglari bilan bir necha kun
+DevTools konsolini kuzatish kerak: GTM/Pixel/Metrika o'z resurslarini runtime'da
+o'zi yuklaydi va ularni build'dan sanab bo'lmaydi.
+
+`/studio` header ro'yxatidan chetlatilgan, chunki Studio o'z frame'lari bilan
+ishlaydi. Shu sababli u production'da **umuman xizmat qilmaydi** —
+`src/app/studio/layout.tsx` `SANITY_STUDIO_ENABLED=on` va haqiqiy
+`NEXT_PUBLIC_SANITY_PROJECT_ID` bo'lmasa `notFound()` qaytaradi. Development'da
+har doim ochiq. `@sanity/vision` (GROQ konsoli) production konfiguratsiyasida
+ro'yxatdan o'tkazilmaydi (`sanity.config.ts`).
+
+**Shaxsiy ma'lumotlar log'ga yozilmaydi.** Telefon va email manzili
+`src/lib/privacy.ts` dagi `redactPhone` / `redactEmail` orqali o'tadi. Server
+log'i so'rovdan uzoq yashaydi va uchinchi tomon panelida turadi — mijoz
+aloqa ma'lumotini saqlash uchun joy emas. Backend'dagi yagona istisno
+`OTP_DEBUG_ECHO` — `main.py` uni production'da rad etadi.
+
+**Dependency holati:** `npm run audit:deps` CI'da yuradi. Hozir tuzatishga
+mumkin bo'lgan high/critical **0 ta**. Qolgan 19 tasi `sanity` 3.x zanjiriga
+teginadi (yagona tuzatish — `sanity@6` major migratsiyasi) va
+`scripts/audit/deps.mjs` dagi baseline'da sababi bilan yozilgan. Baseline
+**faqat bir tomonga** ishlaydi: qator eskirsa (paket tuzatilsa yoki daraxtdan
+chiqsa) audit yiqiladi va qatorni o'chirishni talab qiladi.
+
+Backend xavfsizligi `backend/app/` da: OTP kodi HMAC bilan va telefon bilan
+tuzilgan holda saqlanadi (`app/otp.py`), `hmac.compare_digest` — constant-time,
+`main.py` esa production'da uchta narsani **boot paytida** tekshiradi:
+`JWT_SECRET` placeholder bo'lmasligi, `OTP_DEBUG_ECHO` yopiqligi va
+`OTP_HMAC_KEY` o'rnatilgan hamda kamida 32 bayt ekanligi.
+
+**OTP kaliti JWT kalitidan ajratilgan.** `JWT_SECRET` 30 kun yashaydigan token'ni
+imzalaydi, `OTP_HMAC_KEY` esa 5 daqiqada o'ladigan kodni kalitlaydi — bitta
+kalit sizsa ikkala tizim ham zararlanadi, va `JWT_SECRET` har bir autentifikatsiya
+so'rovida ishlatilgani uchun u "eng uzoqqa sayohat qiladigan" kalit. Development'da
+`OTP_HMAC_KEY` bo'sh qoldirilsa, kalit `JWT_SECRET` dan domen ajratish belgisi
+ostida keltirib chiqariladi (`docker compose up` konfiguratsiyasiz ishlashi uchun).
+Keltirib chiqarish ikki kalitning **qiymatini** ajratadi, lekin **taqdirini** emas:
+`JWT_SECRET` ni bilgan odam keltirilgan kalitni ham hisoblay oladi. Shuning uchun
+production'da bu fallback rad etiladi. Batafsil: `backend/README.md`.
 
 ## Upsell Savings Ladder
 
@@ -272,7 +388,7 @@ o'tkazib yuborish, oraliqni o'zgartirish, bekor qilish.
 
 ```env
 # Majburiy (production)
-NEXT_PUBLIC_SITE_URL=https://alimkhanov.uz
+NEXT_PUBLIC_SITE_URL=https://www.govita.uz
 
 # Analytics (ixtiyoriy)
 NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
@@ -302,6 +418,12 @@ MARKETING_API_KEY=...         # backend'da ham xuddi shu qiymat
 
 # Namuna ijtimoiy-isbot (default: o'chiq)
 NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=on   # faqat demo deploy uchun
+
+# Demo akkaunt kabineti (default: o'chiq)
+NEXT_PUBLIC_ACCOUNT_DEMO=on          # faqat demo deploy uchun
+
+# Sanity Studio (production'da default: yopiq)
+SANITY_STUDIO_ENABLED=on             # + haqiqiy NEXT_PUBLIC_SANITY_PROJECT_ID kerak
 ```
 
 ## Ishlab chiqish qoidalari
@@ -328,7 +450,10 @@ BASE_URL=http://localhost:3000 npm run audit
 kerak**: dev build boshqa CSS va boshqa vaqtlash bilan ishlaydi, ya'ni boshqa
 narsani o'lchaydi. Nuqson topilsa `npm run audit` nolmas kod bilan chiqadi.
 
-Quyidagilar o'lchangan va **nol** holatga keltirilgan. Yangi ish ularni buzmasin:
+Quyidagilar o'lchangan va **nol** holatga keltirilgan. Yangi ish ularni buzmasin.
+Birinchi qator boshqalardan farq qiladi: u sahifaning qanday **ko'rinishini**
+emas, qanday **javob berishini** o'lchaydi va shu sababli brauzersiz, oddiy
+`fetch` bilan yuradi (`scripts/audit/checks/soft404.mjs`).
 
 | tekshiruv | holat |
 |---|---|
@@ -341,6 +466,7 @@ Quyidagilar o'lchangan va **nol** holatga keltirilgan. Yangi ish ularni buzmasin
 | Fokus ko'rinmaydigan element | 0 |
 | Kesilgan matn (uz + ru) | 0 |
 | Pastki chekka elementlari kesishuvi | 0 |
+| 404 bo'lishi kerak URL 404 qaytaradi (soft-404 yo'q) | 0 |
 
 Amaliy qoidalar, har biri haqiqiy nuqsondan chiqqan:
 

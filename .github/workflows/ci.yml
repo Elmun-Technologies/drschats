@@ -20,6 +20,19 @@ jobs:
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
 
+      # The other "audit" job in this file measures what the site renders. This
+      # one measures what it is built from, and they are not the same thing:
+      # a critical framework advisory sat unpatched here for want of a step
+      # that would have named it.
+      #
+      # Not a bare `npm audit --audit-level=high` — that fails on the first run
+      # and stays failing, because the Sanity CLI chain has no fix short of a
+      # major CMS migration, and a permanently red check gets ignored. This
+      # gates everything fixable now and holds the rest in a baseline that
+      # fails when a row goes stale. See scripts/audit/deps.mjs.
+      - name: Dependency audit
+        run: npm run audit:deps
+
       - name: Lint
         run: npm run lint
 

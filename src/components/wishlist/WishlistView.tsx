@@ -29,9 +29,24 @@ export function WishlistView({ allProducts }: { allProducts: Product[] }) {
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
+  /*
+    The heading is rendered before hydration, not after it.
+
+    Only the *contents* of the list depend on localStorage; the page's own
+    title does not. Gating the whole page on hydration therefore shipped a
+    document whose <main> held sixteen skeleton divs and no heading at all, so
+    a screen reader user landing here met an unnamed page and a search engine
+    saw one with no h1. Rendering the title immediately fixes both and keeps
+    the layout from shifting when the grid replaces the skeleton.
+  */
   if (!hydrated) {
     return (
       <Container className="py-10">
+        <header className="mb-8">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+            {t("title")}
+          </h1>
+        </header>
         <ProductGridSkeleton count={4} />
       </Container>
     );

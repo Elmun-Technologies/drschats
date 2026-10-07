@@ -76,6 +76,9 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-govita}:${POSTGRES_PASSWORD:-govita_dev}@postgres:5432/${POSTGRES_DB:-govita}
       JWT_SECRET: ${JWT_SECRET:-dev-only-change-me}
+      # Bo'sh qoldirilsa, kalit JWT_SECRET'dan keltirib chiqariladi (development).
+      # Production'da main.py buni talab qiladi va 32 baytdan qisqasini rad etadi.
+      OTP_HMAC_KEY: ${OTP_HMAC_KEY:-}
       ENVIRONMENT: ${ENVIRONMENT:-development}
       CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:3000}
     ports:

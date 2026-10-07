@@ -77,9 +77,18 @@ export async function submitOrder(payload: OrderRequest): Promise<OrderResult> {
     const order = parsed.data as OrderRequest;
     const result = await shopflow.createOrder(order);
     if (result.ok && result.orderId) {
-      // Awaited, unlike the operator notice: an order confirmation that races
-      // the serverless function's shutdown is one that never arrives. The
-      // sender swallows its own failures, so this cannot fail the order.
+      /*
+        All three awaited, not fire-and-forget. A serverless function is frozen
+        the moment the response is returned, so anything still in flight at that
+        point is dropped — an order confirmation that races the shutdown is one
+        that never arrives, and the customer is left with nothing but a success
+        page. Promise.all keeps them concurrent, which is the part that matters
+        for latency; the await is what makes them actually happen.
+
+        None of the three can fail the order: notifyOperator and sendCampaign
+        both swallow their own errors, and requestEmailOptIn records a
+        preference that is worth less than the sale already made.
+      */
       await Promise.all([
         notifyOperatorOfOrder(order, result.orderId),
         emailOrderConfirmation(order, result.orderId),

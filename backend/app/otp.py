@@ -28,18 +28,48 @@ def generate_code() -> str:
     return f"{secrets.randbelow(10**CODE_LENGTH):0{CODE_LENGTH}d}"
 
 
+# Domain-separation label for the derived fallback key. It is versioned because
+# changing it invalidates every code issued before the change — which, given a
+# five-minute TTL, is an inconvenience rather than an outage.
+_OTP_KEY_DOMAIN = b"govita:otp-hmac:v1"
+
+
+def otp_key(settings) -> bytes:
+    """
+    The key that hashes sign-in codes, kept apart from the JWT signing key.
+
+    With OTP_HMAC_KEY set, that secret is used directly and the two systems are
+    genuinely independent: losing one says nothing about the other.
+
+    Without it, a key is derived from jwt_secret under a fixed label. That is a
+    fallback for development, not an equivalent: derivation produces a
+    *different value* but not a *different secret*, so anyone holding
+    jwt_secret can recompute it. What it buys is that the two keys are never
+    the same bytes, so a key intended for one protocol cannot be used by
+    mistake or by accident of implementation for the other — and it means
+    moving to real separation later is a configuration change, not a code
+    change. main.py refuses to start in production while OTP_HMAC_KEY is empty,
+    so this branch is never what protects a live deployment.
+    """
+    if settings.otp_hmac_key:
+        return settings.otp_hmac_key.encode()
+    return hmac.new(settings.jwt_secret.encode(), _OTP_KEY_DOMAIN, hashlib.sha256).digest()
+
+
 def hash_code(phone: str, code: str) -> str:
     """
     HMAC rather than a bare hash, and salted with the phone.
 
     A bare SHA-256 of a six-digit code is a lookup table with a million rows —
     anyone with a copy of the table recovers every live code instantly. Keying
-    it with the server secret means the stored value is worthless without that
+    it with a server secret means the stored value is worthless without that
     secret, and mixing in the phone stops one rainbow table covering everyone.
+
+    The key is not the JWT signing key; see otp_key() for why that matters.
     """
     settings = get_settings()
     message = f"{phone}:{code}".encode()
-    return hmac.new(settings.jwt_secret.encode(), message, hashlib.sha256).hexdigest()
+    return hmac.new(otp_key(settings), message, hashlib.sha256).hexdigest()
 
 
 def verify_code_hash(phone: str, code: str, code_hash: str) -> bool:

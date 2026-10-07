@@ -15,4 +15,12 @@ export default defineConfig({
       "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
+  test: {
+    /*
+      Installs localStorage before the store modules are imported, which is
+      the only point at which it can help: Zustand's persist middleware reads
+      storage during module initialisation. See vitest.setup.ts.
+    */
+    setupFiles: [fileURLToPath(new URL("./vitest.setup.ts", import.meta.url))],
+  },
 });

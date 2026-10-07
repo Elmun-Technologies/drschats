@@ -97,12 +97,35 @@ It is 20 bits, so the length is not the protection — the limits are:
 | Lifetime | 5 minutes |
 | Guesses | 5, then the code is burned |
 | Requests | 5 per phone per hour, 60s between them |
-| At rest | HMAC-SHA256 keyed with `JWT_SECRET`, salted with the phone — never the code itself |
+| At rest | HMAC-SHA256 keyed with `OTP_HMAC_KEY`, salted with the phone — never the code itself |
 | Reuse | Single-use; issuing a new code retires the previous one |
 
 Every rejection says `invalid_code`, whether the code was wrong, expired or
 never existed. Splitting those apart would tell an attacker which phone numbers
 have accounts.
+
+### The hashing key is not the JWT key
+
+`OTP_HMAC_KEY` is its own secret, deliberately. The two protect different things
+with different blast radii: `JWT_SECRET` signs a bearer token valid for 30 days,
+`OTP_HMAC_KEY` keys a code that dies in 5 minutes. Sharing one key means a
+single leak breaks both, and `JWT_SECRET` is the one that travels furthest
+because every authenticated request touches it.
+
+Left empty in development, where a key is derived from `JWT_SECRET` under a
+fixed label instead — so `docker compose up` still needs no configuration.
+Derivation separates the two *values* but not their *fates*: whoever holds
+`JWT_SECRET` can recompute the derived key. That is why `main.py` refuses to
+boot in production while `OTP_HMAC_KEY` is empty, and refuses one shorter than
+32 bytes, the same way it already refuses the placeholder `JWT_SECRET`.
+
+```bash
+python -c "import secrets; print(secrets.token_urlsafe(32))"
+```
+
+Rotating the key invalidates every code issued before the change. With a
+five-minute TTL that is an inconvenience rather than an outage, and nobody has
+to be told.
 
 ## Running it
 

@@ -5,6 +5,7 @@ import * as targetSize from "./checks/target-size.mjs";
 import * as clipped from "./checks/clipped.mjs";
 import * as bottomEdge from "./checks/bottom-edge.mjs";
 import * as states from "./checks/states.mjs";
+import * as soft404 from "./checks/soft404.mjs";
 
 /*
   The quality bar, as something that runs.
@@ -12,6 +13,10 @@ import * as states from "./checks/states.mjs";
   CLAUDE.md claims a table of zeros. That claim is only worth anything if
   something re-checks it, so this is what does — and why it exits non-zero
   rather than printing a summary nobody reads.
+
+  Most of these look at what a page renders. The first one looks at what it
+  *answers*, because a correct-looking page served under the wrong status code
+  is invisible to every other check here and is still a bug Google reports.
 
   Usage:  BASE_URL=http://localhost:3000 npm run audit
   The server must already be serving a production build; a dev build measures
@@ -24,6 +29,7 @@ process.env.BASE_URL = BASE_URL;
 // Overlay states are locale-independent in structure, so checking them once
 // keeps CI honest without tripling its runtime.
 const PER_LOCALE = [
+  ["404s answer 404 (no soft-404)", soft404],
   ["accessible names, alt text, heading order, overflow", a11y],
   ["colour contrast", contrast],
   ["target size (WCAG 2.2 spacing exception applied)", targetSize],
