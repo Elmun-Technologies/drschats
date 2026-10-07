@@ -54,7 +54,26 @@ Ayni paytda bir nechta muammo bor va ularning eng jiddiylari — loyiha o'zining
 | Soft-404 testi | ❌ **jiddiy bug topildi** |
 | `npm audit` | ❌ **2 kritik, 27 high** |
 | Rasm `alt` / sarlavha tartibi | ✅ 0 muammo (mustaqil tasdiqlandi) |
-| Vizual audit (`npm run audit`) | ⚠️ sandbox'da brauzer yo'q — ishga tushmadi |
+| Vizual audit (`npm run audit`) | ⚠️ audit **kunida** sandbox'da brauzer yo'q edi — ishga tushmadi. **Keyin CI'da ishga tushdi va o'tdi** — quyidagi izohga qarang |
+
+> **`npm run audit` birinchi marta PR #94 da haqiqiy brauzer bilan ishladi va
+> to'liq o'tdi** (`audit` job'i, 8m30s, SUCCESS). CI job'i Chromium o'rnatadi
+> (`npx playwright install --with-deps chromium`), production build'ni
+> `next start` bilan serve qiladi va `npm run audit` ni ishga tushiradi.
+>
+> Bu muhim, chunki ikki narsani birinchi marta tasdiqlaydi:
+>
+> 1. **`scripts/audit/checks/soft404.mjs` runtime'da ishlaydi.** Men uni
+>    sandbox'da brauzer yo'qligi sababli ishga tushirolmagan edim va shu
+>    hisobotda "yozilgan, lekin runtime'da tekshirilmagan" deb belgilagan edim.
+>    Endi u ikkala lokalda (`uz`, `ru`) 10 ta noto'g'ri va 8 ta haqiqiy URL'ni
+>    tekshirib, **0 ta topilma** qaytardi.
+> 2. **Audit muvaffaqiyatsizlikda CI'ni haqiqatan qizartiradi.** Buni alohida
+>    tekshirish kerak edi: agar harness faqat chop etib, exit code qaytarmasa,
+>    "o'tdi" degan natija hech narsani isbotlamas edi. `scripts/audit/index.mjs`
+>    oxirida `process.exit(ok ? 0 : 1)` bor va `ok` har bir tekshiruv natijasi
+>    bilan `ok = report(...) && ok` orqali yig'iladi. Ya'ni bitta topilma ham
+>    job'ni yiqitadi — "yashil" bo'lishi tasodifiy emas.
 
 **Loyiha hajmi (tuzatishdan keyin qayta o'lchandi):** ~37 600 qator kod.
 
