@@ -33,7 +33,7 @@ Ayni paytda bir nechta muammo bor va ularning eng jiddiylari — loyiha o'zining
 | Backend xavfsizligi | **9 / 10** | OTP HMAC, bcrypt, production guard'lar — namunali |
 | SEO | **6.5 / 10** | asoslar kuchli, lekin 3 ta haqiqiy bug bor |
 | Dependency xavfsizligi | **4 / 10** | 2 ta kritik, 27 ta high; CI'da `npm audit` yo'q |
-| Test qamrovi | **6 / 10** | 151 test yashil (100 frontend + 51 backend), lekin ~37k LOC uchun yupqa; E2E yo'q. Hozir **177** (113 + 64) — §8 |
+| Test qamrovi | **6 / 10** | 151 test yashil (100 frontend + 51 backend), lekin ~37k LOC uchun yupqa; E2E yo'q. Hozir **203** (139 + 64) — §8 |
 | Repo gigienasi | **4 / 10** | 54.6 MB RAR arxivlar, shundan 46 MB ochiq tarqatiladi |
 | Dokumentatsiya | **6 / 10** | hajmi yaxshi, lekin muhim joylarda eskirgan |
 
@@ -172,8 +172,8 @@ Ustuvorlik: 🔴 relizni to'sadi · 🟡 jiddiy · 🟢 keyin bo'lsa ham bo'ladi
 > tuzatilgan va production build ustida jonli o'lchangan.** Har bir bo'lim oxirida
 > tuzatish va o'lchov natijasi keltirilgan. 🟢 bo'limlardan 4.11 va 4.13 ham
 > yopilgan; 4.8 (CSP) va 4.12 (test qamrovi) ochiq qoldi — ikkalasi ham relizni
-> to'smaydi, sabablari o'z bo'limlarida. Yangi topilgan to'rtta muammo — 4.15, 4.16, 4.17 va
-> 4.18 — oxirida qo'shilgan; 4.18 dastlab 4.14 da kichik kuzatuv edi.
+> to'smaydi, sabablari o'z bo'limlarida. Yangi topilgan muammolar — 4.15, 4.16, 4.17, 4.18 va 4.19 — oxirida
+> qo'shilgan; 4.18 dastlab 4.14 da kichik kuzatuv, 4.19 esa 4.8 ning o'zi edi.
 >
 > Bu hisobot audit **kunidagi** holatni saqlaydi: raqamlar va iqtiboslar tuzatishdan
 > oldin o'lchangan, shuning uchun bo'limlarni "nima topilgandi" deb o'qish kerak.
@@ -485,6 +485,9 @@ bor sayt uchun CSP — XSS'ning zararini kamaytiradigan asosiy qatlam.
 Kamida `Content-Security-Policy-Report-Only` bilan boshlash mantiqliy: u hech
 narsani sindirmaydi, lekin qanday manbalar yuklanayotganini ko'rsatadi.
 
+**Bajarildi (4.19 ga qarang).** `src/lib/security/csp.ts` + `next.config.ts`,
+sukut bo'yicha `report-only`.
+
 ---
 
 ### 🟡 4.9 Mijoz telefon raqami server log'iga yoziladi
@@ -601,7 +604,7 @@ Lekin ~37 600 qator kod uchun bu yupqa:
   ichida qaytariladi, shuning uchun bir testning holati keyingisiga o'tmaydi.
   Test natijasi endi **toza** — hech qanday ogohlantirish chiqmaydi.
 
-**Tuzatishdan keyingi holat (4.12):** testlar 151 → **177** (113 frontend +
+**Tuzatishdan keyingi holat (4.12):** testlar 151 → **203** (139 frontend +
 64 backend). Yangilari: `storage-keys.test.ts` (`alimkhanov-` → `govita-`
 migratsiyasi va kalit ro'yxati) va `public-hygiene.test.ts` (`public/` ostida
 binary damp paydo bo'lishini to'sadi). Test gigienasi muammosi yopildi.
@@ -887,6 +890,108 @@ TTL bilan bu uzilish emas.
 
 ---
 
+### 🟡 4.19 Content-Security-Policy yozildi — va uning chegarasi halol aytildi *(4.8 dan)*
+
+4.8 da "CSP umuman yo'q" deb yozilgan edi. Endi bor: `src/lib/security/csp.ts`
+siyosatni **hisoblaydi**, `next.config.ts` uni sarlavha sifatida beradi, sukut
+bo'yicha rejim `report-only`.
+
+**Nima uchun siyosat qotirilgan ro'yxat emas, hisoblanadigan funksiya.** Har bir
+uchinchi tomon origin'i uni kerak qiladigan integratsiya yoqilgan bo'lsagina
+paydo bo'ladi: analytics host'i faqat o'z ID'si o'rnatilganda, API origin'i faqat
+`NEXT_PUBLIC_API_URL` bo'lsa. Qotirilgan siyosat yo hech narsa ishlatmaydigan
+origin'larni ruxsat etadi (behuda kengaytirilgan hujum yuzasi), yoki kimdir GTM
+ID'sini qo'ygan kuni sinadi. Hisoblanadigan siyosat aynan hozirgi konfiguratsiya
+qanchalik qat'iy bo'lsa shunchalik qat'iy va konfiguratsiya kengaysa o'zi,
+to'g'ri kengayadi.
+
+Rasm hostlari `images.remotePatterns` bilan **bitta ro'yxatdan** olinadi
+(`REMOTE_IMAGE_HOSTS`), shuning uchun optimizator va siyosat bir-biriga zid kela
+olmaydi. Test buni ham ushlab turadi: `next.config.ts` da `hostname: "` qayta
+paydo bo'lsa, test qizil bo'ladi.
+
+**O'lchandi (24 ta sahifa, production build):**
+
+| Nima | Natija |
+|---|---|
+| Tashqi origin | **0 ta** — analytics ID'lari hali sozlanmagan |
+| Inline `<script>` | **1061 ta** (Next.js RSC payload'ni inline oqimlaydi) |
+| Inline `style=` | **410 ta** |
+| `<style>` bloki | 0 (CSS tashqi fayllarda) |
+| Tashqi `<img src>` | 0 — unsplash va Sanity rasmlari `next/image` orqali **proksi** qilinadi |
+
+Oxirgi qator muhim va kutilmagan edi: `images.unsplash.com` va `cdn.sanity.io`
+kontentda ishlatiladi, lekin brauzer ularni hech qachon to'g'ridan-to'g'ri
+so'ramaydi — u faqat same-origin `/_next/image?url=…` ni yuklaydi, uzoq host'ni
+esa Next serveri oladi. Ya'ni CSP `img-src` ga tashqi CDN'lar **kerak emas**.
+Ular baribir ro'yxatda, chunki optimizatorni chetlab o'tuvchi oddiy `<img>`
+yozish oson va ro'yxat `remotePatterns` bilan umumiy.
+
+**Chegara — va bu eng muhim qismi.** Bu siyosat `'unsafe-inline'` talab qiladi:
+1061 ta inline skript va 410 ta inline uslub bilan nonce'li siyosat butun
+hujjatni middleware'ga ko'chirmasdan mumkin emas. Shuning uchun ochiq aytish
+kerak: **bu CSP ichkariga kiritilgan inline skriptni to'xtatmaydi.** U
+to'xtatadigan narsa — boshqa joydan yuklanadigan skript, clickjacking, `<base>`
+hijacking, plaginlar va forma ma'lumotini tashqariga chiqarish. Bu amaliy
+qiymatning katta qismi, lekin hammasi emas va shunday deb yozilgan.
+
+`enforce` emas, `report-only` bilan chiqishining sababi ham shu chegaradan
+kelib chiqadi: GTM, Meta Pixel va Yandex Metrika o'z resurslarini **runtime'da
+o'zi** yuklaydi va ularni build'dan sanab bo'lmaydi. Haqiqiy teglar yuklangan
+holda bir necha kun konsol kuzatilmasdan `enforce` yoqish — taxmin qilish.
+
+**Build paytida hisoblanishi — o'lchandi, taxmin qilinmadi.** `headers()` build
+vaqtida yechiladi va routes manifest'iga yoziladi. Tekshirish: `CSP_MODE=enforce
+NEXT_PUBLIC_GTM_ID=…` bilan build qilib, keyin serverni **umuman env'siz** ishga
+tushirdim — sarlavha baribir enforcing bo'ldi va GTM origin'i joyida edi.
+
+Analytics uchun bu bog'lanish **to'g'ri**: `NEXT_PUBLIC_*` qiymatlari ham build
+paytida klient bundle'ga yoziladi, ya'ni tegning o'zi ham ID build'da bo'lgandagina
+chiziladi. Siyosat va chiziladigan teglar bitta snapshot'dan keladi va zid kela
+olmaydi. Lekin `CSP_MODE` uchun bu tuzoq: u runtime tugmasiga o'xshaydi va
+unday emas.
+
+Shuning uchun `src/instrumentation.ts` qo'shildi — server ishga tushganda build
+rejimini runtime rejimi bilan taqqoslaydi va farq qilsa **ovozli** ogohlantiradi:
+
+```
+[csp] CSP_MODE at runtime is "report-only" but this build was made with
+CSP_MODE="enforce", and the build-time value is the one in force. This build
+BLOCKS violations. …
+```
+
+Ikkala yo'nalish teng yomon emas, shuning uchun xabar ham bir xil emas: build
+`enforce` bo'lsa, "haqiqiy mehmonlar uchun allaqachon rad etilmoqda" deydi.
+Rejimler mos bo'lsa jim tasdiqlaydi. Bu loyihaning boshqa qismlaridagi falsafaga
+mos — `main.py` placeholder kalit bilan ishga tushishni rad etadi, storefront
+demo kabinetni 404 qiladi, dependency auditi baseline eskirganda yiqiladi.
+Ko'rinadigan lekin ishlamaydigan o'zgaruvchi — yagona istisno bo'lishi kerak
+emas.
+
+Bu repoda tuzoq amalda yopiq: storefront Vercel'da (har deploy qayta build
+qiladi), `docker-compose.yml` da esa faqat postgres, redis, meilisearch va
+FastAPI bor — storefront image'i va ildiz Dockerfile'i yo'q. Ogohlantirish
+baribir kerak, chunki `next start` ni o'zi host qiladigan odam aynan "o'zgaruvchini
+o'zgartirib qayta ishga tushirish"ni sinaydi.
+
+**Nima tekshirilmadi — va bu halol aytilishi kerak.** CSP'ni **brauzer** bajaradi,
+server emas; `curl` uni umuman e'tiborga olmaydi. Shuning uchun lokal tekshiruv
+faqat buni isbotlaydi: siyosat sintaktik to'g'ri (26 ta unit test), sarlavha
+to'g'ri nom bilan chiqadi, rejim nomuvofiqligi aniqlanadi va server resurslarni
+berishda davom etadi (rasmlar 200, 27 ta statik asset yuklandi). **Brauzer biror
+kerakli resursni bloklamasligini** sandbox'da brauzer yo'qligi sababli tekshira
+olmadim. Aynan shu sabab `report-only` sukut rejim — bu ehtiyotkorlik, kamchilik
+emas, va `enforce` ga o'tish mijoz analytics ID'larini bergandan keyingi qadam.
+
+**Testlar:** `src/lib/security/csp.test.ts` — 26 ta test (frontend 113 → **139**).
+Shu jumladan: hech bir direktivada yalang'och `*` yoki `https:` yo'qligi, bo'sh
+direktiva yo'qligi, har bir analytics provayderi faqat o'z ID'si bilan paydo
+bo'lishi, bo'sh string ID'ning "sozlanmagan" deb hisoblanishi, server-side
+host'larning `connect-src` ga tushmasligi, va `next.config.ts` ning umumiy
+ro'yxatdan foydalanishi (drift ga qarshi).
+
+---
+
 ## 5. Bu branch'da nima o'zgartirildi
 
 Audit kuni bu bo'limda faqat bitta band bor edi — 4.2 dependency patch'ini
@@ -930,6 +1035,7 @@ va 6 ta RAR arxiv — 5 tasi `public/products/`, 1 tasi ildizdagi duplikat.
 | `src/components/{profile,account,wishlist}/*View.tsx` | Sarlavha hydration gate'idan tashqariga chiqarildi (4.15) |
 | `src/sanity/image.ts` | Named export — build logi 0 ogohlantirish (4.14) |
 | `README.md`, `CLAUDE.md`, `docs/QOLGAN-ISHLAR.md`, `.env.example` | Haqiqatga keltirildi (4.13) |
+| `src/lib/security/csp.ts`, `src/instrumentation.ts` | **Yangi**: CSP siyosati konfiguratsiyadan hisoblanadi; boot'da build va runtime rejimini taqqoslaydi (4.19) |
 | `src/messages/{uz,ru}.json` | Restock formasi uchun 2 ta yangi kalit; uchta qotirilgan son olib tashlandi — brendlar, kviz savollari, namunaviy ekspertlar (4.17). Paritet 919 = 919 |
 | `package.json` + lock | `next@15.5.27`, `eslint-config-next@15.5.27`, `react-is@19.2.8`; `gsap` va `@tanstack/react-query` olib tashlandi (4.2, 4.11) |
 
@@ -938,7 +1044,7 @@ va 6 ta RAR arxiv — 5 tasi `public/products/`, 1 tasi ildizdagi duplikat.
 ```
 npm run lint        →  ✔ No ESLint warnings or errors      (0 xato, 0 ogohlantirish)
 npx tsc --noEmit    →  0 xato
-npm test            →  10 fayl / 113 test — hammasi yashil
+npm test            →  11 fayl / 139 test — hammasi yashil
 pytest              →  64 passed   (13 tasi yangi: backend/tests/test_otp_key.py)
 npm run build       →  ✓ Compiled successfully, ✓ 129/129 statik sahifa
                        build logida 0 ogohlantirish
@@ -971,12 +1077,13 @@ o'zgaruvchini to'ldirish kerakligi yozilgan. Qisqasi:
 
 ### Texnik qaror kutayotgan (relizni to'smaydi)
 
-6. **CSP (4.8)** — saytda checkout, GTM va Meta Pixel bor, lekin
-   `Content-Security-Policy` yo'q. `Report-Only` bilan boshlash to'g'ri yo'l:
-   qattiq CSP'ni darhol yoqish uchta tashqi skriptni sindirishi mumkin, shuning
-   uchun avval bir necha kun hisobot yig'ish kerak. Bu **ongli kechiktirish**,
-   unutib qolish emas.
-7. **Test qamrovi (4.12)** — 113 test yashil, lekin komponent darajasidagi test
+6. **CSP'ni `enforce` rejimiga o'tkazish (4.19)** — siyosat yozildi va
+   `report-only` holatida xizmat qilinmoqda. Mijoz analytics ID'larini bergach,
+   bir necha kun DevTools konsolini kuzatib, jim bo'lsa `CSP_MODE=enforce` ga
+   o'tkazish va qayta build qilish kerak. Bu **ongli kechiktirish**, unutib
+   qolish emas: GTM, Meta Pixel va Yandex Metrika o'z skriptlarini runtime'da
+   o'zi yuklaydi va ularni build'dan sanab bo'lmaydi.
+7. **Test qamrovi (4.12)** — 139 test yashil, lekin komponent darajasidagi test
    yo'q va `CheckoutForm.tsx` (565 qator) tekshirilmagan. Playwright o'rnatilgan,
    `*.spec.ts` fayllar yo'q. Eng yuqori qiymat: checkout oqimi uchun 3–4 ta E2E.
 8. **`.git` tarixi (4.6)** — 72 MB, RAR'lar tarixda qolgan. `git filter-repo`
@@ -1026,9 +1133,10 @@ tuzatildi va production build ustida jonli o'lchandi.
 | Arxitektura | 9 | **9** | `demo.ts` konfiguratsiya qatlami qo'shildi |
 | Accessibililik | 9 | **9.5** | uchala hydration gate sarlavhali bo'ldi (4.15) |
 | Backend xavfsizligi | 9 | **9.5** | PII maskalash frontend log'lariga ham tarqaldi (4.9); OTP kaliti JWT kalitidan ajratildi va production'da majburiy qilindi (4.18) |
+| Frontend xavfsizligi | 7 | **8.5** | 5 ta sarlavhaga CSP qo'shildi (4.19): konfiguratsiyadan hisoblanadigan siyosat, report-only, build/runtime nomuvofiqligi boot'da ogohlantiriladi |
 | SEO | 6.5 | **9** | soft-404 yo'q, x-default to'g'ri, JSON-LD rasmlari absolyut — hammasi jonli tekshirildi |
 | Dependency xavfsizligi | 4 | **7.5** | 47 → 19 (qolgani `sanity@3` pin'ida, baseline + CI ratchet bilan nazoratda) |
-| Test qamrovi | 6 | **6.5** | 151 → 177 test (frontend 100→113, backend 51→64); komponent/E2E hali yo'q |
+| Test qamrovi | 6 | **7** | 151 → 203 test (frontend 100→139, backend 51→64); komponent/E2E hali yo'q |
 | Repo gigienasi | 4 | **8** | 46 MB o'lik fayl deploy'dan chiqdi, ignore + test bilan qulflandi; `.git` tarixi ochiq masala |
 | Dokumentatsiya | 6 | **9** | `README`, `CLAUDE.md`, `QOLGAN-ISHLAR.md` haqiqatga moslashtirildi; build logi toza |
 

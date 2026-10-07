@@ -360,6 +360,12 @@ Eng qisqa yo'l — shu 7 tasi:
 - [ ] `EMAIL_TOKEN_SECRET` — bo'lmasa server ishga tushmaydi
 - [ ] Litsenziya raqami va sertifikat skanlari (yoki belgilarni olib tashlash qarori)
 - [ ] Kamida bitta haqiqiy tibbiy ekspert — ism, foto, mutaxassislik, yozma rozilik
+- [ ] Analytics ID'lari (GTM / GA4 / Meta Pixel / Yandex Metrika) — CSP ularning
+      origin'ini ID o'rnatilganda **o'zi** qo'shadi, qo'lda yangilash shart emas
+- [ ] Bir necha kun `report-only` konsolini kuzatib, jim bo'lsa
+      `CSP_MODE=enforce` ga o'tkazish va **qayta build qilish** (siyosat build
+      paytida pishadi — ishlayotgan serverda o'zgartirish ishlamaydi;
+      `src/instrumentation.ts` boot'da nomuvofiqlik haqida ogohlantiradi)
 
 Qolgani — logotip, real sharhlar, Sanity migratsiyasi — keyin ham qo'shsa
 bo'ladi; hech biri sotishni to'smaydi. Tibbiy imzo (2-bo'lim) sotishni
@@ -373,7 +379,7 @@ qonuni nuqtai nazaridan eng arzon sug'urta — uni imkon qadar erta bering.
 Bu fayl yozilgandan beri da'volar o'lchanadigan bo'ldi. CI'da har bir PR'da
 uchta gate yuradi (`.github/workflows/ci.yml`):
 
-1. lint + typecheck + **113** unit test + **64** backend test + production build
+1. lint + typecheck + **139** unit test + **64** backend test + production build
 2. `npm run audit` — Playwright bilan render sifati: kontrast, nomlar, `alt`,
    sarlavha tartibi, tap-target, kesilgan matn, overflow, dialog semantikasi va
    **404 bo'lishi kerak URL'lar haqiqatan 404 qaytarishi**

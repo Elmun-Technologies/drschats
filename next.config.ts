@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { REMOTE_IMAGE_HOSTS, cspHeaders, cspMode } from "./src/lib/security/csp";
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
@@ -19,7 +20,7 @@ const nextConfig: NextConfig = {
     globalNotFound: true,
   },
   async headers() {
-    return [
+    const routes = [
       {
         source: "/((?!studio).*)",
         headers: [
@@ -38,6 +39,36 @@ const nextConfig: NextConfig = {
         ],
       },
     ];
+
+    /*
+      CSP is appended rather than listed above because the header *name* depends
+      on the mode: report-only and enforcing are two different headers, and
+      emitting the wrong one is either a silent no-op or an outage.
+      src/lib/security/csp.ts builds the value from the same configuration that
+      switches each integration on, so an analytics origin appears only once its
+      ID is set. `/studio` is excluded along with the other headers — Sanity
+      Studio needs a policy of its own, and it is already gated off in
+      production.
+    */
+    const csp = cspHeaders(process.env);
+    if (csp) routes[0].headers.push(csp);
+
+    return routes;
+  },
+  /*
+    Stamps the mode this build's policy was made with, so the server can tell at
+    boot whether the CSP_MODE it was started with is the one actually in force.
+
+    `headers()` above is resolved at build time and baked into the routes
+    manifest, so setting CSP_MODE on a running server changes nothing. Without
+    this stamp that is invisible: an operator flips the variable, restarts, sees
+    no difference and has no idea why. instrumentation.ts reads the stamp
+    (inlined here at build) next to the runtime value and warns when they
+    differ. The name is deliberately not CSP_MODE, which would override the
+    runtime variable everywhere instead of recording it.
+  */
+  env: {
+    CSP_BUILD_MODE: cspMode(process.env.CSP_MODE),
   },
   images: {
     /*
@@ -55,15 +86,19 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
-    remotePatterns: [
-      // Placeholder/CDN sources — real Shopflow product image host is added here later.
-      { protocol: "https", hostname: "picsum.photos" },
-      { protocol: "https", hostname: "images.unsplash.com" },
-      { protocol: "https", hostname: "**.uzum.uz" },
-      { protocol: "https", hostname: "cdn.sanity.io" },
-      { protocol: "https", hostname: "shop-flow.uz" },
-      { protocol: "https", hostname: "**.shop-flow.uz" },
-    ],
+    /*
+      Built from the same list the CSP's img-src uses, so the optimiser and the
+      policy can never disagree about which hosts are legitimate. Adding a host
+      in one place and not the other fails as a broken image, which reads as a
+      content bug rather than a security rule — the kind of thing that gets
+      "fixed" by widening whatever was in the way.
+      Placeholder/CDN sources; the real Shopflow product image host is already
+      covered by the shop-flow.uz entries.
+    */
+    remotePatterns: REMOTE_IMAGE_HOSTS.map((hostname) => ({
+      protocol: "https" as const,
+      hostname,
+    })),
   },
 };
 

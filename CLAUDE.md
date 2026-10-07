@@ -243,6 +243,36 @@ TELEGRAM_CHAT_ID=your_chat_id
 - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
 - `Strict-Transport-Security: max-age=63072000; includeSubDomains` — `preload`
   atayin yo'q: u amalda qaytarib bo'lmaydigan va domen qaroriga tegishli
+- `Content-Security-Policy` (yoki `-Report-Only`) — `src/lib/security/csp.ts`
+  tomonidan **hisoblanadi**, pastda
+
+**CSP qotirilgan ro'yxat emas.** Har bir uchinchi tomon origin'i uni kerak
+qiladigan integratsiya yoqilgan bo'lsagina paydo bo'ladi: analytics host'i faqat
+o'z ID'si (`NEXT_PUBLIC_GTM_ID` va h.k.) o'rnatilganda, API origin'i faqat
+`NEXT_PUBLIC_API_URL` bo'lsa. Shuning uchun **yangi teg qo'shganda CSP'ni qo'lda
+yangilash shart emas** — ID'ni o'rnatishning o'zi siyosatni ham kengaytiradi.
+Aksincha, ID'ni o'chirish origin'ni siyosatdan ham olib tashlaydi.
+
+Rasm hostlari `images.remotePatterns` bilan bitta ro'yxatdan (`REMOTE_IMAGE_HOSTS`)
+olinadi, shuning uchun optimizator va `img-src` zid kela olmaydi. `csp.test.ts`
+buni drift ga qarshi ushlab turadi: `next.config.ts` da `hostname: "` literal
+qayta paydo bo'lsa, test qizil bo'ladi.
+
+`CSP_MODE` — `report-only` (sukut) | `enforce` | `off`. **Build paytida
+o'qiladi**: `headers()` build vaqtida yechilib routes manifest'iga yoziladi,
+shuning uchun ishlayotgan serverda o'zgartirish qayta build'gacha hech narsa
+qilmaydi. `src/instrumentation.ts` boot'da build rejimini runtime rejimi bilan
+taqqoslaydi va farq qilsa ogohlantiradi — ko'rinadigan lekin ishlamaydigan
+o'zgaruvchi bo'lmasligi uchun. Vercel har deploy'da qayta build qiladi, shuning
+uchun u yerda bu muammo emas.
+
+Siyosat `'unsafe-inline'` talab qiladi (sahifada 1000+ inline RSC skripti va
+400+ inline `style=` bor), ya'ni **u ichkariga kiritilgan inline skriptni
+to'xtatmaydi** — faqat boshqa joydan yuklanadigan skriptni, clickjacking'ni,
+`<base>` hijack'ni, plaginlarni va forma ma'lumotini tashqariga chiqarishni.
+`enforce` ga o'tishdan oldin haqiqiy analytics teglari bilan bir necha kun
+DevTools konsolini kuzatish kerak: GTM/Pixel/Metrika o'z resurslarini runtime'da
+o'zi yuklaydi va ularni build'dan sanab bo'lmaydi.
 
 `/studio` header ro'yxatidan chetlatilgan, chunki Studio o'z frame'lari bilan
 ishlaydi. Shu sababli u production'da **umuman xizmat qilmaydi** —
