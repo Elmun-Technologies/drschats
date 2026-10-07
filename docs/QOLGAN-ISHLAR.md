@@ -328,7 +328,7 @@ paytda qilish eng arzon — hozir ko'chiradigan kontent yo'q.
 
 ## Ishga tushirishdan oldin minimal ro'yxat
 
-Eng qisqa yo'l — shu 6 tasi:
+Eng qisqa yo'l — shu 7 tasi:
 
 - [ ] `NEXT_PUBLIC_SITE_URL` = haqiqiy domen + apex'ni `www` ga yo'naltirish
 - [ ] `SHOPFLOW_MODE=http` + API kalitlari (yoki mock bilan qolish qarori)
