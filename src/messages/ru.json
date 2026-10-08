@@ -72,7 +72,15 @@
     "notFoundShop": "В магазин",
     "close": "Закрыть",
     "popularCategories": "Популярные категории",
-    "quiz": "Тест подбора витаминов"
+    "quiz": "Тест подбора витаминов",
+    "unitTablet": "таблетка",
+    "unitCapsule": "капсула",
+    "perUnit": "{price} / {unit}",
+    "delivery24": "Доставка за 24 часа",
+    "hit": "Хит",
+    "decrease": "Уменьшить",
+    "increase": "Увеличить",
+    "inCartQty": "{count} шт."
   },
   "home": {
     "hero": {

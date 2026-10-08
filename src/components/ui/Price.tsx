@@ -1,20 +1,17 @@
-import { cn } from "@/lib/utils";
-import { formatMoney } from "@/lib/utils";
+import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import type { Locale } from "@/lib/i18n/routing";
 
 /*
   Money, in one component, so the same product is priced the same way wherever
-  it appears.
+  it appears (design: kit — price bold ink, the reference price struck through
+  in muted).
 
-  The old price sits on its own line, always. It used to sit beside the current
-  price inside a `flex-wrap` row, which in a two-column mobile grid wrapped
-  "142 890 so'm" onto one line and "800 000 so'm" onto the next — so the two
-  numbers read as two separate prices and the discount looked like a price rise
-  depending on where the wrap landed. Stacking costs one line of height and
-  removes the ambiguity at every width; `whitespace-nowrap` and `tabular-nums`
-  keep the digits from breaking mid-number as well.
+  `layout="inline"` is the card form: price and old price on one baseline,
+  wrapping as a pair, the old one without the currency as in the design.
+  No tabular-nums: Onest's tabular figures are visibly wider than the design. `stack` keeps the old price on its own line for the
+  narrow places (cart lines, drawers) where a wrap would split the two numbers
+  into what reads as two prices.
 */
-
 export function Price({
   amount,
   oldAmount,
@@ -22,6 +19,7 @@ export function Price({
   className,
   size = "md",
   align = "start",
+  layout = "stack",
 }: {
   amount: number;
   oldAmount?: number;
@@ -29,20 +27,12 @@ export function Price({
   className?: string;
   size?: "sm" | "md" | "lg";
   align?: "start" | "center";
+  layout?: "stack" | "inline";
 }) {
-  /*
-    Fluid on the small end.
-
-    `md` is the product-card size, and a card is 132px wide inside a two-column
-    grid on a 320px phone. "1 000 000 so'm" at 20px — the old fixed size — is
-    ~121px, which `whitespace-nowrap` then pushes straight out of the card
-    (it looked fixed because the price no longer wrapped, but it clipped).
-    15px until the two-column grid itself gets wider, then the display size.
-  */
   const sizes = {
-    sm: "text-[0.95rem] sm:text-base",
-    md: "text-[0.95rem] sm:text-xl",
-    lg: "text-2xl sm:text-3xl",
+    sm: "text-base",
+    md: "text-lg sm:text-price",
+    lg: "text-[28px] leading-9 sm:text-price-l",
   }[size];
 
   const discounted = Boolean(oldAmount && oldAmount > amount);
@@ -50,30 +40,35 @@ export function Price({
   return (
     <div
       className={cn(
-        "flex flex-col",
-        align === "center" ? "items-center" : "items-start",
+        "flex",
+        layout === "inline" ? "flex-wrap items-baseline gap-x-2" : "flex-col",
+        layout === "stack" && (align === "center" ? "items-center" : "items-start"),
         className,
       )}
     >
-      <span className={cn("whitespace-nowrap font-display font-semibold tabular-nums text-fg", sizes)}>
+      <span className={cn("whitespace-nowrap font-bold text-ink", sizes)}>
         {formatMoney(amount, locale)}
       </span>
       {discounted && (
-        <span className="text-[0.8rem] tabular-nums text-legacy-muted line-through sm:text-sm">
-          {formatMoney(oldAmount as number, locale)}
+        <span className="whitespace-nowrap text-sm text-muted line-through">
+          {layout === "inline" ? formatNumber(oldAmount as number) : formatMoney(oldAmount as number, locale)}
         </span>
       )}
     </div>
   );
 }
 
-/** A saving note ("−8%") in the neutral palette, never in the action colour. */
+export function discountPercent(price: number, oldPrice?: number): number {
+  return oldPrice && oldPrice > price ? Math.round((1 - price / oldPrice) * 100) : 0;
+}
+
+/** "−11%" — the red pill, the only place the sale colour is allowed. */
 export function DiscountBadge({ percent, className }: { percent: number; className?: string }) {
   if (percent <= 0) return null;
   return (
     <span
       className={cn(
-        "inline-flex items-center whitespace-nowrap rounded-full border border-legacy-line-strong bg-surface-2 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-brand-deep",
+        "inline-flex h-6 items-center whitespace-nowrap rounded-pill bg-red px-[9px] text-[13px] font-bold text-white",
         className,
       )}
     >

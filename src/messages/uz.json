@@ -72,7 +72,15 @@
     "notFoundShop": "Do'konga o'tish",
     "close": "Yopish",
     "popularCategories": "Mashhur kategoriyalar",
-    "quiz": "Vitamin tanlash testi"
+    "quiz": "Vitamin tanlash testi",
+    "unitTablet": "tabletka",
+    "unitCapsule": "kapsula",
+    "perUnit": "{price} / {unit}",
+    "delivery24": "24 soatda yetkazish",
+    "hit": "Xit",
+    "decrease": "Kamaytirish",
+    "increase": "Koʻpaytirish",
+    "inCartQty": "{count} dona"
   },
   "home": {
     "hero": {

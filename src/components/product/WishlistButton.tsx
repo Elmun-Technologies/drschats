@@ -20,10 +20,10 @@ export function WishlistButton({ productId, className = "" }: { productId: strin
     <button
       onClick={handleClick}
       aria-label={saved ? t("remove") : t("add")}
-      className={`flex items-center justify-center rounded-full transition-colors ${saved ? "text-danger" : "text-faint hover:text-danger"} ${className}`}
+      className={`flex items-center justify-center rounded-full transition-colors ${saved ? "text-red" : "text-ink hover:text-red"} ${className}`}
     >
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.8">
-        <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z" strokeLinecap="round" strokeLinejoin="round" />
+      <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
       </svg>
     </button>
   );

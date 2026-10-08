@@ -27,3 +27,10 @@ describe("categoryCutout", () => {
     expect(categoryCutout("coffee")).toBeUndefined();
   });
 });
+
+describe("PRODUCT_UNITS", () => {
+  it("only names products the catalogue already knows", async () => {
+    const { PRODUCT_UNITS } = await import("./product-units");
+    expect(Object.keys(PRODUCT_UNITS).filter((slug) => !(slug in PRODUCT_PHOTOS))).toEqual([]);
+  });
+});
