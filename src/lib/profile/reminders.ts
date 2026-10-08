@@ -62,8 +62,12 @@ const REORDER_LEAD_DAYS = 5;
 /** Stop chasing a purchase nobody came back for. */
 const REORDER_WINDOW_DAYS = 120;
 
-/** Matches the quiz's own 90-day TTL — a stale plan is a plan for someone else. */
-const QUIZ_STALE_DAYS = 90;
+/*
+  A plan this old is worth retaking. It has to be shorter than the quiz's own
+  90-day TTL (quiz/engine.ts): the stored result is gone after 90 days, so a
+  90-day threshold could never see a plan old enough to fire.
+*/
+const QUIZ_STALE_DAYS = 60;
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 

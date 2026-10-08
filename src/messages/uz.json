@@ -690,7 +690,9 @@
       "step2": "24–48 soat ichida joʻnatishga tayyorlanadi.",
       "step3Title": "Kuryer yetkazib beradi",
       "step3": "Buyurtma manzilingizga yetkaziladi.",
-      "telegram": "Telegramda yozish"
+      "telegram": "Telegramda yozish",
+      "bonusNudge": "Yana 1 ta qoʻshing — 3-si sovgʻa",
+      "fillersTitle": "Bittasini qoʻshing — yetkazish bepul boʻladi:"
     }
   },
   "checkout": {

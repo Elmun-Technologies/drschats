@@ -25,6 +25,8 @@ import { submitOrder } from "@/app/[locale]/checkout/actions";
 import { getAttribution, itemOf, trackBeginCheckout, trackOrder, trackViewCart } from "@/lib/analytics/events";
 import { trackPurchase } from "@/lib/personalization/tracker";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
+import { gapFillers } from "@/lib/cart/gap";
+import { FreeShippingFillers } from "@/components/cart/FreeShippingFillers";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
@@ -257,6 +259,9 @@ export function CheckoutForm({
               <div className="h-1.5 rounded-full bg-[#DCDFDB] lg:h-2">
                 <div className="h-full rounded-full bg-ink transition-[width] duration-500" style={{ width: `${progress}%` }} />
               </div>
+              {watch("method") !== "pickup" && (
+                <FreeShippingFillers products={gapFillers(recommended, lines, totals.freeShippingRemaining)} />
+              )}
             </div>
           )}
 

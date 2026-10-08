@@ -109,6 +109,8 @@ export interface Promotion {
   threshold?: Money;
   /** Percentage value (percent_off). */
   percent?: number;
+  /** Products the promotion is limited to; absent = every product. */
+  productSlugs?: string[];
 }
 
 export interface UpsellOffer {

@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
-import { lineListTotal, lineQtyCap, lineTotal, type CartLine } from "@/lib/cart/pricing";
+import { bonusUnitsNeeded, lineListTotal, lineQtyCap, lineTotal, type CartLine } from "@/lib/cart/pricing";
 import type { UpsellStep } from "@/lib/upsell/ladder";
 import { useCart } from "@/lib/cart/store";
+import { usePromotions } from "@/lib/cart/promotions-context";
 import { useWishlist } from "@/lib/wishlist/store";
 import { track, trackAddToWishlist } from "@/lib/analytics/events";
 import { COMMERCE } from "@/lib/config/commerce";
@@ -56,6 +57,8 @@ function Line({ line: l }: { line: CartLine }) {
   const common = useTranslations("common");
   const tp = useTranslations("product.v3");
   const remove = useCart((s) => s.remove);
+  const setQuantity = useCart((s) => s.setQuantity);
+  const bonus = bonusUnitsNeeded(l, usePromotions()) > 0 && l.quantity < lineQtyCap(l);
   const toggleWish = useWishlist((s) => s.toggle);
   const saved = useWishlist((s) => s.items.includes(l.productId));
 
@@ -91,6 +94,15 @@ function Line({ line: l }: { line: CartLine }) {
         </Link>
         {meta && <span className="hidden text-sm text-muted lg:block">{meta}</span>}
         {l.soldOut && <span role="status" className="text-sm font-semibold text-red">{common("outOfStock")}</span>}
+        {bonus && (
+          <button
+            type="button"
+            onClick={() => setQuantity(l.lineId, l.quantity + 1)}
+            className="inline-flex min-h-11 items-center self-start text-sm font-semibold underline underline-offset-2 hover:no-underline"
+          >
+            {t("bonusNudge")}
+          </button>
+        )}
         {l.subscription && (
           <span className="text-sm font-semibold">{ts("everyDays", { days: l.subscription.intervalDays })}</span>
         )}

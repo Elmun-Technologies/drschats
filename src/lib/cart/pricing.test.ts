@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { cartLineId, computeTotals, DEFAULT_SHIPPING, type CartLine } from "./pricing";
+import { bonusUnitsNeeded, cartLineId, computeTotals, DEFAULT_SHIPPING, type CartLine } from "./pricing";
 import type { Promotion } from "@/lib/shopflow/types";
 import {
   FIRST_ORDER_PERCENT,
@@ -126,5 +126,35 @@ describe("computeTotals — subscriptions", () => {
     const t = computeTotals([line()]);
     expect(t.hasSubscription).toBe(false);
     expect(t.recurringTotal).toBe(0);
+  });
+});
+
+describe("promotion stacking", () => {
+  const bonus = { id: "b", type: "buy_x_get_y" as const, title: "", description: "" };
+  const line = (over: Partial<CartLine>): CartLine => ({
+    lineId: "x",
+    productId: "x",
+    slug: "x",
+    name: "x",
+    image: "",
+    price: 100_000,
+    quantity: 3,
+    ...over,
+  });
+
+  it("gives buy-2-get-1 only on lines without an offer of their own", () => {
+    expect(computeTotals([line({})], [bonus]).discount).toBe(100_000);
+    expect(computeTotals([line({ upsellDiscountPercent: 20 })], [bonus]).discount).toBe(60_000);
+    expect(computeTotals([line({ subscription: { intervalDays: 30 } })], [bonus]).discount).toBe(30_000);
+  });
+
+  it("limits a promotion to its products when it names them", () => {
+    expect(computeTotals([line({ slug: "other" })], [{ ...bonus, productSlugs: ["only-this"] }]).discount).toBe(0);
+  });
+
+  it("nudges toward the free unit at two of three", () => {
+    expect(bonusUnitsNeeded(line({ quantity: 2 }), [bonus])).toBe(1);
+    expect(bonusUnitsNeeded(line({ quantity: 3 }), [bonus])).toBe(0);
+    expect(bonusUnitsNeeded(line({ quantity: 2, upsellDiscountPercent: 10 }), [bonus])).toBe(0);
   });
 });

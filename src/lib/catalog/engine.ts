@@ -15,6 +15,7 @@ import type {
 } from "@/lib/shopflow/types";
 import type { RawCategory, RawProduct, RawPromotion } from "@/lib/shopflow/mock";
 import { fold } from "@/lib/search/fold";
+import { audienceOf } from "@/lib/quiz/audience-fit";
 
 /*
   The catalogue's read logic, independent of where the rows come from: the
@@ -184,15 +185,35 @@ export class CatalogEngine implements ShopflowClient {
     return raw ? resolveProduct(raw, data, locale) : null;
   }
 
+  /*
+    The product page's add-on rail. There is no co-purchase data yet, so the
+    reason claims nothing about other buyers; the pick is by relation: same
+    audience (never a children's complex beside a men's formula), another
+    category first — something that complements rather than duplicates —
+    then the same category, each in catalogue order. Deterministic, because
+    the order action re-reads this list to accept the rail's discount.
+  */
   async getUpsells(productId: string, locale: Locale): Promise<UpsellOffer[]> {
     const data = await this.load();
-    const others = data.products
-      .filter((p) => p.id !== productId && p.inStock && listed(p))
+    const current = data.products.find((p) => p.id === productId);
+    if (!current) return [];
+    const audience = audienceOf(current);
+    const pool = data.products.filter(
+      (p) => p.id !== productId && p.inStock && (p.kind ?? "core") === "core" && audienceOf(p) === audience,
+    );
+    // Rotated to start after the current product, so every page does not offer the same three.
+    const at = data.products.indexOf(current);
+    const split = pool.filter((p) => data.products.indexOf(p) < at).length;
+    const ring = [...pool.slice(split), ...pool.slice(0, split)];
+    const others = [
+      ...ring.filter((p) => p.categorySlug !== current.categorySlug),
+      ...ring.filter((p) => p.categorySlug === current.categorySlug),
+    ]
       .slice(0, 3)
       .map((p) => resolveProduct(p, data, locale));
     const reasons: Record<Locale, string> = {
-      uz: "Koʻpincha shu bilan birga olishadi",
-      ru: "Часто покупают вместе",
+      uz: "Shu mahsulotga qoʻshimcha",
+      ru: "Дополнение к этому товару",
     };
     return others.map((product) => ({ product, discountPercent: 15, reason: reasons[locale] }));
   }
@@ -204,6 +225,7 @@ export class CatalogEngine implements ShopflowClient {
       type: p.type,
       threshold: p.threshold,
       percent: p.percent,
+      productSlugs: p.productSlugs,
       title: p.title[locale],
       description: p.description[locale],
     }));

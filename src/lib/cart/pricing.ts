@@ -94,6 +94,26 @@ export function lineListTotal(l: Pick<CartLine, "price" | "oldPrice" | "quantity
   return ref ? ref * l.quantity : null;
 }
 
+/**
+ * Whether a promotion counts this line. Promotions do not stack on a line that
+ * already carries its own offer (upsell, programme, gift) or a subscription
+ * discount: 2+1 on top of a −20% ladder step was 53% off.
+ */
+export function promotionApplies(
+  promo: Pick<Promotion, "productSlugs">,
+  l: Pick<CartLine, "slug" | "upsellDiscountPercent" | "subscription">,
+): boolean {
+  if (l.upsellDiscountPercent || l.subscription) return false;
+  return !promo.productSlugs || promo.productSlugs.includes(l.slug);
+}
+
+/** Units to add to this line for the next free one under a buy-2-get-1 promotion (0 = not applicable). */
+export function bonusUnitsNeeded(l: CartLine, promotions: Promotion[]): number {
+  const promo = promotions.find((p) => p.type === "buy_x_get_y" && promotionApplies(p, l));
+  if (!promo) return 0;
+  return l.quantity % 3 === 2 ? 1 : 0;
+}
+
 type OfferLine = Pick<CartLine, "price" | "quantity" | "upsellDiscountPercent">;
 
 /**
@@ -157,13 +177,17 @@ export function computeTotals(
   let freeShippingThreshold = subscriptionLines.length > 0 ? SUBSCRIPTION_FREE_SHIPPING_OVER : Infinity;
   for (const promo of promotions) {
     if (promo.type === "percent_off" && promo.percent) {
-      discount += Math.round((subtotal * promo.percent) / 100);
-      appliedPromotions.push(promo.id);
+      const base = lines.filter((l) => promotionApplies(promo, l)).reduce((sum, l) => sum + l.price * l.quantity, 0);
+      if (base > 0) {
+        discount += Math.round((base * promo.percent) / 100);
+        appliedPromotions.push(promo.id);
+      }
     }
     if (promo.type === "buy_x_get_y") {
-      // Buy 2, get the 3rd free — per identical line.
+      // Buy 2, get the 3rd free — per identical line, on lines without an offer of their own.
       let promoDiscount = 0;
       for (const l of lines) {
+        if (!promotionApplies(promo, l)) continue;
         const free = Math.floor(l.quantity / 3);
         promoDiscount += free * l.price;
       }

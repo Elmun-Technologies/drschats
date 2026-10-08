@@ -1,6 +1,7 @@
 import type { Product } from "@/lib/shopflow/types";
 import type { UserProfile } from "./types";
 import { getCategoryAffinities, getTypicalPrice } from "./tracker";
+import { audienceOf } from "@/lib/quiz/audience-fit";
 
 /**
  * Score a product for a given user profile. Higher = more relevant.
@@ -34,9 +35,6 @@ export function scoreProduct(
   // Don't resurface purchased items
   if (purchasedSlugs.has(product.slug)) score -= 5;
 
-  // Slight boost for in-stock
-  if (!product.inStock) score -= 1;
-
   return score;
 }
 
@@ -57,7 +55,8 @@ export function getRecommendations(
   const excludeSet = new Set(excludeSlugs);
 
   return products
-    .filter((p) => !excludeSet.has(p.slug))
+    // Sold-out, withdrawn and add-on products are never recommended.
+    .filter((p) => p.inStock && (p.assortment ?? "core") === "core" && !excludeSet.has(p.slug))
     .map((p) => ({
       product: p,
       score: scoreProduct(p, affinities, typicalPrice, seenSlugs, purchasedSlugs),
@@ -76,8 +75,9 @@ export function getSimilarProducts(
   allProducts: Product[],
   limit = 6,
 ): Product[] {
+  const audience = audienceOf(current);
   return allProducts
-    .filter((p) => p.slug !== current.slug)
+    .filter((p) => p.slug !== current.slug && p.inStock && p.assortment !== "unlisted" && audienceOf(p) === audience)
     .map((p) => {
       let score = 0;
 

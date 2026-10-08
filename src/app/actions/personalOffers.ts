@@ -43,7 +43,7 @@ export async function getPersonalOffers(
   if (goals.length === 0 && ingredients.length === 0) return [];
 
   const [pool, allIngredients, allTopics] = await Promise.all([
-    shopflow.getProducts({ locale, pageSize: POOL_SIZE }),
+    shopflow.getProducts({ locale, pageSize: POOL_SIZE, assortment: "core" }),
     getIngredients(locale),
     getHealthTopics(locale),
   ]);
@@ -51,7 +51,7 @@ export async function getPersonalOffers(
   const exclude = new Set(excludeSlugs);
 
   return scoreCatalogue(
-    pool.items.filter((p) => !exclude.has(p.slug)),
+    pool.items.filter((p) => p.inStock && !exclude.has(p.slug)),
     allTopics,
     allIngredients,
     { topics: weightsFromRanking(goals), ingredients: weightsFromRanking(ingredients) },
