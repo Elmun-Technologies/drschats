@@ -21,9 +21,12 @@ Kod emas, kontent va konfiguratsiya bo'shliqlari. To'liq ro'yxat va har birining
 qadamlari: **[`docs/QOLGAN-ISHLAR.md`](docs/QOLGAN-ISHLAR.md)**.
 
 Qisqacha (ishlab turgan saytdan sanaldi): `/vitamins` **10**, `/symptoms` **7**,
-`/goals` **10** mavzu; `/programs` 7, `/blog` 3, `/experts` 3, `/ingredients` 12,
-`/where-to-buy` 11 ta dorixona tarmog'i. Mahsulot rasmlari **haqiqiy** — 129 ta
-fayl `public/products/` da. `BRAND.contact` va `BRAND.social` Go Vita
+`/goals` **10** mavzu; `/programs` 7, `/blog` 3, `/ingredients` 12,
+`/where-to-buy` 11 ta dorixona tarmog'i. Mahsulot rasmlari **haqiqiy** — har bir SKU
+o'z fotosiga ega (`photos-coverage.test.ts`), AI-generatsiya rasm loyihada yo'q.
+`/experts` va `/news` — **bo'sh, shuning uchun 404** (menyu, footer va sitemap'da yo'q):
+demo ekspertlar va o'ylab topilgan yangiliklar olib tashlangan; birinchi haqiqiy yozuv
+qo'shilishi bilan bo'lim o'zi qaytadi. `BRAND.contact` va `BRAND.social` Go Vita
 manzillariga o'tkazilgan.
 
 Hali bo'sh: `/reviews` (halol bo'sh holat ko'rsatadi — o'ylab topilgan sharh
@@ -101,6 +104,8 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
   brands/ brands/[slug]/   # brendlar va brend sahifasi (mahsulotsiz brend → 404)
   compare/                 # taqqoslash (govita-compare, brauzerda)
   blog/ news/ experts/ ingredients/ reviews/ loyalty/
+  delivery/ payment/ guarantee/ about/ licenses/ contact/ partners/   # InfoShell (InfoNavV3) layout'ida; partners — B2B ariza
+  requisites/ privacy/ offer/ where-to-buy/                            # ham InfoShell'da
   lp/[campaign]/           # landing pages (kampaniyalar)
   [...rest]/               # catch-all → lokalizatsiyalangan 404
   not-found.tsx error.tsx
@@ -132,8 +137,9 @@ chaqirilgandan **keyin** chizing.
 | `analytics/` | GTM dataLayer, Meta Pixel, Yandex Metrika events |
 | `i18n/` | next-intl routing, navigation helpers |
 | `seo/` | Metadata builder, JSON-LD (WebSite, LocalBusiness, Product, FAQ, Breadcrumb) |
-| `content/` | Blog, ekspertlar, ingredientlar — static content. **Ekspert kengashi atayin bo'sh**: `/experts` dagi 3 ta profil `demo` belgili va `reviewerForKey()` ularni hech qachon tibbiy tekshiruvchi qaytarmaydi, shuning uchun `MedicalWebPage` JSON-LD `reviewedBy`/`author` ni umuman chiqarmaydi. Haqiqiy ekspert qo'shilganda ikkalasi o'zi paydo bo'ladi (`docs/QOLGAN-ISHLAR.md` §2) |
+| `content/` | Blog, ekspertlar, ingredientlar — static content. **Ekspert kengashi bo'sh**: `rawExperts = []`, `/experts` 404, `MedicalWebPage` JSON-LD `reviewedBy`/`author` ni chiqarmaydi. Haqiqiy ekspert (rozilik bilan, o'z fotosi) qo'shilganda hammasi o'zi paydo bo'ladi (`docs/QOLGAN-ISHLAR.md` §2). Blog maqolalaridagi mahsulot slug'lari katalogda borligini `blog.test.ts` tekshiradi |
 | `ui/` | Toast Zustand store |
+| `quiz/` | Savollar, ball (`engine`), reja (`recommend`), `audience-fit` — mahsulot faqat o'z auditoriyasiga; bolaga/homiladorga faqat ularga mo'ljallangan |
 
 ### Components katalogi (`src/components/`)
 
@@ -147,6 +153,8 @@ chaqirilgandan **keyin** chizing.
 | `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
 | `account/` | AccountShell (AccountNavV3: desktopda yon menyu, telefonda sahifa oxirida ro'yxat), AccountView (kirish yoki bosh sahifa), AuthForm (OTP, 6 katak — bitta input), OrderHistory (+ `useMyOrders`, `StatusBadge`), OrderDetail, MySubscriptions (+ `SubscriptionsView`). Holatlar — `lib/account/orders.ts` |
 | `quiz/` | QuizFlow (V3: savol = `h1`, segmentli progress, «Kim uchun» foto kartalari — `lib/content/audience.ts`; telefonda fixed «Keyingi» paneli), QuizPlanView (natija: qora toʻplam paneli, «Nega»/«Izoh» qatorlari, shifokor ogohlantirishi), QuizPlanActions (+ `QuizAddOne`). Logika — `lib/quiz/` |
+| `info/` | InfoShell (InfoNavV3: desktopda chap menyu + yordam kartasi, telefonda chip qatori; `InfoHeader`, `InfoFaq`), LeadForms (`PartnerForm`, `ContactForm` → `app/actions/leads.ts` → operator Telegram'i) |
+| `blog/` | BlogIndex (blog va kategoriya bitta komponent, `ArticleTile`), ShareRow |
 | `checkout/` | CheckoutForm — `/cart` sahifasining o'zi: savat, 3 qadam, xulosa, mobil fixed panel; bitta `<form>` (react-hook-form + Zod, sxema va payload o'zgarmagan) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
 | `personalization/` | ViewTracker, PurchaseTracker, PersonalizedRail, RecentlyViewed, SimilarProducts |
@@ -209,7 +217,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1231 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1425 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -241,10 +249,21 @@ GTM ID: `NEXT_PUBLIC_GTM_ID`
 ## Checkout va Buyurtmalar
 
 **Server Action** (`src/app/[locale]/checkout/actions.ts`):
-- Zod validation (server-side)
+- Zod validation (server-side), chegaralar bilan (miqdor ≤ 99, ≤ 50 qator)
 - Rate limiting: 10 ta / IP / 10 daqiqa
-- Shopflow `createOrder()` chaqiradi
-- Muvaffaqiyatli buyurtmadan keyin Telegram-ga xabar yuboradi
+- **Narx va jami serverda qayta hisoblanadi** (`lib/cart/reprice.ts`): brauzer
+  yuborgan `unitPrice`/`totals` ishlatilmaydi; mahsulot katalogdan olinadi, taklif
+  chegirmasi faqat saytdagi qiymatlar (10/12/15/20/100%), bepul sovg'a faqat
+  zinapoyaning oxirgi qadami. Savatcha narxlari ham `/cart` da katalog bilan
+  sinxronlanadi (`useCart.syncPrices`)
+- O'zi olib ketishda yetkazish 0 (`computeTotals(..., { pickup })`)
+- Shopflow `createOrder()` chaqiradi, keyin operatorga Telegram xabari — **oddiy
+  matn**, Markdown emas (mijoz ismidagi `_`/`*` Markdown xabarni rad ettirardi)
+- **Real backend bo'lmasa (mock) Telegram xabari buyurtmaning yagona yozuvi.**
+  Live deploy'da (`lib/config/live.ts`) kanal sozlanmagan yoki xabar yetib
+  bormasa buyurtma rad etiladi va mijozga telefon raqami aytiladi — "qabul
+  qilindi" deb hech kim ko'rmaydigan buyurtma qoldirilmaydi
+- `SHOPFLOW_MODE=http` endi haqiqatan o'qiladi (avval kodda mock qotirilgan edi)
 
 **Telegram sozlash:**
 ```env
@@ -428,6 +447,9 @@ MARKETING_API_KEY=...         # backend'da ham xuddi shu qiymat
 # Namuna ijtimoiy-isbot (default: o'chiq)
 NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF=on   # faqat demo deploy uchun
 
+# Live deploy belgisi (Vercel'da VERCEL_ENV=production yetarli; o'z serverida):
+GOVITA_PRODUCTION=1                  # demo bayroqlari yoqilgan bo'lsa build yiqiladi
+
 # Demo akkaunt kabineti (default: o'chiq)
 NEXT_PUBLIC_ACCOUNT_DEMO=on          # faqat demo deploy uchun
 
@@ -450,12 +472,11 @@ koʻrinish qatlami.
 3. Dizayn audit nolini buzsa (kontrast, tap-target, fokus…) — audit yutadi va
    farq foydalanuvchiga aytiladi.
 
-**`legacy-*` tokenlar.** Dizayndagi `ink`, `line`, `line-strong`, `muted`, `gold`,
-`shadow-pop` nomlari eski tokenlarda boshqa maʼnoda band edi (eski `ink` — och
-sahifa foni, yangisi — deyarli qora). Eski tokenlar `legacy-*` ga mexanik
-koʻchirildi (koʻrinish oʻzgarmadi — kompilyatsiya qilingan CSS solishtirildi),
-yangilari ayni nomni oldi. **Yangi kodda `legacy-*` ishlatilmaydi**; 12-bosqich
-oxirida `grep -r legacy- src` boʻsh boʻlishi va eski `@theme` bloki oʻchishi kerak.
+**`legacy-*` tokenlar o'chirilgan (12-bosqich).** Eski "apothecary" palitrasi
+(`surface`, `fg`, `signal`, `accent`, `brand-deep`, `legacy-*`…) `globals.css` dan
+olib tashlangan; birinchi `@theme` blokida faqat shrift, radius, easing va animatsiya
+qolgan. Rang va soya — faqat V3 tokenlari. `grep -rE "legacy-|text-fg|bg-surface" src`
+bo'sh bo'lishi kerak.
 
 **Breakpoint:** desktop header va footer ustunlari `lg` (1024px) dan; undan
 pastda mobil header + tab bar. `--bottom-nav` ham 1023.98px gacha nolmas.

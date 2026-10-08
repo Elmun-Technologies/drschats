@@ -49,7 +49,7 @@ function Arrow({ side, onClick }: { side: "left" | "right"; onClick: () => void 
       onClick={onClick}
       aria-label={side === "left" ? "Previous" : "Next"}
       className={cn(
-        "absolute top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-legacy-line bg-legacy-ink/90 text-fg shadow-lg backdrop-blur transition-all hover:border-legacy-line-strong hover:text-fg md:flex",
+        "absolute top-1/2 z-10 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-bg/90 text-ink shadow-lg backdrop-blur transition-all hover:border-line-strong hover:text-ink md:flex",
         side === "left" ? "left-0 -translate-x-1/2" : "right-0 translate-x-1/2",
       )}
     >

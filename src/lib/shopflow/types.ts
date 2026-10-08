@@ -141,6 +141,8 @@ export interface OrderRequestItem {
   unitPrice: Money;
   /** Present when the line is a repeating delivery, with its rhythm in days. */
   subscription?: { intervalDays: number };
+  /** The offer discount the line was added with (upsell ladder, rail, program). Checked on the server. */
+  upsellDiscountPercent?: number;
 }
 
 export interface OrderAttribution {

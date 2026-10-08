@@ -24,16 +24,16 @@ export function StarRating({
             viewBox="0 0 20 20"
             className={cn(
               "h-4 w-4",
-              i < Math.round(rating) ? "fill-legacy-gold" : "fill-surface-3",
+              i < Math.round(rating) ? "fill-ink" : "fill-chip-strong",
             )}
           >
             <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77l-5.2 2.73.99-5.78-4.21-4.1 5.82-.85L10 1.5z" />
           </svg>
         ))}
       </div>
-      <span className="text-sm font-medium text-fg">{rating.toFixed(1)}</span>
+      <span className="text-sm font-medium text-ink">{rating.toFixed(1)}</span>
       {count != null && reviewsLabel && (
-        <span className="text-sm text-faint">({count})</span>
+        <span className="text-sm text-muted">({count})</span>
       )}
     </div>
   );

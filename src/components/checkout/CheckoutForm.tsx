@@ -1,6 +1,7 @@
 "use client";
 
 import { cloneElement, useEffect, useId, useState, type ReactNode } from "react";
+import { REGION_KEYS } from "@/lib/checkout/regions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -12,6 +13,7 @@ import { useCart } from "@/lib/cart/store";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals } from "@/lib/cart/pricing";
 import { COMMERCE } from "@/lib/config/commerce";
+import { BRAND } from "@/lib/brand";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { Checkbox, RadioCard } from "@/components/ui/Choice";
@@ -33,22 +35,6 @@ import { PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments
   key is what travels to the backend, so an order stays readable whichever
   language it was placed in.
 */
-const REGION_KEYS = [
-  "tashkentCity",
-  "tashkent",
-  "samarkand",
-  "fergana",
-  "andijan",
-  "namangan",
-  "bukhara",
-  "khorezm",
-  "kashkadarya",
-  "surkhandarya",
-  "syrdarya",
-  "jizzakh",
-  "navoi",
-  "karakalpakstan",
-] as const;
 
 /*
   Design: CartV3 / CartMobileV3 — the cart and the order form on one page.
@@ -56,10 +42,17 @@ const REGION_KEYS = [
   only the layout changed. The whole page is one <form>, so the summary's
   "Buyurtmani yuborish" and the phone's fixed bar both submit it.
 */
-export function CheckoutForm({ recommended }: { recommended: Product[] }) {
+export function CheckoutForm({
+  recommended,
+  prices,
+}: {
+  recommended: Product[];
+  prices: Record<string, { price: number; oldPrice?: number; inStock: boolean }>;
+}) {
   const tv = useTranslations("cart.v3");
   const locale = useLocale() as Locale;
   const t = useTranslations("checkout");
+  const te = useTranslations("checkout.errors");
   const tr = useTranslations("checkout.regions");
   const tc = useTranslations("cart");
   const ts = useTranslations("subscription");
@@ -68,11 +61,14 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   const lines = useCart((s) => s.lines);
   const clear = useCart((s) => s.clear);
   const promotions = usePromotions();
-  const totals = computeTotals(lines, promotions);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  const syncPrices = useCart((s) => s.syncPrices);
+  useEffect(() => {
+    if (mounted) syncPrices(prices);
+  }, [mounted, prices, syncPrices]);
 
   const schema = z.object({
     name: z.string().min(2, t("errorRequired")),
@@ -124,7 +120,9 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   if (!mounted) return <div className="min-h-[60vh]" />;
   if (lines.length === 0) return <EmptyCart recommended={recommended} />;
 
-  const ladderSteps = buildUpsellLadder(lines, recommended);
+  // Paid steps only. The cart shows the steps side by side, so the free last
+  // step would be free for nothing; it is earned in the step-by-step modal.
+  const ladderSteps = buildUpsellLadder(lines, recommended).filter((s) => s.stepType !== "free_gift");
   const payChoice = payment === "online" ? provider : "cod";
   const choosePay = (value: string) => {
     if (value === "cod") {
@@ -135,6 +133,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
       setValue("provider", value as "payme" | "click" | "uzum", { shouldValidate: Boolean(errors.provider) });
     }
   };
+  const totals = computeTotals(lines, promotions, { pickup: watch("method") === "pickup" });
   const savings =
     lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
   const progress = totals.freeShippingThreshold
@@ -171,6 +170,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
         quantity: l.quantity,
         unitPrice: l.price,
         subscription: l.subscription,
+        upsellDiscountPercent: l.upsellDiscountPercent,
       })),
       appliedUpsells: lines.filter((l) => l.upsellDiscountPercent).map((l) => l.productId),
       appliedPromotions: totals.appliedPromotions,
@@ -186,11 +186,11 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
 
     const res = await submitOrder(payload);
     if (res.ok && res.orderId) {
-      trackLead(res.orderId, totals.total);
+      trackLead(res.orderId, res.total ?? totals.total);
       clear();
       router.push(`/checkout/success?order=${res.orderId}`);
     } else {
-      setServerError(res.message ?? "Error");
+      setServerError(te(res.error ?? "failed", { phone: BRAND.contact.phone }));
       setSubmitting(false);
     }
   }
@@ -260,14 +260,19 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
             </div>
             <div className="grid gap-3.5 lg:grid-cols-[260px_minmax(0,1fr)]">
               <Field label={t("region")} error={errors.region?.message}>
-                <select className={cn(inputClass, "appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2317191B%22 stroke-width=%221.75%22 stroke-linecap=%22round%22><path d=%22M6 9l6 6 6-6%22/></svg>')] bg-[length:18px] bg-[right_16px_center] bg-no-repeat pr-11")} {...register("region")}>
-                  <option value="">{t("regionPlaceholder")}</option>
-                  {REGION_KEYS.map((key) => (
-                    <option key={key} value={tr(key)}>
-                      {tr(key)}
-                    </option>
-                  ))}
-                </select>
+                <div className="relative">
+                  <select className={cn(inputClass, "appearance-none pr-11")} {...register("region")}>
+                    <option value="">{t("regionPlaceholder")}</option>
+                    {REGION_KEYS.map((key) => (
+                      <option key={key} value={tr(key)}>
+                        {tr(key)}
+                      </option>
+                    ))}
+                  </select>
+                  <svg viewBox="0 0 24 24" aria-hidden className="pointer-events-none absolute right-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </div>
               </Field>
               <Field label={t("address")} error={errors.address?.message}>
                 <input className={inputClass} placeholder={t("addressPlaceholder")} autoComplete="street-address" {...register("address")} />

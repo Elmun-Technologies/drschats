@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
@@ -30,16 +31,18 @@ export default async function ExpertsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const [t, experts] = await Promise.all([getTranslations("experts"), getExperts(locale)]);
+  // No real specialists on file: the section does not exist (sitemap agrees).
+  if (experts.length === 0) notFound();
 
   return (
     <div className="pt-10">
       <Container>
         <header className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-legacy-muted">{t("eyebrow")}</p>
+          <p className="text-sm font-semibold uppercase tracking-widest text-ink-2">{t("eyebrow")}</p>
           <Reveal>
-            <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h1>
+            <h1 className="mt-3 text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h1>
           </Reveal>
-          <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
+          <p className="mt-4 text-lg text-ink-2">{t("subtitle")}</p>
         </header>
 
         {/*
@@ -55,21 +58,21 @@ export default async function ExpertsPage({
           them — and what it will take to publish a face here.
         */}
         {experts.some((e) => e.isDemo) && (
-          <section className="mt-10 rounded-2xl border border-signal/25 bg-signal-soft p-6 sm:p-8">
-            <h2 className="font-display text-lg font-bold text-fg">{t("demoNoticeTitle")}</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-legacy-muted">{t("demoNoticeBody")}</p>
+          <section className="mt-10 rounded-2xl border border-line/25 bg-tile p-6 sm:p-8">
+            <h2 className="text-lg font-bold text-ink">{t("demoNoticeTitle")}</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-relaxed text-ink-2">{t("demoNoticeBody")}</p>
           </section>
         )}
 
-        <section className="mt-10 rounded-2xl border border-legacy-line bg-surface p-8 sm:p-10">
-          <h2 className="font-display text-2xl font-extrabold tracking-tight">{t("emptyTitle")}</h2>
-          <p className="mt-3 max-w-3xl leading-relaxed text-legacy-muted">{t("emptyBody")}</p>
+        <section className="mt-10 rounded-2xl border border-line bg-bg p-8 sm:p-10">
+          <h2 className="text-2xl font-extrabold tracking-tight">{t("emptyTitle")}</h2>
+          <p className="mt-3 max-w-3xl leading-relaxed text-ink-2">{t("emptyBody")}</p>
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {(t.raw("requirements") as string[]).map((item, i) => (
               <Reveal key={item} index={i} as="li">
-                <div className="flex h-full items-start gap-3 rounded-xl border border-legacy-line bg-legacy-ink p-4">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal-soft text-[11px] font-bold text-signal">✓</span>
-                  <p className="text-sm leading-relaxed text-fg">{item}</p>
+                <div className="flex h-full items-start gap-3 rounded-xl border border-line bg-bg p-4">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-tile text-[11px] font-bold text-ink">✓</span>
+                  <p className="text-sm leading-relaxed text-ink">{item}</p>
                 </div>
               </Reveal>
             ))}
@@ -86,20 +89,20 @@ export default async function ExpertsPage({
           <div className="mb-32 mt-14 grid gap-8 md:grid-cols-3">
             {experts.map((e, i) => (
               <Reveal key={e.id} index={i}>
-                <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-legacy-line bg-surface">
-                  <div className="relative aspect-[4/3] overflow-hidden bg-surface-2">
+                <div className="flex h-full flex-col overflow-hidden rounded-3xl border border-line bg-bg">
+                  <div className="relative aspect-[4/3] overflow-hidden bg-tile">
                     <Image src={e.image} alt={e.name} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
                     {e.isDemo && (
-                      <span className="absolute left-3 top-3 rounded-full border border-legacy-line bg-legacy-ink/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-legacy-muted backdrop-blur-sm">
+                      <span className="absolute left-3 top-3 rounded-full border border-line bg-bg/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-ink-2 backdrop-blur-sm">
                         {t("demoChip")}
                       </span>
                     )}
                   </div>
                   <div className="flex flex-1 flex-col p-6">
-                    <h2 className="font-display text-lg font-bold text-fg">{e.name}</h2>
-                    <p className="mt-1 text-sm font-medium text-fg">{e.title}</p>
-                    <p className="mt-3 line-clamp-3 flex-1 text-sm text-legacy-muted">{e.bio}</p>
-                    <Link href={`/experts/${e.slug}`} className="mt-4 text-sm font-semibold text-fg">
+                    <h2 className="text-lg font-bold text-ink">{e.name}</h2>
+                    <p className="mt-1 text-sm font-medium text-ink">{e.title}</p>
+                    <p className="mt-3 line-clamp-3 flex-1 text-sm text-ink-2">{e.bio}</p>
+                    <Link href={`/experts/${e.slug}`} className="mt-4 text-sm font-semibold text-ink">
                       {t("readMore")}
                     </Link>
                   </div>

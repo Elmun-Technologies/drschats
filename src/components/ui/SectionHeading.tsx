@@ -45,7 +45,7 @@ export function SectionHeading({
           <p
             className={cn(
               "mb-3 text-xs font-semibold uppercase tracking-[0.22em]",
-              dark ? "text-white/60" : "text-legacy-muted",
+              dark ? "text-white/60" : "text-ink-2",
             )}
           >
             {eyebrow}
@@ -55,8 +55,8 @@ export function SectionHeading({
       <Reveal index={1}>
         <Tag
           className={cn(
-            "font-display text-2xl font-extrabold tracking-tight text-balance sm:text-3xl lg:text-4xl",
-            dark ? "text-white" : "text-fg",
+            "text-2xl font-extrabold tracking-tight text-balance sm:text-3xl lg:text-4xl",
+            dark ? "text-white" : "text-ink",
           )}
         >
           {title}
@@ -64,7 +64,7 @@ export function SectionHeading({
       </Reveal>
       {subtitle && (
         <Reveal index={2}>
-          <p className={cn("mt-4 text-pretty text-base sm:text-lg", dark ? "text-white/70" : "text-legacy-muted")}>
+          <p className={cn("mt-4 text-pretty text-base sm:text-lg", dark ? "text-white/70" : "text-ink-2")}>
             {subtitle}
           </p>
         </Reveal>

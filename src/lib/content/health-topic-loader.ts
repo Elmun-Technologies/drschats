@@ -20,24 +20,17 @@ export interface HealthTopicPageData {
 }
 
 /**
- * Products explicitly pinned to a topic win; otherwise the topic's categories
- * decide. Both are unioned so an editor can pin a hero product and still let
- * the category fill the rest of the rail.
+ * The products pinned to a topic, in the order the editor listed them.
+ *
+ * Categories used to fill the rest of the rail, but a category is far wider
+ * than a topic: "vitamins" put a B-complex on the digestion page and a men's
+ * formula on the immunity page. A topic shows what was chosen for it, or
+ * nothing.
  */
 function selectProducts(topic: HealthTopic, pool: Product[]): Product[] {
-  const pinned = new Set(topic.productSlugs);
-  const categories = new Set(topic.categorySlugs);
-
-  const matches = pool.filter(
-    (p) => pinned.has(p.slug) || (p.categorySlug ? categories.has(p.categorySlug) : false),
-  );
-
-  // Pinned products first, in the order the editor listed them.
-  return matches.sort((a, b) => {
-    const ai = pinned.has(a.slug) ? topic.productSlugs.indexOf(a.slug) : Number.MAX_SAFE_INTEGER;
-    const bi = pinned.has(b.slug) ? topic.productSlugs.indexOf(b.slug) : Number.MAX_SAFE_INTEGER;
-    return ai - bi;
-  });
+  return topic.productSlugs
+    .map((slug) => pool.find((p) => p.slug === slug))
+    .filter((p): p is Product => Boolean(p));
 }
 
 export async function loadHealthTopicPage(

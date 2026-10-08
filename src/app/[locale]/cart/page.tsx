@@ -4,6 +4,10 @@ import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
+import { getAllProducts } from "@/lib/shop/all-products";
+
+// Prices on this page feed the order total; keep them close to the catalogue.
+export const revalidate = 300;
 
 export async function generateMetadata({
   params,
@@ -28,11 +32,18 @@ export default async function CartPage({
   setRequestLocale(locale);
 
   // The same pool /checkout gave the upsell ladder, so its offers do not change.
-  const recommended = await shopflow.getProducts({ locale, sort: "popular", pageSize: 20 });
+  const [recommended, catalogue] = await Promise.all([
+    shopflow.getProducts({ locale, sort: "popular", pageSize: 20 }),
+    getAllProducts({ locale }),
+  ]);
+  // Today's prices, so a cart kept for weeks shows what the order will cost.
+  const prices = Object.fromEntries(
+    catalogue.items.map((p) => [p.id, { price: p.price, oldPrice: p.oldPrice, inStock: p.inStock }]),
+  );
 
   return (
     <div className="wrap pb-9 pt-1 lg:pb-[72px] lg:pt-5">
-      <CheckoutForm recommended={recommended.items} />
+      <CheckoutForm recommended={recommended.items} prices={prices} />
     </div>
   );
 }

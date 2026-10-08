@@ -35,6 +35,8 @@ export function Footer({
 }) {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
+  const news = useTranslations("pages.news");
+  const hasNews = (news.raw("items") as unknown[]).length > 0;
   const header = useTranslations("header");
   const contact = useTranslations("contact");
   const legal = useTranslations("legal");
@@ -72,8 +74,9 @@ export function Footer({
         { href: "/about", label: nav("aboutUs") },
         { href: "/licenses", label: nav("licenses") },
         { href: "/blog", label: nav("blog") },
-        { href: "/news", label: nav("news") },
-        { href: "/where-to-buy", label: header("forPharmacies") },
+        ...(hasNews ? [{ href: "/news", label: nav("news") }] : []),
+        { href: "/partners", label: header("forPharmacies") },
+        { href: "/where-to-buy", label: nav("whereToBuy") },
         { href: "/contact", label: nav("contact") },
       ],
     },

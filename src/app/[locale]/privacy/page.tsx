@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/animation/Reveal";
+import { InfoShell } from "@/components/info/InfoShell";
 
 export const revalidate = 3600;
 
@@ -20,35 +19,20 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
   const sections = t.raw("sections") as { heading: string; body: string }[];
 
   return (
-    <div className="pb-24 pt-10">
-      <Container size="narrow">
-        <Reveal>
-          <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h1>
-        </Reveal>
-        <Reveal index={1}>
-          <p className="mt-3 text-sm text-faint">{t("effective")}</p>
-        </Reveal>
-        <Reveal index={2}>
-          <p className="mt-6 text-base leading-relaxed text-legacy-muted">{t("intro")}</p>
-        </Reveal>
-
-        <div className="mt-12 space-y-10">
-          {sections.map((section, i) => (
-            <Reveal key={i} index={i + 3}>
-              <div className="rounded-2xl border border-legacy-line bg-surface p-6">
-                <h2 className="font-display text-lg font-bold text-fg">{section.heading}</h2>
-                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-legacy-muted">{section.body}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-
-        <Reveal index={sections.length + 3}>
-          <p className="mt-12 text-xs text-faint">
-            © 2026 Dr. Schatz Store · Go Vita
-          </p>
-        </Reveal>
-      </Container>
-    </div>
+    <InfoShell crumb={t("title")}>
+      <header className="flex flex-col gap-2 lg:gap-3">
+        <h1 className="text-[28px] font-bold leading-[34px] lg:text-[40px] lg:leading-[46px]">{t("title")}</h1>
+        <p className="text-sm text-muted">{t("effective")}</p>
+        <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("intro")}</p>
+      </header>
+      <div className="flex flex-col gap-3">
+        {sections.map((section) => (
+          <section key={section.heading} className="flex flex-col gap-2 rounded-[20px] border border-line p-5 lg:p-6">
+            <h2 className="text-lg font-bold">{section.heading}</h2>
+            <p className="whitespace-pre-line text-[15px] leading-6 text-ink-2">{section.body}</p>
+          </section>
+        ))}
+      </div>
+    </InfoShell>
   );
 }

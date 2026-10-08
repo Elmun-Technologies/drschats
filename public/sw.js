@@ -1,4 +1,6 @@
-const CACHE_NAME = "alimkhanov-v1";
+// Bumped with the rebrand: activation deletes every other cache, including the
+// old one that could hold error responses (see the cache-first branch).
+const CACHE_NAME = "govita-v2";
 const STATIC_ASSETS = ["/", "/manifest.json"];
 
 self.addEventListener("install", (event) => {
@@ -19,6 +21,8 @@ self.addEventListener("activate", (event) => {
 
 self.addEventListener("fetch", (event) => {
   const { request } = event;
+  // Server actions (the order form, sign-up forms) are POSTs: never touch them.
+  if (request.method !== "GET") return;
   const url = new URL(request.url);
 
   // Network-first for API and Next.js data
@@ -34,8 +38,12 @@ self.addEventListener("fetch", (event) => {
     event.respondWith(
       caches.match(request).then((cached) =>
         cached ?? fetch(request).then((res) => {
-          const clone = res.clone();
-          caches.open(CACHE_NAME).then((c) => c.put(request, clone));
+          // Only a good response is worth keeping: a cached 404 or 500 would
+          // show as a broken image on that device for good.
+          if (res.ok) {
+            const clone = res.clone();
+            caches.open(CACHE_NAME).then((c) => c.put(request, clone));
+          }
           return res;
         })
       )

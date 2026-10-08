@@ -33,13 +33,13 @@ export default async function CampaignLanding({
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_20%,rgba(31,209,123,0.18),transparent_60%)]" />
         <Container>
           <div className="mx-auto max-w-3xl py-24 text-center">
-            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-accent/30 bg-surface-2 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-fg">
+            <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line-strong/30 bg-tile px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-ink">
               {t("hero.eyebrow")}
             </p>
-            <h1 className="font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-balance sm:text-4xl lg:text-5xl">
+            <h1 className="text-3xl font-extrabold leading-[1.08] tracking-tight text-balance sm:text-4xl lg:text-5xl">
               {t("cta.title")}
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-legacy-muted">{t("cta.subtitle")}</p>
+            <p className="mx-auto mt-6 max-w-xl text-lg text-ink-2">{t("cta.subtitle")}</p>
             <Link href="/products" className={buttonVariants("dark", "lg") + " mt-10"}>
               {t("cta.button")}
             </Link>

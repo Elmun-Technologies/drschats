@@ -69,37 +69,37 @@ export function ConsultationModal({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-legacy-line bg-surface p-6 sm:p-8 shadow-[var(--shadow-legacy-pop)]">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-line bg-bg p-6 sm:p-8 shadow-pop">
             <button
               type="button"
               onClick={handleClose}
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-surface-2 text-legacy-muted hover:text-fg"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-tile text-ink-2 hover:text-ink"
             >
               ✕
             </button>
 
-            <div className="flex items-center gap-4 border-b border-legacy-line pb-5">
-              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-signal">
+            <div className="flex items-center gap-4 border-b border-line pb-5">
+              <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-line">
                 <Image src={expert.image} alt={expert.name} fill className="object-cover" />
               </div>
               <div>
-                <span className="text-xs font-semibold uppercase tracking-widest text-signal">
+                <span className="text-xs font-semibold uppercase tracking-widest text-ink">
                   {t("consultModalTitle")}
                 </span>
-                <h3 className="font-display text-lg font-bold">{expert.name}</h3>
-                <p className="text-xs text-legacy-muted truncate">{expert.title}</p>
+                <h3 className="text-lg font-bold">{expert.name}</h3>
+                <p className="text-xs text-ink-2 truncate">{expert.title}</p>
               </div>
             </div>
 
             {submitted ? (
               <div className="py-8 text-center">
-                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-signal-soft text-signal">
+                <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-tile text-ink">
                   <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
                     <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
-                <h4 className="font-display text-lg font-bold">{t("successTitle")}</h4>
-                <p className="mt-2 text-sm text-legacy-muted leading-relaxed">{t("successMsg")}</p>
+                <h4 className="text-lg font-bold">{t("successTitle")}</h4>
+                <p className="mt-2 text-sm text-ink-2 leading-relaxed">{t("successMsg")}</p>
                 <div className="mt-6 flex flex-col gap-3">
                   <a
                     href={BRAND.social.telegram}
@@ -119,7 +119,7 @@ export function ConsultationModal({
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                <p className="text-xs text-legacy-muted">{t("consultModalSub")}</p>
+                <p className="text-xs text-ink-2">{t("consultModalSub")}</p>
 
                 {/* Method selector */}
                 <div className="grid grid-cols-2 gap-3">
@@ -129,8 +129,8 @@ export function ConsultationModal({
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "telegram"
-                        ? "border-signal bg-signal-soft text-signal"
-                        : "border-legacy-line bg-surface-2 text-legacy-muted",
+                        ? "border-line bg-tile text-ink"
+                        : "border-line bg-tile text-ink-2",
                     )}
                   >
                     <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -144,8 +144,8 @@ export function ConsultationModal({
                     className={cn(
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "phone"
-                        ? "border-signal bg-signal-soft text-signal"
-                        : "border-legacy-line bg-surface-2 text-legacy-muted",
+                        ? "border-line bg-tile text-ink"
+                        : "border-line bg-tile text-ink-2",
                     )}
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -156,26 +156,26 @@ export function ConsultationModal({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-fg mb-1">{t("nameLabel")}</label>
+                  <label className="block text-xs font-semibold text-ink mb-1">{t("nameLabel")}</label>
                   <input
                     type="text"
                     required
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t("namePlaceholder")}
-                    className="w-full rounded-xl border border-legacy-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
+                    className="w-full rounded-xl border border-line bg-tile px-4 py-2.5 text-sm font-medium focus:border-line focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/40"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-fg mb-1">{t("phoneLabel")}</label>
+                  <label className="block text-xs font-semibold text-ink mb-1">{t("phoneLabel")}</label>
                   <input
                     type="tel"
                     required
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder={t("phonePlaceholder")}
-                    className="w-full rounded-xl border border-legacy-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
+                    className="w-full rounded-xl border border-line bg-tile px-4 py-2.5 text-sm font-medium focus:border-line focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/40"
                   />
                 </div>
 

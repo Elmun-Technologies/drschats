@@ -33,7 +33,7 @@ function mapImage(raw: { mainImage?: unknown }): string {
       // fall through to placeholder
     }
   }
-  return "/placeholders/p1.svg";
+  return "/images/stock/st-cat-capsules.webp";
 }
 
 type SanityRaw = any;

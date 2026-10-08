@@ -99,16 +99,16 @@ export const productListResultSchema = z.object({
 
 export const orderRequestSchema = z.object({
   customer: z.object({
-    name: z.string().min(2),
-    phone: z.string().min(7),
+    name: z.string().trim().min(2).max(120),
+    phone: z.string().trim().min(7).max(20).regex(/^\+?[\d\s()-]+$/),
     email: z.string().email().max(160).optional(),
     marketingOptIn: z.boolean().optional(),
   }),
   delivery: z.object({
-    region: z.string().min(1),
-    address: z.string().min(3),
-    note: z.string().optional(),
-    method: z.string(),
+    region: z.string().min(1).max(60),
+    address: z.string().min(3).max(300),
+    note: z.string().max(1000).optional(),
+    method: z.enum(["courier", "pickup"]),
   }),
   payment: z
     .object({
@@ -119,19 +119,21 @@ export const orderRequestSchema = z.object({
   items: z
     .array(
       z.object({
-        productId: z.string(),
-        slug: z.string(),
-        name: z.string(),
-        quantity: z.number().int().positive(),
-        unitPrice: z.number(),
+        productId: z.string().max(120),
+        slug: z.string().max(160),
+        name: z.string().max(200),
+        quantity: z.number().int().positive().max(99),
+        unitPrice: z.number().nonnegative(),
         subscription: z
           .object({ intervalDays: z.number().int().min(7).max(365) })
           .optional(),
+        upsellDiscountPercent: z.number().int().min(1).max(100).optional(),
       }),
     )
-    .min(1),
-  appliedUpsells: z.array(z.string()),
-  appliedPromotions: z.array(z.string()),
+    .min(1)
+    .max(50),
+  appliedUpsells: z.array(z.string().max(120)).max(50),
+  appliedPromotions: z.array(z.string().max(120)).max(20),
   totals: z.object({
     subtotal: z.number(),
     discount: z.number(),

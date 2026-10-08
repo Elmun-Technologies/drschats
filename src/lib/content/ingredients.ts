@@ -27,7 +27,7 @@ const raw: RawIngredient[] = [
       uz: "Yuqori tozalikdagi to'yinmagan yog' kislotalari. Yurak ritmi, miya faoliyati, ko'rish o'tkirligi va qon tomirlar elastikligini qo'llab-quvvatlaydi.",
       ru: "Очищенные полиненасыщенные жирные кислоты для сердца, сосудов, зрения и когнитивных функций.",
     },
-    inProducts: ["omega-3-premium", "dr-frei-omega-3-1000"],
+    inProducts: [],
   },
   {
     slug: "vitamin-d3",
@@ -37,7 +37,7 @@ const raw: RawIngredient[] = [
       uz: "Quyosh vitamini. Kalsiy va fosfor so'rilishi, immun tizimi faolligi, energiya va kayfiyat barqarorligi uchun muhim biofaol modda.",
       ru: "Солнечный витамин; регулирует усвоение кальция, поддерживает иммунитет, плотность костей и жизненный тонус.",
     },
-    inProducts: ["vitamin-d3-k2", "swiss-energy-d3-caps"],
+    inProducts: ["swiss-energy-calcivit-30", "dr-frei-kids-multivitamins-20", "dr-frei-multivitamins-biotin-20"],
   },
   {
     slug: "vitamin-k2",
@@ -47,7 +47,7 @@ const raw: RawIngredient[] = [
       uz: "Kalsiyni qon tomir devorlaridan suyak to'qimalariga yo'naltiruvchi maxsus vitamin. D3 bilan sinergiyada ishlaydi.",
       ru: "Направляет кальций непосредственно в костную ткань, предотвращая его отложение в сосудах.",
     },
-    inProducts: ["vitamin-d3-k2"],
+    inProducts: ["swiss-energy-calcivit-30", "swiss-energy-prenatal-forte-60"],
   },
   {
     slug: "magnesium",
@@ -57,7 +57,7 @@ const raw: RawIngredient[] = [
       uz: "Organizmda 300 dan ortiq biokimyoviy reaksiyalarda qatnashadi. Mushaklar spazmini yechadi, asab tizimini tinchlantiradi va uyquni me'yorlashtiradi.",
       ru: "Участвует более чем в 300 ферментативных реакциях; снижает нервную возбудимость, судороги и нормализует сон.",
     },
-    inProducts: ["magnesium-b6", "swiss-energy-magnesium"],
+    inProducts: ["dr-frei-antistress-magniy-20"],
   },
   {
     slug: "vitamin-c",
@@ -67,7 +67,7 @@ const raw: RawIngredient[] = [
       uz: "Kuchli antioksidant. Hujayralarni oksidlanishdan himoya qiladi, kollagen sintezini rag'batlantiradi va temir moddasi so'rilishini oshiradi.",
       ru: "Мощный антиоксидант; стимулирует выработку коллагена, укрепляет стенки капилляров и повышает сопротивляемость инфекциям.",
     },
-    inProducts: ["immuno-complex", "swiss-energy-vitamin-c-1000", "dr-frei-vitamin-c"],
+    inProducts: ["swiss-energy-vitamin-c-20", "swiss-energy-immunovit-30", "dr-frei-multivitamins-biotin-20", "dr-frei-gold-vitamins-20", "dr-frei-antistress-magniy-20", "dr-frei-kids-multivitamins-20", "swiss-energy-prenatal-forte-60"],
   },
   {
     slug: "zinc",
@@ -77,7 +77,7 @@ const raw: RawIngredient[] = [
       uz: "Immun hujayralari bo'linishi, jarohatlar bitishi, teri tozaligi va reproduktiv salomatlik uchun muhim mikroelement.",
       ru: "Ключевой минерал для дифференцировки Т-лимфоцитов, заживления тканей, здоровья кожи и выработки гормонов.",
     },
-    inProducts: ["immuno-complex", "dr-frei-zinc"],
+    inProducts: ["swiss-energy-immunovit-30", "swiss-energy-hair-nail-skin-30", "swiss-energy-visiovit-30", "dr-frei-gold-vitamins-20", "swiss-energy-calcivit-30"],
   },
   {
     slug: "collagen",
@@ -87,7 +87,7 @@ const raw: RawIngredient[] = [
       uz: "Kichik molekulyar oqsil peptidlari. Teri elastikligini tiklaydi, ajinlar paydo bo'lishini sekinlashtiradi va bo'g'im tog'aylarini oziqlantiradi.",
       ru: "Легкоусвояемые пептиды коллагена I и III типа для плотности дермы, эластичности связок и укрепления суставов.",
     },
-    inProducts: ["collagen-beauty", "swiss-energy-collagen"],
+    inProducts: ["swiss-energy-nature-collagen"],
   },
   {
     slug: "biotin",
@@ -97,7 +97,7 @@ const raw: RawIngredient[] = [
       uz: "Keratin oqsilining asosiy sintezlovchisi. Soch to'kilishini kamaytiradi, uning qalinligini oshiradi va tirnoqlarni mustahkamlaydi.",
       ru: "Кофермент в синтезе кератина; останавливает ломкость волос, укрепляет ногтевую пластину и улучшает текстуру кожи.",
     },
-    inProducts: ["collagen-beauty", "swiss-energy-beauty"],
+    inProducts: ["swiss-energy-hair-nail-skin-30", "dr-frei-multivitamins-biotin-20", "dr-frei-kids-multivitamins-20", "swiss-energy-neuroforce-30"],
   },
   {
     slug: "vitamin-b12",
@@ -107,7 +107,7 @@ const raw: RawIngredient[] = [
       uz: "Eritrotsitlar hosil bo'lishi, asab tolalari qobig'i (miyelizatsiya) va aqliy tetiklik uchun almashtirib bo'lmaydigan vitamin.",
       ru: "Необходим для кроветворения, синтеза ДНК, поддержки нервных волокон и преодоления хронической усталости.",
     },
-    inProducts: ["multivitamin-daily", "dr-frei-active"],
+    inProducts: ["swiss-energy-neuroforce-30", "dr-frei-multivitamins-biotin-20", "swiss-energy-prenatal-forte-60"],
   },
   {
     slug: "iron",
@@ -117,7 +117,7 @@ const raw: RawIngredient[] = [
       uz: "Oshqozonni bezovta qilmaydigan yuqori bio-mavjudlikdagi temir shakli. To'qimalarga kislorod yetkazish va charchoqni yengish uchun.",
       ru: "Хелатная форма железа без побочных эффектов со стороны ЖКТ; восстанавливает уровень ферритина и гемоглобина.",
     },
-    inProducts: ["multivitamin-daily"],
+    inProducts: ["swiss-energy-prenatal-forte-60"],
   },
   {
     slug: "calcium",
@@ -127,7 +127,7 @@ const raw: RawIngredient[] = [
       uz: "Suyaklar va tishlarning asosiy mineral qurilish materiali. Yurak qisqarishi va qon ivishida ishtirok etadi.",
       ru: "Основа минеральной плотности скелета и зубов; участвует в нервной передаче и мышечном сокращении.",
     },
-    inProducts: ["swiss-energy-calcid"],
+    inProducts: ["swiss-energy-calcivit-30", "dr-frei-kids-multivitamins-20"],
   },
   {
     slug: "probiotics",
@@ -137,7 +137,7 @@ const raw: RawIngredient[] = [
       uz: "Foydali jonli laktobakteriyalar va bifidobakteriyalar. Oziq moddalar so'rilishini yaxshilaydi va immun tizimini 70% ichak orqali kuchaytiradi.",
       ru: "Штаммы полезных бактерий для нормализации кишечной микрофлоры, комфортного пищеварения и иммунитета.",
     },
-    inProducts: ["dr-frei-probiotic"],
+    inProducts: [],
   },
 ];
 

@@ -65,7 +65,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
   return (
     <Container className="py-14 sm:py-20">
       <div className="mx-auto max-w-xl">
-        <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
+        <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
           {t("title")}
         </h1>
 
@@ -74,8 +74,8 @@ export function EmailPreferencesView({ status, token, email }: Props) {
             role="status"
             className={`mt-6 rounded-2xl border px-5 py-4 text-sm ${
               status === "invalid"
-                ? "border-danger/40 bg-danger/10 text-danger"
-                : "border-accent/40 bg-surface-2 text-fg"
+                ? "border-red/40 bg-red/10 text-red"
+                : "border-line-strong/40 bg-tile text-ink"
             }`}
           >
             {t(`status.${status}`)}
@@ -83,9 +83,9 @@ export function EmailPreferencesView({ status, token, email }: Props) {
         )}
 
         {token ? (
-          <section className="mt-8 rounded-2xl border border-legacy-line bg-surface p-6">
-            <h2 className="font-display text-lg font-bold tracking-tight">{t("manage.title")}</h2>
-            <p className="mt-1 text-sm text-legacy-muted">{t("manage.description")}</p>
+          <section className="mt-8 rounded-2xl border border-line bg-bg p-6">
+            <h2 className="text-lg font-bold tracking-tight">{t("manage.title")}</h2>
+            <p className="mt-1 text-sm text-ink-2">{t("manage.description")}</p>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Button onClick={() => setSubscribed(true)} disabled={busy === "working"}>
@@ -101,16 +101,16 @@ export function EmailPreferencesView({ status, token, email }: Props) {
             </div>
 
             <p aria-live="polite" className="mt-4 text-sm">
-              {busy === "done" && <span className="font-medium text-fg">{t("saved")}</span>}
-              {busy === "error" && <span className="text-danger">{t("error")}</span>}
+              {busy === "done" && <span className="font-medium text-ink">{t("saved")}</span>}
+              {busy === "error" && <span className="text-red">{t("error")}</span>}
             </p>
           </section>
         ) : (
-          <form onSubmit={resendOptIn} className="mt-8 rounded-2xl border border-legacy-line bg-surface p-6">
-            <label htmlFor="preferences-email" className="text-sm font-medium text-fg">
+          <form onSubmit={resendOptIn} className="mt-8 rounded-2xl border border-line bg-bg p-6">
+            <label htmlFor="preferences-email" className="text-sm font-medium text-ink">
               {t("resubscribe.label")}
             </label>
-            <p className="mt-1 text-sm text-legacy-muted">{t("resubscribe.description")}</p>
+            <p className="mt-1 text-sm text-ink-2">{t("resubscribe.description")}</p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <input
                 id="preferences-email"
@@ -119,7 +119,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
                 autoComplete="email"
                 value={resubscribeEmail}
                 onChange={(e) => setResubscribeEmail(e.target.value)}
-                className="flex-1 rounded-xl border border-legacy-line bg-legacy-ink px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
+                className="flex-1 rounded-xl border border-line bg-bg px-4 py-3 text-sm outline-none transition-colors focus:border-line-strong focus-visible:ring-2 focus-visible:ring-ink"
               />
               <Button type="submit" disabled={busy === "working"}>
                 {t("resubscribe.submit")}
@@ -127,16 +127,16 @@ export function EmailPreferencesView({ status, token, email }: Props) {
             </div>
             <p aria-live="polite" className="mt-4 text-sm">
               {busy === "done" && (
-                <span className="font-medium text-fg">{t("resubscribe.sent")}</span>
+                <span className="font-medium text-ink">{t("resubscribe.sent")}</span>
               )}
-              {busy === "error" && <span className="text-danger">{t("error")}</span>}
+              {busy === "error" && <span className="text-red">{t("error")}</span>}
             </p>
           </form>
         )}
 
-        <p className="mt-8 text-sm text-legacy-muted">
+        <p className="mt-8 text-sm text-ink-2">
           {t("profileHint")}{" "}
-          <Link href="/profile" className="font-semibold text-fg underline-offset-4 hover:underline">
+          <Link href="/profile" className="font-semibold text-ink underline-offset-4 hover:underline">
             {t("profileLink")}
           </Link>
         </p>

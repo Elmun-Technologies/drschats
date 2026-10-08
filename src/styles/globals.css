@@ -16,117 +16,18 @@
 @source not "../../design";
 
 /*
-  Go Vita design tokens — "Warm Apothecary".
-
-  A marketplace catalogue asks colour to carry three separate jobs, so each one
-  gets its own hue and they never borrow from each other:
-
-    accent  → action     (button, link, filter — "do something")
-    danger  → money      (price, discount, savings)
-    signal  → state      (in stock, natural, certified)
-                          #276650 is the value that clears 4.5:1 on the
-                          lightest ground the colour is read on — the soft
-                          chip over ink (4.99:1). The lighter #2b7159 looked
-                          right and measured 4.29:1 there, which is where the
-                          ✓ marks print.
-
-  `ink` is the light porcelain page ground and the contrast colour placed on
-  accent/gold buttons. The product UI stays clear and trustworthy while the
-  warmer palette keeps the health-and-beauty direction premium rather than
-  clinical.
+  Shared non-colour tokens: type families, radii, easing and the two looping
+  animations. Every colour and shadow comes from the GoVita V3 block below —
+  the warm "apothecary" palette that preceded it (and its legacy-* names) has
+  been removed with the last page that used it.
 */
 @theme {
-  /*
-    Go Vita design tokens — warm apothecary.
-
-    The reference direction is deliberately light, calm and tactile: warm
-    porcelain surfaces, charcoal typography and one restrained champagne-gold
-    action colour.  The values below remain semantic so every existing page
-    receives the same visual language without tying components to a brand name.
-  */
-  --color-legacy-ink: #fffdf9;
-  --color-surface: #f8f6f1;
-  --color-surface-2: #f1eee7;
-  --color-surface-3: #e7e1d7;
-  --color-legacy-line: rgba(49, 43, 33, 0.10);
-  --color-legacy-line-strong: rgba(49, 43, 33, 0.18);
-
-  /* Warm charcoal replaces cold navy as the contrast ground. */
-  --color-brand-deep: #2d2a25;
-
-  /* Foreground.
-     Both greys are checked against the three light grounds the site paints
-     (ink #fffdf9, surface #f8f6f1, surface-2 #f1eee7, surface-3 #e7e1d7):
-     muted clears 5.3:1 on the darkest of them, faint 4.6:1. The old faint
-     (#766f64) measured 4.29:1 on surface-2 — under the 4.5 floor, exactly
-     where card metadata (origin, servings, "12 dona") is printed. */
-  --color-fg: #2d2a25;
-  --color-legacy-muted: #5f594f;
-  --color-faint: #6a6359;
-
-  /* Action — antique gold. `accent` is deliberately light and stays a
-     background/border/decorative colour only — as a fill it pairs with dark
-     text (text-brand-deep), never white/ink, since a colour light enough to
-     read as "gold" can't hit 4.5:1 under light text. Anywhere the colour is
-     the text itself (price highlights, icons, eyebrows), use `accent-strong`
-     instead, which is dark enough to pass on the porcelain surfaces. */
-  --color-accent: #b48b3e;
-  --color-accent-soft: rgba(180, 139, 62, 0.10);
-  --color-accent-strong: #725721;
-
-  /* State */
-  --color-signal: #276650;
-  --color-signal-soft: rgba(39, 102, 80, 0.12);
-
-  /* Money + rating. `gold` is used as a surface/CTA, while `gold-ink` is the
-     darker accessible version for copy on porcelain backgrounds. */
-  --color-legacy-gold: #d1ac59;
-  --color-gold-ink: #755a26;
-  --color-gold-soft: #f6ecd7;
-
-  --color-danger: #bd4b55;
-
-  /* Secondary palette */
-  --color-teal: #357c73;
-  --color-blue: #536779;
-  --color-accent-on-dark: #f3dfb1;
-  --color-blue-soft: rgba(83, 103, 121, 0.08);
-
-  /* Soft editorial backgrounds */
-  --color-pastel-beige: #f8f4ec;
-  --color-pastel-lilac: #f4f1f0;
-  --color-pastel-mint: #eef5f0;
-  --color-pastel-sky: #eff4f5;
-
-  /* Typography */
-  /* Onest everywhere since V3 stage 1 — the design has one UI face. */
   --font-display: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
   --font-sans: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
-
-  /* Radii */
-  --radius-sm: 0.5rem;
   --radius-md: 1rem;
   --radius-lg: 1.5rem;
   --radius-xl: 2.5rem;
-
-  /* Easing */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-
-  /*
-    Shadows, on the warm axis.
-
-    The site had three unrelated shadow colours — a navy rgba(15,23,42,…), a
-    cold slate rgba(19,22,50,…) and one warm brown — so two cards side by side
-    could cast differently coloured shade. Everything now derives from the
-    graphite brand colour, which is what a warm porcelain ground expects.
-  */
-  --shadow-xs: 0 1px 2px rgba(45, 42, 37, 0.05);
-  --shadow-sm: 0 2px 6px -2px rgba(45, 42, 37, 0.10);
-  --shadow-card: 0 10px 30px -22px rgba(45, 42, 37, 0.35);
-  --shadow-legacy-pop: 0 24px 48px -24px rgba(45, 42, 37, 0.35);
-  --shadow-cta: 0 8px 22px -14px rgba(101, 76, 33, 0.7);
-
-  /* Animations */
   --animate-marquee: marquee 28s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
 }
@@ -347,7 +248,7 @@
 
   /* The flat stage a product photo sits on, so cards and heroes agree. */
   .product-stage {
-    background: var(--color-surface-2);
+    background: var(--color-tile);
   }
 }
 
@@ -621,8 +522,8 @@ html.lenis body {
 }
 
 ::selection {
-  background: var(--color-accent);
-  color: var(--color-brand-deep);
+  background: var(--color-ink);
+  color: #ffffff;
 }
 
 /* Custom scrollbar */
@@ -630,10 +531,10 @@ html.lenis body {
   width: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-surface);
+  background: var(--color-tile);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-surface-3);
+  background: var(--color-chip-strong);
   border-radius: 999px;
 }
 

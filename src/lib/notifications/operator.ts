@@ -14,13 +14,14 @@ export function isOperatorChannelConfigured(): boolean {
   return Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID);
 }
 
-export async function notifyOperator(text: string, options?: { markdown?: boolean }): Promise<void> {
+/** Sends to the operator group. Resolves to whether Telegram accepted the message; never throws. */
+export async function notifyOperator(text: string, options?: { markdown?: boolean }): Promise<boolean> {
   const token = process.env.TELEGRAM_BOT_TOKEN;
   const chatId = process.env.TELEGRAM_CHAT_ID;
-  if (!token || !chatId) return;
+  if (!token || !chatId) return false;
 
   try {
-    await fetch(`${API}/bot${token}/sendMessage`, {
+    const res = await fetch(`${API}/bot${token}/sendMessage`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -30,8 +31,10 @@ export async function notifyOperator(text: string, options?: { markdown?: boolea
       }),
       signal: AbortSignal.timeout(TIMEOUT_MS),
     });
+    return res.ok;
   } catch {
     // See the note above: never surfaced to the customer.
+    return false;
   }
 }
 

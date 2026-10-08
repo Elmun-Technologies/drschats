@@ -76,12 +76,14 @@ export async function notifyRestock(
   }
 
   const text = [
-    `🔔 *Mahsulot kutilmoqda*`,
+    `🔔 Mahsulot kutilmoqda`,
     `📦 ${parsed.data.productName}`,
-    `🆔 \`${parsed.data.productId}\``,
+    `🆔 ${parsed.data.productId}`,
     `📞 ${parsed.data.phone}`,
   ].join("\n");
 
-  await notifyOperator(text, { markdown: true });
-  return { ok: true };
+  // Plain text (a product name with "_" would break Markdown), and the result
+  // reported: a request that never reached the operator is not "received".
+  const delivered = await notifyOperator(text);
+  return delivered ? { ok: true } : { ok: false, error: "unavailable" };
 }

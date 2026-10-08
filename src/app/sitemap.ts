@@ -1,11 +1,12 @@
+import { getTranslations } from "next-intl/server";
 import type { MetadataRoute } from "next";
 import { locales, routing } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
-import { listArticleSlugs } from "@/lib/content/blog.sanity";
+import { getArticles, listArticleSlugs } from "@/lib/content/blog.sanity";
 import { listExpertSlugs } from "@/lib/content/experts.sanity";
 import { getHealthTopicIndex } from "@/lib/content/health-topics.sanity";
 import { getProgramSlugs } from "@/lib/content/programs.sanity";
-import { BLOG_CATEGORY_KEYS } from "@/lib/content/blog-categories";
+import { usedCategoryKeys } from "@/lib/content/blog-categories";
 import { TOPIC_BASE_PATH, TOPIC_KINDS } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { productBrand } from "@/lib/content/product-brands";
@@ -33,13 +34,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // A topic family with nothing published is an empty page; submitting it is
   // asking to be crawled for it. Listed only once it has something to show,
   // which mirrors what the navigation does with the same fact.
+  const news = await getTranslations({ locale: "uz", namespace: "pages.news" });
+  const hasNews = (news.raw("items") as unknown[]).length > 0;
+
   const populatedFamilies = new Set(healthTopics.map((t) => TOPIC_BASE_PATH[t.kind]));
 
   const staticPaths = [
-    "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
-    "/loyalty", "/ingredients", "/brands", "/news", "/payment", "/guarantee",
-    "/requisites", "/licenses", "/quiz", "/programs", "/where-to-buy",
+    "", "/products", "/about", "/blog", "/contact", "/delivery",
+    "/loyalty", "/ingredients", "/brands", "/payment", "/guarantee",
+    "/requisites", "/licenses", "/quiz", "/programs", "/where-to-buy", "/partners",
     "/reviews", "/sale",
+    ...(hasNews ? ["/news"] : []),
+    ...(expertSlugs.length > 0 ? ["/experts"] : []),
     ...TOPIC_KINDS.map((kind) => TOPIC_BASE_PATH[kind]).filter((p) => populatedFamilies.has(p)),
   ];
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
@@ -50,7 +56,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
   const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);
   const topicPaths = healthTopics.map((t) => `${TOPIC_BASE_PATH[t.kind]}/${t.slug}`);
-  const blogCategoryPaths = BLOG_CATEGORY_KEYS.map((key) => `/blog/category/${key}`);
+  // Only categories with articles: an empty one answers 404.
+  const blogCategoryPaths = usedCategoryKeys(await getArticles("uz")).map((key) => `/blog/category/${key}`);
   const programPaths = programSlugs.map((slug) => `/programs/${slug}`);
   const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...brandPaths, ...blogPaths, ...expertPaths, ...topicPaths, ...programPaths, ...blogCategoryPaths];
 

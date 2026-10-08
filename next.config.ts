@@ -4,6 +4,19 @@ import { REMOTE_IMAGE_HOSTS, cspHeaders, cspMode } from "./src/lib/security/csp"
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
+/*
+  The demo switches show invented data (sample reviews and purchase toasts, a
+  cabinet that signs anyone in as somebody else). They exist for preview
+  deployments; a production build with either one on is refused outright, so a
+  copied .env cannot put fabricated data in front of real customers.
+*/
+if (process.env.VERCEL_ENV === "production" || process.env.GOVITA_PRODUCTION === "1") {
+  const on = ["NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF", "NEXT_PUBLIC_ACCOUNT_DEMO"].filter((k) => process.env[k] === "on");
+  if (on.length > 0) {
+    throw new Error(`Demo flags must be off in production: ${on.join(", ")}`);
+  }
+}
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Harmless header, free information for anyone fingerprinting the stack.

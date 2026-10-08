@@ -1,15 +1,13 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { loadProgramIndex, getProgramImage } from "@/lib/content/program-loader";
+import { loadProgramIndex } from "@/lib/content/program-loader";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { JsonLd, itemListLd } from "@/lib/seo/jsonld";
 import { formatMoney } from "@/lib/utils";
 import { Link } from "@/lib/i18n/navigation";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/animation/Reveal";
 import { Disclaimer } from "@/components/legal/Disclaimer";
-import Image from "next/image";
+import { DiscountBadge } from "@/components/ui/Price";
 
 export const revalidate = 3600;
 
@@ -49,85 +47,49 @@ export default async function ProgramsPage({
           entries.map(({ program }) => ({ name: program.name, description: program.headline })),
         )}
       />
-      <div className="pt-10 pb-6">
-        <Container>
-          <header className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-widest text-fg">
-              {t("plural")}
-            </p>
-            <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-              {t("indexTitle")}
-            </h1>
-            <p className="mt-4 text-lg text-legacy-muted">{t("indexSubtitle")}</p>
+      <div className="wrap flex flex-col gap-8 pb-10 pt-4 lg:gap-10 lg:pb-20 lg:pt-8">
+          <header className="flex flex-col gap-3">
+            <span className="text-[15px] font-semibold text-ink-2">{t("plural")}</span>
+            <h1 className="text-[28px] font-bold leading-[34px] lg:text-[40px] lg:leading-[46px]">{t("indexTitle")}</h1>
+            <p className="max-w-[760px] text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("indexSubtitle")}</p>
           </header>
 
           {entries.length === 0 ? (
-            <p className="py-24 text-center text-legacy-muted">{t("empty")}</p>
+            <p className="rounded-[20px] bg-tile px-6 py-8 text-center text-ink-2">{t("empty")}</p>
           ) : (
-            <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {entries.map(({ program, products, pricing }, i) => (
-                <Reveal key={program.slug} index={Math.min(i, 6)} as="li" className="h-full">
+            <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 lg:gap-4">
+              {entries.map(({ program, products, pricing }) => (
+                <li key={program.slug} className="h-full">
                   <Link
                     href={`/programs/${program.slug}`}
-                    className="group relative flex h-[460px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-500 hover:shadow-[var(--shadow-legacy-pop)]"
+                    className="group flex h-full flex-col gap-3 rounded-[20px] bg-tile p-5 transition-colors hover:bg-tile-hover lg:p-6"
                   >
-                    <div className="absolute inset-0 z-0">
-                      <Image
-                        src={getProgramImage(program.slug)}
-                        alt={program.name}
-                        fill
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                        className="object-cover transition-transform duration-700"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/70 to-brand-deep/20 opacity-90 transition-opacity duration-300 group-hover:opacity-100" />
-                    </div>
-
-                    <div className="relative z-10 flex flex-col h-full justify-between p-6">
-                      <div className="flex flex-wrap items-center gap-2 mt-4">
-                        <span className="rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest text-white/90">
-                          {t("duration", { days: program.durationDays })}
+                    <span className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex h-7 items-center rounded-pill bg-bg px-2.5 text-[13px] font-semibold">
+                        {t("duration", { days: program.durationDays })}
+                      </span>
+                      {program.discountPercent > 0 && <DiscountBadge percent={program.discountPercent} />}
+                    </span>
+                    <span className="text-xl font-bold leading-7 group-hover:underline">{program.name}</span>
+                    <span className="text-[15px] leading-[22px] text-ink-2">{program.headline}</span>
+                    {products.length > 0 && (
+                      <span className="mt-auto flex flex-col gap-1 border-t border-line pt-3">
+                        <span className="text-sm text-muted">{t("includes", { count: products.length, days: program.durationDays })}</span>
+                        <span className="flex flex-wrap items-baseline gap-2">
+                          <span className="text-xl font-bold">{formatMoney(pricing.total, locale)}</span>
+                          {pricing.saved > 0 && (
+                            <span className="text-[15px] text-muted line-through">{formatMoney(pricing.subtotal, locale)}</span>
+                          )}
                         </span>
-                        {program.discountPercent > 0 && (
-                          <span className="rounded-full bg-blue px-3 py-1.5 text-[11px] font-bold text-white shadow-lg">
-                            −{program.discountPercent}%
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col">
-                        <h2 className="font-display text-2xl font-bold text-white transition-colors group-hover:text-white/90 drop-shadow-md">{program.name}
-                        </h2>
-                        <p className="mt-2 text-sm font-medium text-white/90 drop-shadow-sm">{program.headline}</p>
-                        
-                        {products.length > 0 && (
-                          <div className="mt-5 border-t border-white/20 pt-4">
-                            <p className="text-[11px] uppercase tracking-widest font-bold text-white/50">
-                              {t("includes", { count: products.length, days: program.durationDays })}
-                            </p>
-                            <div className="mt-2 flex flex-wrap items-baseline gap-2">
-                              <span className="font-display text-xl font-bold text-white group-hover:text-white/90 transition-colors">
-                                {formatMoney(pricing.total, locale)}
-                              </span>
-                              {pricing.saved > 0 && (
-                                <span className="text-sm font-medium text-white/60 line-through">
-                                  {formatMoney(pricing.subtotal, locale)}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
+                      </span>
+                    )}
                   </Link>
-                </Reveal>
+                </li>
               ))}
             </ul>
           )}
 
-          <div className="mt-16">
-            <Disclaimer variant="product" />
-          </div>
-        </Container>
+          <Disclaimer variant="product" />
       </div>
     </>
   );

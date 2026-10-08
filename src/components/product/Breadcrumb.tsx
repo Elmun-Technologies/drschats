@@ -18,20 +18,20 @@ export function Breadcrumb({ product }: { product: Product }) {
   const categoryName = categoryNames[slug] ?? slug;
 
   return (
-    <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-faint">
-      <Link href="/" className="hover:text-fg">
+    <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-muted">
+      <Link href="/" className="hover:text-ink">
         {t("breadcrumbHome")}
       </Link>
       <span>/</span>
-      <Link href="/products" className="hover:text-fg">
+      <Link href="/products" className="hover:text-ink">
         {nav("shop")}
       </Link>
       <span>/</span>
-      <Link href={`/products/${slug}`} className="hover:text-fg">
+      <Link href={`/products/${slug}`} className="hover:text-ink">
         {categoryName}
       </Link>
       <span>/</span>
-      <span className="text-fg">{product.name}</span>
+      <span className="text-ink">{product.name}</span>
     </nav>
   );
 }

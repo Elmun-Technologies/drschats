@@ -64,6 +64,7 @@ export function cartLineId(productId: string, subscription?: { intervalDays: num
 export function computeTotals(
   lines: CartLine[],
   promotions: Promotion[] = [],
+  options: { pickup?: boolean } = {},
 ): CartTotals {
   const subtotal = lines.reduce((sum, l) => sum + l.price * l.quantity, 0);
   const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0);
@@ -123,9 +124,10 @@ export function computeTotals(
 
   const afterDiscount = Math.max(0, subtotal - discount);
 
-  let shipping = itemCount > 0 ? DEFAULT_SHIPPING : 0;
+  // Collecting from the warehouse costs nothing — the delivery page says so.
+  let shipping = itemCount > 0 && !options.pickup ? DEFAULT_SHIPPING : 0;
   let freeShippingRemaining = 0;
-  if (Number.isFinite(freeShippingThreshold)) {
+  if (Number.isFinite(freeShippingThreshold) && !options.pickup) {
     if (afterDiscount >= freeShippingThreshold) {
       shipping = 0;
     } else if (itemCount > 0) {

@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/animation/Reveal";
-import { ContactChannels } from "@/components/contact/ContactChannels";
-import { BRAND } from "@/lib/brand";
+import { BRAND, WHATSAPP_URL } from "@/lib/brand";
+import { Link } from "@/lib/i18n/navigation";
+import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
+import { ContactForm } from "@/components/info/LeadForms";
+import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -19,113 +20,83 @@ export async function generateMetadata({
   return buildPageMetadata({ locale, path: "/contact", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
-export default async function ContactPage({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}) {
+const ARROW = (
+  <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 12h14M13 6l6 6-6 6" />
+  </svg>
+);
+
+export default async function ContactPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("contact");
+  const t = await getTranslations("pages.v3");
 
   const cards = [
-    {
-      icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 5a2 2 0 012-2h2l2 5-2 1a12 12 0 005 5l1-2 5 2v2a2 2 0 01-2 2A16 16 0 013 5z" />
-        </svg>
-      ),
-      label: t("phone"),
-      value: BRAND.contact.phone,
-      href: `tel:${BRAND.contact.phoneHref}`,
-      hint: t("workHours"),
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="2" y="4" width="20" height="16" rx="2" />
-          <path d="M22 7L12 13 2 7" />
-        </svg>
-      ),
-      label: t("email"),
-      value: BRAND.contact.email,
-      href: `mailto:${BRAND.contact.email}`,
-      hint: t("emailHint"),
-    },
-    {
-      icon: (
-        <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
-          <circle cx="12" cy="9" r="2.5" />
-        </svg>
-      ),
-      label: t("address"),
-      value: t("addressValue"),
-      href: null,
-      hint: null,
-    },
+    { label: t("contact.phone"), value: BRAND.contact.phone, href: `tel:${BRAND.contact.phoneHref}`, hint: t("contact.hours"), dark: true },
+    { label: t("contact.email"), value: BRAND.contact.email, href: `mailto:${BRAND.contact.email}`, hint: t("contact.emailHint"), dark: false },
+    { label: t("contact.address"), value: t("contact.city"), href: null, hint: t("contact.country"), dark: false },
   ];
+  const topics = [
+    { key: "orders", href: BRAND.social.telegram, cta: t("contact.telegram"), external: true },
+    { key: "advice", href: BRAND.social.telegram, cta: t("contact.telegram"), external: true },
+    { key: "whatsapp", href: WHATSAPP_URL, cta: "WhatsApp", external: true },
+  ] as const;
+  const kinds = ["pharmacy", "distribution", "corporate"] as const;
 
   return (
-    <div className="pt-10">
-      <Container>
-        <Reveal>
-          <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">{t("title")}</h1>
-        </Reveal>
-        <Reveal index={1}>
-          <p className="mt-6 text-xl text-legacy-muted">{t("subtitle")}</p>
-        </Reveal>
+    <InfoShell active="contact" crumb={t("nav.contact")}>
+      <InfoHeader title={t("contact.title")} lead={t("contact.lead")} />
 
-        <div className="mt-12 space-y-4">
-          {cards.map((card, i) => (
-            <Reveal key={i} index={i}>
-              <div className="flex items-center gap-5 rounded-2xl border border-legacy-line bg-surface p-6">
-                <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-fg">
-                  {card.icon}
-                </span>
-                <div className="flex-1">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-faint">{card.label}</p>
-                  {card.href ? (
-                    <a href={card.href} className="mt-1 block text-lg font-semibold text-fg hover:text-fg">
-                      {card.value}
-                    </a>
-                  ) : (
-                    <p className="mt-1 text-lg font-semibold text-fg">{card.value}</p>
-                  )}
-                  {card.hint && <p className="mt-0.5 text-sm text-legacy-muted">{card.hint}</p>}
-                </div>
-              </div>
-            </Reveal>
+      <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">
+        {cards.map((c) => (
+          <div
+            key={c.label}
+            className={cn("flex flex-col gap-1 rounded-[20px] p-5 lg:min-h-[200px] lg:p-6", c.dark ? "bg-dark-panel text-white" : "bg-tile")}
+          >
+            <span className={cn("text-[15px]", c.dark ? "text-on-dark-2" : "text-ink-2")}>{c.label}</span>
+            {c.href ? (
+              <a href={c.href} className="break-words text-[22px] font-bold leading-7 hover:underline lg:text-[26px] lg:leading-8">{c.value}</a>
+            ) : (
+              <span className="text-[22px] font-bold leading-7 lg:text-[26px] lg:leading-8">{c.value}</span>
+            )}
+            <span className={cn("mt-auto pt-3 text-[15px]", c.dark ? "text-on-dark-2" : "text-ink-2")}>{c.hint}</span>
+          </div>
+        ))}
+      </div>
+
+      <section aria-labelledby="contact-topics" className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 id="contact-topics" className="text-[22px] font-bold leading-7 lg:text-[26px] lg:leading-8">{t("contact.topicsTitle")}</h2>
+          <p className="text-[15px] text-ink-2">{t("contact.topicsLead")}</p>
+        </div>
+        <div className="grid gap-3 lg:grid-cols-3">
+          {topics.map((topic) => (
+            <div key={topic.key} className="flex flex-col gap-1.5 rounded-[20px] border border-line p-5">
+              <h3 className="text-lg font-bold">{t(`contact.topics.${topic.key}.title`)}</h3>
+              <p className="text-[15px] leading-[22px] text-ink-2">{t(`contact.topics.${topic.key}.text`)}</p>
+              <a href={topic.href} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex min-h-11 items-center gap-1.5 self-start text-[15px] font-semibold hover:underline">
+                {topic.cta}
+                {ARROW}
+              </a>
+            </div>
+          ))}
+          {kinds.map((k) => (
+            <div key={k} className="flex flex-col gap-1.5 rounded-[20px] border border-line p-5">
+              <h3 className="text-lg font-bold">{t(`partners.kinds.${k}.title`)}</h3>
+              <p className="text-[15px] leading-[22px] text-ink-2">{t(`partners.kinds.${k}.text`)}</p>
+              <Link href="/partners" className="mt-1 inline-flex min-h-11 items-center gap-1.5 self-start text-[15px] font-semibold hover:underline">
+                {t("contact.more")}
+                {ARROW}
+              </Link>
+            </div>
           ))}
         </div>
+      </section>
 
-        {/* Telegram CTA */}
-        <Reveal index={3}>
-          <a
-            href={BRAND.social.telegram}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-6 flex items-center gap-4 rounded-2xl border border-[#2AABEE]/30 bg-[#2AABEE]/5 p-6 transition-colors hover:border-[#2AABEE]/60"
-          >
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#2AABEE]/10 text-[#2AABEE]">
-              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="currentColor">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.608c-.15.675-.546.84-1.107.522l-3.063-2.257-1.478 1.42c-.163.163-.3.3-.617.3l.22-3.118 5.67-5.12c.247-.22-.054-.342-.383-.122L7.04 14.572l-3.007-.94c-.653-.204-.666-.653.137-.966l11.732-4.522c.545-.197 1.02.133.66.104z" />
-              </svg>
-            </span>
-            <div>
-              <p className="font-semibold text-fg">{t("telegramTitle")}</p>
-              <p className="mt-0.5 text-sm text-legacy-muted">{t("telegramHint")}</p>
-            </div>
-            <svg viewBox="0 0 24 24" className="ml-auto h-5 w-5 shrink-0 text-legacy-muted" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-              <path d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
-          </a>
-        </Reveal>
-
-        <ContactChannels />
-
-        <div className="mb-24" />
-      </Container>
-    </div>
+      <section aria-labelledby="contact-form" className="flex flex-col gap-5 rounded-[20px] border border-line p-5 lg:p-8">
+        <h2 id="contact-form" className="text-[22px] font-bold leading-7 lg:text-[26px]">{t("contact.formTitle")}</h2>
+        <ContactForm />
+      </section>
+    </InfoShell>
   );
 }

@@ -10,17 +10,6 @@ import type { HealthTopic } from "@/lib/content/health-topics";
 import { getProgram, getPrograms } from "@/lib/content/programs.sanity";
 import type { Program } from "@/lib/content/programs";
 
-export const PROGRAM_IMAGES: Record<string, string> = {
-  "immunity-30": "https://images.unsplash.com/photo-1512069772995-ec65ed45afd6?auto=format&fit=crop&q=80&w=600",
-  "stress-recovery": "https://images.unsplash.com/photo-1499209974431-9dddcece7f88?auto=format&fit=crop&q=80&w=600",
-  "beauty-skin-hair": "https://images.unsplash.com/photo-1515377905703-c4788e51af15?auto=format&fit=crop&q=80&w=600",
-  "kids-growth": "https://images.unsplash.com/photo-1502086223501-7ea6ecd79368?auto=format&fit=crop&q=80&w=600",
-  "default": "https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600",
-};
-
-export function getProgramImage(slug: string): string {
-  return PROGRAM_IMAGES[slug] || PROGRAM_IMAGES.default;
-}
 
 const POOL_SIZE = 100;
 const MAX_PROGRAM_PRODUCTS = 6;
@@ -49,26 +38,12 @@ export function priceProgram(products: Product[], discountPercent: number): Prog
   return { subtotal, total, saved: subtotal - total };
 }
 
-/** Pinned products first; the programme's categories fill the remaining slots. */
+/** The products pinned to the programme — a category is too wide to fill a course with (see health-topic-loader). */
 export function selectProgramProducts(program: Program, pool: Product[]): Product[] {
-  const pinned = program.productSlugs
+  return program.productSlugs
     .map((slug) => pool.find((p) => p.slug === slug))
-    .filter((p): p is Product => Boolean(p));
-
-  if (pinned.length >= MAX_PROGRAM_PRODUCTS) return pinned.slice(0, MAX_PROGRAM_PRODUCTS);
-
-  const taken = new Set(pinned.map((p) => p.slug));
-  const filler = pool
-    .filter(
-      (p) =>
-        !taken.has(p.slug) &&
-        p.categorySlug != null &&
-        program.categorySlugs.includes(p.categorySlug),
-    )
-    .sort((a, b) => b.rating - a.rating)
-    .slice(0, MAX_PROGRAM_PRODUCTS - pinned.length);
-
-  return [...pinned, ...filler];
+    .filter((p): p is Product => Boolean(p))
+    .slice(0, MAX_PROGRAM_PRODUCTS);
 }
 
 export async function loadProgramPage(

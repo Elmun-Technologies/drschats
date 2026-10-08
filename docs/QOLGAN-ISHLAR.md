@@ -10,6 +10,26 @@ Ustuvorlik: 🔴 ishga tushirishni to'sadi · 🟡 sifatga jiddiy ta'sir · 🟢
 
 ---
 
+## ⚡ Ishga tushirish uchun minimal to'plam (2026-10-08)
+
+Kod tomoni tayyor. Mijozga ochishdan oldin **shu beshtasi** shart — qolganlari
+pastdagi bo'limlarda:
+
+1. 🔴 **Telegram** — `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID`. Real backend
+   ulanmaguncha buyurtmaning **yagona yozuvi** shu xabar; live deploy'da kanal
+   bo'lmasa sayt buyurtmani qabul qilmaydi (mijozga telefon aytiladi). 1c-bo'lim.
+2. 🔴 **Katalog** — `SHOPFLOW_MODE=http` + API hujjati/kaliti, yoki real narx va
+   qoldiq ro'yxati. Hozirgi 30 ta mahsulotning narxlari mock. 1a-bo'lim.
+3. 🔴 **To'lov** — Payme/Click/Uzum merchant ID'lari (`NEXT_PUBLIC_*_MERCHANT_ID`).
+   Bo'lmasa sayt "Tez kunda" deydi va faqat yetkazishda to'lov ishlaydi.
+4. 🟡 **Ommaviy oferta** — yuristdan matn. Hozir `/offer` buni ochiq aytadi.
+5. 🟡 **Litsenziya raqami** — `NEXT_PUBLIC_LICENCE_NUMBER`.
+
+Tasdiqlash kerak bo'lgan matn: yetkazish muddati hamma joyda **Toshkent 24 soat,
+viloyatlar 1–3 kun** (`COMMERCE`); birinchi buyurtmaga −10% ni operator qo'llaydi.
+
+---
+
 ## ✅ Bajarilgan — endi sizdan hech narsa kerak emas
 
 Avval bu ro'yxatda turgan, hozir yopilgan ishlar. Raqamlar ishlab turgan
@@ -22,11 +42,12 @@ production build'dan o'lchangan.
 | `/goals` | **10 ta mavzu** |
 | `/programs` | 7 ta dastur |
 | `/blog` | 3 ta maqola + turkumlar |
-| `/experts` | 3 ta ekspert |
+| `/experts` | **bo'sh → 404** (demo profillar va AI portretlar olib tashlandi; haqiqiy ekspert kerak — 2-bo'lim) |
 | `/ingredients` | 12 ta faol modda |
 | `/where-to-buy` | **11 ta dorixona tarmog'i**, manzillar `2026-10-04` da tekshirilgan |
-| `/news`, `/brands` | to'ldirilgan (alohida `[slug]` marshrutlari yo'q — axborot sahifalari) |
-| Mahsulot rasmlari | **129 ta haqiqiy foto** `public/products/` da, slug bo'yicha ulangan |
+| `/news` | **bo'sh → 404** (3 ta o'ylab topilgan yangilik olib tashlandi; haqiqiy e'lon yozilsa qaytadi) |
+| `/brands` | to'ldirilgan |
+| Mahsulot rasmlari | haqiqiy fotolar `public/products/` da, har bir SKU qamrab olingan (test); AI-generatsiya rasmlar o'chirildi |
 | Katalog | 30 mahsulot, 29 tasi ro'yxatda (bittasi atayin `kind: "unlisted"`) |
 | Brend manzillari | `contact.email`, `contact.b2bEmail`, `contact.phone`, uchala ijtimoiy tarmoq — Go Vita manzillariga o'tkazilgan |
 | Yuridik rekvizitlar | `legalName`, STIR `307895851`, manzil (lotin + kirill), direktor, ro'yxatdan o'tgan sana, OKED — orginfo.uz dan, o'qilgan sanasi bilan |

@@ -57,15 +57,15 @@ export default function GlobalNotFound() {
           <div className="text-center">
             <p
               aria-hidden
-              className="font-display text-[120px] font-extrabold leading-none tracking-tight text-fg sm:text-[180px]"
+              className="text-[120px] font-extrabold leading-none tracking-tight text-ink sm:text-[180px]"
             >
               404
             </p>
 
-            <h1 lang="uz-UZ" className="mt-4 font-display text-2xl font-extrabold text-fg sm:text-3xl">
+            <h1 lang="uz-UZ" className="mt-4 text-2xl font-extrabold text-ink sm:text-3xl">
               {uz.common.notFoundTitle}
             </h1>
-            <p lang="ru-RU" className="mt-2 text-lg font-semibold text-legacy-muted">
+            <p lang="ru-RU" className="mt-2 text-lg font-semibold text-ink-2">
               {ru.common.notFoundTitle}
             </p>
 
@@ -73,14 +73,14 @@ export default function GlobalNotFound() {
               <Link
                 href={`/${defaultLocale}`}
                 lang="ru-RU"
-                className={`${LINK_BASE} bg-fg text-legacy-ink hover:bg-accent-strong hover:text-legacy-ink`}
+                className={`${LINK_BASE} bg-ink text-white hover:bg-black hover:text-white`}
               >
                 {ru.common.notFoundHome}
               </Link>
               <Link
                 href="/uz"
                 lang="uz-UZ"
-                className={`${LINK_BASE} border border-legacy-line bg-surface text-fg hover:border-legacy-line-strong hover:text-fg`}
+                className={`${LINK_BASE} border border-line bg-bg text-ink hover:border-line-strong hover:text-ink`}
               >
                 {uz.common.notFoundHome}
               </Link>

@@ -2,13 +2,11 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
-import { Reveal } from "@/components/animation/Reveal";
 import { buttonVariants } from "@/components/ui/Button";
-import { LoyaltyJourney } from "@/components/loyalty/LoyaltyJourney";
-import { BRAND } from "@/lib/brand";
 import { COMMERCE, thousands } from "@/lib/config/commerce";
+import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
+import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -43,136 +41,97 @@ export async function generateMetadata({
   });
 }
 
-export default async function LoyaltyPage({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}) {
+export default async function LoyaltyPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("loyalty");
+  const t = await getTranslations("pages.v3");
+  const { discounts } = COMMERCE;
+  const amount = thousands(COMMERCE.freeShippingOver);
+  const hours = COMMERCE.delivery.tashkent.hours;
 
-  const { discounts, freeShippingOver } = COMMERCE;
-  const amountLabel = thousands(freeShippingOver);
-
-  const journey = [
-    { title: t("journeyRegisterTitle"), description: t("journeyRegisterText"), icon: "profile" as const },
-    { title: t("journeyBuyTitle"), description: t("journeyBuyText"), icon: "product" as const },
-    { title: t("journeyRewardsTitle"), description: t("journeyRewardsText"), icon: "rewards" as const },
-  ];
-
-  /*
-    The three programs are read as raw arrays and interpolated here rather than
-    through message keys. It keeps the numbers in one place (COMMERCE) while the
-    wording stays in the translation files — a tier card that quotes a
-    percentage nobody's checkout applies is exactly the bug this page fixes.
-  */
-  const fill = (template: string, vars: Record<string, string | number>) =>
-    template.replace(/\{(\w+)\}/g, (_, key: string) =>
-      key in vars ? String(vars[key]) : `{${key}}`,
-    );
-
-  const freeLabel = t("programsFree");
-  // Every value is a string so the three shapes can sit in one array.
-  const programVars: Record<string, string>[] = [
-    { first: String(discounts.firstOrderPercent) },
+  const programs = [
     {
-      first: String(discounts.subscriptionFirstPercent),
-      recurring: String(discounts.subscriptionRecurringPercent),
+      value: `−${discounts.firstOrderPercent}%`,
+      title: t("loyalty.firstTitle"),
+      text: t("loyalty.firstText", { percent: discounts.firstOrderPercent }),
+      note: t("loyalty.firstNote"),
+      dark: true,
     },
-    { free: freeLabel, amount: amountLabel },
+    {
+      value: `−${discounts.subscriptionFirstPercent}% → −${discounts.subscriptionRecurringPercent}%`,
+      title: t("loyalty.subTitle"),
+      text: t("loyalty.subText", { first: discounts.subscriptionFirstPercent, next: discounts.subscriptionRecurringPercent }),
+      note: t("loyalty.subNote"),
+      dark: false,
+    },
+    {
+      value: t("free"),
+      title: t("loyalty.clubTitle"),
+      text: t("loyalty.clubText", { amount }),
+      note: t("loyalty.clubNote"),
+      dark: false,
+    },
   ];
-  const programs = (t.raw("programs") as { badge: string; title: string; text: string; note: string }[]).map(
-    (program, index) => ({
-      badge: fill(program.badge, programVars[index]),
-      title: program.title,
-      text: fill(program.text, programVars[index]),
-      note: fill(program.note, programVars[index]),
-    }),
+  const how = t.raw("loyalty.how") as { title: string; text: string }[];
+  const rules = (t.raw("loyalty.rules") as string[]).map((r) =>
+    r.replace("{amount}", amount).replace("{hours}", String(hours)),
   );
 
-  const rules = (t.raw("rules") as string[]).map((rule) => fill(rule, { amount: amountLabel }));
-
   return (
-    <div className="pb-24 sm:pb-32">
-      <LoyaltyJourney
-        title={t("journeyTitle")}
-        subtitle={t("journeySubtitle")}
-        cta={t("cta")}
-        steps={journey}
-      />
+    <InfoShell active="loyalty" crumb={t("nav.loyaltyShort")}>
+      <InfoHeader title={t("nav.loyaltyShort")} lead={t("loyalty.lead")} />
 
-      <Container>
-        <section aria-labelledby="loyalty-programs-title" className="border-t border-legacy-line pt-16 sm:pt-24">
-          <Reveal>
-            <div className="mx-auto max-w-2xl text-center">
-              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-legacy-muted">{t("title")}</p>
-              <h2 id="loyalty-programs-title" className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("programsTitle")}
-              </h2>
-              <p className="mt-4 text-legacy-muted">{t("programsDesc")}</p>
-            </div>
-          </Reveal>
-
-          <div className="mt-10 grid gap-4 md:grid-cols-3">
-            {programs.map((program, index) => (
-              <Reveal key={program.title} index={index} className="h-full">
-                <article className="flex h-full min-h-56 flex-col rounded-2xl border border-legacy-line bg-surface p-7">
-                  <span className="w-fit rounded-full border border-legacy-line-strong bg-legacy-ink px-3 py-1.5 text-xs font-extrabold tabular-nums text-brand-deep">
-                    {program.badge}
-                  </span>
-                  <h3 className="mt-5 font-display text-xl font-extrabold text-fg">{program.title}</h3>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-legacy-muted">{program.text}</p>
-                  <p className="mt-5 rounded-xl border border-legacy-line bg-legacy-ink p-3.5 text-xs leading-relaxed text-legacy-muted">
-                    {program.note}
-                  </p>
-                </article>
-              </Reveal>
-            ))}
+      <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">
+        {programs.map((p) => (
+          <div
+            key={p.title}
+            className={cn(
+              "flex flex-col gap-3 rounded-[24px] p-6 lg:min-h-[340px] lg:p-7",
+              p.dark ? "bg-dark-panel text-white" : "bg-tile",
+            )}
+          >
+            <span className="text-[34px] font-bold leading-10 lg:text-[40px] lg:leading-[44px]">{p.value}</span>
+            <h2 className="text-xl font-bold leading-7">{p.title}</h2>
+            <p className={cn("text-[15px] leading-[22px]", p.dark ? "text-on-dark-2" : "text-ink-2")}>{p.text}</p>
+            <p className={cn("mt-auto pt-3 text-sm leading-5", p.dark ? "text-on-dark-2" : "text-ink-2")}>{p.note}</p>
           </div>
-        </section>
+        ))}
+      </div>
 
-        <section aria-labelledby="loyalty-rules-title" className="mt-16 rounded-2xl border border-legacy-line bg-surface-2/60 px-6 py-10 sm:mt-20 sm:px-10">
-          <Reveal>
-            <h2 id="loyalty-rules-title" className="font-display text-2xl font-extrabold tracking-tight">{t("rulesTitle")}
-            </h2>
-          </Reveal>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2">
-            {rules.map((rule, index) => (
-              <Reveal key={rule} index={index} as="li">
-                <div className="flex h-full items-start gap-3 rounded-xl border border-legacy-line bg-legacy-ink p-4">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal-soft text-[11px] font-bold text-signal">
-                    ✓
-                  </span>
-                  <p className="text-sm leading-relaxed text-fg">{rule}</p>
-                </div>
-              </Reveal>
-            ))}
-          </ul>
-        </section>
+      <section aria-labelledby="loyalty-how" className="flex flex-col gap-4">
+        <h2 id="loyalty-how" className="text-[22px] font-bold leading-7 lg:text-[26px] lg:leading-8">{t("loyalty.howTitle")}</h2>
+        <ol className="grid gap-3 lg:grid-cols-3 lg:gap-4">
+          {how.map((h, i) => (
+            <li key={h.title} className="flex flex-col gap-2 rounded-[20px] border border-line p-5 lg:p-6">
+              <span aria-hidden className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-[15px] font-bold text-white">{i + 1}</span>
+              <h3 className="mt-1 text-lg font-bold">{h.title}</h3>
+              <p className="text-[15px] leading-[22px] text-ink-2">{h.text}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
 
-        <section className="mt-16 sm:mt-20">
-          <Reveal>
-            <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-8 sm:p-10">
-              <h2 className="font-display text-2xl font-extrabold tracking-tight">{t("partnersTitle")}</h2>
-              <p className="mt-3 max-w-3xl leading-relaxed text-legacy-muted">{t("partnersText")}</p>
-              <a
-                href={`mailto:${BRAND.contact.b2bEmail}`}
-                className={buttonVariants("secondary") + " mt-6"}
-              >
-                {t("partnersCta")}
-              </a>
-            </div>
-          </Reveal>
-        </section>
+      <section aria-labelledby="loyalty-rules" className="flex flex-col gap-3 rounded-[20px] bg-tile p-5 lg:p-7">
+        <h2 id="loyalty-rules" className="text-[22px] font-bold leading-7">{t("loyalty.rulesTitle")}</h2>
+        <ul className="flex flex-col gap-2.5">
+          {rules.map((r) => (
+            <li key={r} className="flex items-start gap-3 text-base leading-6">
+              <svg viewBox="0 0 24 24" aria-hidden className="mt-0.5 h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M5 12l5 5 9-10" />
+              </svg>
+              {r}
+            </li>
+          ))}
+        </ul>
+      </section>
 
-        <Reveal>
-          <div className="mt-12 flex justify-center">
-            <Link href="/products" className={buttonVariants("dark", "lg")}>
-              {t("cta")}
-            </Link>
-          </div>
-        </Reveal>
-      </Container>
-    </div>
+      <div className="flex flex-col items-start gap-4 rounded-[20px] border border-line p-5 lg:p-7">
+        <div className="flex flex-col gap-1.5">
+          <h2 className="text-xl font-bold">{t("loyalty.b2bTitle")}</h2>
+          <p className="max-w-[640px] text-[15px] leading-[22px] text-ink-2">{t("loyalty.b2bText")}</p>
+        </div>
+        <Link href="/partners" className={buttonVariants("secondary")}>{t("loyalty.b2bCta")}</Link>
+      </div>
+    </InfoShell>
   );
 }

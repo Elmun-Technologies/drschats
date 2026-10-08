@@ -127,7 +127,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     ingredientSlugs: ["vitamin-d3", "vitamin-c", "zinc"],
-    productSlugs: ["immuno-complex", "vitamin-d3-k2", "swiss-energy-vitamin-c-1000"],
+    productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-vitamin-c-20", "dr-frei-gold-vitamins-20"],
     categorySlugs: ["immunity", "vitamins"],
     relatedSlugs: ["frequent-colds", "vitamin-d3", "vitamin-c", "zinc"],
     faq: {
@@ -200,7 +200,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     ingredientSlugs: ["magnesium"],
-    productSlugs: ["magnesium-b6", "swiss-energy-magnesium"],
+    productSlugs: ["dr-frei-antistress-magniy-20"],
     categorySlugs: ["sleep", "minerals"],
     relatedSlugs: ["insomnia", "stress", "magnesium"],
     faq: {
@@ -265,7 +265,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     ingredientSlugs: ["vitamin-b12", "iron", "vitamin-d3", "magnesium"],
-    productSlugs: ["multivitamin-daily", "dr-frei-active"],
+    productSlugs: ["swiss-energy-neuroforce-30", "dr-frei-multivitamins-biotin-20", "aminomorin-forte-30"],
     categorySlugs: ["vitamins", "energy"],
     relatedSlugs: ["fatigue", "vitamin-b12", "iron"],
     faq: {
@@ -324,7 +324,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     ingredientSlugs: ["collagen", "biotin", "vitamin-c", "zinc"],
-    productSlugs: ["collagen-beauty", "swiss-energy-beauty"],
+    productSlugs: ["swiss-energy-hair-nail-skin-30", "swiss-energy-nature-collagen"],
     categorySlugs: ["beauty"],
     relatedSlugs: ["hair-loss", "collagen", "biotin"],
     faq: {
@@ -373,7 +373,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Органический магний — снижение тревожности", "Витамин B6 — синтез серотонина"],
     },
     ingredientSlugs: ["magnesium", "vitamin-b12"],
-    productSlugs: ["magnesium-b6"],
+    productSlugs: ["dr-frei-antistress-magniy-20", "swiss-energy-neuroforce-30"],
     categorySlugs: ["sleep", "vitamins"],
     relatedSlugs: ["stress-anxiety", "sleep", "magnesium"],
     faq: {
@@ -422,7 +422,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Мультиштаммовые пробиотики", "Пребиотические волокна для питания флоры"],
     },
     ingredientSlugs: ["probiotics", "zinc"],
-    productSlugs: ["dr-frei-probiotic"],
+    productSlugs: [],
     categorySlugs: ["vitamins"],
     relatedSlugs: ["digestive-bloat", "probiotics"],
     faq: {
@@ -471,7 +471,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Омега-3 высокой концентрации", "Органический магний против сосудистого спазма", "Витамин K2 для защиты артерий"],
     },
     ingredientSlugs: ["epa-dha", "magnesium", "vitamin-k2"],
-    productSlugs: ["omega-3-premium", "dr-frei-omega-3-1000", "vitamin-d3-k2"],
+    productSlugs: [],
     categorySlugs: ["vitamins", "minerals"],
     relatedSlugs: ["omega-3", "magnesium", "vitamin-d3"],
     faq: {
@@ -520,7 +520,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Пептиды коллагена для суставов", "Витамины D3 и K2 для минерализации костей", "Биодоступный кальций"],
     },
     ingredientSlugs: ["collagen", "vitamin-d3", "vitamin-k2", "calcium"],
-    productSlugs: ["collagen-beauty", "vitamin-d3-k2", "swiss-energy-calcid"],
+    productSlugs: ["swiss-energy-calcivit-30", "swiss-energy-nature-collagen"],
     categorySlugs: ["vitamins", "minerals"],
     relatedSlugs: ["joint-pain", "collagen", "calcium", "vitamin-d3"],
     faq: {
@@ -569,7 +569,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Высокая концентрация ДГК Омега-3", "Витамин B12 для проводимости нервных волокон", "Магний для устойчивости к нагрузкам"],
     },
     ingredientSlugs: ["epa-dha", "vitamin-b12", "magnesium"],
-    productSlugs: ["omega-3-premium", "dr-frei-active"],
+    productSlugs: ["swiss-energy-neuroforce-30"],
     categorySlugs: ["vitamins"],
     relatedSlugs: ["omega-3", "vitamin-b12", "fatigue"],
     faq: {
@@ -618,7 +618,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Витамин D3 для регуляции метаболизма", "Магний для энергетического обмена", "Пробиотики для кишечной микробиоты"],
     },
     ingredientSlugs: ["vitamin-d3", "magnesium", "probiotics"],
-    productSlugs: ["vitamin-d3-k2", "magnesium-b6", "dr-frei-probiotic"],
+    productSlugs: [],
     categorySlugs: ["vitamins"],
     relatedSlugs: ["vitamin-d3", "magnesium", "probiotics"],
     faq: {
@@ -685,7 +685,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     ingredientSlugs: ["vitamin-d3", "vitamin-k2"],
-    productSlugs: ["vitamin-d3-k2", "swiss-energy-d3-caps"],
+    productSlugs: ["swiss-energy-calcivit-30", "dr-frei-multivitamins-biotin-20"],
     categorySlugs: ["vitamins", "immunity"],
     relatedSlugs: ["immunity", "frequent-colds", "calcium"],
     faq: {
@@ -734,7 +734,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Антиоксидантная защита", "Кофактор выработки коллагена", "Усиление всасывания железа"],
     },
     ingredientSlugs: ["vitamin-c"],
-    productSlugs: ["immuno-complex", "swiss-energy-vitamin-c-1000", "dr-frei-vitamin-c"],
+    productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-vitamin-c-20", "dr-frei-gold-vitamins-20"],
     categorySlugs: ["vitamins", "effervescent"],
     relatedSlugs: ["immunity", "frequent-colds", "iron"],
     faq: {
@@ -783,7 +783,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Снятие мышечных судорог", "Снижение тревожности и стресса", "Поддержка сердечного ритма"],
     },
     ingredientSlugs: ["magnesium"],
-    productSlugs: ["magnesium-b6", "swiss-energy-magnesium"],
+    productSlugs: ["dr-frei-antistress-magniy-20"],
     categorySlugs: ["minerals", "sleep"],
     relatedSlugs: ["sleep", "stress", "insomnia"],
     faq: {
@@ -832,7 +832,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Усиление иммунной защиты", "Противовоспалительный эффект при акне", "Стимуляция роста волос"],
     },
     ingredientSlugs: ["zinc"],
-    productSlugs: ["immuno-complex", "dr-frei-zinc"],
+    productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-hair-nail-skin-30", "dr-frei-gold-vitamins-20"],
     categorySlugs: ["minerals", "immunity"],
     relatedSlugs: ["immunity", "frequent-colds", "beauty"],
     faq: {
@@ -881,7 +881,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Высокая концентрация EPA/DHA", "Поддержка липидного профиля", "Когнитивные функции и зрение"],
     },
     ingredientSlugs: ["epa-dha"],
-    productSlugs: ["omega-3-premium", "dr-frei-omega-3-1000"],
+    productSlugs: [],
     categorySlugs: ["vitamins"],
     relatedSlugs: ["heart", "brain"],
     faq: {
@@ -930,7 +930,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Пептиды коллагена I и III типа", "Обогащен витамином C и гиалуроновой кислотой", "Повышение гидратации кожи"],
     },
     ingredientSlugs: ["collagen", "vitamin-c", "biotin"],
-    productSlugs: ["collagen-beauty", "swiss-energy-collagen"],
+    productSlugs: ["swiss-energy-nature-collagen"],
     categorySlugs: ["beauty"],
     relatedSlugs: ["beauty", "joints", "hair-loss"],
     faq: {
@@ -979,7 +979,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Биоактивная коферментная форма", "Поддержка уровня гемоглобина", "Защита миелиновых оболочек нервов"],
     },
     ingredientSlugs: ["vitamin-b12"],
-    productSlugs: ["multivitamin-daily", "dr-frei-active"],
+    productSlugs: ["swiss-energy-neuroforce-30", "dr-frei-multivitamins-biotin-20"],
     categorySlugs: ["vitamins"],
     relatedSlugs: ["fatigue", "energy", "iron"],
     faq: {
@@ -1028,7 +1028,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Хелатная форма без побочных эффектов", "Максимальное усвоение с витамином C", "Устранение гипоксии и слабости"],
     },
     ingredientSlugs: ["iron", "vitamin-c"],
-    productSlugs: ["multivitamin-daily"],
+    productSlugs: [],
     categorySlugs: ["minerals", "vitamins"],
     relatedSlugs: ["fatigue", "energy", "hair-loss"],
     faq: {
@@ -1077,7 +1077,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Профилактика остеопении и остеопороза", "Синергия с D3 и K2", "Крепость зубной эмали"],
     },
     ingredientSlugs: ["calcium", "vitamin-d3", "vitamin-k2"],
-    productSlugs: ["swiss-energy-calcid", "vitamin-d3-k2"],
+    productSlugs: ["swiss-energy-calcivit-30"],
     categorySlugs: ["minerals"],
     relatedSlugs: ["joints", "vitamin-d3"],
     faq: {
@@ -1126,7 +1126,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Миллиарды КОЕ живых бактерий", "Устранение вздутия и дискомфорта", "Поддержка иммунитета"],
     },
     ingredientSlugs: ["probiotics"],
-    productSlugs: ["dr-frei-probiotic"],
+    productSlugs: [],
     categorySlugs: ["vitamins"],
     relatedSlugs: ["digestion", "digestive-bloat", "immunity"],
     faq: {
@@ -1177,7 +1177,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Проверка ферритина и гемоглобина", "Восполнение D3 и B-комплекса", "Нормализация сна с магнием"],
     },
     ingredientSlugs: ["iron", "vitamin-b12", "magnesium", "vitamin-d3"],
-    productSlugs: ["multivitamin-daily", "magnesium-b6", "dr-frei-active"],
+    productSlugs: ["swiss-energy-neuroforce-30", "dr-frei-multivitamins-biotin-20", "dr-frei-antistress-magniy-20"],
     categorySlugs: ["vitamins", "energy"],
     relatedSlugs: ["energy", "vitamin-b12", "iron"],
     faq: {
@@ -1226,7 +1226,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Биотин и коллаген для кератина", "Цинк для здоровья кожи головы", "Восполнение уровня железа"],
     },
     ingredientSlugs: ["biotin", "collagen", "zinc", "iron"],
-    productSlugs: ["collagen-beauty", "swiss-energy-beauty"],
+    productSlugs: ["swiss-energy-hair-nail-skin-30", "swiss-energy-nature-collagen"],
     categorySlugs: ["beauty"],
     relatedSlugs: ["beauty", "collagen", "biotin"],
     faq: {
@@ -1275,7 +1275,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Органический магний B6 за 40 минут до сна", "Ограничение кофеина во второй половине дня", "Проветривание спальни"],
     },
     ingredientSlugs: ["magnesium", "vitamin-b12"],
-    productSlugs: ["magnesium-b6", "swiss-energy-magnesium"],
+    productSlugs: ["dr-frei-antistress-magniy-20"],
     categorySlugs: ["sleep", "minerals"],
     relatedSlugs: ["sleep", "stress", "magnesium"],
     faq: {
@@ -1324,7 +1324,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Курсовой витамин D3", "Хелатный цинк", "Высокодозный витамин C"],
     },
     ingredientSlugs: ["vitamin-d3", "zinc", "vitamin-c"],
-    productSlugs: ["immuno-complex", "vitamin-d3-k2", "swiss-energy-vitamin-c-1000"],
+    productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-vitamin-c-20"],
     categorySlugs: ["immunity", "vitamins"],
     relatedSlugs: ["immunity", "vitamin-d3", "zinc"],
     faq: {
@@ -1373,7 +1373,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Хелат магния с витамином B6", "Эмоциональный баланс", "Защита сердца от стресса"],
     },
     ingredientSlugs: ["magnesium", "vitamin-b12"],
-    productSlugs: ["magnesium-b6"],
+    productSlugs: ["dr-frei-antistress-magniy-20"],
     categorySlugs: ["sleep", "minerals"],
     relatedSlugs: ["stress", "sleep", "insomnia"],
     faq: {
@@ -1422,7 +1422,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Курс мультипробиотика", "Достаточный питьевой режим", "Снижение доли рафинированных сахаров"],
     },
     ingredientSlugs: ["probiotics", "zinc"],
-    productSlugs: ["dr-frei-probiotic"],
+    productSlugs: [],
     categorySlugs: ["vitamins"],
     relatedSlugs: ["digestion", "probiotics"],
     faq: {
@@ -1471,7 +1471,7 @@ const raw: RawHealthTopic[] = [
       ru: ["Пептиды коллагена для хрящей", "Витамины D3 и K2 с кальцием", "Умеренная двигательная активность"],
     },
     ingredientSlugs: ["collagen", "vitamin-d3", "vitamin-k2", "calcium"],
-    productSlugs: ["collagen-beauty", "vitamin-d3-k2", "swiss-energy-calcid"],
+    productSlugs: ["swiss-energy-calcivit-30", "swiss-energy-nature-collagen"],
     categorySlugs: ["vitamins", "minerals"],
     relatedSlugs: ["joints", "collagen", "calcium"],
     faq: {

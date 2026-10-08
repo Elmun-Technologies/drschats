@@ -3,10 +3,11 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { PageHero } from "@/components/page/PageHero";
-import { FaqSection } from "@/components/page/FaqSection";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/animation/Reveal";
+import { Link } from "@/lib/i18n/navigation";
+import { COMMERCE } from "@/lib/config/commerce";
+import { buttonVariants } from "@/components/ui/Button";
+import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
+import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -25,68 +26,65 @@ const POINT_ICONS = [
 export default async function GuaranteePage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("pages.guarantee");
-  const dt = await getTranslations("pages");
-  const points = t.raw("points") as { title: string; text: string }[];
-  const faq = t.raw("faq") as { question: string; answer: string }[];
+  const t = await getTranslations("pages.v3");
+  const g = await getTranslations("pages.guarantee");
+  const faq = g.raw("faq") as { question: string; answer: string }[];
+  const days = COMMERCE.returns.unopenedWindowDays;
+  const steps = t.raw("guarantee.steps") as string[];
+  const cards = (t.raw("guarantee.cards") as { title: string; text: string }[]).map((c) => ({
+    title: c.title.replace("{days}", String(days)),
+    text: c.text.replace("{days}", String(days)),
+  }));
 
   return (
-    <div className="pb-24">
+    <InfoShell active="guarantee" crumb={t("nav.guarantee")}>
       <JsonLd data={faqLd(faq)} />
-      <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/guarantee` }])} />
-      <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
+      <JsonLd data={breadcrumbLd([{ name: t("nav.guarantee"), url: `${SITE_URL}/${locale}/guarantee` }])} />
+      <InfoHeader title={t("nav.guarantee")} lead={t("guarantee.lead")} />
 
-      <Container className="mt-14">
-        {/* Big guarantee badge */}
-        <Reveal>
-          <div className="mb-12 flex flex-col items-center gap-4 rounded-3xl border border-accent/30 bg-surface-2 py-12 text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-signal-soft text-signal">
-              <svg viewBox="0 0 24 24" className="h-10 w-10" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <p className="font-display text-5xl font-extrabold text-fg">30</p>
-            <p className="font-display text-xl font-bold text-fg">{t("badgeLabel")}</p>
-            <p className="max-w-sm text-sm text-legacy-muted">{t("badgeDesc")}</p>
-          </div>
-        </Reveal>
-
-        {/* Points */}
-        <div className="grid gap-4 sm:grid-cols-3">
-          {points.map((p, i) => (
-            <Reveal key={p.title} index={i}>
-              <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-6">
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-surface-2 text-fg">
-                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d={POINT_ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-                <h3 className="font-display text-lg font-bold text-fg">{p.title}</h3>
-                <p className="mt-2 flex-1 text-sm text-legacy-muted">{p.text}</p>
-              </div>
-            </Reveal>
-          ))}
+      <div className="flex flex-col gap-5 rounded-[20px] bg-dark-panel p-6 text-white lg:flex-row lg:items-center lg:gap-10 lg:rounded-[28px] lg:px-9 lg:py-8">
+        <div className="flex shrink-0 items-baseline gap-3 lg:w-[220px] lg:flex-col lg:gap-1">
+          <span className="text-[56px] font-bold leading-none tracking-[-0.03em] lg:text-[88px]">{days}</span>
+          <span className="text-[15px] text-on-dark-2 lg:text-[17px]">{t("guarantee.bigLabel")}</span>
         </div>
+        <div className="flex flex-col gap-2">
+          <h2 className="text-xl font-bold leading-7 lg:text-[26px] lg:leading-8">{t("guarantee.heroTitle", { days })}</h2>
+          <p className="text-[15px] leading-[22px] text-on-dark-2 lg:text-base lg:leading-6">{t("guarantee.heroText")}</p>
+        </div>
+      </div>
 
-        {/* Return steps */}
-        <Reveal className="mt-14">
-          <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-8">
-            <h2 className="mb-8 font-display text-lg font-bold text-fg">{t("howToReturn")}</h2>
-            <div className="relative grid gap-6 sm:grid-cols-3">
-              {[t("returnStep1"), t("returnStep2"), t("returnStep3")].map((step, i) => (
-                <div key={i} className="flex items-start gap-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-signal text-sm font-bold text-white">
-                    {i + 1}
-                  </span>
-                  <p className="text-sm text-legacy-muted">{step}</p>
-                </div>
-              ))}
-            </div>
+      <section aria-labelledby="return-steps" className="flex flex-col gap-4">
+        <h2 id="return-steps" className="text-[22px] font-bold leading-7 lg:text-[26px] lg:leading-8">{t("guarantee.stepsTitle")}</h2>
+        <ol className="grid gap-3 lg:grid-cols-3 lg:gap-4">
+          {steps.map((step, i) => (
+            <li key={step} className="flex items-start gap-4 rounded-[20px] bg-tile p-5 lg:flex-col lg:p-6">
+              <span aria-hidden className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-[15px] font-bold text-white">{i + 1}</span>
+              <span className="text-base font-semibold leading-6 lg:text-[17px]">{step}</span>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">
+        {cards.map((c) => (
+          <div key={c.title} className="flex flex-col gap-2 rounded-[20px] border border-line p-5 lg:p-6">
+            <h3 className="text-lg font-bold lg:text-xl">{c.title}</h3>
+            <p className="text-[15px] leading-[22px] text-ink-2">{c.text}</p>
           </div>
-        </Reveal>
-      </Container>
+        ))}
+      </div>
 
-      <FaqSection heading={dt("deliveryFaqTitle")} items={faq} />
-    </div>
+      <div className="flex flex-col gap-4 rounded-[20px] bg-tile p-5 lg:flex-row lg:items-center lg:justify-between lg:px-7 lg:py-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-lg font-bold">{t("guarantee.devicesTitle")}</h2>
+          <p className="text-[15px] leading-[22px] text-ink-2">{t("guarantee.devicesText")}</p>
+        </div>
+        <Link href="/contact" className={cn(buttonVariants("primary"), "shrink-0 self-start lg:self-center")}>
+          {t("guarantee.devicesCta")}
+        </Link>
+      </div>
+
+      <InfoFaq title={t("faqTitle")} items={faq} />
+    </InfoShell>
   );
 }
