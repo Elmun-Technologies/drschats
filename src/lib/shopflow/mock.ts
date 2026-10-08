@@ -100,8 +100,8 @@ const rawCategories: RawCategory[] = [
     slug: "immunity",
     name: { uz: "Immunitet", ru: "Иммунитет" },
     description: {
-      uz: "Himoyani kuchaytiruvchi komplekslar.",
-      ru: "Комплексы для укрепления защиты.",
+      uz: "Vitamin va mineral komplekslar.",
+      ru: "Комплексы витаминов и минералов.",
     },
     image: img("cat-immunity", "Immunity").url,
   },
@@ -691,8 +691,8 @@ const rawProducts: RawProduct[] = [
       ru: "Витамины для волос, ногтей и кожи — 30 капсул",
     },
     description: {
-      uz: "Swiss Energy Hair Nail & Skin — tibbiy achitqi ekstrakti, pantoten kislota, L-sistein, L-metionin, niatsin, sink, biotin, B1 va B6 vitamini. Soch va tirnoqni mustahkamlaydi, terini yaxshilaydi.",
-      ru: "Swiss Energy Hair Nail & Skin — экстракт медицинских дрожжей, пантотеновая кислота, L-цистеин, L-метионин, ниацин, цинк, биотин, витамин B1 и B6. Укрепляет волосы и ногти, улучшает кожу.",
+      uz: "Swiss Energy Hair Nail & Skin — tibbiy achitqi ekstrakti, pantoten kislota, L-sistein, L-metionin, niatsin, sink, biotin, B1 va B6 vitamini. Soch, tirnoq va teri uchun mo'ljallangan kompleks, 30 kapsula.",
+      ru: "Swiss Energy Hair Nail & Skin — экстракт медицинских дрожжей, пантотеновая кислота, L-цистеин, L-метионин, ниацин, цинк, биотин, витамин B1 и B6. Комплекс для волос, ногтей и кожи, 30 капсул.",
     },
     highlights: {
       uz: ["Biotin + Sink", "L-sistein + L-metionin", "B1 va B6 vitamini", "30 kapsula"],
@@ -783,8 +783,8 @@ const rawProducts: RawProduct[] = [
       ru: "Компрессорный небулайзер — для взрослых и детей",
     },
     description: {
-      uz: "Dr. Frei Turbo Base — kompressorli nebulayzer ingalyator. Nafas yo'llari kasalliklarini davolash uchun. Kattalar va bolalarga mos, oddiy foydalanish.",
-      ru: "Dr. Frei Turbo Base — компрессорный небулайзер-ингалятор. Для лечения заболеваний дыхательных путей. Подходит взрослым и детям, простое использование.",
+      uz: "Dr. Frei Turbo Base — kompressorli nebulayzer ingalyator. Dori eritmalarini ingalyatsiya qilish uchun qurilma. Kattalar va bolalarga mos, oddiy foydalanish. Qo'llashdan oldin shifokor bilan maslahatlashing.",
+      ru: "Dr. Frei Turbo Base — компрессорный небулайзер-ингалятор. Устройство для ингаляции лекарственных растворов. Подходит взрослым и детям, простое использование. Перед применением проконсультируйтесь с врачом.",
     },
     highlights: {
       uz: ["Kompressorli nebulayzer", "Kattalar va bolalar uchun", "Oddiy foydalanish", "Dr. Frei brendidan"],
@@ -1027,8 +1027,8 @@ const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "Kuniga 1 kapsuladan ovqat bilan qabul qiling. Mavsumiy profilaktika uchun 1–2 oy davomida.",
-      ru: "Принимайте по 1 капсуле в день с едой. Для сезонной профилактики — 1–2 месяца.",
+      uz: "Kuniga 1 kapsuladan ovqat bilan qabul qiling. Kurs — 1–2 oy.",
+      ru: "Принимайте по 1 капсуле в день с едой. Курс — 1–2 месяца.",
     },
     faq: {
       uz: [{ question: "Shamollayotganda ichsa bo'ladimi?", answer: "Ha, shamollash boshlanishida va davomida foydali." }],
@@ -1508,12 +1508,12 @@ const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Arzon narx kafolati"], ru: ["Акция", "Гарантия низкой цены"] },
     name: { uz: "Dr. Frei Antistress Magniy B6 20", ru: "Dr. Frei Антистресс Магний B6 20" },
     tagline: {
-      uz: "Stressga qarshi vitaminlar — magniy B6, taurin, vitamin C va K",
-      ru: "Витамины от стресса — магний B6, таурин, витамин C и K",
+      uz: "Magniy B6, taurin, vitamin C va K — shipuchi tabletka",
+      ru: "Магний B6, таурин, витамин C и K — шипучие таблетки",
     },
     description: {
-      uz: "Dr. Frei Antistress — magniy, B6 vitamini, taurin, vitamin C va K bilan boyitilgan shipuchi tabletkalar. Stress, charchoq va ta'sirlanishni kamaytiradi. 20 tabletka.",
-      ru: "Dr. Frei Антистресс — шипучие таблетки с магнием, витамином B6, таурином, витамином C и K. Снижает стресс, усталость и раздражительность. 20 таблеток.",
+      uz: "Dr. Frei Antistress — magniy, B6 vitamini, taurin, vitamin C va K bilan boyitilgan shipuchi tabletkalar. Bir tabletka bir stakan suvda eriydi — kapsula yutishni yoqtirmaydiganlar uchun qulay shakl. Qadoqda 20 tabletka, kuniga bittadan qabul qilinganda 20 kunga yetadi.",
+      ru: "Dr. Frei Антистресс — шипучие таблетки с магнием, витамином B6, таурином, витамином C и K. Одна таблетка растворяется в стакане воды — удобная форма для тех, кто не любит глотать капсулы. В упаковке 20 таблеток, при приёме по одной в день — на 20 дней.",
     },
     highlights: {
       uz: ["Magniy + B6", "Taurin", "Vitamin C + K", "20 shipuchi tabletka"],
@@ -1553,11 +1553,11 @@ const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "Uyquga yordami bormi?", answer: "Ha, magniy uyquni yaxshilashga yordam beradi, kechqurun qabul qilish tavsiya etiladi." },
+        { question: "Uyquga yordami bormi?", answer: "Magniyni kechqurun qabul qilish tavsiya etiladi. Uyqu bilan bog'liq muammolar bo'yicha shifokor bilan maslahatlashing." },
         { question: "Har kuni ichsa bo'ladimi?", answer: "Ha, kunlik qabul uchun mo'ljallangan." },
       ],
       ru: [
-        { question: "Помогает ли со сном?", answer: "Да, магний помогает улучшить сон, рекомендуется вечерний приём." },
+        { question: "Помогает ли со сном?", answer: "Магний рекомендуется принимать вечером. По вопросам сна проконсультируйтесь с врачом." },
         { question: "Можно принимать каждый день?", answer: "Да, предназначен для ежедневного приёма." },
       ],
     },
