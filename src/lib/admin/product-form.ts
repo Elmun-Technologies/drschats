@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isAllowedImageUrl } from "@/lib/security/csp";
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import type { ProductContent } from "@/lib/db/schema";
@@ -130,8 +131,7 @@ export const productFieldsSchema = z
     path: ["oldPrice"],
   });
 
-const URL_RE = /^(https:\/\/|\/)[^\s]+$/;
-
+/** Image URLs the site can actually render (own files or an allowlisted host); the rest are dropped. */
 export function parseImages(text: string | undefined): string[] {
-  return lines(text ?? "").filter((u) => URL_RE.test(u));
+  return lines(text ?? "").filter(isAllowedImageUrl);
 }

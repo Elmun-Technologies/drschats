@@ -60,7 +60,12 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     placeholder and the gallery stays away.
   */
   const photos = p.images?.length ? p.images : (BRAND.productImageOverrides[p.slug] ?? []);
-  const brand = p.brandSlug ? data.brands?.find((b) => b.slug === p.brandSlug) ?? null : null;
+  /*
+    undefined = the source does not say (built-in rows → slug tables decide);
+    null = the database says "none" (an admin cleared it) and must stay none.
+  */
+  const brand =
+    p.brandSlug === undefined ? undefined : p.brandSlug ? (data.brands?.find((b) => b.slug === p.brandSlug) ?? null) : null;
   return {
     id: p.id,
     slug: p.slug,
@@ -92,8 +97,8 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     certifications: [],
     bespoke: p.bespoke,
     assortment: p.kind ?? "core",
-    cutout: p.cutout ?? null,
-    unit: p.unit ?? null,
+    cutout: p.cutout,
+    unit: p.unit,
     brand,
   };
 }

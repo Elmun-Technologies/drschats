@@ -12,11 +12,12 @@ describe("product form codec", () => {
     expect(formToContent(contentToForm(content(p)))).toEqual(content(p));
   });
 
-  it("keeps only https or root-relative image URLs", () => {
-    expect(parseImages("https://a.b/c.jpg\n/products/x.webp\njavascript:alert(1)\nhttp://x\n")).toEqual([
-      "https://a.b/c.jpg",
-      "/products/x.webp",
-    ]);
+  it("keeps only images the site can render: own files or allowlisted https hosts", () => {
+    expect(
+      parseImages(
+        "https://govita.fly.storage.tigris.dev/p/1.webp\n/products/x.webp\nhttps://evil.example/c.jpg\n//cdn.x/a.png\njavascript:alert(1)\nhttp://x.fly.storage.tigris.dev/a.png\n",
+      ),
+    ).toEqual(["https://govita.fly.storage.tigris.dev/p/1.webp", "/products/x.webp"]);
   });
 
   it("rejects an old price that is not above the price", () => {

@@ -15,6 +15,7 @@ import { PRODUCT_UNITS } from "@/lib/content/product-units";
 import { ALL_BRANDS, productBrand } from "@/lib/content/product-brands";
 import { SLUG_RE, formToContent, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
 import { isStorageConfigured, uploadImage } from "@/lib/admin/storage";
+import { isAllowedImageUrl } from "@/lib/security/csp";
 
 export type FormState = { error?: string; ok?: string } | undefined;
 
@@ -117,6 +118,12 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
   if (!parsed.success) return { error: firstIssue(parsed.error) };
   const d = parsed.data;
   const id = data.id?.trim() || `p-${d.slug}`;
+  const rejected = [...(d.images ?? "").split(/\r?\n/), d.cutout ?? ""]
+    .map((u) => u.trim())
+    .filter((u) => u && !isAllowedImageUrl(u));
+  if (rejected.length > 0) {
+    return { error: `Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): ${rejected[0]}. Rasmni «Rasm yuklash» orqali yuklang.` };
+  }
 
   const unit =
     d.unitCount && d.unitKind ? { count: Number(d.unitCount), unit: d.unitKind as "tablet" | "capsule" } : null;
@@ -130,7 +137,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     kind: d.kind,
     sort: d.sort,
     images: parseImages(d.images),
-    cutout: d.cutout && /^(https:\/\/|\/)\S+$/.test(d.cutout) ? d.cutout : null,
+    cutout: d.cutout && isAllowedImageUrl(d.cutout) ? d.cutout : null,
     unit,
     content: formToContent(data),
     updatedAt: new Date(),
@@ -197,7 +204,7 @@ export async function saveCategory(_: FormState, form: FormData): Promise<FormSt
     slug: d.slug,
     name: { uz: d["uz.name"], ru: d["ru.name"] },
     description: { uz: d["uz.description"], ru: d["ru.description"] },
-    image: d.image && /^(https:\/\/|\/)\S+$/.test(d.image) ? d.image : null,
+    image: d.image && isAllowedImageUrl(d.image) ? d.image : null,
     sort: d.sort,
     updatedAt: new Date(),
   };
