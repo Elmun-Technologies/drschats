@@ -40,11 +40,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const populatedFamilies = new Set(healthTopics.map((t) => TOPIC_BASE_PATH[t.kind]));
 
   const staticPaths = [
-    "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
+    "", "/products", "/about", "/blog", "/contact", "/delivery",
     "/loyalty", "/ingredients", "/brands", "/payment", "/guarantee",
     "/requisites", "/licenses", "/quiz", "/programs", "/where-to-buy", "/partners",
     "/reviews", "/sale",
     ...(hasNews ? ["/news"] : []),
+    ...(expertSlugs.length > 0 ? ["/experts"] : []),
     ...TOPIC_KINDS.map((kind) => TOPIC_BASE_PATH[kind]).filter((p) => populatedFamilies.has(p)),
   ];
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);

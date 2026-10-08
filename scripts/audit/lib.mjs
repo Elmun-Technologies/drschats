@@ -26,7 +26,6 @@ export const PATHS = [
   "/quiz/result?a=who.self-woman~age.18-35~concerns.fatigue_colds_hair-skin",
   "/programs",
   "/blog",
-  "/experts",
   "/about",
   "/contact",
   "/loyalty",

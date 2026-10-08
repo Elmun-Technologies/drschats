@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
@@ -30,6 +31,8 @@ export default async function ExpertsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const [t, experts] = await Promise.all([getTranslations("experts"), getExperts(locale)]);
+  // No real specialists on file: the section does not exist (sitemap agrees).
+  if (experts.length === 0) notFound();
 
   return (
     <div className="pt-10">

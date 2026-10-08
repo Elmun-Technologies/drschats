@@ -79,105 +79,10 @@ const img = (seed: string) => {
 
   See docs/GOVITA-TAVSIYALAR.md §Ekspertlar for exactly what each record needs.
 */
-const rawExperts: RawExpert[] = [
-  /*
-    Two demo profiles, with portraits generated for the layout (see
-    /public/images/experts). They contain no invented degrees, no invented
-    years of experience and no profile links: the "credentials" below are the
-    checklist of what the real record must contain, printed where the real
-    credentials will be. A third portrait is still being generated.
-  */
-  {
-    id: "demo-therapist",
-    slug: "namuna-terapevt",
-    demo: true,
-    name: "Dr. Malika Yusupova",
-    photo: "/images/experts/demo-1.jpg",
-    photoSeed: "demo-therapist",
-    title: {
-      uz: "Terapevt (namuna profili)",
-      ru: "Терапевт (демо-профиль)",
-    },
-    bio: {
-      uz: "Bu — namuna profil: ekspertlar bo'limi qanday ko'rinishini ko'rsatish uchun qo'yilgan. Haqiqiy mutaxassis kelganda shu yerga uning ismi, mutaxassisligi, ish joyi va mahsulot tavsiflarini ko'rib chiqqani haqidagi yozma roziligi qo'yiladi. Shu sababli bu profil mahsulot sahifalarida «tekshirgan mutaxassis» sifatida ko'rinmaydi.",
-      ru: "Это демо-профиль: он показывает, как будет выглядеть раздел экспертов. Когда появится реальный специалист, здесь будут его имя, специальность, место работы и письменное согласие на проверку описаний продуктов. Поэтому данный профиль не отображается на страницах продуктов как «проверивший специалист».",
-    },
-    credentials: {
-      uz: [
-        "Diplom va mutaxassislik sertifikati — hujjat kutilmoqda",
-        "Ish joyi va lavozim — tasdiqlanmagan",
-        "Ko'rib chiqilgan materiallar ro'yxati — kutilmoqda",
-      ],
-      ru: [
-        "Диплом и сертификат специальности — документ ожидается",
-        "Место работы и должность — не подтверждены",
-        "Перечень проверенных материалов — ожидается",
-      ],
-    },
-    worksFor: "",
-    sameAs: [],
-  },
-  {
-    id: "demo-pharmacist",
-    slug: "namuna-farmatsevt",
-    demo: true,
-    name: "Dr. Rustam Abdullayev",
-    photo: "/images/experts/demo-2.jpg",
-    photoSeed: "demo-pharmacist",
-    title: {
-      uz: "Klinik farmatsevt (namuna profili)",
-      ru: "Клинический фармацевт (демо-профиль)",
-    },
-    bio: {
-      uz: "Bu ham namuna profil. Farmatsevt mahsulotni tavsiya qilishdan oldin uning tarkibi, dozasi va mosligini ko'rib chiqadi — shu rol uchun ajratilgan joy. Haqiqiy mutaxassis ma'lumotlari, fotosi va yozma roziligi olinishi bilan profil almashtiriladi.",
-      ru: "Это также демо-профиль. Фармацевт проверяет состав, дозировку и совместимость продукта перед рекомендацией — место отведено под эту роль. Профиль будет заменён, как только появятся данные реального специалиста, его фото и письменное согласие.",
-    },
-    credentials: {
-      uz: [
-        "Diplom va litsenziya — hujjat kutilmoqda",
-        "Ish joyi va lavozim — tasdiqlanmagan",
-        "Ko'rib chiqilgan materiallar ro'yxati — kutilmoqda",
-      ],
-      ru: [
-        "Диплом и лицензия — документ ожидается",
-        "Место работы и должность — не подтверждены",
-        "Перечень проверенных материалов — ожидается",
-      ],
-    },
-    worksFor: "",
-    sameAs: [],
-  },
-  {
-    id: "demo-nutritionist",
-    slug: "namuna-nutriyent-mutaxassisi",
-    demo: true,
-    name: "Dr. Nilufar Sattorova",
-    photo: "/images/experts/demo-3.jpg",
-    photoSeed: "demo-nutritionist",
-    title: {
-      uz: "Nutriyent mutaxassisi (namuna profili)",
-      ru: "Специалист по нутриентам (демо-профиль)",
-    },
-    bio: {
-      uz: "Uchinchi namuna profil — parhez va nutriyentlar bo'yicha maslahat roli uchun. Bu yerda haqiqiy mutaxassisning ta'lim ma'lumotlari, ish joyi va ko'rib chiqqan materiallari ro'yxati turadi; hozircha ular kutilmoqda, shuning uchun profil mahsulot tavsiflarida ko'rinmaydi.",
-      ru: "Третий демо-профиль — место для специалиста по питанию и нутриентам. Здесь будут сведения об образовании, месте работы и списке проверенных материалов реального специалиста; пока они ожидаются, поэтому профиль не отображается в описаниях продуктов.",
-    },
-    credentials: {
-      uz: [
-        "Ta'lim va malaka hujjatlari — kutilmoqda",
-        "Ish joyi va lavozim — tasdiqlanmagan",
-        "Ko'rib chiqilgan materiallar ro'yxati — kutilmoqda",
-      ],
-      ru: [
-        "Документы об образовании и квалификации — ожидаются",
-        "Место работы и должность — не подтверждены",
-        "Перечень проверенных материалов — ожидается",
-      ],
-    },
-    worksFor: "",
-    sameAs: [],
-  },
-];
+// Empty until a real, consenting specialist is on file. The demo profiles that
+// filled the layout for the presentation (with generated portraits) are gone:
+// the live shop shows no expert section at all rather than a placeholder one.
+const rawExperts: RawExpert[] = [];
 
 function resolve(e: RawExpert, locale: Locale): Expert {
   /*
