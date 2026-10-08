@@ -133,6 +133,50 @@ Audit: 0 (filtr sheet ochilgan holat ham auditga qoʻshildi).
 Filtrlash Shopflow'dan olingan 100 talik pool ustida bajariladi (kategoriya va
 qidiruv serverda). Katalog 100 dan oshsa, filtrlarni backend'ga oʻtkazish kerak.
 
+## 5-bosqich — mahsulot sahifasi (bajarildi)
+
+ProductV3 / ProductMobileV3 / ProductMobileFirstV3. Desktop: breadcrumb,
+sarlavha va meta qator (sharhlar, savol-javob soni, brend, sevimlilar,
+ulashish); uch ustun — galereya (vertikal thumbnaillar, kesma rasm `tile`
+fonida, strelkalar, −% va "Arzon narx kafolati"), qadoq hajmi + asosiy
+xususiyatlar (nuqtali chiziq) + qisqa tarkib, xarid kartasi (narx, eski narx,
+−%, birlik narxi va tejash, bir martalik / obuna 30–90 kun, miqdor, "Savatga
+qoʻshish", "Hozir buyurtma berish", sotuvda bor) va yetkazish/toʻlov paneli.
+Undan keyin sticky tablar (header balandligini oʻzi oʻlchaydi) va
+boʻlimlar: Tavsif, Tarkibi (jadval), Qabul qilish + BAD ogohlantirishi,
+Xususiyatlar, Savol-javob, Sharhlar (boʻsh holat), Hujjatlar; oʻngda sticky
+mini karta. Telefonda bloklar qayta tartiblanadi (galereya, sarlavha, xarid,
+yetkazish, xususiyatlar), uzun boʻlimlar akkordeon, pastda `fixed` xarid paneli
+tab bar ustida. Audit: 0.
+
+**`--bottom-stack`** — pastdagi barcha fixed qatlamlar (tab bar + mahsulot
+sahifasida xarid paneli). Toast, cookie paneli, "yuqoriga" tugmasi va
+footer'ning pastki boʻshligʻi shundan offset oladi; `:root:has([data-buy-bar])`
+uni faqat shu sahifada kattalashtiradi. Tab bar oʻzi `--bottom-nav` da qoladi.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| Kunlik doza, Yosh, Qadoq yetadi, Import qiluvchi, Mahsulot turi | xususiyat qatorlari | yoʻq | katalogda maydoni yoʻq — faqat brend, mamlakat, shakl, qadoq |
+| Qabul qilish | Qancha / Qachon / Qanday — 3 karta | bitta panel (`howToUse` matni) | maʻlumot bitta erkin matn |
+| "Eng foydali" | sariq pill | neytral pill | sariq faqat "Xit" va "Arzon narx kafolati" uchun |
+| Taqqoslash | meta qatorda | yoʻq | `/compare` 8-bosqichda |
+| "Bu mahsulot bilan birga olishadi" | ProductCard setkasi | "Buni ham qoʻshing" (upsell, chegirma bilan) + "O'xshash mahsulotlar" | birga sotib olish statistikasi yoʻq; upsell chegirmasi biznes-logika |
+| "Siz koʻrgan" | doim | kamida 2 ta boshqa koʻrilgan mahsulot boʻlsa | brauzer tarixi (`govita-user`) |
+| Savol berish, Sharh yozish | forma | Telegram kanali | saytda savol/sharh qabul qiluvchi backend yoʻq |
+| Sertifikat soʻrash | LicensesV3 | `/licenses` | mavjud sahifa |
+| Sogʻliq maqsadlari bloki | yoʻq | Tavsif ichida | sogʻliq yoʻli saqlanadi (CLAUDE.md) |
+| Tavsif yonidagi rasm | lifestyle foto | mahsulotning oxirgi haqiqiy fotosi | faqat real rasm |
+
+**Kontent:** tibbiy vaʻdalar `mock.ts` dan olib tashlandi (Antistress tavsifi,
+tagline va savol-javobi, Hair Nail & Skin, ingalyator, Immunovit "profilaktika",
+"Immunitet" kategoriyasi tavsifi). `benefits` maydonidagi daʻvolar sahifada
+endi chizilmaydi (dizaynda bu blok yoʻq).
+
+**Oʻchirildi:** `bespoke/` (6 ta alohida mahsulot sahifasi) — ularning
+slug'lari katalogda yoʻq edi, yaʻni sahifalar hech qachon ochilmasdi, va
+ular eski `BuyBox`/`ProductGallery` ga bogʻliq edi. Shuningdek `ProductTabs`,
+`StickyBuyBar`, `SubscribeToSave` (xarid kartasiga qoʻshildi).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -186,7 +230,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 2 | ProductCard + UI ✅ | yuqorida | — |
 | 3 | Bosh sahifa ✅ | yuqorida | — |
 | 4 | Katalog ✅ | yuqorida | — |
-| 5 | Mahsulot | galereya, xarid bloki, sticky tablar, mobil fixed panel | tibbiy vaʼdalarni matndan olib tashlash — kontent oʻzgarishi |
+| 5 | Mahsulot ✅ | yuqorida | — |
 | 6 | Savat | progress, upsell, 3 qadam, sticky xulosa | savol 2; checkout server action va Zod sxemasi oʻzgarmaydi |
 | 7 | Qidiruv | `/search` route + header takliflari | — |
 | 8 | Aksiya, brend, sevimli, taqqoslash | `/sale`, `/brands/[slug]`, `/compare` | savol 3 |

@@ -137,7 +137,7 @@ chaqirilgandan **keyin** chizing.
 | `nav/` | MobileBottomNav — 5 tab (V3 TabBar), `lg:hidden`; "Katalog" tabi katalog ekranini (dialog) ochadi, "Savat" — drawer |
 | `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
 | `cart/` | CartDrawer (Framer Motion slide-in) |
-| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
+| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate (V3 PDP: 3 ustun, sticky tablar, mobil akkordeon), BuyBox (xarid kartasi + obuna), ProductGallery, ProductSection / ProductSectionNav, ProductMiniBuy (desktop mini karta + mobil fixed xarid paneli), WishlistButton, ShareButton, OutOfStockNotify. Alohida "bespoke" sahifalar yo'q — har mahsulot bitta shablonda |
 | `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
 | `checkout/` | CheckoutForm (react-hook-form + Zod) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
@@ -201,7 +201,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1022 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1058 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -564,8 +564,9 @@ emas, qanday **javob berishini** o'lchaydi va shu sababli brauzersiz, oddiy
 
 Amaliy qoidalar, har biri haqiqiy nuqsondan chiqqan:
 
-- **Pastga biriktirilgan har qanday element** `--bottom-nav` tokenidan offset olsin
-  (`globals.css`). Beshta element o'z offsetini alohida tanlagani uchun
+- **Pastga biriktirilgan har qanday element** `--bottom-stack` tokenidan offset olsin
+  (`globals.css`; tab bar + mahsulot sahifasidagi xarid paneli). Tab bar o'zi
+  `--bottom-nav` dan o'lchanadi. Beshta element o'z offsetini alohida tanlagani uchun
   "yuqoriga" tugmasi mobil tab-barning ustida turgan edi.
 - **Modal/drawer/overlay** — `useDialog` hookiga ulansin (`src/lib/ui/useDialog.ts`):
   Escape, fokusni ichkariga olish va qaytarish, Tab tuzog'i. Ustiga
