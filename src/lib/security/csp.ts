@@ -67,8 +67,6 @@ export type CspMode = "off" | "report-only" | "enforce";
  * next/image already uses; `toCspSource()` translates it to CSP's `*.` form.
  */
 export const REMOTE_IMAGE_HOSTS = [
-  "picsum.photos",
-  "images.unsplash.com",
   "**.uzum.uz",
   "cdn.sanity.io",
   "shop-flow.uz",

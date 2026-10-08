@@ -139,6 +139,7 @@ chaqirilgandan **keyin** chizing.
 | `seo/` | Metadata builder, JSON-LD (WebSite, LocalBusiness, Product, FAQ, Breadcrumb) |
 | `content/` | Blog, ekspertlar, ingredientlar — static content. **Ekspert kengashi bo'sh**: `rawExperts = []`, `/experts` 404, `MedicalWebPage` JSON-LD `reviewedBy`/`author` ni chiqarmaydi. Haqiqiy ekspert (rozilik bilan, o'z fotosi) qo'shilganda hammasi o'zi paydo bo'ladi (`docs/QOLGAN-ISHLAR.md` §2). Blog maqolalaridagi mahsulot slug'lari katalogda borligini `blog.test.ts` tekshiradi |
 | `ui/` | Toast Zustand store |
+| `quiz/` | Savollar, ball (`engine`), reja (`recommend`), `audience-fit` — mahsulot faqat o'z auditoriyasiga; bolaga/homiladorga faqat ularga mo'ljallangan |
 
 ### Components katalogi (`src/components/`)
 
@@ -471,12 +472,11 @@ koʻrinish qatlami.
 3. Dizayn audit nolini buzsa (kontrast, tap-target, fokus…) — audit yutadi va
    farq foydalanuvchiga aytiladi.
 
-**`legacy-*` tokenlar.** Dizayndagi `ink`, `line`, `line-strong`, `muted`, `gold`,
-`shadow-pop` nomlari eski tokenlarda boshqa maʼnoda band edi (eski `ink` — och
-sahifa foni, yangisi — deyarli qora). Eski tokenlar `legacy-*` ga mexanik
-koʻchirildi (koʻrinish oʻzgarmadi — kompilyatsiya qilingan CSS solishtirildi),
-yangilari ayni nomni oldi. **Yangi kodda `legacy-*` ishlatilmaydi**; 12-bosqich
-oxirida `grep -r legacy- src` boʻsh boʻlishi va eski `@theme` bloki oʻchishi kerak.
+**`legacy-*` tokenlar o'chirilgan (12-bosqich).** Eski "apothecary" palitrasi
+(`surface`, `fg`, `signal`, `accent`, `brand-deep`, `legacy-*`…) `globals.css` dan
+olib tashlangan; birinchi `@theme` blokida faqat shrift, radius, easing va animatsiya
+qolgan. Rang va soya — faqat V3 tokenlari. `grep -rE "legacy-|text-fg|bg-surface" src`
+bo'sh bo'lishi kerak.
 
 **Breakpoint:** desktop header va footer ustunlari `lg` (1024px) dan; undan
 pastda mobil header + tab bar. `--bottom-nav` ham 1023.98px gacha nolmas.

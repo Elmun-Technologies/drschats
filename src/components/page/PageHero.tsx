@@ -18,26 +18,26 @@ export function PageHero({
   const t = useTranslations("product");
   return (
     <>
-      <div className="border-b border-legacy-line bg-surface">
+      <div className="border-b border-line bg-bg">
         <Container className="flex flex-wrap items-center gap-2 py-4 text-sm">
-          <Link href="/" className="text-legacy-muted hover:text-fg">{t("breadcrumbHome")}</Link>
-          <span className="text-faint">/</span>
-          <span className="font-semibold text-fg">{crumb}</span>
+          <Link href="/" className="text-ink-2 hover:text-ink">{t("breadcrumbHome")}</Link>
+          <span className="text-muted">/</span>
+          <span className="font-semibold text-ink">{crumb}</span>
         </Container>
       </div>
       <Container className="pt-12">
         <div className="max-w-2xl">
           {eyebrow && (
             <Reveal>
-              <p className="text-sm font-semibold text-fg">{eyebrow}</p>
+              <p className="text-sm font-semibold text-ink">{eyebrow}</p>
             </Reveal>
           )}
           <Reveal index={1}>
-            <h1 className="mt-2 font-display text-3xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
+            <h1 className="mt-2 text-3xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
           </Reveal>
           {subtitle && (
             <Reveal index={2}>
-              <p className="mt-4 text-lg text-legacy-muted">{subtitle}</p>
+              <p className="mt-4 text-lg text-ink-2">{subtitle}</p>
             </Reveal>
           )}
         </div>

@@ -21,8 +21,8 @@ export default function LocaleError({
   return (
     <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center px-4">
       <p className="text-5xl">😕</p>
-      <h1 className="font-display text-2xl font-extrabold">{t("errorTitle")}</h1>
-      <p className="text-legacy-muted max-w-md">{t("errorDesc")}</p>
+      <h1 className="text-2xl font-extrabold">{t("errorTitle")}</h1>
+      <p className="text-ink-2 max-w-md">{t("errorDesc")}</p>
       <div className="flex gap-3">
         <button onClick={reset} className={buttonVariants("dark")}>
           {t("errorRetry")}

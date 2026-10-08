@@ -60,13 +60,6 @@ export function scoreCatalogue(
     for (const productSlug of topic.productSlugs) {
       credit(productSlug, weight * 2, topic.name);
     }
-    if (topic.categorySlugs.length > 0) {
-      for (const product of pool) {
-        if (product.categorySlug && topic.categorySlugs.includes(product.categorySlug)) {
-          credit(product.slug, weight, topic.name);
-        }
-      }
-    }
   }
 
   return pool

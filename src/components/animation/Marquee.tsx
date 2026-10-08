@@ -12,7 +12,7 @@ export function Marquee({
   return (
     <div
       className={cn(
-        "relative flex overflow-hidden border-y border-legacy-line py-4",
+        "relative flex overflow-hidden border-y border-line py-4",
         className,
       )}
     >
@@ -20,7 +20,7 @@ export function Marquee({
         {items.map((_, i) => (
           <span
             key={i}
-            className="text-sm font-medium uppercase tracking-[0.2em] text-legacy-muted"
+            className="text-sm font-medium uppercase tracking-[0.2em] text-ink-2"
           >
             {text}
           </span>
@@ -33,7 +33,7 @@ export function Marquee({
         {items.map((_, i) => (
           <span
             key={i}
-            className="text-sm font-medium uppercase tracking-[0.2em] text-legacy-muted"
+            className="text-sm font-medium uppercase tracking-[0.2em] text-ink-2"
           >
             {text}
           </span>

@@ -69,22 +69,22 @@ export default async function ReviewsPage({
     <div className="pt-10 pb-6">
       <Container>
         <header className="max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-fg">
+          <p className="text-sm font-semibold uppercase tracking-widest text-ink">
             {t("eyebrow")}
           </p>
-          <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
+          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
             {t("title")}
           </h1>
-          <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
+          <p className="mt-4 text-lg text-ink-2">{t("subtitle")}</p>
 
           {average > 0 && (
-            <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-legacy-line bg-surface px-5 py-4">
-              <span className="font-display text-3xl font-extrabold text-fg">
+            <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-line bg-bg px-5 py-4">
+              <span className="text-3xl font-extrabold text-ink">
                 {average.toFixed(1)}
               </span>
               <StarRating rating={average} />
               {totalReviews > 0 && (
-                <span className="text-sm text-legacy-muted">{t("basedOn", { count: totalReviews })}</span>
+                <span className="text-sm text-ink-2">{t("basedOn", { count: totalReviews })}</span>
               )}
             </div>
           )}
@@ -92,7 +92,7 @@ export default async function ReviewsPage({
 
         {stories.length > 0 && (
           <section aria-labelledby="stories" className="mt-16">
-            <h2 id="stories" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("storiesTitle")}
+            <h2 id="stories" className="text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("storiesTitle")}
             </h2>
             <ul className="mt-6 grid gap-6 lg:grid-cols-2">
               {stories.map((story, i) => (
@@ -105,12 +105,12 @@ export default async function ReviewsPage({
         )}
 
         <section aria-labelledby="product-reviews" className="mt-16">
-          <h2 id="product-reviews" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("productReviewsTitle")}
+          <h2 id="product-reviews" className="text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("productReviewsTitle")}
           </h2>
 
           {productReviews.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-legacy-line bg-surface p-10 text-center">
-              <p className="text-legacy-muted">{t("empty")}</p>
+            <div className="mt-6 rounded-2xl border border-line bg-bg p-10 text-center">
+              <p className="text-ink-2">{t("empty")}</p>
               <Link href="/products" className={`${buttonVariants("secondary")} mt-6`}>
                 {t("browse")}
               </Link>
@@ -119,19 +119,19 @@ export default async function ReviewsPage({
             <ul className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {productReviews.map((review, i) => (
                 <Reveal key={`${review.product.slug}-${review.author}-${i}`} index={Math.min(i, 6)} as="li" className="h-full">
-                  <figure className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-6">
+                  <figure className="flex h-full flex-col rounded-2xl border border-line bg-bg p-6">
                     <div className="flex items-center justify-between gap-3">
                       <StarRating rating={review.rating} />
-                      {review.date && <time className="text-xs text-faint">{review.date}</time>}
+                      {review.date && <time className="text-xs text-muted">{review.date}</time>}
                     </div>
-                    <blockquote className="mt-4 flex-1 text-legacy-muted">
+                    <blockquote className="mt-4 flex-1 text-ink-2">
                       &ldquo;{review.text}&rdquo;
                     </blockquote>
-                    <figcaption className="mt-4 border-t border-legacy-line pt-3">
-                      <span className="block text-sm font-medium text-fg">{review.author}</span>
+                    <figcaption className="mt-4 border-t border-line pt-3">
+                      <span className="block text-sm font-medium text-ink">{review.author}</span>
                       <Link
                         href={`/product/${review.product.slug}`}
-                        className="mt-1 block text-xs text-fg hover:underline"
+                        className="mt-1 block text-xs text-ink hover:underline"
                       >
                         {review.product.name}
                       </Link>
@@ -155,9 +155,9 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
   const embed = story.videoUrl ? toYouTubeEmbed(story.videoUrl) : null;
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-legacy-line bg-surface">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-bg">
       {embed && (
-        <div className="relative aspect-video w-full bg-surface-2">
+        <div className="relative aspect-video w-full bg-tile">
           <iframe
             src={embed}
             title={story.author}
@@ -170,11 +170,11 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
       )}
 
       {!embed && story.beforeImage && story.afterImage && (
-        <div className="grid grid-cols-2 gap-px bg-legacy-line">
+        <div className="grid grid-cols-2 gap-px bg-line">
           {[story.beforeImage, story.afterImage].map((src, i) => (
-            <div key={src} className="relative aspect-square bg-surface-2">
+            <div key={src} className="relative aspect-square bg-tile">
               <Image src={src} alt="" fill sizes="(max-width: 1024px) 50vw, 300px" className="object-cover" />
-              <span className="absolute left-2 top-2 rounded-full bg-legacy-ink/90 px-2.5 py-1 text-[11px] font-semibold text-fg">
+              <span className="absolute left-2 top-2 rounded-full bg-bg/90 px-2.5 py-1 text-[11px] font-semibold text-ink">
                 {i === 0 ? "1" : "2"}
               </span>
             </div>
@@ -183,14 +183,14 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
       )}
 
       <div className="flex flex-1 flex-col p-6">
-        <span className="w-fit rounded-full bg-surface-2 px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-fg">
+        <span className="w-fit rounded-full bg-tile px-2.5 py-1 text-[11px] font-bold uppercase tracking-widest text-ink">
           {kindLabel}
         </span>
         {story.rating != null && <StarRating rating={story.rating} className="mt-3" />}
-        <blockquote className="mt-3 flex-1 text-legacy-muted">&ldquo;{story.quote}&rdquo;</blockquote>
-        <figcaption className="mt-4 border-t border-legacy-line pt-3 text-sm font-medium text-fg">
+        <blockquote className="mt-3 flex-1 text-ink-2">&ldquo;{story.quote}&rdquo;</blockquote>
+        <figcaption className="mt-4 border-t border-line pt-3 text-sm font-medium text-ink">
           {story.author}
-          {story.city && <span className="text-legacy-muted"> — {story.city}</span>}
+          {story.city && <span className="text-ink-2"> — {story.city}</span>}
         </figcaption>
       </div>
     </article>

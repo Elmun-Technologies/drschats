@@ -106,25 +106,25 @@ export function UpsellLadderModal() {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className={`overflow-hidden rounded-2xl border border-legacy-line shadow-[var(--shadow-legacy-pop)] ${isFreeGift ? "bg-signal-soft" : "bg-surface"}`}>
+            <div className={`overflow-hidden rounded-2xl border border-line shadow-pop ${isFreeGift ? "bg-tile" : "bg-bg"}`}>
               {/* Header */}
-              <div className={`px-5 py-4 ${isFreeGift ? "bg-signal-soft/60" : "bg-surface-2"}`}>
+              <div className={`px-5 py-4 ${isFreeGift ? "bg-tile/60" : "bg-tile"}`}>
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     {isFreeGift ? (
                       <span className="text-xl">🎁</span>
                     ) : (
-                      <span className="text-base font-semibold text-fg">
+                      <span className="text-base font-semibold text-ink">
                         {t("stepOf", { step: currentStep + 1, total: totalSteps })}
                       </span>
                     )}
                     {isFreeGift && (
-                      <span className="font-display text-sm font-bold uppercase tracking-widest text-signal">
+                      <span className="text-sm font-bold uppercase tracking-widest text-ink">
                         {t("freeGiftTitle")}
                       </span>
                     )}
                   </div>
-                  <button onClick={closeLadder} aria-label={tc("close")} className="text-faint hover:text-fg">
+                  <button onClick={closeLadder} aria-label={tc("close")} className="text-muted hover:text-ink">
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                     </svg>
@@ -137,7 +137,7 @@ export function UpsellLadderModal() {
                     key={displaySavings}
                     initial={{ opacity: 0, y: -4 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`mt-2 text-sm font-semibold ${isFreeGift ? "text-signal" : "text-fg"}`}
+                    className={`mt-2 text-sm font-semibold ${isFreeGift ? "text-ink" : "text-ink"}`}
                   >
                     {isFreeGift
                       ? t("freeGiftCovered", { amount: formatMoney(displaySavings, locale) })
@@ -145,13 +145,13 @@ export function UpsellLadderModal() {
                   </motion.p>
                 )}
                 {!isFreeGift && displaySavings === 0 && (
-                  <p className="mt-1 text-sm text-legacy-muted">{t("growSavings")}</p>
+                  <p className="mt-1 text-sm text-ink-2">{t("growSavings")}</p>
                 )}
               </div>
 
               {/* Product */}
               <div className="flex gap-4 px-5 py-4">
-                <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-surface-2">
+                <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-xl bg-tile">
                   <Image
                     src={step.product.images[0]?.url ?? ""}
                     alt={step.product.name}
@@ -160,41 +160,41 @@ export function UpsellLadderModal() {
                     className="object-contain p-2"
                   />
                   {isFreeGift && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-signal-soft">
+                    <div className="absolute inset-0 flex items-center justify-center bg-tile">
                       <span className="text-2xl">🎁</span>
                     </div>
                   )}
                 </div>
 
                 <div className="flex flex-1 flex-col justify-center">
-                  <p className="text-xs text-legacy-muted">{step.reason}</p>
+                  <p className="text-xs text-ink-2">{step.reason}</p>
                   {/* Names the dialog: what a screen reader announces on open
                       is the product being offered. */}
-                  <p id="upsell-offer-title" className="mt-0.5 font-medium text-fg">{step.product.name}</p>
+                  <p id="upsell-offer-title" className="mt-0.5 font-medium text-ink">{step.product.name}</p>
 
                   {/* Stars, only where there are ratings to show. */}
                   {step.product.rating > 0 && (
                     <div className="mt-1 flex items-center gap-1">
-                      <span className="text-xs text-signal">{"★".repeat(Math.round(step.product.rating))}</span>
-                      <span className="text-xs text-faint">{step.product.reviewCount}</span>
+                      <span className="text-xs text-ink">{"★".repeat(Math.round(step.product.rating))}</span>
+                      <span className="text-xs text-muted">{step.product.reviewCount}</span>
                     </div>
                   )}
 
                   {/* Price */}
                   <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-sm text-faint line-through">
+                    <span className="text-sm text-muted line-through">
                       {formatMoney(step.product.price, locale)}
                     </span>
                     {isFreeGift ? (
-                      <span className="font-display text-lg font-bold text-fg">
+                      <span className="text-lg font-bold text-ink">
                         {t("freeLabel")}
                       </span>
                     ) : (
                       <>
-                        <span className="font-display text-base font-bold text-fg">
+                        <span className="text-base font-bold text-ink">
                           {formatMoney(step.discountedPrice, locale)}
                         </span>
-                        <span className="rounded border border-legacy-line bg-surface-2 px-1.5 py-0.5 text-xs font-bold text-legacy-muted">
+                        <span className="rounded border border-line bg-tile px-1.5 py-0.5 text-xs font-bold text-ink-2">
                           −{step.discountPercent}%
                         </span>
                       </>
@@ -206,16 +206,16 @@ export function UpsellLadderModal() {
               {/* Free gift coverage bar */}
               {isFreeGift && displaySavings > 0 && (
                 <div className="px-5 pb-3">
-                  <div className="flex justify-between text-xs text-faint mb-1">
+                  <div className="flex justify-between text-xs text-muted mb-1">
                     <span>{t("savedSoFar", { amount: formatMoney(displaySavings, locale) })}</span>
                     <span>{formatMoney(step.product.price, locale)}</span>
                   </div>
-                  <div className="h-2 overflow-hidden rounded-full bg-surface-3">
+                  <div className="h-2 overflow-hidden rounded-full bg-tile-hover">
                     <motion.div
                       initial={{ width: 0 }}
                       animate={{ width: `${Math.min(100, (displaySavings / step.product.price) * 100)}%` }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
-                      className="h-full rounded-full bg-signal"
+                      className="h-full rounded-full bg-ink"
                     />
                   </div>
                 </div>
@@ -227,15 +227,15 @@ export function UpsellLadderModal() {
                   onClick={handleAccept}
                   className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
                     isFreeGift
-                      ? "bg-legacy-gold text-fg hover:brightness-95"
-                      : "bg-accent text-brand-deep hover:bg-accent-strong hover:text-legacy-ink"
+                      ? "bg-ink text-ink hover:brightness-95"
+                      : "bg-ink text-ink hover:bg-black hover:text-white"
                   }`}
                 >
                   {isFreeGift ? t("freeGiftCta") : t("accept")}
                 </button>
                 <button
                   onClick={() => { trackUpsellSkip(currentStep + 1, step.product.id); skipStep(); }}
-                  className="rounded-full border border-legacy-line px-4 py-3 text-sm text-legacy-muted transition-colors hover:border-legacy-line-strong hover:text-fg"
+                  className="rounded-full border border-line px-4 py-3 text-sm text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
                 >
                   {t("skip")}
                 </button>

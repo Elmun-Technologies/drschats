@@ -21,22 +21,22 @@ export function UpsellSavingsBar() {
     <motion.div
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
-      className="border-t border-legacy-line px-6 py-3"
+      className="border-t border-line px-6 py-3"
     >
       <div className="flex items-center justify-between text-xs">
-        <span className="font-semibold text-fg">
+        <span className="font-semibold text-ink">
           {t("progressLabel", { amount: formatMoney(cumulativeSavings, locale) })}
         </span>
-        <span className="text-faint">
+        <span className="text-muted">
           {t("progressSteps", { done: completedSteps, total: totalSteps })}
         </span>
       </div>
-      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-surface-3">
+      <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-tile-hover">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="h-full rounded-full bg-signal"
+          className="h-full rounded-full bg-ink"
         />
       </div>
     </motion.div>

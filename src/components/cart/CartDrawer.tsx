@@ -49,16 +49,16 @@ export function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: "100%" }}
             transition={{ type: "tween", duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-legacy-line bg-surface"
+            className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-line bg-bg"
           >
-            <header className="flex items-center justify-between border-b border-legacy-line px-6 py-5 bg-surface text-fg">
+            <header className="flex items-center justify-between border-b border-line px-6 py-5 bg-bg text-ink">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-signal-soft text-signal font-bold text-sm">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-tile text-ink font-bold text-sm">
                   🛒
                 </span>
-                <h2 id="cart-drawer-title" className="font-display text-lg font-extrabold text-fg">{t("title")}</h2>
+                <h2 id="cart-drawer-title" className="text-lg font-extrabold text-ink">{t("title")}</h2>
               </div>
-              <button onClick={close} aria-label={tc("close")} className="rounded-full bg-surface-2 p-1.5 text-legacy-muted hover:text-fg">
+              <button onClick={close} aria-label={tc("close")} className="rounded-full bg-tile p-1.5 text-ink-2 hover:text-ink">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
@@ -67,12 +67,12 @@ export function CartDrawer() {
 
             {lines.length === 0 ? (
               <div className="flex flex-1 flex-col items-center justify-center gap-4 px-6 text-center">
-                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-surface-2">
-                  <svg viewBox="0 0 24 24" className="h-10 w-10 text-faint" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
+                <div className="flex h-20 w-20 items-center justify-center rounded-full bg-tile">
+                  <svg viewBox="0 0 24 24" className="h-10 w-10 text-muted" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" /><path d="M3 6h18M16 10a4 4 0 01-8 0" />
                   </svg>
                 </div>
-                <p className="text-legacy-muted">{t("empty")}</p>
+                <p className="text-ink-2">{t("empty")}</p>
                 <Link href="/products" onClick={close} className={buttonVariants("dark")}>
                   {t("emptyCta")}
                 </Link>
@@ -80,15 +80,15 @@ export function CartDrawer() {
             ) : (
               <>
                 {totals.freeShippingThreshold > 0 && (
-                  <div className="border-b border-legacy-line/60 bg-surface-2 px-6 py-4">
-                    <p className="mb-2 text-xs font-bold text-brand-deep">
+                  <div className="border-b border-line/60 bg-tile px-6 py-4">
+                    <p className="mb-2 text-xs font-bold text-ink">
                       {totals.freeShippingRemaining > 0
                         ? t("freeShippingProgress", { amount: formatMoney(totals.freeShippingRemaining, locale) })
                         : t("freeShippingUnlocked")}
                     </p>
-                    <div className="h-2 overflow-hidden rounded-full bg-legacy-line/60">
+                    <div className="h-2 overflow-hidden rounded-full bg-line/60">
                       <div
-                        className="h-full rounded-full bg-signal transition-[width] duration-700 ease-out"
+                        className="h-full rounded-full bg-ink transition-[width] duration-700 ease-out"
                         style={{
                           width: `${Math.min(100, ((totals.subtotal) / totals.freeShippingThreshold) * 100)}%`,
                         }}
@@ -100,29 +100,29 @@ export function CartDrawer() {
                 <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
                   {lines.map((l) => (
                     <div key={l.lineId} className="flex gap-3">
-                      <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-surface-2">
+                      <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-tile">
                         {l.image && <Image src={l.image} alt={l.name} fill sizes="64px" className="object-cover" />}
                       </div>
                       <div className="flex flex-1 flex-col">
                         <div className="flex items-start justify-between gap-2">
-                          <p className="text-sm font-medium text-fg">{l.name}</p>
-                          <button onClick={() => remove(l.lineId)} className="text-faint hover:text-danger" aria-label={t("remove")}>
+                          <p className="text-sm font-medium text-ink">{l.name}</p>
+                          <button onClick={() => remove(l.lineId)} className="text-muted hover:text-red" aria-label={t("remove")}>
                             <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
                               <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                             </svg>
                           </button>
                         </div>
-                        <p className="mt-1 text-sm text-fg">{formatMoney(l.price, locale)}</p>
+                        <p className="mt-1 text-sm text-ink">{formatMoney(l.price, locale)}</p>
                         {l.oldPrice && l.oldPrice > l.price && (
                           <div className="mt-0.5 flex items-center gap-2">
-                            <span className="text-xs text-legacy-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
-                            <span className="rounded border border-legacy-line bg-surface-2 px-1.5 py-0 text-[10px] font-medium text-legacy-muted">
+                            <span className="text-xs text-ink-2 line-through">{formatMoney(l.oldPrice, locale)}</span>
+                            <span className="rounded border border-line bg-tile px-1.5 py-0 text-[10px] font-medium text-ink-2">
                               −{Math.round((1 - l.price / l.oldPrice) * 100)}%
                             </span>
                           </div>
                         )}
                         {l.subscription && (
-                          <p className="mt-0.5 text-xs font-semibold text-fg">
+                          <p className="mt-0.5 text-xs font-semibold text-ink">
                             {ts("everyDays", { days: l.subscription.intervalDays })}
                           </p>
                         )}
@@ -137,7 +137,7 @@ export function CartDrawer() {
                 </div>
 
                 <UpsellSavingsBar />
-                <footer className="space-y-3 border-t border-legacy-line px-6 py-5">
+                <footer className="space-y-3 border-t border-line px-6 py-5">
                   <Row label={t("subtotal")} value={formatMoney(totals.subtotal, locale)} />
                   {totals.discount > 0 && (
                     <Row label={t("discount")} value={`−${formatMoney(totals.discount, locale)}`} accent />
@@ -146,14 +146,14 @@ export function CartDrawer() {
                     label={t("shipping")}
                     value={totals.shipping === 0 ? t("free") : formatMoney(totals.shipping, locale)}
                   />
-                  <div className="flex items-center justify-between border-t border-legacy-line pt-3 text-base font-semibold">
+                  <div className="flex items-center justify-between border-t border-line pt-3 text-base font-semibold">
                     <span>{t("total")}</span>
                     <span>{formatMoney(totals.total, locale)}</span>
                   </div>
                   {/* What the repeating part costs next time, before anyone has
                       committed to it — not after the second charge. */}
                   {totals.hasSubscription && (
-                    <p className="text-xs text-legacy-muted">
+                    <p className="text-xs text-ink-2">
                       {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })}
                     </p>
                   )}
@@ -161,8 +161,8 @@ export function CartDrawer() {
                     const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
                     if (totalSavings > 0) {
                       return (
-                        <div className="mt-2 rounded-xl border border-signal/25 bg-signal-soft p-2.5 text-center">
-                          <p className="text-xs font-semibold text-signal">
+                        <div className="mt-2 rounded-xl border border-line/25 bg-tile p-2.5 text-center">
+                          <p className="text-xs font-semibold text-ink">
                             {tc("savings", { amount: formatMoney(totalSavings, locale) })}
                           </p>
                         </div>
@@ -195,7 +195,7 @@ function QtyButton({ children, onClick }: { children: React.ReactNode; onClick: 
   return (
     <button
       onClick={onClick}
-      className="flex h-7 w-7 items-center justify-center rounded-full border border-legacy-line text-fg transition-colors hover:border-legacy-line-strong hover:text-fg"
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-line-strong hover:text-ink"
     >
       {children}
     </button>
@@ -205,8 +205,8 @@ function QtyButton({ children, onClick }: { children: React.ReactNode; onClick: 
 function Row({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between text-sm">
-      <span className="text-legacy-muted">{label}</span>
-      <span className={accent ? "font-semibold text-fg" : "text-legacy-muted"}>{value}</span>
+      <span className="text-ink-2">{label}</span>
+      <span className={accent ? "font-semibold text-ink" : "text-ink-2"}>{value}</span>
     </div>
   );
 }
