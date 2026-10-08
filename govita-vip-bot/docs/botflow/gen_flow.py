@@ -80,8 +80,8 @@ screens = [
         "text": L("Nima haqida bilmoqchisiz?", "О чём хотите узнать?"),
         "buttons": [
             btn("info_deliv", "🚚 Yetkazib berish", "🚚 Доставка", {"type": "text", "text": L(
-                "<b>Yetkazib berish</b>\n\n• Toshkent, kuryer — 24 soat ichida\n• Viloyatlar, EMU pochta — 1–3 kun\n• Oʻzi olib ketish — Toshkentdagi ombordan, bepul\n\n300 000 soʻmdan ortiq xaridga yetkazish bepul.",
-                "<b>Доставка</b>\n\n• Ташкент, курьер — в течение 24 часов\n• Регионы, EMU — 1–3 дня\n• Самовывоз — со склада в Ташкенте, бесплатно\n\nПри заказе от 300 000 сум доставка бесплатная.")}, False),
+                "<b>Yetkazib berish</b>\n\n• Toshkent — Yandex Dostavka, 24 soat ichida\n• Viloyatlar — BTS, 1–3 kun\n• Oʻzi olib ketish — Toshkentdagi ombordan, bepul\n\n300 000 soʻmdan ortiq xaridga yetkazish bepul.",
+                "<b>Доставка</b>\n\n• Ташкент — Яндекс Доставка, в течение 24 часов\n• Регионы — BTS, 1–3 дня\n• Самовывоз — со склада в Ташкенте, бесплатно\n\nПри заказе от 300 000 сум доставка бесплатная.")}, False),
             btn("info_pay", "💳 Toʻlov", "💳 Оплата", {"type": "text", "text": L(
                 "<b>Toʻlov usullari</b>\n\nPayme, Click, Uzum — onlayn.\nNaqd yoki karta — yetkazishda kuryerga.",
                 "<b>Способы оплаты</b>\n\nPayme, Click, Uzum — онлайн.\nНаличные или карта — курьеру при доставке.")}, False),
