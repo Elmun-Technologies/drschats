@@ -333,8 +333,8 @@
           "action": {
             "type": "text",
             "text": {
-              "uz": "<b>Yetkazib berish</b>\n\n• Toshkent, kuryer — 24 soat ichida\n• Viloyatlar, EMU pochta — 1–3 kun\n• Oʻzi olib ketish — Toshkentdagi ombordan, bepul\n\n300 000 soʻmdan ortiq xaridga yetkazish bepul.",
-              "ru": "<b>Доставка</b>\n\n• Ташкент, курьер — в течение 24 часов\n• Регионы, EMU — 1–3 дня\n• Самовывоз — со склада в Ташкенте, бесплатно\n\nПри заказе от 300 000 сум доставка бесплатная."
+              "uz": "<b>Yetkazib berish</b>\n\n• Toshkent — Yandex Dostavka, 24 soat ichida\n• Viloyatlar — BTS, 1–3 kun\n• Oʻzi olib ketish — Toshkentdagi ombordan, bepul\n\n300 000 soʻmdan ortiq xaridga yetkazish bepul.",
+              "ru": "<b>Доставка</b>\n\n• Ташкент — Яндекс Доставка, в течение 24 часов\n• Регионы — BTS, 1–3 дня\n• Самовывоз — со склада в Ташкенте, бесплатно\n\nПри заказе от 300 000 сум доставка бесплатная."
             }
           },
           "fullWidth": false

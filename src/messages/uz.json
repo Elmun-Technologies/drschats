@@ -382,7 +382,7 @@
       },
       "seo": {
         "title": "Go Vita — vitaminlar va BAD onlayn doʻkoni",
-        "text": "Go Vita — Oʻzbekistonga rasmiy import qilinadigan vitaminlar va biologik faol qoʻshimchalar. Katalogda Swiss Energy, Dr. Frei, Delical, Aminomorin va Peano mahsulotlari: vitamin va minerallar, shipuchi tabletkalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Toshkent boʻylab kuryer {hours} soat ichida yetkazadi, viloyatlarga 1–3 kunda. {free} soʻmdan ortiq buyurtmalar bepul yetkaziladi."
+        "text": "Go Vita — Oʻzbekistonga rasmiy import qilinadigan vitaminlar va biologik faol qoʻshimchalar. Katalogda Swiss Energy, Dr. Frei, Delical, Aminomorin va Peano mahsulotlari: vitamin va minerallar, shipuchi tabletkalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Toshkent boʻylab Yandex Dostavka {hours} soat ichida yetkazadi, viloyatlarga BTS orqali 1–3 kunda. {free} soʻmdan ortiq buyurtmalar bepul yetkaziladi."
       }
     }
   },
@@ -481,12 +481,12 @@
       "similar": "Oʻxshash mahsulotlar",
       "seen": "Siz koʻrgan mahsulotlar",
       "upsell": "Birga qoʻshsangiz — arzonroq",
-      "courier": "Kuryer, Toshkent",
+      "courier": "Yandex Dostavka, Toshkent",
       "courierNote": "{hours} soat ichida · {amount}dan bepul",
       "pickup": "Oʻzi olib ketish",
       "free": "Bepul",
       "pickupNote": "Toshkent shahridagi omborimizdan",
-      "regions": "Viloyatlarga, EMU pochta",
+      "regions": "Viloyatlarga, BTS",
       "regionsNote": "{days} · {amount}dan bepul",
       "payment": "Toʻlov",
       "paymentOnline": "{providers} yoki yetkazishda naqd / karta",
@@ -550,7 +550,7 @@
       "shown": "{total} ta mahsulotdan {shown} tasi koʻrsatildi",
       "more": "Yana {count} ta koʻrsatish",
       "seoTitle": "{name} — Toshkentda xarid qilish",
-      "seoText": "Go Vita katalogida «{name}» boʻlimida {count} ta mahsulot. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan. Toshkent boʻylab kuryer {hours} soat ichida yetkazadi, {free} soʻmdan ortiq buyurtmalar bepul.",
+      "seoText": "Go Vita katalogida «{name}» boʻlimida {count} ta mahsulot. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan. Toshkent boʻylab Yandex Dostavka {hours} soat ichida, viloyatlarga BTS yetkazadi, {free} soʻmdan ortiq buyurtmalar bepul.",
       "categories": "Boʻlimlar",
       "priceMin": "Eng past narx",
       "priceMax": "Eng yuqori narx"
@@ -673,7 +673,7 @@
       "addFor": "Qoʻshish: {name}",
       "favoriteFor": "Sevimlilarga: {name}",
       "guestNote": "Hisobsiz ham buyurtma berishingiz mumkin.",
-      "courierNote": "Toshkent — {hours} soat ichida, {fee}",
+      "courierNote": "Toshkent — Yandex Dostavka, {hours} soat ichida · viloyatlar — BTS, 1–3 kun · {fee}",
       "online": "Onlayn",
       "codTitle": "Naqd / karta",
       "codSub": "Yetkazishda",
@@ -708,7 +708,7 @@
     "note": "Izoh (ixtiyoriy)",
     "notePlaceholder": "Qoʻshimcha maʼlumot",
     "method": "Yetkazib berish usuli",
-    "methodCourier": "Kuryer orqali",
+    "methodCourier": "Yetkazib berish",
     "methodPickup": "Oʻzi olib ketish",
     "paymentNote": "Onlayn toʻlov: Payme, Click, Uzum. Naqd yoki karta yetkazib berishda ham mumkin.",
     "summary": "Buyurtma tarkibi",
@@ -1047,10 +1047,10 @@
     "freeBannerTitle": "{amount} soʻmdan ortiq xaridga — bepul yetkazib berish",
     "freeBannerDesc": "Toshkent va viloyatlar uchun bir xil shart.",
     "shippingTitle": "Yetkazib berish usullari",
-    "tashkentTitle": "Toshkent boʻylab — kuryer",
+    "tashkentTitle": "Toshkent boʻylab — Yandex Dostavka",
     "tashkentTime": "24 soat ichida",
     "tashkentFree": "{amount} soʻmdan ortiq xaridga bepul. Aks holda — {fee} soʻm.",
-    "regionsTitle": "Viloyatlarga — EMU pochta",
+    "regionsTitle": "Viloyatlarga — BTS",
     "regionsTime": "1–3 kun",
     "regionsFree": "{amount} soʻmdan ortiq xaridga bepul. Aks holda — {fee} soʻm.",
     "pickupTitle": "Oʻzi olib ketish",
@@ -1436,7 +1436,7 @@
     "deliveryFaq": [
       {
         "question": "Yetkazib berish qancha vaqt oladi?",
-        "answer": "Toshkent boʻylab 24 soat ichida, viloyatlarga EMU pochta orqali 1–3 kun. Aniq muddatni operator tasdiqlashda aytadi."
+        "answer": "Toshkent boʻylab Yandex Dostavka orqali 24 soat ichida, viloyatlarga BTS orqali 1–3 kun. Aniq muddatni operator tasdiqlashda aytadi."
       },
       {
         "question": "Yetkazib berish bepulmi?",
@@ -1501,10 +1501,10 @@
         "heroTitle": "{amount} soʻmdan ortiq xaridga — bepul yetkazib berish",
         "heroShort": "{amount} soʻmdan ortiq xaridga — bepul",
         "heroText": "Toshkent va viloyatlar uchun bir xil shart.",
-        "courierTitle": "Toshkent boʻylab — kuryer",
+        "courierTitle": "Toshkent boʻylab — Yandex Dostavka",
         "courierTime": "{hours} soat ichida",
         "feeNote": "{amount} soʻmdan ortiq xaridga bepul. Aks holda — {fee} soʻm.",
-        "postTitle": "Viloyatlarga — EMU pochta",
+        "postTitle": "Viloyatlarga — BTS",
         "postTime": "1–3 kun",
         "pickupTitle": "Oʻzi olib ketish",
         "pickupText": "Toshkent shahridagi omborimizdan.",
@@ -1512,8 +1512,8 @@
         "colMethod": "Usul",
         "colBelow": "{amount} soʻmgacha",
         "colAbove": "{amount} soʻmdan",
-        "rowCourier": "Kuryer, Toshkent",
-        "rowPost": "EMU pochta, viloyatlar",
+        "rowCourier": "Yandex Dostavka, Toshkent",
+        "rowPost": "BTS, viloyatlar",
         "rowPickup": "Oʻzi olib ketish",
         "noteOnline": "Buyurtma onlayn toʻlov bilan darhol tasdiqlanadi. Operator faqat aniqlashtirish uchun qoʻngʻiroq qiladi.",
         "noteCall": "Buyurtmadan keyin operator tasdiqlash uchun qoʻngʻiroq qiladi va aniq yetkazish vaqtini aytadi."
