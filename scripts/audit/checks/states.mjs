@@ -97,6 +97,18 @@ const STATES = [
     },
   },
   {
+    name: "cart page with items",
+    viewport: MOBILE,
+    path: "/cart",
+    open: async (page) => {
+      await page.evaluate(() => {
+        const line = { productId: "p-antistress", slug: "dr-frei-antistress-magniy-20", name: "Antistress", image: "", price: 79000, oldPrice: 89000, lineId: "p-antistress", quantity: 2 };
+        localStorage.setItem("govita-cart", JSON.stringify({ state: { lines: [line], _savedAt: Date.now() }, version: 0 }));
+      });
+      await page.reload({ waitUntil: "networkidle" });
+    },
+  },
+  {
     name: "cart drawer",
     viewport: DESKTOP,
     path: "",

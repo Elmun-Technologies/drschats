@@ -89,4 +89,4 @@ function optionClass(on: boolean) {
 }
 
 const RADIO =
-  "mt-px h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-full border-[1.5px] border-[#A9AEB3] transition-[border] checked:border-[6px] checked:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "mt-px h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-full border-[1.5px] border-[#8A8F95] transition-[border] checked:border-[6px] checked:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";

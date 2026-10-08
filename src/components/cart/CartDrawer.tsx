@@ -171,7 +171,7 @@ export function CartDrawer() {
                     return null;
                   })()}
                   <Link
-                    href="/checkout"
+                    href="/cart"
                     onClick={() => {
                       close();
                       trackBeginCheckout(totals.total);

@@ -180,6 +180,42 @@ yigʻindisi — footer, toast va «yuqoriga» tugmasi panelni oʻzi chetlab oʻt
 `--header-sticky` (lg: 130px) — scroll qilingan desktop header balandligi.
 Audit: 0 (mobil akkordeonlar ochilgan holat ham qoʻshildi).
 
+## 6-bosqich — savat va buyurtma (bajarildi)
+
+CartV3 / CartMobileV3 / CartEmptyV3 / OrderSuccessV3: savat va rasmiylashtirish
+**bitta sahifada** (`/cart`) — savol 2 ga default javob, dizayn shunday;
+`/checkout` → `/cart` redirect (eski havolalar ishlaydi), `/checkout/success`
+oʻz joyida. Bepul yetkazishgacha progress, qatorlar (miqdor ≥ 1, sevimlilarga,
+oʻchirish), «Buyurtmangizga qoʻshing va tejang» (upsell ladder), 3 qadam
+(aloqa, yetkazish, toʻlov), oʻngda sticky xulosa, telefonda pastda fixed
+«Jami + Buyurtmani yuborish». Butun sahifa bitta `<form>`.
+
+**Oʻzgarmadi:** Zod sxemasi, `OrderRequest` payload, `submitOrder` server
+action, `computeTotals`, upsell ladder'ga beriladigan mahsulotlar roʻyxati
+(popular, 20), `trackLead`, `trackBeginCheckout` (drawer tugmasi endi `/cart`
+ga olib boradi), `PurchaseTracker`.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| «Hammasini tanlash» / tanlanganlarni oʻchirish | bor | yoʻq | tanlash buyurtma tarkibini oʻzgartirmaydi — bu yangi logika boʻlardi; har qatorda «Olib tashlash» bor |
+| «Aksiya chegirmasi», «Birinchi buyurtma −10%» | alohida qatorlar | bitta «Chegirma» qatori | `computeTotals` chegirmani yigʻindi qaytaradi; boʻlish — biznes-logika |
+| Payme / Click / Uzum | tanlanadi | merchant id yoʻq boʻlsa «tez orada», tanlanmaydi | ishlamaydigan toʻlov yoʻlini vaʼda qilmaslik |
+| Kabinetga biriktirish matni | bor | faqat «Hisobsiz ham buyurtma berishingiz mumkin» | backend deploy qilinmagan |
+| Boʻsh savat: «−10% avtomatik qoʻllanadi» | bor | yoʻq | −10% faqat obunaga tegishli — umumiy vaʼda notoʻgʻri |
+| Boʻsh savat: «Koʻp sotib olinadi» | sarlavha | «Sara mahsulotlar» | sotuv tarixi yoʻq |
+| Natija: «Payme · toʻlandi», «Toʻlov tasdiqlandi» | bor | yoʻq; 1-qadam «Buyurtma qabul qilindi» | naqd toʻlovda bu yolgʻon; sahifa toʻlov holatini bilmaydi |
+| Natija: buyurtma tarkibi, manzil | oʻng panel | yoʻq | savat redirect'dan oldin tozalanadi; maʼlumot faqat buyurtma raqami |
+| Natija: «Telegram orqali kuzatish» | bot | «Telegramda yozish» → `BRAND.social.telegram` | bot nomi hali yoʻq (OPEN-QUESTIONS #9); eski `@drschatsstorebot` olib tashlandi |
+
+**Topilgan nuqson (tuzatilmadi — biznes-logika):** «Oʻzi olib ketish»
+tanlanganda ham `computeTotals` 30 000 soʻm yetkazish qoʻshadi; usul narxga
+taʼsir qilmaydi. Yetkazish sahifasi esa olib ketishni «bepul» deydi.
+Tuzatish `computeTotals` ga `method` qoʻshishni va backend bilan
+kelishishni talab qiladi.
+
+Oʻchirildi: `CartPageView`, `SuccessCheckmark`. Audit: 0 (toʻldirilgan savat
+holati ham qoʻshildi).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -193,7 +229,7 @@ Audit: 0 (mobil akkordeonlar ochilgan holat ham qoʻshildi).
 | ProductV3 | `/product/[slug]` | bor | qayta chiziladi |
 | CompareV3 | `/compare` | yoʻq, **store ham yoʻq** | yangi funksiya — savol 3 |
 | FavoritesV3 | `/wishlist` | bor | qayta chiziladi |
-| CartV3 (savat + checkout bitta sahifada) | `/cart` | `/cart` va `/checkout` alohida | savol 2 |
+| CartV3 (savat + checkout bitta sahifada) | `/cart` | `/cart`; `/checkout` → redirect | ✅ 6-bosqich |
 | OrderSuccessV3 | `/checkout/success` | bor | qayta chiziladi |
 | LoginV3 | `/account/login` | `/account` ichida `AuthForm` (Telegram OTP, 6 xona) | oqim saqlanadi; URL savol 4 |
 | AccountV3, OrderDetailV3, SubscriptionsV3, ProfileV3 | `/account/...` | bitta `/account` sahifasi + alohida `/profile` (brauzerdagi sogʻliq profili) | savol 4 |
@@ -234,7 +270,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 3 | Bosh sahifa ✅ | yuqorida | — |
 | 4 | Katalog ✅ | yuqorida | — |
 | 5 | Mahsulot ✅ | yuqorida | — |
-| 6 | Savat | progress, upsell, 3 qadam, sticky xulosa | savol 2; checkout server action va Zod sxemasi oʻzgarmaydi |
+| 6 | Savat ✅ | yuqorida | — |
 | 7 | Qidiruv | `/search` route + header takliflari | — |
 | 8 | Aksiya, brend, sevimli, taqqoslash | `/sale`, `/brands/[slug]`, `/compare` | savol 3 |
 | 9 | Kabinet | sidebar, buyurtma timeline, obunalar | backend'da yoʻq funksiyalar roʻyxati alohida beriladi |

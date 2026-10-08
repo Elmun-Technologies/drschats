@@ -1,6 +1,29 @@
 "use client";
 
-import { cloneElement, isValidElement, useId, useState, type ReactElement } from "react";
+import { cloneElement, useEffect, useId, useState, type ReactNode } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useLocale, useTranslations } from "next-intl";
+import { Link, useRouter } from "@/lib/i18n/navigation";
+import type { Locale } from "@/lib/i18n/routing";
+import type { OrderRequest, Product } from "@/lib/shopflow/types";
+import { useCart } from "@/lib/cart/store";
+import { usePromotions } from "@/lib/cart/promotions-context";
+import { computeTotals } from "@/lib/cart/pricing";
+import { COMMERCE } from "@/lib/config/commerce";
+import { cn, formatMoney, formatNumber } from "@/lib/utils";
+import { Button, buttonVariants } from "@/components/ui/Button";
+import { Checkbox, RadioCard } from "@/components/ui/Choice";
+import { inputClass } from "@/components/ui/Field";
+import { ProductCard } from "@/components/product/ProductCard";
+import { productCutout } from "@/lib/content/product-cutouts";
+import { CartLines } from "@/components/cart/CartLines";
+import { submitOrder } from "@/app/[locale]/checkout/actions";
+import { getAttribution, trackLead } from "@/lib/analytics/events";
+import { buildUpsellLadder } from "@/lib/upsell/ladder";
+import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
+import { PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -27,41 +50,29 @@ const REGION_KEYS = [
   "karakalpakstan",
 ] as const;
 
-import Image from "next/image";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useLocale, useTranslations } from "next-intl";
-import { useRouter } from "@/lib/i18n/navigation";
-import type { Locale } from "@/lib/i18n/routing";
-import type { OrderRequest, Product } from "@/lib/shopflow/types";
-import { useCart } from "@/lib/cart/store";
-import { usePromotions } from "@/lib/cart/promotions-context";
-import { computeTotals } from "@/lib/cart/pricing";
-import { formatMoney } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
-import { Badge } from "@/components/ui/Badge";
-import { Link } from "@/lib/i18n/navigation";
-import { buttonVariants } from "@/components/ui/Button";
-import { submitOrder } from "@/app/[locale]/checkout/actions";
-import { getAttribution, trackLead } from "@/lib/analytics/events";
-import { buildUpsellLadder } from "@/lib/upsell/ladder";
-import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
-import { PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
-
+/*
+  Design: CartV3 / CartMobileV3 — the cart and the order form on one page.
+  The schema, the payload and the server action are the ones /checkout used;
+  only the layout changed. The whole page is one <form>, so the summary's
+  "Buyurtmani yuborish" and the phone's fixed bar both submit it.
+*/
 export function CheckoutForm({ recommended }: { recommended: Product[] }) {
+  const tv = useTranslations("cart.v3");
   const locale = useLocale() as Locale;
   const t = useTranslations("checkout");
   const tr = useTranslations("checkout.regions");
   const tc = useTranslations("cart");
   const ts = useTranslations("subscription");
+  const tp = useTranslations("product.v3");
   const router = useRouter();
-  const { lines, add, setQuantity } = useCart();
+  const lines = useCart((s) => s.lines);
   const clear = useCart((s) => s.clear);
   const promotions = usePromotions();
   const totals = computeTotals(lines, promotions);
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   const schema = z.object({
     name: z.string().min(2, t("errorRequired")),
@@ -93,6 +104,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -104,21 +116,30 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
     },
   });
 
+
   const emailEntered = Boolean(watch("email"));
   const provider = watch("provider");
+  const payment = watch("payment");
 
-  if (lines.length === 0) {
-    return (
-      <div className="flex flex-col items-center gap-5 py-24 text-center">
-        <p className="text-lg text-legacy-muted">{tc("empty")}</p>
-        <Link href="/products" className={buttonVariants("dark")}>
-          {tc("emptyCta")}
-        </Link>
-      </div>
-    );
-  }
+  if (!mounted) return <div className="min-h-[60vh]" />;
+  if (lines.length === 0) return <EmptyCart recommended={recommended} />;
 
   const ladderSteps = buildUpsellLadder(lines, recommended);
+  const payChoice = payment === "online" ? provider : "cod";
+  const choosePay = (value: string) => {
+    if (value === "cod") {
+      setValue("payment", "cod");
+      setValue("provider", undefined);
+    } else {
+      setValue("payment", "online");
+      setValue("provider", value as "payme" | "click" | "uzum", { shouldValidate: Boolean(errors.provider) });
+    }
+  };
+  const savings =
+    lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
+  const progress = totals.freeShippingThreshold
+    ? Math.min(100, Math.round(((totals.subtotal - totals.discount) / totals.freeShippingThreshold) * 100))
+    : 0;
 
   async function onSubmit(values: FormValues) {
     setSubmitting(true);
@@ -175,338 +196,310 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   }
 
   return (
-    <div className="grid gap-12 lg:grid-cols-[1.3fr_1fr]">
-      {/* Form */}
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-10 [order:1] lg:[order:1]">
-        <fieldset className="space-y-5">
-          <legend className="mb-2 font-display text-xl font-semibold">{t("contactSection")}</legend>
-          <Field label={t("name")} error={errors.name?.message}>
-            <input className={inputClass} placeholder={t("namePlaceholder")} {...register("name")} />
-          </Field>
-          <Field label={t("phone")} error={errors.phone?.message}>
-            <input className={inputClass} placeholder={t("phonePlaceholder")} inputMode="tel" {...register("phone")} />
-          </Field>
-          <Field label={t("email")} error={errors.email?.message} hint={t("emailHint")}>
-            <input
-              className={inputClass}
-              placeholder={t("emailPlaceholder")}
-              type="email"
-              inputMode="email"
-              autoComplete="email"
-              {...register("email")}
-            />
-          </Field>
-          {emailEntered && (
-            <label className="flex items-start gap-3 text-sm text-legacy-muted">
-              <input
-                type="checkbox"
-                {...register("subscribe")}
-                className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--color-accent)]"
-              />
-              <span>{t("subscribeLabel")}</span>
-            </label>
-          )}
-        </fieldset>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4 lg:gap-6">
+      <Heading count={totals.itemCount} />
 
-        <fieldset className="space-y-5">
-          <legend className="mb-2 font-display text-xl font-semibold">{t("deliverySection")}</legend>
-          <div className="grid gap-5 sm:grid-cols-2">
-            <Field label={t("region")} error={errors.region?.message}>
-              <select className={inputClass} {...register("region")}>
-                <option value="">{t("regionPlaceholder")}</option>
-                {REGION_KEYS.map((key) => (
-                  <option key={key} value={tr(key)}>
-                    {tr(key)}
-                  </option>
-                ))}
-              </select>
-            </Field>
-            <Field label={t("method")}>
-              <select className={inputClass} {...register("method")}>
-                <option value="courier">{t("methodCourier")}</option>
-                <option value="pickup">{t("methodPickup")}</option>
-              </select>
-            </Field>
-          </div>
-          <Field label={t("address")} error={errors.address?.message}>
-            <input className={inputClass} placeholder={t("addressPlaceholder")} {...register("address")} />
-          </Field>
-          <Field label={t("note")}>
-            <textarea rows={3} className={inputClass} placeholder={t("notePlaceholder")} {...register("note")} />
-          </Field>
-          {/*
-            A real choice instead of a row of logos.
-
-            The provider badges that used to sit here were decorative: no
-            merchant account behind them, and the order still ended in a
-            confirmation call. Now the customer picks a route, the choice
-            travels with the order, and a provider with no merchant id
-            configured is shown as unavailable rather than advertised.
-          */}
-          <fieldset className="rounded-2xl border border-legacy-line/60 bg-surface p-4">
-            <legend className="px-1 text-xs font-bold uppercase tracking-wider text-fg">
-              {t("paymentTitle")}
-            </legend>
-
-            {onlinePaymentAvailable() && (
-              <div className="mt-2 space-y-2">
-                <div className="flex items-start gap-3 rounded-xl border border-legacy-line bg-legacy-ink p-3">
-                  <input
-                    id="payment-online"
-                    type="radio"
-                    value="online"
-                    {...register("payment")}
-                    className="mt-0.5 h-4 w-4 accent-brand-deep"
-                  />
-                  <div className="min-w-0">
-                    <label htmlFor="payment-online" className="block cursor-pointer text-sm font-semibold text-fg">
-                      {t("payOnline")}
-                    </label>
-                    <p className="mt-0.5 text-xs text-legacy-muted">{t("payOnlineNote")}</p>
-                    {/* Providers are radios of their own — nesting them inside
-                        the parent's <label> made one click select two things. */}
-                    <div className="mt-2 flex flex-wrap gap-2">
-                      {PAYMENT_PROVIDERS.map((p) => (
-                        <label
-                          key={p.id}
-                          htmlFor={`provider-${p.id}`}
-                          className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-bold ${
-                            p.configured
-                              ? "cursor-pointer border-legacy-line-strong bg-surface text-fg"
-                              : "border-legacy-line bg-surface-2 text-faint"
-                          }`}
-                        >
-                          <input
-                            id={`provider-${p.id}`}
-                            type="radio"
-                            value={p.id}
-                            disabled={!p.configured}
-                            {...register("provider")}
-                            className="h-3.5 w-3.5 accent-brand-deep"
-                          />
-                          {p.label}
-                          {!p.configured && <span className="font-medium">— {t("paySoon")}</span>}
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
+      <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-8">
+        <div className="flex min-w-0 flex-col gap-4">
+          {totals.freeShippingThreshold > 0 && (
+            <div className="flex flex-col gap-2 rounded-[20px] bg-tile px-4 py-3.5 lg:gap-2.5 lg:px-6 lg:py-[18px]">
+              <div className="flex flex-wrap justify-between gap-x-3 gap-y-1 text-[15px] leading-5 lg:text-base">
+                <span>
+                  {totals.freeShippingRemaining > 0
+                    ? tv.rich("freeLeft", {
+                        amount: formatMoney(totals.freeShippingRemaining, locale),
+                        b: (chunks) => <b>{chunks}</b>,
+                      })
+                    : tc("freeShippingUnlocked")}
+                </span>
+                <span className="hidden text-ink-2 lg:inline">
+                  {formatNumber(Math.max(0, totals.subtotal - totals.discount))} / {formatMoney(totals.freeShippingThreshold, locale)}
+                </span>
               </div>
-            )}
+              <div className="h-1.5 rounded-full bg-[#DCDFDB] lg:h-2">
+                <div className="h-full rounded-full bg-ink transition-[width] duration-500" style={{ width: `${progress}%` }} />
+              </div>
+            </div>
+          )}
 
-            <label className="mt-2 flex cursor-pointer items-start gap-3 rounded-xl border border-legacy-line bg-legacy-ink p-3">
-              <input
-                type="radio"
-                value="cod"
-                {...register("payment")}
-                className="mt-0.5 h-4 w-4 accent-brand-deep"
-              />
-              <span className="min-w-0">
-                <span className="block text-sm font-semibold text-fg">{t("payCod")}</span>
-              </span>
-            </label>
+          <CartLines lines={lines} upsells={ladderSteps} />
 
-            <p className="pt-2 text-xs text-legacy-muted">
-              {onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}
-            </p>
+          <Step n={1} title={t("contactSection")}>
+            <div className="grid gap-3.5 lg:grid-cols-3">
+              <Field label={t("name")} error={errors.name?.message}>
+                <input className={inputClass} placeholder={t("namePlaceholder")} autoComplete="name" {...register("name")} />
+              </Field>
+              <Field label={t("phone")} error={errors.phone?.message}>
+                <input className={inputClass} placeholder={t("phonePlaceholder")} inputMode="tel" autoComplete="tel" {...register("phone")} />
+              </Field>
+              <Field label={t("email")} error={errors.email?.message} hint={t("emailHint")}>
+                <input
+                  className={inputClass}
+                  placeholder={t("emailPlaceholder")}
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  {...register("email")}
+                />
+              </Field>
+            </div>
+            <p className="text-sm text-muted">{tv("guestNote")}</p>
+          </Step>
+
+          <Step n={2} title={t("deliverySection")}>
+            <div role="radiogroup" aria-label={t("method")} className="grid gap-2.5 lg:grid-cols-2">
+              <RadioCard value="courier" {...register("method")}>
+                <OptionText
+                  title={t("methodCourier")}
+                  note={tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, fee: formatMoney(COMMERCE.shippingFee, locale) })}
+                />
+              </RadioCard>
+              <RadioCard value="pickup" {...register("method")}>
+                <OptionText title={t("methodPickup")} note={tp("pickupNote")} />
+              </RadioCard>
+            </div>
+            <div className="grid gap-3.5 lg:grid-cols-[260px_minmax(0,1fr)]">
+              <Field label={t("region")} error={errors.region?.message}>
+                <select className={cn(inputClass, "appearance-none bg-[url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2317191B%22 stroke-width=%221.75%22 stroke-linecap=%22round%22><path d=%22M6 9l6 6 6-6%22/></svg>')] bg-[length:18px] bg-[right_16px_center] bg-no-repeat pr-11")} {...register("region")}>
+                  <option value="">{t("regionPlaceholder")}</option>
+                  {REGION_KEYS.map((key) => (
+                    <option key={key} value={tr(key)}>
+                      {tr(key)}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              <Field label={t("address")} error={errors.address?.message}>
+                <input className={inputClass} placeholder={t("addressPlaceholder")} autoComplete="street-address" {...register("address")} />
+              </Field>
+            </div>
+            <Field label={t("note")}>
+              <input className={inputClass} placeholder={t("notePlaceholder")} {...register("note")} />
+            </Field>
+          </Step>
+
+          {/*
+            A real choice instead of a row of logos: a provider with no
+            merchant id configured is shown as "tez orada" and cannot be
+            picked, so the page never promises a payment route the shop
+            cannot complete.
+          */}
+          <Step n={3} title={t("paymentTitle")}>
+            <div role="radiogroup" aria-label={t("paymentTitle")} className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-2.5">
+              {PAYMENT_PROVIDERS.map((p) => (
+                <RadioCard
+                  key={p.id}
+                  name="pay-choice"
+                  value={p.id}
+                  checked={payChoice === p.id}
+                  disabled={!p.configured}
+                  onChange={() => choosePay(p.id)}
+                  className={cn("p-3.5 lg:p-4", !p.configured && "cursor-not-allowed opacity-60")}
+                >
+                  <OptionText title={p.label} note={p.configured ? tv("online") : t("paySoon")} bold />
+                </RadioCard>
+              ))}
+              <RadioCard name="pay-choice" value="cod" checked={payChoice === "cod"} onChange={() => choosePay("cod")} className="p-3.5 lg:p-4">
+                <OptionText title={tv("codTitle")} note={tv("codSub")} bold />
+              </RadioCard>
+            </div>
             {errors.provider?.message && (
-              <p role="alert" className="pt-1 text-xs font-semibold text-danger">
+              <p role="alert" className="text-sm font-semibold text-red">
                 {errors.provider.message}
               </p>
             )}
-          </fieldset>
-        </fieldset>
-
-        {/* Upsell Ladder */}
-        {ladderSteps.length > 0 && (
-          <fieldset>
-            <legend className="mb-4 font-display text-xl font-semibold">{t("upsellTitle")}</legend>
-            <div className="space-y-3">
-              {ladderSteps.map((step, i) => (
-                <div
-                  key={step.product.id}
-                  className={`flex items-center gap-4 rounded-xl border p-3 transition-all ${
-                    step.stepType === "free_gift"
-                      ? "border-legacy-line-strong bg-surface-2"
-                      : "border-legacy-line bg-surface"
-                  }`}
-                >
-                  <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-surface-2">
-                    <Image src={step.product.images[0]?.url ?? ""} alt={step.product.name} fill sizes="56px" className="object-cover" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-xs text-faint">{step.reason}</p>
-                    <p className="text-sm font-medium">{step.product.name}</p>
-                    <div className="mt-1 flex items-center gap-2">
-                      <span className="text-sm text-faint line-through">{formatMoney(step.product.price, locale)}</span>
-                      {step.stepType === "free_gift" ? (
-                        <span className="font-display text-sm font-bold text-signal">{t("upsellFree")}</span>
-                      ) : (
-                        <>
-                          <span className="text-sm font-semibold text-fg">{formatMoney(step.discountedPrice, locale)}</span>
-                          <Badge tone="gold">−{step.discountPercent}%</Badge>
-                        </>
-                      )}
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      add({
-                        productId: step.product.id,
-                        slug: step.product.slug,
-                        name: step.product.name,
-                        image: step.product.images[0]?.url ?? "",
-                        price: step.product.price,
-                        oldPrice: step.product.oldPrice,
-                        upsellDiscountPercent: step.discountPercent,
-                      })
-                    }
-                    className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
-                      step.stepType === "free_gift"
-                        ? "bg-accent text-brand-deep hover:bg-accent-strong hover:text-legacy-ink"
-                        : "border border-legacy-line-strong bg-surface-2 text-fg hover:bg-surface-3"
-                    }`}
-                  >
-                    {step.stepType === "free_gift" ? t("upsellFree") : t("upsellAdd")}
-                  </button>
-                </div>
-              ))}
-            </div>
-          </fieldset>
-        )}
-
-        {/* role="alert": the submit failure appears after the button was
-            pressed, so it has to announce itself rather than wait to be found. */}
-        {serverError && (
-          <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm font-medium text-danger">
-            {serverError}
-          </p>
-        )}
-
-        <div className="space-y-3">
-          <Button type="submit" size="lg" className="w-full" disabled={submitting}>
-            {submitting ? t("submitting") : t("submit")}
-          </Button>
-          <p className="text-center text-sm text-legacy-muted">{t("operatorNote")}</p>
+            <p className="text-sm text-muted">{onlinePaymentAvailable() ? tv("gatewayNote") : t("payUnavailable")}</p>
+          </Step>
         </div>
-      </form>
 
-      {/* Summary */}
-      <aside className="[order:2] lg:[order:2] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="rounded-2xl border border-legacy-line bg-surface p-6">
-          <h2 className="mb-5 font-display text-lg font-semibold">{t("summary")}</h2>
-          <div className="space-y-4">
-            {lines.map((l) => (
-              <div key={l.lineId} className="flex gap-3">
-                <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-surface-2">
-                  {l.image && <Image src={l.image} alt={l.name} fill sizes="56px" className="object-cover" />}
-                </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium">{l.name}</p>
-                  {l.oldPrice && l.oldPrice > l.price && (
-                    <div className="mt-0.5 flex items-center gap-2">
-                      <span className="text-xs text-legacy-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
-                      <Badge tone="gold" className="px-1.5 py-0 text-[10px]">
-                        −{Math.round((1 - l.price / l.oldPrice) * 100)}%
-                      </Badge>
-                    </div>
-                  )}
-                  <div className="mt-1 flex items-center gap-1 text-xs text-legacy-muted">
-                    {/*
-                      Stopping at 1 rather than letting "−" fall through to 0.
-                      The store treats 0 as "remove", so one more press than
-                      intended deleted the product from the order with no
-                      warning and nothing to undo it with. Removing is now its
-                      own labelled control.
-                    */}
-                    <button
-                      type="button"
-                      onClick={() => setQuantity(l.lineId, l.quantity - 1)}
-                      disabled={l.quantity <= 1}
-                      aria-label={t("decreaseFor", { name: l.name })}
-                      className="rounded px-1.5 hover:text-fg disabled:opacity-40"
-                    >
-                      −
-                    </button>
-                    <span aria-live="polite" className="min-w-4 text-center tabular-nums">
-                      {l.quantity}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity(l.lineId, l.quantity + 1)}
-                      aria-label={t("increaseFor", { name: l.name })}
-                      className="rounded px-1.5 hover:text-fg"
-                    >
-                      +
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setQuantity(l.lineId, 0)}
-                      aria-label={t("removeFor", { name: l.name })}
-                      className="ml-2 rounded px-1.5 text-faint hover:text-danger"
-                    >
-                      {t("remove")}
-                    </button>
-                  </div>
-                </div>
-                <span className="text-sm">{formatMoney(l.price * l.quantity, locale)}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 space-y-2 border-t border-legacy-line pt-4 text-sm">
-            <SummaryRow label={tc("subtotal")} value={formatMoney(totals.subtotal, locale)} />
+        <aside className="flex flex-col gap-3 lg:sticky lg:top-[calc(var(--header-sticky)+16px)]">
+          <div className="flex flex-col gap-3.5 rounded-[20px] bg-tile p-5 lg:border lg:border-line lg:bg-bg lg:p-7 lg:shadow-buybox">
+            <h2 className="hidden text-[22px] font-bold lg:block">{t("summary")}</h2>
+            <SummaryRow label={tv("itemsRow", { count: totals.itemCount })} value={formatMoney(totals.subtotal, locale)} />
             {totals.discount > 0 && (
-              <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} accent />
+              <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} sale />
             )}
             <SummaryRow
               label={tc("shipping")}
               value={totals.shipping === 0 ? tc("free") : formatMoney(totals.shipping, locale)}
             />
-            <div className="flex items-center justify-between border-t border-legacy-line pt-3 text-base font-semibold">
+            <div className="flex items-baseline justify-between gap-3 border-t border-[#DCDFDB] pt-3.5 text-[22px] font-bold lg:border-line lg:text-[26px]">
               <span>{tc("total")}</span>
               <span>{formatMoney(totals.total, locale)}</span>
             </div>
             {totals.hasSubscription && (
-              <p className="pt-1 text-xs text-legacy-muted">
-                {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })}{" "}
-                {ts("benefitControl")}
+              <p className="text-sm text-ink-2">
+                {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })} {ts("benefitControl")}
               </p>
             )}
-            {(() => {
-              const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
-              if (totalSavings > 0) {
-                return (
-                  <div className="mt-4 rounded-xl border border-legacy-line bg-surface-2 p-3 text-centerter">
-                    <p className="text-sm font-semibold text-brand-deep">
-                      {t("savings", { amount: formatMoney(totalSavings, locale) })}
-                    </p>
-                  </div>
-                );
-              }
-              return null;
-            })()}
+            {savings > 0 && (
+              <span className="inline-flex h-[30px] items-center self-start rounded-pill bg-chip-strong px-2.5 text-sm font-semibold">
+                {tc("savings", { amount: formatMoney(savings, locale) })}
+              </span>
+            )}
+            {serverError && (
+              <p role="alert" className="rounded-sm bg-red/10 px-4 py-3 text-sm font-medium text-red">
+                {serverError}
+              </p>
+            )}
+            <Button type="submit" size="lg" className="mt-1 hidden h-14 w-full rounded-[14px] lg:inline-flex" disabled={submitting}>
+              {submitting ? t("submitting") : t("submit")}
+            </Button>
+            {emailEntered && (
+              <Checkbox {...register("subscribe")} className="items-start text-sm leading-[19px] text-ink-2">
+                {t("subscribeLabel")}
+              </Checkbox>
+            )}
+            <p className="text-[13px] leading-[18px] text-muted">
+              {tv.rich("consent", {
+                offer: (chunks) => <Link href="/offer" className="underline">{chunks}</Link>,
+                privacy: (chunks) => <Link href="/privacy" className="underline">{chunks}</Link>,
+              })}
+            </p>
+            <UpsellSavingsBar />
           </div>
-          <UpsellSavingsBar />
+          <div className="hidden flex-col gap-3 rounded-[20px] bg-tile px-5 py-[18px] text-sm leading-[19px] lg:flex">
+            <TrustRow d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4">{tc("trustGuarantee")}</TrustRow>
+            <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>
+            <TrustRow d="M4 5h16v11H9l-5 4z">{onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}</TrustRow>
+          </div>
+        </aside>
+      </div>
+
+      <div
+        data-buy-bar
+        className="fixed inset-x-0 bottom-[var(--tab-bar)] z-40 flex h-[var(--buy-bar)] items-center gap-2.5 border-t border-line bg-bg px-4 lg:hidden"
+      >
+        <div className="flex shrink-0 flex-col">
+          <span className="text-[13px] text-ink-2">{tc("total")}</span>
+          <span className="text-[19px] font-bold leading-[23px]">{formatMoney(totals.total, locale)}</span>
         </div>
-      </aside>
+        <Button type="submit" size="lg" className="min-w-0 flex-1 rounded-[14px]" disabled={submitting}>
+          {submitting ? t("submitting") : t("submit")}
+        </Button>
+      </div>
+    </form>
+  );
+}
+
+function Heading({ count, crumbsOnly = false }: { count?: number; crumbsOnly?: boolean }) {
+  const tc = useTranslations("cart");
+  const tv = useTranslations("cart.v3");
+  const tp = useTranslations("product");
+  return (
+    <div className="flex flex-col gap-2 lg:gap-3.5">
+      <nav aria-label={tp("breadcrumbHome")} className="hidden gap-2 text-sm text-muted lg:flex">
+        <Link href="/" className="hover:text-ink">{tp("breadcrumbHome")}</Link>
+        <span aria-hidden>/</span>
+        <span className="text-ink">{tc("title")}</span>
+      </nav>
+      {!crumbsOnly && (
+        <div className="flex items-baseline gap-2.5 lg:gap-3.5">
+          <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{tc("title")}</h1>
+          {count != null && <span className="text-[15px] text-muted lg:text-[17px]">{tv("itemsCount", { count })}</span>}
+        </div>
+      )}
     </div>
   );
 }
 
-const inputClass =
-  "w-full rounded-xl border border-legacy-line bg-surface-2 px-4 py-3 text-sm text-fg outline-none transition-colors placeholder:text-faint focus:border-accent";
+function EmptyCart({ recommended }: { recommended: Product[] }) {
+  const tv = useTranslations("cart.v3");
+  const common = useTranslations("common");
+  const home = useTranslations("home");
+  // Cut-out pack shots first, as on every other rail.
+  const picks = recommended
+    .filter((p) => p.inStock && (p.assortment ?? "core") === "core")
+    .sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+    .slice(0, 6);
+  return (
+    <div className="flex flex-col gap-8 lg:gap-12">
+      <div className="hidden lg:block">
+        <Heading crumbsOnly />
+      </div>
+      <section className="flex flex-col items-center gap-3.5 rounded-[28px] bg-tile px-6 py-12 text-center lg:rounded-[32px] lg:px-8 lg:py-16">
+        <span className="flex h-24 w-24 items-center justify-center rounded-full bg-bg">
+          <svg viewBox="0 0 24 24" aria-hidden className="h-11 w-11" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" />
+          </svg>
+        </span>
+        <h1 className="mt-1.5 text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{tv("emptyTitle")}</h1>
+        <p className="max-w-[520px] text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{tv("emptyText")}</p>
+        <div className="mt-2.5 flex flex-wrap justify-center gap-2.5">
+          <Link href="/products" className={cn(buttonVariants("primary", "lg"), "h-14 rounded-[14px] px-8")}>
+            {tv("emptyShop")}
+          </Link>
+          <Link href="/quiz" className={cn(buttonVariants("secondary", "lg"), "h-14 rounded-[14px] bg-transparent")}>
+            {common("quiz")}
+          </Link>
+        </div>
+      </section>
+      {picks.length > 0 && (
+        <section aria-labelledby="cart-picks" className="flex flex-col gap-3.5 lg:gap-6">
+          <h2 id="cart-picks" className="text-[22px] font-bold leading-7 lg:text-h-section lg:leading-9">
+            {home("catalog.title")}
+          </h2>
+          <div className="grid grid-cols-2 gap-x-2.5 gap-y-5 md:grid-cols-[repeat(auto-fill,minmax(188px,1fr))] md:gap-x-3 md:gap-y-6">
+            {picks.map((p, i) => (
+              <div key={p.id} className="h-full">
+                <ProductCard product={p} index={i} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
+  );
+}
+
+function Step({ n, title, children }: { n: number; title: string; children: ReactNode }) {
+  return (
+    <section className="flex flex-col gap-4 rounded-[20px] border border-line p-[18px] lg:gap-[18px] lg:p-7">
+      <h2 className="flex items-center gap-2.5 text-[19px] font-bold leading-[26px] lg:gap-3 lg:text-xl">
+        <span aria-hidden className="flex h-[30px] w-[30px] shrink-0 items-center justify-center rounded-full bg-ink text-[15px] text-white lg:h-9 lg:w-9 lg:text-base">
+          {n}
+        </span>
+        {title}
+      </h2>
+      {children}
+    </section>
+  );
+}
+
+function OptionText({ title, note, bold = false }: { title: string; note: string; bold?: boolean }) {
+  return (
+    <span className="flex flex-col gap-0.5">
+      <span className={cn("text-base", bold ? "font-bold" : "font-semibold")}>{title}</span>
+      <span className="text-[13px] text-ink-2 lg:text-sm">{note}</span>
+    </span>
+  );
+}
+
+function TrustRow({ d, children }: { d: string; children: ReactNode }) {
+  return (
+    <span className="flex gap-2.5">
+      <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d={d} />
+      </svg>
+      {children}
+    </span>
+  );
+}
+
+function SummaryRow({ label, value, sale }: { label: string; value: string; sale?: boolean }) {
+  return (
+    <div className="flex justify-between gap-3 text-base">
+      <span className="text-ink-2">{label}</span>
+      <span className={sale ? "font-semibold text-red" : undefined}>{value}</span>
+    </div>
+  );
+}
 
 /*
   The error used to be a span inside the <label>, which made it part of the
-  control's accessible *name* — a screen reader announced the name field as
-  "Ism familiya Bu maydon majburiy" rather than reading the reason as a
-  description. Nothing was marked invalid either.
-
-  So the message moves out of the label and is tied to the control by id, and
-  the control gets aria-invalid. role="alert" so a message appearing after the
-  submit button was pressed is announced rather than waited for.
+  control's accessible *name*. So the message sits outside the label, is tied
+  to the control by id, and the control gets aria-invalid. role="alert" so a
+  message appearing after the submit button was pressed is announced.
 */
 function Field({
   label,
@@ -517,49 +510,34 @@ function Field({
   label: string;
   error?: string;
   hint?: string;
-  children: React.ReactNode;
+  children: React.ReactElement<Record<string, unknown>>;
 }) {
   const fieldId = useId();
   const errorId = `${fieldId}-error`;
   const hintId = `${fieldId}-hint`;
-
-  // The hint stays announced even when an error appears: "we email the receipt
-  // here" is why the field exists, and losing it mid-correction is confusing.
   const describedBy = [error ? errorId : null, hint ? hintId : null].filter(Boolean).join(" ");
-
-  const control = isValidElement(children)
-    ? cloneElement(children as ReactElement<Record<string, unknown>>, {
-        id: fieldId,
-        "aria-invalid": error ? true : undefined,
-        "aria-describedby": describedBy || undefined,
-      })
-    : children;
+  const control = cloneElement(children, {
+    id: fieldId,
+    "aria-invalid": error ? true : undefined,
+    "aria-describedby": describedBy || undefined,
+  });
 
   return (
-    <div>
-      <label htmlFor={fieldId} className="mb-2 block text-sm font-medium text-legacy-muted">
+    <div className="flex flex-col gap-2">
+      <label htmlFor={fieldId} className="text-sm font-medium text-ink-2">
         {label}
       </label>
       {control}
       {hint && (
-        <span id={hintId} className="mt-1 block text-xs text-faint">
+        <span id={hintId} className="text-[13px] text-muted">
           {hint}
         </span>
       )}
       {error && (
-        <span id={errorId} role="alert" className="mt-1 block text-xs text-danger">
+        <span id={errorId} role="alert" className="text-sm text-red">
           {error}
         </span>
       )}
-    </div>
-  );
-}
-
-function SummaryRow({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
-  return (
-    <div className="flex items-center justify-between">
-      <span className="text-legacy-muted">{label}</span>
-      <span className={accent ? "font-semibold text-fg" : "text-legacy-muted"}>{value}</span>
     </div>
   );
 }
