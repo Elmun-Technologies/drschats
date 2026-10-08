@@ -1,19 +1,19 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, itemListLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { BRAND } from "@/lib/brand";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.licenses" });
-  return buildPageMetadata({ locale, path: "/licenses", title: `${t("title")} — Go Vita`, description: t("subtitle") });
+  return staticPageMetadata(locale, "licenses", "/licenses");
 }
 
 export default async function LicensesPage({ params }: { params: Promise<{ locale: Locale }> }) {

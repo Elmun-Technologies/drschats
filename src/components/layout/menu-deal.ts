@@ -1,5 +1,5 @@
-import { productCutout } from "@/lib/content/product-cutouts";
 import type { Product } from "@/lib/shopflow/types";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /** The "Haftaning taklifi" tile in the catalogue menu — the deepest real discount. */
 export interface MenuDeal {
@@ -17,7 +17,7 @@ export function toMenuDeal(product: Product | undefined): MenuDeal | null {
     name: product.name,
     price: product.price,
     oldPrice: product.oldPrice,
-    image: productCutout(product.slug) ?? product.images[0]?.url ?? null,
+    image: cutoutOf(product) ?? product.images[0]?.url ?? null,
   };
 }
 

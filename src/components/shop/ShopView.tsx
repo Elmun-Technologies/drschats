@@ -7,8 +7,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
 import { chipClass } from "@/components/ui/Chip";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
-import { categoryCutout, productCutout } from "@/lib/content/product-cutouts";
-import { productBrand } from "@/lib/content/product-brands";
+import { categoryCutout } from "@/lib/content/product-cutouts";
 import { COMMERCE } from "@/lib/config/commerce";
 import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
 import {
@@ -24,6 +23,10 @@ import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { SORT_ORDER, sortKey, type CatalogSort } from "@/lib/shop/catalog-sort";
 import { CatalogSidebar, MobileFilterBar, type PanelContext } from "./CatalogFilterPanel";
 import { isStocked } from "@/lib/shop/categories";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, breadcrumbLd, collectionLd } from "@/lib/seo/jsonld";
+import { categorySeoCopy } from "@/lib/content/category-seo";
+import { cutoutOf, brandOf } from "@/lib/catalog/product-facts";
 
 /** Shopflow filters by category and search; the rest runs over every matching product. */
 const PAGE_SIZE = 24;
@@ -65,7 +68,7 @@ export async function ShopView({
   // cutout pack shot lead and coffee and devices follow — as on the home page.
   const items =
     sort === "popular"
-      ? [...pool.items].sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+      ? [...pool.items].sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
       : pool.items;
   const facts = items.map((p) => toFacts(p, topics));
   const matchIds = new Set(applyFilters(facts, filters).map((f) => f.id));
@@ -80,7 +83,7 @@ export async function ShopView({
   const heading = search ? t("searchResults", { query: search }) : active ? active.name : t("title");
 
   const brandNames = Object.fromEntries(
-    pool.items.map((p) => productBrand(p.slug)).filter(Boolean).map((b) => [b!.slug, b!.name]),
+    pool.items.map((p) => brandOf(p)).filter(Boolean).map((b) => [b!.slug, b!.name]),
   );
   const goalNames = Object.fromEntries(topics.map((topic) => [topic.slug, topic.name]));
   const ctx: PanelContext = { facts, filters, sort, basePath, keep, brandNames, goalNames };
@@ -117,6 +120,7 @@ export async function ShopView({
 
   return (
     <div className="wrap flex flex-col gap-4 pb-9 pt-1 lg:gap-6 lg:pb-[72px] lg:pt-5">
+      {!search && <ShelfJsonLd />}
       <div className="flex flex-col gap-1 lg:gap-4">
         <nav aria-label={prod("breadcrumbHome")} className="hidden flex-wrap gap-2 text-sm text-muted lg:flex">
           <Link href="/" className="hover:text-ink">{prod("breadcrumbHome")}</Link>
@@ -271,6 +275,9 @@ export async function ShopView({
           {active && (
             <div className="flex max-w-[820px] flex-col gap-2.5 pt-4">
               <h2 className="text-title font-bold">{v3("seoTitle", { name: active.name })}</h2>
+              {categorySeoCopy(active.slug, locale).map((paragraph) => (
+                <p key={paragraph.slice(0, 32)} className="text-body text-ink-2">{paragraph}</p>
+              ))}
               <p className="text-body text-ink-2">
                 {v3("seoText", {
                   name: active.name,
@@ -285,6 +292,22 @@ export async function ShopView({
       </div>
     </div>
   );
+
+  /** Only the clean shelf URL carries it; a search result is not a page of its own. */
+  function ShelfJsonLd() {
+    const url = `${SITE_URL}/${locale}${basePath}`;
+    const crumbs = [
+      { name: prod("breadcrumbHome"), url: `${SITE_URL}/${locale}` },
+      { name: header("catalog"), url: `${SITE_URL}/${locale}/products` },
+      ...(active ? [{ name: active.name, url }] : []),
+    ];
+    return (
+      <>
+        <JsonLd data={breadcrumbLd(crumbs)} />
+        <JsonLd data={collectionLd({ name: heading, url, products: visible })} />
+      </>
+    );
+  }
 
   /*
     Two editorial tiles live in the grid itself, as in the design: the quiz

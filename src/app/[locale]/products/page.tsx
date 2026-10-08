@@ -11,16 +11,19 @@ export const revalidate = 300;
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const [{ locale }, query] = await Promise.all([params, searchParams]);
   const t = await getTranslations({ locale, namespace: "meta" });
   return buildPageMetadata({
     locale,
     path: "/products",
     title: t("shopTitle"),
     description: t("shopDescription"),
+    noindex: Object.keys(query).length > 0,
   });
 }
 

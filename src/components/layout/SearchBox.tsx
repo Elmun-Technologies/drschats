@@ -4,10 +4,10 @@ import { useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/lib/i18n/navigation";
 import { cn, formatMoney } from "@/lib/utils";
-import { productBrand } from "@/lib/content/product-brands";
 import { chipClass } from "@/components/ui/Chip";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Category } from "@/lib/shopflow/types";
+import { brandOf } from "@/lib/catalog/product-facts";
 
 interface Suggestion {
   slug: string;
@@ -317,7 +317,7 @@ export function SearchBox({
                 <ul role="group">
                   {productOptions.map((opt) => {
                     if (opt.kind !== "product") return null;
-                    const brand = productBrand(opt.product.slug);
+                    const brand = brandOf(opt.product);
                     return (
                       <li
                         key={opt.key}

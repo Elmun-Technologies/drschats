@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { Link } from "@/lib/i18n/navigation";
 import { COMMERCE } from "@/lib/config/commerce";
 import { buttonVariants } from "@/components/ui/Button";
 import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.guarantee" });
-  return buildPageMetadata({ locale, path: "/guarantee", title: `${t("title")} — Go Vita`, description: t("subtitle") });
+  return staticPageMetadata(locale, "guarantee", "/guarantee");
 }
 
 const POINT_ICONS = [

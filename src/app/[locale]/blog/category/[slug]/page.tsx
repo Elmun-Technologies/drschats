@@ -9,9 +9,10 @@ import {
   isBlogCategoryKey,
   usedCategoryKeys,
 } from "@/lib/content/blog-categories";
-import { buildPageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo/metadata";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { BlogIndex } from "@/components/blog/BlogIndex";
+import { blogCategoryDescription, seoTitle } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
@@ -31,8 +32,8 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale,
     path: `/blog/category/${slug}`,
-    title: `${label} — ${t("title")} | ${SITE_NAME}`,
-    description: t("categorySubtitle", { category: label }),
+    title: await seoTitle(locale, "blogCategory", { name: label }),
+    description: await blogCategoryDescription(locale, label),
   });
 }
 

@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { JsonLd, organizationLd } from "@/lib/seo/jsonld";
+import { JsonLd, localBusinessLd, organizationLd, websiteLd } from "@/lib/seo/jsonld";
 import { byDeepestDiscount } from "@/lib/shop/discounts";
 import { promotable } from "@/lib/shop/curation";
 import { productCutout } from "@/lib/content/product-cutouts";
@@ -28,6 +28,7 @@ import {
   SectionHead,
 } from "@/components/home/HomeBlocks";
 import { isStocked } from "@/lib/shop/categories";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 
@@ -79,14 +80,14 @@ export default async function HomePage({
   // Products with a cutout pack shot lead every rail: they are the supplement
   // lines the design is built around, the rest (coffee, devices) follow.
   const catalogue = [...promotable(listing.items)].sort(
-    (a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)),
+    (a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)),
   );
   const shelves = categories.filter(isStocked);
   const deals = byDeepestDiscount(catalogue).slice(0, 6);
   const dealIds = new Set(deals.map((p) => p.id));
   const weeklyDeals = deals.map(toMenuDeal).filter((d): d is MenuDeal => d !== null);
   const swissEnergy = catalogue
-    .filter((p) => p.slug.startsWith("swiss-energy-") && productCutout(p.slug))
+    .filter((p) => p.slug.startsWith("swiss-energy-") && cutoutOf(p))
     .slice(0, 8);
   const curated = catalogue.filter((p) => !dealIds.has(p.id)).slice(0, 12);
   const bundle = promotions.find((p) => p.type === "buy_x_get_y");
@@ -99,6 +100,8 @@ export default async function HomePage({
   return (
     <>
       <JsonLd data={organizationLd(locale)} />
+      <JsonLd data={websiteLd(locale)} />
+      <JsonLd data={localBusinessLd()} />
       <h1 className="sr-only">{meta("homeTitle")}</h1>
       <div className="flex flex-col gap-8 pb-9 pt-1 lg:gap-16 lg:pb-[72px] lg:pt-6">
         <QuickChips categories={shelves} saleLabel={nav("topDeals")} label={nav("shopByCategories")} />

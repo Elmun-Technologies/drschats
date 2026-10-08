@@ -9,9 +9,6 @@ import type { Expert } from "@/lib/content/experts";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import { COMMERCE } from "@/lib/config/commerce";
 import { ONLINE_PROVIDERS } from "@/lib/config/payments";
-import { productBrand } from "@/lib/content/product-brands";
-import { productCutout } from "@/lib/content/product-cutouts";
-import { PRODUCT_UNITS } from "@/lib/content/product-units";
 import { discountPercent } from "@/components/ui/Price";
 import { buttonVariants } from "@/components/ui/Button";
 import { chipClass } from "@/components/ui/Chip";
@@ -27,6 +24,7 @@ import { HealthContext } from "@/components/product/HealthContext";
 import { DoctorVideo } from "@/components/product/DoctorVideo";
 import { UpsellRail } from "@/components/product/UpsellRail";
 import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
+import { cutoutOf, unitOf, brandOf } from "@/lib/catalog/product-facts";
 
 /*
   Design: ProductV3 (desktop), ProductMobileV3 (phones).
@@ -63,9 +61,9 @@ export async function ProductTemplate({
   const legal = await getTranslations("legal");
   const td = await getTranslations("delivery");
 
-  const brand = productBrand(product.slug);
-  const pack = PRODUCT_UNITS[product.slug];
-  const cutout = productCutout(product.slug);
+  const brand = brandOf(product);
+  const pack = unitOf(product);
+  const cutout = cutoutOf(product);
   const images = cutout ? [{ url: cutout, alt: product.name }, ...product.images.slice(1)] : product.images;
   const discount = discountPercent(product.price, product.oldPrice);
   const guaranteeLabel = product.badges.find((b) => /kafolat|гарантия/i.test(b));

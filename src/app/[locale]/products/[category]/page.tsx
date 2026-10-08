@@ -4,7 +4,9 @@ import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { routing } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
-import { buildPageMetadata } from "@/lib/seo/metadata";
+import { listingMetadata } from "@/lib/seo/page-meta";
+import { getAllProducts } from "@/lib/shop/all-products";
+import { isStocked } from "@/lib/shop/categories";
 import { ShopView } from "@/components/shop/ShopView";
 import { isCatalogSort } from "@/lib/shop/catalog-sort";
 import { parseFilters, type FilterParams } from "@/lib/shop/catalog-filters";
@@ -26,18 +28,24 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ locale: Locale; category: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }): Promise<Metadata> {
-  const { locale, category } = await params;
+  const [{ locale, category }, query] = await Promise.all([params, searchParams]);
   const categories = await shopflow.getCategories(locale);
   const cat = categories.find((c) => c.slug === category);
   if (!cat) return {};
-  return buildPageMetadata({
+  const products = await getAllProducts({ locale, category });
+  return listingMetadata({
     locale,
+    kind: "category",
+    name: cat.name,
     path: `/products/${category}`,
-    title: `${cat.name} — Go Vita`,
-    description: cat.description ?? cat.name,
+    products: products.items,
+    fallbackDescription: cat.description ?? cat.name,
+    filtered: Object.keys(query).length > 0,
   });
 }
 
@@ -53,7 +61,9 @@ export default async function CategoryPage({
   setRequestLocale(locale);
 
   const categories = await shopflow.getCategories(locale);
-  if (!categories.some((c) => c.slug === category)) notFound();
+  // An empty shelf answers 404 like a brand without products: nothing to show, nothing to index.
+  const shelf = categories.find((c) => c.slug === category);
+  if (!shelf || !isStocked(shelf)) notFound();
 
   const activeSort = isCatalogSort(sort) ? sort : "popular";
   const activePage = Math.max(1, Number(page) || 1);

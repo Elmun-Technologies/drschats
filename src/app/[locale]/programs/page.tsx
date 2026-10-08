@@ -2,28 +2,18 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { loadProgramIndex } from "@/lib/content/program-loader";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { JsonLd, itemListLd } from "@/lib/seo/jsonld";
 import { formatMoney } from "@/lib/utils";
 import { Link } from "@/lib/i18n/navigation";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { DiscountBadge } from "@/components/ui/Price";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "programs" });
-  return buildPageMetadata({
-    locale,
-    path: "/programs",
-    title: `${t("indexTitle")} — ${SITE_NAME}`,
-    description: t("indexSubtitle"),
-  });
+  return staticPageMetadata(locale, "programs", "/programs");
 }
 
 export default async function ProgramsPage({

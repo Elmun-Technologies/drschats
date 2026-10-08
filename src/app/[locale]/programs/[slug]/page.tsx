@@ -4,9 +4,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getProgram } from "@/lib/content/programs.sanity";
 import { loadProgramPage } from "@/lib/content/program-loader";
-import { buildPageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo/metadata";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, breadcrumbLd, faqLd } from "@/lib/seo/jsonld";
 import { ProgramTemplate } from "@/components/program/ProgramTemplate";
+import { clampDescription, seoTitle } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -26,8 +27,8 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale,
     path: `/programs/${slug}`,
-    title: `${program.name} — ${program.headline} | ${SITE_NAME}`,
-    description: program.intro,
+    title: await seoTitle(locale, "program", { name: program.name }),
+    description: clampDescription(`${program.headline}. ${program.intro}`),
   });
 }
 

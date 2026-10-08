@@ -6,31 +6,21 @@ import { shopflow } from "@/lib/shopflow";
 import type { Product, Review } from "@/lib/shopflow/types";
 import { getCustomerStories, toYouTubeEmbed } from "@/lib/content/stories.sanity";
 import type { CustomerStory } from "@/lib/content/stories.sanity";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { Link } from "@/lib/i18n/navigation";
 import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/animation/Reveal";
 import { StarRating } from "@/components/ui/StarRating";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { buttonVariants } from "@/components/ui/Button";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
 const MAX_PRODUCT_REVIEWS = 24;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "reviews" });
-  return buildPageMetadata({
-    locale,
-    path: "/reviews",
-    title: `${t("title")} — ${SITE_NAME}`,
-    description: t("subtitle"),
-  });
+  return staticPageMetadata(locale, "reviews", "/reviews");
 }
 
 interface ProductReview extends Review {

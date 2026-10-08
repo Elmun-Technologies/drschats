@@ -1,6 +1,6 @@
 import { shopflow } from "@/lib/shopflow";
 import { isLocale, routing } from "@/lib/i18n/routing";
-import { productCutout } from "@/lib/content/product-cutouts";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /*
   Type-ahead for the header search.
@@ -30,7 +30,7 @@ export async function GET(req: Request) {
       name: p.name,
       price: p.price,
       oldPrice: p.oldPrice,
-      image: productCutout(p.slug) ?? p.images[0]?.url ?? null,
+      image: cutoutOf(p) ?? p.images[0]?.url ?? null,
     }));
     return Response.json(
       { items, total: result.total },

@@ -84,6 +84,15 @@ export interface Product {
   bespoke: boolean;
   /** Position in the assortment — see {@link Assortment}. Absent = core. */
   assortment?: Assortment;
+  /**
+   * Catalogue facts that used to live only in slug-keyed tables
+   * (content/product-cutouts, -units, -brands). A product added in the admin
+   * panel carries them itself; read through lib/catalog/product-facts, which
+   * falls back to the tables for the built-in catalogue.
+   */
+  cutout?: string | null;
+  unit?: { count: number; unit: "tablet" | "capsule" } | null;
+  brand?: { slug: string; name: string } | null;
 }
 
 export type PromotionType =

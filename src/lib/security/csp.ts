@@ -66,12 +66,45 @@ export type CspMode = "off" | "report-only" | "enforce";
  * A `**.` prefix means "this host and any subdomain", matching the convention
  * next/image already uses; `toCspSource()` translates it to CSP's `*.` form.
  */
-export const REMOTE_IMAGE_HOSTS = [
+function storageCdnHost(): string[] {
+  const raw = process.env.STORAGE_PUBLIC_URL?.trim();
+  if (!raw) return [];
+  try {
+    return [new URL(raw).hostname];
+  } catch {
+    return [];
+  }
+}
+
+export const REMOTE_IMAGE_HOSTS: readonly string[] = [
   "**.uzum.uz",
   "cdn.sanity.io",
   "shop-flow.uz",
   "**.shop-flow.uz",
-] as const;
+  // Admin-uploaded product photos (Tigris object storage on Fly.io).
+  "**.fly.storage.tigris.dev",
+  // …or the CDN in front of it, when one is configured.
+  ...storageCdnHost(),
+];
+
+/**
+ * Whether an image URL can be rendered: a file the site serves itself, or an
+ * https URL on a host above. The admin panel stores only URLs that pass — an
+ * unlisted host would make next/image reject the page at render time.
+ */
+export function isAllowedImageUrl(url: string): boolean {
+  if (/^\/(?!\/)\S+$/.test(url)) return true;
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return false;
+  }
+  if (parsed.protocol !== "https:") return false;
+  return REMOTE_IMAGE_HOSTS.some((h) =>
+    h.startsWith("**.") ? parsed.hostname === h.slice(3) || parsed.hostname.endsWith(h.slice(2)) : parsed.hostname === h,
+  );
+}
 
 /**
  * Analytics providers, keyed by the env var that switches each one on.

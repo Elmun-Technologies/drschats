@@ -2,25 +2,15 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { JsonLd, itemListLd } from "@/lib/seo/jsonld";
 import { TopicIndex } from "@/components/health/TopicIndex";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "health.vitamin" });
-  return buildPageMetadata({
-    locale,
-    path: "/vitamins",
-    title: `${t("indexTitle")} — ${SITE_NAME}`,
-    description: t("indexSubtitle"),
-  });
+  return staticPageMetadata(locale, "vitamins", "/vitamins");
 }
 
 export default async function VitaminGuideIndexPage({

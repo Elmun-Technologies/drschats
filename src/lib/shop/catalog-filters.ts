@@ -1,8 +1,8 @@
-import { productBrand } from "@/lib/content/product-brands";
-import { PRODUCT_UNITS, type DoseUnit } from "@/lib/content/product-units";
+import { type DoseUnit } from "@/lib/content/product-units";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import type { Product } from "@/lib/shopflow/types";
 import { productMatchesTopic } from "./goal-facets";
+import { unitOf, brandOf } from "@/lib/catalog/product-facts";
 
 /*
   The catalogue's filters (design: CatalogV3 sidebar, FiltersMobileV3 sheet).
@@ -55,9 +55,9 @@ export function toFacts(product: Product, topics: HealthTopic[]): ProductFacts {
     price: product.price,
     inStock: product.inStock,
     sale: Boolean(product.oldPrice && product.oldPrice > product.price),
-    brand: productBrand(product.slug)?.slug ?? null,
+    brand: brandOf(product)?.slug ?? null,
     origin: product.origin ?? null,
-    form: PRODUCT_UNITS[product.slug]?.unit ?? null,
+    form: unitOf(product)?.unit ?? null,
     goals: topics.filter((t) => productMatchesTopic(product, t)).map((t) => t.slug),
   };
 }

@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { BRAND } from "@/lib/brand";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.requisites" });
-  return buildPageMetadata({ locale, path: "/requisites", title: `${t("title")} — Go Vita`, description: t("subtitle") });
+  return staticPageMetadata(locale, "requisites", "/requisites");
 }
 
 export default async function RequisitesPage({ params }: { params: Promise<{ locale: Locale }> }) {

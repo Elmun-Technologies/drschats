@@ -1,24 +1,19 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata } from "@/lib/seo/metadata";
 import { JsonLd, faqLd } from "@/lib/seo/jsonld";
 import Image from "next/image";
 import { formatMoney } from "@/lib/utils";
 import { COMMERCE, thousands } from "@/lib/config/commerce";
 import { onlinePaymentAvailable } from "@/lib/config/payments";
 import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "delivery" });
-  return buildPageMetadata({ locale, path: "/delivery", title: `${t("title")} — Go Vita`, description: t("subtitle") });
+  return staticPageMetadata(locale, "delivery", "/delivery");
 }
 
 const ICONS = {

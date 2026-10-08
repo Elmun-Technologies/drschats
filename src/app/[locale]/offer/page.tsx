@@ -2,8 +2,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
+import type { Metadata } from "next";
 
 export const revalidate = 3600;
+
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  return staticPageMetadata(locale, "offer", "/offer");
+}
 
 /*
   The public offer is a contract; its wording has to come from a lawyer, not

@@ -18,7 +18,7 @@ pastdagi bo'limlarda:
 1. 🔴 **Telegram** — `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID`. Real backend
    ulanmaguncha buyurtmaning **yagona yozuvi** shu xabar; live deploy'da kanal
    bo'lmasa sayt buyurtmani qabul qilmaydi (mijozga telefon aytiladi). 1c-bo'lim.
-2. 🔴 **Katalog** — `SHOPFLOW_MODE=http` + API hujjati/kaliti, yoki real narx va
+2. 🔴 **Katalog** — `CATALOG_SOURCE=shopflow` + API hujjati/kaliti, yoki real narx va
    qoldiq ro'yxati. Hozirgi 30 ta mahsulotning narxlari mock. 1a-bo'lim.
 3. 🔴 **To'lov** — Payme/Click/Uzum merchant ID'lari (`NEXT_PUBLIC_*_MERCHANT_ID`).
    Bo'lmasa sayt "Tez kunda" deydi va faqat yetkazishda to'lov ishlaydi.
@@ -64,7 +64,7 @@ Siz aytgandingiz — oxirida ulaysiz. Mana aniq ro'yxat.
 ### 1a. Katalog backend (Shopflow)
 
 ```env
-SHOPFLOW_MODE=http
+CATALOG_SOURCE=shopflow
 SHOPFLOW_API_URL=https://api.shopflow.uz
 SHOPFLOW_API_KEY=...
 ```
@@ -324,7 +324,7 @@ uchun bu eng qimmat turadigan yolg'on. Google'ning structured-data siyosati ham
 soxta `aggregateRating` uchun jarima beradi.
 
 **Nima kerak:** haqiqiy mijoz sharhlari. Ular kelganda — Sanity'ga yoki
-`SHOPFLOW_MODE=http` orqali real API'dan. Ikkalasi ham bu filtrdan o'tmaydi,
+`CATALOG_SOURCE=shopflow` orqali real API'dan. Ikkalasi ham bu filtrdan o'tmaydi,
 ya'ni haqiqiy sharh darrov ko'rinadi va `aggregateRating` o'zi paydo bo'ladi.
 `LivePurchaseToast` uchun esa `src/components/social-proof/LivePurchaseToast.tsx`
 dagi ro'yxatni haqiqiy buyurtmalar oqimiga almashtirish kerak.
@@ -375,7 +375,7 @@ paytda qilish eng arzon — hozir ko'chiradigan kontent yo'q.
 Eng qisqa yo'l — shu 7 tasi:
 
 - [ ] `NEXT_PUBLIC_SITE_URL` = haqiqiy domen + apex'ni `www` ga yo'naltirish
-- [ ] `SHOPFLOW_MODE=http` + API kalitlari (yoki mock bilan qolish qarori)
+- [ ] `CATALOG_SOURCE=shopflow` + API kalitlari (yoki mock bilan qolish qarori)
 - [ ] Telegram bot — buyurtma **va** restock so'rovlari borishi uchun
 - [ ] `RESEND_API_KEY` + SPF/DKIM/DMARC — buyurtma tasdig'i mijozga borishi uchun
 - [ ] `EMAIL_TOKEN_SECRET` — bo'lmasa server ishga tushmaydi

@@ -9,8 +9,10 @@ import { getProgramSlugs } from "@/lib/content/programs.sanity";
 import { usedCategoryKeys } from "@/lib/content/blog-categories";
 import { TOPIC_BASE_PATH, TOPIC_KINDS } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
-import { productBrand } from "@/lib/content/product-brands";
+import { absoluteUrl } from "@/lib/config/site";
+import { isStocked } from "@/lib/shop/categories";
 import type { Product } from "@/lib/shopflow/types";
+import { brandOf } from "@/lib/catalog/product-facts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, allProducts] = await Promise.all([
@@ -23,7 +25,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     allProducts.items.map((p: Product) => [p.slug, p.rating]),
   );
 
-  const categoryPaths = categories.map((c) => `/products/${c.slug}`);
+  // An empty shelf is a page with nothing on it — listed once it has a product.
+  const categoryPaths = categories.filter(isStocked).map((c) => `/products/${c.slug}`);
   const [blogSlugs, expertSlugs, healthTopics, programSlugs] = await Promise.all([
     listArticleSlugs(),
     listExpertSlugs(),
@@ -50,20 +53,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
   // A brand page with no products is an empty page — listed once it has one.
-  const brandPaths = [...new Set(allProducts.items.map((p) => productBrand(p.slug)?.slug).filter(Boolean))].map(
+  const brandPaths = [...new Set(allProducts.items.map((p) => brandOf(p)?.slug).filter(Boolean))].map(
     (slug) => `/brands/${slug}`,
   );
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
+  const articles = await getArticles("uz");
+  // lastmod only where the date is real; a "now" on every URL teaches crawlers to ignore it.
+  const lastModified = new Map(articles.map((a) => [`/blog/${a.slug}`, new Date(a.date)]));
+  const images = new Map<string, string[]>(
+    allProducts.items.map((p) => [`/product/${p.slug}`, p.images.slice(0, 3).map((i) => absoluteUrl(i.url))]),
+  );
   const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);
   const topicPaths = healthTopics.map((t) => `${TOPIC_BASE_PATH[t.kind]}/${t.slug}`);
   // Only categories with articles: an empty one answers 404.
-  const blogCategoryPaths = usedCategoryKeys(await getArticles("uz")).map((key) => `/blog/category/${key}`);
+  const blogCategoryPaths = usedCategoryKeys(articles).map((key) => `/blog/category/${key}`);
   const programPaths = programSlugs.map((slug) => `/programs/${slug}`);
   const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...brandPaths, ...blogPaths, ...expertPaths, ...topicPaths, ...programPaths, ...blogCategoryPaths];
 
-  return allPaths.map((path) => {
+  /*
+    Every language version is its own <url>, each listing all of them as
+    alternates. Only the Uzbek URLs were submitted before, so the Russian site
+    — the half Yandex and most Russian-language queries reach — was known to
+    crawlers only through hreflang hints.
+  */
+  return allPaths.flatMap((path) => {
     const languages: Record<string, string> = {};
     for (const l of locales) languages[l] = `${SITE_URL}/${l}${path}`;
+    languages["x-default"] = `${SITE_URL}/${routing.defaultLocale}${path}`;
 
     let priority = path === "" ? 1 : 0.6;
     if (path.startsWith("/product/")) {
@@ -81,19 +97,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority = path.split("/").length > 2 ? 0.8 : 0.75;
     }
 
-    languages["x-default"] = `${SITE_URL}/${routing.defaultLocale}${path}`;
-
     let changeFrequency: "weekly" | "monthly" | "daily" = "monthly";
     if (path.startsWith("/product/")) changeFrequency = "weekly";
     else if (path.startsWith("/blog/")) changeFrequency = "weekly";
     else if (path === "/products" || path === "" || path.startsWith("/products/")) changeFrequency = "daily";
 
-    return {
-      url: `${SITE_URL}/${routing.defaultLocale}${path}`,
-      lastModified: new Date(),
+    return locales.map((locale) => ({
+      url: `${SITE_URL}/${locale}${path}`,
+      ...(lastModified.has(path) ? { lastModified: lastModified.get(path) } : {}),
       changeFrequency,
       priority,
       alternates: { languages },
-    };
+      ...(images.has(path) ? { images: images.get(path) } : {}),
+    }));
   });
 }

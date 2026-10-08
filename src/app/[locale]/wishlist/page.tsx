@@ -4,7 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { WishlistView } from "@/components/wishlist/WishlistView";
-import { productCutout } from "@/lib/content/product-cutouts";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 
@@ -41,7 +41,7 @@ export default async function WishlistPage({
   // Cut-out pack shots first, as on every other rail.
   const recommended = pool.items
     .filter((p) => (p.assortment ?? "core") === "core")
-    .sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)));
+    .sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)));
 
   return <WishlistView allProducts={pool.items} recommended={recommended} />;
 }

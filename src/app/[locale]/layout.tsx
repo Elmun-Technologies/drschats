@@ -18,7 +18,6 @@ import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
 import { SITE_URL } from "@/lib/seo/metadata";
-import { JsonLd, websiteLd, localBusinessLd } from "@/lib/seo/jsonld";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
 import { toMenuDeal } from "@/components/layout/menu-deal";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
@@ -27,8 +26,18 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
+/*
+  Search Console / Yandex.Webmaster ownership tokens. Set in the deploy's env;
+  an unset one emits nothing rather than an empty tag.
+*/
+const verification: Metadata["verification"] = {
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : {}),
+  ...(process.env.YANDEX_VERIFICATION ? { yandex: process.env.YANDEX_VERIFICATION } : {}),
+};
+
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  verification,
 };
 
 export default async function LocaleLayout({
@@ -68,8 +77,6 @@ export default async function LocaleLayout({
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className="grain min-h-screen antialiased">
-        <JsonLd data={websiteLd(locale as Locale)} />
-        <JsonLd data={localBusinessLd()} />
         <NextIntlClientProvider messages={messages}>
           <PromotionsProvider promotions={promotions}>
             <a

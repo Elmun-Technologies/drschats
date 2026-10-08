@@ -8,11 +8,11 @@ import type { Product } from "@/lib/shopflow/types";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { buildPageMetadata } from "@/lib/seo/metadata";
-import { productCutout } from "@/lib/content/product-cutouts";
 import { buttonVariants } from "@/components/ui/Button";
 import { Chip, chipClass } from "@/components/ui/Chip";
 import { ProductGrid } from "@/components/home/HomeBlocks";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 type Params = Promise<{ locale: Locale }>;
 type Query = Promise<{ q?: string; category?: string }>;
@@ -61,7 +61,7 @@ export default async function SearchPage({ params, searchParams }: { params: Par
   const resultIds = new Set(results.map((p) => p.id));
   const others = [...pool.items]
     .filter((p) => !resultIds.has(p.id) && p.inStock)
-    .sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+    .sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
     .slice(0, 6);
   const haystack = pool.items.map((p) => `${p.name} ${p.tagline}`.toLowerCase());
   const tryTerms = TRY_TERMS.filter((term) => haystack.some((h) => h.includes(term.toLowerCase()))).slice(0, 6);

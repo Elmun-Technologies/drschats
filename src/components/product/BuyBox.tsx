@@ -10,12 +10,12 @@ import { DiscountBadge, discountPercent } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { trackViewProduct } from "@/lib/analytics/events";
-import { unitPrice } from "@/lib/content/product-units";
 import type { Expert } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 import { SubscribeToSave } from "@/components/product/SubscribeToSave";
 import { MAX_QTY, useAddToCart, usePurchase } from "@/components/product/purchase";
+import { unitPriceOf } from "@/lib/catalog/product-facts";
 
 /*
   Design: ProductV3 buy card. Price, the two ways to buy, quantity and the two
@@ -36,7 +36,7 @@ export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Exp
   const addToCart = useAddToCart(product);
 
   const discount = discountPercent(product.price, product.oldPrice);
-  const perUnit = unitPrice(product.slug, product.price);
+  const perUnit = unitPriceOf(product);
 
   useEffect(() => reset(product.id), [reset, product.id]);
 

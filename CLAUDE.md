@@ -10,7 +10,8 @@ katalog o'sha yo'lning oxirida turadi.
 
 - **Stack**: Next.js 15, TypeScript, Tailwind CSS v4, Framer Motion, Zustand, next-intl, Zod, react-hook-form
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
-- **Katalog backend**: Shopflow adapteri (`SHOPFLOW_MODE=mock` — mock data; `SHOPFLOW_MODE=http` — real API)
+- **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io). Mahsulot, kategoriya, brend, buyurtmalar, administratorlar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi
+- **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
 - **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
 - **Deploy**: Vercel
@@ -107,6 +108,7 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
   delivery/ payment/ guarantee/ about/ licenses/ contact/ partners/   # InfoShell (InfoNavV3) layout'ida; partners — B2B ariza
   requisites/ privacy/ offer/ where-to-buy/                            # ham InfoShell'da
   lp/[campaign]/           # landing pages (kampaniyalar)
+src/app/admin/             # admin panel (locale'siz, i18n middleware'dan tashqarida): login, setup, (panel)/…
   [...rest]/               # catch-all → lokalizatsiyalangan 404
   not-found.tsx error.tsx
 ```
@@ -123,7 +125,10 @@ chaqirilgandan **keyin** chizing.
 
 | Papka | Vazifa |
 |---|---|
-| `shopflow/` | Backend klient (mock/http), types, schemas, Zod validation |
+| `shopflow/` | Klient fabrikasi (`index.ts`: shopflow → baza → o'rnatilgan), types, schemas, o'rnatilgan katalog ma'lumoti (`mock.ts`) |
+| `catalog/` | `engine.ts` (o'qish mantig'i, ikkala manbaga bitta), `db.ts` (bazadan o'qish + kesh + fallback, buyurtma yozish), `product-facts.ts` (`cutoutOf`/`unitOf`/`brandOf` — slug jadvallari o'rniga shularni ishlating) |
+| `db/` | Postgres ulanishi va Drizzle sxema turlari; sxemaning o'zi `db/migrations/*.sql` |
+| `admin/` | Admin auth (scrypt, imzolangan cookie), mahsulot forma codec'i, so'rovlar, Tigris yuklash |
 | `cart/` | Zustand store (localStorage TTL 30 kun), pricing (discount, shipping, upsell) |
 | `upsell/` | Savings Ladder algoritmi, Zustand upsell store |
 | `personalization/` | Viewtracker, recency-decay engine, recommendation scoring, katalogni sog'liq signallariga solishtirish |
@@ -202,9 +207,9 @@ shopflow.getPromotions(locale)
 shopflow.createOrder(payload)
 ```
 
-**Real API-ga o'tish:**
+**Real API-ga o'tish** (rejada yo'q — o'z admin paneli quriladi):
 ```env
-SHOPFLOW_MODE=http
+CATALOG_SOURCE=shopflow
 SHOPFLOW_API_URL=https://api.shopflow.uz
 SHOPFLOW_API_KEY=your_key
 ```
@@ -217,17 +222,31 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1425 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1475 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
 
 ## SEO
 
-- **JSON-LD**: WebSite (SearchAction → `/search?q=`), LocalBusiness (PharmacyOrDrugstore), Product, FAQ, BreadcrumbList — `src/lib/seo/jsonld.tsx`
-- **Sitemap**: reyting ≥4.5 → priority 0.9; boshqalar 0.8; kategoriyalar 0.7 — `src/app/sitemap.ts`
-- **hreflang**: next-intl orqali avtomatik
-- **robots.txt**: `/cart`, `/checkout` — noindex
+To'liq holat, qoidalar va off-page reja: **[`docs/SEO.md`](docs/SEO.md)**.
+
+- **Title/description** — faqat `src/lib/seo/page-meta.ts` orqali (matn `meta.seo` /
+  `meta.pages`, uz + ru). Qo'lda `${x} — Go Vita` yozilmaydi. Title ≤ 70, so'rov so'zi
+  oldinda ("… narxi, Toshkentda sotib olish" / "… купить в Ташкенте, цена");
+  description 70–160, haqiqiy narx/son/muddat bilan (`page-meta.test.ts`)
+- **Query-param variantlari** (`?sort`, filtrlar, `?page`) — `noindex, follow`
+- **Bo'sh javon** (0 mahsulot) — 404 va sitemap'da yo'q; `productCount` javon
+  ko'rsatgandek (`categorySlug`, sotuvdagilar) sanaladi
+- **JSON-LD** (`src/lib/seo/jsonld.tsx`): WebSite + Store — faqat bosh sahifada (Store
+  kontaktda ham); Product (`brand` — ishlab chiqaruvchi, yetkazish narxi haqiqiy,
+  o'ylab topilgan sana yo'q); kategoriyada CollectionPage + ItemList + Breadcrumb; FAQ
+- **Sitemap**: uz **va** ru `<loc>`, mahsulot rasmlari, `lastmod` faqat haqiqiy sanada.
+  Priority: reyting ≥4.5 → 0.9; mahsulot 0.8; kategoriya 0.7 — `src/app/sitemap.ts`
+- **Kategoriya matnlari**: `src/lib/content/category-seo.ts` (tibbiy va'dasiz, test bilan)
+- **hreflang**: `buildAlternates` (x-default = uz); `og:locale` `uz_UZ`/`ru_RU`
+- **robots.txt**: `/cart`, `/checkout`, `/studio` — disallow
+- **Verifikatsiya**: `GOOGLE_SITE_VERIFICATION`, `YANDEX_VERIFICATION`
 
 ## Analytics
 
@@ -263,7 +282,7 @@ GTM ID: `NEXT_PUBLIC_GTM_ID`
   Live deploy'da (`lib/config/live.ts`) kanal sozlanmagan yoki xabar yetib
   bormasa buyurtma rad etiladi va mijozga telefon raqami aytiladi — "qabul
   qilindi" deb hech kim ko'rmaydigan buyurtma qoldirilmaydi
-- `SHOPFLOW_MODE=http` endi haqiqatan o'qiladi (avval kodda mock qotirilgan edi)
+- Katalog manbai `CATALOG_SOURCE=shopflow` bilangina tashqi API'ga o'tadi
 
 **Telegram sozlash:**
 ```env
@@ -423,8 +442,8 @@ NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 NEXT_PUBLIC_META_PIXEL_ID=xxxxxxxxxx
 NEXT_PUBLIC_YANDEX_METRIKA_ID=xxxxxxxx
 
-# Backend (real API uchun)
-SHOPFLOW_MODE=http
+# Backend (tashqi Shopflow — faqat atayin)
+CATALOG_SOURCE=shopflow
 SHOPFLOW_API_URL=https://api.shopflow.uz
 SHOPFLOW_API_KEY=your_key
 
@@ -452,6 +471,17 @@ GOVITA_PRODUCTION=1                  # demo bayroqlari yoqilgan bo'lsa build yiq
 
 # Demo akkaunt kabineti (default: o'chiq)
 NEXT_PUBLIC_ACCOUNT_DEMO=on          # faqat demo deploy uchun
+
+# Qidiruv tizimlari verifikatsiyasi (ixtiyoriy, meta teg sifatida chiqadi)
+GOOGLE_SITE_VERIFICATION=...
+YANDEX_VERIFICATION=...
+
+# Admin panel va baza (docs/ADMIN.md) — faqat Production muhitida
+DATABASE_URL=postgres://…?sslmode=require
+ADMIN_SESSION_SECRET=...      # ≥ 32 belgi
+ADMIN_SETUP_TOKEN=...         # birinchi admin yaratilgach o'chiriladi
+# Rasm yuklash (Fly Tigris, `fly storage create` beradi)
+AWS_ENDPOINT_URL_S3=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... BUCKET_NAME=... AWS_REGION=auto
 
 # Sanity Studio (production'da default: yopiq)
 SANITY_STUDIO_ENABLED=on             # + haqiqiy NEXT_PUBLIC_SANITY_PROJECT_ID kerak
@@ -565,7 +595,10 @@ Tab bar va PDP/savatdagi xarid paneli — **`position: fixed`**. Hech qachon `po
 - Server actions — `"use server"` + Zod validation + try/catch
 - **Server komponentga kerak bo'lgan konstanta/funksiya `"use client"` faylda turmasin.** U serverga qiymat emas, client reference bo'lib keladi va `.map is not a function` kabi xato faqat runtime'da chiqadi (V3 da ikki marta: `nav-links.ts`, `catalog-sort.ts`). Oddiy modulga chiqaring
 - Komment yozmaslik (obvious bo'lmasa) — kod o'zi gapirsin
-- Build tekshirish: `npm run build` — 0 xatolik
+- Build tekshirish: `npm run build` — 0 xatolik (avval `db:migrate`, `DATABASE_URL` bo'lmasa o'tkazib yuboriladi)
+- **Client komponent server modulni import qilmasin.** `shopflow/index.ts` endi `postgres` ni tortadi; client fayl `lib/quiz/recommend` kabi loader'dan sof funksiya olsa, build `Can't resolve 'net'` bilan yiqiladi. Sof qismni alohida modulga chiqaring (`quiz/answers-codec.ts`)
+- **Mahsulot rasmi/brendi/birligi** — `cutoutOf(p)`, `brandOf(p)`, `unitOf(p)` (`lib/catalog/product-facts.ts`); `productCutout(p.slug)` to'g'ridan-to'g'ri chaqirilmaydi, aks holda admin'da qo'shilgan mahsulotda rasm chiqmaydi
+- **Bazaga yangi ustun** — `db/migrations/000N_*.sql` (yangi fayl, eskisini o'zgartirmang) + `src/lib/db/schema.ts`
 
 ## Sifat darajasi — nolda turadi
 

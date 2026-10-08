@@ -1,18 +1,6 @@
 import type { Locale } from "@/lib/i18n/routing";
-import { locales } from "@/lib/i18n/routing";
-import { BRAND } from "@/lib/brand";
-import { discountPercent } from "@/lib/shop/discounts";
-import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
 import type {
-  Category,
-  Product,
   Promotion,
-  ShopflowClient,
-  ProductListParams,
-  ProductListResult,
-  UpsellOffer,
-  OrderRequest,
-  OrderResult,
   ProductBenefit,
   FaqItem,
   Review,
@@ -20,8 +8,9 @@ import type {
 } from "./types";
 
 import { categoryCutout } from "@/lib/content/product-cutouts";
+import { CatalogEngine } from "@/lib/catalog/engine";
 
-type L<T = string> = Record<Locale, T>;
+export type L<T = string> = Record<Locale, T>;
 
 /*
   Category images: the pack shot that stands for the category (the same
@@ -34,7 +23,7 @@ const img = (id: string, alt: string) => ({
   alt,
 });
 
-interface RawCategory {
+export interface RawCategory {
   id: string;
   slug: string;
   name: L;
@@ -52,7 +41,7 @@ function catSimple(id: string, slug: string, uz: string, ru: string): RawCategor
   };
 }
 
-const rawCategories: RawCategory[] = [
+export const rawCategories: RawCategory[] = [
   {
     id: "cat-vitamins",
     slug: "vitamins",
@@ -160,7 +149,7 @@ const rawCategories: RawCategory[] = [
   catSimple("cat-joints", "joints", "Bo'g'imlar", "Суставы"),
 ];
 
-interface RawProduct {
+export interface RawProduct {
   id: string;
   slug: string;
   categoryId: string;
@@ -192,9 +181,17 @@ interface RawProduct {
   howToUse: L;
   faq: L<FaqItem[]>;
   reviews: L<Review[]>;
+  /**
+   * Admin-managed facts. The built-in catalogue leaves them out and the engine
+   * falls back to the slug tables (product-photos, -cutouts, -units, -brands).
+   */
+  images?: string[];
+  cutout?: string | null;
+  unit?: { count: number; unit: "tablet" | "capsule" } | null;
+  brandSlug?: string | null;
 }
 
-const rawProducts: RawProduct[] = [
+export const rawProducts: RawProduct[] = [
   // ─── Delical ──────────────────────────────────────────────────────────────
   {
     id: "p-delical-vanil",
@@ -2243,7 +2240,9 @@ const rawProducts: RawProduct[] = [
 
 ];
 
-const rawPromotions: { id: string; type: Promotion["type"]; threshold?: number; percent?: number; title: L; description: L }[] = [
+export interface RawPromotion { id: string; type: Promotion["type"]; threshold?: number; percent?: number; title: L; description: L }
+
+export const rawPromotions: RawPromotion[] = [
   {
     id: "promo-shipping",
     type: "free_shipping_over",
@@ -2265,187 +2264,19 @@ const rawPromotions: { id: string; type: Promotion["type"]; threshold?: number; 
   },
 ];
 
-function resolveCategory(c: RawCategory, locale: Locale): Category {
-  return {
-    id: c.id,
-    slug: c.slug,
-    name: c.name[locale],
-    description: c.description[locale],
-    image: c.image,
-    productCount: rawProducts.filter((p) => p.categoryId === c.id).length,
-  };
-}
+export const builtInCatalog = {
+  categories: rawCategories,
+  products: rawProducts,
+  promotions: rawPromotions,
+};
 
-/*
-  The reviews and ratings below are sample copy, so they are withheld unless
-  someone explicitly turns them on. Stripping them here rather than at each
-  display site means the product page, the reviews page, the star ratings,
-  the sitemap's rating boost and the Product structured data all go quiet
-  together — there is no surface left that could still quote a number nobody
-  earned. `StarRating` already renders nothing at zero.
-*/
-function resolveProduct(p: RawProduct, locale: Locale): Product {
-  return {
-    id: p.id,
-    slug: p.slug,
-    name: p.name[locale],
-    tagline: p.tagline[locale],
-    description: p.description[locale],
-    categoryId: p.categoryId,
-    categorySlug: p.categorySlug,
-    price: p.price,
-    oldPrice: p.oldPrice,
-    currency: "UZS",
-    rating: SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
-    reviewCount: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,
-    inStock: p.inStock,
-    /*
-      A product with no photography of its own gets NO image rather than a
-      recycled photo of a different product — the catalogue card then falls
-      back to its plain placeholder, and the gallery simply stays away. Every
-      current SKU has real shots in BRAND.productImageOverrides, so this only
-      guards whatever is added next.
-    */
-    images: BRAND.productImageOverrides[p.slug]?.length
-      ? BRAND.productImageOverrides[p.slug].map((url) => ({ url, alt: p.name[locale] }))
-      : [],
-    highlights: p.highlights[locale],
-    benefits: p.benefits[locale],
-    ingredients: p.ingredients[locale],
-    howToUse: p.howToUse[locale],
-    faq: p.faq[locale],
-    reviews: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviews[locale] : [],
-    badges: p.badges[locale],
-    servings: p.servings[locale],
-    origin: p.origin[locale],
-    /*
-      Empty on purpose. Every card used to claim cGMP + ISO 22000 + Halal,
-      baked into the data layer, so the badge row on a product page advertised
-      three certificates for a shop that holds none of them and only resells
-      imports. Manufacturer certificates exist per batch and are sent on
-      request; that is a sentence in the copy, not a chip on 30 products.
-    */
-    certifications: [],
-    bespoke: p.bespoke,
-    assortment: p.kind ?? "core",
-  };
-}
-
-function sortProducts(items: Product[], sort?: ProductListParams["sort"]): Product[] {
-  const copy = [...items];
-  switch (sort) {
-    case "price_asc":
-      return copy.sort((a, b) => a.price - b.price);
-    case "price_desc":
-      return copy.sort((a, b) => b.price - a.price);
-    case "new":
-      return copy.reverse();
-    case "deals":
-      // Deepest cut first; discounted or not, everything stays listed.
-      return copy.sort((a, b) => discountPercent(b) - discountPercent(a));
-    case "popular":
-    default:
-      // With review counts withheld this is a no-op on a stable sort, which
-      // leaves the catalogue in its curated order — the right fallback for
-      // "popular" on a shop that has no sales history to rank by.
-      return copy.sort((a, b) => b.reviewCount - a.reviewCount);
-  }
-}
-
-export class MockShopflowClient implements ShopflowClient {
-  async getCategories(locale: Locale): Promise<Category[]> {
-    return rawCategories.map((c) => resolveCategory(c, locale));
-  }
-
-  async getProducts(params: ProductListParams): Promise<ProductListResult> {
-    const {
-      locale, category, search, origin, minPrice, maxPrice, sort,
-      assortment = "listed", page = 1, pageSize = 12,
-    } = params;
-    let items = rawProducts
-      // Products withdrawn from sale disappear from every listing unless a
-      // caller explicitly asks for the whole archive.
-      .filter((p) => assortment === "all" || (p.kind ?? "core") !== "unlisted")
-      .map((p) => resolveProduct(p, locale));
-
-    if (assortment === "core") items = items.filter((p) => p.assortment === "core");
-
-    if (category) items = items.filter((p) => p.categorySlug === category);
-    if (origin) items = items.filter((p) => p.origin === origin);
-    if (minPrice != null) items = items.filter((p) => p.price >= minPrice);
-    if (maxPrice != null) items = items.filter((p) => p.price <= maxPrice);
-    if (search) {
-      const q = search.toLowerCase();
-      const aliasesFor = (slug: string) => {
-        const raw = rawProducts.find((r) => r.slug === slug);
-        return raw?.searchAliases ? Object.values(raw.searchAliases).flat() : [];
-      };
-      items = items.filter(
-        (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.tagline.toLowerCase().includes(q) ||
-          aliasesFor(p.slug).some((alias) => alias.toLowerCase().includes(q)),
-      );
-    }
-    items = sortProducts(items, sort);
-
-    const total = items.length;
-    const start = (page - 1) * pageSize;
-    return {
-      items: items.slice(start, start + pageSize),
-      total,
-      page,
-      pageSize,
-    };
-  }
-
-  async getProduct(slug: string, locale: Locale): Promise<Product | null> {
-    const raw = rawProducts.find((p) => p.slug === slug);
-    return raw ? resolveProduct(raw, locale) : null;
-  }
-
-  async getUpsells(productId: string, locale: Locale): Promise<UpsellOffer[]> {
-    const others = rawProducts
-      .filter((p) => p.id !== productId && p.inStock)
-      .slice(0, 3)
-      .map((p) => resolveProduct(p, locale));
-    const reasons: Record<Locale, string> = {
-      uz: "Ko'pincha shu bilan birga olishadi",
-      ru: "Часто покупают вместе",
-    };
-    return others.map((product) => ({
-      product,
-      discountPercent: 15,
-      reason: reasons[locale],
-    }));
-  }
-
-  async getPromotions(locale: Locale): Promise<Promotion[]> {
-    return rawPromotions.map((p) => ({
-      id: p.id,
-      type: p.type,
-      threshold: p.threshold,
-      percent: p.percent,
-      title: p.title[locale],
-      description: p.description[locale],
-    }));
-  }
-
-  async createOrder(payload: OrderRequest): Promise<OrderResult> {
-    const orderId = `MOCK-${Date.now().toString(36).toUpperCase()}`;
-    if (process.env.NODE_ENV !== "production") {
-      console.info("[shopflow:mock] order received", orderId, payload);
-    }
-    return {
-      ok: true,
-      orderId,
-      message: "Order received (mock).",
-    };
+/** The built-in catalogue behind the ShopflowClient interface. */
+export class MockShopflowClient extends CatalogEngine {
+  constructor() {
+    super(async () => builtInCatalog);
   }
 }
 
 export function listAllSlugs(): { slug: string }[] {
   return rawProducts.map((p) => ({ slug: p.slug }));
 }
-
-export const allLocales = locales;

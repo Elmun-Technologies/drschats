@@ -131,7 +131,7 @@ interface ShopflowClient {
 }
 ```
 
-FastAPI shu 6 ta endpoint'ni bergan kuni `SHOPFLOW_MODE=http` qilinadi va
+FastAPI shu 6 ta endpoint'ni bergan kuni `CATALOG_SOURCE=shopflow` qilinadi va
 sayt real backend'ga o'tadi — boshqa hech qanday kod o'zgarmaydi. Kutilayotgan
 so'rov/javob shakllari `docs/SHOPFLOW_API.md` da, kodning o'zidan olingan.
 Javoblar Zod bilan chegarada tekshiriladi, shuning uchun shakl mos kelmasa

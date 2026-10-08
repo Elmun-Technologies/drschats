@@ -1,23 +1,19 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata } from "@/lib/seo/metadata";
 import { BRAND, WHATSAPP_URL } from "@/lib/brand";
 import { Link } from "@/lib/i18n/navigation";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { ContactForm } from "@/components/info/LeadForms";
 import { cn } from "@/lib/utils";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { JsonLd, localBusinessLd } from "@/lib/seo/jsonld";
 
 export const revalidate = 3600;
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "contact" });
-  return buildPageMetadata({ locale, path: "/contact", title: `${t("title")} — Go Vita`, description: t("subtitle") });
+  return staticPageMetadata(locale, "contact", "/contact");
 }
 
 const ARROW = (
@@ -45,6 +41,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <InfoShell active="contact" crumb={t("nav.contact")}>
+      <JsonLd data={localBusinessLd()} />
       <InfoHeader title={t("contact.title")} lead={t("contact.lead")} />
 
       <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">

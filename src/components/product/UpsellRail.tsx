@@ -10,7 +10,7 @@ import { DiscountBadge } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { trackAddToCart } from "@/lib/analytics/events";
-import { productCutout } from "@/lib/content/product-cutouts";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /** Companion offers from the catalogue, each with its real extra discount. */
 export function UpsellRail({ offers, title }: { offers: UpsellOffer[]; title: string }) {
@@ -28,7 +28,7 @@ export function UpsellRail({ offers, title }: { offers: UpsellOffer[]; title: st
       <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
         {offers.map(({ product, discountPercent }) => {
           const discounted = Math.round(product.price * (1 - discountPercent / 100));
-          const image = productCutout(product.slug) ?? product.images[0]?.url;
+          const image = cutoutOf(product) ?? product.images[0]?.url;
           return (
             <div key={product.id} className="flex gap-4 rounded-[20px] bg-tile p-4">
               <Link href={`/product/${product.slug}`} className="relative h-24 w-24 shrink-0 rounded-[16px] bg-bg">

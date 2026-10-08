@@ -3,7 +3,7 @@
 > **Status.** This contract is backend-agnostic: it describes what the
 > storefront needs, not who serves it. If the catalog moves to the in-house
 > FastAPI service, this is the spec that service implements — the endpoint
-> shapes and the `SHOPFLOW_MODE=http` switch stay exactly as written here.
+> shapes and the `CATALOG_SOURCE=shopflow` switch stay exactly as written here.
 > See `docs/ARCHITECTURE.md` for the platform plan.
 
 This document is the **exact contract** the storefront expects from the catalog
@@ -14,7 +14,7 @@ backend. It is generated from the code:
   validated against these; a mismatch throws at the boundary)
 - HTTP adapter: `src/lib/shopflow/http.ts` (the calls below)
 
-When these endpoints exist, set `SHOPFLOW_MODE=http`, `SHOPFLOW_API_URL`,
+When these endpoints exist, set `CATALOG_SOURCE=shopflow`, `SHOPFLOW_API_URL`,
 `SHOPFLOW_API_KEY` and the site uses the real platform with no other code change.
 
 ---

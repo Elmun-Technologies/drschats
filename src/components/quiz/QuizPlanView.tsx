@@ -4,8 +4,6 @@ import type { Locale } from "@/lib/i18n/routing";
 import type { QuizPlan } from "@/lib/quiz/recommend";
 import type { Expert } from "@/lib/content/experts.sanity";
 import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
-import { productCutout } from "@/lib/content/product-cutouts";
-import { unitPrice } from "@/lib/content/product-units";
 import { COMMERCE } from "@/lib/config/commerce";
 import { FIRST_ORDER_PERCENT, RECURRING_PERCENT } from "@/lib/subscription/plans";
 import { Link } from "@/lib/i18n/navigation";
@@ -14,6 +12,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { chipClass } from "@/components/ui/Chip";
 import { QuizAddOne, QuizPlanActions } from "./QuizPlanActions";
 import { cn, formatMoney } from "@/lib/utils";
+import { cutoutOf, unitPriceOf } from "@/lib/catalog/product-facts";
 
 /*
   The quiz result. Design: QuizResultV3.
@@ -135,8 +134,8 @@ export async function QuizPlanView({
             </div>
             <ul className="flex flex-col gap-3">
               {products.map(({ product, reasons }) => {
-                const image = productCutout(product.slug) ?? product.images[0]?.url;
-                const perUnit = unitPrice(product.slug, product.price);
+                const image = cutoutOf(product) ?? product.images[0]?.url;
+                const perUnit = unitPriceOf(product);
                 return (
                   <li
                     key={product.id}

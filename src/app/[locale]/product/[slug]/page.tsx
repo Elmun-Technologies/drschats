@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { productMetadata } from "@/lib/seo/page-meta";
 import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
@@ -11,7 +12,7 @@ import { topicsForProduct } from "@/lib/shop/product-topics";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
 import { getSimilarProducts } from "@/lib/personalization/engine";
-import { productCutout } from "@/lib/content/product-cutouts";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -28,13 +29,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const product = await shopflow.getProduct(slug, locale);
   if (!product) return {};
-  return buildPageMetadata({
-    locale,
-    path: `/product/${slug}`,
-    title: `${product.name} — Go Vita`,
-    description: product.tagline,
-    image: product.images[0]?.url,
-  });
+  return productMetadata(product, locale);
 }
 
 export default async function ProductPage({
@@ -68,7 +63,7 @@ export default async function ProductPage({
   const topics = topicsForProduct(product, allTopics);
   // Products with a cut-out pack shot first, as on every other rail.
   const similar = getSimilarProducts(product, allProducts.items, 12)
-    .sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+    .sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
     .slice(0, 6);
 
   const [reviewerResult, authorResult] = await Promise.all([
