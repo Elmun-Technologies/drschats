@@ -16,6 +16,7 @@ import { CatalogMenu } from "./CatalogMenu";
 import { SALE_HREF } from "./nav-links";
 import { SearchBox } from "./SearchBox";
 import { WishlistLink } from "./WishlistLink";
+import { CompareLink } from "./CompareLink";
 import { AccountLink } from "./AccountLink";
 import { Logo } from "./Logo";
 import { ICONS } from "./header-item";
@@ -79,6 +80,7 @@ export function Header({
           <CatalogMenu categories={categories} topicPaths={topicPaths} deal={deal} />
           <SearchBox categories={categories} className="min-w-0 flex-1" />
           <nav aria-label={t("userNav")} className="flex shrink-0 gap-1">
+            <CompareLink label={t("compare")} />
             <WishlistLink label={nav("wishlist")} />
             {showAccount && <AccountLink />}
             <CartButton label={nav("cart")} />

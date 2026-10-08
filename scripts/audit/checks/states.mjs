@@ -119,6 +119,29 @@ const STATES = [
     },
   },
   {
+    name: "compare table with products",
+    viewport: MOBILE,
+    path: "/compare",
+    open: async (page) => {
+      await page.evaluate(() =>
+        localStorage.setItem("govita-compare", JSON.stringify({ state: { items: ["p-antistress", "p-dr-frei-multi"] }, version: 0 })),
+      );
+      await page.reload({ waitUntil: "networkidle" });
+      await page.locator('button[aria-pressed]').last().click();
+    },
+  },
+  {
+    name: "wishlist with products",
+    viewport: MOBILE,
+    path: "/wishlist",
+    open: async (page) => {
+      await page.evaluate(() =>
+        localStorage.setItem("govita-wishlist", JSON.stringify({ state: { items: ["p-antistress", "p-dr-frei-multi"] }, version: 0 })),
+      );
+      await page.reload({ waitUntil: "networkidle" });
+    },
+  },
+  {
     name: "cart drawer",
     viewport: DESKTOP,
     path: "",

@@ -20,6 +20,7 @@ import { ProductGallery } from "@/components/product/ProductGallery";
 import { BuyBox, MiniBuyCard } from "@/components/product/BuyBox";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { ShareButton } from "@/components/product/ShareButton";
+import { CompareButton } from "@/components/product/CompareButton";
 import { Collapsible, SectionNav } from "@/components/product/ProductSections";
 import { ProductReviews } from "@/components/product/ProductReviews";
 import { HealthContext } from "@/components/product/HealthContext";
@@ -117,6 +118,7 @@ export async function ProductTemplate({
             {category?.name ?? tc("viewAll")}
           </Link>
           <div className="flex">
+            <CompareButton productId={product.id} iconOnly className="h-11 w-11 justify-center" />
             <WishlistButton productId={product.id} className="h-11 w-11" iconClassName="h-6 w-6" />
             <ShareButton name={product.name} iconOnly className="h-11 w-11 justify-center" />
           </div>
@@ -147,12 +149,13 @@ export async function ProductTemplate({
             {brand && (
               <span className="inline-flex items-center gap-1.5">
                 <span className="hidden lg:inline">{tv("brand")}:</span>
-                <Link href={`/products?brand=${brand.slug}`} className="font-semibold text-ink underline-offset-4 lg:underline">
+                <Link href={`/brands/${brand.slug}`} className="font-semibold text-ink underline-offset-4 lg:underline">
                   {brand.name}
                 </Link>
               </span>
             )}
             <span className="hidden flex-1 lg:block" />
+            <CompareButton productId={product.id} className="hidden text-[15px] hover:text-ink lg:inline-flex" />
             <WishlistButton
               productId={product.id}
               label={{ add: tv("favorite"), saved: tv("favoriteSaved") }}

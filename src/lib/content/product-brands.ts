@@ -22,3 +22,10 @@ export function productBrand(productSlug: string): ProductBrand | null {
   const hit = BRANDS.find((b) => productSlug.startsWith(b.prefix));
   return hit ? { slug: hit.slug, name: hit.name } : null;
 }
+
+/** Every brand the catalogue knows, in display order. */
+export const ALL_BRANDS: ProductBrand[] = BRANDS.map(({ slug, name }) => ({ slug, name }));
+
+export function brandBySlug(slug: string): ProductBrand | null {
+  return ALL_BRANDS.find((b) => b.slug === slug) ?? null;
+}

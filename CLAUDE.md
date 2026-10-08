@@ -97,7 +97,10 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
   account/                 # kabinet — API sozlanmagan bo'lsa notFound()
   profile/                 # sog'liq profili — API'siz ham ishlaydi (brauzerda)
   email/preferences/       # obuna sozlamalari (xatdagi havolalar shu yerga tushadi)
-  blog/ news/ experts/ brands/ ingredients/ reviews/ loyalty/
+  sale/                    # aksiyalar (V3) — SALE_HREF shu yerga
+  brands/ brands/[slug]/   # brendlar va brend sahifasi (mahsulotsiz brend → 404)
+  compare/                 # taqqoslash (govita-compare, brauzerda)
+  blog/ news/ experts/ ingredients/ reviews/ loyalty/
   lp/[campaign]/           # landing pages (kampaniyalar)
   [...rest]/               # catch-all → lokalizatsiyalangan 404
   not-found.tsx error.tsx
@@ -125,6 +128,7 @@ chaqirilgandan **keyin** chizing.
 | `marketing/` | Backend'ning navbatiga server-to-server klient |
 | `notifications/` | Telegram — operator va mijoz kanallari |
 | `wishlist/` | Zustand persist store (`govita-wishlist`) |
+| `compare/` | Taqqoslash store'i (`govita-compare`, 4 tagacha — eng eskisi tushadi) |
 | `analytics/` | GTM dataLayer, Meta Pixel, Yandex Metrika events |
 | `i18n/` | next-intl routing, navigation helpers |
 | `seo/` | Metadata builder, JSON-LD (WebSite, LocalBusiness, Product, FAQ, Breadcrumb) |
@@ -203,7 +207,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1125 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1192 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`

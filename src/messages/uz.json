@@ -575,6 +575,72 @@
       "orTelegram": "Yoki Telegramda yozing",
       "maybe": "Balki sizga kerakdir",
       "back": "Orqaga"
+    },
+    "sale": {
+      "title": "Aksiyalar va chegirmalar",
+      "short": "Aksiyalar",
+      "lead": "Saytda amalda ishlaydigan chegirmalar. Chegirma savatchada avtomatik qoʻllanadi, promokod kerak emas.",
+      "subTitle": "Obuna",
+      "subText": "Bugun −{first}%, keyingi har bir yetkazishda −{recurring}%. Har 30, 45, 60 yoki 90 kunda.",
+      "freeTitle": "Bepul yetkazish",
+      "freeText": "{amount}dan ortiq xaridga — Toshkent va viloyatlar uchun bir xil shart.",
+      "deals": "Chegirmadagi mahsulotlar",
+      "dealsCount": "{count} ta mahsulot",
+      "dealsShort": "{count} ta",
+      "rulesTitle": "Bir xil qoidalar",
+      "rule1": "Bepul yetkazish chegarasi butun saytda bir xil: {amount}.",
+      "rule2": "Yetkazib berish muddati: Toshkent boʻylab {hours} soat, viloyatlarga {days}.",
+      "rule3": "Chizilgan «eski narx» faqat real pasaytirilgan narx uchun koʻrsatiladi.",
+      "clubEyebrow": "VIP Salomatlik Klubi",
+      "clubTitle": "Yangi aksiyalarni birinchi boʻlib biling",
+      "clubText": "Telegram kanalida yangi takliflar va aksiyalar. Qoʻshimcha foiz chegirma vaʼda qilinmaydi.",
+      "clubCta": "Telegramni ochish",
+      "empty": "Hozir chegirmadagi mahsulot yoʻq."
+    },
+    "brands": {
+      "all": "Hammasi",
+      "inCatalog": "mahsulot katalogda",
+      "delivery": "Toshkentga yetkazish",
+      "hours": "{hours} soat",
+      "eyebrow": "{country} · rasmiy import",
+      "docsText": "Zavod sertifikati, import yoki roʻyxatdan oʻtkazish hujjati — istalgan mahsulot uchun nusxasini soʻrov boʻyicha yuboramiz.",
+      "docsCta": "Hujjatlarni koʻrish",
+      "originTitle": "Kelib chiqishi",
+      "originText": "Qaysi mamlakatda ishlab chiqarilgani har bir mahsulot sahifasida qadoqdagi yozuvga muvofiq koʻrsatiladi.",
+      "docsFactTitle": "Ishlab chiqaruvchi hujjatlari",
+      "docsFactText": "Har bir partiya zavod hujjatlari bilan keladi; sertifikat nusxasini soʻrov boʻyicha yuboramiz.",
+      "importTitle": "Rasmiy import",
+      "importText": "{brand} mahsulotlari Oʻzbekistonga rasmiy import qilinadi.",
+      "products": "{brand} mahsulotlari",
+      "noProducts": "Bu brend mahsulotlari hozircha katalogda yoʻq."
+    },
+    "compare": {
+      "title": "Taqqoslash",
+      "add": "Taqqoslash",
+      "added": "Taqqoslashda",
+      "show": "Koʻrsatish:",
+      "all": "Hammasi",
+      "diff": "Faqat farqlar",
+      "clear": "Roʻyxatni tozalash",
+      "removeFor": "Olib tashlash: {name}",
+      "price": "Narx",
+      "unit": "Birlik narxi",
+      "discount": "Chegirma",
+      "composition": "Asosiy tarkib",
+      "form": "Shakli",
+      "pack": "Qadoqda",
+      "brand": "Brend",
+      "origin": "Ishlab chiqarilgan",
+      "note": "Maʼlumot mahsulot sahifalari va qadoqdagi yozuvga asoslangan. Biologik faol qoʻshimchalar dori vositasi emas.",
+      "emptyTitle": "Taqqoslash roʻyxati boʻsh",
+      "emptyText": "Mahsulot sahifasida «Taqqoslash» tugmasini bosing — bu yerda {limit} tagacha mahsulotni yonma-yon koʻrasiz."
+    },
+    "favorites": {
+      "addAll": "Hammasini savatga · {amount}",
+      "added": "Savatga qoʻshildi",
+      "deviceTitle": "Roʻyxat faqat shu qurilmada saqlangan",
+      "deviceText": "Brauzer maʼlumotlari tozalansa, roʻyxat ham oʻchadi.",
+      "rec": "Sizga yoqishi mumkin"
     }
   },
   "cart": {
@@ -992,7 +1058,8 @@
     "closeSearch": "Qidiruvni yopish",
     "closeCatalog": "Katalogni yopish",
     "homeLabel": "GoVita bosh sahifa",
-    "allProductsPlain": "Barcha mahsulotlar"
+    "allProductsPlain": "Barcha mahsulotlar",
+    "compare": "Taqqoslash"
   },
   "badges": {
     "hot": "YANGI",

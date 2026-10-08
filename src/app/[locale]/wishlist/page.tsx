@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { WishlistView } from "@/components/wishlist/WishlistView";
+import { productCutout } from "@/lib/content/product-cutouts";
 
 export const revalidate = 300;
 
@@ -36,7 +37,11 @@ export default async function WishlistPage({
 
   // The saved ids live in the visitor's browser, so the page ships a pool and
   // the client picks its own out of it. See WishlistView for the trade-off.
-  const pool = await shopflow.getProducts({ locale, pageSize: 100 });
+  const pool = await shopflow.getProducts({ locale, sort: "popular", pageSize: 100 });
+  // Cut-out pack shots first, as on every other rail.
+  const recommended = pool.items
+    .filter((p) => (p.assortment ?? "core") === "core")
+    .sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)));
 
-  return <WishlistView allProducts={pool.items} />;
+  return <WishlistView allProducts={pool.items} recommended={recommended} />;
 }

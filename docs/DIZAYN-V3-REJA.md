@@ -245,6 +245,40 @@ Endi `/search?q=`.
 `event`, `bare`). Audit: 0 (yangi: `/search` natija va boʻsh holatlari,
 telefonda soʻrov yozilgan qidiruv ekrani).
 
+## 8-bosqich — aksiyalar, brendlar, sevimlilar, taqqoslash (bajarildi)
+
+Foydalanuvchi qarori: zip'dagi dizayn 1:1, taqqoslash ham.
+
+- **`/sale`** (SaleV3): aksiya kartalari, chegirmadagi mahsulotlar
+  (`byDeepestDiscount`), «Bir xil qoidalar», Telegram paneli. `SALE_HREF` →
+  `/sale` (katalogdagi `?sale=1` ishlayveradi).
+- **`/brands`** (BrandsV3): mamlakat chiplari (`?country=`), kesma rasmli brend
+  plitkalari, «Hujjat kerakmi?». Brend maʼlumoti `lib/content/brand-info.ts`:
+  nom — slug'dan, mamlakat/matn — Sanity yoki i18n, mahsulotlar — katalogdan.
+- **`/brands/[slug]`** (BrandV3, yangi): qora hero (katalogdagi soni, yetkazish
+  muddati, 3 ta kesma rasm), shakl chiplari (`?form=`), setka, 3 ta fakt.
+  Nomaʼlum yoki mahsulotsiz brend → 404. PDP'dagi brend havolasi shu yerga.
+- **`/wishlist`** (FavoritesV3): «Hammasini savatga · summa», Hammasi /
+  Chegirmadagilar / Sotuvda bor chiplari, qurilma haqida panel, tavsiyalar.
+- **`/compare`** (CompareV3, yangi): `lib/compare/store.ts` (`govita-compare`,
+  4 tagacha, testli), header'da «Taqqoslash» ikonkasi, PDP'da tugma; jadvalda
+  farqli qatorlar `tile` fonida, «Faqat farqlar». Telefonda ustunlar 150px,
+  yonga scroll.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| «Birinchi buyurtma −10%» kartasi | bor | yoʻq | `computeTotals` da −10% faqat obunaga — savat bu narxni olmaydi |
+| «Chegirmalar qoʻshilmaydi — eng kattasi» | qoida | yoʻq | upsell va aksiyalar qoʻshiladi — qoida notoʻgʻri boʻlardi |
+| 2+1 kartasi | doim | faqat `buy_x_get_y` aksiya ishlayotganda, matni aksiyaning oʻzidan | real maʼlumot |
+| Klub: «Telegram-bot» | bot | Telegram kanal | bot nomi hali yoʻq (OPEN-QUESTIONS #9) |
+| Sevimlilar: «Ulashish» | tugma | yoʻq | roʻyxat brauzerda — havola boshqa odamda boʻsh roʻyxat ochadi |
+| Sevimlilar: «Kabinetga kiring — raqamga biriktiriladi» | bor | «Brauzer tozalansa, roʻyxat oʻchadi» | sevimlilar backend'ga sinxron qilinmaydi (OPEN-QUESTIONS #14) |
+| Taqqoslash: «Yosh» qatori | bor | yoʻq | katalogda maydon yoʻq |
+| Brend sahifasi: «Saralash: Ommabop» | bor | yoʻq | brendda 14 tagacha mahsulot — kesma rasmlilar oldinda |
+
+Audit: 0 (yangi yoʻllar: `/sale`, `/brands/swiss-energy`, `/compare`;
+holatlar: mahsulotli taqqoslash + «Faqat farqlar», mahsulotli sevimlilar).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -301,7 +335,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 5 | Mahsulot ✅ | yuqorida | — |
 | 6 | Savat ✅ | yuqorida | — |
 | 7 | Qidiruv ✅ | yuqorida | — |
-| 8 | Aksiya, brend, sevimli, taqqoslash | `/sale`, `/brands/[slug]`, `/compare` | savol 3 |
+| 8 | Aksiya, brend, sevimli, taqqoslash ✅ | yuqorida | — |
 | 9 | Kabinet | sidebar, buyurtma timeline, obunalar | backend'da yoʻq funksiyalar roʻyxati alohida beriladi |
 | 10 | Test | savol/natija UI | quiz logikasi qoladi |
 | 11 | Maʼlumot sahifalari, blog, 404 | InfoSidebar layout | — |
