@@ -54,6 +54,24 @@ barcha `border-*` rang utility'larini bosib ketardi. Endi `@layer base` da —
 eski sahifalarda ayrim chegaralar oʻz rangini oldi (masalan qora panellardagi
 `border-white/15`).
 
+## 2-bosqich — mahsulot kartasi va UI elementlar (bajarildi)
+
+`ProductCard` dizayn bo'yicha qayta yozildi va hamma joyda (12 ta chaqiruv)
+shu komponent ishlatiladi. `Price`, `DiscountBadge`, `Badge`, `Button`
+kit.css'ga moslandi; yangi: `Chip`, `Field`/`Input`, `Checkbox`, `RadioCard`.
+`formatMoney` endi `soʻm` yozadi. Audit: 0.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| "Xit" belgisi | namuna maʼlumotda Vitamin C | faqat katalogda `Bestseller`/`Хит продаж` belgisi boʻlsa | oʻylab topilgan daʼvo yoʻq |
+| Birlik narxi | 19 mahsulotning 12 tasida | shu 12 ta (tabletka/kapsula) | suyuqlik, jihoz, krem uchun birlik yoʻq |
+| Checkbox/radio chegarasi | #A9AEB3 | #8A8F95 | boshqaruv elementi chegarasi oqda ≥ 3:1 (WCAG 1.4.11) |
+| Karta reytingi | yoʻq | olib tashlandi | dizaynda yoʻq, sharhlar hali real emas |
+| "24 soatda yetkazish" | har kartada | har kartada | saytdagi mavjud vaʼda (Toshkent, 24 soat) — OPEN-QUESTIONS #4 javobi kelsa matn bitta kalitda |
+
+`Button` variantlari: `dark` va `gold` endi `primary` (qora) bilan bir xil —
+eski chaqiruvlar buzilmasligi uchun alias sifatida qoldi.
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -104,7 +122,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | # | Bosqich | Asosiy ish | Eʼtibor |
 |---|---|---|---|
 | 1 | Layout ✅ | yuqorida | — |
-| 2 | ProductCard + UI | kartaga kesma rasm, birlik narxi; Button/Chip/Badge/Input | birlik narxi uchun `units`/`unitLabel` maydoni kerak (`design/data/products.json` da bor, `Product` turida yoʻq) |
+| 2 | ProductCard + UI ✅ | yuqorida | — |
 | 3 | Bosh sahifa | dizayn bloklari, real maʼlumot | mavjud sogʻliq-maqsad bloklari dizaynda yoʻq — savol 1 |
 | 4 | Katalog | filtrlar (brend, shakl, kim uchun, mamlakat — soni bilan), mobil sheet | "shakl", "kim uchun" maydonlari maʼlumotda bor-yoʻqligini tekshirish |
 | 5 | Mahsulot | galereya, xarid bloki, sticky tablar, mobil fixed panel | tibbiy vaʼdalarni matndan olib tashlash — kontent oʻzgarishi |

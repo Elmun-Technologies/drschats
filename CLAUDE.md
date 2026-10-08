@@ -136,7 +136,7 @@ chaqirilgandan **keyin** chizing.
 | `layout/` | Header (desktop + mobil, V3), CatalogMenu (mega-menyu), TopBar (utility qator), SearchBox, Footer (+ FooterAccordion), CookieConsent. Umumiy havolalar `nav-links.ts` da — server komponent `"use client"` moduldan konstanta ololmaydi |
 | `nav/` | MobileBottomNav — 5 tab (V3 TabBar), `lg:hidden`; "Katalog" tabi katalog ekranini (dialog) ochadi, "Savat" — drawer |
 | `cart/` | CartDrawer (Framer Motion slide-in) |
-| `product/` | ProductCard, ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
+| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
 | `shop/` | ShopView (server), FilterBar, Pagination |
 | `checkout/` | CheckoutForm (react-hook-form + Zod) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
@@ -144,7 +144,7 @@ chaqirilgandan **keyin** chizing.
 | `social-proof/` | LivePurchaseToast (har 35s, Framer Motion) |
 | `exit-intent/` | ExitIntentPopup (mouseleave + visibilitychange, sessionStorage once) |
 | `pwa/` | ServiceWorkerRegistration |
-| `ui/` | Button, Badge, Skeleton, ProductGridSkeleton, CountdownTimer, Price, StarRating, ScrollProgress, BackToTop |
+| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), Skeleton, CountdownTimer, StarRating, ScrollProgress, BackToTop |
 | `analytics/` | Analytics (GTM Script) |
 
 ## State Management
@@ -200,7 +200,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 953 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 961 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -465,6 +465,14 @@ maʼlumot, kod emas.
 
 **Kesma rasmlar:** `public/images/products/c-*.png`, slug → fayl
 `src/lib/content/product-cutouts.ts` da (test fayllar mavjudligini tekshiradi).
+**Birlik narxi** (`3 950 soʻm / tabletka`): `src/lib/content/product-units.ts` —
+`Product` turiga maydon qo'shilmadi; real API'ga o'tilganda bu ma'lumot API'dan
+kelishi kerak.
+
+**`cn()` V3 shrift o'lchamlarini biladi** (`src/lib/utils.ts`,
+`extendTailwindMerge`). Yangi `--text-*` token qo'shsangiz, uni o'sha ro'yxatga
+ham qo'shing — aks holda `cn("text-yangi", "text-muted")` o'lchamni tashlab
+yuboradi. `formatMoney` uz uchun `soʻm` (U+02BB) yozadi.
 Stok foto: `public/images/stock/st-*`.
 
 Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa>.html` va `design/screenshots/<Sahifa>.jpg` ni oʻqing. Dizayndan chetga chiqish faqat kelishilgan holda.
