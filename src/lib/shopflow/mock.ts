@@ -2272,7 +2272,9 @@ function resolveCategory(c: RawCategory, locale: Locale): Category {
     name: c.name[locale],
     description: c.description[locale],
     image: c.image,
-    productCount: rawProducts.filter((p) => p.categoryId === c.id).length,
+    // Counted the way the shelf lists (by slug, without withdrawn products). Counting by
+    // categoryId kept "collagen" and "herbal" stocked while their pages showed nothing.
+    productCount: rawProducts.filter((p) => p.categorySlug === c.slug && (p.kind ?? "core") !== "unlisted").length,
   };
 }
 

@@ -22,7 +22,7 @@
   production until the reviews come from customers and the toast from orders.
 
   This gates only the fabricated parts. Sanity-authored customer stories, and
-  anything the real Shopflow API returns in `SHOPFLOW_MODE=http`, are untouched:
+  anything the real Shopflow API returns in `CATALOG_SOURCE=shopflow`, are untouched:
   those are somebody's actual words, and hiding them would be the opposite
   mistake.
 

@@ -8,22 +8,30 @@ export { listAllSlugs } from "./mock";
 
 /*
   Factory: the whole app imports `shopflow` from here and only ever depends on
-  the ShopflowClient interface. Flip SHOPFLOW_MODE=http (with API_URL/API_KEY)
-  to switch from sample data to the real Shopflow platform — no other code
-  changes required.
+  the ShopflowClient interface.
+
+  The built-in catalogue is the source unless CATALOG_SOURCE=shopflow is set
+  explicitly. It used to follow SHOPFLOW_MODE, and production still carried a
+  stale SHOPFLOW_MODE=http from an early setup: once the code honoured it, every
+  read went to an API that does not exist and the live site lost its products,
+  categories and menus at once. A switch that empties the shop must be one
+  nobody can flip by accident.
 */
 let client: ShopflowClient | null = null;
 
+const USE_SHOPFLOW = process.env.CATALOG_SOURCE === "shopflow";
+
+if (!USE_SHOPFLOW && process.env.SHOPFLOW_MODE === "http") {
+  console.warn("[catalog] SHOPFLOW_MODE=http is ignored — the built-in catalogue is used. Set CATALOG_SOURCE=shopflow to switch.");
+}
+
 export function getShopflow(): ShopflowClient {
   if (client) return client;
-  const mode = process.env.SHOPFLOW_MODE === "http" ? "http" : "mock";
-  client = withResilientReads(
-    mode === "http" ? new HttpShopflowClient() : new MockShopflowClient(),
-  );
+  client = withResilientReads(USE_SHOPFLOW ? new HttpShopflowClient() : new MockShopflowClient());
   return client;
 }
 
 export const shopflow = getShopflow();
 
-/** True while the catalogue and orders run on the built-in sample client. */
-export const SHOPFLOW_IS_MOCK = process.env.SHOPFLOW_MODE !== "http";
+/** True while the catalogue and orders run on the built-in client (no external order system). */
+export const SHOPFLOW_IS_MOCK = !USE_SHOPFLOW;

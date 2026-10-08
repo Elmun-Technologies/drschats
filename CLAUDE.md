@@ -10,7 +10,7 @@ katalog o'sha yo'lning oxirida turadi.
 
 - **Stack**: Next.js 15, TypeScript, Tailwind CSS v4, Framer Motion, Zustand, next-intl, Zod, react-hook-form
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
-- **Katalog backend**: Shopflow adapteri (`SHOPFLOW_MODE=mock` — mock data; `SHOPFLOW_MODE=http` — real API)
+- **Katalog backend**: o'rnatilgan katalog (default). Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
 - **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
 - **Deploy**: Vercel
@@ -202,9 +202,9 @@ shopflow.getPromotions(locale)
 shopflow.createOrder(payload)
 ```
 
-**Real API-ga o'tish:**
+**Real API-ga o'tish** (rejada yo'q — o'z admin paneli quriladi):
 ```env
-SHOPFLOW_MODE=http
+CATALOG_SOURCE=shopflow
 SHOPFLOW_API_URL=https://api.shopflow.uz
 SHOPFLOW_API_KEY=your_key
 ```
@@ -217,17 +217,31 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1425 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1475 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
 
 ## SEO
 
-- **JSON-LD**: WebSite (SearchAction → `/search?q=`), LocalBusiness (PharmacyOrDrugstore), Product, FAQ, BreadcrumbList — `src/lib/seo/jsonld.tsx`
-- **Sitemap**: reyting ≥4.5 → priority 0.9; boshqalar 0.8; kategoriyalar 0.7 — `src/app/sitemap.ts`
-- **hreflang**: next-intl orqali avtomatik
-- **robots.txt**: `/cart`, `/checkout` — noindex
+To'liq holat, qoidalar va off-page reja: **[`docs/SEO.md`](docs/SEO.md)**.
+
+- **Title/description** — faqat `src/lib/seo/page-meta.ts` orqali (matn `meta.seo` /
+  `meta.pages`, uz + ru). Qo'lda `${x} — Go Vita` yozilmaydi. Title ≤ 70, so'rov so'zi
+  oldinda ("… narxi, Toshkentda sotib olish" / "… купить в Ташкенте, цена");
+  description 70–160, haqiqiy narx/son/muddat bilan (`page-meta.test.ts`)
+- **Query-param variantlari** (`?sort`, filtrlar, `?page`) — `noindex, follow`
+- **Bo'sh javon** (0 mahsulot) — 404 va sitemap'da yo'q; `productCount` javon
+  ko'rsatgandek (`categorySlug`, sotuvdagilar) sanaladi
+- **JSON-LD** (`src/lib/seo/jsonld.tsx`): WebSite + Store — faqat bosh sahifada (Store
+  kontaktda ham); Product (`brand` — ishlab chiqaruvchi, yetkazish narxi haqiqiy,
+  o'ylab topilgan sana yo'q); kategoriyada CollectionPage + ItemList + Breadcrumb; FAQ
+- **Sitemap**: uz **va** ru `<loc>`, mahsulot rasmlari, `lastmod` faqat haqiqiy sanada.
+  Priority: reyting ≥4.5 → 0.9; mahsulot 0.8; kategoriya 0.7 — `src/app/sitemap.ts`
+- **Kategoriya matnlari**: `src/lib/content/category-seo.ts` (tibbiy va'dasiz, test bilan)
+- **hreflang**: `buildAlternates` (x-default = uz); `og:locale` `uz_UZ`/`ru_RU`
+- **robots.txt**: `/cart`, `/checkout`, `/studio` — disallow
+- **Verifikatsiya**: `GOOGLE_SITE_VERIFICATION`, `YANDEX_VERIFICATION`
 
 ## Analytics
 
@@ -263,7 +277,7 @@ GTM ID: `NEXT_PUBLIC_GTM_ID`
   Live deploy'da (`lib/config/live.ts`) kanal sozlanmagan yoki xabar yetib
   bormasa buyurtma rad etiladi va mijozga telefon raqami aytiladi — "qabul
   qilindi" deb hech kim ko'rmaydigan buyurtma qoldirilmaydi
-- `SHOPFLOW_MODE=http` endi haqiqatan o'qiladi (avval kodda mock qotirilgan edi)
+- Katalog manbai `CATALOG_SOURCE=shopflow` bilangina tashqi API'ga o'tadi
 
 **Telegram sozlash:**
 ```env
@@ -423,8 +437,8 @@ NEXT_PUBLIC_GTM_ID=GTM-XXXXXXX
 NEXT_PUBLIC_META_PIXEL_ID=xxxxxxxxxx
 NEXT_PUBLIC_YANDEX_METRIKA_ID=xxxxxxxx
 
-# Backend (real API uchun)
-SHOPFLOW_MODE=http
+# Backend (tashqi Shopflow — faqat atayin)
+CATALOG_SOURCE=shopflow
 SHOPFLOW_API_URL=https://api.shopflow.uz
 SHOPFLOW_API_KEY=your_key
 
@@ -452,6 +466,10 @@ GOVITA_PRODUCTION=1                  # demo bayroqlari yoqilgan bo'lsa build yiq
 
 # Demo akkaunt kabineti (default: o'chiq)
 NEXT_PUBLIC_ACCOUNT_DEMO=on          # faqat demo deploy uchun
+
+# Qidiruv tizimlari verifikatsiyasi (ixtiyoriy, meta teg sifatida chiqadi)
+GOOGLE_SITE_VERIFICATION=...
+YANDEX_VERIFICATION=...
 
 # Sanity Studio (production'da default: yopiq)
 SANITY_STUDIO_ENABLED=on             # + haqiqiy NEXT_PUBLIC_SANITY_PROJECT_ID kerak

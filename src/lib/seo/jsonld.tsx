@@ -5,6 +5,8 @@ import { absoluteUrl } from "@/lib/config/site";
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
+import { COMMERCE } from "@/lib/config/commerce";
+import { productBrand } from "@/lib/content/product-brands";
 
 /*
   Structured-data image URLs, made absolute.
@@ -137,6 +139,7 @@ export function productGraph({
   dateModified?: string;
 }) {
   const url = `${SITE_URL}/${locale}/product/${product.slug}`;
+  const brand = productBrand(product.slug);
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -147,8 +150,9 @@ export function productGraph({
         name: `${product.name} — Go Vita`,
         description: product.tagline,
         inLanguage: locale,
-        datePublished: datePublished ?? "2025-01-01T09:00:00+05:00",
-        dateModified: dateModified ?? "2026-06-27T09:00:00+05:00",
+        // Only real dates: a fixed placeholder told crawlers every page was edited the same day.
+        ...(datePublished ? { datePublished } : {}),
+        ...(dateModified ? { dateModified } : {}),
         isPartOf: { "@id": `${SITE_URL}/#organization` },
         ...(author ? { author: personNode(author) } : {}),
         ...(reviewer ? { reviewedBy: personNode(reviewer) } : {}),
@@ -158,9 +162,10 @@ export function productGraph({
         "@id": `${url}#product`,
         name: product.name,
         image: product.images.map((i) => structuredDataImage(i.url)),
-        description: product.tagline,
+        description: product.description || product.tagline,
         sku: product.id,
-        brand: { "@type": "Brand", name: SITE_NAME },
+        // The maker, not the shop: "Go Vita" as the brand of a Swiss Energy pack was a false claim.
+        ...(brand ? { brand: { "@type": "Brand", name: brand.name } } : {}),
         /*
           Only claimed when there is something to claim. A product with no
           reviews yet must not carry an AggregateRating node: zero stars out
@@ -180,7 +185,6 @@ export function productGraph({
           "@type": "Offer",
           priceCurrency: "UZS",
           price: product.price,
-          priceValidUntil: "2027-12-31",
           availability: product.inStock
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
@@ -191,7 +195,8 @@ export function productGraph({
             "@type": "OfferShippingDetails",
             shippingRate: {
               "@type": "MonetaryAmount",
-              value: 0,
+              // What one unit actually costs to ship: free only above the threshold.
+              value: product.price >= COMMERCE.freeShippingOver ? 0 : COMMERCE.shippingFee,
               currency: "UZS",
             },
             shippingDestination: {
@@ -299,6 +304,33 @@ export function breadcrumbLd(items: { name: string; url: string }[]) {
   };
 }
 
+/**
+ * A catalogue shelf: the listing as an ItemList of product URLs, so the
+ * category page is read as the hub its products hang off.
+ */
+export function collectionLd({ name, url, products }: { name: string; url: string; products: { name: string; slug: string }[] }) {
+  const locale = url.slice(SITE_URL.length).split("/")[1];
+  return {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "@id": `${url}#collection`,
+    url,
+    name,
+    inLanguage: locale,
+    isPartOf: { "@id": `${SITE_URL}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: products.length,
+      itemListElement: products.map((p, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${SITE_URL}/${locale}/product/${p.slug}`,
+        name: p.name,
+      })),
+    },
+  };
+}
+
 /** WebSite node with SearchAction — enables Google Sitelinks Search Box. */
 export function websiteLd(locale: Locale) {
   return {
@@ -324,7 +356,8 @@ export function websiteLd(locale: Locale) {
 export function localBusinessLd() {
   return {
     "@context": "https://schema.org",
-    "@type": ["LocalBusiness", "PharmacyOrDrugstore"],
+    // A shop, not a pharmacy: PharmacyOrDrugstore claims a licence the site does not show yet.
+    "@type": "Store",
     "@id": `${SITE_URL}/#localbusiness`,
     name: BRAND.name,
     url: SITE_URL,

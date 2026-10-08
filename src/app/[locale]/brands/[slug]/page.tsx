@@ -6,7 +6,8 @@ import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { COMMERCE } from "@/lib/config/commerce";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { listingMetadata } from "@/lib/seo/page-meta";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { brandBySlug } from "@/lib/content/product-brands";
 import { getBrandInfos } from "@/lib/content/brand-info";
@@ -19,12 +20,24 @@ export const revalidate = 300;
 
 type Params = Promise<{ locale: Locale; slug: string }>;
 
-export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const { locale, slug } = await params;
+export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: Promise<{ form?: string }> }): Promise<Metadata> {
+  const [{ locale, slug }, query] = await Promise.all([params, searchParams]);
   const brand = brandBySlug(slug);
   if (!brand) return {};
-  const t = await getTranslations({ locale, namespace: "shop.brands" });
-  return buildPageMetadata({ locale, path: `/brands/${slug}`, title: `${brand.name} — Go Vita`, description: t("products", { brand: brand.name }) });
+  const [t, listing] = await Promise.all([
+    getTranslations({ locale, namespace: "shop.brands" }),
+    getAllProducts({ locale, sort: "popular" }),
+  ]);
+  const info = (await getBrandInfos(locale, listing.items)).find((b) => b.slug === slug);
+  return listingMetadata({
+    locale,
+    kind: "brand",
+    name: brand.name,
+    path: `/brands/${slug}`,
+    products: info?.products ?? [],
+    fallbackDescription: t("products", { brand: brand.name }),
+    filtered: Object.keys(query).length > 0,
+  });
 }
 
 /*

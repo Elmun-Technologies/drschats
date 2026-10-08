@@ -7,18 +7,17 @@ import { getAllProducts } from "@/lib/shop/all-products";
 import { BRAND } from "@/lib/brand";
 import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney } from "@/lib/utils";
-import { buildPageMetadata } from "@/lib/seo/metadata";
 import { byDeepestDiscount } from "@/lib/shop/discounts";
 import { productCutout } from "@/lib/content/product-cutouts";
 import { FIRST_ORDER_PERCENT, RECURRING_PERCENT } from "@/lib/subscription/plans";
 import { ProductGrid } from "@/components/home/HomeBlocks";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 300;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "shop.sale" });
-  return buildPageMetadata({ locale, path: "/sale", title: `${t("title")} — Go Vita`, description: t("lead") });
+  return staticPageMetadata(locale, "sale", "/sale");
 }
 
 /*

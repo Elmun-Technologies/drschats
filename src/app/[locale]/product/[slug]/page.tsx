@@ -3,7 +3,8 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { productMetadata } from "@/lib/seo/page-meta";
 import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
@@ -28,13 +29,7 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const product = await shopflow.getProduct(slug, locale);
   if (!product) return {};
-  return buildPageMetadata({
-    locale,
-    path: `/product/${slug}`,
-    title: `${product.name} — Go Vita`,
-    description: product.tagline,
-    image: product.images[0]?.url,
-  });
+  return productMetadata(product, locale);
 }
 
 export default async function ProductPage({

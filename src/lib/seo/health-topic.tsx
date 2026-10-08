@@ -5,7 +5,8 @@ import type { Expert } from "@/lib/content/experts.sanity";
 import type { HealthTopic, HealthTopicKind } from "@/lib/content/health-topics";
 import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
 import { getHealthTopic } from "@/lib/content/health-topics.sanity";
-import { buildPageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo/metadata";
+import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { clampDescription, topicTitle } from "@/lib/seo/page-meta";
 import { JsonLd, breadcrumbLd, faqLd, organizationNode } from "@/lib/seo/jsonld";
 
 export function topicUrl(kind: HealthTopicKind, slug: string, locale: Locale) {
@@ -23,8 +24,8 @@ export async function healthTopicMetadata(
   return buildPageMetadata({
     locale,
     path: `${TOPIC_BASE_PATH[kind]}/${slug}`,
-    title: `${topic.name} — ${topic.headline} | ${SITE_NAME}`,
-    description: topic.intro,
+    title: await topicTitle(locale, kind, topic.name),
+    description: clampDescription(topic.intro),
   });
 }
 

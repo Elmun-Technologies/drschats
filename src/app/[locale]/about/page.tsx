@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import Image from "next/image";
 import { BRAND } from "@/lib/brand";
@@ -10,13 +10,13 @@ import { getAllProducts } from "@/lib/shop/all-products";
 import { productBrand } from "@/lib/content/product-brands";
 import { Link } from "@/lib/i18n/navigation";
 import { InfoShell } from "@/components/info/InfoShell";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.about" });
-  return buildPageMetadata({ locale, path: "/about", title: `${t("title")} — Go Vita`, description: t("subtitle") });
+  return staticPageMetadata(locale, "about", "/about");
 }
 
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {

@@ -17,6 +17,7 @@ import { productCutout } from "@/lib/content/product-cutouts";
 import { cn, formatDate, formatMoney } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
 import { ShareRow } from "@/components/blog/ShareRow";
+import { clampDescription, seoTitle } from "@/lib/seo/page-meta";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -39,9 +40,10 @@ export async function generateMetadata({
   return buildPageMetadata({
     locale,
     path: `/blog/${slug}`,
-    title: `${article.title} — Go Vita`,
-    description: article.excerpt,
+    title: await seoTitle(locale, "blogArticle", { title: article.title }),
+    description: clampDescription(article.excerpt),
     image: article.image,
+    type: "article",
   });
 }
 

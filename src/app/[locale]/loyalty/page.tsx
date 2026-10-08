@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata } from "@/lib/seo/metadata";
 import { Link } from "@/lib/i18n/navigation";
 import { buttonVariants } from "@/components/ui/Button";
 import { COMMERCE, thousands } from "@/lib/config/commerce";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 
 export const revalidate = 3600;
 
@@ -26,19 +26,9 @@ export const revalidate = 3600;
   The partner programme stays, as a contractual B2B arrangement, because that
   is what it is.
 */
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ locale: Locale }>;
-}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "loyalty" });
-  return buildPageMetadata({
-    locale,
-    path: "/loyalty",
-    title: `${t("title")} — Go Vita`,
-    description: t("subtitle"),
-  });
+  return staticPageMetadata(locale, "loyalty", "/loyalty");
 }
 
 export default async function LoyaltyPage({ params }: { params: Promise<{ locale: Locale }> }) {

@@ -44,7 +44,12 @@ interface PageMetaArgs {
   description: string;
   image?: string;
   type?: "website" | "article" | "product";
+  /** A sorted/filtered/paged variant: crawlable for its links, kept out of the index. */
+  noindex?: boolean;
 }
+
+/** og:locale wants language_TERRITORY, not the bare route segment. */
+const OG_LOCALE: Record<Locale, string> = { uz: "uz_UZ", ru: "ru_RU" };
 
 export function buildPageMetadata({
   locale,
@@ -53,6 +58,7 @@ export function buildPageMetadata({
   description,
   image,
   type = "website",
+  noindex = false,
 }: PageMetaArgs): Metadata {
   const url = absoluteUrl(`/${locale}${path === "/" ? "" : path}`);
   const ogImage = image ? image : absoluteUrl(DEFAULT_OG_IMAGE);
@@ -67,7 +73,8 @@ export function buildPageMetadata({
       siteName: SITE_NAME,
       url,
       type: type === "product" ? "website" : type,
-      locale,
+      locale: OG_LOCALE[locale],
+      alternateLocale: locales.filter((l) => l !== locale).map((l) => OG_LOCALE[l]),
       images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
     },
     twitter: {
@@ -76,5 +83,6 @@ export function buildPageMetadata({
       description,
       images: [ogImage],
     },
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
   };
 }
