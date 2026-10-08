@@ -99,8 +99,9 @@
   --color-pastel-sky: #eff4f5;
 
   /* Typography */
-  --font-display: var(--font-exo2), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-exo2), ui-sans-serif, system-ui, sans-serif;
+  /* Onest everywhere since V3 stage 1 — the design has one UI face. */
+  --font-display: var(--font-onest-face), "Segoe UI", Arial, sans-serif;
+  --font-sans: var(--font-onest-face), "Segoe UI", Arial, sans-serif;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -194,6 +195,24 @@
   --shadow-arrow: 0 2px 10px rgba(23, 25, 27, 0.12);
   --shadow-buybox: 0 4px 24px rgba(23, 25, 27, 0.06);
   --shadow-pop: 0 20px 48px rgba(23, 25, 27, 0.25);
+}
+
+/* The V3 content column: 1296px wide, 24px gutter on desktop, 16px on phones. */
+@utility wrap {
+  width: 100%;
+  max-width: 1296px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 768px) {
+    padding-inline: 1.5rem;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes marquee {
@@ -320,14 +339,14 @@
   each other — the scroll button sat squarely on the "home" tab.
 
   One token instead. `--bottom-nav` is the space the mobile tab bar occupies
-  (zero once it hides at md), and everything pinned to the bottom offsets by it.
+  (zero once it hides at lg), and everything pinned to the bottom offsets by it.
   MobileBottomNav sets its own height from the same token, so the number cannot
   drift out of sync with the thing it describes.
 */
 :root {
   --bottom-nav: 0px;
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   :root {
     --bottom-nav: calc(4.25rem + env(safe-area-inset-bottom, 0px));
   }
@@ -387,8 +406,16 @@
   color-scheme: light;
 }
 
-* {
-  border-color: var(--color-legacy-line);
+/*
+  Default border colour, in the base layer. Unlayered, it outranked every
+  `border-*` colour utility (cascade layers lose to unlayered rules), so
+  `border-transparent`, `border-ink` and `border-white/15` all silently drew
+  the hairline colour instead.
+*/
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
 }
 
 /*
@@ -413,11 +440,11 @@
     Keyboard focus, visible everywhere.
 
     Components that set their own Tailwind ring keep it; this is the fallback
-    for the custom buttons that only reset the outline. Signal green rather
-    than gold: focus is a state, not a call to spend money.
+    for the custom buttons that only reset the outline. Ink, because the V3
+    design has no green and focus is a state, not a call to spend money.
   */
   :focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
 
@@ -425,7 +452,14 @@
      sticky header (72px row + 40px utility bar + 56px nav row at lg). */
   :target,
   [id] {
-    scroll-margin-top: 8.5rem;
+    scroll-margin-top: 1rem;
+  }
+  /* Only the desktop header is sticky: 76px main row + ~50px category row. */
+  @media (min-width: 1024px) {
+    :target,
+    [id] {
+      scroll-margin-top: 8.5rem;
+    }
   }
 }
 
@@ -451,8 +485,8 @@ html {
 }
 
 body {
-  background-color: var(--color-legacy-ink);
-  color: var(--color-fg);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
