@@ -27,6 +27,33 @@ topshiriqdagidek `next/font/google` bilan ulandi — u ham build vaqtida yuklab,
 oʻz domenimizdan beradi (CSP oʻzgarmaydi). Narxi: build Google Fonts'ga
 tarmoq talab qiladi (Vercel va GitHub Actions'da bor).
 
+## 1-bosqich — layout (bajarildi)
+
+Header (utility qator, Katalog + mega-menyu, qidiruv, ikonlar, kategoriya
+qatori), mobil header + toʻliq ekranli qidiruv, 5 tabli tab bar + katalog
+ekrani (MenuMobileV3), Footer (desktop ustunlar, mobil akkordeon). Butun sayt
+shrifti Onest, fon oq, fokus halqasi qora. Audit: barcha qatorlar 0.
+
+**Dizayndan ongli farqlar:**
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| Header ikonlari | Taqqoslash, Kirish | Taqqoslash yoʻq; Kirish faqat API yoki demo yoqilganda | `/compare` yoʻq (8-bosqich); havola 404 ga olib bormasin |
+| Kategoriya qatori | 10 ta qotirilgan nom | real kategoriyalar (13 ta), gorizontal skroll | faqat real maʼlumot |
+| Mega-menyu oʻrta ustun | Shakli / Tarkib / Kim uchun + brend chiplari | Sogʻliq maqsadlari + Doʻkon havolalari | bu filtrlar maʼlumotda hali yoʻq (4-bosqich) — savol 1 boʻyicha default |
+| Aksiyalar havolasi | `/sale` | `/products?sort=deals` | `/sale` 8-bosqichda |
+| Savat (header va tab) | savat sahifasi | savat drawer'i | mavjud oqim saqlandi |
+| Kabinet tabi | kabinet | `/account` yoki (API yoʻq boʻlsa) `/profile` | `/account` API'siz 404 |
+| Footer toʻlov | Payme, Click, Uzum, Naqd | faqat merchant id bor provayderlar + Naqd/karta | hozir hech biri sozlanmagan |
+| Footer "Xaridorlarga" | 6 havola | + Maqsadlar, Belgilar, Vitaminlar, Dasturlar | sogʻliq sahifalari yetim qolmasin |
+| Mobil header til | UZ | boshqa til (RU/UZ) | bosilganda nima boʻlishi koʻrinsin |
+| Narx valyutasi | soʻm (ʻ) | so’m | narx yordamchisi 2-bosqichda |
+
+**Tuzatilgan eski xato:** global `* { border-color }` layer'siz edi va
+barcha `border-*` rang utility'larini bosib ketardi. Endi `@layer base` da —
+eski sahifalarda ayrim chegaralar oʻz rangini oldi (masalan qora panellardagi
+`border-white/15`).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -76,7 +103,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 
 | # | Bosqich | Asosiy ish | Eʼtibor |
 |---|---|---|---|
-| 1 | Layout | `--font-sans` → Onest, body foni `bg`; Header, MegaMenu, MobileHeader, TabBar, Footer | Butun sayt shriftini oʻzgartiradi — kesilgan matn auditi; eski sahifalar yangi header bilan aralash koʻrinadi (kutilgan) |
+| 1 | Layout ✅ | yuqorida | — |
 | 2 | ProductCard + UI | kartaga kesma rasm, birlik narxi; Button/Chip/Badge/Input | birlik narxi uchun `units`/`unitLabel` maydoni kerak (`design/data/products.json` da bor, `Product` turida yoʻq) |
 | 3 | Bosh sahifa | dizayn bloklari, real maʼlumot | mavjud sogʻliq-maqsad bloklari dizaynda yoʻq — savol 1 |
 | 4 | Katalog | filtrlar (brend, shakl, kim uchun, mamlakat — soni bilan), mobil sheet | "shakl", "kim uchun" maydonlari maʼlumotda bor-yoʻqligini tekshirish |

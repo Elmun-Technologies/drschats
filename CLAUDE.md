@@ -133,8 +133,8 @@ chaqirilgandan **keyin** chizing.
 
 | Papka | Asosiy komponentlar |
 |---|---|
-| `layout/` | Header, Footer, CookieConsent |
-| `nav/` | MobileBottomNav (4 tab, cart badge, md:hidden) |
+| `layout/` | Header (desktop + mobil, V3), CatalogMenu (mega-menyu), TopBar (utility qator), SearchBox, Footer (+ FooterAccordion), CookieConsent. Umumiy havolalar `nav-links.ts` da — server komponent `"use client"` moduldan konstanta ololmaydi |
+| `nav/` | MobileBottomNav — 5 tab (V3 TabBar), `lg:hidden`; "Katalog" tabi katalog ekranini (dialog) ochadi, "Savat" — drawer |
 | `cart/` | CartDrawer (Framer Motion slide-in) |
 | `product/` | ProductCard, ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
 | `shop/` | ShopView (server), FilterBar, Pagination |
@@ -200,7 +200,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 919 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 953 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -447,6 +447,18 @@ sahifa foni, yangisi — deyarli qora). Eski tokenlar `legacy-*` ga mexanik
 koʻchirildi (koʻrinish oʻzgarmadi — kompilyatsiya qilingan CSS solishtirildi),
 yangilari ayni nomni oldi. **Yangi kodda `legacy-*` ishlatilmaydi**; 12-bosqich
 oxirida `grep -r legacy- src` boʻsh boʻlishi va eski `@theme` bloki oʻchishi kerak.
+
+**Breakpoint:** desktop header va footer ustunlari `lg` (1024px) dan; undan
+pastda mobil header + tab bar. `--bottom-nav` ham 1023.98px gacha nolmas.
+Faqat desktop header sticky — telefonda tab bar doim ko'rinadi.
+
+**Yopiq akkordeon kontentini chizmang** (`<details>` emas). Chrome yopiq
+`details` ichidagi havolalarni `content-visibility: hidden` bilan joylashtirib
+qo'yadi va bottom-edge/tap-target auditi ko'rinmaydigan havolalarni sanaydi
+(`FooterAccordion` shu sabab client komponent).
+
+**Global `border-color` `@layer base` ichida.** U layer'siz turganda har qanday
+`border-*` rang utility'sini bosib ketardi (layer'siz qoida har doim yutadi).
 
 `design/` Tailwind skaneridan (`@source not`) va ESLint'dan chiqarilgan — u
 maʼlumot, kod emas.
