@@ -94,7 +94,7 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
   product/[slug]/          # mahsulot detail sahifasi
   cart/                    # savat + buyurtma formasi bitta sahifada (V3)
   checkout/                # → /cart redirect; checkout/success/ va server action shu yerda
-  account/                 # kabinet — API sozlanmagan bo'lsa notFound()
+  account/                 # kabinet (kirish + buyurtmalar), orders/[id]/, subscriptions/ — API yoki demo bo'lmasa notFound() (lib/account/gate.ts)
   profile/                 # sog'liq profili — API'siz ham ishlaydi (brauzerda)
   email/preferences/       # obuna sozlamalari (xatdagi havolalar shu yerga tushadi)
   sale/                    # aksiyalar (V3) — SALE_HREF shu yerga
@@ -145,6 +145,7 @@ chaqirilgandan **keyin** chizing.
 | `cart/` | CartDrawer (Framer Motion slide-in; tugmasi `/cart` ga), CartLines (V3 qatorlar + upsell ladder takliflari) |
 | `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate (PDP V3, server; bitta DOM, telefonda `order-*`), BuyBox (+ `MobileBuyBar`, `MiniBuyCard`), `purchase.ts` (uchala «qo'shish» tugmasining umumiy holati — rejim, oraliq, miqdor), SubscribeToSave, ProductGallery, ProductSections (`SectionNav` scrollspy, `Collapsible` — desktopda ochiq, telefonda akkordeon), WishlistButton, ShareButton, OutOfStockNotify |
 | `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
+| `account/` | AccountShell (AccountNavV3: desktopda yon menyu, telefonda sahifa oxirida ro'yxat), AccountView (kirish yoki bosh sahifa), AuthForm (OTP, 6 katak — bitta input), OrderHistory (+ `useMyOrders`, `StatusBadge`), OrderDetail, MySubscriptions (+ `SubscriptionsView`). Holatlar — `lib/account/orders.ts` |
 | `checkout/` | CheckoutForm — `/cart` sahifasining o'zi: savat, 3 qadam, xulosa, mobil fixed panel; bitta `<form>` (react-hook-form + Zod, sxema va payload o'zgarmagan) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
 | `personalization/` | ViewTracker, PurchaseTracker, PersonalizedRail, RecentlyViewed, SimilarProducts |
@@ -207,7 +208,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1184 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1223 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`

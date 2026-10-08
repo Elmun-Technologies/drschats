@@ -36,9 +36,9 @@ export function ProfileOffers() {
 
   return (
     <section aria-labelledby="profile-offers">
-      <h2 id="profile-offers" className="font-display text-lg font-bold tracking-tight">{t("title")}
+      <h2 id="profile-offers" className="text-xl font-bold">{t("title")}
       </h2>
-      <p className="mt-1 text-sm text-legacy-muted">{t("description")}</p>
+      <p className="mt-1 text-sm text-ink-2">{t("description")}</p>
 
       <div className="mt-4 grid grid-cols-2 gap-4 md:grid-cols-4">
         {offers.map((offer, i) => (
@@ -47,8 +47,8 @@ export function ProfileOffers() {
               <ProductCard product={offer.product} index={i} />
             </div>
             {offer.reasons.length > 0 && (
-              <p className="px-1 text-xs leading-snug text-legacy-muted">
-                <span className="font-semibold text-fg">{t("because")}</span>{" "}
+              <p className="px-1 text-xs leading-snug text-ink-2">
+                <span className="font-semibold text-ink">{t("because")}</span>{" "}
                 {offer.reasons.join(" · ")}
               </p>
             )}

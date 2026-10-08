@@ -47,38 +47,38 @@ export function ConsentPanel() {
 
   return (
     <section aria-labelledby="profile-consent">
-      <h2 id="profile-consent" className="font-display text-lg font-bold tracking-tight">{t("title")}
+      <h2 id="profile-consent" className="text-xl font-bold">{t("title")}
       </h2>
-      <p className="mt-1 text-sm text-legacy-muted">{t("description")}</p>
+      <p className="mt-1 text-sm text-ink-2">{t("description")}</p>
 
       <div className="mt-4 flex flex-col gap-3">
-        <label className="flex items-start gap-3 rounded-2xl border border-legacy-line bg-surface px-4 py-4">
+        <label className="flex items-start gap-3 rounded-[20px] border border-line bg-bg px-4 py-4">
           <input
             type="checkbox"
             checked={profile.consents.email}
             onChange={(e) => toggleEmail(e.target.checked)}
-            className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--color-accent)]"
+            className="mt-0.5 h-5 w-5 shrink-0 accent-ink"
           />
           <span>
-            <span className="block font-semibold text-fg">{t("email")}</span>
-            <span className="mt-0.5 block text-sm text-legacy-muted">{t("emailNote")}</span>
+            <span className="block font-semibold text-ink">{t("email")}</span>
+            <span className="mt-0.5 block text-sm text-ink-2">{t("emailNote")}</span>
             {profile.consents.email && !profile.email && (
-              <span className="mt-2 block text-sm font-medium text-danger">{t("emailMissing")}</span>
+              <span className="mt-2 block text-sm font-medium text-red">{t("emailMissing")}</span>
             )}
             <span aria-live="polite" className="mt-2 block text-sm">
-              {emailState === "sending" && <span className="text-legacy-muted">{t("emailSending")}</span>}
+              {emailState === "sending" && <span className="text-ink-2">{t("emailSending")}</span>}
               {emailState === "sent" && (
-                <span className="font-medium text-fg">
+                <span className="font-medium text-ink">
                   {t("emailSent", { email: profile.email ?? "" })}
                 </span>
               )}
-              {emailState === "error" && <span className="text-danger">{t("emailError")}</span>}
+              {emailState === "error" && <span className="text-red">{t("emailError")}</span>}
             </span>
           </span>
         </label>
 
         {telegramUrl && (
-          <label className="flex items-start gap-3 rounded-2xl border border-legacy-line bg-surface px-4 py-4">
+          <label className="flex items-start gap-3 rounded-[20px] border border-line bg-bg px-4 py-4">
             <input
               type="checkbox"
               checked={profile.consents.telegram}
@@ -86,18 +86,18 @@ export function ConsentPanel() {
                 setConsent({ telegram: e.target.checked });
                 track(e.target.checked ? "consent_telegram_granted" : "consent_telegram_withdrawn", {});
               }}
-              className="mt-0.5 h-5 w-5 shrink-0 accent-[var(--color-accent)]"
+              className="mt-0.5 h-5 w-5 shrink-0 accent-ink"
             />
             <span>
-              <span className="block font-semibold text-fg">{t("telegram")}</span>
-              <span className="mt-0.5 block text-sm text-legacy-muted">{t("telegramNote")}</span>
+              <span className="block font-semibold text-ink">{t("telegram")}</span>
+              <span className="mt-0.5 block text-sm text-ink-2">{t("telegramNote")}</span>
               {profile.consents.telegram && (
                 <a
                   href={telegramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => track("telegram_connect_click", { source: "profile" })}
-                  className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-fg underline-offset-4 hover:underline"
+                  className="mt-2 inline-flex min-h-11 items-center text-sm font-semibold text-ink underline-offset-4 hover:underline"
                 >
                   {t("telegramConnect")}
                 </a>
@@ -107,7 +107,7 @@ export function ConsentPanel() {
         )}
       </div>
 
-      <p className="mt-3 text-xs text-faint">{t("legal")}</p>
+      <p className="mt-3 text-xs text-muted">{t("legal")}</p>
     </section>
   );
 }

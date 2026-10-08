@@ -36,12 +36,12 @@ export function ReminderPanel() {
 
   return (
     <section aria-labelledby="profile-reminders">
-      <h2 id="profile-reminders" className="font-display text-lg font-bold tracking-tight">{t("title")}
+      <h2 id="profile-reminders" className="text-xl font-bold">{t("title")}
       </h2>
-      <p className="mt-1 text-sm text-legacy-muted">{t("description")}</p>
+      <p className="mt-1 text-sm text-ink-2">{t("description")}</p>
 
       {reminders.length === 0 ? (
-        <p className="mt-4 rounded-2xl border border-dashed border-legacy-line px-4 py-5 text-sm text-legacy-muted">
+        <p className="mt-4 rounded-[20px] border border-dashed border-line px-4 py-5 text-sm text-ink-2">
           {t("empty")}
         </p>
       ) : (
@@ -49,16 +49,16 @@ export function ReminderPanel() {
           {reminders.map((reminder) => (
             <li
               key={reminder.id}
-              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-legacy-line bg-surface px-4 py-3"
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-[20px] border border-line bg-bg px-4 py-3"
             >
-              <span className="rounded-full border border-legacy-line bg-surface-2 px-3 py-1 text-xs font-bold text-legacy-muted">
+              <span className="rounded-full border border-line bg-tile px-3 py-1 text-xs font-bold text-ink-2">
                 {reminder.daysUntil === 0 ? t("today") : t("inDays", { days: reminder.daysUntil })}
               </span>
-              <span className="text-sm text-fg">{describe(reminder, t)}</span>
+              <span className="text-sm text-ink">{describe(reminder, t)}</span>
               {reminder.kind === "reorder" && reminder.productSlug && (
                 <Link
                   href={`/product/${reminder.productSlug}`}
-                  className="text-sm font-semibold text-fg underline-offset-4 hover:underline"
+                  className="text-sm font-semibold text-ink underline-offset-4 hover:underline"
                 >
                   {t("reorderCta")}
                 </Link>
@@ -66,7 +66,7 @@ export function ReminderPanel() {
               {reminder.kind === "quiz-refresh" && (
                 <Link
                   href="/quiz"
-                  className="text-sm font-semibold text-fg underline-offset-4 hover:underline"
+                  className="text-sm font-semibold text-ink underline-offset-4 hover:underline"
                 >
                   {t("quizCta")}
                 </Link>

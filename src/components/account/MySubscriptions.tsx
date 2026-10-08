@@ -10,9 +10,14 @@ import {
   type SubscriptionStatus,
 } from "@/lib/api/client";
 import { useSession } from "@/lib/auth/store";
-import { formatDate, formatMoney } from "@/lib/utils";
+import Image from "next/image";
+import { cn, formatDate, formatMoney } from "@/lib/utils";
+import { productCutout } from "@/lib/content/product-cutouts";
+import { buttonVariants } from "@/components/ui/Button";
+import { AccountShell } from "./AccountShell";
+import { AccountView } from "./AccountView";
 import type { Locale } from "@/lib/i18n/routing";
-import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
+import { FIRST_ORDER_PERCENT, RECURRING_PERCENT, SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
 import { track } from "@/lib/analytics/events";
 
 type State =
@@ -30,11 +35,13 @@ type State =
 */
 export function MySubscriptions() {
   const t = useTranslations("subscription.manage");
+  const tv = useTranslations("account.v3");
   const locale = useLocale() as Locale;
   const token = useSession((s) => s.token);
   const signOut = useSession((s) => s.signOut);
   const [state, setState] = useState<State>({ phase: "loading" });
   const [busyId, setBusyId] = useState<number | null>(null);
+  const [editing, setEditing] = useState<number | null>(null);
 
   useEffect(() => {
     if (!token) return;
@@ -80,111 +87,117 @@ export function MySubscriptions() {
   }
 
   if (state.phase === "loading") {
-    return <div aria-busy="true" className="h-28 animate-pulse rounded-2xl bg-surface" />;
+    return <div aria-busy="true" className="h-56 animate-pulse rounded-[20px] bg-tile" />;
   }
 
   if (state.phase === "error") {
     return (
-      <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">
+      <p role="alert" className="rounded-[20px] bg-red/10 px-4 py-3 text-sm font-medium text-red">
         {state.message}
       </p>
     );
   }
 
   if (state.subscriptions.length === 0) {
-    return (
-      <div className="rounded-2xl border border-legacy-line bg-surface px-6 py-10 text-center">
-        <p className="text-legacy-muted">{t("empty")}</p>
-        <Link
-          href="/products"
-          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-fg px-5 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
-        >
-          {t("emptyCta")}
-        </Link>
-      </div>
-    );
+    return <p className="rounded-[20px] bg-tile px-6 py-8 text-center text-base text-ink-2">{t("empty")}</p>;
   }
 
   return (
-    <ul className="space-y-3">
+    <ul className="flex flex-col gap-3 lg:gap-4">
       {state.subscriptions.map((subscription) => {
         const busy = busyId === subscription.id;
         const cancelled = subscription.status === "cancelled";
-        const intervalId = `subscription-interval-${subscription.id}`;
+        const first = subscription.items[0];
+        const image = first ? productCutout(first.slug) : undefined;
+        const name = subscription.items.map((i) => i.name).join(", ");
 
         return (
-          <li key={subscription.id} className="rounded-2xl border border-legacy-line bg-legacy-ink p-5">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
-                {t(`status.${subscription.status}`)}
+          <li key={subscription.id} className="flex flex-col gap-5 rounded-[20px] border border-line p-5 lg:gap-[22px] lg:p-7">
+            <div className="flex items-center gap-4 lg:gap-5">
+              <span className="relative h-20 w-20 shrink-0 rounded-[18px] bg-tile lg:h-24 lg:w-24">
+                {image && <Image src={image} alt="" fill sizes="96px" className="object-contain p-2" />}
               </span>
-              {subscription.nextDeliveryAt && !cancelled && (
-                <span className="text-sm text-legacy-muted">
-                  {t("next", { date: formatDate(subscription.nextDeliveryAt, locale) })}
+              <span className="flex min-w-0 flex-1 flex-col gap-1.5">
+                <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                  {first ? (
+                    <Link href={`/product/${first.slug}`} className="text-lg font-bold hover:underline lg:text-xl">{name}</Link>
+                  ) : (
+                    <span className="text-lg font-bold lg:text-xl">{name}</span>
+                  )}
+                  <span
+                    className={cn(
+                      "inline-flex h-[26px] items-center rounded-pill px-2.5 text-[13px] font-semibold",
+                      subscription.status === "active" ? "bg-ink text-white" : "bg-chip-strong text-ink",
+                    )}
+                  >
+                    {t(`status.${subscription.status}`)}
+                  </span>
                 </span>
-              )}
+                <span className="text-base leading-6 text-ink-2">
+                  {cancelled
+                    ? tv("cancelledNote")
+                    : subscription.status === "paused"
+                      ? tv("pausedNote")
+                      : subscription.nextDeliveryAt
+                        ? t("next", { date: formatDate(subscription.nextDeliveryAt, locale) })
+                        : null}
+                </span>
+              </span>
             </div>
 
-            <ul className="mt-3 space-y-1.5 border-t border-legacy-line pt-3">
-              {subscription.items.map((item) => (
-                <li key={item.slug} className="flex items-baseline justify-between gap-3 text-sm">
-                  <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-fg">
-                    {item.name}
-                  </Link>
-                  <span className="shrink-0 tabular-nums text-legacy-muted">
-                    {item.quantity} × {formatMoney(item.unitPrice, locale)}
-                  </span>
-                </li>
-              ))}
-            </ul>
-
-            <p className="mt-3 border-t border-legacy-line pt-3 text-right">
-              <span className="text-sm text-legacy-muted">{t("perDelivery")}: </span>
-              <b className="font-display text-lg font-extrabold tabular-nums text-fg">
-                {formatMoney(subscription.total, locale)}
-              </b>
-            </p>
+            <dl className="grid grid-cols-2 gap-4 rounded-[16px] bg-tile px-5 py-[18px] lg:grid-cols-3">
+              <KeyValue label={t("perDelivery")} value={formatMoney(subscription.total, locale)} />
+              <KeyValue label={tv("discount")} value={`−${RECURRING_PERCENT}%`} />
+              <KeyValue label={t("interval")} value={t("everyDays", { days: subscription.intervalDays })} />
+            </dl>
 
             {!cancelled && (
-              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-legacy-line pt-4">
-                <label htmlFor={intervalId} className="text-sm text-legacy-muted">
-                  {t("interval")}
-                </label>
-                <select
-                  id={intervalId}
-                  value={subscription.intervalDays}
-                  disabled={busy}
-                  onChange={(e) => change(subscription.id, { intervalDays: Number(e.target.value) })}
-                  className="h-11 rounded-full border border-legacy-line bg-surface px-4 text-sm font-medium outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
-                >
-                  {SUBSCRIPTION_INTERVALS.map((days) => (
-                    <option key={days} value={days}>
-                      {t("everyDays", { days })}
-                    </option>
-                  ))}
-                </select>
-
-                <Action onClick={() => change(subscription.id, { skipNext: true })} disabled={busy}>
-                  {t("skip")}
-                </Action>
-
-                {subscription.status === "active" ? (
-                  <Action onClick={() => change(subscription.id, { status: "paused" })} disabled={busy}>
-                    {t("pause")}
+              <div className="flex flex-col gap-3">
+                <div className="flex flex-wrap gap-2">
+                  {subscription.status === "active" && (
+                    <>
+                      <Action onClick={() => change(subscription.id, { skipNext: true })} disabled={busy} tone="light">
+                        {t("skip")}
+                      </Action>
+                      <Action onClick={() => setEditing(editing === subscription.id ? null : subscription.id)} disabled={busy} tone="light" pressed={editing === subscription.id}>
+                        {tv("changeInterval")}
+                      </Action>
+                      <Action onClick={() => change(subscription.id, { status: "paused" })} disabled={busy}>
+                        {t("pause")}
+                      </Action>
+                    </>
+                  )}
+                  {subscription.status === "paused" && (
+                    <Action onClick={() => change(subscription.id, { status: "active" })} disabled={busy} tone="primary">
+                      {t("resume")}
+                    </Action>
+                  )}
+                  <Action onClick={() => change(subscription.id, { status: "cancelled" })} disabled={busy}>
+                    {t("cancel")}
                   </Action>
-                ) : (
-                  <Action onClick={() => change(subscription.id, { status: "active" })} disabled={busy}>
-                    {t("resume")}
-                  </Action>
+                </div>
+                {editing === subscription.id && (
+                  <div role="group" aria-label={t("interval")} className="flex flex-wrap gap-1.5">
+                    {SUBSCRIPTION_INTERVALS.map((days) => (
+                      <button
+                        key={days}
+                        type="button"
+                        aria-pressed={days === subscription.intervalDays}
+                        disabled={busy}
+                        onClick={() => {
+                          setEditing(null);
+                          if (days !== subscription.intervalDays) change(subscription.id, { intervalDays: days });
+                        }}
+                        className={cn(
+                          "h-11 rounded-sm px-4 text-[15px] font-medium transition-colors disabled:opacity-50",
+                          days === subscription.intervalDays ? "bg-ink text-white" : "bg-tile hover:bg-tile-hover",
+                        )}
+                      >
+                        {t("everyDays", { days })}
+                      </button>
+                    ))}
+                  </div>
                 )}
-
-                <Action
-                  onClick={() => change(subscription.id, { status: "cancelled" })}
-                  disabled={busy}
-                  danger
-                >
-                  {t("cancel")}
-                </Action>
               </div>
             )}
           </li>
@@ -194,27 +207,66 @@ export function MySubscriptions() {
   );
 }
 
+/* Design: SubscriptionsV3 — the list inside the account layout. */
+export function SubscriptionsView() {
+  const t = useTranslations("subscription.manage");
+  const tv = useTranslations("account.v3");
+  const token = useSession((s) => s.token);
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => setHydrated(true), []);
+
+  if (!hydrated) return <div className="min-h-[60vh]" />;
+  if (!token) return <AccountView />;
+
+  return (
+    <AccountShell active="subs">
+      <div className="flex flex-col gap-3">
+        <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
+        <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">
+          {tv("subsLead", { first: FIRST_ORDER_PERCENT, recurring: RECURRING_PERCENT })}
+        </p>
+      </div>
+      <MySubscriptions />
+      <div className="flex flex-wrap items-center justify-between gap-4 rounded-[20px] bg-tile p-5 lg:px-7 lg:py-6">
+        <div className="flex flex-col gap-1">
+          <h2 className="text-lg font-bold">{tv("newSubTitle")}</h2>
+          <p className="text-base leading-6 text-ink-2">{tv("newSubText")}</p>
+        </div>
+        <Link href="/products" className={buttonVariants("primary")}>{t("emptyCta")}</Link>
+      </div>
+    </AccountShell>
+  );
+}
+
+function KeyValue({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <dt className="text-[13px] text-muted">{label}</dt>
+      <dd className="text-base font-bold">{value}</dd>
+    </div>
+  );
+}
+
 function Action({
   children,
   onClick,
   disabled,
-  danger,
+  tone = "outline",
+  pressed,
 }: {
   children: React.ReactNode;
   onClick: () => void;
   disabled?: boolean;
-  danger?: boolean;
+  tone?: "primary" | "light" | "outline";
+  pressed?: boolean;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal disabled:opacity-50 ${
-        danger
-          ? "border-legacy-line text-legacy-muted hover:border-danger hover:text-danger"
-          : "border-legacy-line text-fg hover:border-legacy-line-strong hover:text-fg"
-      }`}
+      aria-pressed={pressed}
+      className={cn(buttonVariants(tone === "primary" ? "primary" : tone === "light" ? "light" : "secondary"), "h-11 px-4 text-[15px]")}
     >
       {children}
     </button>

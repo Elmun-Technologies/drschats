@@ -279,6 +279,43 @@ Foydalanuvchi qarori: zip'dagi dizayn 1:1, taqqoslash ham.
 Audit: 0 (yangi yoʻllar: `/sale`, `/brands/swiss-energy`, `/compare`;
 holatlar: mahsulotli taqqoslash + «Faqat farqlar», mahsulotli sevimlilar).
 
+## 9-bosqich — kabinet (bajarildi)
+
+Savol 4 ga default javob: kirish alohida URL emas — `/account` kirmagan
+foydalanuvchiga LoginV3 ni, kirganga AccountV3 ni koʻrsatadi.
+
+| Sahifa | Dizayn | Nima bor |
+|---|---|---|
+| `/account` (kirmagan) | LoginV3 / LoginMobileV3 | Telegram OTP oqimi oʻzgarmagan: telefon → (kerak boʻlsa bot havolasi) → 6 katakli kod, qayta yuborish taymeri; oʻngda afzalliklar |
+| `/account` (kirgan) | AccountV3 / AccountMobileV3 | yon menyu (AccountNavV3), 4 plitka, buyurtmalar: Hammasi / Faol / Yetkazilgan, karta → tafsilot |
+| `/account/orders/[id]` | OrderDetailV3 | holat, timeline (Qabul qilindi → Tasdiqlandi → Yoʻlda → Yetkazildi; bekor qilinganda timeline yoʻq), qatorlar, summa, «Takrorlash» (katalogdagi mahsulotlar savatga), qaytarish, operator |
+| `/account/subscriptions` | SubscriptionsV3 | oʻtkazib yuborish, oraliqni oʻzgartirish (30/45/60/90), toʻxtatish, davom ettirish, bekor qilish — mavjud `updateSubscription` |
+| `/profile` | ProfileV3 | asosiy maʼlumotlar, maqsadlar, oila aʼzolari, eslatmalar, rozilik — kartalarda; kirgan boʻlsa kabinet menyusi bilan, kirmagan boʻlsa alohida sahifa (profil brauzerda ishlaydi) |
+
+Hamma `/account/*` yoʻllari bitta shartni oʻqiydi (`lib/account/gate.ts`):
+API yoki demo bayrogʻi boʻlmasa — 404. Telefonda kabinet menyusi sahifa
+oxirida roʻyxat. Demo maʼlumotdagi buyurtma va obunalar katalogdagi haqiqiy
+mahsulotlarga oʻtkazildi (eskilari mavjud boʻlmagan slug'lar edi).
+
+**Backend'da yoʻq — UI tayyor yoki joyi qoldirilgan (qaror sizda):**
+
+1. **Buyurtma tafsiloti:** har bir holat vaqti, toʻlov usuli, yetkazish
+   manzili/usuli, chegirma va yetkazish summasi saqlanmaydi yoki `/orders/me`
+   da qaytmaydi — timeline'da vaqtlar yoʻq, summada faqat «Mahsulotlar» va
+   «Jami». Alohida `GET /orders/{id}` ham yoʻq (roʻyxatdan topiladi).
+2. **«Kursingiz tugayapti» eslatma kartasi** (AccountV3): buyurtma sanasi +
+   qadoq hajmidan hisoblash kerak — chizilmadi.
+3. **Menyudagi buyurtma/obuna sonlari:** alohida soʻrov kerak — faqat
+   sevimlilar soni koʻrsatiladi.
+4. **Sevimlilarni akkauntga biriktirish** (OPEN-QUESTIONS #14) — yoʻq.
+5. **Obunaning yetkazish usuli** («Kuryer, Toshkent») saqlanmaydi — kv qatori yoʻq.
+6. **Profilda telefon raqami** — profil store'ida maydon yoʻq.
+7. **Buyurtmani kuzatish boti** — nomi yoʻq; Telegram kanal havolasi turibdi.
+
+Audit: 0 (lokal demo build'da kirilgan sessiya bilan `/account`,
+`/account/orders/…`, `/account/subscriptions`, `/profile` ham tekshirildi;
+CI build'ida kabinet 404, shuning uchun u yerda oʻlchanmaydi).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -294,8 +331,8 @@ holatlar: mahsulotli taqqoslash + «Faqat farqlar», mahsulotli sevimlilar).
 | FavoritesV3 | `/wishlist` | bor | qayta chiziladi |
 | CartV3 (savat + checkout bitta sahifada) | `/cart` | `/cart`; `/checkout` → redirect | ✅ 6-bosqich |
 | OrderSuccessV3 | `/checkout/success` | bor | qayta chiziladi |
-| LoginV3 | `/account/login` | `/account` ichida `AuthForm` (Telegram OTP, 6 xona) | oqim saqlanadi; URL savol 4 |
-| AccountV3, OrderDetailV3, SubscriptionsV3, ProfileV3 | `/account/...` | bitta `/account` sahifasi + alohida `/profile` (brauzerdagi sogʻliq profili) | savol 4 |
+| LoginV3 | `/account/login` | `/account` (kirmagan holat) | ✅ 9-bosqich |
+| AccountV3, OrderDetailV3, SubscriptionsV3, ProfileV3 | `/account/...` | `/account`, `/account/orders/[id]`, `/account/subscriptions`, `/profile` | ✅ 9-bosqich |
 | QuizV3 / QuizResultV3 | `/quiz`, `/quiz/result` | bor | qayta chiziladi |
 | Delivery, Payment, Guarantee, Loyalty, About, Licenses, Contact | shu nomlar | bor | qayta chiziladi |
 | PartnersV3 | `/partners` | `/where-to-buy` | **mavjud URL qoladi** |
@@ -336,7 +373,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 6 | Savat ✅ | yuqorida | — |
 | 7 | Qidiruv ✅ | yuqorida | — |
 | 8 | Aksiya, brend, sevimli, taqqoslash ✅ | yuqorida | — |
-| 9 | Kabinet | sidebar, buyurtma timeline, obunalar | backend'da yoʻq funksiyalar roʻyxati alohida beriladi |
+| 9 | Kabinet ✅ | yuqorida | — |
 | 10 | Test | savol/natija UI | quiz logikasi qoladi |
 | 11 | Maʼlumot sahifalari, blog, 404 | InfoSidebar layout | — |
 | 12 | Yakuniy | skrinshot taqqoslash, eski yashil/legacy tokenlarni oʻchirish, Lighthouse | `grep legacy-` = 0 |

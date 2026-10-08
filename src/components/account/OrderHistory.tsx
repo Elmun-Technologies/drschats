@@ -1,11 +1,16 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { api, ApiError, type AccountOrder } from "@/lib/api/client";
 import { useSession } from "@/lib/auth/store";
-import { formatDate, formatMoney } from "@/lib/utils";
+import { cn, formatDate, formatMoney } from "@/lib/utils";
+import { productCutout } from "@/lib/content/product-cutouts";
+import { isOrderActive, KNOWN_ORDER_STATUSES } from "@/lib/account/orders";
+import { buttonVariants } from "@/components/ui/Button";
+import { Chip } from "@/components/ui/Chip";
 import type { Locale } from "@/lib/i18n/routing";
 
 type State =
@@ -13,18 +18,11 @@ type State =
   | { phase: "ready"; orders: AccountOrder[] }
   | { phase: "error"; message: string };
 
-/*
-  Order statuses come from the backend as stable slugs. They are translated
-  here when a translation exists and shown raw when it does not, so a status
-  the operations team adds later appears as itself rather than as a blank
-  badge or a crash.
-*/
-const KNOWN_STATUSES = new Set(["new", "confirmed", "shipped", "delivered", "cancelled"]);
+type Filter = "all" | "active" | "done";
 
-export function OrderHistory() {
+/** Loads the signed-in customer's orders; an expired token ends the session. */
+export function useMyOrders(): State {
   const t = useTranslations("account");
-  const status = useTranslations("account.status");
-  const locale = useLocale() as Locale;
   const token = useSession((s) => s.token);
   const signOut = useSession((s) => s.signOut);
   const [state, setState] = useState<State>({ phase: "loading" });
@@ -32,90 +30,123 @@ export function OrderHistory() {
   useEffect(() => {
     if (!token) return;
     const controller = new AbortController();
-
     api
       .myOrders(token, controller.signal)
       .then((orders) => setState({ phase: "ready", orders }))
       .catch((err) => {
         if (controller.signal.aborted) return;
-        // An expired or revoked token should end the session rather than leave
-        // the page insisting the customer is signed in.
         if (err instanceof ApiError && err.status === 401) {
           signOut();
           return;
         }
         setState({ phase: "error", message: t("errorOrders") });
       });
-
     return () => controller.abort();
   }, [token, signOut, t]);
 
-  if (state.phase === "loading") {
-    return (
-      <div className="space-y-3" aria-busy="true">
-        {[0, 1].map((i) => (
-          <div key={i} className="h-24 animate-pulse rounded-2xl bg-surface" />
-        ))}
-      </div>
-    );
-  }
+  return state;
+}
 
-  if (state.phase === "error") {
-    return (
-      <p role="alert" className="rounded-2xl bg-danger/10 px-4 py-3 text-sm font-medium text-danger">
-        {state.message}
-      </p>
-    );
-  }
+/* Design: AccountV3 "Buyurtmalarim" — filter chips and one card per order. */
+export function OrderHistory() {
+  const t = useTranslations("account");
+  const tv = useTranslations("account.v3");
+  const state = useMyOrders();
+  const [filter, setFilter] = useState<Filter>("all");
 
-  if (state.orders.length === 0) {
-    return (
-      <div className="rounded-2xl border border-legacy-line bg-surface px-6 py-12 text-center">
-        <p className="text-legacy-muted">{t("noOrders")}</p>
-        <Link
-          href="/products"
-          className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
-        >
-          {t("noOrdersCta")}
-        </Link>
-      </div>
-    );
-  }
+  const orders = state.phase === "ready" ? state.orders : [];
+  const shown = orders.filter((o) => (filter === "all" ? true : filter === "active" ? isOrderActive(o.status) : o.status === "delivered"));
 
   return (
-    <ul className="space-y-3">
-      {state.orders.map((order) => (
-        <li key={order.orderId} className="rounded-2xl border border-legacy-line bg-legacy-ink p-5">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="font-display text-base font-bold text-fg">{order.orderId}</span>
-            <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
-              {KNOWN_STATUSES.has(order.status) ? status(order.status) : order.status}
-            </span>
+    <section aria-labelledby="account-orders" className="flex flex-col gap-3 lg:gap-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h2 id="account-orders" className="text-[21px] font-bold lg:text-[26px]">{t("orders")}</h2>
+        {orders.length > 1 && (
+          <div role="group" aria-label={t("orders")} className="flex gap-1.5">
+            <Chip active={filter === "all"} onClick={() => setFilter("all")} className="h-11 lg:h-9">{tv("filterAll")}</Chip>
+            <Chip active={filter === "active"} onClick={() => setFilter("active")} className="h-11 lg:h-9">{tv("filterActive")}</Chip>
+            <Chip active={filter === "done"} onClick={() => setFilter("done")} className="h-11 lg:h-9">{tv("filterDone")}</Chip>
           </div>
+        )}
+      </div>
 
-          <p className="mt-1 text-xs text-faint">{formatDate(order.createdAt, locale)}</p>
-
-          <ul className="mt-3 space-y-1.5 border-t border-legacy-line pt-3">
-            {order.items.map((item) => (
-              <li key={item.slug} className="flex items-baseline justify-between gap-3 text-sm">
-                <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-fg">
-                  {item.name}
-                </Link>
-                <span className="shrink-0 tabular-nums text-legacy-muted">
-                  {item.quantity} × {formatMoney(item.unitPrice, locale)}
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <p className="mt-3 border-t border-legacy-line pt-3 text-right">
-            <span className="text-sm text-legacy-muted">{t("orderTotal")}: </span>
-            <b className="font-display text-lg font-extrabold tabular-nums text-fg">
-              {formatMoney(order.total, locale)}
-            </b>
-          </p>
-        </li>
+      {state.phase === "loading" && (
+        <div aria-busy="true" className="flex flex-col gap-3">
+          {[0, 1].map((i) => (
+            <div key={i} className="h-28 animate-pulse rounded-[20px] bg-tile" />
+          ))}
+        </div>
+      )}
+      {state.phase === "error" && (
+        <p role="alert" className="rounded-[20px] bg-red/10 px-4 py-3 text-sm font-medium text-red">{state.message}</p>
+      )}
+      {state.phase === "ready" && orders.length === 0 && (
+        <div className="flex flex-col items-center gap-4 rounded-[20px] bg-tile px-6 py-10 text-center">
+          <p className="text-base text-ink-2">{t("noOrders")}</p>
+          <Link href="/products" className={buttonVariants("primary")}>{t("noOrdersCta")}</Link>
+        </div>
+      )}
+      {shown.map((order) => (
+        <OrderCard key={order.orderId} order={order} />
       ))}
-    </ul>
+    </section>
+  );
+}
+
+function OrderCard({ order }: { order: AccountOrder }) {
+  const tv = useTranslations("account.v3");
+  const locale = useLocale() as Locale;
+  const images = order.items.map((i) => productCutout(i.slug)).filter((s): s is string => Boolean(s)).slice(0, 4);
+
+  return (
+    <Link
+      href={`/account/orders/${encodeURIComponent(order.orderId)}`}
+      className="flex flex-col gap-2.5 rounded-[20px] border border-line p-4 transition-colors hover:border-ink lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-4 lg:px-6 lg:py-[22px]"
+    >
+      <div className="flex flex-col gap-2.5 lg:gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-x-3.5 gap-y-1 lg:justify-start">
+          <span className="text-base font-bold lg:text-lg">№ {order.orderId}</span>
+          <span className="hidden text-sm text-muted lg:inline">{formatDate(order.createdAt, locale)}</span>
+          <StatusBadge status={order.status} />
+        </div>
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex gap-1.5 lg:gap-2">
+            {images.map((src) => (
+              <span key={src} className="relative h-12 w-12 rounded-[10px] bg-tile lg:h-14 lg:w-14 lg:rounded-sm">
+                <Image src={src} alt="" fill sizes="56px" className="object-contain p-1" />
+              </span>
+            ))}
+          </div>
+          <span className="flex flex-col items-end lg:hidden">
+            <span className="text-[17px] font-bold">{formatMoney(order.total, locale)}</span>
+            <span className="text-[13px] text-muted">{formatDate(order.createdAt, locale)}</span>
+          </span>
+        </div>
+      </div>
+      <div className="hidden flex-col items-end gap-2 lg:flex">
+        <span className="text-xl font-bold">{formatMoney(order.total, locale)}</span>
+        <span className="inline-flex items-center gap-1.5 text-[15px] font-semibold">
+          {tv("details")}
+          <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </span>
+      </div>
+    </Link>
+  );
+}
+
+export function StatusBadge({ status, large = false }: { status: string; large?: boolean }) {
+  const t = useTranslations("account.status");
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center whitespace-nowrap rounded-pill font-semibold",
+        large ? "h-9 px-4 text-[15px]" : "h-[26px] px-2.5 text-[13px]",
+        status === "shipped" ? "bg-ink text-white" : status === "cancelled" ? "bg-red/10 text-red" : "bg-chip-strong text-ink",
+      )}
+    >
+      {KNOWN_ORDER_STATUSES.has(status) ? t(status as "new") : status}
+    </span>
   );
 }

@@ -35,7 +35,7 @@ export function ProfileField({
 
   return (
     <div className="flex flex-col gap-1.5">
-      <label htmlFor={id} className="text-sm font-medium text-fg">
+      <label htmlFor={id} className="text-sm font-medium text-ink">
         {label}
       </label>
       <input
@@ -47,10 +47,10 @@ export function ProfileField({
         autoComplete={autoComplete}
         aria-describedby={hint ? hintId : undefined}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-xl border border-legacy-line bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
+        className="rounded-sm border border-line bg-bg px-4 py-3 text-sm outline-none transition-colors focus:border-ink focus-visible:ring-2 focus-visible:ring-ink"
       />
       {hint && (
-        <p id={hintId} className="text-xs text-faint">
+        <p id={hintId} className="text-xs text-muted">
           {hint}
         </p>
       )}
