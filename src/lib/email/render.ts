@@ -162,7 +162,7 @@ export function renderEmail(
             <tr>
               <td style="padding:28px 28px 0;">
                 <span style="font-size:20px;font-weight:800;letter-spacing:-0.02em;color:${COLORS.fg};">
-                  ${escapeHtml(BRAND.wordmark.lead)}<span style="color:${COLORS.accent};">${escapeHtml(BRAND.wordmark.accent)}</span>
+                  ${escapeHtml(BRAND.wordmark.lead)}<span style="color:${COLORS.accent};">${escapeHtml(BRAND.wordmark.accent)}</span>${escapeHtml(BRAND.wordmark.tail)}
                 </span>
               </td>
             </tr>

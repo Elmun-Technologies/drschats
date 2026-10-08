@@ -55,7 +55,7 @@ const STATES = [
     name: "catalogue mega-menu",
     viewport: DESKTOP,
     path: "",
-    open: (page) => page.locator('button:has-text("Kategoriyalar"), button:has-text("категор")').first().click(),
+    open: (page) => page.locator('header button[aria-controls]:has-text("Katalog"), header button[aria-controls]:has-text("Каталог")').first().click(),
   },
   {
     name: "search suggestions",
@@ -69,22 +69,16 @@ const STATES = [
     },
   },
   {
-    name: "mobile menu",
+    name: "mobile catalogue",
     viewport: MOBILE,
     path: "",
-    // Located by position rather than label: the label is translated, and a
-    // check that only works in one locale is a check that will rot. Buttons
-    // inside a form are skipped — the mobile search row put its submit button
-    // last in the header and this quietly started clicking that instead.
-    open: (page) =>
-      page.evaluate(() => {
-        const visible = [...document.querySelectorAll("header button")].filter((b) => {
-          if (b.closest("form")) return false;
-          const r = b.getBoundingClientRect();
-          return r.width > 4 && r.height > 4;
-        });
-        visible.at(-1)?.click();
-      }),
+    open: (page) => page.locator('nav button[aria-expanded]:has-text("Katalog"), nav button[aria-expanded]:has-text("Каталог")').first().click(),
+  },
+  {
+    name: "mobile search",
+    viewport: MOBILE,
+    path: "",
+    open: (page) => page.locator('header button[aria-haspopup="dialog"]').first().click(),
   },
   {
     name: "cart drawer",

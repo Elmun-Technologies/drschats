@@ -26,8 +26,8 @@ export const BRAND = {
    */
   legalName: "«DR SCHATZ» mas\u2019uliyati cheklangan jamiyati",
 
-  /** Text wordmark, split so the second half can take the accent colour. */
-  wordmark: { lead: "GO", accent: "VITA" },
+  /** Text wordmark "go·v·ita": the "v" takes the gold accent (design: forest + gold). */
+  wordmark: { lead: "go", accent: "v", tail: "ita" },
 
   /**
    * Path to a logo image placed in /public/brand (e.g. "/brand/logo.svg").

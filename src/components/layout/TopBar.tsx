@@ -1,39 +1,69 @@
-import { useTranslations } from "next-intl";
-import { Link } from "@/lib/i18n/navigation";
-import { Container } from "@/components/ui/Container";
-import { isApiConfigured } from "@/lib/api/client";
-import { accountAreaAvailable } from "@/lib/config/demo";
-import { AccountLink } from "./AccountLink";
+"use client";
 
-/** Utility bar: announcement + secondary links, on the deep brand ground. */
+import { useLocale, useTranslations } from "next-intl";
+import { Link, usePathname } from "@/lib/i18n/navigation";
+import type { Locale } from "@/lib/i18n/routing";
+import { BRAND } from "@/lib/brand";
+import { cn } from "@/lib/utils";
+import { ICONS } from "./header-item";
+
+/* Utility row above the desktop header (design: HeaderV3, first row). */
 export function TopBar() {
-  const t = useTranslations("topbar");
+  const t = useTranslations("header");
   const nav = useTranslations("nav");
   const links = [
-    { key: "about", href: "/about", label: nav("about") },
-    { key: "blog", href: "/blog", label: nav("blog") },
-    { key: "contact", href: "/contact", label: nav("contact") },
-    { key: "faqs", href: "/delivery", label: nav("faqs") },
+    { href: "/delivery", label: nav("menu.delivery") },
+    { href: "/payment", label: nav("payment") },
+    { href: "/guarantee", label: t("guarantee") },
+    { href: "/loyalty", label: t("loyalty") },
+    { href: "/where-to-buy", label: t("forPharmacies") },
   ];
   return (
-    <div className="hidden bg-brand-deep text-white md:block">
-      <Container className="flex h-10 items-center justify-between gap-4 text-sm">
-        <p className="truncate font-medium">{t("announcement")}</p>
-        <nav className="flex items-center gap-4">
-          {links.map((l, i) => (
-            <span key={l.key} className="flex items-center gap-4">
-              <Link href={l.href} className="text-white/85 transition-colors hover:text-white">
-                {l.label}
-              </Link>
-              {i < links.length - 1 && <span aria-hidden className="h-3 w-px bg-white/40" />}
-            </span>
-          ))}
-          {/* Hidden until the account area can answer: an entry that leads
-              nowhere is a promise the site cannot keep. The link and the route
-              read the same predicate, so the link can never point at a 404. */}
-          {accountAreaAvailable(isApiConfigured()) && <AccountLink />}
-        </nav>
-      </Container>
+    <div className="wrap flex h-10 items-center gap-6 text-sm text-ink-2">
+      <Link href="/contact" className="inline-flex items-center gap-1.5 font-semibold text-ink">
+        <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d={ICONS.pin} />
+        </svg>
+        {t("city")}
+      </Link>
+      {links.map((l) => (
+        <Link key={l.href} href={l.href} className="hover:text-ink">
+          {l.label}
+        </Link>
+      ))}
+      <span className="flex-1" />
+      <a href={BRAND.social.telegram} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
+        Telegram
+      </a>
+      <a href={`tel:${BRAND.contact.phoneHref}`} className="font-bold text-ink">
+        {BRAND.contact.phone}
+      </a>
+      <LocaleLinks />
     </div>
+  );
+}
+
+const LOCALE_ORDER: readonly Locale[] = ["uz", "ru"];
+
+/** "UZ | RU" — both locales as plain links to the same page. */
+export function LocaleLinks() {
+  const current = useLocale() as Locale;
+  const pathname = usePathname();
+  return (
+    <span className="inline-flex items-center gap-2 font-semibold">
+      {LOCALE_ORDER.map((l, i) => (
+        <span key={l} className="inline-flex items-center gap-2">
+          {i > 0 && <span aria-hidden className="text-on-dark-2">|</span>}
+          <Link
+            href={pathname}
+            locale={l}
+            aria-current={l === current ? "true" : undefined}
+            className={cn("uppercase", l === current ? "text-ink" : "text-ink-2 hover:text-ink")}
+          >
+            {l}
+          </Link>
+        </span>
+      ))}
+    </span>
   );
 }

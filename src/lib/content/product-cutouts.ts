@@ -29,3 +29,25 @@ export const PRODUCT_CUTOUTS: Record<string, string> = {
 export function productCutout(slug: string): string | undefined {
   return PRODUCT_CUTOUTS[slug];
 }
+
+/**
+ * The pack shot that stands for a category in the catalogue menus, as in the
+ * design's MegaMenuV3 / MenuMobileV3. A category without one shows its icon.
+ */
+const CATEGORY_CUTOUT_SLUG: Record<string, string> = {
+  vitamins: "swiss-energy-neuroforce-30",
+  minerals: "dr-frei-antistress-magniy-20",
+  immunity: "swiss-energy-immunovit-30",
+  beauty: "swiss-energy-hair-nail-skin-30",
+  kids: "dr-frei-kids-multivitamins-20",
+  effervescent: "swiss-energy-vitamin-c-20",
+  "clinical-nutrition": "delical-vanil-200ml",
+  skin: "peano-balzam-30g",
+  devices: "dr-frei-tonometr-a20",
+  collagen: "swiss-energy-nature-collagen",
+};
+
+export function categoryCutout(slug: string): string | undefined {
+  const product = CATEGORY_CUTOUT_SLUG[slug];
+  return product ? PRODUCT_CUTOUTS[product] : undefined;
+}

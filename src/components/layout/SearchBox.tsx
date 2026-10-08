@@ -44,12 +44,13 @@ export function SearchBox({
   categories?: Category[];
   onNavigate?: () => void;
   className?: string;
-  /** Set when the field was just reopened from its collapsed icon. */
+  /** Set when the field opens in its own screen (mobile search). */
   autoFocus?: boolean;
 }) {
   const t = useTranslations("common");
   const shop = useTranslations("shop");
   const nav = useTranslations("nav");
+  const header = useTranslations("header");
   const locale = useLocale() as Locale;
   const router = useRouter();
 
@@ -200,7 +201,7 @@ export function SearchBox({
         /* The input clears its own outline, and nothing replaced it — tabbing
            into search gave no visual signal at all. The ring goes on the form
            so it traces the rounded field rather than the bare input. */
-        className="flex items-center rounded-full border border-legacy-line-strong bg-surface pl-5 pr-1.5 focus-within:ring-2 focus-within:ring-signal focus-within:ring-offset-2 focus-within:ring-offset-legacy-ink"
+        className="flex h-[52px] items-center gap-2.5 rounded-[14px] bg-tile pl-[18px] pr-1.5 focus-within:ring-2 focus-within:ring-ink focus-within:ring-offset-2 focus-within:ring-offset-bg"
       >
         <input
           ref={inputRef}
@@ -220,13 +221,13 @@ export function SearchBox({
           }}
           onFocus={() => setOpen(true)}
           onKeyDown={onKeyDown}
-          placeholder={`${t("search")}…`}
-          className="h-11 flex-1 bg-transparent text-sm text-fg outline-none placeholder:text-faint"
+          placeholder={header("searchPlaceholder")}
+          className="h-11 min-w-0 flex-1 bg-transparent text-base text-ink outline-none placeholder:text-muted"
         />
         <button
           type="submit"
           aria-label={t("search")}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-fg text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
+          className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] bg-ink text-white transition-colors hover:bg-black"
         >
           <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" />
@@ -240,10 +241,10 @@ export function SearchBox({
           id={listboxId}
           role="listbox"
           aria-label={t("search")}
-          className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-2xl border border-legacy-line bg-legacy-ink py-2 shadow-[var(--shadow-legacy-pop)]"
+          className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-[20px] border border-line bg-bg py-2 shadow-pop"
         >
           {(isSearching ? categoryMatches.length > 0 : popular.length > 0) && (
-            <li role="presentation" className="px-4 pb-1 pt-2 text-xs font-bold uppercase tracking-widest text-faint">
+            <li role="presentation" className="px-4 pb-1 pt-2 text-[13px] font-semibold text-muted">
               {isSearching ? nav("shopByCategories") : t("popularCategories")}
             </li>
           )}
@@ -261,7 +262,7 @@ export function SearchBox({
                 go(opt.href);
               }}
               onMouseEnter={() => setActive(i)}
-              className={`flex cursor-pointer items-center gap-3 px-4 py-2.5 ${i === active ? "bg-surface" : ""}`}
+              className={`flex cursor-pointer items-center gap-3 px-4 py-2.5 ${i === active ? "bg-tile" : ""}`}
             >
               {opt.kind === "product" ? (
                 <>
@@ -273,13 +274,13 @@ export function SearchBox({
                       width={40}
                       height={40}
                       loading="lazy"
-                      className="h-10 w-10 shrink-0 rounded-lg bg-surface object-cover"
+                      className="h-10 w-10 shrink-0 rounded-lg bg-tile object-contain"
                     />
                   ) : (
-                    <span className="h-10 w-10 shrink-0 rounded-lg bg-surface" />
+                    <span className="h-10 w-10 shrink-0 rounded-lg bg-tile" />
                   )}
-                  <span className="min-w-0 flex-1 truncate text-sm text-fg">{opt.label}</span>
-                  <span className="shrink-0 text-sm font-bold tabular-nums text-danger">
+                  <span className="min-w-0 flex-1 truncate text-[15px] text-ink">{opt.label}</span>
+                  <span className="shrink-0 text-[15px] font-bold tabular-nums text-ink">
                     {formatMoney(opt.product.price, locale)}
                   </span>
                 </>
@@ -288,12 +289,12 @@ export function SearchBox({
                   {/* The same glyph the category rail uses. One shared hamburger
                       here made six different categories look like one row
                       repeated. */}
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-surface text-fg">
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-tile text-ink">
                     <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                       <path d={getCategoryIcon(opt.slug)} />
                     </svg>
                   </span>
-                  <span className="min-w-0 flex-1 truncate text-sm font-semibold text-fg">
+                  <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-ink">
                     {opt.label}
                   </span>
                 </>
@@ -311,7 +312,7 @@ export function SearchBox({
                 e.preventDefault();
                 goToResults();
               }}
-              className="mt-1 cursor-pointer border-t border-legacy-line px-4 pb-1 pt-3 text-sm font-semibold text-fg"
+              className="mt-1 cursor-pointer border-t border-line px-4 pb-1 pt-3 text-[15px] font-semibold text-ink"
             >
               {shop("searchResults", { query: trimmed })}
             </li>
