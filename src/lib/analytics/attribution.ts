@@ -36,7 +36,17 @@ const MAX = 200;
 
 const cut = (v: string | null | undefined) => (v ? v.slice(0, MAX) : undefined);
 
+/*
+  `document.referrer` keeps naming the page that opened the document for its
+  whole life, so after client-side navigation it would read as a fresh outside
+  visit on every route and overwrite the campaign that brought the visitor.
+  It is a signal only on the document's first page view.
+*/
+let referrerRead = false;
+
 function externalReferrer(): string | undefined {
+  if (referrerRead) return undefined;
+  referrerRead = true;
   try {
     if (!document.referrer) return undefined;
     const ref = new URL(document.referrer);

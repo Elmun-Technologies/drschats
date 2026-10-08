@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import "@/styles/globals.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
@@ -104,7 +105,10 @@ export default async function LocaleLayout({
           </PromotionsProvider>
         </NextIntlClientProvider>
         <Analytics />
-        <RouteAnalytics />
+        {/* useSearchParams: its own Suspense boundary so static pages stay static. */}
+        <Suspense fallback={null}>
+          <RouteAnalytics />
+        </Suspense>
         <ServiceWorkerRegistration />
       </body>
     </html>

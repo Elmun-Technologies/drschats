@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { captureAttribution } from "@/lib/analytics/attribution";
 import { trackPageView } from "@/lib/analytics/events";
 
@@ -13,6 +13,8 @@ import { trackPageView } from "@/lib/analytics/events";
 */
 export function RouteAnalytics() {
   const pathname = usePathname();
+  // Query-only navigations (search terms, filter chips) are page views too.
+  const search = useSearchParams().toString();
   const first = useRef(true);
 
   useEffect(() => {
@@ -22,7 +24,7 @@ export function RouteAnalytics() {
       return;
     }
     trackPageView(window.location.pathname + window.location.search);
-  }, [pathname]);
+  }, [pathname, search]);
 
   return null;
 }
