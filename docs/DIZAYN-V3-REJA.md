@@ -316,6 +316,23 @@ Audit: 0 (lokal demo build'da kirilgan sessiya bilan `/account`,
 `/account/orders/…`, `/account/subscriptions`, `/profile` ham tekshirildi;
 CI build'ida kabinet 404, shuning uchun u yerda oʻlchanmaydi).
 
+## 10-bosqich — vitamin tanlash testi (bajarildi)
+
+Test logikasi (`lib/quiz/*`: savollar, `showIf`, ball, `encodeAnswers`, profilga yozish) oʻzgarmadi — faqat koʻrinish.
+
+| Ekran | Nima |
+|---|---|
+| `/quiz` (QuizV3 / QuizMobileV3) | Savol — sahifaning `h1`'i; segmentli progress (har koʻrinadigan savolga bitta). Birinchi savol («Kim uchun») — foto kartalar (desktop 3 ustun, telefonda 64px rasmli qator); qolganlari — `tile` qatorlar, radio/checkbox belgisi. Telefonda «Oʻtkazish / Keyingi» tab bar ustida fixed panel (`data-buy-bar`) |
+| `/quiz/result` (QuizResultV3) | Chap: sarlavha, yoʻnalishlar chiplari (mavzu sahifasiga havola) + javobdan «Ayolga, 18–35» chipi. Oʻng: qora panel — toʻplam narxi (faqat mavjud mahsulotlar), obuna sharti, «Rejani savatga qoʻshish», «Testni qayta oʻtish». Mahsulot qatorlari: «Nega» (scoring sababi), «Izoh» (mahsulotning `tagline`'i), narx, birlik narxi, «Savatga». Shifokor ogohlantirishi — har doim; `seeDoctor` javobi boʻlsa roʻyxatdan **oldin** va kuchliroq matn bilan |
+
+Qarorlar:
+- Auditoriya fotolari/sarlavhalari `lib/content/audience.ts` ga chiqarildi — bosh sahifa va test bitta jadvaldan oʻqiydi.
+- «Izoh» uchun alohida maʼlumot yoʻq; oʻylab topilgan izoh oʻrniga ishlab chiqaruvchining qisqa tavsifi (`tagline`) ishlatildi.
+- Eski natija sahifasidagi «Asosiy nutriyentlar» va mavzu kartalari dizaynda yoʻq — olib tashlandi (mavzular chip boʻlib qoldi).
+- Tavsiya hovuzi `getAllProducts` orqali — avval 100 ta mahsulot bilan cheklangan edi.
+- `Disclaimer` V3 tokenlariga oʻtkazildi (barcha sahifalarda).
+- `/quiz/result` audit roʻyxatiga qoʻshildi.
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -333,7 +350,7 @@ CI build'ida kabinet 404, shuning uchun u yerda oʻlchanmaydi).
 | OrderSuccessV3 | `/checkout/success` | bor | qayta chiziladi |
 | LoginV3 | `/account/login` | `/account` (kirmagan holat) | ✅ 9-bosqich |
 | AccountV3, OrderDetailV3, SubscriptionsV3, ProfileV3 | `/account/...` | `/account`, `/account/orders/[id]`, `/account/subscriptions`, `/profile` | ✅ 9-bosqich |
-| QuizV3 / QuizResultV3 | `/quiz`, `/quiz/result` | bor | qayta chiziladi |
+| QuizV3 / QuizResultV3 | `/quiz`, `/quiz/result` | bor | ✅ 10-bosqich |
 | Delivery, Payment, Guarantee, Loyalty, About, Licenses, Contact | shu nomlar | bor | qayta chiziladi |
 | PartnersV3 | `/partners` | `/where-to-buy` | **mavjud URL qoladi** |
 | BlogV3 / ArticleV3 | `/blog`, `/blog/[slug]` | bor | qayta chiziladi |
@@ -374,7 +391,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 7 | Qidiruv ✅ | yuqorida | — |
 | 8 | Aksiya, brend, sevimli, taqqoslash ✅ | yuqorida | — |
 | 9 | Kabinet ✅ | yuqorida | — |
-| 10 | Test | savol/natija UI | quiz logikasi qoladi |
+| 10 | Test ✅ | yuqorida | — |
 | 11 | Maʼlumot sahifalari, blog, 404 | InfoSidebar layout | — |
 | 12 | Yakuniy | skrinshot taqqoslash, eski yashil/legacy tokenlarni oʻchirish, Lighthouse | `grep legacy-` = 0 |
 

@@ -1,6 +1,6 @@
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
-import { shopflow } from "@/lib/shopflow";
+import { getAllProducts } from "@/lib/shop/all-products";
 import { getIngredients } from "@/lib/content/ingredients.sanity";
 import type { Ingredient } from "@/lib/content/ingredients.sanity";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
@@ -9,7 +9,6 @@ import { scoreCatalogue } from "@/lib/personalization/catalogue";
 import { getQuizQuestions } from "./questions";
 import { buildQuizResult, type QuizAnswers, type QuizResult } from "./engine";
 
-const POOL_SIZE = 100;
 const MAX_PRODUCTS = 6;
 const MAX_TOPICS = 4;
 const MAX_INGREDIENTS = 5;
@@ -33,7 +32,7 @@ export async function buildQuizPlan(answers: QuizAnswers, locale: Locale): Promi
   const result = buildQuizResult(questions, answers);
 
   const [pool, allIngredients, allTopics] = await Promise.all([
-    shopflow.getProducts({ locale, pageSize: POOL_SIZE }),
+    getAllProducts({ locale }),
     getIngredients(locale),
     getHealthTopics(locale),
   ]);

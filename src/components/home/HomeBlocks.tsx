@@ -6,6 +6,7 @@ import { cn, formatDate, formatNumber } from "@/lib/utils";
 import { COMMERCE } from "@/lib/config/commerce";
 import { BRAND } from "@/lib/brand";
 import { getQuizQuestions } from "@/lib/quiz/questions";
+import { AUDIENCE_PHOTOS, audienceSubtitleKey } from "@/lib/content/audience";
 import { categoryCutout, productCutout } from "@/lib/content/product-cutouts";
 import { JsonLd, faqLd } from "@/lib/seo/jsonld";
 import type { Locale } from "@/lib/i18n/routing";
@@ -194,24 +195,6 @@ export async function PromoBanner({ promo }: { promo: Promotion | undefined }) {
   );
 }
 
-const AUDIENCE_PHOTOS: Record<string, { src: string; position: string }> = {
-  "self-woman": { src: "/images/stock/st-aud-woman.webp", position: "center 30%" },
-  "self-man": { src: "/images/stock/st-aud-man.webp", position: "70% center" },
-  child: { src: "/images/stock/st-aud-child.webp", position: "center" },
-  expectant: { src: "/images/stock/st-aud-pregnancy.webp", position: "60% center" },
-  parent: { src: "/images/stock/st-aud-senior.webp", position: "center" },
-  recovery: { src: "/images/stock/st-aud-recovery.webp", position: "center" },
-};
-
-const AUDIENCE_SUBTITLES: Record<string, string> = {
-  "self-woman": "subSelfWoman",
-  "self-man": "subSelfMan",
-  expectant: "subExpectant",
-  child: "subChild",
-  parent: "subSenior",
-  recovery: "subIllness",
-};
-
 /*
   The doors are the consultant's first question, read from the quiz so the two
   cannot drift; each deep-links into the quiz with that answer filled in.
@@ -247,7 +230,7 @@ export async function HomeAudience({ locale }: { locale: Locale }) {
               <span className="flex flex-col gap-0.5">
                 <span className="text-[15px] font-bold lg:text-lg">{o.label}</span>
                 <span className="hidden text-sm leading-[19px] text-ink-2 lg:block">
-                  {t(`audience.${AUDIENCE_SUBTITLES[o.id] ?? "subtitleFallback"}`)}
+                  {t(`audience.${audienceSubtitleKey(o.id)}`)}
                 </span>
               </span>
             </Link>

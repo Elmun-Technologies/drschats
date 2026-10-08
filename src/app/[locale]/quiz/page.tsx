@@ -3,7 +3,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getQuizQuestions } from "@/lib/quiz/questions";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
-import { Container } from "@/components/ui/Container";
 import { QuizFlow } from "@/components/quiz/QuizFlow";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 
@@ -34,7 +33,6 @@ export default async function QuizPage({
   const { locale } = await params;
   const { who } = await searchParams;
   setRequestLocale(locale);
-  const t = await getTranslations("quiz");
   const questions = getQuizQuestions(locale);
 
   /* The home page offers the first question as its own set of cards, so
@@ -47,33 +45,9 @@ export default async function QuizPage({
       : undefined;
 
   return (
-    <div className="pt-10 pb-6">
-      <Container>
-        <header className="mx-auto max-w-2xl text-center">
-          {/* Was "Dr. Chats AI and Medical Consilium Diagnostics" — a claimed
-              AI diagnosis, hard-coded in Uzbek, on a test that diagnoses
-              nothing. The honest eyebrow is the test's own name. */}
-          <div className="inline-flex items-center gap-2 rounded-full border border-signal/25 bg-signal-soft px-4 py-1.5 text-xs font-semibold text-signal">
-            <svg viewBox="0 0 24 24" className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-              <path d="M9 12l2 2 4-4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <span>{t("eyebrow")}</span>
-          </div>
-          <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-            {t("title")}
-          </h1>
-          <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
-        </header>
-
-        <div className="mt-10 sm:mt-12">
-          <QuizFlow questions={questions} initialAnswers={preset} />
-        </div>
-
-        <div className="mx-auto mt-14 max-w-2xl">
-          <Disclaimer variant="product" />
-        </div>
-      </Container>
+    <div className="wrap pb-9 pt-2 lg:pb-20 lg:pt-10">
+      <QuizFlow questions={questions} initialAnswers={preset} />
+      <Disclaimer variant="product" className="mx-auto mt-8 max-w-[1032px] lg:mt-12" />
     </div>
   );
 }
