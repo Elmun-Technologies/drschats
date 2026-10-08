@@ -29,6 +29,7 @@ import {
 } from "@/components/home/HomeBlocks";
 import { isStocked } from "@/lib/shop/categories";
 import { cutoutOf } from "@/lib/catalog/product-facts";
+import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
 
 export const revalidate = 300;
 
@@ -124,6 +125,8 @@ export default async function HomePage({
         )}
 
         <HomeTrust />
+
+        <PersonalizedRail allProducts={catalogue} />
 
         {deals.length > 0 && (
           <section aria-labelledby="home-deals" className="wrap flex flex-col gap-3.5 lg:gap-6">

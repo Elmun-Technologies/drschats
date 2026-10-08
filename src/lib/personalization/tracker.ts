@@ -81,20 +81,25 @@ export function getPurchaseEvents(profile: UserProfile): PurchaseEvent[] {
 
 /**
  * Returns a map of categorySlug → affinity score (0–1), using exponential
- * recency decay. Views from 1h ago score ~0.95, 24h ago ~0.3, 72h ago ~0.02.
+ * recency decay with a 7-day half-life — vitamins are bought on a cycle of
+ * days to weeks, and the old 14-hour half-life forgot a visitor who came back
+ * after a weekend. Normalised against the strongest category, so a returning
+ * visitor's interests keep their shape however long ago they were formed.
  */
+const HALF_LIFE_HOURS = 7 * 24;
+
 export function getCategoryAffinities(profile: UserProfile): Record<string, number> {
   const now = Date.now();
   const raw: Record<string, number> = {};
 
   for (const view of profile.views) {
     const hoursAgo = (now - view.ts) / 3_600_000;
-    const weight = Math.exp(-0.05 * hoursAgo);
+    const weight = Math.pow(0.5, hoursAgo / HALF_LIFE_HOURS);
     raw[view.categorySlug] = (raw[view.categorySlug] ?? 0) + weight;
   }
 
   // Normalize to 0–1
-  const maxScore = Math.max(...Object.values(raw), 1);
+  const maxScore = Math.max(...Object.values(raw), Number.EPSILON);
   const normalized: Record<string, number> = {};
   for (const [cat, score] of Object.entries(raw)) {
     normalized[cat] = score / maxScore;

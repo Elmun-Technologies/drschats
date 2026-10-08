@@ -11,7 +11,6 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { useWishlist } from "@/lib/wishlist/store";
 import { useCart } from "@/lib/cart/store";
 import { useToast } from "@/lib/ui/toast";
-import { trackAddToCart } from "@/lib/analytics/events";
 import type { Product } from "@/lib/shopflow/types";
 
 type Filter = "all" | "sale" | "stock";
@@ -58,7 +57,6 @@ export function WishlistView({ allProducts, recommended }: { allProducts: Produc
     for (const p of inStock) {
       // Silent: one confirmation for the whole batch, not one per product.
       add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice }, 1, { silent: true });
-      trackAddToCart(p.slug, p.price, 1);
     }
     notify();
   }

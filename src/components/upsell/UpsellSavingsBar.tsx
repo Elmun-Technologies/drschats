@@ -9,12 +9,12 @@ import { formatMoney } from "@/lib/utils";
 export function UpsellSavingsBar() {
   const locale = useLocale() as Locale;
   const t = useTranslations("upsell");
-  const { steps, cumulativeSavings, shown } = useUpsell();
+  const { steps, cumulativeSavings, accepted, shown } = useUpsell();
 
   if (!shown || cumulativeSavings === 0) return null;
 
   const totalSteps = steps.length;
-  const completedSteps = steps.filter((s) => s.cumulativeSavings <= cumulativeSavings).length;
+  const completedSteps = accepted;
   const progress = totalSteps > 0 ? (completedSteps / totalSteps) * 100 : 0;
 
   return (

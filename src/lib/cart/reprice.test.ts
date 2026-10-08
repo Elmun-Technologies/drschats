@@ -47,15 +47,15 @@ describe("repriceOrder", () => {
   });
 
   it("rejects unknown, mismatched and out-of-stock products", () => {
-    expect(repriceOrder(order([item("zzz")]), catalogue, [])).toEqual({ ok: false, error: "unknown_product" });
-    expect(repriceOrder(order([{ ...item("a"), slug: "p-b" }]), catalogue, [])).toEqual({ ok: false, error: "unknown_product" });
-    expect(repriceOrder(order([item("x")]), catalogue, [])).toEqual({ ok: false, error: "out_of_stock" });
+    expect(repriceOrder(order([item("zzz")]), catalogue, [])).toMatchObject({ ok: false, error: "unknown_product" });
+    expect(repriceOrder(order([{ ...item("a"), slug: "p-b" }]), catalogue, [])).toMatchObject({ ok: false, error: "unknown_product" });
+    expect(repriceOrder(order([item("x")]), catalogue, [])).toMatchObject({ ok: false, error: "out_of_stock" });
   });
 
   it("accepts the offer discounts the site makes and rejects invented ones", () => {
     const ok = repriceOrder(order([item("a"), item("b", 1, { upsellDiscountPercent: 15 })]), catalogue, [], ALL);
     expect(ok.ok && ok.order.totals.discount).toBe(7_500);
-    expect(repriceOrder(order([item("b", 1, { upsellDiscountPercent: 90 })]), catalogue, [])).toEqual({ ok: false, error: "invalid_offer" });
+    expect(repriceOrder(order([item("b", 1, { upsellDiscountPercent: 90 })]), catalogue, [])).toMatchObject({ ok: false, error: "invalid_offer" });
   });
 
   it("allows a free item only as the last ladder step", () => {
@@ -66,22 +66,22 @@ describe("repriceOrder", () => {
       item("d", 1, { upsellDiscountPercent: 100 }),
     ];
     expect(repriceOrder(order(ladder), catalogue, [], ALL).ok).toBe(true);
-    expect(repriceOrder(order([item("a"), item("b", 1, { upsellDiscountPercent: 100 })]), catalogue, [], ALL)).toEqual({ ok: false, error: "invalid_offer" });
+    expect(repriceOrder(order([item("a"), item("b", 1, { upsellDiscountPercent: 100 })]), catalogue, [], ALL)).toMatchObject({ ok: false, error: "invalid_offer" });
     const tooDear = [...ladder.slice(0, 3), item("a", 1, { upsellDiscountPercent: 100 })];
-    expect(repriceOrder(order(tooDear), catalogue, [], ALL)).toEqual({ ok: false, error: "invalid_offer" });
+    expect(repriceOrder(order(tooDear), catalogue, [], ALL)).toMatchObject({ ok: false, error: "invalid_offer" });
     const twoUnits = [...ladder.slice(0, 3), item("d", 2, { upsellDiscountPercent: 100 })];
-    expect(repriceOrder(order(twoUnits), catalogue, [], ALL)).toEqual({ ok: false, error: "invalid_offer" });
+    expect(repriceOrder(order(twoUnits), catalogue, [], ALL)).toMatchObject({ ok: false, error: "invalid_offer" });
   });
 
   it("rejects a ladder discount with nothing bought at full price", () => {
-    expect(repriceOrder(order([item("b", 1, { upsellDiscountPercent: 20 })]), catalogue, [], ALL)).toEqual({ ok: false, error: "invalid_offer" });
+    expect(repriceOrder(order([item("b", 1, { upsellDiscountPercent: 20 })]), catalogue, [], ALL)).toMatchObject({ ok: false, error: "invalid_offer" });
   });
 
   it("accepts ladder steps only for products in the ladder pool", () => {
     const pool: OfferContext = { programs: new Map(), rail: new Map(), ladderPool: new Set(["p-b", "p-c"]) };
-    const twice = [item("a"), item("b", 1, { upsellDiscountPercent: 10 }), item("c", 1, { upsellDiscountPercent: 10 })];
-    expect(repriceOrder(order(twice), catalogue, [], pool).ok).toBe(true);
-    expect(repriceOrder(order([item("a"), item("d", 1, { upsellDiscountPercent: 20 })]), catalogue, [], pool)).toEqual({ ok: false, error: "invalid_offer" });
+    const steps = [item("a"), item("b", 1, { upsellDiscountPercent: 10 }), item("c", 1, { upsellDiscountPercent: 15 })];
+    expect(repriceOrder(order(steps), catalogue, [], pool).ok).toBe(true);
+    expect(repriceOrder(order([item("a"), item("d", 1, { upsellDiscountPercent: 20 })]), catalogue, [], pool)).toMatchObject({ ok: false, error: "invalid_offer" });
   });
 
   it("accepts programme and rail discounts only where the shop offers them", () => {
@@ -92,9 +92,23 @@ describe("repriceOrder", () => {
     };
     const program = [item("b", 1, { upsellDiscountPercent: 12 }), item("c", 1, { upsellDiscountPercent: 12 })];
     expect(repriceOrder(order(program), catalogue, [], offers).ok).toBe(true);
-    expect(repriceOrder(order([item("a", 1, { upsellDiscountPercent: 12 })]), catalogue, [], offers)).toEqual({ ok: false, error: "invalid_offer" });
+    expect(repriceOrder(order([item("a", 1, { upsellDiscountPercent: 12 })]), catalogue, [], offers)).toMatchObject({ ok: false, error: "invalid_offer" });
     const rail = [item("a"), item("d", 1, { upsellDiscountPercent: 15 }), item("b", 1, { upsellDiscountPercent: 15 })];
     // d is a rail offer, b takes the one ladder −15% step.
     expect(repriceOrder(order(rail), catalogue, [], offers).ok).toBe(true);
+  });
+
+  it("takes each ladder step once and caps offer quantities", () => {
+    const twice = [item("a"), item("b", 1, { upsellDiscountPercent: 10 }), item("c", 1, { upsellDiscountPercent: 10 })];
+    expect(repriceOrder(order(twice), catalogue, [], ALL)).toMatchObject({ ok: false, error: "invalid_offer", slug: "p-c" });
+    const stockUp = [item("a"), item("b", 4, { upsellDiscountPercent: 10 })];
+    expect(repriceOrder(order(stockUp), catalogue, [], ALL)).toMatchObject({ ok: false, error: "invalid_offer", slug: "p-b" });
+    expect(repriceOrder(order([item("a"), item("b", 3, { upsellDiscountPercent: 10 })]), catalogue, [], ALL).ok).toBe(true);
+  });
+
+  it("names the line at fault so the cart can drop it", () => {
+    expect(repriceOrder(order([item("a"), item("x")]), catalogue, [])).toMatchObject({ error: "out_of_stock", slug: "p-x" });
+    const gift = [item("a"), item("b", 1, { upsellDiscountPercent: 10 }), item("d", 1, { upsellDiscountPercent: 100 })];
+    expect(repriceOrder(order(gift), catalogue, [], ALL)).toMatchObject({ error: "invalid_offer", slug: "p-d" });
   });
 });

@@ -251,19 +251,28 @@ To'liq holat, qoidalar va off-page reja: **[`docs/SEO.md`](docs/SEO.md)**.
 ## Analytics
 
 ```typescript
-// src/lib/analytics/events.ts
-trackViewProduct(slug, price)
-trackAddToCart(slug, price, quantity)
-trackBeginCheckout(value)
-trackLead(orderId, value)
-trackUpsellView(step, total, productId)
-trackUpsellAccept(step, productId, savedAmount)
-trackUpsellSkip(step, productId)
-track(event, payload)   // generic GTM push
-getAttribution()        // UTM params
+// src/lib/analytics/events.ts — GA4 ecommerce shape (items[], currency UZS)
+itemOf(product|line, qty, offerPercent)  // AnalyticsItem
+trackViewProduct(item) · trackViewItemList(list, items) · trackViewCart(items)
+trackAddToCart / trackRemoveFromCart     // FAQAT cart store'dan (useCart.add/remove/setQuantity)
+trackBeginCheckout(value, items)         // /cart formasiga birinchi fokusda
+trackOrder(orderId, totals, items)       // purchase + generate_lead (+ Pixel Purchase/Lead, Metrika goal)
+trackSearch(term) · trackAddToWishlist(item) · trackPageView(url)
+track(event, payload)                    // custom event
 ```
 
-GTM ID: `NEXT_PUBLIC_GTM_ID`
+- **`add_to_cart` komponentdan chaqirilmaydi** — store o'zi yuboradi, shuning
+  uchun har qanday qo'shish yo'li bir xil narxni (taklif bilan) beradi va
+  ikki marta sanalmaydi.
+- GTM bo'lsa — `dataLayer` (`ecommerce` oldin tozalanadi); faqat GA4 bo'lsa —
+  `gtag("event")` (gtag.js oddiy obyektni o'qimaydi).
+- **Attribution** (`lib/analytics/attribution.ts`): har sahifada
+  (`RouteAnalytics`) utm_*, `gclid/fbclid/yclid/ttclid` va tashqi referrer
+  first + last touch sifatida 30 kun saqlanadi (`govita-attribution`).
+  Buyurtma bilan ketadi, Telegram'da `📣 Manba:` qatori, admin'da «Manba».
+  Ilgari `/cart` ning o'z URL'idan o'qilardi — hech narsa yozilmasdi.
+
+GTM ID: `NEXT_PUBLIC_GTM_ID` · GA4: `NEXT_PUBLIC_GA4_ID`
 
 ## Checkout va Buyurtmalar
 
@@ -386,6 +395,21 @@ src/lib/upsell/ladder.ts — buildUpsellLadder(cartLines, allProducts)
 
 Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
 
+**Taklif qoidalari (klient va server bir xil — `lib/cart/pricing.ts`, `reprice.ts`):**
+- Taklif foizi qator kalitining qismi (`cartLineId(id, sub, percent)`): −15% qo'shish
+  to'liq narxli qatorga qo'shilib ketmaydi.
+- Bepul sovg'a (`freeGiftAllowed`): 1 dona, oldin 2 ta pullik qadam, narxi ular
+  tejaganidan oshmaydi. Shart buzilsa store sovg'ani o'zi olib tashlaydi (`settle`);
+  modal skip'dan keyin sovg'aga o'tmaydi.
+- Ladder foizi bir marta (savat sahifasi band foizni yashiradi, server ikkinchisini
+  rad etadi); taklif qatori ≤ 3 dona (`MAX_OFFER_QTY`).
+- Pool bitta: `lib/upsell/pool.ts` (core, sotuvda) — modal, savat va server.
+- Server rad etsa `slug` qaytaradi; savat o'sha qatorni olib, nomini aytadi.
+- Aksiyalar (2+1, percent_off) o'z taklifi/obunasi bor qatorga **qo'shilmaydi**
+  (`promotionApplies`); `productSlugs` bo'lsa faqat o'shalarga.
+- Savatda: 2+1 eslatmasi (2 dona bo'lsa), bepul yetkazishgacha ≤150 000 so'm
+  qolsa uni yolg'iz yopadigan mahsulotlar (`lib/cart/gap.ts`).
+
 ## Personalizatsiya
 
 ```
@@ -394,7 +418,12 @@ src/lib/personalization/engine.ts  — scoreProduct(), getRecommendations(), get
 ```
 
 - `govita-user` localStorage kaliti
-- Recency decay: `weight = Math.exp(-0.05 * hoursAgo)`
+- Recency decay: 7 kunlik yarim yemirilish (`0.5 ** (hours / 168)`) — 14 soatlik
+  eski qiymat dam olishdan qaytgan mijozni unutardi
+- Tavsiyalar sotuvda yo'q, core bo'lmagan va savatdagi mahsulotni chiqarmaydi;
+  o'xshash va PDP rail'i auditoriyani saqlaydi (`audienceOf`: bolalar/homilador/erkak)
+- `PersonalizedRail` bosh sahifada (2+ ko'rishdan yoki profil maqsadlaridan)
+- Xarid tarixi checkout'da `clear()` dan **oldin** yoziladi (eslatmalar shundan)
 - Content-based filtering: category + ingredient affinity
 
 **Ikkinchi profil — `src/lib/profile/`** (`govita-profile`). Bu foydalanuvchi

@@ -144,3 +144,14 @@ describe("dueReminders — stale quiz", () => {
     expect(reminders.map((r) => r.kind)).toContain("quiz-refresh");
   });
 });
+
+describe("quiz refresh", () => {
+  it("fires while the stored plan still exists (before the quiz's 90-day TTL)", () => {
+    const now = new Date("2026-06-01T09:00:00Z");
+    const savedAt = now.getTime() - 61 * 24 * 60 * 60 * 1000;
+    const due = dueReminders({ profile: profileWith({}), quizSavedAt: savedAt, now });
+    expect(due.some((r) => r.kind === "quiz-refresh")).toBe(true);
+    const fresh = dueReminders({ profile: profileWith({}), quizSavedAt: now.getTime() - 10 * 24 * 60 * 60 * 1000, now });
+    expect(fresh.some((r) => r.kind === "quiz-refresh")).toBe(false);
+  });
+});

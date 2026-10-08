@@ -9,7 +9,6 @@ import { Link } from "@/lib/i18n/navigation";
 import { DiscountBadge } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
-import { trackAddToCart } from "@/lib/analytics/events";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /** Companion offers from the catalogue, each with its real extra discount. */
@@ -58,7 +57,6 @@ export function UpsellRail({ offers, title }: { offers: UpsellOffer[]; title: st
                         },
                         1,
                       );
-                      trackAddToCart(product.slug, discounted, 1);
                     }}
                   >
                     {t("addUpsell")}

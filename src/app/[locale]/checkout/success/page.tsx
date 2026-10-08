@@ -5,7 +5,6 @@ import { Link } from "@/lib/i18n/navigation";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
-import { PurchaseTracker } from "@/components/personalization/PurchaseTracker";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -41,7 +40,6 @@ export default async function SuccessPage({
   return (
     <div className="wrap pb-9 pt-4 lg:pb-[72px] lg:pt-10">
       <div className="flex max-w-[860px] flex-col gap-5 lg:gap-7">
-        <PurchaseTracker />
         <div className="flex flex-col gap-3 lg:gap-3.5">
           <span className="flex h-16 w-16 items-center justify-center rounded-full bg-ink text-white lg:h-[72px] lg:w-[72px]">
             <svg viewBox="0 0 24 24" aria-hidden className="h-8 w-8 lg:h-9 lg:w-9" fill="none" stroke="currentColor" strokeWidth="2.25" strokeLinecap="round" strokeLinejoin="round">

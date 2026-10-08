@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import "@/styles/globals.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
@@ -21,6 +22,7 @@ import { SITE_URL } from "@/lib/seo/metadata";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
 import { toMenuDeal } from "@/components/layout/menu-deal";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
+import { RouteAnalytics } from "@/components/analytics/RouteAnalytics";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -103,6 +105,10 @@ export default async function LocaleLayout({
           </PromotionsProvider>
         </NextIntlClientProvider>
         <Analytics />
+        {/* useSearchParams: its own Suspense boundary so static pages stay static. */}
+        <Suspense fallback={null}>
+          <RouteAnalytics />
+        </Suspense>
         <ServiceWorkerRegistration />
       </body>
     </html>

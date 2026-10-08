@@ -33,6 +33,16 @@ export function fitsAudience(product: Product, answers: QuizAnswers): boolean {
   return !only || (who !== undefined && only.includes(who));
 }
 
+/**
+ * The audience a product is made for, or null for a general-adult product.
+ * Rails beside a product keep to its audience: a children's complex next to a
+ * men's formula, or the other way round, is not a recommendation.
+ */
+export function audienceOf(product: Pick<Product, "slug" | "categorySlug">): string | null {
+  if (product.categorySlug === "kids") return "child";
+  return ONLY_FOR[product.slug]?.[0] ?? null;
+}
+
 /** True when the "who" answer limits the plan to products made for that audience. */
 export function isRestrictedAudience(answers: QuizAnswers): boolean {
   const who = answers.who?.[0];

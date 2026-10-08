@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { BRAND } from "@/lib/brand";
+import { usePathname } from "@/lib/i18n/navigation";
+import { useDialog } from "@/lib/ui/useDialog";
 
 /*
   The leaving-visitor card.
@@ -21,9 +23,14 @@ import { BRAND } from "@/lib/brand";
 export function ExitIntentPopup() {
   const t = useTranslations("exit");
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname();
+  // Never in the middle of an order: a full-screen card over the order form
+  // costs more orders than the channel link wins.
+  const checkingOut = pathname.startsWith("/cart") || pathname.startsWith("/checkout");
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, () => setIsOpen(false));
 
   useEffect(() => {
-    if (sessionStorage.getItem("exit-shown")) return;
+    if (checkingOut || sessionStorage.getItem("exit-shown")) return;
 
     let triggered = false;
 
@@ -45,7 +52,7 @@ export function ExitIntentPopup() {
       clearTimeout(timer);
       document.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, []);
+  }, [checkingOut]);
 
   return (
     <AnimatePresence>
@@ -59,6 +66,8 @@ export function ExitIntentPopup() {
             className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm"
           />
           <motion.div
+            ref={dialogRef}
+            tabIndex={-1}
             initial={{ opacity: 0, scale: 0.96, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 24 }}

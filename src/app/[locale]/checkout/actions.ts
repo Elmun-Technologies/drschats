@@ -15,6 +15,8 @@ import { siteOrigin } from "@/lib/email/config";
 import { sendCampaign } from "@/lib/email/send";
 import { requestEmailOptIn } from "@/app/actions/emailOptIn";
 import { formatMoney } from "@/lib/utils";
+import { upsellPool } from "@/lib/upsell/pool";
+import { describeAttribution } from "@/lib/analytics/attribution";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
@@ -35,6 +37,7 @@ async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Prom
     order.totals.discount > 0 ? `🏷 Chegirma: ${formatMoney(order.totals.discount, "uz")}` : "",
     `🚚 Yetkazish: ${formatMoney(order.totals.shipping, "uz")}`,
     `💰 Jami: ${formatMoney(order.totals.total, "uz")}`,
+    describeAttribution(order.attribution) ? `📣 Manba: ${describeAttribution(order.attribution)}` : "",
   ]
     .filter(Boolean)
     .join("\n");
@@ -94,20 +97,21 @@ async function offerContext(order: OrderRequest, products: Product[]): Promise<O
   const anchors = order.items.filter((i) => !i.upsellDiscountPercent).map((i) => bySlug.get(i.slug)?.id).filter(Boolean) as string[];
   const [lists, pool] = await Promise.all([
     Promise.all(anchors.map((id) => shopflow.getUpsells(id, order.locale).catch(() => []))),
-    // The pool getUpsellProducts and the cart page hand to buildUpsellLadder.
-    shopflow.getProducts({ locale: order.locale, sort: "popular", pageSize: 30 }).catch(() => ({ items: [] as Product[] })),
+    upsellPool(order.locale).catch(() => [] as Product[]),
   ]);
   for (const offer of lists.flat()) {
     if (!rail.has(offer.product.slug)) rail.set(offer.product.slug, new Set());
     rail.get(offer.product.slug)!.add(offer.discountPercent);
   }
-  const ladderPool = new Set(pool.items.filter((p) => p.inStock).map((p) => p.slug));
+  const ladderPool = new Set(pool.map((p) => p.slug));
   return { programs, rail, ladderPool };
 }
 
 export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "failed";
 
-export async function submitOrder(payload: OrderRequest): Promise<OrderResult & { error?: OrderError; total?: number }> {
+export async function submitOrder(
+  payload: OrderRequest,
+): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string }> {
   const hdrs = await headers();
   if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
     return { ok: false, error: "rate_limited" };
@@ -149,7 +153,7 @@ export async function submitOrder(payload: OrderRequest): Promise<OrderResult & 
     ]);
     const found = products.filter((p): p is NonNullable<typeof p> => p !== null);
     const priced = repriceOrder(request, found, promotions, await offerContext(request, found));
-    if (!priced.ok) return { ok: false, error: priced.error };
+    if (!priced.ok) return { ok: false, error: priced.error, slug: priced.slug };
     const order = priced.order;
 
     const result = await shopflow.createOrder(order);

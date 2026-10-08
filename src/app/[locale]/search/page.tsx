@@ -13,6 +13,7 @@ import { Chip, chipClass } from "@/components/ui/Chip";
 import { ProductGrid } from "@/components/home/HomeBlocks";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 import { cutoutOf } from "@/lib/catalog/product-facts";
+import { TrackSearch } from "@/components/analytics/TrackSearch";
 
 type Params = Promise<{ locale: Locale }>;
 type Query = Promise<{ q?: string; category?: string }>;
@@ -99,6 +100,7 @@ export default async function SearchPage({ params, searchParams }: { params: Par
     return (
       <div className="wrap flex flex-col gap-8 pb-9 pt-3 lg:gap-10 lg:pb-[72px] lg:pt-5">
         {crumbs}
+        <TrackSearch term={q} />
         <section className="grid items-start gap-6 lg:-mt-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-8">
           <div className="flex flex-col gap-4">
             <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">
@@ -133,6 +135,7 @@ export default async function SearchPage({ params, searchParams }: { params: Par
   return (
     <div className="wrap flex flex-col gap-5 pb-9 pt-3 lg:gap-6 lg:pb-[72px] lg:pt-5">
       {crumbs}
+      <TrackSearch term={q} />
       <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 lg:-mt-1.5">
         <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("resultsFor", { query: q })}</h1>
         <span className="text-[15px] text-muted lg:text-[17px]">{t("count", { count: results.length })}</span>

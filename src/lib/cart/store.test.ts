@@ -94,3 +94,49 @@ describe("syncPrices", () => {
     expect(useCart.getState().lines).toHaveLength(2);
   });
 });
+
+describe("offer lines", () => {
+  it("keeps a product at an offer price apart from the same product at full price", () => {
+    useCart.getState().add(product(), 1, { silent: true });
+    useCart.getState().add(product({ upsellDiscountPercent: 15 }), 1, { silent: true });
+
+    const { lines } = useCart.getState();
+    expect(lines).toHaveLength(2);
+    expect(lines.map((l) => l.upsellDiscountPercent)).toEqual([undefined, 15]);
+  });
+
+  it("holds a free gift at one unit and an offer line at three", () => {
+    useCart.getState().add(product({ productId: "a", price: 200000 }), 1, { silent: true });
+    useCart.getState().add(product({ productId: "b", upsellDiscountPercent: 10 }), 1, { silent: true });
+    useCart.getState().add(product({ productId: "c", upsellDiscountPercent: 15 }), 1, { silent: true });
+    useCart.getState().add(product({ productId: "g", price: 20000, upsellDiscountPercent: 100 }), 1, { silent: true });
+
+    const gift = useCart.getState().lines.find((l) => l.productId === "g")!;
+    useCart.getState().setQuantity(gift.lineId, 2);
+    expect(useCart.getState().lines.find((l) => l.productId === "g")?.quantity).toBe(1);
+
+    const offer = useCart.getState().lines.find((l) => l.productId === "b")!;
+    useCart.getState().setQuantity(offer.lineId, 10);
+    expect(useCart.getState().lines.find((l) => l.productId === "b")?.quantity).toBe(3);
+  });
+
+  it("drops the free gift once the steps that earned it are gone", () => {
+    useCart.getState().add(product({ productId: "a", price: 200000 }), 1, { silent: true });
+    useCart.getState().add(product({ productId: "b", upsellDiscountPercent: 10 }), 1, { silent: true });
+    useCart.getState().add(product({ productId: "c", upsellDiscountPercent: 15 }), 1, { silent: true });
+    useCart.getState().add(product({ productId: "g", price: 20000, upsellDiscountPercent: 100 }), 1, { silent: true });
+    expect(useCart.getState().lines).toHaveLength(4);
+
+    const step = useCart.getState().lines.find((l) => l.productId === "c")!;
+    useCart.getState().remove(step.lineId);
+    expect(useCart.getState().lines.map((l) => l.productId)).toEqual(["a", "b"]);
+  });
+
+  it("flags a sold-out product instead of removing it", () => {
+    useCart.getState().add(product(), 1, { silent: true });
+    useCart.getState().syncPrices({ p1: { price: 100000, inStock: false } });
+    expect(useCart.getState().lines[0].soldOut).toBe(true);
+    useCart.getState().syncPrices({ p1: { price: 100000, inStock: true } });
+    expect(useCart.getState().lines[0].soldOut).toBeUndefined();
+  });
+});

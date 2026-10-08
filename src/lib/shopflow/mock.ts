@@ -2240,7 +2240,7 @@ export const rawProducts: RawProduct[] = [
 
 ];
 
-export interface RawPromotion { id: string; type: Promotion["type"]; threshold?: number; percent?: number; title: L; description: L }
+export interface RawPromotion { id: string; type: Promotion["type"]; threshold?: number; percent?: number; productSlugs?: string[]; title: L; description: L }
 
 export const rawPromotions: RawPromotion[] = [
   {

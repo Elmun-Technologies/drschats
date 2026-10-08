@@ -4,11 +4,12 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
-import type { CartLine } from "@/lib/cart/pricing";
+import { bonusUnitsNeeded, lineListTotal, lineQtyCap, lineTotal, type CartLine } from "@/lib/cart/pricing";
 import type { UpsellStep } from "@/lib/upsell/ladder";
 import { useCart } from "@/lib/cart/store";
+import { usePromotions } from "@/lib/cart/promotions-context";
 import { useWishlist } from "@/lib/wishlist/store";
-import { track } from "@/lib/analytics/events";
+import { track, trackAddToWishlist } from "@/lib/analytics/events";
 import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { productBrand } from "@/lib/content/product-brands";
@@ -56,6 +57,8 @@ function Line({ line: l }: { line: CartLine }) {
   const common = useTranslations("common");
   const tp = useTranslations("product.v3");
   const remove = useCart((s) => s.remove);
+  const setQuantity = useCart((s) => s.setQuantity);
+  const bonus = bonusUnitsNeeded(l, usePromotions()) > 0 && l.quantity < lineQtyCap(l);
   const toggleWish = useWishlist((s) => s.toggle);
   const saved = useWishlist((s) => s.items.includes(l.productId));
 
@@ -65,11 +68,13 @@ function Line({ line: l }: { line: CartLine }) {
   const meta = [brand?.name, pack && `${pack.count} ${common(pack.unit === "tablet" ? "unitTablet" : "unitCapsule")}`]
     .filter(Boolean)
     .join(" · ");
-  const sale = l.oldPrice && l.oldPrice > l.price;
+  const total = lineTotal(l);
+  const before = lineListTotal(l);
 
   const wish = () => {
     toggleWish(l.productId);
-    track(saved ? "wishlist_remove" : "wishlist_add", { product_id: l.productId });
+    if (saved) track("remove_from_wishlist", { item_id: l.slug });
+    else trackAddToWishlist({ item_id: l.slug, item_name: l.name, price: l.price });
   };
 
   return (
@@ -81,13 +86,23 @@ function Line({ line: l }: { line: CartLine }) {
 
       <div className="flex min-w-0 flex-col gap-1 lg:gap-1.5">
         <div className="flex items-baseline gap-1.5 lg:hidden">
-          <span className="text-lg font-bold">{formatMoney(l.price * l.quantity, locale)}</span>
-          {sale && <span className="text-[13px] text-muted line-through">{formatNumber(l.oldPrice! * l.quantity)}</span>}
+          <span className="text-lg font-bold">{formatMoney(total, locale)}</span>
+          {before && <span className="text-[13px] text-muted line-through">{formatNumber(before)}</span>}
         </div>
         <Link href={`/product/${l.slug}`} className="text-[15px] leading-5 hover:underline lg:text-[17px] lg:font-medium lg:leading-[23px]">
           {l.name}
         </Link>
         {meta && <span className="hidden text-sm text-muted lg:block">{meta}</span>}
+        {l.soldOut && <span role="status" className="text-sm font-semibold text-red">{common("outOfStock")}</span>}
+        {bonus && (
+          <button
+            type="button"
+            onClick={() => setQuantity(l.lineId, l.quantity + 1)}
+            className="inline-flex min-h-11 items-center self-start text-sm font-semibold underline underline-offset-2 hover:no-underline"
+          >
+            {t("bonusNudge")}
+          </button>
+        )}
         {l.subscription && (
           <span className="text-sm font-semibold">{ts("everyDays", { days: l.subscription.intervalDays })}</span>
         )}
@@ -118,9 +133,9 @@ function Line({ line: l }: { line: CartLine }) {
         <Stepper line={l} />
       </div>
       <div className="hidden flex-col items-end gap-0.5 lg:flex">
-        <span className="whitespace-nowrap text-xl font-bold">{formatMoney(l.price * l.quantity, locale)}</span>
-        {sale && <span className="text-sm text-muted line-through">{formatNumber(l.oldPrice! * l.quantity)}</span>}
-        {l.quantity > 1 && <span className="text-[13px] text-muted">{t("each", { price: formatMoney(l.price, locale) })}</span>}
+        <span className="whitespace-nowrap text-xl font-bold">{formatMoney(total, locale)}</span>
+        {before && <span className="text-sm text-muted line-through">{formatNumber(before)}</span>}
+        {l.quantity > 1 && <span className="text-[13px] text-muted">{t("each", { price: formatMoney(Math.round(total / l.quantity), locale) })}</span>}
       </div>
     </li>
   );
@@ -151,8 +166,9 @@ function Stepper({ line, small = false }: { line: CartLine; small?: boolean }) {
       <button
         type="button"
         onClick={() => setQuantity(line.lineId, line.quantity + 1)}
+        disabled={line.quantity >= lineQtyCap(line)}
         aria-label={tc("increaseFor", { name: line.name })}
-        className="flex h-full w-11 items-center justify-center text-xl font-medium"
+        className="flex h-full w-11 items-center justify-center text-xl font-medium disabled:opacity-40"
       >
         +
       </button>

@@ -1,5 +1,5 @@
 import type { OrderRequest, Product, Promotion } from "@/lib/shopflow/types";
-import { cartLineId, computeTotals, type CartLine } from "./pricing";
+import { MAX_OFFER_QTY, cartLineId, computeTotals, freeGiftAllowed, type CartLine } from "./pricing";
 
 /*
   The order the server is willing to accept.
@@ -33,7 +33,8 @@ const NO_OFFERS: OfferContext = { programs: new Map(), rail: new Map(), ladderPo
 
 export type RepriceResult =
   | { ok: true; order: OrderRequest }
-  | { ok: false; error: "unknown_product" | "out_of_stock" | "invalid_offer" };
+  /** `slug` names the line at fault, so the cart can drop it instead of failing again. */
+  | { ok: false; error: "unknown_product" | "out_of_stock" | "invalid_offer"; slug?: string };
 
 export function repriceOrder(
   order: OrderRequest,
@@ -46,11 +47,11 @@ export function repriceOrder(
 
   for (const item of order.items) {
     const product = byId.get(item.productId);
-    if (!product || product.slug !== item.slug) return { ok: false, error: "unknown_product" };
-    if (!product.inStock) return { ok: false, error: "out_of_stock" };
+    if (!product || product.slug !== item.slug) return { ok: false, error: "unknown_product", slug: item.slug };
+    if (!product.inStock) return { ok: false, error: "out_of_stock", slug: item.slug };
     const percent = item.upsellDiscountPercent;
     lines.push({
-      lineId: cartLineId(product.id, item.subscription),
+      lineId: cartLineId(product.id, item.subscription, percent),
       productId: product.id,
       slug: product.slug,
       name: product.name,
@@ -72,27 +73,31 @@ export function repriceOrder(
     ladder after every accepted step, so several lines can share a percent.)
   */
   const base = lines.filter((l) => !l.upsellDiscountPercent);
+  const ladderPercents = new Set<number>();
   for (const l of lines) {
     const percent = l.upsellDiscountPercent;
     if (!percent) continue;
+    if (percent < 100 && l.quantity > MAX_OFFER_QTY) return { ok: false, error: "invalid_offer", slug: l.slug };
     if (offers.programs.get(l.slug)?.has(percent)) continue;
     if (offers.rail.get(l.slug)?.has(percent)) continue;
-    if (!LADDER_PERCENTS.has(percent) || base.length === 0 || !offers.ladderPool.has(l.slug)) {
-      return { ok: false, error: "invalid_offer" };
+    /*
+      Each ladder step once: the cart rebuilds the ladder after an accept and
+      hides steps whose percent is already taken (CheckoutForm), so a second
+      line at the same ladder percent is not an offer the shop made.
+    */
+    if (
+      !LADDER_PERCENTS.has(percent) ||
+      base.length === 0 ||
+      !offers.ladderPool.has(l.slug) ||
+      ladderPercents.has(percent)
+    ) {
+      return { ok: false, error: "invalid_offer", slug: l.slug };
     }
+    ladderPercents.add(percent);
   }
 
-  /*
-    A free item exists only as the last step of the upsell ladder: one unit,
-    after two discounted steps, worth no more than what those two saved.
-  */
-  const free = lines.filter((l) => l.upsellDiscountPercent === 100);
-  if (free.length > 0) {
-    const paidOffers = lines.filter((l) => l.upsellDiscountPercent && l.upsellDiscountPercent < 100);
-    const saved = paidOffers.reduce((sum, l) => sum + Math.round((l.price * (l.upsellDiscountPercent ?? 0)) / 100), 0);
-    if (free.length > 1 || free[0].quantity !== 1 || paidOffers.length < 2 || free[0].price > saved) {
-      return { ok: false, error: "invalid_offer" };
-    }
+  if (!freeGiftAllowed(lines)) {
+    return { ok: false, error: "invalid_offer", slug: lines.find((l) => l.upsellDiscountPercent === 100)?.slug };
   }
 
   const totals = computeTotals(lines, promotions, { pickup: order.delivery.method === "pickup" });

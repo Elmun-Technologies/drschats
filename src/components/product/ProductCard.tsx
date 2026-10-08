@@ -12,7 +12,6 @@ import { DiscountBadge, Price, discountPercent } from "@/components/ui/Price";
 import { Badge } from "@/components/ui/Badge";
 import { useCart } from "@/lib/cart/store";
 import { cartLineId } from "@/lib/cart/pricing";
-import { trackAddToCart } from "@/lib/analytics/events";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { cutoutOf, unitPriceOf } from "@/lib/catalog/product-facts";
 
@@ -65,7 +64,6 @@ export function ProductCard({
       price: product.price,
       oldPrice: product.oldPrice,
     });
-    trackAddToCart(product.slug, product.price, 1);
   }
 
   return (
