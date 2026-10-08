@@ -1,331 +1,366 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
-import type { ProductListParams } from "@/lib/shopflow/types";
-import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
-import { FilterBar } from "@/components/shop/FilterBar";
-import { Pagination } from "@/components/shop/Pagination";
+import { chipClass } from "@/components/ui/Chip";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
-import { paginateByGoal, toGoalFacets } from "@/lib/shop/goal-facets";
-import { cn, formatMoney } from "@/lib/utils";
-
-type Sort = NonNullable<ProductListParams["sort"]>;
-const sorts: Sort[] = ["popular", "deals", "price_asc", "price_desc", "new"];
-const sortLabelKey: Record<Sort, string> = {
-  popular: "sortPopular",
-  deals: "sortDeals",
-  price_asc: "sortPriceAsc",
-  price_desc: "sortPriceDesc",
-  new: "sortNew",
-};
+import { categoryCutout, productCutout } from "@/lib/content/product-cutouts";
+import { productBrand } from "@/lib/content/product-brands";
+import { COMMERCE } from "@/lib/config/commerce";
+import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
+import {
+  activeFilterCount,
+  applyFilters,
+  filtersToQuery,
+  toFacts,
+  toggle,
+  EMPTY_FILTERS,
+  type CatalogFilters,
+} from "@/lib/shop/catalog-filters";
+import { cn, formatMoney, formatNumber } from "@/lib/utils";
+import { SORT_ORDER, sortKey, type CatalogSort } from "@/lib/shop/catalog-sort";
+import { CatalogSidebar, MobileFilterBar, type PanelContext } from "./CatalogFilterPanel";
 
 const PAGE_SIZE = 24;
+/** Shopflow filters by category and search; the rest runs over this pool. */
+const POOL_SIZE = 100;
 
+/*
+  Design: CatalogV3 / CatalogMobileV3 / FiltersMobileV3.
+
+  `page` is cumulative ("Yana N ta koʻrsatish" shows the first page × 24), so
+  every listing state is still a plain URL a crawler and the back button can
+  reach.
+*/
 export async function ShopView({
   locale,
   activeCategory,
-  goal,
   sort = "popular",
   search,
-  origin,
-  minPrice,
-  maxPrice,
+  filters = EMPTY_FILTERS,
   page = 1,
 }: {
   locale: Locale;
   activeCategory?: string;
-  goal?: string;
-  sort?: Sort;
+  sort?: CatalogSort;
   search?: string;
-  origin?: string;
-  minPrice?: number;
-  maxPrice?: number;
+  filters?: CatalogFilters;
   page?: number;
 }) {
-  const [t, nav, prod, health, categories, listing, facetPool, topics] = await Promise.all([
+  const [t, v3, nav, prod, header, categories, pool, topics] = await Promise.all([
     getTranslations("shop"),
+    getTranslations("shop.v3"),
     getTranslations("nav"),
     getTranslations("product"),
-    getTranslations("health"),
+    getTranslations("header"),
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, category: activeCategory, search, origin, minPrice, maxPrice, sort, pageSize: PAGE_SIZE, page }),
-    shopflow.getProducts({ locale, category: activeCategory, search, origin, minPrice, maxPrice, pageSize: 100 }),
+    shopflow.getProducts({ locale, category: activeCategory, search, sort, pageSize: POOL_SIZE }),
     getHealthTopics(locale, "goal"),
   ]);
 
-  const goalFacets = toGoalFacets(topics, facetPool.items);
-  const activeGoal = goal ? topics.find((topicItem) => topicItem.slug === goal) : undefined;
-  // Shopflow has no goal filter, so a goal listing is paginated over the pool.
-  const result = activeGoal
-    ? paginateByGoal(facetPool.items, activeGoal, { sort, page, pageSize: PAGE_SIZE })
-    : listing;
-
-  const origins = Array.from(
-    new Set(facetPool.items.map((p) => p.origin).filter((o): o is string => Boolean(o))),
-  ).sort();
+  // "Ommabop" has no sales history to rank by, so the supplement lines with a
+  // cutout pack shot lead and coffee and devices follow — as on the home page.
+  const items =
+    sort === "popular"
+      ? [...pool.items].sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+      : pool.items;
+  const facts = items.map((p) => toFacts(p, topics));
+  const matchIds = new Set(applyFilters(facts, filters).map((f) => f.id));
+  const matched = items.filter((p) => matchIds.has(p.id));
+  const visible = matched.slice(0, page * PAGE_SIZE);
+  const remaining = matched.length - visible.length;
 
   const active = activeCategory ? categories.find((c) => c.slug === activeCategory) : undefined;
+  const shelves = categories.filter((c) => c.productCount);
   const basePath = activeCategory ? `/products/${activeCategory}` : "/products";
-  const heading = search
-    ? t("searchResults", { query: search })
-    : activeGoal
-      ? activeGoal.name
-      : active
-        ? active.name
-        : t("title");
-  const totalPages = Math.ceil((result.total || 0) / PAGE_SIZE);
+  const keep: Record<string, string> = search ? { q: search } : {};
+  const heading = search ? t("searchResults", { query: search }) : active ? active.name : t("title");
 
-  function buildQuery(overrides: Record<string, string | undefined>) {
-    const q: Record<string, string> = {};
-    if (sort !== "popular") q.sort = sort;
-    if (goal) q.goal = goal;
-    if (search) q.q = search;
-    if (origin) q.origin = origin;
-    if (minPrice != null) q.min = String(minPrice);
-    if (maxPrice != null) q.max = String(maxPrice);
-    if (page > 1) q.page = String(page);
-    Object.entries(overrides).forEach(([k, v]) => {
-      if (v === undefined) delete q[k]; else q[k] = v;
-    });
-    return { pathname: basePath, query: q };
+  const brandNames = Object.fromEntries(
+    pool.items.map((p) => productBrand(p.slug)).filter(Boolean).map((b) => [b!.slug, b!.name]),
+  );
+  const goalNames = Object.fromEntries(topics.map((topic) => [topic.slug, topic.name]));
+  const ctx: PanelContext = { facts, filters, sort, basePath, keep, brandNames, goalNames };
+
+  function href(next: CatalogFilters, nextSort: CatalogSort = sort, nextPage = 1) {
+    const query: Record<string, string> = { ...keep, ...filtersToQuery(next) };
+    if (nextSort !== "popular") query.sort = nextSort;
+    if (nextPage > 1) query.page = String(nextPage);
+    return { pathname: basePath, query };
   }
 
-  const sortQuery = (s: Sort) => buildQuery({ sort: s !== "popular" ? s : undefined, page: undefined });
-
-  /*
-    Applied filters, each one removable on its own.
-
-    Without this row the only record of an active filter is the sidebar, which
-    is off-screen on mobile and easy to scroll past on desktop — so a visitor
-    who filters into an empty result has no visible cause and no way back
-    except the browser button. Price is one chip rather than two: the range is
-    set as a pair, so it reads and clears as a pair.
-  */
   const priceLabel =
-    minPrice != null && maxPrice != null
-      ? `${formatMoney(minPrice, locale)} – ${formatMoney(maxPrice, locale)}`
-      : minPrice != null
-        ? t("priceFromValue", { value: formatMoney(minPrice, locale) })
-        : maxPrice != null
-          ? t("priceToValue", { value: formatMoney(maxPrice, locale) })
+    filters.min != null && filters.max != null
+      ? `${formatNumber(filters.min)} – ${formatMoney(filters.max, locale)}`
+      : filters.min != null
+        ? t("priceFromValue", { value: formatMoney(filters.min, locale) })
+        : filters.max != null
+          ? t("priceToValue", { value: formatMoney(filters.max, locale) })
           : null;
+  const formLabel = { capsule: v3("formCapsule"), tablet: v3("formTablet") };
 
-  const activeFilters = [
-    search ? { key: "q", label: `“${search}”`, clear: { q: undefined } } : null,
-    activeGoal ? { key: "goal", label: activeGoal.name, clear: { goal: undefined } } : null,
-    origin ? { key: "origin", label: origin, clear: { origin: undefined } } : null,
-    priceLabel ? { key: "price", label: priceLabel, clear: { min: undefined, max: undefined } } : null,
-  ].filter((f): f is NonNullable<typeof f> => f !== null);
+  const chips = [
+    filters.stock && { key: "stock", label: v3("inStock"), next: { ...filters, stock: false } },
+    filters.sale && { key: "sale", label: v3("onSale"), next: { ...filters, sale: false } },
+    filters.goal && { key: "goal", label: goalNames[filters.goal] ?? filters.goal, next: { ...filters, goal: null } },
+    ...filters.brands.map((b) => ({ key: `b-${b}`, label: brandNames[b] ?? b, next: { ...filters, brands: toggle(filters.brands, b) } })),
+    ...filters.forms.map((f) => ({ key: `f-${f}`, label: formLabel[f], next: { ...filters, forms: toggle(filters.forms, f) } })),
+    ...filters.origins.map((o) => ({ key: `o-${o}`, label: o, next: { ...filters, origins: toggle(filters.origins, o) } })),
+    priceLabel && { key: "price", label: priceLabel, next: { ...filters, min: null, max: null } },
+  ].filter((c): c is { key: string; label: string; next: CatalogFilters } => Boolean(c));
+
+  const activeCount = activeFilterCount(filters);
+  const hours = String(COMMERCE.delivery.tashkent.hours);
 
   return (
-    <>
-      {/* Breadcrumb & Hero Header band */}
-      <div className="bg-brand-deep border-b border-white/10 text-white pt-6 pb-12">
-        <Container>
-          <div className="flex flex-wrap items-center gap-2 text-xs text-white/60 mb-6">
-            <Link href="/" className="hover:text-white transition-colors">{prod("breadcrumbHome")}</Link>
-            <span>/</span>
-            <Link href="/products" className={active ? "transition-colors" : "text-white font-bold"}>{nav("shop")}</Link>
-            {active && (
-              <>
-                <span>/</span>
-                <span className="text-white font-bold">{active.name}</span>
-              </>
-            )}
-          </div>
-
-          <div className="max-w-3xl">
-            <span className="inline-block rounded-full border border-white/15 bg-white/10 backdrop-blur-md px-3.5 py-1 text-xs font-extrabold uppercase tracking-widest text-white/90 mb-3">
-              {t("productsAvailable", { count: result.total })}
-            </span>
-            <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl text-white drop-shadow-md">{heading}</h1>
-            <p className="mt-3 text-base text-surface-2/80">
-              {search
-                ? t("resultsCount", { count: result.total })
-                : activeGoal?.headline ?? active?.description ?? t("subtitle")}
-            </p>
-            {activeGoal && (
-              <Link
-                href={`/goals/${activeGoal.slug}`}
-                className="mt-4 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-white/85 transition-colors hover:text-white"
-              >
-                {t("readGoal", { goal: activeGoal.name })} →
-              </Link>
-            )}
-          </div>
-        </Container>
+    <div className="wrap flex flex-col gap-4 pb-9 pt-1 lg:gap-6 lg:pb-[72px] lg:pt-5">
+      <div className="flex flex-col gap-1 lg:gap-4">
+        <nav aria-label={prod("breadcrumbHome")} className="hidden flex-wrap gap-2 text-sm text-muted lg:flex">
+          <Link href="/" className="hover:text-ink">{prod("breadcrumbHome")}</Link>
+          <span aria-hidden>/</span>
+          {active || search ? (
+            <Link href="/products" className="hover:text-ink">{header("catalog")}</Link>
+          ) : (
+            <span className="text-ink">{header("catalog")}</span>
+          )}
+          {active && (
+            <>
+              <span aria-hidden>/</span>
+              <span className="text-ink">{active.name}</span>
+            </>
+          )}
+        </nav>
+        {(active || search) && (
+          <Link href="/products" className="inline-flex items-center gap-1 self-start text-sm text-ink-2 lg:hidden">
+            <Icon d="M15 6l-6 6 6 6" className="h-4 w-4" />
+            {header("catalog")}
+          </Link>
+        )}
+        <div className="flex flex-col gap-1 lg:-mt-1.5 lg:flex-row lg:flex-wrap lg:items-baseline lg:gap-3.5">
+          <h1 className="text-[26px] font-bold leading-8 lg:text-h-page">{heading}</h1>
+          <span className="text-[15px] text-muted lg:text-[17px]">{v3("count", { count: matched.length })}</span>
+        </div>
       </div>
 
-      <Container className="py-10">
-
-        {/* Goal facets — the visitor filters by intent, not by warehouse category. */}
-        {goalFacets.length > 0 && (
-          <nav aria-label={health("goal.plural")} className="mb-8">
-            <p className="mb-3 text-xs font-extrabold uppercase tracking-widest text-brand-deep">{t("byGoal")}</p>
-            <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1">
-              <Link
-                href={buildQuery({ goal: undefined, page: undefined })}
-                className={cn(
-            "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
-                  !goal ? "border-brand-deep bg-brand-deep text-white shadow-xs" : "border-legacy-line/80 bg-white text-brand-deep hover:border-legacy-gold/60",
-                )}
-              >
-                {t("all")}
-              </Link>
-              {goalFacets.map((facet) => (
-                <Link
-                  key={facet.slug}
-                  href={buildQuery({ goal: facet.slug, page: undefined })}
-                  className={cn(
-            "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
-                    facet.slug === goal
-                      ? "border-brand-deep bg-brand-deep text-white shadow-xs"
-                      : "border-legacy-line/80 bg-white text-brand-deep hover:border-legacy-gold/60",
-                  )}
-                >
-                  {facet.name}
-                  <span className="ml-1.5 text-[11px] opacity-70">{facet.count}</span>
-                </Link>
-              ))}
-            </div>
-          </nav>
-        )}
-
-        {/* Mobile category chips — hidden on large screens */}
-        <div className="mb-6 flex gap-2 overflow-x-auto pb-1 lg:hidden">
-          <Link
-            href="/products"
-            className={cn(
-            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", !activeCategory ? "border-legacy-line-strong bg-surface-2 text-fg" : "border-legacy-line text-legacy-muted")}
-          >
-            {t("all")}
-          </Link>
-          {categories.map((c) => (
+      <nav aria-label={v3("categories")} className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:gap-3 lg:px-0">
+        {shelves.map((c) => {
+          const img = categoryCutout(c.slug);
+          const current = c.slug === activeCategory;
+          return (
             <Link
               key={c.id}
               href={`/products/${c.slug}`}
+              aria-current={current ? "page" : undefined}
               className={cn(
-            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", c.slug === activeCategory ? "border-legacy-line-strong bg-surface-2 text-fg" : "border-legacy-line text-legacy-muted")}
+                "relative flex h-28 w-28 shrink-0 flex-col overflow-hidden rounded-[18px] p-2.5 pb-0 transition-colors lg:h-[120px] lg:w-[calc((100%-60px)/6)] lg:rounded-[20px] lg:p-4 lg:pb-0",
+                current ? "bg-ink text-white" : "bg-tile hover:bg-tile-hover",
+              )}
             >
-              {c.name}
+              <span className="relative z-10 text-[13px] font-semibold leading-4 lg:text-base lg:leading-5">
+                {c.name}
+                <small className={cn("block text-[13px] font-normal", current ? "text-on-dark-2" : "text-muted")}>
+                  {v3("count", { count: c.productCount ?? 0 })}
+                </small>
+              </span>
+              {img && (
+                <span className="absolute bottom-0.5 right-0.5 h-16 w-16 lg:bottom-1 lg:right-1.5 lg:h-[78px] lg:w-[78px]">
+                  <Image src={img} alt="" fill sizes="78px" className="object-contain" />
+                </span>
+              )}
             </Link>
-          ))}
-        </div>
+          );
+        })}
+      </nav>
 
-        <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
-          {/* Sidebar */}
-          <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-5">
-              <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-fg">{t("categoriesTitle")}</h2>
-              <ul className="space-y-1">
-                <li>
-                  <Link href="/products" className={cn(
-            "block rounded-lg px-3 py-2 text-sm transition-colors", !activeCategory ? "bg-surface-2 font-semibold text-fg" : "text-legacy-muted hover:bg-surface hover:text-fg")}>
-                    {t("all")}
-                  </Link>
-                </li>
-                {categories.map((c) => (
-                  <li key={c.id}>
-                    <Link href={`/products/${c.slug}`} className={cn(
-            "flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors", c.slug === activeCategory ? "bg-surface-2 font-semibold text-accent-strong" : "text-legacy-muted hover:bg-surface hover:text-fg")}>
-                      {c.name}
-                      {c.productCount ? <span className="text-xs tabular-nums text-faint">{c.productCount}</span> : null}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+      <div className="grid items-start gap-8 lg:grid-cols-[272px_minmax(0,1fr)]">
+        <aside aria-label={t("filters")} className="hidden flex-col lg:flex">
+          <CatalogSidebar key={JSON.stringify(filters)} {...ctx} />
+          <QuizTile
+            className="mt-6 bg-tile"
+            title={v3("quizTitle")}
+            text={v3("quizText")}
+            cta={v3("quizCta")}
+          />
+        </aside>
+
+        <section aria-label={heading} className="flex min-w-0 flex-col gap-4 lg:gap-5">
+          <div className="hidden flex-wrap items-center justify-between gap-4 lg:flex">
+            <div className="flex flex-wrap items-center gap-1">
+              <span className="mr-1.5 text-[15px] text-muted">{v3("sortLabel")}</span>
+              {SORT_ORDER.map((s) => (
+                <Link
+                  key={s}
+                  href={href(filters, s)}
+                  aria-current={s === sort ? "true" : undefined}
+                  className={cn(
+                    "rounded-[10px] px-3.5 py-2 text-[15px]",
+                    s === sort ? "bg-tile font-semibold text-ink" : "text-ink-2 hover:text-ink",
+                  )}
+                >
+                  {t(sortKey(s))}
+                </Link>
+              ))}
             </div>
-            <FilterBar
-              basePath={basePath}
-              origins={origins}
-              current={{
-                origin,
-                min: minPrice != null ? String(minPrice) : undefined,
-                max: maxPrice != null ? String(maxPrice) : undefined,
-                sort,
-                q: search,
-              }}
-            />
-          </aside>
-
-          {/* Main */}
-          <div>
-            {activeFilters.length > 0 && (
-              <div className="mb-4 flex flex-wrap items-center gap-2">
-                <span className="text-sm font-semibold text-fg">{t("activeFilters")}:</span>
-                {activeFilters.map((f) => (
-                  <Link
-                    key={f.key}
-                    href={buildQuery({ ...f.clear, page: undefined })}
-                    aria-label={t("removeFilter", { name: f.label })}
-                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-surface-2 px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-fg hover:text-legacy-ink"
-                  >
-                    {f.label}
-                    <svg viewBox="0 0 24 24" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
-                      <path d="M6 6l12 12M18 6L6 18" />
-                    </svg>
-                  </Link>
-                ))}
-                {activeFilters.length > 1 && (
-                  <Link
-                    href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
-                    className="text-sm font-semibold text-legacy-muted underline-offset-4 hover:text-fg hover:underline"
-                  >
-                    {t("clearFilters")}
-                  </Link>
-                )}
-              </div>
-            )}
-
-            <div className="mb-6 flex flex-wrap items-center justify-end gap-4 rounded-2xl border border-legacy-line bg-surface px-5 py-3">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="text-sm text-faint">{t("sort")}:</span>
-                {sorts.map((s) => (
-                  <Link
-                    key={s}
-                    href={sortQuery(s)}
-                    className={cn(
-            "rounded-full px-3 py-1.5 text-sm transition-colors", s === sort ? "bg-surface-2 font-semibold text-fg" : "text-legacy-muted hover:text-fg")}
-                  >
-                    {t(sortLabelKey[s])}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            {result.items.length === 0 ? (
-              <div className="py-24 text-center">
-                <p className="text-legacy-muted">{t("empty")}</p>
-                {/* An empty result caused by filters needs a way out that is
-                    not the browser back button. */}
-                {activeFilters.length > 0 && (
-                  <Link
-                    href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
-                    className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
-                  >
-                    {t("clearFilters")}
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <>
-                <div className="grid grid-cols-2 gap-5 sm:grid-cols-3">
-                  {result.items.map((p, i) => (
-                    <ProductCard key={p.id} product={p} index={i} />
-                  ))}
-                </div>
-                <Pagination
-                  currentPage={page}
-                  totalPages={totalPages}
-                  buildHref={(p) => buildQuery({ page: p > 1 ? String(p) : undefined })}
-                />
-              </>
-            )}
           </div>
-        </div>
-      </Container>
-    </>
+
+          <MobileFilterBar key={JSON.stringify(filters) + sort} ctx={ctx} activeCount={activeCount} />
+
+          {chips.length > 0 && (
+            <div className="no-scrollbar -mx-4 flex gap-1.5 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:gap-2 lg:px-0">
+              {chips.map((c) => (
+                <Link
+                  key={c.key}
+                  href={href(c.next)}
+                  aria-label={t("removeFilter", { name: c.label })}
+                  className={cn(chipClass(true), "h-9 text-sm lg:h-10 lg:text-[15px]")}
+                >
+                  {c.label}
+                  <Icon d="M6 6l12 12M18 6L6 18" className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
+                </Link>
+              ))}
+              {chips.length > 1 && (
+                <Link href={href(EMPTY_FILTERS)} className="inline-flex h-9 shrink-0 items-center px-2 text-sm underline lg:h-10 lg:text-[15px]">
+                  {v3("clearAll")}
+                </Link>
+              )}
+            </div>
+          )}
+
+          {matched.length === 0 ? (
+            <div className="flex flex-col items-center gap-4 py-20 text-center">
+              <p className="text-lead text-ink-2">{t("empty")}</p>
+              {activeCount > 0 && (
+                <Link href={href(EMPTY_FILTERS)} className="inline-flex h-12 items-center rounded-sm bg-ink px-6 text-button font-semibold text-white">
+                  {t("clearFilters")}
+                </Link>
+              )}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 gap-x-2.5 gap-y-5 md:grid-cols-3 md:gap-x-3 md:gap-y-6 xl:grid-cols-4">
+              {visible.map((p, i) => (
+                <ListingSlot key={p.id} index={i}>
+                  <ProductCard product={p} index={i} />
+                </ListingSlot>
+              ))}
+            </div>
+          )}
+
+          {matched.length > 0 && (
+            <div className="flex flex-col items-center gap-2.5 pt-2">
+              <span className="text-sm text-ink-2 lg:text-[15px]">{v3("shown", { total: matched.length, shown: visible.length })}</span>
+              <div className="h-1 w-full max-w-[280px] overflow-hidden rounded-full bg-line" aria-hidden>
+                <div className="h-1 rounded-full bg-ink" style={{ width: `${Math.round((visible.length / matched.length) * 100)}%` }} />
+              </div>
+              {remaining > 0 && (
+                <Link
+                  href={href(filters, sort, page + 1)}
+                  scroll={false}
+                  className="mt-1 flex h-12 w-full max-w-[360px] items-center justify-center rounded-sm bg-tile text-button font-semibold transition-colors hover:bg-tile-hover"
+                >
+                  {v3("more", { count: Math.min(remaining, PAGE_SIZE) })}
+                </Link>
+              )}
+            </div>
+          )}
+
+          {active && (
+            <div className="flex max-w-[820px] flex-col gap-2.5 pt-4">
+              <h2 className="text-title font-bold">{v3("seoTitle", { name: active.name })}</h2>
+              <p className="text-body text-ink-2">
+                {v3("seoText", {
+                  name: active.name,
+                  count: active.productCount ?? matched.length,
+                  hours,
+                  free: formatNumber(COMMERCE.freeShippingOver),
+                })}
+              </p>
+            </div>
+          )}
+        </section>
+      </div>
+    </div>
+  );
+
+  /*
+    Two editorial tiles live in the grid itself, as in the design: the quiz
+    after the fourth card on phones (the sidebar holds it on desktop) and the
+    subscription banner after the eighth, across the full row.
+  */
+  function ListingSlot({ index, children }: { index: number; children: React.ReactNode }) {
+    return (
+      <>
+        {index === 4 && (
+          <QuizTile
+            className="col-span-full bg-dark-panel text-white lg:hidden"
+            title={v3("quizTitle")}
+            text={v3("quizText")}
+            cta={v3("quizCta")}
+            onDark
+          />
+        )}
+        {index === 8 && (
+          <Link
+            href="/loyalty"
+            className="col-span-full flex flex-col gap-4 rounded-3xl bg-dark-panel p-5 text-white md:flex-row md:items-center md:gap-6 md:px-8 md:py-6"
+          >
+            <span className="flex flex-1 flex-col gap-1.5">
+              <span className="text-xs font-semibold uppercase tracking-[0.06em] text-on-dark-2 md:text-[13px]">{v3("subEyebrow")}</span>
+              <span className="text-xl font-bold md:text-[26px] md:leading-[31px]">
+                {v3("subTitle", {
+                  first: COMMERCE.discounts.subscriptionFirstPercent,
+                  recurring: COMMERCE.discounts.subscriptionRecurringPercent,
+                })}
+              </span>
+              <span className="text-sm text-on-dark-2 md:text-[15px]">
+                {v3("subText", { intervals: SUBSCRIPTION_INTERVALS.join(", ") })}
+              </span>
+            </span>
+            <span className="inline-flex h-12 items-center self-start rounded-[14px] bg-bg px-7 text-[17px] font-semibold text-ink md:self-auto">
+              {v3("subCta")}
+            </span>
+          </Link>
+        )}
+        <div className="h-full">{children}</div>
+      </>
+    );
+  }
+}
+
+function QuizTile({
+  title,
+  text,
+  cta,
+  className,
+  onDark = false,
+}: {
+  title: string;
+  text: string;
+  cta: string;
+  className?: string;
+  onDark?: boolean;
+}) {
+  return (
+    <Link href="/quiz" className={cn("flex flex-col gap-2 rounded-[20px] p-5 lg:p-[22px]", className)}>
+      <span className="text-[19px] font-bold leading-6 lg:text-lg lg:leading-[23px]">{title}</span>
+      <span className={cn("text-sm leading-5", onDark ? "text-on-dark-2" : "text-ink-2")}>{text}</span>
+      <span
+        className={cn(
+          "mt-1.5 inline-flex h-11 items-center self-start rounded-sm px-[18px] text-[15px] font-semibold",
+          onDark ? "bg-bg text-ink" : "bg-ink text-white",
+        )}
+      >
+        {cta}
+      </span>
+    </Link>
+  );
+}
+
+function Icon({ d, className }: { d: string; className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className={className} fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} />
+    </svg>
   );
 }

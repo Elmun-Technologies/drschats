@@ -81,6 +81,12 @@ const STATES = [
     open: (page) => page.locator('header button[aria-haspopup="dialog"]').first().click(),
   },
   {
+    name: "catalogue filter sheet",
+    viewport: MOBILE,
+    path: "/products",
+    open: (page) => page.locator('button[aria-haspopup="dialog"]:has-text("Filtrlar"), button[aria-haspopup="dialog"]:has-text("Фильтры")').first().click(),
+  },
+  {
     name: "cart drawer",
     viewport: DESKTOP,
     path: "",
