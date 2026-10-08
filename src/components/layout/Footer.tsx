@@ -82,7 +82,9 @@ export function Footer({
 
   return (
     <footer className="bg-tile pb-[var(--bottom-nav)] text-ink">
-      <div className="wrap flex flex-col gap-6 pb-7 pt-7 md:gap-10 md:pb-8 md:pt-12">
+      {/* pb-16 clears the back-to-top button (0.75rem + 36px above the tab bar),
+          which floats over the right edge where the legal links wrap to. */}
+      <div className="wrap flex flex-col gap-6 pb-16 pt-7 md:gap-10 md:pt-12">
         <div className="grid gap-6 md:gap-12 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
           <div className="flex flex-col gap-5">
             <Link href="/" aria-label={header("homeLabel")} className="self-start">
