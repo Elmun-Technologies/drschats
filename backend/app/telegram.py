@@ -111,7 +111,7 @@ async def send_message(chat_id: int, text: str) -> bool:
             return False
         return True
     except httpx.HTTPError as exc:
-        logger.warning("telegram: sendMessage failed: %s", exc)
+        logger.warning("telegram: sendMessage transport failed")
         return False
 
 
@@ -140,7 +140,7 @@ async def request_contact(chat_id: int, prompt: str, button: str) -> bool:
             )
         return response.status_code == 200
     except httpx.HTTPError as exc:
-        logger.warning("telegram: request_contact failed: %s", exc)
+        logger.warning("telegram: request_contact transport failed")
         return False
 
 

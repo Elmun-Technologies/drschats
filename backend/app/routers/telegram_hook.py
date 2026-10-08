@@ -47,6 +47,8 @@ async def webhook(
     x_telegram_bot_api_secret_token: str | None = Header(default=None),
 ) -> dict[str, bool]:
     settings = get_settings()
+    if settings.telegram_mode == "polling":
+        raise HTTPException(410, "polling_mode_use_bot_service")
 
     # The URL is the only thing hiding this endpoint, so without the shared
     # secret anyone who guesses it could bind arbitrary phones to their own

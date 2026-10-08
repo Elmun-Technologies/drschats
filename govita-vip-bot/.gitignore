@@ -1,0 +1,8 @@
+.venv/
+.env
+*.sqlite3
+__pycache__/
+.club-pepper
+*.sqlite3-*
+.pytest_cache/
+data/
