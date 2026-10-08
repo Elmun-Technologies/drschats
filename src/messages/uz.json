@@ -766,7 +766,16 @@
     "payCod": "Yetkazib berishda (naqd yoki karta)",
     "payUnavailable": "Onlayn to'lov hozircha ulanmagan — buyurtma yetkazishda to'lanadi.",
     "payOnlineNote": "Buyurtma darhol tasdiqlanadi, qayta qo'ng'iroq shart emas. To'lovni tanlangan tizim sahifasida tugatasiz.",
-    "paySoon": "tez orada"
+    "paySoon": "tez orada",
+    "errors": {
+      "rate_limited": "Juda koʻp urinish. Bir necha daqiqadan keyin qayta urinib koʻring.",
+      "invalid": "Maʼlumotlarni tekshiring va qayta yuboring.",
+      "unknown_product": "Savatdagi mahsulotlardan biri katalogda topilmadi. Savatni yangilang.",
+      "out_of_stock": "Savatdagi mahsulotlardan biri tugadi. Uni olib tashlab, qayta urinib koʻring.",
+      "invalid_offer": "Taklif chegirmasi amal qilmaydi. Savatni yangilab, qayta urinib koʻring.",
+      "payment_unavailable": "Bu toʻlov usuli hozir mavjud emas. Yetkazishda toʻlovni tanlang.",
+      "failed": "Buyurtma yuborilmadi. Qayta urinib koʻring yoki {phone} raqamiga qoʻngʻiroq qiling."
+    }
   },
   "footer": {
     "tagline": "Sog'lom hayot uchun tanlangan nutriyentlar.",

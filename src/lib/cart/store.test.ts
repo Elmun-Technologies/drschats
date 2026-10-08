@@ -79,3 +79,15 @@ describe("cart lines", () => {
     expect(useCart.getState().lines).toEqual([]);
   });
 });
+
+describe("syncPrices", () => {
+  it("updates stale prices and drops products no longer sold", () => {
+    useCart.getState().add(product(), 1, { silent: true });
+    useCart.getState().add(product({ productId: "gone", slug: "gone" }), 1, { silent: true });
+    useCart.getState().syncPrices({ p1: { price: 120000, oldPrice: 150000, inStock: true } });
+
+    const { lines } = useCart.getState();
+    expect(lines).toHaveLength(1);
+    expect(lines[0]).toMatchObject({ productId: "p1", price: 120000, oldPrice: 150000 });
+  });
+});

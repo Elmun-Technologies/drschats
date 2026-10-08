@@ -3,6 +3,8 @@
 import { headers } from "next/headers";
 import { shopflow } from "@/lib/shopflow";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
+import { repriceOrder } from "@/lib/cart/reprice";
+import { ONLINE_PROVIDERS } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
 import { clientIp, withinRateLimit } from "@/lib/rate-limit";
 import { notifyOperator } from "@/lib/notifications/operator";
@@ -14,9 +16,11 @@ import { formatMoney } from "@/lib/utils";
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
 async function notifyOperatorOfOrder(order: OrderRequest, orderId: string) {
-  const items = order.items.map((i) => `  • ${i.name} × ${i.quantity}`).join("\n");
+  const items = order.items
+    .map((i) => `  • ${i.name} × ${i.quantity}${i.upsellDiscountPercent ? ` (−${i.upsellDiscountPercent}%)` : ""}${i.subscription ? ` · obuna ${i.subscription.intervalDays} kun` : ""}`)
+    .join("\n");
   const text = [
-    `🛒 *Yangi buyurtma #${orderId}*`,
+    `🛒 Yangi buyurtma #${orderId}`,
     `👤 ${order.customer.name} — ${order.customer.phone}`,
     order.customer.email ? `✉️ ${order.customer.email}` : "",
     `📍 ${order.delivery.region}, ${order.delivery.address}`,
@@ -25,12 +29,16 @@ async function notifyOperatorOfOrder(order: OrderRequest, orderId: string) {
       ? `💳 ${order.payment.method === "online" ? `Onlayn to'lov: ${order.payment.provider}` : "Yetkazishda to'lov"}`
       : "",
     `\n${items}`,
-    `\n💰 Jami: ${order.totals.total.toLocaleString()} so'm`,
+    order.totals.discount > 0 ? `🏷 Chegirma: ${formatMoney(order.totals.discount, "uz")}` : "",
+    `🚚 Yetkazish: ${formatMoney(order.totals.shipping, "uz")}`,
+    `💰 Jami: ${formatMoney(order.totals.total, "uz")}`,
   ]
     .filter(Boolean)
     .join("\n");
 
-  await notifyOperator(text, { markdown: true });
+  // Plain text: a "_" or "*" in a customer's name or address would make
+  // Telegram reject a Markdown message, and the order would never reach anyone.
+  await notifyOperator(text);
 }
 
 /**
@@ -62,19 +70,40 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
   });
 }
 
-export async function submitOrder(payload: OrderRequest): Promise<OrderResult> {
+export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "failed";
+
+export async function submitOrder(payload: OrderRequest): Promise<OrderResult & { error?: OrderError; total?: number }> {
   const hdrs = await headers();
   if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
-    return { ok: false, message: "Too many requests. Please try again later." };
+    return { ok: false, error: "rate_limited" };
   }
 
   const parsed = orderRequestSchema.safeParse(payload);
   if (!parsed.success) {
-    return { ok: false, message: "Invalid order payload." };
+    return { ok: false, error: "invalid" };
+  }
+  const request = parsed.data as OrderRequest;
+
+  // An online payment needs a provider the shop is actually connected to.
+  if (request.payment?.method === "online" && !ONLINE_PROVIDERS.some((p) => p.id === request.payment?.provider)) {
+    return { ok: false, error: "payment_unavailable" };
   }
 
   try {
-    const order = parsed.data as OrderRequest;
+    /*
+      Prices, discounts and totals are the server's, not the browser's: each
+      product is read from the catalogue and the order is priced again
+      (lib/cart/reprice.ts). The request only says what to buy.
+    */
+    const slugs = [...new Set(request.items.map((i) => i.slug))];
+    const [products, promotions] = await Promise.all([
+      Promise.all(slugs.map((slug) => shopflow.getProduct(slug, request.locale))),
+      shopflow.getPromotions(request.locale).catch(() => []),
+    ]);
+    const priced = repriceOrder(request, products.filter((p): p is NonNullable<typeof p> => p !== null), promotions);
+    if (!priced.ok) return { ok: false, error: priced.error };
+    const order = priced.order;
+
     const result = await shopflow.createOrder(order);
     if (result.ok && result.orderId) {
       /*
@@ -101,10 +130,11 @@ export async function submitOrder(payload: OrderRequest): Promise<OrderResult> {
             })
           : Promise.resolve(),
       ]);
+      return { ...result, total: order.totals.total };
     }
-    return result;
+    return { ...result, error: result.ok ? undefined : "failed" };
   } catch (err) {
-    console.error("[checkout] createOrder failed", err);
-    return { ok: false, message: "Could not submit order. Please try again." };
+    console.error("[checkout] createOrder failed", err instanceof Error ? err.message : "unknown error");
+    return { ok: false, error: "failed" };
   }
 }
