@@ -24,9 +24,9 @@ export async function NewsletterSignup() {
   const href = bot ? `https://t.me/${bot.replace(/^@/, "")}` : BRAND.social.telegram;
 
   return (
-    <section className="section-y bg-ink">
+    <section className="section-y bg-legacy-ink">
       <Container>
-        <div className="relative overflow-hidden rounded-3xl border border-line-strong bg-brand-deep p-8 text-white sm:p-14">
+        <div className="relative overflow-hidden rounded-3xl border border-legacy-line-strong bg-brand-deep p-8 text-white sm:p-14">
           <div className="grid gap-10 lg:grid-cols-2 lg:items-center">
             <div>
               <span className="mb-4 inline-block rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-extrabold uppercase tracking-widest text-white/80">

@@ -22,7 +22,7 @@ export function Pagination({ currentPage, totalPages, buildHref }: Props) {
   return (
     <nav className="mt-10 flex items-center justify-center gap-2" aria-label="Pagination">
       {currentPage > 1 && (
-        <Link href={buildHref(currentPage - 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-muted hover:border-line-strong hover:text-fg">
+        <Link href={buildHref(currentPage - 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line text-legacy-muted hover:border-legacy-line-strong hover:text-fg">
           ‹
         </Link>
       )}
@@ -36,8 +36,8 @@ export function Pagination({ currentPage, totalPages, buildHref }: Props) {
             className={cn(
             "flex h-10 w-10 items-center justify-center rounded-full border text-sm font-medium transition-colors",
               p === currentPage
-                ? "border-line-strong bg-surface-2 text-fg"
-                : "border-line text-muted hover:border-line-strong hover:text-fg",
+                ? "border-legacy-line-strong bg-surface-2 text-fg"
+                : "border-legacy-line text-legacy-muted hover:border-legacy-line-strong hover:text-fg",
             )}
           >
             {p}
@@ -45,7 +45,7 @@ export function Pagination({ currentPage, totalPages, buildHref }: Props) {
         )
       )}
       {currentPage < totalPages && (
-        <Link href={buildHref(currentPage + 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-muted hover:border-line-strong hover:text-fg">
+        <Link href={buildHref(currentPage + 1)} className="flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line text-legacy-muted hover:border-legacy-line-strong hover:text-fg">
           ›
         </Link>
       )}

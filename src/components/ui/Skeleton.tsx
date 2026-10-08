@@ -4,7 +4,7 @@ export function Skeleton({ className = "" }: { className?: string }) {
 
 export function ProductCardSkeleton() {
   return (
-    <div className="rounded-2xl border border-line bg-surface p-4">
+    <div className="rounded-2xl border border-legacy-line bg-surface p-4">
       <Skeleton className="aspect-square w-full rounded-xl" />
       <div className="mt-3 space-y-2">
         <Skeleton className="h-4 w-3/4" />

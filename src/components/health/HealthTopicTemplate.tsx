@@ -59,8 +59,8 @@ export async function HealthTopicTemplate({
           <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
             {topic.name}
           </h1>
-          <p className="mt-4 text-lg text-muted">{topic.headline}</p>
-          <p className="mt-5 text-muted">{topic.intro}</p>
+          <p className="mt-4 text-lg text-legacy-muted">{topic.headline}</p>
+          <p className="mt-5 text-legacy-muted">{topic.intro}</p>
         </header>
 
         {reviewer && (
@@ -75,7 +75,7 @@ export async function HealthTopicTemplate({
               {topic.bullets.map((b) => (
                 <li
                   key={b}
-                  className="flex items-start gap-3 rounded-xl border border-line bg-surface p-5 text-sm font-medium text-fg"
+                  className="flex items-start gap-3 rounded-xl border border-legacy-line bg-surface p-5 text-sm font-medium text-fg"
                 >
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg">
                     <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
@@ -96,21 +96,21 @@ export async function HealthTopicTemplate({
                 <Reveal key={section.title}>
                   <section>
                     <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{section.title}</h2>
-                    <p className="mt-3 text-muted">{section.body}</p>
+                    <p className="mt-3 text-legacy-muted">{section.body}</p>
                   </section>
                 </Reveal>
               ))}
             </article>
 
             {ingredients.length > 0 && (
-              <aside className="rounded-2xl border border-line bg-surface p-6 lg:sticky lg:top-24">
+              <aside className="rounded-2xl border border-legacy-line bg-surface p-6 lg:sticky lg:top-24">
                 <h2 className="font-display text-lg font-bold">{t("keyIngredients")}</h2>
                 <ul className="mt-4 space-y-4">
                   {ingredients.map((ing) => (
                     <li key={ing.slug}>
                       <p className="text-sm font-semibold text-fg">{ing.name}</p>
                       <p className="text-xs font-medium uppercase tracking-wide text-fg">{ing.role}</p>
-                      <p className="mt-1 text-sm text-muted">{ing.description}</p>
+                      <p className="mt-1 text-sm text-legacy-muted">{ing.description}</p>
                     </li>
                   ))}
                 </ul>
@@ -168,7 +168,7 @@ export async function HealthTopicTemplate({
                 <Link
                   key={r.slug}
                   href={`${TOPIC_BASE_PATH[r.kind]}/${r.slug}`}
-                  className="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-line-strong hover:text-fg"
+                  className="rounded-full border border-legacy-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-legacy-line-strong hover:text-fg"
                 >
                   {r.name}
                 </Link>

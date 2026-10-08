@@ -93,11 +93,11 @@ export function MySubscriptions() {
 
   if (state.subscriptions.length === 0) {
     return (
-      <div className="rounded-2xl border border-line bg-surface px-6 py-10 text-center">
-        <p className="text-muted">{t("empty")}</p>
+      <div className="rounded-2xl border border-legacy-line bg-surface px-6 py-10 text-center">
+        <p className="text-legacy-muted">{t("empty")}</p>
         <Link
           href="/products"
-          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-fg px-5 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
+          className="mt-4 inline-flex min-h-11 items-center rounded-full bg-fg px-5 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
         >
           {t("emptyCta")}
         </Link>
@@ -113,41 +113,41 @@ export function MySubscriptions() {
         const intervalId = `subscription-interval-${subscription.id}`;
 
         return (
-          <li key={subscription.id} className="rounded-2xl border border-line bg-ink p-5">
+          <li key={subscription.id} className="rounded-2xl border border-legacy-line bg-legacy-ink p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
                 {t(`status.${subscription.status}`)}
               </span>
               {subscription.nextDeliveryAt && !cancelled && (
-                <span className="text-sm text-muted">
+                <span className="text-sm text-legacy-muted">
                   {t("next", { date: formatDate(subscription.nextDeliveryAt, locale) })}
                 </span>
               )}
             </div>
 
-            <ul className="mt-3 space-y-1.5 border-t border-line pt-3">
+            <ul className="mt-3 space-y-1.5 border-t border-legacy-line pt-3">
               {subscription.items.map((item) => (
                 <li key={item.slug} className="flex items-baseline justify-between gap-3 text-sm">
                   <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-fg">
                     {item.name}
                   </Link>
-                  <span className="shrink-0 tabular-nums text-muted">
+                  <span className="shrink-0 tabular-nums text-legacy-muted">
                     {item.quantity} × {formatMoney(item.unitPrice, locale)}
                   </span>
                 </li>
               ))}
             </ul>
 
-            <p className="mt-3 border-t border-line pt-3 text-right">
-              <span className="text-sm text-muted">{t("perDelivery")}: </span>
+            <p className="mt-3 border-t border-legacy-line pt-3 text-right">
+              <span className="text-sm text-legacy-muted">{t("perDelivery")}: </span>
               <b className="font-display text-lg font-extrabold tabular-nums text-fg">
                 {formatMoney(subscription.total, locale)}
               </b>
             </p>
 
             {!cancelled && (
-              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-line pt-4">
-                <label htmlFor={intervalId} className="text-sm text-muted">
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-legacy-line pt-4">
+                <label htmlFor={intervalId} className="text-sm text-legacy-muted">
                   {t("interval")}
                 </label>
                 <select
@@ -155,7 +155,7 @@ export function MySubscriptions() {
                   value={subscription.intervalDays}
                   disabled={busy}
                   onChange={(e) => change(subscription.id, { intervalDays: Number(e.target.value) })}
-                  className="h-11 rounded-full border border-line bg-surface px-4 text-sm font-medium outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
+                  className="h-11 rounded-full border border-legacy-line bg-surface px-4 text-sm font-medium outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
                 >
                   {SUBSCRIPTION_INTERVALS.map((days) => (
                     <option key={days} value={days}>
@@ -212,8 +212,8 @@ function Action({
       disabled={disabled}
       className={`min-h-11 rounded-full border px-4 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal disabled:opacity-50 ${
         danger
-          ? "border-line text-muted hover:border-danger hover:text-danger"
-          : "border-line text-fg hover:border-line-strong hover:text-fg"
+          ? "border-legacy-line text-legacy-muted hover:border-danger hover:text-danger"
+          : "border-legacy-line text-fg hover:border-legacy-line-strong hover:text-fg"
       }`}
     >
       {children}

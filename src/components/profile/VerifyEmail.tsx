@@ -43,12 +43,12 @@ export function VerifyEmail() {
         type="button"
         onClick={verify}
         disabled={state === "sending"}
-        className="min-h-11 rounded-full border border-line px-4 text-sm font-semibold text-fg transition-colors hover:border-line-strong hover:text-fg disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+        className="min-h-11 rounded-full border border-legacy-line px-4 text-sm font-semibold text-fg transition-colors hover:border-legacy-line-strong hover:text-fg disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
       >
         {t("verify")}
       </button>
       <p aria-live="polite" className="mt-2 text-xs">
-        {state === "sending" && <span className="text-muted">{t("verifySending")}</span>}
+        {state === "sending" && <span className="text-legacy-muted">{t("verifySending")}</span>}
         {state === "sent" && (
           <span className="font-medium text-fg">{t("verifySent", { email })}</span>
         )}

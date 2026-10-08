@@ -43,10 +43,10 @@ export function ScienceSection() {
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-signal">{t("eyebrow")}</p>
           <h2 id="quality-heading" className="font-display text-2xl font-extrabold tracking-tight text-balance text-fg sm:text-3xl lg:text-4xl">{t("title")}
           </h2>
-          <p className="mt-3 text-pretty text-base text-muted sm:text-lg">{t("subtitle")}</p>
+          <p className="mt-3 text-pretty text-base text-legacy-muted sm:text-lg">{t("subtitle")}</p>
         </div>
 
-        <div className="mb-6 overflow-hidden rounded-2xl border border-line sm:mb-8">
+        <div className="mb-6 overflow-hidden rounded-2xl border border-legacy-line sm:mb-8">
           <div className="relative aspect-[16/9] bg-surface-2 sm:aspect-[21/9]">
             <Image
               src="/images/quality/documents.jpg"
@@ -61,14 +61,14 @@ export function ScienceSection() {
         <div className="grid gap-6 md:grid-cols-3">
           {points.map((p, i) => (
             <Reveal key={p} index={i} className="h-full">
-              <div className="flex h-full flex-col rounded-2xl border border-line bg-surface p-7">
+              <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-7">
                 <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-signal-soft text-signal">
                   <svg viewBox="0 0 24 24" aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
                     <path d={POINT_ICONS[i]} />
                   </svg>
                 </span>
                 <h3 className="mt-5 font-display text-lg font-bold text-fg">{t(`points.${p}.title`)}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted">{t(`points.${p}.description`)}</p>
+                <p className="mt-2 text-sm leading-relaxed text-legacy-muted">{t(`points.${p}.description`)}</p>
               </div>
             </Reveal>
           ))}

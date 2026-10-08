@@ -88,7 +88,7 @@ export default async function DeliveryPage({
               {t("eyebrow")}
             </span>
             <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{t("title")}</h1>
-            <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
+            <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
           </header>
         </Reveal>
 
@@ -102,7 +102,7 @@ export default async function DeliveryPage({
             </div>
             <div>
               <p className="font-semibold text-fg">{t("freeBannerTitle", shippingVars)}</p>
-              <p className="text-sm text-muted">{t("freeBannerDesc")}</p>
+              <p className="text-sm text-legacy-muted">{t("freeBannerDesc")}</p>
             </div>
           </div>
         </Reveal>
@@ -115,7 +115,7 @@ export default async function DeliveryPage({
           <div className="grid gap-4 md:grid-cols-3">
             {options.map((o, i) => (
               <Reveal key={o.title} index={i}>
-                <div className="flex h-full flex-col rounded-2xl border border-line bg-ink p-6">
+                <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-legacy-ink p-6">
                   <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-surface-2 text-fg">
                     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d={o.icon} strokeLinecap="round" strokeLinejoin="round" />
@@ -123,7 +123,7 @@ export default async function DeliveryPage({
                   </div>
                   <h3 className="font-display text-lg font-bold">{o.title}</h3>
                   <p className="mt-1 font-semibold text-signal">{o.time}</p>
-                  {o.free && <p className="mt-3 flex-1 text-sm text-muted">{o.free}</p>}
+                  {o.free && <p className="mt-3 flex-1 text-sm text-legacy-muted">{o.free}</p>}
                 </div>
               </Reveal>
             ))}
@@ -138,7 +138,7 @@ export default async function DeliveryPage({
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {payments.map((p, i) => (
               <Reveal key={p.label} index={i}>
-                <div className="flex h-full items-start gap-3 rounded-2xl border border-line bg-surface p-5">
+                <div className="flex h-full items-start gap-3 rounded-2xl border border-legacy-line bg-surface p-5">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-signal-soft text-signal">
                     <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                       <path d={p.icon} strokeLinecap="round" strokeLinejoin="round" />
@@ -148,12 +148,12 @@ export default async function DeliveryPage({
                     <p className="text-sm font-medium text-fg">
                       {p.label}
                       {p.soon && (
-                        <span className="ml-2 rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted">
+                        <span className="ml-2 rounded-full bg-surface-2 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-legacy-muted">
                           {t("paySoonBadge")}
                         </span>
                       )}
                     </p>
-                    <p className="mt-0.5 text-xs text-muted">{p.note}</p>
+                    <p className="mt-0.5 text-xs text-legacy-muted">{p.note}</p>
                   </div>
                 </div>
               </Reveal>
@@ -163,8 +163,8 @@ export default async function DeliveryPage({
 
         {/* Operator note + CTA */}
         <Reveal className="mt-12">
-          <div className="flex flex-col items-start gap-4 rounded-2xl border border-line bg-surface p-6 sm:flex-row sm:items-center">
-            <p className="flex-1 text-sm text-muted">{t("note")}</p>
+          <div className="flex flex-col items-start gap-4 rounded-2xl border border-legacy-line bg-surface p-6 sm:flex-row sm:items-center">
+            <p className="flex-1 text-sm text-legacy-muted">{t("note")}</p>
             <Link href="/contact" className={`${buttonVariants("secondary")} shrink-0`}>
               {t("contactCta")}
             </Link>

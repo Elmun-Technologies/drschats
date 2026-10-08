@@ -41,25 +41,25 @@ export default async function IngredientsPage({
         <header className="max-w-2xl">
           <p className="text-sm font-semibold text-fg">{t("badge")}</p>
           <h1 className="mt-3 font-display text-4xl font-extrabold uppercase tracking-tight sm:text-5xl">{t("title")}</h1>
-          <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
+          <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
         </header>
 
         {/* Alphabetical ingredient index */}
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {ingredients.map((ing, i) => (
             <Reveal key={ing.slug} index={Math.min(i, 6)} className="h-full">
-              <div className="flex h-full flex-col rounded-2xl border border-line bg-ink p-6">
+              <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-legacy-ink p-6">
                 <div className="flex items-center justify-between gap-3">
                   <h2 className="min-w-0 font-display text-lg font-bold">{ing.name}</h2>
-                  <span className="shrink-0 rounded-full border border-line bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-muted">{ing.role}</span>
+                  <span className="shrink-0 rounded-full border border-legacy-line bg-surface-2 px-2.5 py-1 text-[11px] font-semibold text-legacy-muted">{ing.role}</span>
                 </div>
-                <p className="mt-3 flex-1 text-sm text-muted">{ing.description}</p>
+                <p className="mt-3 flex-1 text-sm text-legacy-muted">{ing.description}</p>
                 {ing.inProducts.length > 0 && (
-                  <div className="mt-4 border-t border-line pt-3">
+                  <div className="mt-4 border-t border-legacy-line pt-3">
                     <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-faint">{t("foundIn")}</p>
                     <div className="flex flex-wrap gap-2">
                       {ing.inProducts.map((slug) => (
-                        <Link key={slug} href={`/product/${slug}`} className="rounded-full border border-line px-3 py-1 text-xs text-fg transition-colors hover:border-line-strong hover:text-fg">
+                        <Link key={slug} href={`/product/${slug}`} className="rounded-full border border-legacy-line px-3 py-1 text-xs text-fg transition-colors hover:border-legacy-line-strong hover:text-fg">
                           {nameBySlug.get(slug) ?? slug}
                         </Link>
                       ))}
@@ -74,22 +74,22 @@ export default async function IngredientsPage({
         {/* Synergy / compatibility */}
         <section className="mt-20">
           <h2 className="font-display text-2xl font-bold sm:text-3xl">{t("synergyTitle")}</h2>
-          <p className="mt-2 text-muted">{t("synergyDesc")}</p>
+          <p className="mt-2 text-legacy-muted">{t("synergyDesc")}</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-2">
             {synergy.map((s, i) => (
               <Reveal key={i} index={i}>
-                <div className="flex items-center gap-4 rounded-2xl border border-line bg-surface p-5">
-                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${s.type === "boost" ? "bg-surface-2 text-fg" : "bg-surface-2 text-muted"}`}>
+                <div className="flex items-center gap-4 rounded-2xl border border-legacy-line bg-surface p-5">
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${s.type === "boost" ? "bg-surface-2 text-fg" : "bg-surface-2 text-legacy-muted"}`}>
                     {s.type === "boost" ? "+" : "−"}
                   </span>
                   <div>
                     <p className="font-semibold text-fg">
                       {s.a} <span className="text-faint">{s.type === "boost" ? "+" : "×"}</span> {s.b}
-                      <span className={`ml-2 text-xs font-semibold ${s.type === "boost" ? "text-fg" : "text-muted"}`}>
+                      <span className={`ml-2 text-xs font-semibold ${s.type === "boost" ? "text-fg" : "text-legacy-muted"}`}>
                         {s.type === "boost" ? t("boost") : t("block")}
                       </span>
                     </p>
-                    <p className="mt-1 text-sm text-muted">{s.note}</p>
+                    <p className="mt-1 text-sm text-legacy-muted">{s.note}</p>
                   </div>
                 </div>
               </Reveal>
@@ -98,9 +98,9 @@ export default async function IngredientsPage({
         </section>
 
         {/* COA */}
-        <section className="mt-16 rounded-2xl border border-line bg-surface p-8">
+        <section className="mt-16 rounded-2xl border border-legacy-line bg-surface p-8">
           <h2 className="font-display text-lg font-bold text-fg">{t("coaTitle")}</h2>
-          <p className="mt-3 max-w-2xl text-muted">{t("coaDesc")}</p>
+          <p className="mt-3 max-w-2xl text-legacy-muted">{t("coaDesc")}</p>
         </section>
 
         <div className="mb-32 mt-12">

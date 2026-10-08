@@ -24,7 +24,7 @@ const VALUE_ICONS = [
 ];
 
 const VALUE_COLORS = [
-  { bg: "bg-surface-2", text: "text-fg", border: "border-line" },
+  { bg: "bg-surface-2", text: "text-fg", border: "border-legacy-line" },
   { bg: "bg-signal-soft", text: "text-signal", border: "border-signal/25" },
   { bg: "bg-danger/10", text: "text-danger", border: "border-danger/20" },
 ];
@@ -54,16 +54,16 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
       <Container className="pt-10">
         {/* Intro text */}
         <Reveal>
-          <p className="max-w-3xl text-lg leading-relaxed text-muted">{t("intro")}</p>
+          <p className="max-w-3xl text-lg leading-relaxed text-legacy-muted">{t("intro")}</p>
         </Reveal>
 
         {/* Stats */}
         <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal key={s.label} index={i}>
-              <div className="rounded-2xl border border-line bg-ink p-6 text-center">
+              <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-6 text-center">
                 <div className="font-display text-3xl font-extrabold text-fg sm:text-4xl">{s.value}</div>
-                <div className="mt-2 text-sm font-medium text-muted">{s.label}</div>
+                <div className="mt-2 text-sm font-medium text-legacy-muted">{s.label}</div>
               </div>
             </Reveal>
           ))}
@@ -82,14 +82,14 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
             const c = VALUE_COLORS[i % VALUE_COLORS.length];
             return (
               <Reveal key={v.title} index={i} className="h-full">
-                <div className={`h-full rounded-2xl border ${c.border} bg-ink p-7`}>
+                <div className={`h-full rounded-2xl border ${c.border} bg-legacy-ink p-7`}>
                   <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${c.bg} ${c.text}`}>
                     <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
                       <path d={VALUE_ICONS[i % VALUE_ICONS.length]} />
                     </svg>
                   </span>
                   <h2 className="mt-5 font-display text-lg font-bold text-fg">{v.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-muted">{v.text}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-legacy-muted">{v.text}</p>
                 </div>
               </Reveal>
             );
@@ -98,14 +98,14 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
         {/* Certifications strip */}
         <Reveal index={5}>
-          <div className="mt-14 flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface px-6 py-5">
+          <div className="mt-14 flex flex-wrap items-center gap-3 rounded-2xl border border-legacy-line bg-surface px-6 py-5">
             <span className="mr-2 text-xs font-semibold uppercase tracking-widest text-faint">
               {t("certsLabel")}
             </span>
-            <p className="text-sm leading-relaxed text-muted">{t("certsNote")}</p>
+            <p className="text-sm leading-relaxed text-legacy-muted">{t("certsNote")}</p>
             <a
               href={`mailto:${BRAND.contact.email}?subject=Sertifikat%20so'rovi`}
-              className="rounded-full border border-line-strong bg-ink px-4 py-1.5 text-sm font-semibold text-fg transition-colors hover:border-brand-deep/40"
+              className="rounded-full border border-legacy-line-strong bg-legacy-ink px-4 py-1.5 text-sm font-semibold text-fg transition-colors hover:border-brand-deep/40"
             >
               {t("certsCta")}
             </a>

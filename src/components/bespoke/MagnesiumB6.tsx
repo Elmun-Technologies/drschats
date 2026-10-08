@@ -23,7 +23,7 @@ export function MagnesiumB6({ product, upsells }: BespokeProps) {
           background. It now uses the shared product wash, light, with no
           scene.
         */}
-        <div className="absolute inset-0 -z-10 bg-ink">
+        <div className="absolute inset-0 -z-10 bg-legacy-ink">
           <div className="product-hero" />
         </div>
 
@@ -40,14 +40,14 @@ export function MagnesiumB6({ product, upsells }: BespokeProps) {
               </h1>
             </Reveal>
             <Reveal index={2}>
-              <p className="mt-6 max-w-lg text-lg text-muted">{product.tagline}</p>
+              <p className="mt-6 max-w-lg text-lg text-legacy-muted">{product.tagline}</p>
             </Reveal>
           </div>
         </Container>
       </section>
 
       {/* Benefits — calm split rows */}
-      <section className="border-t border-line bg-surface py-24">
+      <section className="border-t border-legacy-line bg-surface py-24">
         <Container>
           <Reveal>
             <h2 className="mb-14 font-display text-2xl font-extrabold tracking-tight sm:text-4xl">{t("benefits")}</h2>
@@ -55,10 +55,10 @@ export function MagnesiumB6({ product, upsells }: BespokeProps) {
           <div className="grid gap-6 md:grid-cols-2">
             {product.benefits.map((b, i) => (
               <Reveal key={b.title} index={i}>
-                <div className="relative h-full overflow-hidden rounded-2xl border border-line bg-ink p-8">
+                <div className="relative h-full overflow-hidden rounded-2xl border border-legacy-line bg-legacy-ink p-8">
                   <div className="absolute -left-8 -top-8 h-28 w-28 rounded-full bg-[#5a6aa8]/15 blur-2xl" />
                   <h3 className="font-display text-lg font-bold">{b.title}</h3>
-                  <p className="mt-3 text-muted">{b.description}</p>
+                  <p className="mt-3 text-legacy-muted">{b.description}</p>
                 </div>
               </Reveal>
             ))}

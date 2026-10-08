@@ -108,7 +108,7 @@ export function CatalogMenu({
             id={panelId}
             role="group"
             aria-label={t("shopByCategories")}
-            className="absolute inset-x-0 top-full z-40 rounded-b-2xl border border-line bg-ink shadow-[var(--shadow-pop)]"
+            className="absolute inset-x-0 top-full z-40 rounded-b-2xl border border-legacy-line bg-legacy-ink shadow-[var(--shadow-legacy-pop)]"
           >
             {/* No <Container> here: the panel already spans the container, and
                 nesting one would pad the contents twice. */}
@@ -158,7 +158,7 @@ export function CatalogMenu({
                     <li key={item.key}>
                       <Link
                         href={item.href}
-                        className="block rounded-lg px-2 py-1.5 text-sm font-semibold text-fg transition-colors hover:bg-ink hover:text-fg"
+                        className="block rounded-lg px-2 py-1.5 text-sm font-semibold text-fg transition-colors hover:bg-legacy-ink hover:text-fg"
                       >
                         {t(item.key)}
                       </Link>
@@ -175,7 +175,7 @@ export function CatalogMenu({
 }
 
 const TRIGGER_CLASS =
-  "flex items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-accent-strong hover:text-ink";
+  "flex items-center gap-2 rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink";
 
 function BurgerIcon() {
   return (

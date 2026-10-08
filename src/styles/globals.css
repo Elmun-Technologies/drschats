@@ -12,6 +12,9 @@
 */
 @source not "../../docs";
 
+/* The design handoff is reference HTML full of its own class names. */
+@source not "../../design";
+
 /*
   Go Vita design tokens — "Warm Apothecary".
 
@@ -41,12 +44,12 @@
     action colour.  The values below remain semantic so every existing page
     receives the same visual language without tying components to a brand name.
   */
-  --color-ink: #fffdf9;
+  --color-legacy-ink: #fffdf9;
   --color-surface: #f8f6f1;
   --color-surface-2: #f1eee7;
   --color-surface-3: #e7e1d7;
-  --color-line: rgba(49, 43, 33, 0.10);
-  --color-line-strong: rgba(49, 43, 33, 0.18);
+  --color-legacy-line: rgba(49, 43, 33, 0.10);
+  --color-legacy-line-strong: rgba(49, 43, 33, 0.18);
 
   /* Warm charcoal replaces cold navy as the contrast ground. */
   --color-brand-deep: #2d2a25;
@@ -58,7 +61,7 @@
      (#766f64) measured 4.29:1 on surface-2 — under the 4.5 floor, exactly
      where card metadata (origin, servings, "12 dona") is printed. */
   --color-fg: #2d2a25;
-  --color-muted: #5f594f;
+  --color-legacy-muted: #5f594f;
   --color-faint: #6a6359;
 
   /* Action — antique gold. `accent` is deliberately light and stays a
@@ -77,7 +80,7 @@
 
   /* Money + rating. `gold` is used as a surface/CTA, while `gold-ink` is the
      darker accessible version for copy on porcelain backgrounds. */
-  --color-gold: #d1ac59;
+  --color-legacy-gold: #d1ac59;
   --color-gold-ink: #755a26;
   --color-gold-soft: #f6ecd7;
 
@@ -119,12 +122,78 @@
   --shadow-xs: 0 1px 2px rgba(45, 42, 37, 0.05);
   --shadow-sm: 0 2px 6px -2px rgba(45, 42, 37, 0.10);
   --shadow-card: 0 10px 30px -22px rgba(45, 42, 37, 0.35);
-  --shadow-pop: 0 24px 48px -24px rgba(45, 42, 37, 0.35);
+  --shadow-legacy-pop: 0 24px 48px -24px rgba(45, 42, 37, 0.35);
   --shadow-cta: 0 8px 22px -14px rgba(101, 76, 33, 0.7);
 
   /* Animations */
   --animate-marquee: marquee 28s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
+}
+
+/*
+  GoVita V3 tokens — design/tokens.json, names kept exactly as the design hands
+  them over. Five of them (ink, line, line-strong, muted, gold, plus shadow-pop)
+  already existed with a different meaning — the old `ink` was the light page
+  ground, the new one is near-black — so the old ones were renamed to
+  `legacy-*` rather than overwritten. Every `legacy-*` utility dies with the
+  page that still uses it; none may be added in new code.
+
+  Radii md (16px) and lg (24px) already match the design; sm moves from 8px to
+  12px, which nothing used before.
+*/
+@theme {
+  --color-bg: #ffffff;
+  --color-tile: #f1f3f0;
+  --color-tile-hover: #e6e8e5;
+  --color-chip-strong: #e3e6e9;
+  --color-line: #e4e6e8;
+  --color-line-strong: #d9dcdf;
+  --color-ink: #17191b;
+  --color-ink-2: #44494e;
+  --color-muted: #63686e;
+  --color-dark-panel: #1c1f22;
+  --color-on-dark-2: #c9cdd1;
+  --color-red: #c8161d;
+  --color-yellow: #ffd43b;
+  --color-yellow-banner: #ffe58a;
+  --color-forest: #0f2d24;
+  --color-gold: #b8954f;
+
+  --font-onest: var(--font-onest-face), "Segoe UI", Arial, sans-serif;
+  --font-logo: var(--font-playfair-face), Georgia, serif;
+
+  --text-h-hero: 40px;
+  --text-h-hero--line-height: 46px;
+  --text-h-hero--letter-spacing: -0.02em;
+  --text-h-page: 36px;
+  --text-h-page--line-height: 42px;
+  --text-h-page--letter-spacing: -0.015em;
+  --text-h-section: 30px;
+  --text-h-section--line-height: 36px;
+  --text-h-section--letter-spacing: -0.01em;
+  --text-title: 20px;
+  --text-title--line-height: 26px;
+  --text-lead: 17px;
+  --text-lead--line-height: 26px;
+  --text-body: 15px;
+  --text-body--line-height: 23px;
+  --text-card-title: 15px;
+  --text-card-title--line-height: 20px;
+  --text-caption: 13px;
+  --text-caption--line-height: 17px;
+  --text-price: 20px;
+  --text-price--line-height: 26px;
+  --text-price-l: 34px;
+  --text-price-l--line-height: 40px;
+  --text-button: 16px;
+  --text-button--line-height: 20px;
+
+  --radius-pill: 9999px;
+  --radius-sm: 12px;
+
+  --shadow-arrow: 0 2px 10px rgba(23, 25, 27, 0.12);
+  --shadow-buybox: 0 4px 24px rgba(23, 25, 27, 0.06);
+  --shadow-pop: 0 20px 48px rgba(23, 25, 27, 0.25);
 }
 
 @keyframes marquee {
@@ -319,7 +388,7 @@
 }
 
 * {
-  border-color: var(--color-line);
+  border-color: var(--color-legacy-line);
 }
 
 /*
@@ -382,7 +451,7 @@ html {
 }
 
 body {
-  background-color: var(--color-ink);
+  background-color: var(--color-legacy-ink);
   color: var(--color-fg);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;

@@ -58,18 +58,18 @@ export default async function ProgramsPage({
             <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
               {t("indexTitle")}
             </h1>
-            <p className="mt-4 text-lg text-muted">{t("indexSubtitle")}</p>
+            <p className="mt-4 text-lg text-legacy-muted">{t("indexSubtitle")}</p>
           </header>
 
           {entries.length === 0 ? (
-            <p className="py-24 text-center text-muted">{t("empty")}</p>
+            <p className="py-24 text-center text-legacy-muted">{t("empty")}</p>
           ) : (
             <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {entries.map(({ program, products, pricing }, i) => (
                 <Reveal key={program.slug} index={Math.min(i, 6)} as="li" className="h-full">
                   <Link
                     href={`/programs/${program.slug}`}
-                    className="group relative flex h-[460px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-500 hover:shadow-[var(--shadow-pop)]"
+                    className="group relative flex h-[460px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-500 hover:shadow-[var(--shadow-legacy-pop)]"
                   >
                     <div className="absolute inset-0 z-0">
                       <Image

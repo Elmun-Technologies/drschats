@@ -59,7 +59,7 @@ export function Price({
         {formatMoney(amount, locale)}
       </span>
       {discounted && (
-        <span className="text-[0.8rem] tabular-nums text-muted line-through sm:text-sm">
+        <span className="text-[0.8rem] tabular-nums text-legacy-muted line-through sm:text-sm">
           {formatMoney(oldAmount as number, locale)}
         </span>
       )}
@@ -73,7 +73,7 @@ export function DiscountBadge({ percent, className }: { percent: number; classNa
   return (
     <span
       className={cn(
-        "inline-flex items-center whitespace-nowrap rounded-full border border-line-strong bg-surface-2 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-brand-deep",
+        "inline-flex items-center whitespace-nowrap rounded-full border border-legacy-line-strong bg-surface-2 px-2.5 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-brand-deep",
         className,
       )}
     >

@@ -76,10 +76,10 @@ export function StickyBuyBar({ product }: { product: Product }) {
           animate={{ y: 0 }}
           exit={{ y: "-100%" }}
           transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-x-0 top-0 z-40 border-b border-line bg-ink/95 shadow-lg backdrop-blur-md"
+          className="fixed inset-x-0 top-0 z-40 border-b border-legacy-line bg-legacy-ink/95 shadow-lg backdrop-blur-md"
         >
           <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-2.5 sm:gap-4 sm:px-6 sm:py-3">
-            <div className="relative hidden h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-line bg-surface sm:block">
+            <div className="relative hidden h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-legacy-line bg-surface sm:block">
               <Image
                 src={product.images[0]?.url ?? ""}
                 alt=""
@@ -106,7 +106,7 @@ export function StickyBuyBar({ product }: { product: Product }) {
             <button
               onClick={handleAdd}
               disabled={!product.inStock}
-              className="shrink-0 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-brand-deep transition-all hover:bg-accent-strong hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:opacity-50"
+              className="shrink-0 rounded-full bg-accent px-5 py-2 text-sm font-semibold text-brand-deep transition-all hover:bg-accent-strong hover:text-legacy-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-legacy-ink disabled:opacity-50"
             >
               {product.inStock ? t("addToCart") : t("outOfStock")}
             </button>

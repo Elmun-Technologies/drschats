@@ -8,7 +8,7 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
   const [open, setOpen] = useState<number | null>(0);
 
   return (
-    <div className="divide-y divide-line border-y border-line">
+    <div className="divide-y divide-legacy-line border-y border-legacy-line">
       {items.map((item, i) => {
         const isOpen = open === i;
         const triggerId = `${uid}-faq-trigger-${i}`;
@@ -49,7 +49,7 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
               className="accordion-panel"
             >
               <div>
-                <p className="pb-5 text-muted">{item.answer}</p>
+                <p className="pb-5 text-legacy-muted">{item.answer}</p>
               </div>
             </div>
           </div>

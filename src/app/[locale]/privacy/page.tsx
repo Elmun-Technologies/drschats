@@ -29,15 +29,15 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
           <p className="mt-3 text-sm text-faint">{t("effective")}</p>
         </Reveal>
         <Reveal index={2}>
-          <p className="mt-6 text-base leading-relaxed text-muted">{t("intro")}</p>
+          <p className="mt-6 text-base leading-relaxed text-legacy-muted">{t("intro")}</p>
         </Reveal>
 
         <div className="mt-12 space-y-10">
           {sections.map((section, i) => (
             <Reveal key={i} index={i + 3}>
-              <div className="rounded-2xl border border-line bg-surface p-6">
+              <div className="rounded-2xl border border-legacy-line bg-surface p-6">
                 <h2 className="font-display text-lg font-bold text-fg">{section.heading}</h2>
-                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{section.body}</p>
+                <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-legacy-muted">{section.body}</p>
               </div>
             </Reveal>
           ))}

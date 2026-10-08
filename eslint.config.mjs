@@ -33,7 +33,7 @@ const eslintConfig = [
   {
     // ESLint ignores node_modules and dotfiles already; these are the build
     // and coverage outputs that would otherwise be walked.
-    ignores: [".next/**", "out/**", "build/**", "coverage/**", "dist/**"],
+    ignores: [".next/**", "out/**", "build/**", "coverage/**", "dist/**", "design/**"],
   },
   ...compat.extends("next/core-web-vitals"),
 ];

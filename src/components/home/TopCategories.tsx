@@ -42,10 +42,10 @@ export function TopCategories({ categories }: { categories: Category[] }) {
         <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
           {/* Was a hardcoded Uzbek string, so the Russian home page said
               "Sog'liq yo'nalishlari" over Russian cards. */}
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted">{t("eyebrow")}</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-legacy-muted">{t("eyebrow")}</p>
           <h2 id="categories-heading" className="font-display text-2xl font-extrabold tracking-tight text-balance text-fg sm:text-3xl lg:text-4xl">{t("title")}
           </h2>
-          <p className="mt-3 text-pretty text-base text-muted sm:text-lg">{t("subtitle")}</p>
+          <p className="mt-3 text-pretty text-base text-legacy-muted sm:text-lg">{t("subtitle")}</p>
         </div>
 
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4 lg:gap-6">
@@ -57,7 +57,7 @@ export function TopCategories({ categories }: { categories: Category[] }) {
               <Reveal key={c.id} index={Math.min(i, 6)} as="div" className="h-full">
                 <Link
                   href={`/products/${c.slug}`}
-                  className="group relative flex aspect-[3/4] w-full flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-[var(--shadow-pop)] md:aspect-[4/5]"
+                  className="group relative flex aspect-[3/4] w-full flex-col justify-between overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-[var(--shadow-legacy-pop)] md:aspect-[4/5]"
                 >
                   <div className="absolute inset-0 z-0">
                     {/* No photo for this category yet → the tile stays a

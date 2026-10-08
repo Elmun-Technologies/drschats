@@ -42,15 +42,15 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
 
   if (state === "sent") {
     return (
-      <div className="rounded-2xl border border-line bg-surface-2 px-5 py-4 text-center">
+      <div className="rounded-2xl border border-legacy-line bg-surface-2 px-5 py-4 text-center">
         <p className="text-sm font-semibold text-fg">{t("success")}</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-line bg-surface-2 px-5 py-4">
-      <label htmlFor="restock-phone" className="mb-3 block text-sm text-muted">
+    <div className="rounded-2xl border border-legacy-line bg-surface-2 px-5 py-4">
+      <label htmlFor="restock-phone" className="mb-3 block text-sm text-legacy-muted">
         {t("notify")}
       </label>
       <form onSubmit={handleSubmit} className="flex gap-2">
@@ -70,12 +70,12 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
           minLength={9}
           aria-describedby={state === "failed" ? "restock-error" : undefined}
           aria-invalid={state === "failed" || undefined}
-          className="flex-1 rounded-xl border border-line bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
+          className="flex-1 rounded-xl border border-legacy-line bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
         />
         <button
           type="submit"
           disabled={state === "loading"}
-          className="rounded-xl bg-fg px-4 py-2.5 text-sm font-semibold text-ink disabled:opacity-60 hover:bg-accent-strong hover:text-ink"
+          className="rounded-xl bg-fg px-4 py-2.5 text-sm font-semibold text-legacy-ink disabled:opacity-60 hover:bg-accent-strong hover:text-legacy-ink"
         >
           {state === "loading" ? t("submitting") : t("submit")}
         </button>

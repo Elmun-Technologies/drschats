@@ -34,7 +34,7 @@ export async function QuizPromo({ locale }: { locale: Locale }) {
   const shown = popular.items.filter((p) => p.images[0]?.url).slice(0, 3);
 
   return (
-    <section className="section-y bg-ink">
+    <section className="section-y bg-legacy-ink">
       <Container>
         <Reveal>
           <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-brand-deep shadow-[var(--shadow-card)]">

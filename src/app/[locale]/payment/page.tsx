@@ -27,10 +27,10 @@ const METHOD_COLORS = [
   "border-[#00B9F2]/30 bg-[#00B9F2]/8",
   "border-[#00AAEE]/30 bg-[#00AAEE]/8",
   "border-accent/30 bg-surface-2",
-  "border-line bg-surface-2",
+  "border-legacy-line bg-surface-2",
 ];
 
-const ICON_COLORS = ["text-[#00B9F2]", "text-[#00AAEE]", "text-signal", "text-muted"];
+const ICON_COLORS = ["text-[#00B9F2]", "text-[#00AAEE]", "text-signal", "text-legacy-muted"];
 
 export default async function PaymentPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
@@ -50,17 +50,17 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {methods.map((m, i) => (
             <Reveal key={m.title} index={i}>
-              <div className={`flex h-full flex-col rounded-2xl border p-6 ${METHOD_COLORS[i] ?? "border-line bg-surface"}`}>
-                <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-ink/40 ${ICON_COLORS[i] ?? "text-fg"}`}>
+              <div className={`flex h-full flex-col rounded-2xl border p-6 ${METHOD_COLORS[i] ?? "border-legacy-line bg-surface"}`}>
+                <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-legacy-ink/40 ${ICON_COLORS[i] ?? "text-fg"}`}>
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d={METHOD_ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
-                <span className="mb-2 w-fit rounded-full bg-ink/30 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted">
+                <span className="mb-2 w-fit rounded-full bg-legacy-ink/30 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-legacy-muted">
                   {m.meta}
                 </span>
                 <h3 className="font-display text-lg font-bold text-fg">{m.title}</h3>
-                <p className="mt-2 flex-1 text-sm text-muted">{m.text}</p>
+                <p className="mt-2 flex-1 text-sm text-legacy-muted">{m.text}</p>
               </div>
             </Reveal>
           ))}
@@ -74,7 +74,7 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
             </svg>
             <div>
               <p className="font-semibold text-fg">{t("secureTitle")}</p>
-              <p className="mt-1 text-sm text-muted">{t("secureNote")}</p>
+              <p className="mt-1 text-sm text-legacy-muted">{t("secureNote")}</p>
             </div>
           </div>
         </Reveal>

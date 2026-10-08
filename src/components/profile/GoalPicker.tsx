@@ -24,7 +24,7 @@ export function GoalPicker() {
   return (
     <fieldset>
       <legend className="font-display text-lg font-bold tracking-tight">{t("title")}</legend>
-      <p className="mt-1 text-sm text-muted">{t("description")}</p>
+      <p className="mt-1 text-sm text-legacy-muted">{t("description")}</p>
 
       <div className="mt-4 flex flex-wrap gap-2">
         {options.map((option) => {
@@ -41,8 +41,8 @@ export function GoalPicker() {
               onClick={() => toggle(option.id)}
               className={`min-h-11 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal ${
                 active
-                  ? "border-line-strong bg-surface-2 text-fg"
-                  : "border-line bg-surface text-fg hover:border-line-strong"
+                  ? "border-legacy-line-strong bg-surface-2 text-fg"
+                  : "border-legacy-line bg-surface text-fg hover:border-legacy-line-strong"
               }`}
             >
               {option.label}

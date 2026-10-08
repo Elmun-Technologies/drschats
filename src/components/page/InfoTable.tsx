@@ -12,10 +12,10 @@ export function InfoTable({ heading, rows }: { heading?: string; rows: { label: 
           </Reveal>
         )}
         <Reveal index={1}>
-          <dl className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-ink">
+          <dl className="divide-y divide-legacy-line overflow-hidden rounded-2xl border border-legacy-line bg-legacy-ink">
             {rows.map((r) => (
               <div key={r.label} className="grid gap-1 px-6 py-4 sm:grid-cols-[220px_1fr] sm:gap-4">
-                <dt className="text-sm text-muted">{r.label}</dt>
+                <dt className="text-sm text-legacy-muted">{r.label}</dt>
                 <dd className="text-sm font-semibold text-fg">{r.value}</dd>
               </div>
             ))}

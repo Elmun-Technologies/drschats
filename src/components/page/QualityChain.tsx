@@ -43,13 +43,13 @@ export async function QualityChain() {
         </p>
         <h2 id="quality-chain" className="mt-3 font-display text-3xl font-extrabold tracking-tight text-balance sm:text-4xl">{t("title")}
         </h2>
-        <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
+        <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
       </div>
 
       <ol className="mt-10 grid gap-4 md:grid-cols-3 lg:grid-cols-5">
         {STAGE_KEYS.map((key, i) => (
           <Reveal key={key} index={Math.min(i, 5)} as="li" className="h-full">
-            <div className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6">
+            <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-6">
               <div className="flex items-center gap-3">
                 <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-surface-2 text-fg">
                   <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
@@ -59,17 +59,17 @@ export async function QualityChain() {
                 <span className="font-display text-sm font-bold text-faint">{i + 1}</span>
               </div>
               <h3 className="mt-4 font-display text-base font-bold text-fg">{t(`${key}.title`)}</h3>
-              <p className="mt-2 text-sm text-muted">{t(`${key}.body`)}</p>
+              <p className="mt-2 text-sm text-legacy-muted">{t(`${key}.body`)}</p>
             </div>
           </Reveal>
         ))}
       </ol>
 
       <Reveal>
-        <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-line bg-ink p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-legacy-line bg-legacy-ink p-6 sm:flex-row sm:items-center sm:justify-between">
           <div className="max-w-2xl">
             <p className="font-display text-lg font-bold text-fg">{t("coaTitle")}</p>
-            <p className="mt-1 text-sm text-muted">{t("coaBody")}</p>
+            <p className="mt-1 text-sm text-legacy-muted">{t("coaBody")}</p>
           </div>
           <Link href="/licenses" className={`${buttonVariants("secondary")} shrink-0`}>
             {t("coaCta")}

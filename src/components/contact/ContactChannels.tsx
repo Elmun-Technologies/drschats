@@ -71,7 +71,7 @@ export async function ContactChannels() {
     <section aria-labelledby="contact-channels" className="mt-16">
       <h2 id="contact-channels" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("title")}
       </h2>
-      <p className="mt-2 text-muted">{t("subtitle")}</p>
+      <p className="mt-2 text-legacy-muted">{t("subtitle")}</p>
 
       <ul className="mt-8 grid gap-4 sm:grid-cols-2">
         {CHANNELS.map((channel, i) => (
@@ -81,7 +81,7 @@ export async function ContactChannels() {
               {...("external" in channel && channel.external
                 ? { target: "_blank", rel: "noopener noreferrer" }
                 : {})}
-              className="group flex h-full gap-4 rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-line-strong"
+              className="group flex h-full gap-4 rounded-2xl border border-legacy-line bg-surface p-5 transition-colors hover:border-legacy-line-strong"
             >
               <span
                 className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${TONES[channel.tone]}`}
@@ -94,7 +94,7 @@ export async function ContactChannels() {
                 <span className="block font-display text-base font-bold text-fg group-hover:text-fg">
                   {t(`${channel.key}.title`)}
                 </span>
-                <span className="mt-1 block text-sm text-muted">{t(`${channel.key}.description`)}</span>
+                <span className="mt-1 block text-sm text-legacy-muted">{t(`${channel.key}.description`)}</span>
                 <span className="mt-2 block truncate text-sm font-semibold text-fg">
                   {channel.action}
                 </span>

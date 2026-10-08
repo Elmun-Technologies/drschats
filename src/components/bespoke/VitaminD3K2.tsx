@@ -28,7 +28,7 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
     <article className="overflow-clip">
       <section ref={heroRef} className="relative flex min-h-[70svh] items-center">
         {/* Was a giant gold sun that scaled and drifted on scroll. */}
-        <div className="absolute inset-0 -z-10 bg-ink">
+        <div className="absolute inset-0 -z-10 bg-legacy-ink">
           <div className="product-hero" />
         </div>
 
@@ -36,7 +36,7 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
           <Container>
             <div className="mx-auto max-w-3xl py-24 text-center">
               <Reveal>
-                <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-line bg-surface-2 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+                <p className="mb-5 inline-flex items-center gap-2 rounded-full border border-legacy-line bg-surface-2 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-legacy-muted">
                   {product.badges[0]}
                 </p>
               </Reveal>
@@ -46,12 +46,12 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
                 </h1>
               </Reveal>
               <Reveal index={2}>
-                <p className="mx-auto mt-6 max-w-xl text-lg text-muted">{product.tagline}</p>
+                <p className="mx-auto mt-6 max-w-xl text-lg text-legacy-muted">{product.tagline}</p>
               </Reveal>
               <Reveal index={3}>
                 <div className="mt-8 flex flex-wrap justify-center gap-3">
                   {product.highlights.map((h) => (
-                    <span key={h} className="rounded-full border border-line bg-surface-2/60 px-4 py-2 text-sm text-fg backdrop-blur">
+                    <span key={h} className="rounded-full border border-legacy-line bg-surface-2/60 px-4 py-2 text-sm text-fg backdrop-blur">
                       {h}
                     </span>
                   ))}
@@ -63,7 +63,7 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
       </section>
 
       {/* Buy section */}
-      <section className="border-t border-line section-y">
+      <section className="border-t border-legacy-line section-y">
         <Container>
           <Breadcrumb product={product} />
           <div className="mt-8 grid gap-12 lg:grid-cols-2 lg:items-start">
@@ -84,7 +84,7 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
       </section>
 
       {/* Benefits cards with warm glow */}
-      <section className="border-t border-line bg-surface py-24">
+      <section className="border-t border-legacy-line bg-surface py-24">
         <Container>
           <Reveal>
             <h2 className="mb-14 max-w-2xl font-display text-2xl font-extrabold tracking-tight sm:text-4xl">{t("benefits")}
@@ -93,11 +93,11 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
           <div className="grid gap-5 md:grid-cols-3">
             {product.benefits.map((b, i) => (
               <Reveal key={b.title} index={i}>
-                <div className="group relative h-full overflow-hidden rounded-2xl border border-line bg-ink p-8">
+                <div className="group relative h-full overflow-hidden rounded-2xl border border-legacy-line bg-legacy-ink p-8">
                   <div className="transition-opacity duration-500 group-hover:opacity-100" />
                   <span className="font-display text-4xl font-bold text-faint">0{i + 1}</span>
                   <h3 className="mt-4 font-display text-lg font-bold">{b.title}</h3>
-                  <p className="mt-2 text-sm text-muted">{b.description}</p>
+                  <p className="mt-2 text-sm text-legacy-muted">{b.description}</p>
                 </div>
               </Reveal>
             ))}
@@ -112,13 +112,13 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
             <Reveal>
               <div>
                 <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("ingredients")}</h2>
-                <div className="mt-8 overflow-hidden rounded-2xl border border-line">
+                <div className="mt-8 overflow-hidden rounded-2xl border border-legacy-line">
                   <table className="w-full text-left text-sm">
-                    <tbody className="divide-y divide-line">
+                    <tbody className="divide-y divide-legacy-line">
                       {product.ingredients.map((row) => (
                         <tr key={row.name} className="bg-surface">
                           <td className="px-6 py-4 font-medium text-fg">{row.name}</td>
-                          <td className="px-6 py-4 text-right text-muted">{row.amount}</td>
+                          <td className="px-6 py-4 text-right text-legacy-muted">{row.amount}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -127,9 +127,9 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
               </div>
             </Reveal>
             <Reveal index={1}>
-              <div className="h-full rounded-2xl border border-line bg-surface p-8">
+              <div className="h-full rounded-2xl border border-legacy-line bg-surface p-8">
                 <h3 className="font-display text-lg font-bold">{t("howToUse")}</h3>
-                <p className="mt-3 text-muted">{product.howToUse}</p>
+                <p className="mt-3 text-legacy-muted">{product.howToUse}</p>
               </div>
             </Reveal>
           </div>
@@ -162,9 +162,9 @@ export function VitaminD3K2({ product, upsells }: BespokeProps) {
             <div className="grid gap-4 md:grid-cols-2">
               {product.reviews.map((r, i) => (
                 <Reveal key={i} index={i}>
-                  <figure className="h-full rounded-2xl border border-line bg-surface p-6">
+                  <figure className="h-full rounded-2xl border border-legacy-line bg-surface p-6">
                     <StarRating rating={r.rating} />
-                    <blockquote className="mt-4 text-muted">“{r.text}”</blockquote>
+                    <blockquote className="mt-4 text-legacy-muted">“{r.text}”</blockquote>
                     <figcaption className="mt-4 text-sm font-medium text-fg">{r.author}</figcaption>
                   </figure>
                 </Reveal>

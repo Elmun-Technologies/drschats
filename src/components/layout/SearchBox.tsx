@@ -200,7 +200,7 @@ export function SearchBox({
         /* The input clears its own outline, and nothing replaced it — tabbing
            into search gave no visual signal at all. The ring goes on the form
            so it traces the rounded field rather than the bare input. */
-        className="flex items-center rounded-full border border-line-strong bg-surface pl-5 pr-1.5 focus-within:ring-2 focus-within:ring-signal focus-within:ring-offset-2 focus-within:ring-offset-ink"
+        className="flex items-center rounded-full border border-legacy-line-strong bg-surface pl-5 pr-1.5 focus-within:ring-2 focus-within:ring-signal focus-within:ring-offset-2 focus-within:ring-offset-legacy-ink"
       >
         <input
           ref={inputRef}
@@ -226,7 +226,7 @@ export function SearchBox({
         <button
           type="submit"
           aria-label={t("search")}
-          className="flex h-9 w-9 items-center justify-center rounded-full bg-fg text-ink transition-colors hover:bg-accent-strong hover:text-ink"
+          className="flex h-9 w-9 items-center justify-center rounded-full bg-fg text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
         >
           <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <circle cx="11" cy="11" r="7" />
@@ -240,7 +240,7 @@ export function SearchBox({
           id={listboxId}
           role="listbox"
           aria-label={t("search")}
-          className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-2xl border border-line bg-ink py-2 shadow-[var(--shadow-pop)]"
+          className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-2xl border border-legacy-line bg-legacy-ink py-2 shadow-[var(--shadow-legacy-pop)]"
         >
           {(isSearching ? categoryMatches.length > 0 : popular.length > 0) && (
             <li role="presentation" className="px-4 pb-1 pt-2 text-xs font-bold uppercase tracking-widest text-faint">
@@ -311,7 +311,7 @@ export function SearchBox({
                 e.preventDefault();
                 goToResults();
               }}
-              className="mt-1 cursor-pointer border-t border-line px-4 pb-1 pt-3 text-sm font-semibold text-fg"
+              className="mt-1 cursor-pointer border-t border-legacy-line px-4 pb-1 pt-3 text-sm font-semibold text-fg"
             >
               {shop("searchResults", { query: trimmed })}
             </li>

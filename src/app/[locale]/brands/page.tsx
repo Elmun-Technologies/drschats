@@ -35,7 +35,7 @@ export default async function BrandsPage({ params }: { params: Promise<{ locale:
           <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
             {sanityBrands.map((brand, i) => (
               <Reveal key={brand.slug} index={i}>
-                <div className="flex h-full flex-col gap-4 rounded-2xl border border-line bg-ink p-6">
+                <div className="flex h-full flex-col gap-4 rounded-2xl border border-legacy-line bg-legacy-ink p-6">
                   {brand.logo && (
                     <div className="relative h-16 w-full">
                       <Image src={brand.logo} alt={brand.name} fill className="object-contain object-left" sizes="200px" />
@@ -44,7 +44,7 @@ export default async function BrandsPage({ params }: { params: Promise<{ locale:
                   <div>
                     <h2 className="font-display text-lg font-bold">{brand.name}</h2>
                     {brand.country && <p className="text-xs text-faint">{brand.country}</p>}
-                    <p className="mt-2 text-sm text-muted">{brand.description}</p>
+                    <p className="mt-2 text-sm text-legacy-muted">{brand.description}</p>
                   </div>
                 </div>
               </Reveal>

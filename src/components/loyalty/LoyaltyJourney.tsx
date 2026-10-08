@@ -33,7 +33,7 @@ export function LoyaltyJourney({
             <h1 id="loyalty-journey-title" className="mt-3 font-display text-3xl font-extrabold tracking-tight text-fg sm:text-5xl">
               {title}
             </h1>
-            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg">{subtitle}</p>
+            <p className="mx-auto mt-4 max-w-xl text-base leading-relaxed text-legacy-muted sm:text-lg">{subtitle}</p>
           </div>
         </Reveal>
 
@@ -67,15 +67,15 @@ function JourneyItem({ step, number, isLast }: { step: LoyaltyJourneyStep; numbe
   return (
     <>
       <Reveal index={number - 1} className="h-full">
-        <article className="relative mx-auto flex min-h-[22rem] w-full max-w-[23rem] flex-col items-center overflow-visible rounded-2xl border border-line/70 bg-surface px-6 pb-8 pt-9 text-center shadow-[var(--shadow-card)] sm:min-h-[23.5rem] sm:px-9">
-          <span className="absolute -left-2 top-0 flex h-16 w-16 -translate-y-1/3 items-center justify-center rounded-full border border-line/60 bg-ink font-display text-3xl font-extrabold text-fg shadow-sm sm:-left-3 sm:h-[4.75rem] sm:w-[4.75rem] sm:text-4xl">
+        <article className="relative mx-auto flex min-h-[22rem] w-full max-w-[23rem] flex-col items-center overflow-visible rounded-2xl border border-legacy-line/70 bg-surface px-6 pb-8 pt-9 text-center shadow-[var(--shadow-card)] sm:min-h-[23.5rem] sm:px-9">
+          <span className="absolute -left-2 top-0 flex h-16 w-16 -translate-y-1/3 items-center justify-center rounded-full border border-legacy-line/60 bg-legacy-ink font-display text-3xl font-extrabold text-fg shadow-sm sm:-left-3 sm:h-[4.75rem] sm:w-[4.75rem] sm:text-4xl">
             {number}
           </span>
 
           <JourneyIcon type={step.icon} />
           <h2 className="mt-7 max-w-[15rem] font-display text-xl font-extrabold leading-tight text-fg sm:text-2xl">{step.title}
           </h2>
-          <p className="mt-4 max-w-[16rem] text-sm leading-relaxed text-muted sm:text-base">{step.description}</p>
+          <p className="mt-4 max-w-[16rem] text-sm leading-relaxed text-legacy-muted sm:text-base">{step.description}</p>
         </article>
       </Reveal>
 

@@ -54,7 +54,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     <Reveal
       as="article"
       index={index % 4}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-xs transition-all duration-300 hover:border-line-strong hover:shadow-[var(--shadow-card)]"
+      className="group relative flex flex-col overflow-hidden rounded-2xl border border-legacy-line bg-surface shadow-xs transition-all duration-300 hover:border-legacy-line-strong hover:shadow-[var(--shadow-card)]"
     >
       {/* Photo */}
       <div className="relative aspect-square w-full p-3 sm:p-4">
@@ -90,7 +90,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
             {discount > 0 ? (
               <DiscountBadge percent={discount} />
             ) : product.badges?.[0] ? (
-              <span className="rounded-full border border-line-strong bg-ink/90 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted backdrop-blur-xs">
+              <span className="rounded-full border border-legacy-line-strong bg-legacy-ink/90 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-legacy-muted backdrop-blur-xs">
                 {product.badges[0]}
               </span>
             ) : null}
@@ -105,7 +105,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           <div className="absolute right-2.5 top-2.5 z-10">
             <WishlistButton
               productId={product.id}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-ink/90 text-fg shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-line-strong hover:text-danger"
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-legacy-line bg-legacy-ink/90 text-fg shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-legacy-line-strong hover:text-danger"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         {/* One metadata line: origin, then the first highlight. Never both
             large — at 320px two wrapped lines of grey push the price below the
             fold of the card. */}
-        <div className="mt-1.5 min-h-[1.15rem] text-[11px] leading-tight text-muted">
+        <div className="mt-1.5 min-h-[1.15rem] text-[11px] leading-tight text-legacy-muted">
           {product.origin && (
             <span className="inline-flex items-center gap-1 font-semibold">
               <svg viewBox="0 0 24 24" aria-hidden className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
@@ -138,7 +138,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <div className="mt-2 flex items-center justify-between gap-2">
           <StarRating rating={product.rating} className="origin-left scale-90" />
           {product.servings && (
-            <span className="truncate rounded-md bg-surface-2 px-1.5 py-0.5 text-[10px] font-semibold text-muted">
+            <span className="truncate rounded-md bg-surface-2 px-1.5 py-0.5 text-[10px] font-semibold text-legacy-muted">
               {product.servings}
             </span>
           )}
@@ -154,7 +154,7 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
         <button
           onClick={handleAdd}
           disabled={!product.inStock}
-          className="mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent py-2.5 text-[11px] font-bold uppercase tracking-wider text-brand-deep shadow-[var(--shadow-cta)] transition-all duration-300 hover:bg-accent-strong hover:text-ink active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-muted disabled:shadow-none sm:text-xs"
+          className="mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent py-2.5 text-[11px] font-bold uppercase tracking-wider text-brand-deep shadow-[var(--shadow-cta)] transition-all duration-300 hover:bg-accent-strong hover:text-legacy-ink active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-legacy-muted disabled:shadow-none sm:text-xs"
         >
           <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5">
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />

@@ -42,7 +42,7 @@ export function BackToTop() {
           exit={{ opacity: 0, scale: 0.6 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label={t("backToTop")}
-          className="fixed right-3 bottom-[calc(var(--bottom-nav)+0.75rem)] z-30 flex h-9 w-9 items-center justify-center rounded-full border border-line-strong bg-ink/90 text-fg shadow-md backdrop-blur-sm transition-colors hover:border-line-strong hover:text-fg"
+          className="fixed right-3 bottom-[calc(var(--bottom-nav)+0.75rem)] z-30 flex h-9 w-9 items-center justify-center rounded-full border border-legacy-line-strong bg-legacy-ink/90 text-fg shadow-md backdrop-blur-sm transition-colors hover:border-legacy-line-strong hover:text-fg"
         >
           <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
             <path d="M12 19V5M6 11l6-6 6 6" strokeLinecap="round" strokeLinejoin="round" />

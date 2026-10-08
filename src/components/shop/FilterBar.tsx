@@ -55,7 +55,7 @@ export function FilterBar({
   }
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5">
+    <div className="flex flex-col gap-4 rounded-2xl border border-legacy-line bg-surface p-5">
       <div className="flex items-center justify-between">
         <span className="text-sm font-semibold text-fg">{t("filters")}</span>
         {hasActive && (
@@ -88,7 +88,7 @@ export function FilterBar({
             value={min}
             onChange={(e) => setMin(e.target.value.replace(/\D/g, ""))}
             inputMode="numeric"
-            className="h-10 w-28 rounded-lg border border-line bg-surface-2 px-3 text-sm outline-none focus:border-accent"
+            className="h-10 w-28 rounded-lg border border-legacy-line bg-surface-2 px-3 text-sm outline-none focus:border-accent"
             placeholder="0"
           />
         </label>
@@ -98,13 +98,13 @@ export function FilterBar({
             value={max}
             onChange={(e) => setMax(e.target.value.replace(/\D/g, ""))}
             inputMode="numeric"
-            className="h-10 w-28 rounded-lg border border-line bg-surface-2 px-3 text-sm outline-none focus:border-accent"
+            className="h-10 w-28 rounded-lg border border-legacy-line bg-surface-2 px-3 text-sm outline-none focus:border-accent"
             placeholder="∞"
           />
         </label>
         <button
           type="submit"
-          className="h-10 rounded-lg bg-fg px-4 text-sm font-semibold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
+          className="h-10 rounded-lg bg-fg px-4 text-sm font-semibold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
         >
           {t("apply")}
         </button>
@@ -128,8 +128,8 @@ function Chip({
       className={cn(
             "rounded-full border px-3 py-1.5 text-sm transition-colors",
         active
-          ? "border-line-strong bg-surface-2 text-fg"
-          : "border-line text-muted hover:border-line-strong hover:text-fg",
+          ? "border-legacy-line-strong bg-surface-2 text-fg"
+          : "border-legacy-line text-legacy-muted hover:border-legacy-line-strong hover:text-fg",
       )}
     >
       {children}

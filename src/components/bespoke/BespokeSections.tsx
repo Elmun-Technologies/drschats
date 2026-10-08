@@ -32,7 +32,7 @@ export function BespokeSections({
   return (
     <>
       {/* Buy */}
-      <section className="border-t border-line section-y">
+      <section className="border-t border-legacy-line section-y">
         <Container>
           <Breadcrumb product={product} />
           <div className="mt-8 grid gap-12 lg:grid-cols-2 lg:items-start">
@@ -53,19 +53,19 @@ export function BespokeSections({
       </section>
 
       {/* Ingredients + how to use */}
-      <section className="border-t border-line section-y">
+      <section className="border-t border-legacy-line section-y">
         <Container>
           <div className="grid gap-12 lg:grid-cols-2">
             <Reveal>
               <div>
                 <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("ingredients")}</h2>
-                <div className="mt-8 overflow-hidden rounded-2xl border border-line">
+                <div className="mt-8 overflow-hidden rounded-2xl border border-legacy-line">
                   <table className="w-full text-left text-sm">
-                    <tbody className="divide-y divide-line">
+                    <tbody className="divide-y divide-legacy-line">
                       {product.ingredients.map((row) => (
                         <tr key={row.name} className="bg-surface">
                           <td className="px-6 py-4 font-medium text-fg">{row.name}</td>
-                          <td className="px-6 py-4 text-right text-muted">{row.amount}</td>
+                          <td className="px-6 py-4 text-right text-legacy-muted">{row.amount}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -74,12 +74,12 @@ export function BespokeSections({
               </div>
             </Reveal>
             <Reveal index={1}>
-              <div className="h-full rounded-2xl border border-line bg-surface p-8">
+              <div className="h-full rounded-2xl border border-legacy-line bg-surface p-8">
                 <h3 className="font-display text-lg font-bold">{t("howToUse")}</h3>
-                <p className="mt-3 text-muted">{product.howToUse}</p>
+                <p className="mt-3 text-legacy-muted">{product.howToUse}</p>
                 <ul className="mt-6 space-y-2">
                   {product.highlights.map((h, i) => (
-                    <li key={h} className="flex items-center gap-3 text-sm text-muted">
+                    <li key={h} className="flex items-center gap-3 text-sm text-legacy-muted">
                       <span className={`font-display text-lg font-bold ${numberColor}`}>0{i + 1}</span>
                       {h}
                     </li>
@@ -92,7 +92,7 @@ export function BespokeSections({
       </section>
 
       {/* Upsell */}
-      <section className="border-t border-line section-y-tight">
+      <section className="border-t border-legacy-line section-y-tight">
         <Container>
           <UpsellRail offers={upsells} />
         </Container>
@@ -100,7 +100,7 @@ export function BespokeSections({
 
       {/* FAQ */}
       {product.faq.length > 0 && (
-        <section className="border-t border-line section-y">
+        <section className="border-t border-legacy-line section-y">
           <Container size="narrow">
             <Reveal>
               <h2 className="mb-8 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("faq")}</h2>
@@ -112,7 +112,7 @@ export function BespokeSections({
 
       {/* Reviews */}
       {product.reviews.length > 0 && (
-        <section className="border-t border-line section-y">
+        <section className="border-t border-legacy-line section-y">
           <Container>
             <Reveal>
               <h2 className="mb-8 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("reviews")}</h2>
@@ -120,9 +120,9 @@ export function BespokeSections({
             <div className="grid gap-4 md:grid-cols-2">
               {product.reviews.map((r, i) => (
                 <Reveal key={i} index={i}>
-                  <figure className="h-full rounded-2xl border border-line bg-surface p-6">
+                  <figure className="h-full rounded-2xl border border-legacy-line bg-surface p-6">
                     <StarRating rating={r.rating} />
-                    <blockquote className="mt-4 text-muted">“{r.text}”</blockquote>
+                    <blockquote className="mt-4 text-legacy-muted">“{r.text}”</blockquote>
                     <figcaption className="mt-4 text-sm font-medium text-fg">{r.author}</figcaption>
                   </figure>
                 </Reveal>

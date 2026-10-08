@@ -20,10 +20,10 @@ export async function HomeFaq() {
       <JsonLd data={faqLd(items)} />
       <div className="grid gap-10 lg:grid-cols-[minmax(0,360px)_1fr] lg:items-start">
         <div className="lg:sticky lg:top-32">
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted">{t("eyebrow")}</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-legacy-muted">{t("eyebrow")}</p>
           <h2 className="font-display text-2xl font-extrabold tracking-tight text-balance text-fg sm:text-3xl">{t("title")}
           </h2>
-          <p className="mt-3 text-pretty text-muted">{t("subtitle")}</p>
+          <p className="mt-3 text-pretty text-legacy-muted">{t("subtitle")}</p>
         </div>
         <FaqAccordion items={items} />
       </div>

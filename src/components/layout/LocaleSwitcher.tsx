@@ -21,7 +21,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
     <div className={cn("relative", className)}>
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-1.5 rounded-full border border-line px-3 py-1.5 text-sm font-medium text-fg transition-colors hover:border-line-strong"
+        className="flex items-center gap-1.5 rounded-full border border-legacy-line px-3 py-1.5 text-sm font-medium text-fg transition-colors hover:border-legacy-line-strong"
         aria-haspopup="listbox"
         aria-expanded={open}
       >
@@ -35,7 +35,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
           <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
           <ul
             role="listbox"
-            className="absolute right-0 z-20 mt-2 min-w-[160px] overflow-hidden rounded-xl border border-line bg-surface-2 py-1 shadow-[var(--shadow-pop)]"
+            className="absolute right-0 z-20 mt-2 min-w-[160px] overflow-hidden rounded-xl border border-legacy-line bg-surface-2 py-1 shadow-[var(--shadow-legacy-pop)]"
           >
             {locales.map((l) => (
               <li key={l}>
@@ -43,7 +43,7 @@ export function LocaleSwitcher({ className }: { className?: string }) {
                   onClick={() => switchTo(l)}
                   className={cn(
                     "flex w-full items-center justify-between px-4 py-2.5 text-left text-sm transition-colors hover:bg-surface-3",
-                    l === locale ? "font-semibold text-fg" : "text-muted",
+                    l === locale ? "font-semibold text-fg" : "text-legacy-muted",
                   )}
                 >
                   {localeNames[l]}

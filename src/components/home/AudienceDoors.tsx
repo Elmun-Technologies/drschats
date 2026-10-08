@@ -61,7 +61,7 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
   return (
     <Section tone="ink" aria-labelledby="audience-heading">
       <div className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-muted">{t("eyebrow")}</p>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.22em] text-legacy-muted">{t("eyebrow")}</p>
         <Reveal>
           <h2
             id="audience-heading"
@@ -70,7 +70,7 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
             {audience.question}
           </h2>
         </Reveal>
-        <p className="mt-3 text-pretty text-base text-muted sm:text-lg">{t("subtitle")}</p>
+        <p className="mt-3 text-pretty text-base text-legacy-muted sm:text-lg">{t("subtitle")}</p>
       </div>
 
       <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -78,7 +78,7 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
           <Reveal key={option.id} index={Math.min(index, 6)} as="li" className="h-full">
             <Link
               href={{ pathname: "/quiz", query: { who: option.id } }}
-              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface transition-colors duration-300 hover:border-line-strong"
+              className="group flex h-full flex-col overflow-hidden rounded-2xl border border-legacy-line bg-surface transition-colors duration-300 hover:border-legacy-line-strong"
             >
               <span className="relative block aspect-[4/3] overflow-hidden bg-surface-2">
                 <Image
@@ -88,7 +88,7 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover"
                 />
-                <span className="absolute left-3 top-3 flex h-10 w-10 items-center justify-center rounded-xl bg-ink/85 text-signal backdrop-blur-sm">
+                <span className="absolute left-3 top-3 flex h-10 w-10 items-center justify-center rounded-xl bg-legacy-ink/85 text-signal backdrop-blur-sm">
                   <svg
                     viewBox="0 0 24 24"
                     aria-hidden
@@ -108,8 +108,8 @@ export async function AudienceDoors({ locale }: { locale: Locale }) {
                 <span className="font-display text-xl font-extrabold leading-snug text-brand-deep">
                   {option.label}
                 </span>
-                <span className="text-sm text-muted">{t(SUBTITLE_KEYS[option.id] ?? "subtitleFallback")}</span>
-                <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-xs font-extrabold uppercase tracking-widest text-muted transition-colors group-hover:text-fg">
+                <span className="text-sm text-legacy-muted">{t(SUBTITLE_KEYS[option.id] ?? "subtitleFallback")}</span>
+                <span className="mt-auto inline-flex items-center gap-1.5 pt-3 text-xs font-extrabold uppercase tracking-widest text-legacy-muted transition-colors group-hover:text-fg">
                   {t("cta")}
                   <svg
                     viewBox="0 0 20 20"

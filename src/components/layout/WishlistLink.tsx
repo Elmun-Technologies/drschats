@@ -21,13 +21,13 @@ export function WishlistLink({ label }: { label: string }) {
     <Link
       href="/wishlist"
       aria-label={label}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-line-strong hover:text-fg"
+      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line text-fg transition-colors hover:border-legacy-line-strong hover:text-fg"
     >
       <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
         <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78L12 21.23l8.84-8.84a5.5 5.5 0 000-7.78z" />
       </svg>
       {mounted && count > 0 && (
-        <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-fg px-1 text-[11px] font-bold tabular-nums text-ink">
+        <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-fg px-1 text-[11px] font-bold tabular-nums text-legacy-ink">
           {count}
         </span>
       )}

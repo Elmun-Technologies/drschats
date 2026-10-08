@@ -100,7 +100,7 @@ export function AuthForm() {
   }
 
   return (
-    <div className="mx-auto max-w-md rounded-2xl border border-line bg-ink p-6 sm:p-8">
+    <div className="mx-auto max-w-md rounded-2xl border border-legacy-line bg-legacy-ink p-6 sm:p-8">
       <h2 className="font-display text-lg font-bold text-fg text-fg">{t("title")}</h2>
 
       {step === "phone" && (
@@ -111,7 +111,7 @@ export function AuthForm() {
           }}
           className="mt-5 flex flex-col gap-4"
         >
-          <p className="text-sm text-muted">{t("otpIntro")}</p>
+          <p className="text-sm text-legacy-muted">{t("otpIntro")}</p>
           <Field
             id="account-phone"
             label={t("phone")}
@@ -130,13 +130,13 @@ export function AuthForm() {
 
       {step === "link" && (
         <div className="mt-5 flex flex-col gap-4">
-          <p className="text-sm text-muted">{t("linkIntro")}</p>
+          <p className="text-sm text-legacy-muted">{t("linkIntro")}</p>
           {telegramLink ? (
             <a
               href={telegramLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-full bg-fg px-6 py-3 text-center text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
+              className="rounded-full bg-fg px-6 py-3 text-center text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
             >
               {t("linkCta")}
             </a>
@@ -156,7 +156,7 @@ export function AuthForm() {
 
       {step === "code" && (
         <form onSubmit={submitCode} className="mt-5 flex flex-col gap-4">
-          <p className="text-sm text-muted">{t("codeIntro", { phone })}</p>
+          <p className="text-sm text-legacy-muted">{t("codeIntro", { phone })}</p>
           <Field
             ref={codeRef}
             id="account-code"
@@ -184,7 +184,7 @@ export function AuthForm() {
                 setCode("");
                 setError(null);
               }}
-              className="font-semibold text-muted hover:text-fg"
+              className="font-semibold text-legacy-muted hover:text-fg"
             >
               {t("changePhone")}
             </button>
@@ -218,7 +218,7 @@ function SubmitButton({
     <button
       type="submit"
       disabled={busy || disabled}
-      className="rounded-full bg-fg px-6 py-3 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink disabled:opacity-60"
+      className="rounded-full bg-fg px-6 py-3 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink disabled:opacity-60"
     >
       {busy ? "…" : children}
     </button>
@@ -252,7 +252,7 @@ function Field({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         aria-describedby={hint ? `${id}-hint` : undefined}
-        className="w-full rounded-xl border border-line bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
+        className="w-full rounded-xl border border-legacy-line bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
         {...rest}
       />
       {hint && (

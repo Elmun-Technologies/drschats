@@ -204,15 +204,15 @@ export function QuizFlow({
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between text-xs sm:text-sm text-muted">
+      <div className="flex items-center justify-between text-xs sm:text-sm text-legacy-muted">
         <div className="flex items-center gap-2">
-          <span className="rounded-full border border-line bg-surface-2 px-3 py-1 text-xs font-semibold tabular-nums text-fg">
+          <span className="rounded-full border border-legacy-line bg-surface-2 px-3 py-1 text-xs font-semibold tabular-nums text-fg">
             {t("stepOf", { step: stepIndex + 1, total: visible.length })}
           </span>
           {/* The duration lives in the page title. A second, different estimate
               ("~1.5 daqiqa" against "2 daqiqada") only made both look made up. */}
         </div>
-        <span className="font-semibold tabular-nums text-muted">{progress}%</span>
+        <span className="font-semibold tabular-nums text-legacy-muted">{progress}%</span>
       </div>
 
       <div
@@ -244,7 +244,7 @@ export function QuizFlow({
             <legend id={`q-${question.id}`} className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
               {question.question}
             </legend>
-            {question.hint && <p className="mt-2 text-sm text-muted">{question.hint}</p>}
+            {question.hint && <p className="mt-2 text-sm text-legacy-muted">{question.hint}</p>}
 
             {/* role="radio" has to be owned by a radiogroup — a fieldset maps to
                 plain `group`, which leaves the radios unowned and costs the
@@ -276,7 +276,7 @@ export function QuizFlow({
                       "group flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 text-left text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
                       isSelected
                         ? "border-signal/50 bg-signal-soft text-fg"
-                        : "border-line bg-surface text-muted hover:border-line-strong hover:text-fg",
+                        : "border-legacy-line bg-surface text-legacy-muted hover:border-legacy-line-strong hover:text-fg",
                     )}
                   >
                     <div className="flex items-center gap-3.5">
@@ -291,7 +291,7 @@ export function QuizFlow({
                       className={cn(
                         "flex h-5 w-5 shrink-0 items-center justify-center border transition-all",
                         question.multiSelect ? "rounded-md" : "rounded-full",
-                        isSelected ? "border-signal bg-signal text-white" : "border-line-strong",
+                        isSelected ? "border-signal bg-signal text-white" : "border-legacy-line-strong",
                       )}
                     >
                       {isSelected && (
@@ -317,7 +317,7 @@ export function QuizFlow({
                   </div>
                   <div>
                     <span className="mb-0.5 block font-semibold text-fg">{t("guidanceLabel")}</span>
-                    <span className="leading-relaxed text-muted">{question.guidance}</span>
+                    <span className="leading-relaxed text-legacy-muted">{question.guidance}</span>
                   </div>
                 </div>
               </div>
@@ -331,7 +331,7 @@ export function QuizFlow({
           type="button"
           onClick={() => setStep((s) => Math.max(0, s - 1))}
           disabled={step === 0}
-          className="rounded-full px-5 py-2.5 text-sm font-semibold text-muted transition-colors hover:bg-surface-2 hover:text-fg disabled:opacity-40 disabled:hover:bg-transparent"
+          className="rounded-full px-5 py-2.5 text-sm font-semibold text-legacy-muted transition-colors hover:bg-surface-2 hover:text-fg disabled:opacity-40 disabled:hover:bg-transparent"
         >
           {t("back")}
         </button>
@@ -340,7 +340,7 @@ export function QuizFlow({
           <button
             type="button"
             onClick={goNext}
-            className="rounded-full px-4 py-2.5 text-sm font-medium text-muted transition-colors hover:bg-surface-2 hover:text-fg"
+            className="rounded-full px-4 py-2.5 text-sm font-medium text-legacy-muted transition-colors hover:bg-surface-2 hover:text-fg"
           >
             {t("skip")}
           </button>
@@ -348,7 +348,7 @@ export function QuizFlow({
             type="button"
             onClick={goNext}
             disabled={selected.length === 0 || submitting}
-            className="rounded-full bg-fg px-8 py-3.5 text-sm font-bold text-ink transition-colors hover:bg-brand-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:opacity-40"
+            className="rounded-full bg-fg px-8 py-3.5 text-sm font-bold text-legacy-ink transition-colors hover:bg-brand-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-legacy-ink disabled:opacity-40"
           >
             {isLast ? t("finish") : t("next")}
           </button>

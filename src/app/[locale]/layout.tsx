@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import localFont from "next/font/local";
+import { onest, playfair } from "@/styles/fonts";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getMessages, getTranslations } from "next-intl/server";
 import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routing";
@@ -69,7 +70,7 @@ export default async function LocaleLayout({
   ]);
 
   return (
-    <html lang={localeHtmlLang[locale as Locale]} className={exo2.variable}>
+    <html lang={localeHtmlLang[locale as Locale]} className={`${exo2.variable} ${onest.variable} ${playfair.variable}`}>
       <head>
         <link rel="manifest" href="/manifest.json" />
         <meta name="theme-color" content="#2d2a25" />
@@ -82,7 +83,7 @@ export default async function LocaleLayout({
           <PromotionsProvider promotions={promotions}>
             <a
               href="#main-content"
-              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-fg focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-ink"
+              className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-fg focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-legacy-ink"
             >
               {tc("skipToContent")}
             </a>

@@ -55,19 +55,19 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
   if (!current) return null;
 
   return (
-    <section className="bg-ink pb-9 pt-4 sm:pb-12 sm:pt-6">
+    <section className="bg-legacy-ink pb-9 pt-4 sm:pb-12 sm:pt-6">
       <Container size="wide">
-        <div className="relative overflow-hidden rounded-3xl rounded-2xl border border-line bg-surface shadow-[var(--shadow-card)] sm:rounded-3xl">
+        <div className="relative overflow-hidden rounded-3xl rounded-2xl border border-legacy-line bg-surface shadow-[var(--shadow-card)] sm:rounded-3xl">
           <div className="grid lg:min-h-[520px] lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
             <div className="relative z-10 flex flex-col px-7 pb-9 pt-12 sm:px-12 sm:pb-12 sm:pt-16 lg:px-16 lg:pb-16 lg:pt-20">
               <div key={active} className="hero-slide-in relative max-w-xl">
-                <p className="text-xs font-extrabold uppercase leading-relaxed tracking-[0.16em] text-muted sm:text-sm">
+                <p className="text-xs font-extrabold uppercase leading-relaxed tracking-[0.16em] text-legacy-muted sm:text-sm">
                   {current.eyebrow}
                 </p>
                 <h1 className="mt-5 font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-fg sm:text-5xl xl:text-6xl">
                   {current.title}
                 </h1>
-                <p className="mt-5 max-w-lg text-base leading-relaxed text-muted sm:text-lg">
+                <p className="mt-5 max-w-lg text-base leading-relaxed text-legacy-muted sm:text-lg">
                   {current.subtitle}
                 </p>
 
@@ -102,7 +102,7 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
               </div>
             </div>
 
-            <div className="relative min-h-[20rem] overflow-hidden border-t border-line bg-surface-2 sm:min-h-[26rem] lg:min-h-full lg:border-l lg:border-t-0">
+            <div className="relative min-h-[20rem] overflow-hidden border-t border-legacy-line bg-surface-2 sm:min-h-[26rem] lg:min-h-full lg:border-l lg:border-t-0">
               {featured?.images[0]?.url ? (
                 <Link href={`/product/${featured.slug}`} className="group absolute inset-0 flex flex-col">
                   <span className="relative flex-1 overflow-hidden">
@@ -130,14 +130,14 @@ export function HeroBento({ products = [] }: { products?: Product[] }) {
                       className="object-contain p-10 drop-shadow-[0_20px_30px_rgba(45,42,37,0.28)] transition-transform duration-500 group-hover:scale-[1.03] sm:p-14"
                     />
                   </span>
-                  <span className="relative border-t border-line bg-ink/85 px-6 py-4 backdrop-blur-sm">
+                  <span className="relative border-t border-legacy-line bg-legacy-ink/85 px-6 py-4 backdrop-blur-sm">
                     <span className="block font-display text-sm font-bold text-fg">{featured.name}</span>
                     <span className="mt-1 flex items-baseline gap-2">
                       <b className="whitespace-nowrap font-display text-base font-extrabold tabular-nums text-fg sm:text-lg">
                         {formatMoney(featured.price, locale)}
                       </b>
                       {featured.oldPrice && (
-                        <s className="text-xs tabular-nums text-muted line-through">
+                        <s className="text-xs tabular-nums text-legacy-muted line-through">
                           {formatMoney(featured.oldPrice, locale)}
                         </s>
                       )}

@@ -48,7 +48,7 @@ export function MobileBottomNav() {
             <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
           {cartCount > 0 && (
-            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-fg text-[10px] font-bold tabular-nums text-ink">
+            <span className="absolute -right-1.5 -top-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-fg text-[10px] font-bold tabular-nums text-legacy-ink">
               {cartCount > 9 ? "9+" : cartCount}
             </span>
           )}
@@ -67,11 +67,11 @@ export function MobileBottomNav() {
   ] as const;
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 h-[var(--bottom-nav)] border-t border-line bg-ink/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur-lg md:hidden">
+    <nav className="fixed inset-x-0 bottom-0 z-40 h-[var(--bottom-nav)] border-t border-legacy-line bg-legacy-ink/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur-lg md:hidden">
       <div className="grid h-full grid-cols-4">
         {tabs.map((tab) => {
           const active = tab.href ? isActive(tab.href) : false;
-          const cls = `relative flex flex-col items-center justify-center gap-1 pt-1.5 text-[10px] font-semibold transition-colors ${active ? "text-fg" : "text-muted"}`;
+          const cls = `relative flex flex-col items-center justify-center gap-1 pt-1.5 text-[10px] font-semibold transition-colors ${active ? "text-fg" : "text-legacy-muted"}`;
 
           // A hairline marks the active tab. It used to be gold text, which
           // put the money colour on plain navigation.

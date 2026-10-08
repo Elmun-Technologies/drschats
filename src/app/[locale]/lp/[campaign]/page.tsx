@@ -39,7 +39,7 @@ export default async function CampaignLanding({
             <h1 className="font-display text-3xl font-extrabold leading-[1.08] tracking-tight text-balance sm:text-4xl lg:text-5xl">
               {t("cta.title")}
             </h1>
-            <p className="mx-auto mt-6 max-w-xl text-lg text-muted">{t("cta.subtitle")}</p>
+            <p className="mx-auto mt-6 max-w-xl text-lg text-legacy-muted">{t("cta.subtitle")}</p>
             <Link href="/products" className={buttonVariants("dark", "lg") + " mt-10"}>
               {t("cta.button")}
             </Link>

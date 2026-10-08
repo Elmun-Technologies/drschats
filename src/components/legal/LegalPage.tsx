@@ -10,7 +10,7 @@ export function LegalPage({ title, body }: { title: string; body: string }) {
           <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-5xl">{title}</h1>
         </Reveal>
         <Reveal index={1}>
-          <p className="my-16 whitespace-pre-line text-muted">{body}</p>
+          <p className="my-16 whitespace-pre-line text-legacy-muted">{body}</p>
         </Reveal>
       </Container>
     </div>

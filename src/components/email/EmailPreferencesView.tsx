@@ -83,9 +83,9 @@ export function EmailPreferencesView({ status, token, email }: Props) {
         )}
 
         {token ? (
-          <section className="mt-8 rounded-2xl border border-line bg-surface p-6">
+          <section className="mt-8 rounded-2xl border border-legacy-line bg-surface p-6">
             <h2 className="font-display text-lg font-bold tracking-tight">{t("manage.title")}</h2>
-            <p className="mt-1 text-sm text-muted">{t("manage.description")}</p>
+            <p className="mt-1 text-sm text-legacy-muted">{t("manage.description")}</p>
 
             <div className="mt-5 flex flex-wrap gap-3">
               <Button onClick={() => setSubscribed(true)} disabled={busy === "working"}>
@@ -106,11 +106,11 @@ export function EmailPreferencesView({ status, token, email }: Props) {
             </p>
           </section>
         ) : (
-          <form onSubmit={resendOptIn} className="mt-8 rounded-2xl border border-line bg-surface p-6">
+          <form onSubmit={resendOptIn} className="mt-8 rounded-2xl border border-legacy-line bg-surface p-6">
             <label htmlFor="preferences-email" className="text-sm font-medium text-fg">
               {t("resubscribe.label")}
             </label>
-            <p className="mt-1 text-sm text-muted">{t("resubscribe.description")}</p>
+            <p className="mt-1 text-sm text-legacy-muted">{t("resubscribe.description")}</p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
               <input
                 id="preferences-email"
@@ -119,7 +119,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
                 autoComplete="email"
                 value={resubscribeEmail}
                 onChange={(e) => setResubscribeEmail(e.target.value)}
-                className="flex-1 rounded-xl border border-line bg-ink px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
+                className="flex-1 rounded-xl border border-legacy-line bg-legacy-ink px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
               />
               <Button type="submit" disabled={busy === "working"}>
                 {t("resubscribe.submit")}
@@ -134,7 +134,7 @@ export function EmailPreferencesView({ status, token, email }: Props) {
           </form>
         )}
 
-        <p className="mt-8 text-sm text-muted">
+        <p className="mt-8 text-sm text-legacy-muted">
           {t("profileHint")}{" "}
           <Link href="/profile" className="font-semibold text-fg underline-offset-4 hover:underline">
             {t("profileLink")}

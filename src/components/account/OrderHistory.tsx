@@ -70,11 +70,11 @@ export function OrderHistory() {
 
   if (state.orders.length === 0) {
     return (
-      <div className="rounded-2xl border border-line bg-surface px-6 py-12 text-center">
-        <p className="text-muted">{t("noOrders")}</p>
+      <div className="rounded-2xl border border-legacy-line bg-surface px-6 py-12 text-center">
+        <p className="text-legacy-muted">{t("noOrders")}</p>
         <Link
           href="/products"
-          className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
+          className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
         >
           {t("noOrdersCta")}
         </Link>
@@ -85,7 +85,7 @@ export function OrderHistory() {
   return (
     <ul className="space-y-3">
       {state.orders.map((order) => (
-        <li key={order.orderId} className="rounded-2xl border border-line bg-ink p-5">
+        <li key={order.orderId} className="rounded-2xl border border-legacy-line bg-legacy-ink p-5">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <span className="font-display text-base font-bold text-fg">{order.orderId}</span>
             <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
@@ -95,21 +95,21 @@ export function OrderHistory() {
 
           <p className="mt-1 text-xs text-faint">{formatDate(order.createdAt, locale)}</p>
 
-          <ul className="mt-3 space-y-1.5 border-t border-line pt-3">
+          <ul className="mt-3 space-y-1.5 border-t border-legacy-line pt-3">
             {order.items.map((item) => (
               <li key={item.slug} className="flex items-baseline justify-between gap-3 text-sm">
                 <Link href={`/product/${item.slug}`} className="min-w-0 truncate text-fg hover:text-fg">
                   {item.name}
                 </Link>
-                <span className="shrink-0 tabular-nums text-muted">
+                <span className="shrink-0 tabular-nums text-legacy-muted">
                   {item.quantity} × {formatMoney(item.unitPrice, locale)}
                 </span>
               </li>
             ))}
           </ul>
 
-          <p className="mt-3 border-t border-line pt-3 text-right">
-            <span className="text-sm text-muted">{t("orderTotal")}: </span>
+          <p className="mt-3 border-t border-legacy-line pt-3 text-right">
+            <span className="text-sm text-legacy-muted">{t("orderTotal")}: </span>
             <b className="font-display text-lg font-extrabold tabular-nums text-fg">
               {formatMoney(order.total, locale)}
             </b>

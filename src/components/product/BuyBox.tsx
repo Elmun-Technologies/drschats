@@ -114,13 +114,13 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
           {product.name}
         </h1>
-        <p className="mt-2 text-base text-muted">{product.tagline}</p>
+        <p className="mt-2 text-base text-legacy-muted">{product.tagline}</p>
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
         <StarRating rating={product.rating} />
         {product.reviewCount > 0 && (
-          <a href="#reviews" className="text-sm text-muted underline decoration-line-strong underline-offset-4 hover:text-fg">
+          <a href="#reviews" className="text-sm text-legacy-muted underline decoration-legacy-line-strong underline-offset-4 hover:text-fg">
             {t("reviews", { count: product.reviewCount })}
           </a>
         )}
@@ -145,7 +145,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
       {reviewer && <ReviewedBy expert={reviewer} />}
 
       {/* Price */}
-      <div className="rounded-2xl border border-line bg-surface p-4">
+      <div className="rounded-2xl border border-legacy-line bg-surface p-4">
         <div className="flex flex-wrap items-center gap-3">
           <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="lg" />
           {/* One discount badge across the whole site, and it is neutral: a red
@@ -161,7 +161,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
       </div>
 
       {(product.origin || product.servings) && (
-        <div className="flex flex-wrap gap-4 text-sm text-muted">
+        <div className="flex flex-wrap gap-4 text-sm text-legacy-muted">
           {product.origin && (
             <span>
               {t("origin")}: <span className="font-medium text-fg">{product.origin}</span>
@@ -178,7 +178,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
       {product.certifications && product.certifications.length > 0 && (
         <div className="flex flex-wrap gap-2">
           {product.certifications.map((c) => (
-            <span key={c} className="rounded-full border border-line bg-surface px-3 py-1 text-xs font-semibold text-muted">
+            <span key={c} className="rounded-full border border-legacy-line bg-surface px-3 py-1 text-xs font-semibold text-legacy-muted">
               {c}
             </span>
           ))}
@@ -198,7 +198,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
       {/* Qty + CTAs */}
       <div id="buybox-cta" className="flex flex-col gap-3 scroll-mt-28">
         <div className="flex items-stretch gap-3">
-          <div className="flex items-center rounded-full border border-line" role="group" aria-label={t("quantity")}>
+          <div className="flex items-center rounded-full border border-legacy-line" role="group" aria-label={t("quantity")}>
             <button
               type="button"
               onClick={() => setQty((q) => Math.max(1, q - 1))}
@@ -236,7 +236,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
               {t("buyNow")}
             </Button>
             {qty > 1 && (
-              <p className="text-sm text-muted">
+              <p className="text-sm text-legacy-muted">
                 {tp("total")}:{" "}
                 <span className="font-semibold text-fg">{formatMoney(product.price * qty, locale)}</span>
               </p>
@@ -250,7 +250,7 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
       )}
 
       {/* Trust signals */}
-      <div className="grid grid-cols-3 gap-2 rounded-2xl border border-line bg-surface p-4">
+      <div className="grid grid-cols-3 gap-2 rounded-2xl border border-legacy-line bg-surface p-4">
         <TrustItem label={tp("delivery")}>
           <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
             <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
@@ -275,24 +275,24 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
         page, including the ones with no merchant account behind them.
       */}
       <div>
-        <p className="mb-2 text-xs text-muted">{tp("payWith")}</p>
+        <p className="mb-2 text-xs text-legacy-muted">{tp("payWith")}</p>
         <div className="flex flex-wrap gap-1.5">
           {onlineProviderNames.map((name) => (
             <span
               key={name}
-              className="inline-flex items-center rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-muted"
+              className="inline-flex items-center rounded-lg border border-legacy-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-legacy-muted"
             >
               {name}
             </span>
           ))}
-          <span className="inline-flex items-center rounded-lg border border-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-muted">
+          <span className="inline-flex items-center rounded-lg border border-legacy-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-legacy-muted">
             {tp("payCod")}
           </span>
         </div>
       </div>
 
-      <div className="flex items-center gap-3 border-t border-line pt-4">
-        <WishlistButton productId={product.id} className="h-10 w-10 rounded-full border border-line hover:border-danger" />
+      <div className="flex items-center gap-3 border-t border-legacy-line pt-4">
+        <WishlistButton productId={product.id} className="h-10 w-10 rounded-full border border-legacy-line hover:border-danger" />
         <ShareButton name={product.name} />
       </div>
 

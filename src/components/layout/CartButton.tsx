@@ -14,7 +14,7 @@ export function CartButton({ label }: { label: string }) {
     <button
       onClick={toggle}
       aria-label={label}
-      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-line bg-surface-2 text-fg transition-colors duration-200 hover:border-line-strong hover:bg-surface-3"
+      className="relative flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line bg-surface-2 text-fg transition-colors duration-200 hover:border-legacy-line-strong hover:bg-surface-3"
     >
       <svg viewBox="0 0 24 24" className="h-5 w-5 text-brand-deep" fill="none" stroke="currentColor" strokeWidth="2">
         <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />
@@ -28,7 +28,7 @@ export function CartButton({ label }: { label: string }) {
             animate={{ scale: [1.3, 1], opacity: 1 }}
             exit={{ scale: 0.4, opacity: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-fg px-1.5 text-[10px] font-extrabold tabular-nums text-ink"
+            className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-fg px-1.5 text-[10px] font-extrabold tabular-nums text-legacy-ink"
           >
             {count}
           </motion.span>

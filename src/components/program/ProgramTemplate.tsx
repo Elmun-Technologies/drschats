@@ -54,8 +54,8 @@ export async function ProgramTemplate({
             <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
               {program.name}
             </h1>
-            <p className="mt-4 text-lg text-muted">{program.headline}</p>
-            <p className="mt-5 text-muted">{program.intro}</p>
+            <p className="mt-4 text-lg text-legacy-muted">{program.headline}</p>
+            <p className="mt-5 text-legacy-muted">{program.intro}</p>
 
             {reviewer && (
               <div className="mt-6">
@@ -69,7 +69,7 @@ export async function ProgramTemplate({
                 </h2>
                 <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                   {program.forWhom.map((item) => (
-                    <li key={item} className="flex items-start gap-3 rounded-xl border border-line bg-surface p-4 text-sm font-medium text-fg">
+                    <li key={item} className="flex items-start gap-3 rounded-xl border border-legacy-line bg-surface p-4 text-sm font-medium text-fg">
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg">
                         <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
                           <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
@@ -84,8 +84,8 @@ export async function ProgramTemplate({
           </header>
 
           {/* Price panel — sticky so the bundle price follows the reader. */}
-          <aside className="rounded-2xl border border-line bg-surface p-6 lg:sticky lg:top-24">
-            <p className="text-sm text-muted">{t("bundlePrice")}</p>
+          <aside className="rounded-2xl border border-legacy-line bg-surface p-6 lg:sticky lg:top-24">
+            <p className="text-sm text-legacy-muted">{t("bundlePrice")}</p>
             <div className="mt-2 flex flex-wrap items-baseline gap-3">
               <span className="font-display text-3xl font-extrabold text-fg">
                 {formatMoney(pricing.total, locale)}
@@ -101,7 +101,7 @@ export async function ProgramTemplate({
                 {t("youSave", { amount: formatMoney(pricing.saved, locale) })}
               </p>
             )}
-            <p className="mt-4 text-sm text-muted">
+            <p className="mt-4 text-sm text-legacy-muted">
               {t("includes", { count: products.length, days: program.durationDays })}
             </p>
             <AddProgramButton
@@ -138,12 +138,12 @@ export async function ProgramTemplate({
             <ol className="mt-6 grid gap-4 md:grid-cols-3">
               {program.steps.map((step, i) => (
                 <Reveal key={step.title} index={Math.min(i, 4)} as="li" className="h-full">
-                  <div className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6">
+                  <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-6">
                     <span className="flex h-9 w-9 items-center justify-center rounded-full bg-surface-2 font-display text-sm font-bold text-fg">
                       {i + 1}
                     </span>
                     <h3 className="mt-4 font-display text-lg font-bold">{step.title}</h3>
-                    <p className="mt-2 text-sm text-muted">{step.body}</p>
+                    <p className="mt-2 text-sm text-legacy-muted">{step.body}</p>
                   </div>
                 </Reveal>
               ))}
@@ -157,10 +157,10 @@ export async function ProgramTemplate({
             </h2>
             <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {ingredients.map((ing) => (
-                <li key={ing.slug} className="rounded-2xl border border-line bg-surface p-5">
+                <li key={ing.slug} className="rounded-2xl border border-legacy-line bg-surface p-5">
                   <p className="font-display text-base font-bold text-fg">{ing.name}</p>
                   <p className="text-xs font-semibold uppercase tracking-wide text-fg">{ing.role}</p>
-                  <p className="mt-2 text-sm text-muted">{ing.description}</p>
+                  <p className="mt-2 text-sm text-legacy-muted">{ing.description}</p>
                 </li>
               ))}
             </ul>
@@ -184,7 +184,7 @@ export async function ProgramTemplate({
                 <Link
                   key={topic.slug}
                   href={`${TOPIC_BASE_PATH[topic.kind]}/${topic.slug}`}
-                  className="rounded-full border border-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-line-strong hover:text-fg"
+                  className="rounded-full border border-legacy-line bg-surface px-5 py-2.5 text-sm font-semibold text-fg transition-colors hover:border-legacy-line-strong hover:text-fg"
                 >
                   {topic.name}
                 </Link>

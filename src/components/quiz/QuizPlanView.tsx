@@ -67,7 +67,7 @@ export async function QuizPlanView({
           <h1 className="mt-4 font-display text-3xl font-extrabold tracking-tight text-balance sm:text-5xl">
             {t("resultTitle")}
           </h1>
-          <p className="mt-3 max-w-2xl text-lg text-muted text-pretty">{t("resultSubtitle")}</p>
+          <p className="mt-3 max-w-2xl text-lg text-legacy-muted text-pretty">{t("resultSubtitle")}</p>
         </header>
 
         {/* Renders only when a verified expert is on file. See lib/content/experts. */}
@@ -84,7 +84,7 @@ export async function QuizPlanView({
                 <span>{t("doctorOpinionTitle")}</span>
               </div>
               <p className="font-display text-sm font-bold text-fg">{reviewer.name}</p>
-              <p className="line-clamp-1 text-xs text-muted">{reviewer.title}</p>
+              <p className="line-clamp-1 text-xs text-legacy-muted">{reviewer.title}</p>
             </div>
           </div>
         )}
@@ -96,7 +96,7 @@ export async function QuizPlanView({
           <div className="mt-8 flex flex-col gap-4 rounded-2xl border border-signal/30 bg-signal-soft p-6 sm:flex-row sm:items-center sm:justify-between">
             <div className="max-w-xl">
               <p className="font-display text-lg font-bold text-fg">{t("doctorTitle")}</p>
-              <p className="mt-1 text-sm text-muted text-pretty">{t("doctorBody")}</p>
+              <p className="mt-1 text-sm text-legacy-muted text-pretty">{t("doctorBody")}</p>
             </div>
             <Link href="/experts" className={cn(buttonVariants("secondary"), "shrink-0")}>
               {t("doctorCta")}
@@ -105,8 +105,8 @@ export async function QuizPlanView({
         )}
 
         {empty ? (
-          <div className="mt-12 rounded-2xl border border-line bg-surface p-10 text-center">
-            <p className="text-muted">{t("resultEmpty")}</p>
+          <div className="mt-12 rounded-2xl border border-legacy-line bg-surface p-10 text-center">
+            <p className="text-legacy-muted">{t("resultEmpty")}</p>
             <Link href="/quiz" className={cn(buttonVariants("secondary"), "mt-6")}>
               {t("retake")}
             </Link>
@@ -116,11 +116,11 @@ export async function QuizPlanView({
             {/* One action for the whole set. Gold belongs here: this button
                 puts things in the cart. */}
             {products.length > 0 && (
-              <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
+              <div className="mt-10 flex flex-col gap-4 rounded-2xl border border-legacy-line bg-surface p-6 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <h2 className="font-display text-xl font-extrabold tracking-tight">{t("oneClickAdd", { count: products.length })}
                   </h2>
-                  <p className="mt-1 text-sm text-muted text-pretty">{t("oneClickAddBody", { count: products.length })}</p>
+                  <p className="mt-1 text-sm text-legacy-muted text-pretty">{t("oneClickAddBody", { count: products.length })}</p>
                 </div>
                 <div className="shrink-0">
                   <QuizPlanActions products={products.map((p) => p.product)} />
@@ -132,21 +132,21 @@ export async function QuizPlanView({
               <section aria-labelledby="plan-focus" className="mt-12 sm:mt-14">
                 <h2 id="plan-focus" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("focusTitle")}
                 </h2>
-                <p className="mt-2 text-muted text-pretty">{t("focusSubtitle")}</p>
+                <p className="mt-2 text-legacy-muted text-pretty">{t("focusSubtitle")}</p>
                 <ul className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
                   {topics.map((topic, i) => (
                     <Reveal key={topic.slug} index={Math.min(i, 4)} as="li" className="h-full">
                       <Link
                         href={`${TOPIC_BASE_PATH[topic.kind]}/${topic.slug}`}
-                        className="group flex h-full flex-col rounded-2xl border border-line bg-surface p-5 transition-colors hover:border-line-strong"
+                        className="group flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-5 transition-colors hover:border-legacy-line-strong"
                       >
-                        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted">
+                        <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-legacy-muted">
                           {health(`${topic.kind}.singular`)}
                         </span>
                         <span className="mt-1 font-display text-lg font-bold text-fg group-hover:text-signal">
                           {topic.name}
                         </span>
-                        <span className="mt-2 line-clamp-3 text-sm text-muted">{topic.headline}</span>
+                        <span className="mt-2 line-clamp-3 text-sm text-legacy-muted">{topic.headline}</span>
                       </Link>
                     </Reveal>
                   ))}
@@ -160,10 +160,10 @@ export async function QuizPlanView({
                 </h2>
                 <ul className="mt-6 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
                   {ingredients.map((ing) => (
-                    <li key={ing.slug} className="rounded-2xl border border-line bg-surface p-5">
+                    <li key={ing.slug} className="rounded-2xl border border-legacy-line bg-surface p-5">
                       <p className="font-display text-base font-bold text-fg">{ing.name}</p>
                       <p className="text-xs font-semibold uppercase tracking-[0.12em] text-signal">{ing.role}</p>
-                      <p className="mt-2 text-sm text-muted">{ing.description}</p>
+                      <p className="mt-2 text-sm text-legacy-muted">{ing.description}</p>
                     </li>
                   ))}
                 </ul>
@@ -176,7 +176,7 @@ export async function QuizPlanView({
                   <div>
                     <h2 id="plan-products" className="font-display text-2xl font-extrabold tracking-tight sm:text-3xl sm:text-3xl">{t("productsTitle")}
                     </h2>
-                    <p className="mt-2 text-muted">{t("productsSubtitle")}</p>
+                    <p className="mt-2 text-legacy-muted">{t("productsSubtitle")}</p>
                   </div>
                   <QuizPlanActions products={products.map((p) => p.product)} />
                 </div>
@@ -186,7 +186,7 @@ export async function QuizPlanView({
                     <div key={product.id} className="flex flex-col gap-2">
                       <ProductCard product={product} index={i} />
                       {reasons.length > 0 && (
-                        <p className="px-1 text-xs text-muted">
+                        <p className="px-1 text-xs text-legacy-muted">
                           <span className="font-semibold text-fg">{t("whyLabel")}:</span>{" "}
                           {reasons.join(" · ")}
                         </p>
@@ -207,7 +207,7 @@ export async function QuizPlanView({
           Go Vita channel, never the corporate account.
         */}
         {reviewer && (
-          <div className="mt-12 rounded-2xl border border-line bg-surface p-6 sm:mt-14 sm:p-8">
+          <div className="mt-12 rounded-2xl border border-legacy-line bg-surface p-6 sm:mt-14 sm:p-8">
             <div className="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-4">
                 <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border border-signal/30">
@@ -218,7 +218,7 @@ export async function QuizPlanView({
                     {t("doctorConsultLabel")}
                   </span>
                   <h3 className="font-display text-lg font-bold text-fg">{t("doctorConsultTrigger")}</h3>
-                  <p className="mt-1 max-w-lg text-sm text-muted">{t("doctorConsultDesc")}</p>
+                  <p className="mt-1 max-w-lg text-sm text-legacy-muted">{t("doctorConsultDesc")}</p>
                 </div>
               </div>
               <a

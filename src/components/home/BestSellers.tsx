@@ -19,7 +19,7 @@ export function BestSellers({
   const common = useTranslations("common");
 
   return (
-    <section className="border-t border-line py-24 sm:py-32">
+    <section className="border-t border-legacy-line py-24 sm:py-32">
       <Container>
         <div className="flex flex-wrap items-end justify-between gap-6">
           <SectionHeading eyebrow={t("subtitle")} title={t("title")} />

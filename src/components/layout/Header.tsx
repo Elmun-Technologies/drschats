@@ -35,7 +35,7 @@ const navItems = [
 // discount label is not an alert. Graphite text on the pale ground announces
 // itself without borrowing the warning colour.
 const BADGE_STYLES: Record<string, string> = {
-  sale: "border border-line-strong bg-surface-2 text-fg",
+  sale: "border border-legacy-line-strong bg-surface-2 text-fg",
 };
 
 export function Header({
@@ -79,7 +79,7 @@ export function Header({
   const menuRef = useDialog<HTMLDivElement>(menuOpen, closeMenu);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-line bg-ink/90 backdrop-blur-xl">
+    <header className="sticky top-0 z-50 w-full border-b border-legacy-line bg-legacy-ink/90 backdrop-blur-xl">
       {/*
         The utility bar is an announcement, not navigation: it collapses once
         the shopper starts scrolling, which hands back 40px of screen on every
@@ -112,7 +112,7 @@ export function Header({
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label={t("search")}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg transition-colors hover:border-line-strong hover:bg-surface"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line text-fg transition-colors hover:border-legacy-line-strong hover:bg-surface"
             >
               <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" />
@@ -131,7 +131,7 @@ export function Header({
             </svg>
           </span>
           <div className="leading-tight">
-            <div className="text-xs text-muted">{h("needHelp")}</div>
+            <div className="text-xs text-legacy-muted">{h("needHelp")}</div>
             <a href={`tel:${BRAND.contact.phoneHref}`} className="text-sm font-bold text-fg hover:text-signal">
               {h("phone")}
             </a>
@@ -146,7 +146,7 @@ export function Header({
               type="button"
               onClick={() => setSearchOpen(true)}
               aria-label={t("search")}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg md:hidden"
+              className="flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line text-fg md:hidden"
             >
               <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <circle cx="11" cy="11" r="7" />
@@ -160,7 +160,7 @@ export function Header({
           <button
             onClick={() => setMenuOpen(true)}
             aria-label={t("openMenu")}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-fg lg:hidden"
+            className="flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line text-fg lg:hidden"
           >
             <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
               <path d="M4 7h16M4 12h16M4 17h16" strokeLinecap="round" />
@@ -180,7 +180,7 @@ export function Header({
       )}
 
       {/* Nav row. Since header is sticky, this row simply stays visible */}
-      <div className="hidden border-t border-line/40 lg:block">
+      <div className="hidden border-t border-legacy-line/40 lg:block">
         <Container className="relative flex h-14 items-center gap-7">
           <CatalogMenu categories={categories} topicPaths={topicPaths} />
           <nav className="flex items-center gap-7">
@@ -233,11 +233,11 @@ export function Header({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 flex flex-col bg-ink lg:hidden"
+            className="fixed inset-0 z-50 flex flex-col bg-legacy-ink lg:hidden"
           >
-            <div className="container-px flex h-16 items-center justify-between border-b border-line">
+            <div className="container-px flex h-16 items-center justify-between border-b border-legacy-line">
               <Logo />
-              <button onClick={closeMenu} aria-label={t("closeMenu")} className="flex h-10 w-10 items-center justify-center rounded-full border border-line">
+              <button onClick={closeMenu} aria-label={t("closeMenu")} className="flex h-10 w-10 items-center justify-center rounded-full border border-legacy-line">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
@@ -248,7 +248,7 @@ export function Header({
             </div>
             <nav className="container-px flex flex-col gap-1 overflow-y-auto pb-10 pt-4">
               {items.map((item) => (
-                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="flex items-center justify-between border-b border-line/50 py-4 font-display text-xl font-semibold">
+                <Link key={item.key} href={item.href} onClick={() => setMenuOpen(false)} className="flex items-center justify-between border-b border-legacy-line/50 py-4 font-display text-xl font-semibold">
                   <span>{t(`menu.${item.key}`)}</span>
                   {"badge" in item && item.badge && (
                     <span className={cn(
@@ -267,7 +267,7 @@ export function Header({
               <Link
                 href="/profile"
                 onClick={() => setMenuOpen(false)}
-                className="border-b border-line/50 py-4 font-display text-xl font-semibold"
+                className="border-b border-legacy-line/50 py-4 font-display text-xl font-semibold"
               >
                 {t("profile")}
               </Link>
@@ -286,7 +286,7 @@ export function Header({
                         <Link
                           href={`/products/${c.slug}`}
                           onClick={() => setMenuOpen(false)}
-                          className="flex items-start justify-between gap-2 border-b border-line/50 py-3 text-sm font-semibold"
+                          className="flex items-start justify-between gap-2 border-b border-legacy-line/50 py-3 text-sm font-semibold"
                         >
                           <span className="leading-snug">{c.name}</span>
                           <span className="shrink-0 text-xs tabular-nums text-faint">{c.productCount}</span>
@@ -300,18 +300,18 @@ export function Header({
               {/* Hours, phone and address in the menu itself. For a pharmacy
                   audience these answer "are they open and can I reach them"
                   without a trip to the contact page. */}
-              <div className="mt-6 rounded-2xl border border-line bg-surface p-4">
+              <div className="mt-6 rounded-2xl border border-legacy-line bg-surface p-4">
                 <p className="text-xs font-bold uppercase tracking-widest text-faint">
                   {t("contact")}
                 </p>
-                <p className="mt-2 text-sm text-muted">{contact("workHours")}</p>
+                <p className="mt-2 text-sm text-legacy-muted">{contact("workHours")}</p>
                 <a
                   href={`tel:${BRAND.contact.phoneHref}`}
                   className="mt-2 block text-base font-semibold text-fg transition-colors hover:text-signal"
                 >
                   {BRAND.contact.phone}
                 </a>
-                <p className="mt-1 text-sm text-muted">{contact("addressValue")}</p>
+                <p className="mt-1 text-sm text-legacy-muted">{contact("addressValue")}</p>
               </div>
 
               <div className="pt-6">

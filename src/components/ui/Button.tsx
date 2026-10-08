@@ -22,16 +22,16 @@ type Size = "sm" | "md" | "lg";
 
 export function buttonVariants(variant: Variant = "primary", size: Size = "md") {
   const base =
-    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-bold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50";
+    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-bold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-legacy-ink disabled:cursor-not-allowed disabled:opacity-50";
 
   const variants: Record<Variant, string> = {
     primary:
-      "bg-accent text-brand-deep shadow-[var(--shadow-cta)] hover:bg-accent-strong hover:text-ink",
+      "bg-accent text-brand-deep shadow-[var(--shadow-cta)] hover:bg-accent-strong hover:text-legacy-ink",
     secondary:
-      "border border-line-strong bg-ink text-fg hover:border-fg/30 hover:bg-surface",
+      "border border-legacy-line-strong bg-legacy-ink text-fg hover:border-fg/30 hover:bg-surface",
     ghost: "text-fg hover:bg-surface-2",
     dark: "bg-brand-deep text-white hover:bg-fg/90",
-    gold: "bg-gold text-brand-deep shadow-[var(--shadow-cta)] hover:bg-[#dfbc70]",
+    gold: "bg-legacy-gold text-brand-deep shadow-[var(--shadow-cta)] hover:bg-[#dfbc70]",
   };
 
   const sizes: Record<Size, string> = {

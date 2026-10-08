@@ -21,7 +21,7 @@ export function UpsellSavingsBar() {
     <motion.div
       initial={{ opacity: 0, height: 0 }}
       animate={{ opacity: 1, height: "auto" }}
-      className="border-t border-line px-6 py-3"
+      className="border-t border-legacy-line px-6 py-3"
     >
       <div className="flex items-center justify-between text-xs">
         <span className="font-semibold text-fg">

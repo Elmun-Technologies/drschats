@@ -79,7 +79,7 @@ export default async function BlogPage({
                 <Link
                   key={key}
                   href={`/blog/category/${key}`}
-                  className="shrink-0 rounded-full border border-white/20 bg-brand-deep/80 backdrop-blur-md px-5 py-2.5 text-xs font-bold text-white transition-all hover:border-gold hover:text-white"
+                  className="shrink-0 rounded-full border border-white/20 bg-brand-deep/80 backdrop-blur-md px-5 py-2.5 text-xs font-bold text-white transition-all hover:border-legacy-gold hover:text-white"
                 >
                   {t(`categories.${key}`)}
                 </Link>
@@ -98,7 +98,7 @@ export default async function BlogPage({
             </div>
             <Link
               href={`/blog/${featured.slug}`}
-              className="group relative block overflow-hidden rounded-3xl border border-line bg-surface transition-all duration-700 hover:shadow-[var(--shadow-pop)]"
+              className="group relative block overflow-hidden rounded-3xl border border-legacy-line bg-surface transition-all duration-700 hover:shadow-[var(--shadow-legacy-pop)]"
             >
               <div className="grid lg:grid-cols-2">
                 <div className="relative aspect-[16/9] lg:aspect-auto lg:h-[400px]">
@@ -113,15 +113,15 @@ export default async function BlogPage({
                   <div className="absolute inset-0 bg-gradient-to-r from-transparent to-brand-deep/50 lg:bg-gradient-to-r lg:from-transparent lg:to-brand-deep/30" />
                 </div>
                 <div className="relative flex flex-col justify-center p-8 lg:p-12">
-                  <Badge tone="accent" className="mb-4 w-fit border border-line bg-surface-2 px-4 py-1.5 text-muted">
+                  <Badge tone="accent" className="mb-4 w-fit border border-legacy-line bg-surface-2 px-4 py-1.5 text-legacy-muted">
                     {featured.category}
                   </Badge>
-                  <p className="text-xs font-bold uppercase tracking-widest text-muted mb-2">
+                  <p className="text-xs font-bold uppercase tracking-widest text-legacy-muted mb-2">
                     {t("minRead", { min: featured.readingMinutes })}
                   </p>
                   <h2 className="font-display text-2xl lg:text-3xl font-extrabold leading-tight text-brand-deep transition-colors group-hover:underline decoration-2 underline-offset-4">{featured.title}
                   </h2>
-                  <p className="mt-4 text-base text-muted line-clamp-3">
+                  <p className="mt-4 text-base text-legacy-muted line-clamp-3">
                     {featured.excerpt}
                   </p>
                   <span className="mt-6 inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest text-brand-deep underline decoration-1 underline-offset-4 transition-all group-hover:decoration-2">
@@ -142,7 +142,7 @@ export default async function BlogPage({
             <div className="flex items-center justify-between mb-8">
               <h2 className="font-display text-xl font-extrabold text-brand-deep">Boshqa maqolalar
               </h2>
-              <span className="text-xs font-bold text-muted">
+              <span className="text-xs font-bold text-legacy-muted">
                 {rest.length} ta maqola
               </span>
             </div>

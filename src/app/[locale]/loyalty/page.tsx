@@ -103,26 +103,26 @@ export default async function LoyaltyPage({
       />
 
       <Container>
-        <section aria-labelledby="loyalty-programs-title" className="border-t border-line pt-16 sm:pt-24">
+        <section aria-labelledby="loyalty-programs-title" className="border-t border-legacy-line pt-16 sm:pt-24">
           <Reveal>
             <div className="mx-auto max-w-2xl text-center">
-              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-muted">{t("title")}</p>
+              <p className="text-xs font-extrabold uppercase tracking-[0.2em] text-legacy-muted">{t("title")}</p>
               <h2 id="loyalty-programs-title" className="mt-3 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("programsTitle")}
               </h2>
-              <p className="mt-4 text-muted">{t("programsDesc")}</p>
+              <p className="mt-4 text-legacy-muted">{t("programsDesc")}</p>
             </div>
           </Reveal>
 
           <div className="mt-10 grid gap-4 md:grid-cols-3">
             {programs.map((program, index) => (
               <Reveal key={program.title} index={index} className="h-full">
-                <article className="flex h-full min-h-56 flex-col rounded-2xl border border-line bg-surface p-7">
-                  <span className="w-fit rounded-full border border-line-strong bg-ink px-3 py-1.5 text-xs font-extrabold tabular-nums text-brand-deep">
+                <article className="flex h-full min-h-56 flex-col rounded-2xl border border-legacy-line bg-surface p-7">
+                  <span className="w-fit rounded-full border border-legacy-line-strong bg-legacy-ink px-3 py-1.5 text-xs font-extrabold tabular-nums text-brand-deep">
                     {program.badge}
                   </span>
                   <h3 className="mt-5 font-display text-xl font-extrabold text-fg">{program.title}</h3>
-                  <p className="mt-3 flex-1 text-sm leading-relaxed text-muted">{program.text}</p>
-                  <p className="mt-5 rounded-xl border border-line bg-ink p-3.5 text-xs leading-relaxed text-muted">
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-legacy-muted">{program.text}</p>
+                  <p className="mt-5 rounded-xl border border-legacy-line bg-legacy-ink p-3.5 text-xs leading-relaxed text-legacy-muted">
                     {program.note}
                   </p>
                 </article>
@@ -131,7 +131,7 @@ export default async function LoyaltyPage({
           </div>
         </section>
 
-        <section aria-labelledby="loyalty-rules-title" className="mt-16 rounded-2xl border border-line bg-surface-2/60 px-6 py-10 sm:mt-20 sm:px-10">
+        <section aria-labelledby="loyalty-rules-title" className="mt-16 rounded-2xl border border-legacy-line bg-surface-2/60 px-6 py-10 sm:mt-20 sm:px-10">
           <Reveal>
             <h2 id="loyalty-rules-title" className="font-display text-2xl font-extrabold tracking-tight">{t("rulesTitle")}
             </h2>
@@ -139,7 +139,7 @@ export default async function LoyaltyPage({
           <ul className="mt-6 grid gap-3 sm:grid-cols-2">
             {rules.map((rule, index) => (
               <Reveal key={rule} index={index} as="li">
-                <div className="flex h-full items-start gap-3 rounded-xl border border-line bg-ink p-4">
+                <div className="flex h-full items-start gap-3 rounded-xl border border-legacy-line bg-legacy-ink p-4">
                   <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-signal-soft text-[11px] font-bold text-signal">
                     ✓
                   </span>
@@ -152,9 +152,9 @@ export default async function LoyaltyPage({
 
         <section className="mt-16 sm:mt-20">
           <Reveal>
-            <div className="rounded-2xl border border-line bg-ink p-8 sm:p-10">
+            <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-8 sm:p-10">
               <h2 className="font-display text-2xl font-extrabold tracking-tight">{t("partnersTitle")}</h2>
-              <p className="mt-3 max-w-3xl leading-relaxed text-muted">{t("partnersText")}</p>
+              <p className="mt-3 max-w-3xl leading-relaxed text-legacy-muted">{t("partnersText")}</p>
               <a
                 href={`mailto:${BRAND.contact.b2bEmail}`}
                 className={buttonVariants("secondary") + " mt-6"}

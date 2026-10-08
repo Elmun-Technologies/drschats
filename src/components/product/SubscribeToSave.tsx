@@ -59,7 +59,7 @@ export function SubscribeToSave({
         <p id={`${groupId}-label`} className="text-xs font-extrabold uppercase tracking-wider text-brand-deep">
           {t("chooseMode")}
         </p>
-        <span className="rounded-full border border-line-strong bg-surface-2 px-2.5 py-0.5 text-[11px] font-extrabold text-muted">
+        <span className="rounded-full border border-legacy-line-strong bg-surface-2 px-2.5 py-0.5 text-[11px] font-extrabold text-legacy-muted">
           {t("autoDelivery")}
         </span>
       </div>
@@ -69,7 +69,7 @@ export function SubscribeToSave({
         className={`relative flex cursor-pointer flex-col rounded-2xl border p-4 transition-all duration-300 ${
           isSub
             ? "border-brand-deep bg-surface-2 shadow-sm ring-1 ring-brand-deep/20"
-            : "border-line bg-surface hover:border-line-strong"
+            : "border-legacy-line bg-surface hover:border-legacy-line-strong"
         }`}
       >
         <div className="flex items-start gap-3">
@@ -78,7 +78,7 @@ export function SubscribeToSave({
             name={groupId}
             checked={isSub}
             onChange={() => onModeChange("subscription")}
-            className="mt-1 h-5 w-5 shrink-0 accent-gold cursor-pointer"
+            className="mt-1 h-5 w-5 shrink-0 accent-legacy-gold cursor-pointer"
           />
           <div className="flex-1">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -86,7 +86,7 @@ export function SubscribeToSave({
                 <span className="font-display text-base font-extrabold text-brand-deep">
                   {t("subscribe")}
                 </span>
-                <span className="rounded-full border border-line-strong bg-ink px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-brand-deep">
+                <span className="rounded-full border border-legacy-line-strong bg-legacy-ink px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wider text-brand-deep">
                   {t("saveBadge", { percent: pricing.firstPercent })}
                 </span>
               </div>
@@ -103,13 +103,13 @@ export function SubscribeToSave({
             </div>
 
             {perServing !== null && (
-              <p className="mt-1 text-xs text-muted">
+              <p className="mt-1 text-xs text-legacy-muted">
                 {t("perServing", { price: formatMoney(perServing, locale) })}
               </p>
             )}
 
             {/* Benefits List */}
-            <div className="mt-3 rounded-xl bg-surface-2 p-3 border border-line/50">
+            <div className="mt-3 rounded-xl bg-surface-2 p-3 border border-legacy-line/50">
               <ul className="flex flex-col gap-1.5 text-xs font-semibold text-fg">
                 <li className="flex items-start gap-2">
                   <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-signal-soft text-signal font-bold text-[10px]">✓</span>
@@ -128,7 +128,7 @@ export function SubscribeToSave({
 
             {/* Interval Selector */}
             <div className="mt-3.5 flex flex-wrap items-center gap-2">
-              <span className="text-xs font-bold text-muted">{t("deliveryInterval")}</span>
+              <span className="text-xs font-bold text-legacy-muted">{t("deliveryInterval")}</span>
               <select
                 aria-labelledby={`${groupId}-interval-label`}
                 value={intervalDays}
@@ -136,7 +136,7 @@ export function SubscribeToSave({
                   onIntervalChange(Number(e.target.value) as IntervalDays);
                   onModeChange("subscription");
                 }}
-                className="h-10 min-w-0 flex-1 basis-32 rounded-xl border border-line bg-surface-2 px-3 text-xs font-bold text-brand-deep outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep/30"
+                className="h-10 min-w-0 flex-1 basis-32 rounded-xl border border-legacy-line bg-surface-2 px-3 text-xs font-bold text-brand-deep outline-none focus:border-brand-deep focus:ring-1 focus:ring-brand-deep/30"
               >
                 {SUBSCRIPTION_INTERVALS.map((days) => (
                   <option key={days} value={days}>
@@ -154,7 +154,7 @@ export function SubscribeToSave({
         className={`flex cursor-pointer items-center gap-3 rounded-2xl border p-4 transition-all duration-300 ${
           !isSub
             ? "border-brand-deep bg-surface-2 shadow-xs ring-1 ring-brand-deep/20"
-            : "border-line bg-surface hover:border-line-strong"
+            : "border-legacy-line bg-surface hover:border-legacy-line-strong"
         }`}
       >
         <input
@@ -169,7 +169,7 @@ export function SubscribeToSave({
             <span className="font-display text-sm font-extrabold text-brand-deep block">
               {t("oneTime")}
             </span>
-            <span className="text-xs text-muted">{t("oneTimeNote")}</span>
+            <span className="text-xs text-legacy-muted">{t("oneTimeNote")}</span>
           </div>
           <span className="font-display text-base font-extrabold text-brand-deep">
             {formatMoney(product.price, locale)}

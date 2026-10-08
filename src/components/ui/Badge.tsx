@@ -19,9 +19,9 @@ export function Badge({
     "this was a promotional label" still compile and read the same.
   */
   const tones = {
-    default: "border-line-strong bg-surface-2 text-muted",
-    accent: "border-line bg-surface-2 text-muted",
-    gold: "border-line bg-surface-2 text-muted",
+    default: "border-legacy-line-strong bg-surface-2 text-legacy-muted",
+    accent: "border-legacy-line bg-surface-2 text-legacy-muted",
+    gold: "border-legacy-line bg-surface-2 text-legacy-muted",
     danger: "border-danger/30 bg-danger/10 text-danger",
   }[tone];
   return (

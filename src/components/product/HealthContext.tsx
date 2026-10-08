@@ -15,7 +15,7 @@ import { TOPIC_BASE_PATH, type HealthTopic, type HealthTopicKind } from "@/lib/c
 const KIND_STYLE: Record<HealthTopicKind, string> = {
   goal: "bg-surface-2 text-fg hover:bg-surface-3",
   symptom: "bg-signal-soft text-signal hover:bg-signal hover:text-white",
-  vitamin: "bg-surface-2 text-fg hover:bg-fg hover:text-ink",
+  vitamin: "bg-surface-2 text-fg hover:bg-fg hover:text-legacy-ink",
 };
 
 const KIND_ICON: Record<HealthTopicKind, string> = {
@@ -30,10 +30,10 @@ export async function HealthContext({ topics }: { topics: HealthTopic[] }) {
   const t = await getTranslations("product.healthContext");
 
   return (
-    <Reveal as="section" aria-labelledby="health-context" className="mt-12 rounded-2xl border border-line bg-surface p-6 sm:p-7">
+    <Reveal as="section" aria-labelledby="health-context" className="mt-12 rounded-2xl border border-legacy-line bg-surface p-6 sm:p-7">
       <h2 id="health-context" className="font-display text-lg font-extrabold tracking-tight sm:text-xl">{t("title")}
       </h2>
-      <p className="mt-1 text-sm text-muted">{t("subtitle")}</p>
+      <p className="mt-1 text-sm text-legacy-muted">{t("subtitle")}</p>
 
       <ul className="mt-5 flex flex-wrap gap-2.5">
         {topics.map((topic) => (
@@ -53,7 +53,7 @@ export async function HealthContext({ topics }: { topics: HealthTopic[] }) {
 
       {/* Uzbek advertising law: health content on a commercial page has to say
           plainly that it does not replace a doctor. */}
-      <p className="mt-5 border-t border-line pt-4 text-xs leading-relaxed text-faint">
+      <p className="mt-5 border-t border-legacy-line pt-4 text-xs leading-relaxed text-faint">
         {t("disclaimer")}
       </p>
     </Reveal>

@@ -66,12 +66,12 @@ export function ExitIntentPopup() {
             role="dialog"
             aria-modal="true"
             aria-labelledby="exit-title"
-            className="fixed inset-x-4 top-1/2 z-[71] mx-auto max-w-md -translate-y-1/2 overflow-hidden rounded-3xl border border-line bg-ink p-7 shadow-[var(--shadow-pop)] sm:p-8"
+            className="fixed inset-x-4 top-1/2 z-[71] mx-auto max-w-md -translate-y-1/2 overflow-hidden rounded-3xl border border-legacy-line bg-legacy-ink p-7 shadow-[var(--shadow-legacy-pop)] sm:p-8"
           >
             <button
               type="button"
               onClick={() => setIsOpen(false)}
-              className="absolute right-4 top-4 rounded-full bg-surface-2 p-2 text-muted transition-colors hover:text-fg"
+              className="absolute right-4 top-4 rounded-full bg-surface-2 p-2 text-legacy-muted transition-colors hover:text-fg"
               aria-label={t("dismiss")}
             >
               <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
@@ -84,9 +84,9 @@ export function ExitIntentPopup() {
             <h2 id="exit-title" className="mt-3 font-display text-2xl font-extrabold leading-tight text-fg">{t("title")}
             </h2>
 
-            <p className="mt-3 text-sm leading-relaxed text-muted">{t("body")}</p>
+            <p className="mt-3 text-sm leading-relaxed text-legacy-muted">{t("body")}</p>
 
-            <ul className="mt-5 flex flex-col gap-2.5 rounded-2xl border border-line bg-surface p-4 text-sm text-fg">
+            <ul className="mt-5 flex flex-col gap-2.5 rounded-2xl border border-legacy-line bg-surface p-4 text-sm text-fg">
               {[t("perk1"), t("perk2"), t("perk3")].map((perk) => (
                 <li key={perk} className="flex items-start gap-2.5">
                   <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-signal-soft text-[10px] font-bold text-signal">
@@ -106,7 +106,7 @@ export function ExitIntentPopup() {
               {t("cta")}
             </a>
 
-            <p className="mt-3 text-center text-[11px] leading-relaxed text-muted">{t("promise")}</p>
+            <p className="mt-3 text-center text-[11px] leading-relaxed text-legacy-muted">{t("promise")}</p>
           </motion.div>
         </>
       )}
