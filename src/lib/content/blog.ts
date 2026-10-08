@@ -51,14 +51,14 @@ const rawArticles: RawArticle[] = [
     date: "2026-05-20",
     readingMinutes: 6,
     imageSeed: "blog-omega3",
-    category: { uz: "Yurak sog'lig'i", ru: "Здоровье сердца" },
+    category: { uz: "Yurak sogʻligʻi", ru: "Здоровье сердца" },
     categoryKey: "nutrition",
     title: {
       uz: "Omega-3 nima uchun kerak va qanday tanlash kerak",
       ru: "Зачем нужна омега-3 и как её выбрать",
     },
     excerpt: {
-      uz: "EPA va DHA — yurak, miya va ko'z uchun zarur yog' kislotalari. Sifatli omega-3 ni qanday tanlashni o'rganing.",
+      uz: "EPA va DHA — yurak, miya va koʻz uchun zarur yog' kislotalari. Sifatli omega-3 ni qanday tanlashni oʻrganing.",
       ru: "EPA и DHA — жирные кислоты для сердца, мозга и зрения. Узнайте, как выбрать качественную омегу-3.",
     },
     sections: [
@@ -66,8 +66,8 @@ const rawArticles: RawArticle[] = [
         heading: { uz: "EPA va DHA nima?", ru: "Что такое EPA и DHA?" },
         paragraphs: {
           uz: [
-            "Omega-3 — bu organizm o'zi ishlab chiqara olmaydigan to'yinmagan yog' kislotalari. Asosiy ikkitasi — EPA va DHA — baliq yog'ida ko'p bo'ladi.",
-            "DHA miya va to'r parda hujayralarining qurilish bloki, EPA esa yallig'lanishni muvozanatlashga yordam beradi.",
+            "Omega-3 — bu organizm oʻzi ishlab chiqara olmaydigan toʻyinmagan yog' kislotalari. Asosiy ikkitasi — EPA va DHA — baliq yogʻida koʻp boʻladi.",
+            "DHA miya va toʻr parda hujayralarining qurilish bloki, EPA esa yalligʻlanishni muvozanatlashga yordam beradi.",
           ],
           ru: [
             "Омега-3 — это ненасыщенные жирные кислоты, которые организм не вырабатывает сам. Две главные — EPA и DHA — содержатся в рыбьем жире.",
@@ -79,8 +79,8 @@ const rawArticles: RawArticle[] = [
         heading: { uz: "Sifatli mahsulotni qanday tanlash", ru: "Как выбрать качественный продукт" },
         paragraphs: {
           uz: [
-            "Yorliqdagi EPA va DHA umumiy miqdoriga e'tibor bering — bu baliq yog'ining umumiy og'irligidan muhimroq.",
-            "Molekulyar distillash va IFOS sertifikati og'ir metallardan tozalanganini bildiradi. Hidsiz formula sifatdan dalolat beradi.",
+            "Yorliqdagi EPA va DHA umumiy miqdoriga eʼtibor bering — bu baliq yogʻining umumiy ogʻirligidan muhimroq.",
+            "Molekulyar distillash va IFOS sertifikati ogʻir metallardan tozalanganini bildiradi. Hidsiz formula sifatdan dalolat beradi.",
           ],
           ru: [
             "Смотрите на суммарное количество EPA и DHA на этикетке — это важнее общего веса рыбьего жира.",
@@ -100,11 +100,11 @@ const rawArticles: RawArticle[] = [
     category: { uz: "Immunitet", ru: "Иммунитет" },
     categoryKey: "vitamins",
     title: {
-      uz: "Qishda vitamin D: nega ko'pchilikda yetishmaydi",
+      uz: "Qishda vitamin D: nega koʻpchilikda yetishmaydi",
       ru: "Витамин D зимой: почему его не хватает многим",
     },
     excerpt: {
-      uz: "Quyosh kam bo'lgan oylarda vitamin D darajasi pasayadi. Bu kayfiyat, suyak va immunitetga qanday ta'sir qiladi?",
+      uz: "Quyosh kam boʻlgan oylarda vitamin D darajasi pasayadi. Bu kayfiyat, suyak va immunitetga qanday taʼsir qiladi?",
       ru: "В месяцы нехватки солнца уровень витамина D падает. Как это влияет на настроение, кости и иммунитет?",
     },
     sections: [
@@ -112,8 +112,8 @@ const rawArticles: RawArticle[] = [
         heading: { uz: "Quyosh va vitamin D", ru: "Солнце и витамин D" },
         paragraphs: {
           uz: [
-            "Terimiz quyosh nuri ta'sirida vitamin D ishlab chiqaradi. Kuz va qishda nur kamayadi, shuning uchun daraja pasayadi.",
-            "Vitamin D yetishmovchiligi charchoq, kayfiyat pasayishi va tez-tez shamollash bilan namoyon bo'lishi mumkin.",
+            "Terimiz quyosh nuri taʼsirida vitamin D ishlab chiqaradi. Kuz va qishda nur kamayadi, shuning uchun daraja pasayadi.",
+            "Vitamin D yetishmovchiligi charchoq, kayfiyat pasayishi va tez-tez shamollash bilan namoyon boʻlishi mumkin.",
           ],
           ru: [
             "Кожа вырабатывает витамин D под действием солнца. Осенью и зимой света меньше, поэтому уровень падает.",
@@ -125,7 +125,7 @@ const rawArticles: RawArticle[] = [
         heading: { uz: "Nega K2 bilan birga?", ru: "Почему вместе с K2?" },
         paragraphs: {
           uz: [
-            "Vitamin K2 kalsiyni qon tomirlaridan suyaklarga yo'naltiradi. Shuning uchun D3 + K2 juftligi ideal hisoblanadi.",
+            "Vitamin K2 kalsiyni qon tomirlaridan suyaklarga yoʻnaltiradi. Shuning uchun D3 + K2 juftligi ideal hisoblanadi.",
           ],
           ru: [
             "Витамин K2 направляет кальций из сосудов в кости. Поэтому пара D3 + K2 считается идеальной.",

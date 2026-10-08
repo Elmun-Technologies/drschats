@@ -18,7 +18,7 @@ export interface UpsellStep {
 
 const REASONS = [
   "Ajoyib kombinatsiya",
-  "Ko'p tanlanadigan juft",
+  "Koʻp tanlanadigan juft",
   "Salomatlik uchun ideal",
   "Ularni birga oling",
   "Premium tanlov",

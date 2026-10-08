@@ -5,6 +5,8 @@ import { BRAND } from "@/lib/brand";
 import { isApiConfigured } from "@/lib/api/client";
 import { accountAreaAvailable } from "@/lib/config/demo";
 import { ONLINE_PROVIDERS } from "@/lib/config/payments";
+import { CARD_BRANDS, type PaymentBrandId } from "@/lib/config/payment-brands";
+import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { isNavigable } from "@/lib/content/nav-sections";
 import type { Category } from "@/lib/shopflow/types";
 import { HEALTH_LINKS, SALE_HREF } from "./nav-links";
@@ -82,7 +84,8 @@ export function Footer({
     },
   ];
 
-  const payments = [...ONLINE_PROVIDERS.map((p) => p.label), t("cash")];
+  // Online providers appear once they can take a payment; the cards are what the courier terminal accepts.
+  const payments: PaymentBrandId[] = [...ONLINE_PROVIDERS.map((p) => p.id), ...CARD_BRANDS];
 
   return (
     <footer className="bg-tile pb-[var(--bottom-nav)] text-ink">
@@ -140,11 +143,8 @@ export function Footer({
           <div className="flex flex-col gap-2.5 md:flex-row md:flex-wrap md:items-center md:gap-3">
             <span className="text-[15px] font-semibold md:mr-1">{t("paymentMethods")}</span>
             <div className="flex flex-wrap gap-2 md:gap-3">
-              {payments.map((p) => (
-                <span key={p} className="inline-flex h-9 items-center rounded-[10px] bg-bg px-3 text-sm font-bold md:h-10 md:px-4 md:text-[15px]">
-                  {p}
-                </span>
-              ))}
+              <PaymentMarks ids={payments} label={t("paymentMethods")} />
+              <span className="inline-flex h-10 items-center rounded-[10px] bg-bg px-3 text-[15px] font-bold">{t("cash")}</span>
             </div>
           </div>
           <div className="flex items-center gap-2.5">

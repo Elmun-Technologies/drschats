@@ -74,12 +74,12 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           paragraphs: [
             greeting(locale, campaign.name),
             uz
-              ? "Go Vita yangiliklariga obuna bo'lish uchun quyidagi tugmani bosing. Tasdiqlamaguningizcha biz sizga hech narsa yubormaymiz."
+              ? "Go Vita yangiliklariga obuna boʻlish uchun quyidagi tugmani bosing. Tasdiqlamaguningizcha biz sizga hech narsa yubormaymiz."
               : "Нажмите кнопку ниже, чтобы подписаться на рассылку Go Vita. Пока вы не подтвердите, мы вам ничего не отправим.",
           ],
           cta: { label: uz ? "Obunani tasdiqlash" : "Подтвердить подписку", url: campaign.confirmUrl },
           note: uz
-            ? "Agar bu siz bo'lmasangiz, shunchaki e'tiborsiz qoldiring — havola 7 kundan keyin ishlamay qoladi."
+            ? "Agar bu siz boʻlmasangiz, shunchaki eʼtiborsiz qoldiring — havola 7 kundan keyin ishlamay qoladi."
             : "Если это были не вы, просто проигнорируйте письмо — ссылка перестанет работать через 7 дней.",
         },
       };
@@ -89,7 +89,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
         subject: uz ? "Xush kelibsiz — nimadan boshlaymiz?" : "Добро пожаловать — с чего начнём?",
         blocks: {
           preheader: uz
-            ? "5 daqiqalik test — sizga mos vitaminlar ro'yxati."
+            ? "5 daqiqalik test — sizga mos vitaminlar roʻyxati."
             : "Тест на 5 минут — список витаминов под вас.",
           heading: uz ? "Xush kelibsiz!" : "Добро пожаловать!",
           paragraphs: [
@@ -98,7 +98,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
               ? "Obunangiz faollashdi. Biz oyiga 2–3 marta yozamiz: yangi mahsulotlar, aksiyalar va farmatsevtlarimiz tayyorlagan qisqa maslahatlar."
               : "Подписка активна. Мы пишем 2–3 раза в месяц: новинки, акции и короткие материалы от наших фармацевтов.",
             uz
-              ? "Boshlash uchun eng qulay yo'l — sog'liq testi. U turmush tarzingiz haqida bir necha savol beradi va shu asosda ro'yxat tuzadi."
+              ? "Boshlash uchun eng qulay yoʻl — sogʻliq testi. U turmush tarzingiz haqida bir necha savol beradi va shu asosda roʻyxat tuzadi."
               : "Самый простой старт — тест здоровья. Несколько вопросов об образе жизни, и вы получите подобранный список.",
           ],
           cta: { label: uz ? "Testni boshlash" : "Пройти тест", url: campaign.quizUrl },
@@ -112,13 +112,13 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           : `Заказ принят — №${campaign.orderId}`,
         blocks: {
           preheader: uz
-            ? "Operatorimiz tez orada bog'lanadi."
+            ? "Operatorimiz tez orada bogʻlanadi."
             : "Наш оператор скоро свяжется с вами.",
           heading: uz ? `Buyurtma №${campaign.orderId} qabul qilindi` : `Заказ №${campaign.orderId} принят`,
           paragraphs: [
             greeting(locale, campaign.customerName),
             uz
-              ? "Rahmat! Buyurtmangiz qabul qilindi. Operatorimiz manzilni va yetkazib berish vaqtini tasdiqlash uchun tez orada qo'ng'iroq qiladi."
+              ? "Rahmat! Buyurtmangiz qabul qilindi. Operatorimiz manzilni va yetkazib berish vaqtini tasdiqlash uchun tez orada qoʻngʻiroq qiladi."
               : "Спасибо! Заказ принят. Оператор позвонит вам, чтобы подтвердить адрес и время доставки.",
           ],
           products: campaign.items,
@@ -138,7 +138,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           paragraphs: [
             greeting(locale, campaign.name),
             uz
-              ? "Siz tanlagan mahsulotlar savatchada turibdi. Agar biror savol qolgan bo'lsa — shu xatga javob yozing, farmatsevtimiz javob beradi."
+              ? "Siz tanlagan mahsulotlar savatchada turibdi. Agar biror savol qolgan boʻlsa — shu xatga javob yozing, farmatsevtimiz javob beradi."
               : "Выбранные товары остались в корзине. Если остался вопрос — ответьте на это письмо, наш фармацевт ответит.",
           ],
           products: campaign.items,
@@ -151,28 +151,28 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
       return {
         subject: who
           ? uz
-            ? `${who}ning tug'ilgan kuni yaqinlashmoqda`
+            ? `${who}ning tugʻilgan kuni yaqinlashmoqda`
             : `Скоро день рождения — ${who}`
           : uz
-            ? "Tug'ilgan kuningiz bilan!"
+            ? "Tugʻilgan kuningiz bilan!"
             : "С днём рождения!",
         blocks: {
           preheader: uz ? "Kichik sovg'amiz bor." : "У нас есть небольшой подарок.",
           heading: who
             ? uz
-              ? `${who}ning tug'ilgan kuni yaqin`
+              ? `${who}ning tugʻilgan kuni yaqin`
               : `Скоро день рождения — ${who}`
             : uz
-              ? "Tug'ilgan kuningiz bilan!"
+              ? "Tugʻilgan kuningiz bilan!"
               : "С днём рождения!",
           paragraphs: [
             greeting(locale, campaign.name),
             who
               ? uz
-                ? `Siz profilingizda ${who}ning tug'ilgan kunini belgilagansiz — u yaqinlashib qoldi. Eslatib qo'yamiz, shoshilmasdan tayyorlanishingiz uchun.`
+                ? `Siz profilingizda ${who}ning tugʻilgan kunini belgilagansiz — u yaqinlashib qoldi. Eslatib qoʻyamiz, shoshilmasdan tayyorlanishingiz uchun.`
                 : `Вы отметили в профиле день рождения — ${who}. Он уже близко, напоминаем заранее, чтобы вы успели спокойно подготовиться.`
               : uz
-                ? "Sizni tug'ilgan kuningiz bilan tabriklaymiz. Yil davomida bizni tanlaganingiz uchun rahmat."
+                ? "Sizni tugʻilgan kuningiz bilan tabriklaymiz. Yil davomida bizni tanlaganingiz uchun rahmat."
                 : "Поздравляем вас с днём рождения и благодарим за то, что выбираете нас.",
           ],
           bullets: campaign.promoCode
@@ -196,22 +196,22 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
             : "Сезонная подборка для детей.",
           heading: campaign.childName
             ? uz
-              ? `${campaign.childName} uchun o'quv yiliga tayyorgarlik`
+              ? `${campaign.childName} uchun oʻquv yiliga tayyorgarlik`
               : `Готовимся к учебному году — ${campaign.childName}`
             : uz
-              ? "O'quv yiliga tayyorgarlik"
+              ? "Oʻquv yiliga tayyorgarlik"
               : "Готовимся к учебному году",
           paragraphs: [
             uz
-              ? "Sentyabr yaqinlashmoqda: bolalar yana bir jamoaga qaytadi, kun tartibi o'zgaradi."
+              ? "Sentyabr yaqinlashmoqda: bolalar yana bir jamoaga qaytadi, kun tartibi oʻzgaradi."
               : "Сентябрь близко: дети возвращаются в коллектив, режим дня меняется.",
             uz
-              ? "Bolalar uchun mo'ljallangan mahsulotlarni alohida bo'limga yig'dik. Dozani yoshga qarab tanlash kerak — farmatsevtimiz bilan maslahatlashishingiz mumkin."
+              ? "Bolalar uchun moʻljallangan mahsulotlarni alohida boʻlimga yigʻdik. Dozani yoshga qarab tanlash kerak — farmatsevtimiz bilan maslahatlashishingiz mumkin."
               : "Мы собрали товары для детей в отдельный раздел. Дозировка подбирается по возрасту — вы можете посоветоваться с нашим фармацевтом.",
           ],
           cta: { label: uz ? "Bolalar bo'limi" : "Раздел для детей", url: campaign.shopUrl },
           note: uz
-            ? "Bolaga har qanday qo'shimcha berishdan oldin shifokor bilan maslahatlashing."
+            ? "Bolaga har qanday qoʻshimcha berishdan oldin shifokor bilan maslahatlashing."
             : "Перед приёмом любых добавок ребёнком проконсультируйтесь с врачом.",
         },
       };
@@ -221,7 +221,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
         subject: uz ? "Kursingiz tugayapti" : "Ваш курс заканчивается",
         blocks: {
           preheader: uz
-            ? "Uzilish bo'lmasligi uchun oldindan eslatamiz."
+            ? "Uzilish boʻlmasligi uchun oldindan eslatamiz."
             : "Напоминаем заранее, чтобы не было перерыва.",
           heading: uz ? "Kurs tugashiga oz qoldi" : "Курс скоро закончится",
           paragraphs: [
@@ -233,7 +233,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
                 ? `Oxirgi buyurtmangizdagi kurs taxminan ${campaign.daysLeft} kundan keyin tugaydi.`
                 : `Курс из вашего последнего заказа закончится примерно через ${campaign.daysLeft} дн.`,
             uz
-              ? "Ko'p mahsulotlarda samara muntazamlikka bog'liq, shuning uchun oldindan eslatamiz."
+              ? "Koʻp mahsulotlarda samara muntazamlikka bogʻliq, shuning uchun oldindan eslatamiz."
               : "Для многих продуктов важна регулярность приёма, поэтому напоминаем заранее.",
           ],
           cta: { label: uz ? "Takroriy buyurtma" : "Повторить заказ", url: campaign.productUrl },
@@ -247,15 +247,15 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           : `Следующая доставка — ${campaign.deliveryDate}`,
         blocks: {
           preheader: uz
-            ? "O'zgartirish, o'tkazib yuborish yoki bekor qilish — bir bosishda."
+            ? "Oʻzgartirish, oʻtkazib yuborish yoki bekor qilish — bir bosishda."
             : "Изменить, пропустить или отменить — в один клик.",
           heading: uz ? "Obuna bo'yicha keyingi yetkazib berish" : "Ближайшая доставка по подписке",
           paragraphs: [
             uz
-              ? `${campaign.daysUntil} kundan keyin (${campaign.deliveryDate}) obunangiz bo'yicha navbatdagi buyurtma tayyorlanadi.`
+              ? `${campaign.daysUntil} kundan keyin (${campaign.deliveryDate}) obunangiz boʻyicha navbatdagi buyurtma tayyorlanadi.`
               : `Через ${campaign.daysUntil} дн. (${campaign.deliveryDate}) мы соберём очередной заказ по вашей подписке.`,
             uz
-              ? "Agar hozircha kerak bo'lmasa — bu yetkazib berishni o'tkazib yuborishingiz yoki oraliqni o'zgartirishingiz mumkin."
+              ? "Agar hozircha kerak boʻlmasa — bu yetkazib berishni oʻtkazib yuborishingiz yoki oraliqni oʻzgartirishingiz mumkin."
               : "Если сейчас не нужно — пропустите доставку или измените интервал.",
           ],
           products: campaign.items,
@@ -274,7 +274,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           paragraphs: [
             greeting(locale, campaign.name),
             uz
-              ? "Go Vita'da hisob yaratildi. Elektron pochtangizni tasdiqlasangiz, buyurtma holati va eslatmalar shu manzilga keladi."
+              ? "Go Vitaʼda hisob yaratildi. Elektron pochtangizni tasdiqlasangiz, buyurtma holati va eslatmalar shu manzilga keladi."
               : "Аккаунт в Go Vita создан. Подтвердите почту, и статусы заказов и напоминания будут приходить на этот адрес.",
           ],
           cta: { label: uz ? "Pochtani tasdiqlash" : "Подтвердить почту", url: campaign.verifyUrl },

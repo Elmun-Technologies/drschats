@@ -90,17 +90,17 @@ const raw: RawQuestion[] = [
     id: "who",
     question: { uz: "Kim uchun tanlayapsiz?", ru: "Для кого подбираете?" },
     guidance: {
-      uz: "Nima uchun bu muhim? Yosh va jinsga qarab sutkalik ehtiyoj me'yorlari farq qiladi.",
+      uz: "Nima uchun bu muhim? Yosh va jinsga qarab sutkalik ehtiyoj meʼyorlari farq qiladi.",
       ru: "Почему это важно? В зависимости от пола и возраста суточные нормы потребления различаются.",
     },
     multiSelect: false,
     /*
       Six doors, not four.
 
-      "O'zim uchun (ayol / erkak)" used to be the only way to say "for myself",
+      "Oʻzim uchun (ayol / erkak)" used to be the only way to say "for myself",
       which left out the two audiences the shop actually sells to: someone
       buying for a parent over 60, and someone recovering from an illness or an
-      operation. Both were reachable only by picking "o'zim uchun" and reading
+      operation. Both were reachable only by picking "oʻzim uchun" and reading
       the result loosely. The doors are the question, so the question has to
       offer them.
 
@@ -123,7 +123,7 @@ const raw: RawQuestion[] = [
       },
       {
         id: "expectant",
-        label: { uz: "Bo'lajak onaga", ru: "Будущей маме" },
+        label: { uz: "Boʻlajak onaga", ru: "Будущей маме" },
         topics: { pregnancy: 3, immunity: 1 },
         ingredients: { "vitamin-d3": 1, iron: 1 },
         seeDoctor: true,
@@ -156,22 +156,22 @@ const raw: RawQuestion[] = [
       wording of the result, so it carries no scoring weights.
     */
     id: "recipient",
-    question: { uz: "O'zingiz uchunmi yoki sovg'a?", ru: "Для себя или в подарок?" },
+    question: { uz: "Oʻzingiz uchunmi yoki sovgʻa?", ru: "Для себя или в подарок?" },
     guidance: {
-      uz: "Nima uchun bu muhim? Sovg'a uchun natijada taklifnoma va qadoqlash haqidagi ma'lumot ko'rsatiladi.",
+      uz: "Nima uchun bu muhim? Sovgʻa uchun natijada taklifnoma va qadoqlash haqidagi maʼlumot koʻrsatiladi.",
       ru: "Почему это важно? Для подарка в результате появятся подсказки об упаковке.",
     },
     multiSelect: false,
     options: [
-      { id: "self", label: { uz: "O'zim uchun", ru: "Для себя" }, topics: {} },
-      { id: "gift", label: { uz: "Sovg'a uchun", ru: "В подарок" }, topics: {} },
+      { id: "self", label: { uz: "Oʻzim uchun", ru: "Для себя" }, topics: {} },
+      { id: "gift", label: { uz: "Sovgʻa uchun", ru: "В подарок" }, topics: {} },
     ],
   },
   {
     id: "age",
     question: { uz: "Yosh guruhi", ru: "Возрастная группа" },
     guidance: {
-      uz: "Nima uchun bu muhim? Yosh ulg'aygani sari kalsiy, D3 va B12 kabi nutriyentlarning biologik o'zlashtirilishi o'zgaradi.",
+      uz: "Nima uchun bu muhim? Yosh ulgʻaygani sari kalsiy, D3 va B12 kabi nutriyentlarning biologik oʻzlashtirilishi oʻzgaradi.",
       ru: "Почему это важно? С возрастом усвояемость таких нутриентов, как кальций, D3 и B12, существенно меняется.",
     },
     multiSelect: false,
@@ -185,12 +185,12 @@ const raw: RawQuestion[] = [
   {
     id: "concerns",
     question: {
-      uz: "Sizni nima ko'proq bezovta qiladi?",
+      uz: "Sizni nima koʻproq bezovta qiladi?",
       ru: "Что беспокоит больше всего?",
     },
     hint: { uz: "Bir nechtasini tanlash mumkin", ru: "Можно выбрать несколько" },
     guidance: {
-      uz: "Nima uchun bu muhim? Charchoq, uyqu buzilishi va soch to'kilishi muayyan vitamin va minerallar yetishmovchiligining asosiy klinik belgilaridir.",
+      uz: "Nima uchun bu muhim? Charchoq, uyqu buzilishi va soch toʻkilishi muayyan vitamin va minerallar yetishmovchiligining asosiy klinik belgilaridir.",
       ru: "Почему это важно? Усталость, проблемы со сном и выпадение волос — ключевые клинические признаки дефицита нутриентов.",
     },
     multiSelect: true,
@@ -221,13 +221,13 @@ const raw: RawQuestion[] = [
       },
       {
         id: "hair-skin",
-        label: { uz: "Soch to'kilishi, teri holati", ru: "Выпадение волос, состояние кожи" },
+        label: { uz: "Soch toʻkilishi, teri holati", ru: "Выпадение волос, состояние кожи" },
         topics: { beauty: 3, "hair-loss": 2 },
         ingredients: { collagen: 2, biotin: 2, zinc: 1 },
       },
       {
         id: "bones",
-        label: { uz: "Suyak va bo'g'imlar", ru: "Кости и суставы" },
+        label: { uz: "Suyak va boʻgʻimlar", ru: "Кости и суставы" },
         topics: { bones: 3 },
         ingredients: { "vitamin-d3": 2, "vitamin-k2": 2 },
       },
@@ -256,7 +256,7 @@ const raw: RawQuestion[] = [
         an unverifiable claim in a shop quiz. Until the doctor writes the
         replacement, the guidance only says why the question is asked.
       */
-      uz: "Nima uchun bu muhim? Javobingiz kundalik tanlovga ta'sir qiladi.",
+      uz: "Nima uchun bu muhim? Javobingiz kundalik tanlovga taʼsir qiladi.",
       ru: "Почему это важно? Ваш ответ влияет на подборку.",
     },
     multiSelect: false,
@@ -264,17 +264,17 @@ const raw: RawQuestion[] = [
       { id: "lt5", label: { uz: "5 soatdan kam", ru: "Меньше 5 часов" }, topics: { sleep: 2, fatigue: 2 } },
       { id: "5-7", label: { uz: "5–7 soat", ru: "5–7 часов" }, topics: { sleep: 1, fatigue: 1 } },
       { id: "7-9", label: { uz: "7–9 soat", ru: "7–9 часов" }, topics: {} },
-      { id: "gt9", label: { uz: "9 soatdan ko'p, baribir charchoq", ru: "Больше 9, но всё равно усталость" }, topics: { fatigue: 2 }, seeDoctor: true },
+      { id: "gt9", label: { uz: "9 soatdan koʻp, baribir charchoq", ru: "Больше 9, но всё равно усталость" }, topics: { fatigue: 2 }, seeDoctor: true },
     ],
   },
   {
     id: "sun",
     question: {
-      uz: "Kuniga qancha vaqt ochiq havoda bo'lasiz?",
+      uz: "Kuniga qancha vaqt ochiq havoda boʻlasiz?",
       ru: "Сколько времени в день проводите на улице?",
     },
     guidance: {
-      uz: "Nima uchun bu muhim? Quyosh nuri D3 vitaminining terida sintez bo'lishining asosiy manbai hisoblanadi.",
+      uz: "Nima uchun bu muhim? Quyosh nuri D3 vitaminining terida sintez boʻlishining asosiy manbai hisoblanadi.",
       ru: "Почему это важно? Солнечный свет — главный источник естественного синтеза витамина D3 в коже.",
     },
     multiSelect: false,
@@ -282,7 +282,7 @@ const raw: RawQuestion[] = [
       { id: "almost-none", label: { uz: "Deyarli chiqmayman", ru: "Почти не выхожу" }, ingredients: { "vitamin-d3": 3 }, topics: { fatigue: 1, bones: 1 } },
       { id: "lt1", label: { uz: "1 soatdan kam", ru: "Меньше часа" }, ingredients: { "vitamin-d3": 2 } },
       { id: "1-3", label: { uz: "1–3 soat", ru: "1–3 часа" }, ingredients: { "vitamin-d3": 0.5 } },
-      { id: "gt3", label: { uz: "3 soatdan ko'p", ru: "Больше 3 часов" }, ingredients: {} },
+      { id: "gt3", label: { uz: "3 soatdan koʻp", ru: "Больше 3 часов" }, ingredients: {} },
     ],
   },
   {
@@ -294,7 +294,7 @@ const raw: RawQuestion[] = [
     },
     multiSelect: false,
     options: [
-      { id: "sedentary", label: { uz: "Ko'proq o'tirib ishlayman", ru: "В основном сидячая работа" }, topics: { energy: 1, heart: 1 } },
+      { id: "sedentary", label: { uz: "Koʻproq oʻtirib ishlayman", ru: "В основном сидячая работа" }, topics: { energy: 1, heart: 1 } },
       { id: "light", label: { uz: "Haftada 1–2 marta", ru: "1–2 раза в неделю" }, topics: {} },
       { id: "regular", label: { uz: "Haftada 3–5 marta", ru: "3–5 раз в неделю" }, topics: { sport: 2 }, ingredients: { magnesium: 1 } },
       { id: "athlete", label: { uz: "Har kuni, jiddiy yuklama", ru: "Ежедневно, серьёзные нагрузки" }, topics: { sport: 3, energy: 1 }, ingredients: { magnesium: 2 } },
@@ -311,22 +311,22 @@ const raw: RawQuestion[] = [
     options: [
       { id: "fish", label: { uz: "Haftada 2+ marta baliq yeyman", ru: "Ем рыбу 2+ раза в неделю" }, ingredients: { "epa-dha": -1.5 } },
       { id: "veg", label: { uz: "Vegetarian yoki vegan", ru: "Вегетарианство или веганство" }, ingredients: { "epa-dha": 2, zinc: 1 }, topics: { energy: 1 } },
-      { id: "no-dairy", label: { uz: "Sut mahsulotlarini iste'mol qilmayman", ru: "Не употребляю молочные продукты" }, ingredients: { "vitamin-d3": 1, "vitamin-k2": 1 }, topics: { bones: 1 } },
-      { id: "irregular", label: { uz: "Tartibsiz, tez-tez o'tkazib yuboraman", ru: "Нерегулярное, часто пропускаю" }, topics: { fatigue: 1, energy: 1 } },
+      { id: "no-dairy", label: { uz: "Sut mahsulotlarini isteʼmol qilmayman", ru: "Не употребляю молочные продукты" }, ingredients: { "vitamin-d3": 1, "vitamin-k2": 1 }, topics: { bones: 1 } },
+      { id: "irregular", label: { uz: "Tartibsiz, tez-tez oʻtkazib yuboraman", ru: "Нерегулярное, часто пропускаю" }, topics: { fatigue: 1, energy: 1 } },
     ],
   },
   {
     id: "screen",
     question: { uz: "Ekran oldida kuniga qancha vaqt?", ru: "Сколько времени за экраном в день?" },
     guidance: {
-      uz: "Nima uchun bu muhim? Ko'k nur (blue light) ko'z to'r pardasiga ta'sir qilib, lyutein va zeaksantin nutriyentlariga ehtiyojni oshiradi.",
+      uz: "Nima uchun bu muhim? Koʻk nur (blue light) koʻz toʻr pardasiga taʼsir qilib, lyutein va zeaksantin nutriyentlariga ehtiyojni oshiradi.",
       ru: "Почему это важно? Синий свет увеличивает потребность глаз в антиоксидантах, лютеине и зеаксантине.",
     },
     multiSelect: false,
     options: [
       { id: "lt4", label: { uz: "4 soatdan kam", ru: "Меньше 4 часов" }, topics: {} },
       { id: "4-8", label: { uz: "4–8 soat", ru: "4–8 часов" }, topics: { vision: 1 } },
-      { id: "gt8", label: { uz: "8 soatdan ko'p", ru: "Больше 8 часов" }, topics: { vision: 2, sleep: 1 } },
+      { id: "gt8", label: { uz: "8 soatdan koʻp", ru: "Больше 8 часов" }, topics: { vision: 2, sleep: 1 } },
     ],
   },
   {
@@ -338,8 +338,8 @@ const raw: RawQuestion[] = [
     },
     multiSelect: false,
     options: [
-      { id: "no", label: { uz: "Yo'q", ru: "Нет" }, topics: {} },
-      { id: "sometimes", label: { uz: "Ba'zan", ru: "Иногда" }, ingredients: { "vitamin-c": 1 } },
+      { id: "no", label: { uz: "Yoʻq", ru: "Нет" }, topics: {} },
+      { id: "sometimes", label: { uz: "Baʼzan", ru: "Иногда" }, ingredients: { "vitamin-c": 1 } },
       { id: "yes", label: { uz: "Ha, muntazam", ru: "Да, регулярно" }, ingredients: { "vitamin-c": 2 }, topics: { heart: 1 } },
     ],
   },
@@ -350,16 +350,16 @@ const raw: RawQuestion[] = [
       ru: "Принимаете ли сейчас лекарства постоянно?",
     },
     hint: {
-      uz: "Bu javob tavsiyaga ta'sir qilmaydi — faqat farmatsevt bilan maslahatlashish kerakligini ko'rsatadi",
+      uz: "Bu javob tavsiyaga taʼsir qilmaydi — faqat farmatsevt bilan maslahatlashish kerakligini koʻrsatadi",
       ru: "Ответ не влияет на подбор — он лишь показывает, нужна ли консультация фармацевта",
     },
     guidance: {
-      uz: "Nima uchun bu muhim? Ba'zi dori vositalari vitaminlar so'rilishini bloklaydi va farmatsevt konsultatsiyasini talab qiladi.",
+      uz: "Nima uchun bu muhim? Baʼzi dori vositalari vitaminlar soʻrilishini bloklaydi va farmatsevt konsultatsiyasini talab qiladi.",
       ru: "Почему это важно? Некоторые лекарства блокируют всасывание витаминов и требуют консультации фармацевта.",
     },
     multiSelect: false,
     options: [
-      { id: "none", label: { uz: "Yo'q", ru: "Нет" }, topics: {} },
+      { id: "none", label: { uz: "Yoʻq", ru: "Нет" }, topics: {} },
       { id: "some", label: { uz: "Ha", ru: "Да" }, seeDoctor: true },
     ],
   },
@@ -376,7 +376,7 @@ const raw: RawQuestion[] = [
     showIf: { question: "who", includesAny: ["self-woman", "expectant"] },
     multiSelect: false,
     options: [
-      { id: "no", label: { uz: "Yo'q / tegishli emas", ru: "Нет / не относится" }, topics: {} },
+      { id: "no", label: { uz: "Yoʻq / tegishli emas", ru: "Нет / не относится" }, topics: {} },
       { id: "yes", label: { uz: "Ha", ru: "Да" }, topics: { pregnancy: 3 }, seeDoctor: true },
     ],
   },
@@ -387,13 +387,13 @@ const raw: RawQuestion[] = [
       ru: "Принимали ли витамины раньше?",
     },
     guidance: {
-      uz: "Nima uchun bu muhim? Vitamin qabul qilish tajribangiz doza va kurs davomiyligini to'g'ri rejalashtirishga yordam beradi.",
+      uz: "Nima uchun bu muhim? Vitamin qabul qilish tajribangiz doza va kurs davomiyligini toʻgʻri rejalashtirishga yordam beradi.",
       ru: "Почему это важно? Ваш опыт приема витаминов помогает правильно рассчитать дозировку и курс.",
     },
     multiSelect: false,
     options: [
-      { id: "never", label: { uz: "Yo'q, birinchi marta", ru: "Нет, впервые" }, topics: {} },
-      { id: "sometimes", label: { uz: "Ba'zan, tizimsiz", ru: "Иногда, бессистемно" }, topics: {} },
+      { id: "never", label: { uz: "Yoʻq, birinchi marta", ru: "Нет, впервые" }, topics: {} },
+      { id: "sometimes", label: { uz: "Baʼzan, tizimsiz", ru: "Иногда, бессистемно" }, topics: {} },
       { id: "regular", label: { uz: "Ha, muntazam", ru: "Да, регулярно" }, topics: {} },
     ],
   },

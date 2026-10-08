@@ -65,7 +65,7 @@ export const rawCategories: RawCategory[] = [
   {
     id: "cat-beauty",
     slug: "beauty",
-    name: { uz: "Go'zallik", ru: "Красота" },
+    name: { uz: "Goʻzallik", ru: "Красота" },
     description: {
       uz: "Soch, teri va tirnoq uchun vitaminlar.",
       ru: "Витамины для волос, кожи и ногтей.",
@@ -77,7 +77,7 @@ export const rawCategories: RawCategory[] = [
     slug: "kids",
     name: { uz: "Bolalar uchun", ru: "Детям" },
     description: {
-      uz: "Bolalar uchun vitaminlar va qo'shimchalar.",
+      uz: "Bolalar uchun vitaminlar va qoʻshimchalar.",
       ru: "Витамины и добавки для детей.",
     },
     image: img("cat-kids", "Kids").url,
@@ -87,7 +87,7 @@ export const rawCategories: RawCategory[] = [
     slug: "effervescent",
     name: { uz: "Shipuchi tabletkalar", ru: "Шипучие таблетки" },
     description: {
-      uz: "Suvda eriydigan vitaminlar — tez ta'sir qiladi.",
+      uz: "Suvda eriydigan vitaminlar — tez taʼsir qiladi.",
       ru: "Растворимые витамины — быстрое действие.",
     },
     image: img("cat-effervescent", "Effervescent").url,
@@ -214,7 +214,7 @@ export const rawProducts: RawProduct[] = [
       ru: "Специализированное питание — 452 ккал, 200 мл",
     },
     description: {
-      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. Kam ishtaha va tiklanish davrida qo'llaniladi. 452 kcal, 200 ml, laktozasiz formula. Vanil ta'mi.",
+      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. Kam ishtaha va tiklanish davrida qoʻllaniladi. 452 kcal, 200 ml, laktozasiz formula. Vanil taʼmi.",
       ru: "Delical — высококалорийный питательный коктейль. Предназначен для больных и выздоравливающих пациентов. 452 ккал, 200 мл, без лактозы. Вкус ванили.",
     },
     highlights: {
@@ -223,8 +223,8 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "bolt", title: "Yuqori energiya", description: "452 kcal kichik hajmda to'liq kaloriya ta'minlaydi." },
-        { icon: "shield", title: "Tuzalishga yordam", description: "Kasallik va operatsiyadan keyin ovqatlanishni qo'llab-quvvatlaydi." },
+        { icon: "bolt", title: "Yuqori energiya", description: "452 kcal kichik hajmda toʻliq kaloriya taʼminlaydi." },
+        { icon: "shield", title: "Tuzalishga yordam", description: "Kasallik va operatsiyadan keyin ovqatlanishni qoʻllab-quvvatlaydi." },
       ],
       ru: [
         { icon: "bolt", title: "Высокая энергия", description: "452 ккал в небольшом объёме обеспечивает полный калораж." },
@@ -246,12 +246,12 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "Sovutilgan holda iching. Kuniga 1–3 shisha shifokor tavsiyasiga ko'ra.",
+      uz: "Sovutilgan holda iching. Kuniga 1–3 shisha shifokor tavsiyasiga koʻra.",
       ru: "Употреблять в охлаждённом виде. 1–3 бутылки в день по рекомендации врача.",
     },
     faq: {
       uz: [
-        { question: "Kim uchun mo'ljallangan?", answer: "Kasallik, operatsiya yoki ishtahasizlik tufayli zaruriy kaloriya olib olmayotgan bemorlar uchun." },
+        { question: "Kim uchun moʻljallangan?", answer: "Kasallik, operatsiya yoki ishtahasizlik tufayli zaruriy kaloriya olib olmayotgan bemorlar uchun." },
         { question: "Bolalar icha oladimi?", answer: "3 yoshdan katta bolalar uchun, ammo shifokor tavsiyasi bilan." },
       ],
       ru: [
@@ -261,7 +261,7 @@ export const rawProducts: RawProduct[] = [
     },
     reviews: {
       uz: [
-        { author: "Mohira A.", rating: 5, date: "2026-05-10", text: "Onama operatsiyadan keyin ishlatdik, juda foydali bo'ldi." },
+        { author: "Mohira A.", rating: 5, date: "2026-05-10", text: "Onama operatsiyadan keyin ishlatdik, juda foydali boʻldi." },
       ],
       ru: [
         { author: "Мохира А.", rating: 5, date: "2026-05-10", text: "Давала маме после операции — очень помогло." },
@@ -285,21 +285,21 @@ export const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Laktozasiz"], ru: ["Акция", "Без лактозы"] },
     name: { uz: "Delical Shokolad 200ml", ru: "Delical Шоколад 200мл" },
     tagline: {
-      uz: "Ixtisoslashgan ovqatlanish — 452 kcal, shokolad ta'mi",
+      uz: "Ixtisoslashgan ovqatlanish — 452 kcal, shokolad taʼmi",
       ru: "Специализированное питание — 452 ккал, вкус шоколада",
     },
     description: {
-      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. 452 kcal, 200 ml, laktozasiz formula. Shokolad ta'mi.",
+      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. 452 kcal, 200 ml, laktozasiz formula. Shokolad taʼmi.",
       ru: "Delical — высококалорийный питательный коктейль. 452 ккал, 200 мл, без лактозы. Вкус шоколада.",
     },
     highlights: {
-      uz: ["452 kcal", "200 ml", "Laktozasiz", "Shokolad ta'mi"],
+      uz: ["452 kcal", "200 ml", "Laktozasiz", "Shokolad taʼmi"],
       ru: ["452 ккал", "200 мл", "Без лактозы", "Вкус шоколада"],
     },
     benefits: {
       uz: [
-        { icon: "bolt", title: "Yuqori energiya", description: "452 kcal kichik hajmda to'liq kaloriya ta'minlaydi." },
-        { icon: "shield", title: "Tuzalishga yordam", description: "Kasallik va operatsiyadan keyin ovqatlanishni qo'llab-quvvatlaydi." },
+        { icon: "bolt", title: "Yuqori energiya", description: "452 kcal kichik hajmda toʻliq kaloriya taʼminlaydi." },
+        { icon: "shield", title: "Tuzalishga yordam", description: "Kasallik va operatsiyadan keyin ovqatlanishni qoʻllab-quvvatlaydi." },
       ],
       ru: [
         { icon: "bolt", title: "Высокая энергия", description: "452 ккал в небольшом объёме обеспечивает полный калораж." },
@@ -321,15 +321,15 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "Sovutilgan holda iching. Kuniga 1–3 shisha shifokor tavsiyasiga ko'ra.",
+      uz: "Sovutilgan holda iching. Kuniga 1–3 shisha shifokor tavsiyasiga koʻra.",
       ru: "Употреблять в охлаждённом виде. 1–3 бутылки в день по рекомендации врача.",
     },
     faq: {
-      uz: [{ question: "Vanil bilan farqi?", answer: "Faqat ta'm farq qiladi, tarkib bir xil." }],
+      uz: [{ question: "Vanil bilan farqi?", answer: "Faqat taʼm farq qiladi, tarkib bir xil." }],
       ru: [{ question: "Чем отличается от ванили?", answer: "Только вкус разный, состав одинаков." }],
     },
     reviews: {
-      uz: [{ author: "Sarvinoz K.", rating: 5, date: "2026-04-20", text: "Shokolad ta'mi juda yoqimli, qabul qilish oson." }],
+      uz: [{ author: "Sarvinoz K.", rating: 5, date: "2026-04-20", text: "Shokolad taʼmi juda yoqimli, qabul qilish oson." }],
       ru: [{ author: "Сарвиноз К.", rating: 5, date: "2026-04-20", text: "Вкус шоколада очень приятный, легко принимать." }],
     },
   },
@@ -350,21 +350,21 @@ export const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Laktozasiz"], ru: ["Акция", "Без лактозы"] },
     name: { uz: "Delical Abrikos 200ml", ru: "Delical Абрикос 200мл" },
     tagline: {
-      uz: "Ixtisoslashgan ovqatlanish — 452 kcal, abrikos ta'mi",
+      uz: "Ixtisoslashgan ovqatlanish — 452 kcal, abrikos taʼmi",
       ru: "Специализированное питание — 452 ккал, вкус абрикоса",
     },
     description: {
-      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. 452 kcal, 200 ml, laktozasiz formula. Abrikos ta'mi.",
+      uz: "Delical — yuqori kaloriyali ixtisoslashgan ichimlik. 452 kcal, 200 ml, laktozasiz formula. Abrikos taʼmi.",
       ru: "Delical — высококалорийный питательный коктейль. 452 ккал, 200 мл, без лактозы. Вкус абрикоса.",
     },
     highlights: {
-      uz: ["452 kcal", "200 ml", "Laktozasiz", "Abrikos ta'mi"],
+      uz: ["452 kcal", "200 ml", "Laktozasiz", "Abrikos taʼmi"],
       ru: ["452 ккал", "200 мл", "Без лактозы", "Вкус абрикоса"],
     },
     benefits: {
       uz: [
-        { icon: "bolt", title: "Yuqori energiya", description: "452 kcal kichik hajmda to'liq kaloriya ta'minlaydi." },
-        { icon: "shield", title: "Tuzalishga yordam", description: "Kasallik va operatsiyadan keyin ovqatlanishni qo'llab-quvvatlaydi." },
+        { icon: "bolt", title: "Yuqori energiya", description: "452 kcal kichik hajmda toʻliq kaloriya taʼminlaydi." },
+        { icon: "shield", title: "Tuzalishga yordam", description: "Kasallik va operatsiyadan keyin ovqatlanishni qoʻllab-quvvatlaydi." },
       ],
       ru: [
         { icon: "bolt", title: "Высокая энергия", description: "452 ккал в небольшом объёме обеспечивает полный калораж." },
@@ -386,15 +386,15 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "Sovutilgan holda iching. Kuniga 1–3 shisha shifokor tavsiyasiga ko'ra.",
+      uz: "Sovutilgan holda iching. Kuniga 1–3 shisha shifokor tavsiyasiga koʻra.",
       ru: "Употреблять в охлаждённом виде. 1–3 бутылки в день по рекомендации врача.",
     },
     faq: {
-      uz: [{ question: "Qaysi ta'm eng mashhur?", answer: "Vanil eng ko'p sotiladi, lekin abrikos va shokolad ham talabgir." }],
+      uz: [{ question: "Qaysi taʼm eng mashhur?", answer: "Vanil eng koʻp sotiladi, lekin abrikos va shokolad ham talabgir." }],
       ru: [{ question: "Какой вкус самый популярный?", answer: "Ваниль продаётся больше всего, но абрикос и шоколад тоже востребованы." }],
     },
     reviews: {
-      uz: [{ author: "Nodira F.", rating: 5, date: "2026-05-02", text: "Tabiiy abrikos ta'mi — juda yoqdi." }],
+      uz: [{ author: "Nodira F.", rating: 5, date: "2026-05-02", text: "Tabiiy abrikos taʼmi — juda yoqdi." }],
       ru: [{ author: "Нодира Ф.", rating: 5, date: "2026-05-02", text: "Натуральный вкус абрикоса — очень понравился." }],
     },
   },
@@ -432,7 +432,7 @@ export const rawProducts: RawProduct[] = [
     benefits: {
       uz: [
         { icon: "bolt", title: "Kofein energiyasi", description: "Ertalabki faollikni oshiradi." },
-        { icon: "sparkle", title: "Boy aroma", description: "Arabika ko'pqirrali ta'm beradi." },
+        { icon: "sparkle", title: "Boy aroma", description: "Arabika koʻpqirrali taʼm beradi." },
       ],
       ru: [
         { icon: "bolt", title: "Энергия кофеина", description: "Повышает утреннюю активность." },
@@ -444,15 +444,15 @@ export const rawProducts: RawProduct[] = [
       ru: [{ name: "100% кофе арабика", amount: "250 г" }],
     },
     howToUse: {
-      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda damlab iching. Ta'mingizga qarab miqdorni sozlang.",
+      uz: "1 choy qoshiq qahvani 200 ml qaynoq suvda damlab iching. Taʼmingizga qarab miqdorni sozlang.",
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды. Регулируйте количество по вкусу.",
     },
     faq: {
-      uz: [{ question: "Edel va Crema farqi nima?", answer: "Edel 100% arabika, Crema esa 90% arabika + 10% robusta — ko'proq kuchli ta'mli." }],
+      uz: [{ question: "Edel va Crema farqi nima?", answer: "Edel 100% arabika, Crema esa 90% arabika + 10% robusta — koʻproq kuchli taʼmli." }],
       ru: [{ question: "В чём разница Edel и Crema?", answer: "Edel — 100% арабика, Crema — 90% арабика + 10% робуста — более крепкий вкус." }],
     },
     reviews: {
-      uz: [{ author: "Ulugbek S.", rating: 5, date: "2026-06-01", text: "Aroma zo'r, ertalab ichish uchun ideal." }],
+      uz: [{ author: "Ulugbek S.", rating: 5, date: "2026-06-01", text: "Aroma zoʻr, ertalab ichish uchun ideal." }],
       ru: [{ author: "Улугбек С.", rating: 5, date: "2026-06-01", text: "Аромат отличный, идеально для утра." }],
     },
   },
@@ -477,7 +477,7 @@ export const rawProducts: RawProduct[] = [
       ru: "Натуральный молотый кофе, 100% арабика, 500 г",
     },
     description: {
-      uz: "Swiss Energy Coffee Edel — 100% arabika, 500 g. Iqtisodiy o'lcham, bir xil Shveytsariya sifati.",
+      uz: "Swiss Energy Coffee Edel — 100% arabika, 500 g. Iqtisodiy oʻlcham, bir xil Shveytsariya sifati.",
       ru: "Swiss Energy Coffee Edel — 100% арабика, 500 г. Экономичный размер, то же швейцарское качество.",
     },
     highlights: {
@@ -503,11 +503,11 @@ export const rawProducts: RawProduct[] = [
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды.",
     },
     faq: {
-      uz: [{ question: "250g bilan farqi?", answer: "Faqat hajm farq qiladi — 500g ko'proq tejamkor." }],
+      uz: [{ question: "250g bilan farqi?", answer: "Faqat hajm farq qiladi — 500g koʻproq tejamkor." }],
       ru: [{ question: "Чем отличается от 250г?", answer: "Только объём — 500г экономичнее." }],
     },
     reviews: {
-      uz: [{ author: "Dilshod M.", rating: 4, date: "2026-05-15", text: "Yaxshi ta'm, oilam uchun olgandim." }],
+      uz: [{ author: "Dilshod M.", rating: 4, date: "2026-05-15", text: "Yaxshi taʼm, oilam uchun olgandim." }],
       ru: [{ author: "Дилшод М.", rating: 4, date: "2026-05-15", text: "Хороший вкус, брал для семьи." }],
     },
   },
@@ -541,7 +541,7 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "bolt", title: "Kuchli ta'm", description: "Robusta qo'shimchasi qahvani kuchliroq qiladi." },
+        { icon: "bolt", title: "Kuchli taʼm", description: "Robusta qoʻshimchasi qahvani kuchliroq qiladi." },
         { icon: "sparkle", title: "Kremal aroma", description: "Nozik qaymoqli aroma." },
       ],
       ru: [
@@ -564,7 +564,7 @@ export const rawProducts: RawProduct[] = [
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды.",
     },
     faq: {
-      uz: [{ question: "Espresso uchun yaraydimi?", answer: "Ha, kofe mashinasida ham, turka yoki french press-da ham ishlataversa bo'ladi." }],
+      uz: [{ question: "Espresso uchun yaraydimi?", answer: "Ha, kofe mashinasida ham, turka yoki french press-da ham ishlataversa boʻladi." }],
       ru: [{ question: "Подходит для эспрессо?", answer: "Да, можно использовать в кофемашине, турке или french press." }],
     },
     reviews: {
@@ -602,7 +602,7 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "bolt", title: "Kuchli ta'm", description: "Robusta qo'shimchasi kuchliroq qiladi." },
+        { icon: "bolt", title: "Kuchli taʼm", description: "Robusta qoʻshimchasi kuchliroq qiladi." },
         { icon: "sparkle", title: "Kremal aroma", description: "Nozik qaymoqli aroma." },
       ],
       ru: [
@@ -625,11 +625,11 @@ export const rawProducts: RawProduct[] = [
       ru: "Заварите 1 чайную ложку кофе в 200 мл горячей воды.",
     },
     faq: {
-      uz: [{ question: "500g bilan farqi?", answer: "Faqat hajm farq qiladi — birinchi marta sinab ko'rish uchun 250g ideal." }],
+      uz: [{ question: "500g bilan farqi?", answer: "Faqat hajm farq qiladi — birinchi marta sinab koʻrish uchun 250g ideal." }],
       ru: [{ question: "Чем отличается от 500г?", answer: "Только объём — 250г идеально для первой пробы." }],
     },
     reviews: {
-      uz: [{ author: "Malika H.", rating: 4, date: "2026-06-05", text: "Yaxshi ta'm, kuchli qahva." }],
+      uz: [{ author: "Malika H.", rating: 4, date: "2026-06-05", text: "Yaxshi taʼm, kuchli qahva." }],
       ru: [{ author: "Малика Х.", rating: 4, date: "2026-06-05", text: "Хороший вкус, крепкий кофе." }],
     },
   },
@@ -705,8 +705,8 @@ export const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "Qachon natija ko'rinadi?", answer: "Soch va tirnoqda 4–8 haftadan keyin sezilarli o'zgarish bo'ladi." },
-        { question: "14 yoshdan kichiklarga mosmi?", answer: "14+ yoshdan kattalar uchun mo'ljallangan." },
+        { question: "Qachon natija koʻrinadi?", answer: "Soch va tirnoqda 4–8 haftadan keyin sezilarli oʻzgarish boʻladi." },
+        { question: "14 yoshdan kichiklarga mosmi?", answer: "14+ yoshdan kattalar uchun moʻljallangan." },
       ],
       ru: [
         { question: "Когда виден результат?", answer: "Заметные изменения волос и ногтей — через 4–8 недель." },
@@ -715,7 +715,7 @@ export const rawProducts: RawProduct[] = [
     },
     reviews: {
       uz: [
-        { author: "Zilola N.", rating: 5, date: "2026-04-15", text: "Sochim to'kilyapti degan muammo o'tdi, tirnoqlarim ham zo'r." },
+        { author: "Zilola N.", rating: 5, date: "2026-04-15", text: "Sochim toʻkilyapti degan muammo oʻtdi, tirnoqlarim ham zoʻr." },
         { author: "Shahnoza A.", rating: 5, date: "2026-03-20", text: "2 oydan keyin sochim yanada qalinlashdi." },
       ],
       ru: [
@@ -758,7 +758,7 @@ export const rawProducts: RawProduct[] = [
     benefits: {
       uz: [
         { icon: "shield", title: "Ingalyatsiya", description: "Shifokor tayinlagan dori bilan uyda ingalyatsiya qilish uchun." },
-        { icon: "sparkle", title: "Mayda zarrachalar", description: "Dori quyi nafas yo'llariga yetib boradi." },
+        { icon: "sparkle", title: "Mayda zarrachalar", description: "Dori quyi nafas yoʻllariga yetib boradi." },
       ],
       ru: [
         { icon: "shield", title: "Ингаляции", description: "Для домашних ингаляций препаратом, назначенным врачом." },
@@ -775,8 +775,8 @@ export const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "Qanday yoshdagi bolalar uchun?", answer: "Yangi tug'ilgan chaqaloqlardan katta yoshgacha, maxsus niqoblar bilan." },
-        { question: "Qanday dorilar solinadi?", answer: "Shifokor belgilagan dori eritmalarini soling — o'z-o'zingizcha dori tanlamang." },
+        { question: "Qanday yoshdagi bolalar uchun?", answer: "Yangi tugʻilgan chaqaloqlardan katta yoshgacha, maxsus niqoblar bilan." },
+        { question: "Qanday dorilar solinadi?", answer: "Shifokor belgilagan dori eritmalarini soling — oʻz-oʻzingizcha dori tanlamang." },
       ],
       ru: [
         { question: "Для детей какого возраста?", answer: "От новорождённых до взрослых, со специальными масками." },
@@ -808,15 +808,15 @@ export const rawProducts: RawProduct[] = [
     name: { uz: "Peano balzam 30 g", ru: "Peano крем-бальзам 30 г" },
     searchAliases: { uz: ["piano", "peano krem"], ru: ["пиано", "крем бальзам"] },
     tagline: {
-      uz: "Teri tiklanishi uchun balzam — 30 g, xushbo'ysiz va parabensiz",
+      uz: "Teri tiklanishi uchun balzam — 30 g, xushboʻysiz va parabensiz",
       ru: "Бальзам для кожи — 30 г, без отдушки и парабенов",
     },
     description: {
-      uz: "Peano Balzam — dermatologik malham, 30 g. Qadoqda: «Teri tiklanishi uchun balzam», «Xushbo'ysiz va parabensiz».",
+      uz: "Peano Balzam — dermatologik malham, 30 g. Qadoqda: «Teri tiklanishi uchun balzam», «Xushboʻysiz va parabensiz».",
       ru: "Peano Balzam — дерматологическая мазь, 30 г. Без отдушки и парабенов.",
     },
     highlights: {
-      uz: ["30 g", "Teri tiklanishi", "Xushbo'ysiz", "Parabensiz"],
+      uz: ["30 g", "Teri tiklanishi", "Xushboʻysiz", "Parabensiz"],
       ru: ["30 г", "Восстановление кожи", "Без отдушки", "Без парабенов"],
     },
     benefits: {
@@ -832,8 +832,8 @@ export const rawProducts: RawProduct[] = [
     ingredients: {
       uz: [
         { name: "Dermatologik asos", amount: "30 g" },
-        { name: "Xushbo'y", amount: "yo'q" },
-        { name: "Parabenlar", amount: "yo'q" },
+        { name: "Xushboʻy", amount: "yoʻq" },
+        { name: "Parabenlar", amount: "yoʻq" },
       ],
       ru: [
         { name: "Дерматологическая основа", amount: "30 г" },
@@ -847,7 +847,7 @@ export const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "Yuz terisiga ishlataversa bo'ladimi?", answer: "Ha, yuz terisiga ham mos, lekin ko'zdan uzoq saqlang." },
+        { question: "Yuz terisiga ishlataversa boʻladimi?", answer: "Ha, yuz terisiga ham mos, lekin koʻzdan uzoq saqlang." },
       ],
       ru: [
         { question: "Можно ли применять на коже лица?", answer: "Да, подходит и для кожи лица, но держите подальше от глаз." },
@@ -873,7 +873,7 @@ export const rawProducts: RawProduct[] = [
     bespoke: true,
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "30 kapsula", ru: "30 капсул" },
-    badges: { uz: ["Aksiya", "Ko'zlar uchun"], ru: ["Акция", "Для глаз"] },
+    badges: { uz: ["Aksiya", "Koʻzlar uchun"], ru: ["Акция", "Для глаз"] },
     name: { uz: "Swiss Energy Visiovit 30", ru: "Swiss Energy Visiovit 30" },
     tagline: {
       uz: "Visiovit — lyutein, chernika, zeaksantin, A, E, Zn. 30 kapsula",
@@ -889,8 +889,8 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "eye", title: "Ko'rish o'tkirligi", description: "Lyutein va zeaksantin makula sog'lig'ini qo'llab-quvvatlaydi." },
-        { icon: "shield", title: "Ko'z himoyasi", description: "Ko'zni shu'la va tashqi omillardan himoya qiladi." },
+        { icon: "eye", title: "Koʻrish oʻtkirligi", description: "Lyutein va zeaksantin makula sogʻligʻini qoʻllab-quvvatlaydi." },
+        { icon: "shield", title: "Koʻz himoyasi", description: "Koʻzni shuʼla va tashqi omillardan himoya qiladi." },
       ],
       ru: [
         { icon: "eye", title: "Острота зрения", description: "Лютеин и зеаксантин поддерживают здоровье макулы." },
@@ -929,8 +929,8 @@ export const rawProducts: RawProduct[] = [
     },
     reviews: {
       uz: [
-        { author: "Xurshid B.", rating: 5, date: "2026-04-10", text: "Ko'zim toliqishi kamaydi, kompyuter oldida yaxshi ishlayaman." },
-        { author: "Nozima O.", rating: 4, date: "2026-03-15", text: "Yaxshi mahsulot, ko'z shifokorim tavsiya qildi." },
+        { author: "Xurshid B.", rating: 5, date: "2026-04-10", text: "Koʻzim toliqishi kamaydi, kompyuter oldida yaxshi ishlayaman." },
+        { author: "Nozima O.", rating: 4, date: "2026-03-15", text: "Yaxshi mahsulot, koʻz shifokorim tavsiya qildi." },
       ],
       ru: [
         { author: "Хуршид Б.", rating: 5, date: "2026-04-10", text: "Усталость глаз уменьшилась, лучше работаю за компьютером." },
@@ -996,11 +996,11 @@ export const rawProducts: RawProduct[] = [
       ru: "Принимайте по 1 капсуле в день с едой. Для сезонной профилактики — 1–2 месяца.",
     },
     faq: {
-      uz: [{ question: "Shamollayotganda ichsa bo'ladimi?", answer: "Ha, shamollash boshlanishida va davomida foydali." }],
+      uz: [{ question: "Shamollayotganda ichsa boʻladimi?", answer: "Ha, shamollash boshlanishida va davomida foydali." }],
       ru: [{ question: "Можно принимать при простуде?", answer: "Да, полезен в начале и во время простуды." }],
     },
     reviews: {
-      uz: [{ author: "Aziz R.", rating: 5, date: "2026-02-20", text: "Bu qish juda kam kasal bo'ldim, rahmat!" }],
+      uz: [{ author: "Aziz R.", rating: 5, date: "2026-02-20", text: "Bu qish juda kam kasal boʻldim, rahmat!" }],
       ru: [{ author: "Азиз Р.", rating: 5, date: "2026-02-20", text: "Этой зимой болел очень мало, спасибо!" }],
     },
   },
@@ -1023,7 +1023,7 @@ export const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "2 yillik kafolat", "Arzon narx kafolati"], ru: ["Акция", "Гарантия 2 года", "Гарантия низкой цены"] },
     name: { uz: "Dr. Frei A20 Mexanik Tonometr", ru: "Dr. Frei A20 Механический Тонометр" },
     tagline: {
-      uz: "Bosim o'lchash uchun mexanik tonometr — 2 yillik kafolat",
+      uz: "Bosim oʻlchash uchun mexanik tonometr — 2 yillik kafolat",
       ru: "Механический тонометр для измерения давления — гарантия 2 года",
     },
     description: {
@@ -1036,7 +1036,7 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "heart", title: "Aniq o'lchov", description: "Klassik mexanik sxema — eng ishonchli natijalar." },
+        { icon: "heart", title: "Aniq oʻlchov", description: "Klassik mexanik sxema — eng ishonchli natijalar." },
         { icon: "shield", title: "Uzoq xizmat", description: "2 yillik kafolat va yuqori ishonchlilik." },
       ],
       ru: [
@@ -1045,17 +1045,17 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     ingredients: {
-      uz: [{ name: "O'lchov diapazoni", amount: "0–300 mmHg" }],
+      uz: [{ name: "Oʻlchov diapazoni", amount: "0–300 mmHg" }],
       ru: [{ name: "Диапазон измерения", amount: "0–300 мм рт.ст." }],
     },
     howToUse: {
-      uz: "Bilakni yurak darajasida ushlab turing, manjetni kiyib, nasos bilan bosimni oshiring va ko'rsatkichni o'qing.",
+      uz: "Bilakni yurak darajasida ushlab turing, manjetni kiyib, nasos bilan bosimni oshiring va koʻrsatkichni oʻqing.",
       ru: "Держите руку на уровне сердца, наденьте манжету, накачайте давление насосом и считайте показание.",
     },
     faq: {
       uz: [
-        { question: "Elektron va mexanik qaysi biri aniqroq?", answer: "Mexanik tonometr to'g'ri ishlatisganda elektron bilan bir xil yoki undan aniqroq." },
-        { question: "Kafolat qanday ishlaydi?", answer: "2 yil davomida ishlab chiqaruvchi nuqsonlarida bepul ta'mirlanadi." },
+        { question: "Elektron va mexanik qaysi biri aniqroq?", answer: "Mexanik tonometr toʻgʻri ishlatisganda elektron bilan bir xil yoki undan aniqroq." },
+        { question: "Kafolat qanday ishlaydi?", answer: "2 yil davomida ishlab chiqaruvchi nuqsonlarida bepul taʼmirlanadi." },
       ],
       ru: [
         { question: "Что точнее — электронный или механический?", answer: "Механический тонометр при правильном использовании не менее точен, а часто точнее электронного." },
@@ -1064,7 +1064,7 @@ export const rawProducts: RawProduct[] = [
     },
     reviews: {
       uz: [
-        { author: "Hamid Y.", rating: 5, date: "2026-05-20", text: "Otam uchun oldim, juda aniq o'lchaydi." },
+        { author: "Hamid Y.", rating: 5, date: "2026-05-20", text: "Otam uchun oldim, juda aniq oʻlchaydi." },
         { author: "Dilrabo K.", rating: 5, date: "2026-04-08", text: "Shifoxonada ishlagan vaqtimdan beri Dr. Frei-ga ishonaman." },
       ],
       ru: [
@@ -1108,7 +1108,7 @@ export const rawProducts: RawProduct[] = [
       uz: [
         { icon: "shield", title: "Immunitet", description: "Vitamin C immun tizimning normal faoliyatiga hissa qoʻshadi." },
         { icon: "bolt", title: "Energiya", description: "B guruhi vitaminlari normal energiya almashinuviga hissa qoʻshadi." },
-        { icon: "sparkle", title: "Tez so'rilish", description: "Shipuchi format tez ishlaydi." },
+        { icon: "sparkle", title: "Tez soʻrilish", description: "Shipuchi format tez ishlaydi." },
       ],
       ru: [
         { icon: "shield", title: "Иммунитет", description: "Витамин C способствует нормальной работе иммунной системы." },
@@ -1139,13 +1139,13 @@ export const rawProducts: RawProduct[] = [
       ru: "Растворите 1 таблетку в 200 мл воды. Пейте 1 раз в день после еды.",
     },
     faq: {
-      uz: [{ question: "Har kuni ichsa bo'ladimi?", answer: "Ha, kunlik qabul uchun mo'ljallangan." }],
+      uz: [{ question: "Har kuni ichsa boʻladimi?", answer: "Ha, kunlik qabul uchun moʻljallangan." }],
       ru: [{ question: "Можно принимать каждый день?", answer: "Да, предназначен для ежедневного приёма." }],
     },
     reviews: {
       uz: [
-        { author: "Feruza N.", rating: 5, date: "2026-05-12", text: "Juda mazali, ta'mi yoqimli, energiya beradi." },
-        { author: "Sherzod I.", rating: 5, date: "2026-04-28", text: "Narxi arzon, sifati zo'r — har doim olib turaman." },
+        { author: "Feruza N.", rating: 5, date: "2026-05-12", text: "Juda mazali, taʼmi yoqimli, energiya beradi." },
+        { author: "Sherzod I.", rating: 5, date: "2026-04-28", text: "Narxi arzon, sifati zoʻr — har doim olib turaman." },
       ],
       ru: [
         { author: "Феруза Н.", rating: 5, date: "2026-05-12", text: "Очень вкусно, приятный вкус, даёт энергию." },
@@ -1169,19 +1169,19 @@ export const rawProducts: RawProduct[] = [
     bespoke: true,
     origin: { uz: "Hindiston", ru: "Индия" },
     servings: { uz: "200 ml", ru: "200 мл" },
-    badges: { uz: ["Aksiya", "O'simlik asosida"], ru: ["Акция", "На растительной основе"] },
+    badges: { uz: ["Aksiya", "Oʻsimlik asosida"], ru: ["Акция", "На растительной основе"] },
     name: { uz: "Hamdard Safi 200 ml", ru: "Hamdard Safi 200 мл" },
     searchAliases: { uz: ["safi", "safi-eks", "hamdard"], ru: ["сафи", "сафи-экс", "хамдард"] },
     tagline: {
-      uz: "Qonni kompleks tozalash uchun o'simlik siropi",
+      uz: "Qonni kompleks tozalash uchun oʻsimlik siropi",
       ru: "Растительный сироп для комплексного очищения крови",
     },
     description: {
-      uz: "HAMDARD SAFI — qonni tozalash uchun Hindiston o'simlik siropi. Teridagi muammolar va organizmni tozalash uchun an'anaviy vosita. 200 ml.",
+      uz: "HAMDARD SAFI — qonni tozalash uchun Hindiston oʻsimlik siropi. Teridagi muammolar va organizmni tozalash uchun anʼanaviy vosita. 200 ml.",
       ru: "HAMDARD SAFI — индийский растительный сироп для очищения крови. Традиционное средство для кожных проблем и детоксикации организма. 200 мл.",
     },
     highlights: {
-      uz: ["Qonni tozalash", "O'simlik asosida", "Hindiston formulasi", "200 ml"],
+      uz: ["Qonni tozalash", "Oʻsimlik asosida", "Hindiston formulasi", "200 ml"],
       ru: ["Очищение крови", "На растительной основе", "Индийская формула", "200 мл"],
     },
     benefits: {
@@ -1195,7 +1195,7 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     ingredients: {
-      uz: [{ name: "O'simlik ekstraktlari kompleksi", amount: "200 ml" }],
+      uz: [{ name: "Oʻsimlik ekstraktlari kompleksi", amount: "200 ml" }],
       ru: [{ name: "Комплекс растительных экстрактов", amount: "200 мл" }],
     },
     howToUse: {
@@ -1203,11 +1203,11 @@ export const rawProducts: RawProduct[] = [
       ru: "2 раза в день по 10 мл (2 чайные ложки) растворить в воде. Принимать за 30 минут до еды.",
     },
     faq: {
-      uz: [{ question: "Qancha vaqt ichish kerak?", answer: "Odatda 4–6 hafta kurs, so'ng shifokor bilan maslahatlashing." }],
+      uz: [{ question: "Qancha vaqt ichish kerak?", answer: "Odatda 4–6 hafta kurs, soʻng shifokor bilan maslahatlashing." }],
       ru: [{ question: "Сколько времени принимать?", answer: "Обычно курс 4–6 недель, затем проконсультируйтесь с врачом." }],
     },
     reviews: {
-      uz: [{ author: "Sumaiya K.", rating: 5, date: "2026-05-18", text: "Yuzimdag'i akne yo'qoldi, organizmim yengil his qildi." }],
+      uz: [{ author: "Sumaiya K.", rating: 5, date: "2026-05-18", text: "Yuzimdagʻi akne yoʻqoldi, organizmim yengil his qildi." }],
       ru: [{ author: "Сумайя К.", rating: 5, date: "2026-05-18", text: "Акне на лице прошло, организм стал чувствовать себя легче." }],
     },
   },
@@ -1226,14 +1226,14 @@ export const rawProducts: RawProduct[] = [
     bespoke: true,
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "20 tabletka", ru: "20 таблеток" },
-    badges: { uz: ["Aksiya", "Ko'z va immunitet"], ru: ["Акция", "Зрение и иммунитет"] },
+    badges: { uz: ["Aksiya", "Koʻz va immunitet"], ru: ["Акция", "Зрение и иммунитет"] },
     name: { uz: "Dr. Frei Gold Vitaminlar 20", ru: "Dr. Frei Gold Витамины 20" },
     tagline: {
       uz: "Gold — lyutein + A, C, E, Zn. 20 shipuchi tabletka, 14+",
       ru: "Gold — лютеин + A, C, E, Zn. 20 шипучих таблеток, 14+",
     },
     description: {
-      uz: "Dr. Frei GOLD — lyutein bilan vitamin va minerallar kompleksi. Tuproqda: vitamin A, C, E, sink; kunlik qo'llab-quvvatlash. 20 shipuchi tabletka, 14+.",
+      uz: "Dr. Frei GOLD — lyutein bilan vitamin va minerallar kompleksi. Tuproqda: vitamin A, C, E, sink; kunlik qoʻllab-quvvatlash. 20 shipuchi tabletka, 14+.",
       ru: "Dr. Frei GOLD — комплекс витаминов и минералов с лютеином. На тубе: A, C, E, цинк; ежедневная поддержка. 20 шипучих таблеток, 14+.",
     },
     highlights: {
@@ -1242,7 +1242,7 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "eye", title: "Ko'z sog'lig'i", description: "Lyutein va vitamin A ko'rish o'tkirligini qo'llab-quvvatlaydi." },
+        { icon: "eye", title: "Koʻz sogʻligʻi", description: "Lyutein va vitamin A koʻrish oʻtkirligini qoʻllab-quvvatlaydi." },
         { icon: "shield", title: "Immunitet", description: "Vitamin C immun tizimning normal faoliyatiga hissa qoʻshadi." },
       ],
       ru: [
@@ -1271,12 +1271,12 @@ export const rawProducts: RawProduct[] = [
       ru: "С 14 лет: растворите одну таблетку в 200 мл воды. 1 раз в сутки во время или после еды.",
     },
     faq: {
-      uz: [{ question: "Visiovit bilan farqi?", answer: "Gold — shipuchi tabletka (lyutein + A, C, E, Zn). Visiovit — ko'z kapsulasi." }],
+      uz: [{ question: "Visiovit bilan farqi?", answer: "Gold — shipuchi tabletka (lyutein + A, C, E, Zn). Visiovit — koʻz kapsulasi." }],
       ru: [{ question: "В чём разница с Visiovit?", answer: "Gold — шипучая таблетка, Visiovit — капсула. Состав похожий, формат разный." }],
     },
     reviews: {
       uz: [
-        { author: "Iroda S.", rating: 5, date: "2026-04-22", text: "Ko'zim uchun ichaman, yaxshi samara beryapti." },
+        { author: "Iroda S.", rating: 5, date: "2026-04-22", text: "Koʻzim uchun ichaman, yaxshi samara beryapti." },
       ],
       ru: [
         { author: "Ирода С.", rating: 5, date: "2026-04-22", text: "Принимаю для глаз, хорошо помогает." },
@@ -1302,22 +1302,22 @@ export const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "7+ yosh", "Yevropa sifati"], ru: ["Акция", "7+ лет", "Европейское качество"] },
     name: { uz: "Dr. Frei Kids Multivitaminlar 20", ru: "Dr. Frei Kids Мультивитамины 20" },
     tagline: {
-      uz: "Bolalar uchun A, B, C, D3, E + Kalsiy — 7 yoshdan, mevali ta'm",
+      uz: "Bolalar uchun A, B, C, D3, E + Kalsiy — 7 yoshdan, mevali taʼm",
       ru: "Для детей A, B, C, D3, E + Кальций — с 7 лет, ягодный вкус",
     },
     description: {
-      uz: "Dr. Frei Kids — 7 yoshdan yuqori bolalar uchun shipuchi multivitamin kompleksi: 12 ta vitamin (A, B1, B2, B3, B5, B6, B9, B12, C, D3, E, H) va kalsiy. Bir tabletka — bir stakan (200 ml) xushbo'y mevali ichimlik; tabletka yutish shart emas. Kalsiy + D3 suyak va tishlarni, C immunitetni, B guruhi diqqat va xotirani qo'llab-quvvatlaydi.",
+      uz: "Dr. Frei Kids — 7 yoshdan yuqori bolalar uchun shipuchi multivitamin kompleksi: 12 ta vitamin (A, B1, B2, B3, B5, B6, B9, B12, C, D3, E, H) va kalsiy. Bir tabletka — bir stakan (200 ml) xushboʻy mevali ichimlik; tabletka yutish shart emas. Kalsiy + D3 suyak va tishlarni, C immunitetni, B guruhi diqqat va xotirani qoʻllab-quvvatlaydi.",
       ru: "Dr. Frei Kids — шипучие мультивитамины для детей с 7 лет: 12 витаминов (A, B1, B2, B3, B5, B6, B9, B12, C, D3, E, H) и кальций. Одна таблетка — стакан (200 мл) вкусного ягодного напитка; глотать таблетки не нужно. Кальций + D3 — кости и зубы, C — иммунитет, группа B — внимание и память.",
     },
     highlights: {
-      uz: ["12 vitamin + Kalsiy", "7+ yoshdan", "Tabletka yutish shart emas", "200 ml suvga 1 tabletka", "Mevali ta'm"],
+      uz: ["12 vitamin + Kalsiy", "7+ yoshdan", "Tabletka yutish shart emas", "200 ml suvga 1 tabletka", "Mevali taʼm"],
       ru: ["12 витаминов + Кальций", "С 7+ лет", "Без глотания таблеток", "1 таблетка на 200 мл воды", "Ягодный вкус"],
     },
     benefits: {
       uz: [
         { icon: "bolt", title: "Kalsiy + D3", description: "Kalsiy 200 mg va D3 2,3 mkg suyak va tishlarning normal holatini saqlashga hissa qoʻshadi." },
         { icon: "shield", title: "Immunitet", description: "Vitamin C va A immun tizimning normal faoliyatiga hissa qoʻshadi." },
-        { icon: "sparkle", title: "Diqqat va xotira", description: "B guruhi vitaminlari maktab yuklamasida qo'llab-quvvatlaydi." },
+        { icon: "sparkle", title: "Diqqat va xotira", description: "B guruhi vitaminlari maktab yuklamasida qoʻllab-quvvatlaydi." },
       ],
       ru: [
         { icon: "bolt", title: "Кальций + D3", description: "Кальций 200 мг и D3 2,3 мкг способствуют поддержанию нормального состояния костей и зубов." },
@@ -1361,8 +1361,8 @@ export const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "7 yoshdan kichiklarga mosmi?", answer: "Yo'q, 7 yoshdan kichik bolalar uchun shifokor tavsiyasi kerak." },
-        { question: "Ta'mi bormi?", answer: "Ha, meyvali ta'm bor — bolalar yaxshi ko'radi." },
+        { question: "7 yoshdan kichiklarga mosmi?", answer: "Yoʻq, 7 yoshdan kichik bolalar uchun shifokor tavsiyasi kerak." },
+        { question: "Taʼmi bormi?", answer: "Ha, meyvali taʼm bor — bolalar yaxshi koʻradi." },
       ],
       ru: [
         { question: "Подходит ли детям до 7 лет?", answer: "Нет, для детей до 7 лет требуется рекомендация врача." },
@@ -1371,8 +1371,8 @@ export const rawProducts: RawProduct[] = [
     },
     reviews: {
       uz: [
-        { author: "Manzura B.", rating: 5, date: "2026-05-01", text: "Farzandim maktabda kam kasal bo'ldi, rahmat!" },
-        { author: "Odil S.", rating: 5, date: "2026-04-15", text: "Narxi juda qulay, sifati zo'r. Har oyda olamiz." },
+        { author: "Manzura B.", rating: 5, date: "2026-05-01", text: "Farzandim maktabda kam kasal boʻldi, rahmat!" },
+        { author: "Odil S.", rating: 5, date: "2026-04-15", text: "Narxi juda qulay, sifati zoʻr. Har oyda olamiz." },
       ],
       ru: [
         { author: "Манзура Б.", rating: 5, date: "2026-05-01", text: "Ребёнок стал реже болеть в школе, спасибо!" },
@@ -1395,18 +1395,18 @@ export const rawProducts: RawProduct[] = [
     bespoke: true,
     origin: { uz: "Shveytsariya", ru: "Швейцария" },
     servings: { uz: "20 tabletka", ru: "20 таблеток" },
-    badges: { uz: ["Bestseller", "Apelsin ta'mi"], ru: ["Хит продаж", "Вкус апельсина"] },
+    badges: { uz: ["Bestseller", "Apelsin taʼmi"], ru: ["Хит продаж", "Вкус апельсина"] },
     name: { uz: "Swiss Energy Vitamin C 550mg 20", ru: "Swiss Energy Витамин C 550мг 20" },
     tagline: {
-      uz: "Vitamin C 550 mg — 20 shipuchi tabletka, apelsin ta'mi",
+      uz: "Vitamin C 550 mg — 20 shipuchi tabletka, apelsin taʼmi",
       ru: "Витамин C 550 мг — 20 шипучих таблеток, вкус апельсина",
     },
     description: {
-      uz: "Dr. Frei / Swiss Energy Vitamin C 550 mg — shipuchi tabletka. Qadoq: energiya va immunitet, jismoniy va aqliy faollik, apelsin ta'mi. 20 tabletka. Kuniga 1 marta, ovqat paytida yoki darhol keyin.",
+      uz: "Dr. Frei / Swiss Energy Vitamin C 550 mg — shipuchi tabletka. Qadoq: energiya va immunitet, jismoniy va aqliy faollik, apelsin taʼmi. 20 tabletka. Kuniga 1 marta, ovqat paytida yoki darhol keyin.",
       ru: "Dr. Frei / Swiss Energy Витамин C 550 mg — шипучие таблетки. На баннере: энергия и иммунитет, физическая и умственная активность, вкус апельсина. 20 таблеток. 1 раз в день во время или сразу после еды.",
     },
     highlights: {
-      uz: ["550 mg vitamin C", "Apelsin ta'mi", "Energiya va immunitet", "20 tabletka"],
+      uz: ["550 mg vitamin C", "Apelsin taʼmi", "Energiya va immunitet", "20 tabletka"],
       ru: ["550 мг витамина C", "Вкус апельсина", "Энергия и иммунитет", "20 таблеток"],
     },
     benefits: {
@@ -1435,8 +1435,8 @@ export const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "550 mg ko'pmi?", answer: "Yo'q, bu normal terapevtik doza — shamollash va faollik uchun tavsiya etiladi." },
-        { question: "Har kuni ichsa bo'ladimi?", answer: "Ha, kunlik qabul uchun xavfsiz." },
+        { question: "550 mg koʻpmi?", answer: "Yoʻq, bu normal terapevtik doza — shamollash va faollik uchun tavsiya etiladi." },
+        { question: "Har kuni ichsa boʻladimi?", answer: "Ha, kunlik qabul uchun xavfsiz." },
       ],
       ru: [
         { question: "550 мг — это много?", answer: "Нет, это обычная терапевтическая доза — рекомендуется при простуде и активности." },
@@ -1446,7 +1446,7 @@ export const rawProducts: RawProduct[] = [
     reviews: {
       uz: [
         { author: "Kamola U.", rating: 5, date: "2026-05-08", text: "Shamollash mavsumida ichaman, juda foydali." },
-        { author: "Akbar M.", rating: 5, date: "2026-04-30", text: "Apelsin ta'mi juda yoqimli, bolam ham yoqtiradi." },
+        { author: "Akbar M.", rating: 5, date: "2026-04-30", text: "Apelsin taʼmi juda yoqimli, bolam ham yoqtiradi." },
       ],
       ru: [
         { author: "Камола У.", rating: 5, date: "2026-05-08", text: "Принимаю в сезон простуд, очень помогает." },
@@ -1488,7 +1488,7 @@ export const rawProducts: RawProduct[] = [
       uz: [
         { icon: "moon", title: "Asab tizimi", description: "Magniy va B6 vitamini asab tizimining normal faoliyatiga hissa qoʻshadi." },
         { icon: "bolt", title: "Energiya", description: "Magniy normal energiya almashinuviga hissa qoʻshadi." },
-        { icon: "shield", title: "Asab tizimi", description: "B6 vitamini miya faoliyatini qo'llab-quvvatlaydi." },
+        { icon: "shield", title: "Asab tizimi", description: "B6 vitamini miya faoliyatini qoʻllab-quvvatlaydi." },
       ],
       ru: [
         { icon: "moon", title: "Нервная система", description: "Магний и витамин B6 способствуют нормальной работе нервной системы." },
@@ -1519,7 +1519,7 @@ export const rawProducts: RawProduct[] = [
     faq: {
       uz: [
         { question: "Uyquga yordami bormi?", answer: "Magniyni kechqurun qabul qilish tavsiya etiladi. Uyqu bilan bogʻliq muammolar boʻyicha shifokor bilan maslahatlashing." },
-        { question: "Har kuni ichsa bo'ladimi?", answer: "Ha, kunlik qabul uchun mo'ljallangan." },
+        { question: "Har kuni ichsa boʻladimi?", answer: "Ha, kunlik qabul uchun moʻljallangan." },
       ],
       ru: [
         { question: "Помогает ли со сном?", answer: "Магний рекомендуется принимать вечером. С проблемами сна обратитесь к врачу." },
@@ -1529,7 +1529,7 @@ export const rawProducts: RawProduct[] = [
     reviews: {
       uz: [
         { author: "Dilnoza R.", rating: 5, date: "2026-05-25", text: "Ish stressi kamaygandek — uyqum ham yaxshilandi." },
-        { author: "Sanjar O.", rating: 5, date: "2026-05-10", text: "Eng ko'p sotib oladigan mahsulotim, juda foydali." },
+        { author: "Sanjar O.", rating: 5, date: "2026-05-10", text: "Eng koʻp sotib oladigan mahsulotim, juda foydali." },
       ],
       ru: [
         { author: "Дилноза Р.", rating: 5, date: "2026-05-25", text: "Рабочий стресс стал меньше — и сон улучшился." },
@@ -1560,7 +1560,7 @@ export const rawProducts: RawProduct[] = [
       ru: "Кальций + D3 + K2 + Zn, B, Cu, Mn — 30 капсул",
     },
     description: {
-      uz: "Swiss Energy Calcivit by Dr.Frei — 30 kapsula, sekin chiqarilish. Etiketka: Calcium + D3 + K2 + Zn + B + Cu + Mn, «strong bones and teeth». Qadoq: suyak, tish va mushaklar; bo'g'im va xaftaga to'qimasi (reklama).",
+      uz: "Swiss Energy Calcivit by Dr.Frei — 30 kapsula, sekin chiqarilish. Etiketka: Calcium + D3 + K2 + Zn + B + Cu + Mn, «strong bones and teeth». Qadoq: suyak, tish va mushaklar; boʻgʻim va xaftaga toʻqimasi (reklama).",
       ru: "Swiss Energy Calcivit by Dr.Frei — 30 капсул, sustained release. Этикетка: Calcium + D3 + K2 + Zn + B + Cu + Mn, «strong bones and teeth». На баннере: кости, зубы, мышцы, суставы и хрящ.",
     },
     highlights: {
@@ -1569,9 +1569,9 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "shield", title: "Suyak va tish", description: "Qadoq: mustahkam suyaklar va sog'lom tishlar." },
+        { icon: "shield", title: "Suyak va tish", description: "Qadoq: mustahkam suyaklar va sogʻlom tishlar." },
         { icon: "sparkle", title: "D3 + K2", description: "Kompleks vitamin D3 va K2 bilan." },
-        { icon: "heart", title: "Bo'g'imlar", description: "Reklama: bo'g'im va xaftaga to'qimasi." },
+        { icon: "heart", title: "Boʻgʻimlar", description: "Reklama: boʻgʻim va xaftaga toʻqimasi." },
       ],
       ru: [
         { icon: "shield", title: "Кости и зубы", description: "На упаковке: крепкие кости и здоровые зубы." },
@@ -1600,7 +1600,7 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "Bankadagi ko'rsatma bo'yicha. Sekin chiqariladigan kapsula, 30 kunlik hajm.",
+      uz: "Bankadagi koʻrsatma boʻyicha. Sekin chiqariladigan kapsula, 30 kunlik hajm.",
       ru: "По инструкции на банке. Капсулы замедленного высвобождения, упаковка на 30 дней.",
     },
     faq: {
@@ -1645,7 +1645,7 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "moon", title: "Asab tizimi", description: "Qadoq: sog'lom asab tizimi uchun." },
+        { icon: "moon", title: "Asab tizimi", description: "Qadoq: sogʻlom asab tizimi uchun." },
         { icon: "bolt", title: "Diqqat", description: "Reklama: konsentratsiya va diqqat." },
         { icon: "shield", title: "B-kompleks", description: "Sakkizta B vitamini bir kapsulada." },
       ],
@@ -1678,7 +1678,7 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "Bankadagi ko'rsatma bo'yicha. 30 kapsula — odatda bir oylik kurs hajmi.",
+      uz: "Bankadagi koʻrsatma boʻyicha. 30 kapsula — odatda bir oylik kurs hajmi.",
       ru: "По инструкции на банке. 30 капсул — обычно курс на месяц.",
     },
     faq: {
@@ -1714,7 +1714,7 @@ export const rawProducts: RawProduct[] = [
       ru: "Potenton Happy man — 1 капсула в день, курс 30 дней",
     },
     description: {
-      uz: "Swiss Energy Potenton Happy man — Made in Switzerland, 30 kapsula, sekin chiqarilish, Long effect. Qadoq: Sexual stimulant / jinsiy stimulyator. Reklama sxemasi: kuniga 1 kapsula, kurs 30 kun, to'planib boruvchi ta'sir; testosteron, ereksiya va libido (reklama matni).",
+      uz: "Swiss Energy Potenton Happy man — Made in Switzerland, 30 kapsula, sekin chiqarilish, Long effect. Qadoq: Sexual stimulant / jinsiy stimulyator. Reklama sxemasi: kuniga 1 kapsula, kurs 30 kun, toʻplanib boruvchi taʼsir; testosteron, ereksiya va libido (reklama matni).",
       ru: "Swiss Energy Potenton Happy man — Made in Switzerland, 30 капсул, sustained release, Long effect. На упаковке: Sexual stimulant. Схема на баннере: 1 капсула в день, курс 30 дней, накопительный эффект; тестостерон, эрекция и либидо (реклама).",
     },
     highlights: {
@@ -1723,7 +1723,7 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "bolt", title: "Long effect", description: "Qadoq: uzoq / to'planib boruvchi ta'sir." },
+        { icon: "bolt", title: "Long effect", description: "Qadoq: uzoq / toʻplanib boruvchi taʼsir." },
         { icon: "heart", title: "Kurs", description: "Reklama: 30 kun, kuniga 1 kapsula." },
       ],
       ru: [
@@ -1810,7 +1810,7 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "Qadoq va shifokor ko'rsatmasi bo'yicha. 60 kapsula — kuniga 1 donada taxminan 2 oy.",
+      uz: "Qadoq va shifokor koʻrsatmasi boʻyicha. 60 kapsula — kuniga 1 donada taxminan 2 oy.",
       ru: "По инструкции на упаковке и рекомендации врача. 60 капсул — около 2 месяцев при 1 капсуле в день.",
     },
     faq: {
@@ -1867,7 +1867,7 @@ export const rawProducts: RawProduct[] = [
       ru: [{ name: "Аминокислотный комплекс с витаминами", amount: "30 капсул" }],
     },
     howToUse: {
-      uz: "Ichki varaqa va qadoqdagi ko'rsatma bo'yicha.",
+      uz: "Ichki varaqa va qadoqdagi koʻrsatma boʻyicha.",
       ru: "По вкладышу и инструкции на упаковке.",
     },
     faq: {
@@ -1899,22 +1899,22 @@ export const rawProducts: RawProduct[] = [
     name: { uz: "Swiss Energy Nature Collagen", ru: "Swiss Energy Nature Collagen" },
     searchAliases: { uz: ["kollagen"], ru: ["коллаген"] },
     tagline: {
-      uz: "Premium Formula — 100% sof kollagen, neytral ta'm, shakarsiz",
+      uz: "Premium Formula — 100% sof kollagen, neytral taʼm, shakarsiz",
       ru: "Premium Formula — 100% чистый коллаген, нейтральный вкус, без сахара",
     },
     description: {
-      uz: "Swiss Energy Nature Collagen by Dr.Frei, Made in Switzerland. Etiketka: Premium Formula, 100% Pure Collagen, Sugar free, Mix into any drink, Neutral taste. Qadoqda: teri, soch, tirnoq, suyak va bo'g'imlar.",
+      uz: "Swiss Energy Nature Collagen by Dr.Frei, Made in Switzerland. Etiketka: Premium Formula, 100% Pure Collagen, Sugar free, Mix into any drink, Neutral taste. Qadoqda: teri, soch, tirnoq, suyak va boʻgʻimlar.",
       ru: "Swiss Energy Nature Collagen by Dr.Frei, Made in Switzerland. Этикетка: Premium Formula, 100% Pure Collagen, Sugar free, Mix into any drink, Neutral taste. На банке: кожа, волосы, ногти, кости и суставы.",
     },
     highlights: {
-      uz: ["100% sof kollagen", "Shakarsiz", "Neytral ta'm", "Istalgan ichimlikka"],
+      uz: ["100% sof kollagen", "Shakarsiz", "Neytral taʼm", "Istalgan ichimlikka"],
       ru: ["100% чистый коллаген", "Без сахара", "Нейтральный вкус", "В любой напиток"],
     },
     benefits: {
       uz: [
         { icon: "sparkle", title: "Har qanday ichimlik", description: "Etiketka: mix into any drink." },
         { icon: "shield", title: "Shakarsiz", description: "Sugar free." },
-        { icon: "heart", title: "Neytral ta'm", description: "Neutral taste." },
+        { icon: "heart", title: "Neytral taʼm", description: "Neutral taste." },
       ],
       ru: [
         { icon: "sparkle", title: "Любой напиток", description: "На этикетке: mix into any drink." },
@@ -1927,12 +1927,12 @@ export const rawProducts: RawProduct[] = [
       ru: [{ name: "Чистый коллаген", amount: "100%" }],
     },
     howToUse: {
-      uz: "Istalgan ichimlikka aralashtiring. Neytral ta'm, shakarsiz.",
+      uz: "Istalgan ichimlikka aralashtiring. Neytral taʼm, shakarsiz.",
       ru: "Смешайте с любым напитком. Нейтральный вкус, без сахара.",
     },
     faq: {
       uz: [
-        { question: "Shakar bormi?", answer: "Yo'q — sugar free." },
+        { question: "Shakar bormi?", answer: "Yoʻq — sugar free." },
         { question: "Qayerda ishlab chiqarilgan?", answer: "Made in Switzerland." },
       ],
       ru: [
@@ -1991,7 +1991,7 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "1 choy qoshiqni 200 ml qaynoq suvda damlang. Ta'mga qarab sozlang.",
+      uz: "1 choy qoshiqni 200 ml qaynoq suvda damlang. Taʼmga qarab sozlang.",
       ru: "Заварите 1 чайную ложку в 200 мл горячей воды. Количество — по вкусу.",
     },
     faq: {
@@ -2021,7 +2021,7 @@ export const rawProducts: RawProduct[] = [
       ru: "Электронный цифровой термометр — ON/OFF, дисплей °C, металлический наконечник",
     },
     description: {
-      uz: "Dr. Frei T10 — oq korpusli elektron termometr. ON/OFF, °C displey, metall uchi. Simob yo'q.",
+      uz: "Dr. Frei T10 — oq korpusli elektron termometr. ON/OFF, °C displey, metall uchi. Simob yoʻq.",
       ru: "Dr. Frei T10 — электронный термометр в белом корпусе. ON/OFF, дисплей °C, металлический наконечник. Без ртути.",
     },
     highlights: {
@@ -2030,7 +2030,7 @@ export const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "sparkle", title: "Raqamli o'qish", description: "Harorat displeyda °C da." },
+        { icon: "sparkle", title: "Raqamli oʻqish", description: "Harorat displeyda °C da." },
         { icon: "shield", title: "Simobsiz", description: "Elektron sensor." },
       ],
       ru: [
@@ -2051,11 +2051,11 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "ON/OFF bosing, uchini qo'ying, displeydagi raqamni o'qing.",
+      uz: "ON/OFF bosing, uchini qoʻying, displeydagi raqamni oʻqing.",
       ru: "Нажмите ON/OFF, приложите наконечник, считайте значение.",
     },
     faq: {
-      uz: [{ question: "Simob bormi?", answer: "Yo'q, elektron model." }],
+      uz: [{ question: "Simob bormi?", answer: "Yoʻq, elektron model." }],
       ru: [{ question: "Есть ртуть?", answer: "Нет, электронная модель." }],
     },
     reviews: { uz: [], ru: [] },
@@ -2081,7 +2081,7 @@ export const rawProducts: RawProduct[] = [
       ru: "Детский электронный термометр — гибкий носик, без ртути",
     },
     description: {
-      uz: "Dr. Frei T30 — bolalar elektron termometri. Egiluvchan uchi, ON/OFF, °C, ayiqcha qopqoq. Reklama: 99% aniqlik, simob yo'q.",
+      uz: "Dr. Frei T30 — bolalar elektron termometri. Egiluvchan uchi, ON/OFF, °C, ayiqcha qopqoq. Reklama: 99% aniqlik, simob yoʻq.",
       ru: "Dr. Frei T30 — электронный термометр для детей. Гибкий носик, ON/OFF, дисплей °C, колпачок-мишка. На баннере: 99% точность, без ртути.",
     },
     highlights: {
@@ -2109,11 +2109,11 @@ export const rawProducts: RawProduct[] = [
       ],
     },
     howToUse: {
-      uz: "ON/OFF bosing, egiluvchan uchi bilan o'lchang, °C ni o'qing.",
+      uz: "ON/OFF bosing, egiluvchan uchi bilan oʻlchang, °C ni oʻqing.",
       ru: "Нажмите ON/OFF, измерьте гибким наконечником, считайте °C.",
     },
     faq: {
-      uz: [{ question: "Kattalar ishlatsa bo'ladimi?", answer: "Ha, lekin model bolalar uchun (egiluvchan uchi)." }],
+      uz: [{ question: "Kattalar ishlatsa boʻladimi?", answer: "Ha, lekin model bolalar uchun (egiluvchan uchi)." }],
       ru: [{ question: "Можно взрослым?", answer: "Да, но позиционируется как детская модель." }],
     },
     reviews: { uz: [], ru: [] },
@@ -2192,16 +2192,16 @@ export const rawProducts: RawProduct[] = [
       ru: "Компрессорный ингалятор в форме машины — 8 мл, тихая работа",
     },
     description: {
-      uz: "Dr. Frei TURBO LEX — qizil poyga mashinasi korpusidagi kompressorli nebulayzer (g'ildirakda TURBO LEX, orqada I/O). Reklama: bolalar va kattalar, tinch ishlash, 8 ml rezervuar.",
+      uz: "Dr. Frei TURBO LEX — qizil poyga mashinasi korpusidagi kompressorli nebulayzer (gʻildirakda TURBO LEX, orqada I/O). Reklama: bolalar va kattalar, tinch ishlash, 8 ml rezervuar.",
       ru: "Dr. Frei TURBO LEX — компрессорный небулайзер в красном корпусе-машинке (надпись TURBO LEX на колесе, выключатель I/O). На баннере: детям и взрослым, тихая работа, 8 мл.",
     },
     highlights: {
-      uz: ["Mashina korpusi", "8 ml", "Tinch ishlash", "I/O o'chirgich"],
+      uz: ["Mashina korpusi", "8 ml", "Tinch ishlash", "I/O oʻchirgich"],
       ru: ["Корпус-машинка", "8 мл", "Тихая работа", "Выключатель I/O"],
     },
     benefits: {
       uz: [
-        { icon: "shield", title: "Bolalar uchun qulay", description: "O'yinchoq mashina shakli." },
+        { icon: "shield", title: "Bolalar uchun qulay", description: "Oʻyinchoq mashina shakli." },
         { icon: "sparkle", title: "8 ml", description: "Reklamada rezervuar hajmi." },
         { icon: "moon", title: "Tinch", description: "Reklama: тихая работа." },
       ],
@@ -2227,8 +2227,8 @@ export const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "Bu o'yinchoqmi?", answer: "Yo'q — kompressorli ingalyator, korpusi mashina shaklida." },
-        { question: "Kattalar ishlatsa bo'ladimi?", answer: "Reklamada bolalar va kattalar uchun." },
+        { question: "Bu oʻyinchoqmi?", answer: "Yoʻq — kompressorli ingalyator, korpusi mashina shaklida." },
+        { question: "Kattalar ishlatsa boʻladimi?", answer: "Reklamada bolalar va kattalar uchun." },
       ],
       ru: [
         { question: "Это игрушка?", answer: "Нет — компрессорный ингалятор в корпусе-машинке." },
@@ -2249,16 +2249,16 @@ export const rawPromotions: RawPromotion[] = [
     threshold: 300000,
     title: { uz: "Bepul yetkazib berish", ru: "Бесплатная доставка" },
     description: {
-      uz: "300 000 so'mdan ortiq buyurtmalarga bepul yetkazib berish.",
+      uz: "300 000 soʻmdan ortiq buyurtmalarga bepul yetkazib berish.",
       ru: "Бесплатная доставка при заказе от 300 000 сум.",
     },
   },
   {
     id: "promo-bonus",
     type: "buy_x_get_y",
-    title: { uz: "2 oling — 3-si sovg'a", ru: "2 + 1 в подарок" },
+    title: { uz: "2 oling — 3-si sovgʻa", ru: "2 + 1 в подарок" },
     description: {
-      uz: "Tanlangan mahsulotlarga 2 ta olsangiz 3-si sovg'a.",
+      uz: "Tanlangan mahsulotlarga 2 ta olsangiz 3-si sovgʻa.",
       ru: "На выбранные товары: купи 2 — третий в подарок.",
     },
   },

@@ -9,6 +9,8 @@ import type { Expert } from "@/lib/content/experts";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import { COMMERCE } from "@/lib/config/commerce";
 import { ONLINE_PROVIDERS } from "@/lib/config/payments";
+import { CARD_BRANDS } from "@/lib/config/payment-brands";
+import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { discountPercent } from "@/components/ui/Price";
 import { buttonVariants } from "@/components/ui/Button";
 import { chipClass } from "@/components/ui/Chip";
@@ -92,6 +94,7 @@ export async function ProductTemplate({
       note: ONLINE_PROVIDERS.length
         ? tv("paymentOnline", { providers: ONLINE_PROVIDERS.map((p) => p.label).join(", ") })
         : tv("paymentCod"),
+      marks: [...ONLINE_PROVIDERS.map((p) => p.id), ...CARD_BRANDS],
     },
   ];
 
@@ -214,6 +217,7 @@ export async function ProductTemplate({
                     {d.price && <span className="whitespace-nowrap">{d.price}</span>}
                   </div>
                   <span className="text-sm leading-[19px] text-ink-2">{d.note}</span>
+                  {"marks" in d && d.marks && <PaymentMarks ids={d.marks} size="sm" label={d.title} className="mt-1.5" />}
                 </div>
               </div>
             ))}

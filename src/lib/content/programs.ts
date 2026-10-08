@@ -68,20 +68,20 @@ const raw: RawProgram[] = [
     slug: "immunity-30",
     name: { uz: "30 kunlik immunitet", ru: "Иммунитет за 30 дней" },
     headline: {
-      uz: "Sovuq mavsumga tayyorgarlik uchun bir oylik to'plam",
+      uz: "Sovuq mavsumga tayyorgarlik uchun bir oylik toʻplam",
       ru: "Месячный набор для подготовки к холодному сезону",
     },
     intro: {
-      uz: "Immun tizimi uchun eng ko'p o'rganilgan nutriyentlar bir oylik miqdorda. To'plam bitta bosishda savatga tushadi.",
+      uz: "Immun tizimi uchun eng koʻp oʻrganilgan nutriyentlar bir oylik miqdorda. Toʻplam bitta bosishda savatga tushadi.",
       ru: "Наиболее изученные нутриенты для иммунной системы в месячном объёме. Набор добавляется в корзину одним нажатием.",
     },
     durationDays: 30,
     discountPercent: 12,
     forWhom: {
       uz: [
-        "Sovuq mavsumga tayyorgarlik ko'rayotganlar",
-        "Ko'p odam bilan ishlaydiganlar",
-        "Quyosh kam bo'lgan oylarda yashovchilar",
+        "Sovuq mavsumga tayyorgarlik koʻrayotganlar",
+        "Koʻp odam bilan ishlaydiganlar",
+        "Quyosh kam boʻlgan oylarda yashovchilar",
       ],
       ru: [
         "Готовящимся к холодному сезону",
@@ -108,11 +108,11 @@ const raw: RawProgram[] = [
     faq: {
       uz: [
         {
-          question: "To'plamdagi mahsulotlarni birga ichsa bo'ladimi?",
-          answer: "To'plam bir vaqtda qabul qilinadigan qilib tuzilgan, lekin aniq rejim har bir mahsulot yorlig'ida ko'rsatiladi. Doimiy dori qabul qilayotgan bo'lsangiz, avval farmatsevt bilan maslahatlashing.",
+          question: "Toʻplamdagi mahsulotlarni birga ichsa boʻladimi?",
+          answer: "Toʻplam bir vaqtda qabul qilinadigan qilib tuzilgan, lekin aniq rejim har bir mahsulot yorligʻida koʻrsatiladi. Doimiy dori qabul qilayotgan boʻlsangiz, avval farmatsevt bilan maslahatlashing.",
         },
         {
-          question: "30 kundan keyin nima bo'ladi?",
+          question: "30 kundan keyin nima boʻladi?",
           answer: "Bu davomiy kurs emas. 30 kundan keyin holatingizni baholang va davom ettirish kerakligini shifokor bilan hal qiling.",
         },
       ],
@@ -136,13 +136,13 @@ const raw: RawProgram[] = [
       ru: "Месячный план для нервной системы и сна",
     },
     intro: {
-      uz: "Uzoq davom etgan yuklamadan keyin uyqu va bo'shashuvni tiklashga qaratilgan to'plam.",
+      uz: "Uzoq davom etgan yuklamadan keyin uyqu va boʻshashuvni tiklashga qaratilgan toʻplam.",
       ru: "Набор, направленный на восстановление сна и расслабления после длительной нагрузки.",
     },
     durationDays: 30,
     discountPercent: 12,
     forWhom: {
-      uz: ["Uzoq davom etgan ish yuklamasidan keyin", "Uyquga ketish qiyin bo'lganlar", "Kechqurun bo'shasha olmaydiganlar"],
+      uz: ["Uzoq davom etgan ish yuklamasidan keyin", "Uyquga ketish qiyin boʻlganlar", "Kechqurun boʻshasha olmaydiganlar"],
       ru: ["После длительной рабочей нагрузки", "Кому трудно засыпать", "Кто не может расслабиться вечером"],
     },
     steps: {
@@ -165,7 +165,7 @@ const raw: RawProgram[] = [
       uz: [
         {
           question: "Bu uyqu dorisimi?",
-          answer: "Yo'q. To'plamda dori vositalari yo'q — bu biologik faol qo'shimchalar. Uyqusizlik uzoq davom etsa, sabab tibbiy bo'lishi mumkin, shifokorga murojaat qiling.",
+          answer: "Yoʻq. Toʻplamda dori vositalari yoʻq — bu biologik faol qoʻshimchalar. Uyqusizlik uzoq davom etsa, sabab tibbiy boʻlishi mumkin, shifokorga murojaat qiling.",
         },
       ],
       ru: [
@@ -178,22 +178,22 @@ const raw: RawProgram[] = [
   },
   {
     slug: "healthy-skin",
-    name: { uz: "Sog'lom teri va soch", ru: "Здоровая кожа и волосы" },
-    headline: { uz: "Teri, soch va tirnoq uchun bir oylik to'plam", ru: "Месячный набор для кожи, волос и ногтей" },
+    name: { uz: "Sogʻlom teri va soch", ru: "Здоровая кожа и волосы" },
+    headline: { uz: "Teri, soch va tirnoq uchun bir oylik toʻplam", ru: "Месячный набор для кожи, волос и ногтей" },
     intro: {
-      uz: "Teri elastikligi, soch va tirnoq mustahkamligi uchun eng ko'p so'raladigan nutriyentlar.",
+      uz: "Teri elastikligi, soch va tirnoq mustahkamligi uchun eng koʻp soʻraladigan nutriyentlar.",
       ru: "Самые востребованные нутриенты для эластичности кожи, крепости волос и ногтей.",
     },
     durationDays: 30,
     discountPercent: 12,
     forWhom: {
-      uz: ["Soch to'kilishini sezayotganlar", "Tirnoq sinishidan shikoyat qiluvchilar", "Teri quruqligi bilan"],
+      uz: ["Soch toʻkilishini sezayotganlar", "Tirnoq sinishidan shikoyat qiluvchilar", "Teri quruqligi bilan"],
       ru: ["Кто замечает выпадение волос", "Кто жалуется на ломкость ногтей", "При сухости кожи"],
     },
     steps: {
       uz: [
         { title: "1-hafta", body: "Kunlik oqsil va suv miqdorini nazorat qiling — teri va soch shundan quriladi." },
-        { title: "2–4-hafta", body: "To'plamni muntazam qabul qiling. Natija odatda bir necha oyda ko'rinadi." },
+        { title: "2–4-hafta", body: "Toʻplamni muntazam qabul qiling. Natija odatda bir necha oyda koʻrinadi." },
       ],
       ru: [
         { title: "1-я неделя", body: "Контролируйте суточный белок и воду — кожа и волосы строятся из этого." },
@@ -207,8 +207,8 @@ const raw: RawProgram[] = [
     faq: {
       uz: [
         {
-          question: "Qachon natija ko'rinadi?",
-          answer: "Soch va tirnoq sekin o'sadi — o'zgarishni baholash uchun kamida 2–3 oy kerak. Keskin to'kilish bo'lsa, sabab tibbiy bo'lishi mumkin.",
+          question: "Qachon natija koʻrinadi?",
+          answer: "Soch va tirnoq sekin oʻsadi — oʻzgarishni baholash uchun kamida 2–3 oy kerak. Keskin toʻkilish boʻlsa, sabab tibbiy boʻlishi mumkin.",
         },
       ],
       ru: [
@@ -222,21 +222,21 @@ const raw: RawProgram[] = [
   {
     slug: "office-worker",
     name: { uz: "Ofis xodimi", ru: "Офисный работник" },
-    headline: { uz: "Kam harakat va ko'p ekran uchun reja", ru: "План для малой подвижности и долгого экрана" },
+    headline: { uz: "Kam harakat va koʻp ekran uchun reja", ru: "План для малой подвижности и долгого экрана" },
     intro: {
-      uz: "Kun bo'yi o'tirib ishlaydigan va ekran oldida ko'p vaqt o'tkazadiganlar uchun to'plam.",
+      uz: "Kun boʻyi oʻtirib ishlaydigan va ekran oldida koʻp vaqt oʻtkazadiganlar uchun toʻplam.",
       ru: "Набор для тех, кто весь день работает сидя и много времени проводит за экраном.",
     },
     durationDays: 30,
     discountPercent: 12,
     forWhom: {
-      uz: ["Kuniga 8+ soat ekran oldida", "Kun bo'yi o'tirib ishlaydiganlar", "Ochiq havoda kam bo'ladiganlar"],
+      uz: ["Kuniga 8+ soat ekran oldida", "Kun boʻyi oʻtirib ishlaydiganlar", "Ochiq havoda kam boʻladiganlar"],
       ru: ["8+ часов в день за экраном", "Кто работает сидя весь день", "Кто мало бывает на улице"],
     },
     steps: {
       uz: [
-        { title: "Har kuni", body: "Har soatda 5 daqiqa turing va uzoqqa qarang — bu hech qanday qo'shimcha almashtira olmaydigan odat." },
-        { title: "Har hafta", body: "Kamida 150 daqiqa o'rtacha jismoniy faollik." },
+        { title: "Har kuni", body: "Har soatda 5 daqiqa turing va uzoqqa qarang — bu hech qanday qoʻshimcha almashtira olmaydigan odat." },
+        { title: "Har hafta", body: "Kamida 150 daqiqa oʻrtacha jismoniy faollik." },
       ],
       ru: [
         { title: "Каждый день", body: "Каждый час вставайте на 5 минут и смотрите вдаль — эту привычку не заменит никакая добавка." },
@@ -250,8 +250,8 @@ const raw: RawProgram[] = [
     faq: {
       uz: [
         {
-          question: "Ko'z uchun alohida nimadir kerakmi?",
-          answer: "Ekran oldida ishlash ko'zni charchatadi, lekin buning asosiy yechimi — tanaffus va yorug'lik rejimi. Nutriyentlar bu odatlarni almashtirmaydi.",
+          question: "Koʻz uchun alohida nimadir kerakmi?",
+          answer: "Ekran oldida ishlash koʻzni charchatadi, lekin buning asosiy yechimi — tanaffus va yorugʻlik rejimi. Nutriyentlar bu odatlarni almashtirmaydi.",
         },
       ],
       ru: [
@@ -265,21 +265,21 @@ const raw: RawProgram[] = [
   {
     slug: "womens-health",
     name: { uz: "Ayollar salomatligi", ru: "Женское здоровье" },
-    headline: { uz: "Kundalik ehtiyojlar uchun bir oylik to'plam", ru: "Месячный набор для ежедневных потребностей" },
+    headline: { uz: "Kundalik ehtiyojlar uchun bir oylik toʻplam", ru: "Месячный набор для ежедневных потребностей" },
     intro: {
-      uz: "Ayollarda ko'proq uchraydigan nutriyent yetishmovchiliklarini qamrab olgan to'plam.",
+      uz: "Ayollarda koʻproq uchraydigan nutriyent yetishmovchiliklarini qamrab olgan toʻplam.",
       ru: "Набор, охватывающий дефициты нутриентов, которые чаще встречаются у женщин.",
     },
     durationDays: 30,
     discountPercent: 12,
     forWhom: {
-      uz: ["Kundalik yuklama yuqori bo'lganlar", "Temir yetishmovchiligi tashxisi qo'yilganlar (shifokor nazorati bilan)", "Teri va soch holatiga e'tibor beruvchilar"],
+      uz: ["Kundalik yuklama yuqori boʻlganlar", "Temir yetishmovchiligi tashxisi qoʻyilganlar (shifokor nazorati bilan)", "Teri va soch holatiga eʼtibor beruvchilar"],
       ru: ["При высокой ежедневной нагрузке", "С установленным дефицитом железа (под контролем врача)", "Кто следит за состоянием кожи и волос"],
     },
     steps: {
       uz: [
         { title: "Boshlashdan oldin", body: "Ferritin va vitamin D darajasini tekshirib olish tavsiya etiladi." },
-        { title: "1–4-hafta", body: "To'plamni muntazam qabul qiling, holatingizni kuzatib boring." },
+        { title: "1–4-hafta", body: "Toʻplamni muntazam qabul qiling, holatingizni kuzatib boring." },
       ],
       ru: [
         { title: "Перед началом", body: "Рекомендуется проверить уровень ферритина и витамина D." },
@@ -294,7 +294,7 @@ const raw: RawProgram[] = [
       uz: [
         {
           question: "Homiladorlik davrida mos keladimi?",
-          answer: "Bu to'plam homiladorlik uchun mo'ljallanmagan. Homiladorlik va emizish davrida har qanday qo'shimchani faqat shifokor tavsiyasi bilan qabul qiling.",
+          answer: "Bu toʻplam homiladorlik uchun moʻljallanmagan. Homiladorlik va emizish davrida har qanday qoʻshimchani faqat shifokor tavsiyasi bilan qabul qiling.",
         },
       ],
       ru: [
@@ -307,10 +307,10 @@ const raw: RawProgram[] = [
   },
   {
     slug: "kids-growth",
-    name: { uz: "Bolalar o'sishi", ru: "Рост детей" },
-    headline: { uz: "Maktab yoshidagi bolalar uchun to'plam", ru: "Набор для детей школьного возраста" },
+    name: { uz: "Bolalar oʻsishi", ru: "Рост детей" },
+    headline: { uz: "Maktab yoshidagi bolalar uchun toʻplam", ru: "Набор для детей школьного возраста" },
     intro: {
-      uz: "Bolalar uchun mo'ljallangan dozalar va shakllardan tuzilgan to'plam.",
+      uz: "Bolalar uchun moʻljallangan dozalar va shakllardan tuzilgan toʻplam.",
       ru: "Набор из дозировок и форм, предназначенных для детей.",
     },
     durationDays: 30,
@@ -321,7 +321,7 @@ const raw: RawProgram[] = [
     },
     steps: {
       uz: [
-        { title: "Boshlashdan oldin", body: "Bolalar uchun har qanday qo'shimchani pediatr bilan kelishing." },
+        { title: "Boshlashdan oldin", body: "Bolalar uchun har qanday qoʻshimchani pediatr bilan kelishing." },
         { title: "Har kuni", body: "Yosh chegarasi va dozani yorliqdan tekshiring — kattalar mahsulotini bermang." },
       ],
       ru: [
@@ -337,7 +337,7 @@ const raw: RawProgram[] = [
       uz: [
         {
           question: "Necha yoshdan mos keladi?",
-          answer: "Har bir mahsulotning yosh chegarasi yorliqda ko'rsatiladi. Pediatr bilan kelishmasdan boshlamang.",
+          answer: "Har bir mahsulotning yosh chegarasi yorliqda koʻrsatiladi. Pediatr bilan kelishmasdan boshlamang.",
         },
       ],
       ru: [
@@ -351,20 +351,20 @@ const raw: RawProgram[] = [
   {
     slug: "senior-health",
     name: { uz: "55+ salomatlik", ru: "Здоровье 55+" },
-    headline: { uz: "Suyak va yurak uchun bir oylik to'plam", ru: "Месячный набор для костей и сердца" },
+    headline: { uz: "Suyak va yurak uchun bir oylik toʻplam", ru: "Месячный набор для костей и сердца" },
     intro: {
-      uz: "Yosh o'tgan sari e'tibor talab qiladigan yo'nalishlar — suyak zichligi va yurak-qon tomir tizimi.",
+      uz: "Yosh oʻtgan sari eʼtibor talab qiladigan yoʻnalishlar — suyak zichligi va yurak-qon tomir tizimi.",
       ru: "Направления, требующие внимания с возрастом — плотность костей и сердечно-сосудистая система.",
     },
     durationDays: 30,
     discountPercent: 12,
     forWhom: {
-      uz: ["55 yoshdan yuqori", "Suyak zichligi haqida qayg'uradiganlar", "Yurak salomatligiga e'tibor beruvchilar"],
+      uz: ["55 yoshdan yuqori", "Suyak zichligi haqida qaygʻuradiganlar", "Yurak salomatligiga eʼtibor beruvchilar"],
       ru: ["Старше 55 лет", "Кто беспокоится о плотности костей", "Кто следит за здоровьем сердца"],
     },
     steps: {
       uz: [
-        { title: "Boshlashdan oldin", body: "Doimiy dori qabul qilayotgan bo'lsangiz, farmatsevt bilan mosligini tekshiring." },
+        { title: "Boshlashdan oldin", body: "Doimiy dori qabul qilayotgan boʻlsangiz, farmatsevt bilan mosligini tekshiring." },
         { title: "Har kuni", body: "Kunlik harakat — yurish ham suyak va yurak uchun ishlaydi." },
       ],
       ru: [
@@ -379,8 +379,8 @@ const raw: RawProgram[] = [
     faq: {
       uz: [
         {
-          question: "Qon suyultiruvchi dori bilan birga bo'ladimi?",
-          answer: "Vitamin K va omega-3 ba'zi dorilar bilan o'zaro ta'sirga kirishishi mumkin. Doimiy dori qabul qilayotgan bo'lsangiz, albatta farmatsevt yoki shifokor bilan maslahatlashing.",
+          question: "Qon suyultiruvchi dori bilan birga boʻladimi?",
+          answer: "Vitamin K va omega-3 baʼzi dorilar bilan oʻzaro taʼsirga kirishishi mumkin. Doimiy dori qabul qilayotgan boʻlsangiz, albatta farmatsevt yoki shifokor bilan maslahatlashing.",
         },
       ],
       ru: [

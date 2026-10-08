@@ -25,7 +25,9 @@ import { submitOrder } from "@/app/[locale]/checkout/actions";
 import { getAttribution, trackLead } from "@/lib/analytics/events";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
-import { PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
+import { ONLINE_PROVIDERS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
+import { CARD_BRANDS } from "@/lib/config/payment-brands";
+import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -301,7 +303,10 @@ export function CheckoutForm({
                   onChange={() => choosePay(p.id)}
                   className={cn("p-3.5 lg:p-4", !p.configured && "cursor-not-allowed opacity-60")}
                 >
-                  <OptionText title={p.label} note={p.configured ? tv("online") : t("paySoon")} bold />
+                  <span className="flex flex-col items-start gap-0.5">
+                    <PaymentMark id={p.id} size="sm" className="h-6 justify-start bg-transparent px-0 text-base" />
+                    <span className="text-[13px] text-ink-2 lg:text-sm">{p.configured ? tv("online") : t("paySoon")}</span>
+                  </span>
                 </RadioCard>
               ))}
               <RadioCard name="pay-choice" value="cod" checked={payChoice === "cod"} onChange={() => choosePay("cod")} className="p-3.5 lg:p-4">
@@ -313,6 +318,10 @@ export function CheckoutForm({
                 {errors.provider.message}
               </p>
             )}
+            <div className="flex flex-col gap-2 rounded-[14px] bg-tile px-3.5 py-3 sm:flex-row sm:items-center sm:justify-between">
+              <span className="text-sm font-semibold text-ink-2">{t("cardsOnDelivery")}</span>
+              <PaymentMarks ids={CARD_BRANDS} size="sm" label={t("cardsOnDelivery")} />
+            </div>
             <p className="text-sm text-muted">{onlinePaymentAvailable() ? tv("gatewayNote") : t("payUnavailable")}</p>
           </Step>
         </div>
@@ -367,6 +376,7 @@ export function CheckoutForm({
             <TrustRow d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4">{tc("trustGuarantee")}</TrustRow>
             <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>
             <TrustRow d="M4 5h16v11H9l-5 4z">{onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}</TrustRow>
+            <PaymentMarks ids={[...ONLINE_PROVIDERS.map((p) => p.id), ...CARD_BRANDS]} size="sm" label={t("paymentTitle")} className="pt-1" />
           </div>
         </aside>
       </div>

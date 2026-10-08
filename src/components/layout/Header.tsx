@@ -87,7 +87,11 @@ export function Header({
           </nav>
         </div>
 
-        <nav aria-label={nav("shopByCategories")} className="wrap no-scrollbar flex gap-[26px] overflow-x-auto">
+        {/* The row scrolls when the shelves outgrow it; the fade says so instead of slicing the last word. */}
+        <nav
+          aria-label={nav("shopByCategories")}
+          className="wrap no-scrollbar flex gap-[26px] overflow-x-auto [mask-image:linear-gradient(to_right,#000_calc(100%-48px),transparent)]"
+        >
           <CategoryLink href={SALE_HREF} active={false} className="font-semibold text-red">
             {nav("topDeals")}
           </CategoryLink>
@@ -102,6 +106,7 @@ export function Header({
           <CategoryLink href="/brands" active={pathname.startsWith("/brands")}>
             {nav("brands")}
           </CategoryLink>
+          <span aria-hidden className="w-8 shrink-0" />
         </nav>
       </div>
 
