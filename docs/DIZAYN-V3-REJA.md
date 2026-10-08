@@ -72,6 +72,35 @@ kit.css'ga moslandi; yangi: `Chip`, `Field`/`Input`, `Checkbox`, `RadioCard`.
 `Button` variantlari: `dark` va `gold` endi `primary` (qora) bilan bir xil —
 eski chaqiruvlar buzilmasligi uchun alias sifatida qoldi.
 
+## 3-bosqich — bosh sahifa (bajarildi)
+
+HomeV3 / HomeMobileV3 bloklari dizayn tartibida: hero slayder + "Haftaning
+taklifi", kategoriya plitkalari, ishonch qatori, aksiyadagi mahsulotlar,
+Swiss Energy paneli, mahsulotlar setkasi, 2+1 banner, "Kim uchun tanlaysiz",
+xizmat kartalari, "Mahsulot qayerdan keladi", yangiliklar, FAQ + yordam,
+SEO matn. Telefonda dizayndagidek: tezkor chiplar, 6 kategoriya, swipe
+rail'lar; ishonch qatori, kelib chiqish va yangiliklar faqat desktopda.
+Audit: 0.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| "Koʻp sotib olinadi" | shu sarlavha | "Sara mahsulotlar" (mavjud kalit) | sotuv tarixi yoʻq — sarlavha daʼvo boʻlib qolardi |
+| Rail tartibi | qoʻlda tanlangan | kesma rasmi bor mahsulotlar oldinda, aksiyadagilar setkada takrorlanmaydi | katalogdan, qotirilgan roʻyxat emas |
+| Haftaning taklifi | bitta mahsulot | real chegirmalar, strelkalar ular boʻylab yuradi | chegirma boʻlmasa plitka chizilmaydi |
+| 2+1 banner | doim | faqat katalogda `buy_x_get_y` promo boʻlsa; matn promodan | OPEN-QUESTIONS #10 — promo hozir har bir qatorga qoʻllanadi, matnda "tanlangan" deyilgan |
+| Auditoriya | katalogga | testga (`/quiz?who=…`), yorliqlar testdan | mavjud oqim; ikkalasi ajralib ketmaydi |
+| Auditoriya rasmlari | stok foto | stok foto (`st-aud-*`) | eski AI-generatsiya rasmlar oʻchirildi (`public/images/audience`, `hero/hand.jpg`) |
+| Xizmat matnlari | "2 daqiqada" | "Savollarga javob bering…" | test davomiyligi oʻlchanmagan |
+| Brend tugmasi | brend sahifasi | `/brands` | `/brands/[slug]` 8-bosqichda |
+| SEO matn | faqat desktop | telefonda ham | Google mobil versiyani indekslaydi |
+| H1 | yoʻq | `sr-only` (meta sarlavha) | sahifada bitta h1 boʻlishi kerak |
+
+Oʻchirildi: eski bosh sahifa komponentlari (HeroBento, TopCategories,
+DealOfDay, QuizPromo, AudienceDoors, HomeFaq, NewsletterSignup,
+ScienceSection) va `CountdownTimer` — dizayn qoidasi taymerni taqiqlaydi va u
+faqat DealOfDay'da ishlatilgan edi. `FaqAccordion` V3 ga moslandi
+(`defaultOpen` prop) — FAQ ishlatiladigan hamma sahifada ko'rinadi.
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -112,7 +141,7 @@ Ular oʻchirilmaydi; 11-bosqichda InfoNav/umumiy layout'ga oʻtkaziladi — savo
 | kit.css (btn, chip, badge, inp, opt, cb) | `ui/Button`, `ui/Badge`, `ui/Price` … | qayta chiziladi; yangi: Chip, Input, RadioCard, Checkbox |
 | AccountNavV3 | yoʻq | yangi `AccountSidebar` |
 | InfoNavV3 | yoʻq | yangi `InfoSidebar` |
-| — | `CountdownTimer`, `LivePurchaseToast`, `ExitIntentPopup` | dizayn qoidasi (taymer va "N kishi sotib oldi" yoʻq) bilan zid — savol 5 |
+| — | `LivePurchaseToast`, `ExitIntentPopup` (`CountdownTimer` 3-bosqichda oʻchirildi) | dizayn qoidasi (taymer va "N kishi sotib oldi" yoʻq) bilan zid — savol 5 |
 
 Saqlanadigan qoidalar: `useDialog` (modal/drawer/sheet), `--bottom-nav`
 offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
@@ -123,7 +152,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 |---|---|---|---|
 | 1 | Layout ✅ | yuqorida | — |
 | 2 | ProductCard + UI ✅ | yuqorida | — |
-| 3 | Bosh sahifa | dizayn bloklari, real maʼlumot | mavjud sogʻliq-maqsad bloklari dizaynda yoʻq — savol 1 |
+| 3 | Bosh sahifa ✅ | yuqorida | — |
 | 4 | Katalog | filtrlar (brend, shakl, kim uchun, mamlakat — soni bilan), mobil sheet | "shakl", "kim uchun" maydonlari maʼlumotda bor-yoʻqligini tekshirish |
 | 5 | Mahsulot | galereya, xarid bloki, sticky tablar, mobil fixed panel | tibbiy vaʼdalarni matndan olib tashlash — kontent oʻzgarishi |
 | 6 | Savat | progress, upsell, 3 qadam, sticky xulosa | savol 2; checkout server action va Zod sxemasi oʻzgarmaydi |

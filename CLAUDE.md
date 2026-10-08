@@ -135,6 +135,7 @@ chaqirilgandan **keyin** chizing.
 |---|---|
 | `layout/` | Header (desktop + mobil, V3), CatalogMenu (mega-menyu), TopBar (utility qator), SearchBox, Footer (+ FooterAccordion), CookieConsent. Umumiy havolalar `nav-links.ts` da — server komponent `"use client"` moduldan konstanta ololmaydi |
 | `nav/` | MobileBottomNav — 5 tab (V3 TabBar), `lg:hidden`; "Katalog" tabi katalog ekranini (dialog) ochadi, "Savat" — drawer |
+| `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
 | `cart/` | CartDrawer (Framer Motion slide-in) |
 | `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
 | `shop/` | ShopView (server), FilterBar, Pagination |
@@ -144,7 +145,7 @@ chaqirilgandan **keyin** chizing.
 | `social-proof/` | LivePurchaseToast (har 35s, Framer Motion) |
 | `exit-intent/` | ExitIntentPopup (mouseleave + visibilitychange, sessionStorage once) |
 | `pwa/` | ServiceWorkerRegistration |
-| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), Skeleton, CountdownTimer, StarRating, ScrollProgress, BackToTop |
+| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), Skeleton, StarRating, ScrollProgress, BackToTop |
 | `analytics/` | Analytics (GTM Script) |
 
 ## State Management
@@ -200,7 +201,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 961 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 991 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
