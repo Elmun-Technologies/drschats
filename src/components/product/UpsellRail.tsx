@@ -9,7 +9,6 @@ import { Link } from "@/lib/i18n/navigation";
 import { DiscountBadge } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
-import { useToast } from "@/lib/ui/toast";
 import { trackAddToCart } from "@/lib/analytics/events";
 import { productCutout } from "@/lib/content/product-cutouts";
 
@@ -18,7 +17,6 @@ export function UpsellRail({ offers, title }: { offers: UpsellOffer[]; title: st
   const locale = useLocale() as Locale;
   const t = useTranslations("product");
   const add = useCart((s) => s.add);
-  const notify = useToast((s) => s.notify);
 
   if (offers.length === 0) return null;
 
@@ -61,7 +59,6 @@ export function UpsellRail({ offers, title }: { offers: UpsellOffer[]; title: st
                         1,
                       );
                       trackAddToCart(product.slug, discounted, 1);
-                      notify();
                     }}
                   >
                     {t("addUpsell")}

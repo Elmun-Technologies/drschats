@@ -3,7 +3,7 @@ import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
-import { shopflow } from "@/lib/shopflow";
+import { getAllProducts } from "@/lib/shop/all-products";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, itemListLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { productCutout } from "@/lib/content/product-cutouts";
@@ -36,7 +36,7 @@ export default async function BrandsPage({
     getTranslations("shop.brands"),
     getTranslations("product"),
     getTranslations("product.v3"),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 100 }),
+    getAllProducts({ locale, sort: "popular" }),
   ]);
   const brands = await getBrandInfos(locale, listing.items);
   const countries = [...new Set(brands.map((b) => b.country).filter((c): c is string => Boolean(c)))];

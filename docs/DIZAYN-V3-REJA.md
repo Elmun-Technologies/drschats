@@ -130,8 +130,8 @@ Audit: 0 (filtr sheet ochilgan holat ham auditga qoʻshildi).
 | "Ommabop" tartibi | — | kesma rasmli qoʻshimchalar oldinda | sotuv tarixi yoʻq; bosh sahifa bilan bir xil qoida |
 | "Aksiyalar" havolasi | `/sale` | `/products?sale=1&sort=deals` | endi haqiqatan faqat chegirmadagilar chiqadi; `/sale` 8-bosqichda |
 
-Filtrlash Shopflow'dan olingan 100 talik pool ustida bajariladi (kategoriya va
-qidiruv serverda). Katalog 100 dan oshsa, filtrlarni backend'ga oʻtkazish kerak.
+Filtrlash Shopflow'dan sahifalab olingan barcha mos mahsulotlar ustida bajariladi (kategoriya va
+qidiruv serverda; `lib/shop/all-products.ts`, 20 sahifagacha). Katalog minglab mahsulotga yetsa, filtrlarni backend'ga oʻtkazish kerak.
 
 ## 5-bosqich — mahsulot sahifasi (bajarildi)
 

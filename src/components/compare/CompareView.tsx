@@ -9,7 +9,6 @@ import type { Product } from "@/lib/shopflow/types";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { COMPARE_LIMIT, useCompare } from "@/lib/compare/store";
 import { useCart } from "@/lib/cart/store";
-import { useToast } from "@/lib/ui/toast";
 import { trackAddToCart } from "@/lib/analytics/events";
 import { productBrand } from "@/lib/content/product-brands";
 import { productCutout } from "@/lib/content/product-cutouts";
@@ -34,7 +33,6 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
   const remove = useCompare((s) => s.remove);
   const clear = useCompare((s) => s.clear);
   const add = useCart((s) => s.add);
-  const notify = useToast((s) => s.notify);
   const [hydrated, setHydrated] = useState(false);
   const [onlyDiff, setOnlyDiff] = useState(false);
   useEffect(() => setHydrated(true), []);
@@ -144,7 +142,6 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
                       onClick={() => {
                         add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice });
                         trackAddToCart(p.slug, p.price, 1);
-                        notify();
                       }}
                     >
                       {p.inStock ? common("addToCartShort") : common("outOfStock")}

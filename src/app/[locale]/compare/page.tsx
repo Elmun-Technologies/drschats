@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { shopflow } from "@/lib/shopflow";
+import { getAllProducts } from "@/lib/shop/all-products";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { CompareView } from "@/components/compare/CompareView";
 
@@ -17,6 +17,6 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   // The picks live in the visitor's browser, so the page ships a pool and the
   // client resolves its own — the same trade-off as the wishlist.
-  const pool = await shopflow.getProducts({ locale, pageSize: 100 });
+  const pool = await getAllProducts({ locale });
   return <CompareView allProducts={pool.items} />;
 }

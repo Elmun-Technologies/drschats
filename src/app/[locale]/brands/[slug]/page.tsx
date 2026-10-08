@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
-import { shopflow } from "@/lib/shopflow";
+import { getAllProducts } from "@/lib/shop/all-products";
 import { COMMERCE } from "@/lib/config/commerce";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
@@ -43,7 +43,7 @@ export default async function BrandPage({ params, searchParams }: { params: Para
     getTranslations("shop.brands"),
     getTranslations("product"),
     getTranslations("shop.v3"),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 100 }),
+    getAllProducts({ locale, sort: "popular" }),
   ]);
   const brand = (await getBrandInfos(locale, listing.items)).find((b) => b.slug === slug);
   if (!brand || brand.products.length === 0) notFound();

@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { shopflow } from "@/lib/shopflow";
+import { getAllProducts } from "@/lib/shop/all-products";
 import type { Product } from "@/lib/shopflow/types";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
@@ -46,8 +47,8 @@ export default async function SearchPage({ params, searchParams }: { params: Par
     getTranslations("common"),
     getTranslations("home"),
     shopflow.getCategories(locale).catch(() => []),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 100, assortment: "core" }).catch(() => ({ items: [] as Product[] })),
-    q ? shopflow.getProducts({ locale, search: q, pageSize: 100 }).catch(() => ({ items: [] as Product[] })) : null,
+    getAllProducts({ locale, sort: "popular", assortment: "core" }).catch(() => ({ items: [] as Product[] })),
+    q ? getAllProducts({ locale, search: q }).catch(() => ({ items: [] as Product[] })) : null,
   ]);
 
   const results = found?.items ?? [];

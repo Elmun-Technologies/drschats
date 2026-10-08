@@ -9,7 +9,6 @@ import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { DiscountBadge, discountPercent } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
-import { useToast } from "@/lib/ui/toast";
 import { trackViewProduct } from "@/lib/analytics/events";
 import { unitPrice } from "@/lib/content/product-units";
 import type { Expert } from "@/lib/content/experts";
@@ -30,7 +29,6 @@ export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Exp
   const tb = useTranslations("product.buyBox");
   const ts = useTranslations("subscription");
   const openCart = useCart((s) => s.open);
-  const notify = useToast((s) => s.notify);
   const reset = usePurchase((s) => s.reset);
   const qty = usePurchase((s) => s.qty);
   const setQty = usePurchase((s) => s.setQty);
@@ -101,7 +99,6 @@ export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Exp
               className="h-14 rounded-[14px] px-4"
               onClick={() => {
                 addToCart();
-                notify();
               }}
             >
               {mode === "subscription" ? ts("addSubscription") : t("addToCart")}
@@ -150,7 +147,6 @@ export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Exp
 function MobileBuyBar({ product }: { product: Product }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
-  const notify = useToast((s) => s.notify);
   const addToCart = useAddToCart(product);
 
   return (
@@ -170,7 +166,6 @@ function MobileBuyBar({ product }: { product: Product }) {
         disabled={!product.inStock}
         onClick={() => {
           addToCart();
-          notify();
         }}
       >
         {product.inStock ? t("addToCart") : t("outOfStock")}
@@ -183,7 +178,6 @@ function MobileBuyBar({ product }: { product: Product }) {
 export function MiniBuyCard({ product, image }: { product: Product; image?: string }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
-  const notify = useToast((s) => s.notify);
   const addToCart = useAddToCart(product);
 
   return (
@@ -202,7 +196,6 @@ export function MiniBuyCard({ product, image }: { product: Product; image?: stri
         disabled={!product.inStock}
         onClick={() => {
           addToCart();
-          notify();
         }}
       >
         {t("addToCartShort")}

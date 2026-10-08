@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
+import { getAllProducts } from "@/lib/shop/all-products";
 import { Link } from "@/lib/i18n/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
 import { chipClass } from "@/components/ui/Chip";
@@ -24,9 +25,8 @@ import { SORT_ORDER, sortKey, type CatalogSort } from "@/lib/shop/catalog-sort";
 import { CatalogSidebar, MobileFilterBar, type PanelContext } from "./CatalogFilterPanel";
 import { isStocked } from "@/lib/shop/categories";
 
+/** Shopflow filters by category and search; the rest runs over every matching product. */
 const PAGE_SIZE = 24;
-/** Shopflow filters by category and search; the rest runs over this pool. */
-const POOL_SIZE = 100;
 
 /*
   Design: CatalogV3 / CatalogMobileV3 / FiltersMobileV3.
@@ -57,7 +57,7 @@ export async function ShopView({
     getTranslations("product"),
     getTranslations("header"),
     shopflow.getCategories(locale),
-    shopflow.getProducts({ locale, category: activeCategory, search, sort, pageSize: POOL_SIZE }),
+    getAllProducts({ locale, category: activeCategory, search, sort }),
     getHealthTopics(locale, "goal"),
   ]);
 

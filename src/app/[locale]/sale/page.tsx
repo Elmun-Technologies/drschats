@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { shopflow } from "@/lib/shopflow";
+import { getAllProducts } from "@/lib/shop/all-products";
 import { BRAND } from "@/lib/brand";
 import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney } from "@/lib/utils";
@@ -35,7 +36,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
     getTranslations("shop.sale"),
     getTranslations("product"),
     getTranslations("delivery"),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 100, assortment: "core" }),
+    getAllProducts({ locale, sort: "popular", assortment: "core" }),
     shopflow.getPromotions(locale).catch(() => []),
   ]);
 
