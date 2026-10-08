@@ -109,7 +109,6 @@ export function MySubscriptions() {
         const cancelled = subscription.status === "cancelled";
         const first = subscription.items[0];
         const image = first ? productCutout(first.slug) : undefined;
-        const name = subscription.items.map((i) => i.name).join(", ");
 
         return (
           <li key={subscription.id} className="flex flex-col gap-5 rounded-[20px] border border-line p-5 lg:gap-[22px] lg:p-7">
@@ -119,11 +118,14 @@ export function MySubscriptions() {
               </span>
               <span className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <span className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                  {first ? (
-                    <Link href={`/product/${first.slug}`} className="text-lg font-bold hover:underline lg:text-xl">{name}</Link>
-                  ) : (
-                    <span className="text-lg font-bold lg:text-xl">{name}</span>
-                  )}
+                  <span className="text-lg font-bold lg:text-xl">
+                    {subscription.items.map((item, i) => (
+                      <span key={`${item.slug}-${i}`}>
+                        {i > 0 && ", "}
+                        <Link href={`/product/${item.slug}`} className="hover:underline">{item.name}</Link>
+                      </span>
+                    ))}
+                  </span>
                   <span
                     className={cn(
                       "inline-flex h-[26px] items-center rounded-pill px-2.5 text-[13px] font-semibold",
@@ -155,21 +157,21 @@ export function MySubscriptions() {
               <div className="flex flex-col gap-3">
                 <div className="flex flex-wrap gap-2">
                   {subscription.status === "active" && (
-                    <>
-                      <Action onClick={() => change(subscription.id, { skipNext: true })} disabled={busy} tone="light">
-                        {t("skip")}
-                      </Action>
-                      <Action onClick={() => setEditing(editing === subscription.id ? null : subscription.id)} disabled={busy} tone="light" pressed={editing === subscription.id}>
-                        {tv("changeInterval")}
-                      </Action>
-                      <Action onClick={() => change(subscription.id, { status: "paused" })} disabled={busy}>
-                        {t("pause")}
-                      </Action>
-                    </>
+                    <Action onClick={() => change(subscription.id, { skipNext: true })} disabled={busy} tone="light">
+                      {t("skip")}
+                    </Action>
                   )}
                   {subscription.status === "paused" && (
                     <Action onClick={() => change(subscription.id, { status: "active" })} disabled={busy} tone="primary">
                       {t("resume")}
+                    </Action>
+                  )}
+                  <Action onClick={() => setEditing(editing === subscription.id ? null : subscription.id)} disabled={busy} tone="light" pressed={editing === subscription.id}>
+                    {tv("changeInterval")}
+                  </Action>
+                  {subscription.status === "active" && (
+                    <Action onClick={() => change(subscription.id, { status: "paused" })} disabled={busy}>
+                      {t("pause")}
                     </Action>
                   )}
                   <Action onClick={() => change(subscription.id, { status: "cancelled" })} disabled={busy}>
