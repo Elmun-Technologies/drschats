@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { useProfile } from "@/lib/profile/store";
 import { hasSignal } from "@/lib/profile/types";
@@ -14,6 +13,13 @@ import { ConsentPanel } from "./ConsentPanel";
 import { ProfileOffers } from "./ProfileOffers";
 import { ProfileSync } from "./ProfileSync";
 import { VerifyEmail } from "./VerifyEmail";
+import type { ReactNode } from "react";
+import { useSession } from "@/lib/auth/store";
+import { isApiConfigured } from "@/lib/api/client";
+import { accountAreaAvailable } from "@/lib/config/demo";
+import { buttonVariants } from "@/components/ui/Button";
+import { AccountShell } from "@/components/account/AccountShell";
+import { cn } from "@/lib/utils";
 
 /*
   /profile — everything the visitor has told us, in one editable place.
@@ -51,44 +57,34 @@ export function ProfileView() {
   */
   if (!hydrated) {
     return (
-      <Container className="py-10 sm:py-14">
-        <header className="mx-auto max-w-3xl">
-          <p className="text-sm font-semibold text-fg">{t("eyebrow")}</p>
-          <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-            {t("title")}
-          </h1>
-          <p className="mt-2 text-legacy-muted">{t("subtitle")}</p>
-        </header>
-        <div className="mx-auto mt-10 h-96 max-w-3xl animate-pulse rounded-2xl bg-surface" />
-      </Container>
+      <Frame>
+        <h1 className={H1}>{t("title")}</h1>
+        <div className="h-96 animate-pulse rounded-[20px] bg-tile" />
+      </Frame>
     );
   }
 
   return (
-    <Container className="py-10 sm:py-14">
+    <Frame>
       <ProfileSync />
-      <header className="mx-auto max-w-3xl">
-        <p className="text-sm font-semibold text-fg">{t("eyebrow")}</p>
-        <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
-          {profile.name ? t("titleNamed", { name: profile.name }) : t("title")}
-        </h1>
-        <p className="mt-2 text-legacy-muted">{t("subtitle")}</p>
+      <header className="flex flex-col gap-2">
+        <h1 className={H1}>{profile.name ? t("titleNamed", { name: profile.name }) : t("title")}</h1>
+        <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("subtitle")}</p>
         {!hasSignal(profile) && (
-          <p className="mt-4 rounded-2xl border border-accent/40 bg-surface-2/40 px-4 py-3 text-sm text-fg">
+          <p className="mt-2 rounded-[16px] bg-tile px-4 py-3 text-[15px]">
             {t("quizHint")}{" "}
-            <Link href="/quiz" className="font-semibold text-fg underline-offset-4 hover:underline">
+            <Link href="/quiz" className="font-semibold underline-offset-4 hover:underline">
               {t("quizHintCta")}
             </Link>
           </p>
         )}
       </header>
 
-      <div className="mx-auto mt-10 flex max-w-3xl flex-col gap-12">
+      <Card>
         <section aria-labelledby="profile-details">
-          <h2 id="profile-details" className="font-display text-lg font-bold tracking-tight">{t("details.title")}
-          </h2>
-          <p className="mt-1 text-sm text-legacy-muted">{t("details.description")}</p>
-          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+          <h2 id="profile-details" className="text-xl font-bold">{t("details.title")}</h2>
+          <p className="mt-1 text-[15px] text-ink-2">{t("details.description")}</p>
+          <div className="mt-4 grid gap-3.5 sm:grid-cols-2">
             <ProfileField
               label={t("details.name")}
               value={profile.name ?? ""}
@@ -116,51 +112,65 @@ export function ProfileView() {
             />
           </div>
         </section>
+      </Card>
 
-        <GoalPicker />
-        <HouseholdEditor />
-        <ReminderPanel />
-        <ConsentPanel />
-        <ProfileOffers />
+      <Card><GoalPicker /></Card>
+      <Card><HouseholdEditor /></Card>
+      <Card><ReminderPanel /></Card>
+      <Card><ConsentPanel /></Card>
+      <ProfileOffers />
 
-        <section aria-labelledby="profile-data" className="border-t border-legacy-line pt-8">
-          <h2 id="profile-data" className="font-display text-lg font-bold tracking-tight">{t("data.title")}
-          </h2>
-          <p className="mt-1 text-sm text-legacy-muted">{t("data.description")}</p>
-          {confirmingReset ? (
-            <div className="mt-4 flex flex-wrap items-center gap-3">
-              <p role="alert" className="text-sm font-medium text-fg">
-                {t("data.confirm")}
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  reset();
-                  setConfirmingReset(false);
-                }}
-                className="min-h-11 rounded-full bg-danger px-5 text-sm font-bold text-white transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
-              >
-                {t("data.confirmYes")}
-              </button>
-              <button
-                type="button"
-                onClick={() => setConfirmingReset(false)}
-                className="min-h-11 rounded-full border border-legacy-line px-5 text-sm font-semibold text-legacy-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
-              >
-                {t("data.cancel")}
-              </button>
-            </div>
-          ) : (
+      <section aria-labelledby="profile-data" className="border-t border-line pt-6">
+        <h2 id="profile-data" className="text-xl font-bold">{t("data.title")}</h2>
+        <p className="mt-1 text-[15px] text-ink-2">{t("data.description")}</p>
+        {confirmingReset ? (
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <p role="alert" className="text-[15px] font-medium">
+              {t("data.confirm")}
+            </p>
             <button
               type="button"
-              onClick={() => setConfirmingReset(true)}
-              className="mt-4 min-h-11 rounded-full border border-legacy-line px-5 text-sm font-semibold text-legacy-muted transition-colors hover:border-danger hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+              onClick={() => {
+                reset();
+                setConfirmingReset(false);
+              }}
+              className={cn(buttonVariants("primary"), "h-11 bg-red hover:bg-red")}
             >
-              {t("data.clear")}
+              {t("data.confirmYes")}
             </button>
-          )}
-        </section>
-      </div>
-    </Container>
+            <button type="button" onClick={() => setConfirmingReset(false)} className={cn(buttonVariants("secondary"), "h-11")}>
+              {t("data.cancel")}
+            </button>
+          </div>
+        ) : (
+          <button type="button" onClick={() => setConfirmingReset(true)} className={cn(buttonVariants("secondary"), "mt-4 h-11")}>
+            {t("data.clear")}
+          </button>
+        )}
+      </section>
+    </Frame>
+  );
+}
+
+const H1 = "text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]";
+
+function Card({ children }: { children: ReactNode }) {
+  return <div className="rounded-[20px] border border-line p-5 lg:p-7">{children}</div>;
+}
+
+/*
+  Design: ProfileV3. With a session (and an account area to go back to) the
+  page sits in the cabinet layout; without one it is a page of its own — the
+  profile works in this browser whether or not anybody signed in.
+*/
+function Frame({ children }: { children: ReactNode }) {
+  const token = useSession((s) => s.token);
+  if (token && accountAreaAvailable(isApiConfigured())) {
+    return <AccountShell active="profile">{children}</AccountShell>;
+  }
+  return (
+    <div className="wrap pb-9 pt-3 lg:pb-[72px] lg:pt-8">
+      <div className="flex max-w-[860px] flex-col gap-4 lg:gap-5">{children}</div>
+    </div>
   );
 }

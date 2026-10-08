@@ -1,5 +1,7 @@
 "use client";
 
+import { chipClass } from "@/components/ui/Chip";
+import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useProfile } from "@/lib/profile/store";
@@ -49,9 +51,9 @@ export function HouseholdEditor() {
 
   return (
     <section aria-labelledby="profile-household">
-      <h2 id="profile-household" className="font-display text-lg font-bold tracking-tight">{t("title")}
+      <h2 id="profile-household" className="text-xl font-bold">{t("title")}
       </h2>
-      <p className="mt-1 text-sm text-legacy-muted">{t("description")}</p>
+      <p className="mt-1 text-sm text-ink-2">{t("description")}</p>
 
       {household.length > 0 && (
         <ul className="mt-4 flex flex-col gap-3">
@@ -60,15 +62,15 @@ export function HouseholdEditor() {
             return (
               <li
                 key={member.id}
-                className="flex flex-wrap items-center gap-3 rounded-2xl border border-legacy-line bg-surface px-4 py-3"
+                className="flex flex-wrap items-center gap-3 rounded-[20px] border border-line bg-bg px-4 py-3"
               >
-                <span className="rounded-full bg-surface-2 px-3 py-1 text-xs font-bold text-fg">
+                <span className="rounded-full bg-tile px-3 py-1 text-xs font-bold text-ink">
                   {t(`relation.${member.relation}`)}
                 </span>
-                <span className="font-semibold text-fg">{member.name || t("unnamed")}</span>
-                {age !== null && <span className="text-sm text-legacy-muted">{t("age", { age })}</span>}
+                <span className="font-semibold text-ink">{member.name || t("unnamed")}</span>
+                {age !== null && <span className="text-sm text-ink-2">{t("age", { age })}</span>}
 
-                <label className="ml-auto flex items-center gap-2 text-sm text-legacy-muted">
+                <label className="ml-auto flex items-center gap-2 text-sm text-ink-2">
                   <span className="sr-only sm:not-sr-only">{t("birthday")}</span>
                   <input
                     type="date"
@@ -76,7 +78,7 @@ export function HouseholdEditor() {
                     max={today.toISOString().slice(0, 10)}
                     aria-label={t("birthdayFor", { name: member.name || t("unnamed") })}
                     onChange={(e) => updateMember(member.id, { birthday: e.target.value || undefined })}
-                    className="rounded-lg border border-legacy-line bg-legacy-ink px-3 py-2 text-sm outline-none focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
+                    className="rounded-lg border border-line bg-bg px-3 py-2 text-sm outline-none focus:border-ink focus-visible:ring-2 focus-visible:ring-ink"
                   />
                 </label>
 
@@ -84,7 +86,7 @@ export function HouseholdEditor() {
                   type="button"
                   onClick={() => removeMember(member.id)}
                   aria-label={t("removeFor", { name: member.name || t("unnamed") })}
-                  className="flex h-11 w-11 items-center justify-center rounded-full text-faint transition-colors hover:bg-danger/10 hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+                  className="flex h-11 w-11 items-center justify-center rounded-full text-muted transition-colors hover:bg-red/10 hover:text-red focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink"
                 >
                   <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
@@ -96,9 +98,9 @@ export function HouseholdEditor() {
         </ul>
       )}
 
-      <form onSubmit={handleAdd} className="mt-4 rounded-2xl border border-legacy-line bg-surface p-4">
+      <form onSubmit={handleAdd} className="mt-4 rounded-[20px] border border-line bg-bg p-4">
         <fieldset>
-          <legend className="text-sm font-semibold text-fg">{t("addTitle")}</legend>
+          <legend className="text-sm font-semibold text-ink">{t("addTitle")}</legend>
 
           <div className="mt-3 flex flex-wrap gap-2">
             {RELATIONS.map((value) => (
@@ -108,11 +110,7 @@ export function HouseholdEditor() {
                 role="radio"
                 aria-checked={relation === value}
                 onClick={() => setRelation(value)}
-                className={`min-h-11 rounded-full border px-4 py-2.5 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal ${
-                  relation === value
-                    ? "border-legacy-line-strong bg-surface-2 text-fg"
-                    : "border-legacy-line bg-legacy-ink text-fg hover:border-legacy-line-strong"
-                }`}
+                className={cn(chipClass(relation === value), "h-11 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2")}
               >
                 {t(`relation.${value}`)}
               </button>

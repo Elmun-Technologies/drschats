@@ -6,6 +6,10 @@ import { api, ApiError, type OtpRequestResult } from "@/lib/api/client";
 import { useSession } from "@/lib/auth/store";
 import { track } from "@/lib/analytics/events";
 import { ErrorNote } from "@/components/ui/ErrorNote";
+import { Button, buttonVariants } from "@/components/ui/Button";
+import { inputClass } from "@/components/ui/Field";
+import { cn } from "@/lib/utils";
+import { telegramConnectUrl } from "@/lib/notifications/telegram-link";
 
 /*
   Sign-in is a phone and a code — no password, and no separate registration.
@@ -23,6 +27,7 @@ const CODE_LENGTH = 6;
 
 export function AuthForm() {
   const t = useTranslations("account");
+  const tv = useTranslations("account.v3");
   const [step, setStep] = useState<Step>("phone");
   const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
@@ -99,9 +104,19 @@ export function AuthForm() {
     }
   }
 
+  // The bot's own link when the backend handed one over, otherwise the
+  // configured bot — or nothing, rather than a link to the wrong account.
+  const botUrl = telegramLink ?? telegramConnectUrl();
+
   return (
-    <div className="mx-auto max-w-md rounded-2xl border border-legacy-line bg-legacy-ink p-6 sm:p-8">
-      <h2 className="font-display text-lg font-bold text-fg text-fg">{t("title")}</h2>
+    <div className="flex flex-col gap-5 rounded-[20px] lg:border lg:border-line lg:p-10 lg:shadow-buybox">
+      <div aria-hidden className="flex gap-1.5">
+        <span className="h-1 flex-1 rounded-full bg-ink" />
+        <span className={cn("h-1 flex-1 rounded-full", step === "phone" ? "bg-chip-strong" : "bg-ink")} />
+      </div>
+      <h1 className="text-[28px] font-bold leading-[34px] lg:text-[32px] lg:leading-[38px]">
+        {step === "code" ? tv("codeTitle") : t("title")}
+      </h1>
 
       {step === "phone" && (
         <form
@@ -109,74 +124,88 @@ export function AuthForm() {
             e.preventDefault();
             void askForCode();
           }}
-          className="mt-5 flex flex-col gap-4"
+          className="flex flex-col gap-4"
         >
-          <p className="text-sm text-legacy-muted">{t("otpIntro")}</p>
-          <Field
-            id="account-phone"
-            label={t("phone")}
-            type="tel"
-            inputMode="tel"
-            value={phone}
-            onChange={setPhone}
-            autoComplete="tel"
-            placeholder="+998 90 123 45 67"
-            required
-          />
+          <p className="text-base leading-6 text-ink-2">{t("otpIntro")}</p>
+          <div className="flex flex-col gap-2">
+            <label htmlFor="account-phone" className="text-sm font-medium text-ink-2">
+              {t("phone")}
+            </label>
+            <input
+              id="account-phone"
+              type="tel"
+              inputMode="tel"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              autoComplete="tel"
+              placeholder="+998 90 123 45 67"
+              required
+              className={cn(inputClass, "h-14 text-lg")}
+            />
+          </div>
           {error && <ErrorNote>{error}</ErrorNote>}
-          <SubmitButton busy={busy}>{t("otpCta")}</SubmitButton>
+          <Button type="submit" size="lg" disabled={busy} className="h-14 rounded-[14px]">
+            {busy ? "…" : t("otpCta")}
+          </Button>
         </form>
       )}
 
       {step === "link" && (
-        <div className="mt-5 flex flex-col gap-4">
-          <p className="text-sm text-legacy-muted">{t("linkIntro")}</p>
+        <div className="flex flex-col gap-4">
+          <p className="text-base leading-6 text-ink-2">{t("linkIntro")}</p>
           {telegramLink ? (
-            <a
-              href={telegramLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-full bg-fg px-6 py-3 text-center text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
-            >
+            <a href={telegramLink} target="_blank" rel="noopener noreferrer" className={cn(buttonClass, "h-14 rounded-[14px]")}>
               {t("linkCta")}
             </a>
           ) : (
             <ErrorNote>{t("errorNoBot")}</ErrorNote>
           )}
-          <p className="text-xs leading-relaxed text-faint">{t("linkHint")}</p>
-          <button
-            type="button"
-            onClick={() => setStep("code")}
-            className="text-sm font-semibold text-fg hover:underline"
-          >
+          <p className="text-sm leading-5 text-muted">{t("linkHint")}</p>
+          <button type="button" onClick={() => setStep("code")} className="min-h-11 self-start text-[15px] font-semibold hover:underline">
             {t("linkDone")}
           </button>
         </div>
       )}
 
       {step === "code" && (
-        <form onSubmit={submitCode} className="mt-5 flex flex-col gap-4">
-          <p className="text-sm text-legacy-muted">{t("codeIntro", { phone })}</p>
-          <Field
-            ref={codeRef}
-            id="account-code"
-            label={t("code")}
-            value={code}
-            onChange={(v) => setCode(v.replace(/\D/g, "").slice(0, CODE_LENGTH))}
-            // one-time-code lets both iOS and Android offer the code from the
-            // notification, which is most of the reason this flow feels quick.
-            autoComplete="one-time-code"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            placeholder="123456"
-            required
-          />
+        <form onSubmit={submitCode} className="flex flex-col gap-5">
+          <p className="text-base leading-6 text-ink-2">{t("codeIntro", { phone })}</p>
+          {/* One real input, drawn as six boxes: paste, autofill and the
+              keyboard all work as on any field. */}
+          <div className="relative w-fit">
+            <div aria-hidden className="flex gap-2 lg:gap-2.5">
+              {Array.from({ length: CODE_LENGTH }, (_, i) => (
+                <span
+                  key={i}
+                  className={cn(
+                    "flex h-[60px] w-12 items-center justify-center rounded-[14px] border-[1.5px] text-2xl font-bold sm:h-[72px] sm:w-16 sm:text-[28px]",
+                    i < code.length || i === code.length ? "border-ink" : "border-line-strong",
+                    i === code.length && "border-2",
+                  )}
+                >
+                  {code[i] ?? ""}
+                </span>
+              ))}
+            </div>
+            <input
+              ref={codeRef}
+              id="account-code"
+              aria-label={t("code")}
+              value={code}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, "").slice(0, CODE_LENGTH))}
+              autoComplete="one-time-code"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={CODE_LENGTH}
+              required
+              className="absolute inset-0 h-full w-full rounded-[14px] bg-transparent text-transparent caret-transparent outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4"
+            />
+          </div>
           {error && <ErrorNote>{error}</ErrorNote>}
-          <SubmitButton busy={busy} disabled={code.length < CODE_LENGTH}>
-            {t("codeCta")}
-          </SubmitButton>
-
-          <div className="flex items-center justify-between text-sm">
+          <Button type="submit" size="lg" disabled={busy || code.length < CODE_LENGTH} className="h-14 rounded-[14px]">
+            {busy ? "…" : t("codeCta")}
+          </Button>
+          <div className="flex flex-wrap items-center justify-between gap-2 text-[15px]">
             <button
               type="button"
               onClick={() => {
@@ -184,7 +213,7 @@ export function AuthForm() {
                 setCode("");
                 setError(null);
               }}
-              className="font-semibold text-legacy-muted hover:text-fg"
+              className="min-h-11 font-semibold hover:underline"
             >
               {t("changePhone")}
             </button>
@@ -192,7 +221,7 @@ export function AuthForm() {
               type="button"
               disabled={secondsLeft > 0 || busy}
               onClick={() => void askForCode(true)}
-              className="font-semibold text-fg hover:underline disabled:text-faint disabled:no-underline"
+              className="min-h-11 font-semibold hover:underline disabled:font-normal disabled:text-muted disabled:no-underline"
             >
               {secondsLeft > 0 ? t("resendIn", { seconds: secondsLeft }) : t("resend")}
             </button>
@@ -200,66 +229,24 @@ export function AuthForm() {
         </form>
       )}
 
-      <p className="mt-5 text-xs leading-relaxed text-faint">{t("guestNote")}</p>
-    </div>
-  );
-}
-
-function SubmitButton({
-  busy,
-  disabled,
-  children,
-}: {
-  busy: boolean;
-  disabled?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="submit"
-      disabled={busy || disabled}
-      className="rounded-full bg-fg px-6 py-3 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink disabled:opacity-60"
-    >
-      {busy ? "…" : children}
-    </button>
-  );
-}
-
-function Field({
-  id,
-  label,
-  value,
-  onChange,
-  hint,
-  ref,
-  ...rest
-}: {
-  id: string;
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  hint?: string;
-  ref?: React.Ref<HTMLInputElement>;
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "id" | "ref">) {
-  return (
-    <div>
-      <label htmlFor={id} className="mb-1.5 block text-sm font-medium text-fg">
-        {label}
-      </label>
-      <input
-        id={id}
-        ref={ref}
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        aria-describedby={hint ? `${id}-hint` : undefined}
-        className="w-full rounded-xl border border-legacy-line bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent"
-        {...rest}
-      />
-      {hint && (
-        <p id={`${id}-hint`} className="mt-1 text-xs text-faint">
-          {hint}
-        </p>
+      {step !== "link" && (
+        <div className="flex flex-col gap-2 rounded-[16px] bg-tile px-[18px] py-4 lg:px-5 lg:py-[18px]">
+          <span className="text-[15px] font-bold">{tv("codeHelpTitle")}</span>
+          <span className="text-sm leading-5 text-[#2E3236]">{t("linkIntro")}</span>
+          {botUrl && (
+            <a
+              href={botUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(buttonVariants("secondary"), "mt-1 h-11 self-start bg-transparent")}
+            >
+              {t("linkCta")}
+            </a>
+          )}
+        </div>
       )}
     </div>
   );
 }
+
+const buttonClass = buttonVariants("primary", "lg");

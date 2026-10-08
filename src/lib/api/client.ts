@@ -125,22 +125,23 @@ export interface StoredProfile extends Omit<ProfilePayload, "household"> {
 // Demo mock data for offline mode
 const MOCK_ORDERS: AccountOrder[] = [
   {
-    orderId: "GV-98421",
-    status: "delivered",
-    total: 380000,
-    createdAt: new Date(Date.now() - 5 * 24 * 3600 * 1000).toISOString(),
+    orderId: "GV-98104",
+    status: "shipped",
+    total: 188000,
+    createdAt: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(),
     items: [
-      { slug: "vitamin-d3-k2", name: "Vitamin D3 + K2 (Swiss Energy)", quantity: 1, unitPrice: 190000 },
-      { slug: "magnesium-b6", name: "Magnesium + B6 Xelat", quantity: 1, unitPrice: 190000 },
+      { slug: "dr-frei-antistress-magniy-20", name: "Dr. Frei Antistress Magniy B6 20", quantity: 1, unitPrice: 79000 },
+      { slug: "dr-frei-multivitamins-biotin-20", name: "Dr. Frei Multivitamins + Biotin 20", quantity: 1, unitPrice: 79000 },
     ],
   },
   {
-    orderId: "GV-98104",
-    status: "processing",
-    total: 420000,
-    createdAt: new Date(Date.now() - 1 * 24 * 3600 * 1000).toISOString(),
+    orderId: "GV-98421",
+    status: "delivered",
+    total: 373050,
+    createdAt: new Date(Date.now() - 24 * 24 * 3600 * 1000).toISOString(),
     items: [
-      { slug: "omega-3-premium", name: "Omega-3 Premium 1000mg", quantity: 1, unitPrice: 420000 },
+      { slug: "swiss-energy-immunovit-30", name: "Swiss Energy ImmunoVit 30", quantity: 1, unitPrice: 265950 },
+      { slug: "swiss-energy-vitamin-c-20", name: "Swiss Energy Vitamin C 550mg 20", quantity: 1, unitPrice: 107000 },
     ],
   },
 ];
@@ -151,9 +152,19 @@ const MOCK_SUBSCRIPTIONS: AccountSubscription[] = [
     status: "active",
     intervalDays: 30,
     nextDeliveryAt: new Date(Date.now() + 25 * 24 * 3600 * 1000).toISOString(),
-    total: 357000,
+    total: 90950,
     items: [
-      { slug: "omega-3-premium", name: "Omega-3 Premium 1000mg", quantity: 1, unitPrice: 357000 },
+      { slug: "swiss-energy-vitamin-c-20", name: "Swiss Energy Vitamin C 550mg 20", quantity: 1, unitPrice: 107000 },
+    ],
+  },
+  {
+    id: 2,
+    status: "paused",
+    intervalDays: 30,
+    nextDeliveryAt: null,
+    total: 67150,
+    items: [
+      { slug: "dr-frei-antistress-magniy-20", name: "Dr. Frei Antistress Magniy B6 20", quantity: 1, unitPrice: 79000 },
     ],
   },
 ];
@@ -216,6 +227,7 @@ export const api = {
     }
     const found = MOCK_SUBSCRIPTIONS.find((s) => s.id === id) ?? MOCK_SUBSCRIPTIONS[0];
     if (body.status) found.status = body.status;
+    if (body.status === "cancelled") found.nextDeliveryAt = null;
     if (body.intervalDays) found.intervalDays = body.intervalDays;
     return { ...found };
   },
