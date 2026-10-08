@@ -71,6 +71,8 @@ export const REMOTE_IMAGE_HOSTS = [
   "cdn.sanity.io",
   "shop-flow.uz",
   "**.shop-flow.uz",
+  // Admin-uploaded product photos (Tigris object storage on Fly.io).
+  "**.fly.storage.tigris.dev",
 ] as const;
 
 /**

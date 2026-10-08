@@ -15,6 +15,7 @@ import { productBrand } from "@/lib/content/product-brands";
 import { productCutout } from "@/lib/content/product-cutouts";
 import { PRODUCT_UNITS } from "@/lib/content/product-units";
 import { DiscountBadge } from "@/components/ui/Price";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /*
   Design: CartV3 / CartMobileV3 line list and the "Buyurtmangizga qoʻshing"
@@ -163,7 +164,7 @@ function UpsellOffer({ step, label }: { step: UpsellStep; label: string }) {
   const locale = useLocale() as Locale;
   const tc = useTranslations("checkout");
   const add = useCart((s) => s.add);
-  const image = productCutout(step.product.slug) ?? step.product.images[0]?.url;
+  const image = cutoutOf(step.product) ?? step.product.images[0]?.url;
   const free = step.stepType === "free_gift";
 
   return (

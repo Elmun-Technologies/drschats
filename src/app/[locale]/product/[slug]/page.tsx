@@ -12,7 +12,7 @@ import { topicsForProduct } from "@/lib/shop/product-topics";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
 import { getSimilarProducts } from "@/lib/personalization/engine";
-import { productCutout } from "@/lib/content/product-cutouts";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -63,7 +63,7 @@ export default async function ProductPage({
   const topics = topicsForProduct(product, allTopics);
   // Products with a cut-out pack shot first, as on every other rail.
   const similar = getSimilarProducts(product, allProducts.items, 12)
-    .sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+    .sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
     .slice(0, 6);
 
   const [reviewerResult, authorResult] = await Promise.all([

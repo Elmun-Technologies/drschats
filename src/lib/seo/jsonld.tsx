@@ -6,7 +6,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
 import { COMMERCE } from "@/lib/config/commerce";
-import { productBrand } from "@/lib/content/product-brands";
+import { brandOf } from "@/lib/catalog/product-facts";
 
 /*
   Structured-data image URLs, made absolute.
@@ -139,7 +139,7 @@ export function productGraph({
   dateModified?: string;
 }) {
   const url = `${SITE_URL}/${locale}/product/${product.slug}`;
-  const brand = productBrand(product.slug);
+  const brand = brandOf(product);
   return {
     "@context": "https://schema.org",
     "@graph": [

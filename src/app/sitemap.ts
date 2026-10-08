@@ -11,8 +11,8 @@ import { TOPIC_BASE_PATH, TOPIC_KINDS } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { absoluteUrl } from "@/lib/config/site";
 import { isStocked } from "@/lib/shop/categories";
-import { productBrand } from "@/lib/content/product-brands";
 import type { Product } from "@/lib/shopflow/types";
+import { brandOf } from "@/lib/catalog/product-facts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, allProducts] = await Promise.all([
@@ -53,7 +53,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
   // A brand page with no products is an empty page — listed once it has one.
-  const brandPaths = [...new Set(allProducts.items.map((p) => productBrand(p.slug)?.slug).filter(Boolean))].map(
+  const brandPaths = [...new Set(allProducts.items.map((p) => brandOf(p)?.slug).filter(Boolean))].map(
     (slug) => `/brands/${slug}`,
   );
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);

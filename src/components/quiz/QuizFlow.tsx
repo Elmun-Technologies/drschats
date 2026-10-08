@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link, useRouter } from "@/lib/i18n/navigation";
 import { visibleQuestions, type QuizQuestion } from "@/lib/quiz/questions";
 import { buildQuizResult, saveQuiz, type QuizAnswers } from "@/lib/quiz/engine";
-import { encodeAnswers } from "@/lib/quiz/recommend";
+import { encodeAnswers } from "@/lib/quiz/answers-codec";
 import { useProfile } from "@/lib/profile/store";
 import { track } from "@/lib/analytics/events";
 import { AUDIENCE_PHOTOS, audienceSubtitleKey } from "@/lib/content/audience";

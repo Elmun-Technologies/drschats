@@ -1,5 +1,8 @@
 import type { ShopflowClient } from "./types";
 import { MockShopflowClient } from "./mock";
+import { CatalogEngine } from "@/lib/catalog/engine";
+import { loadDbCatalog, saveOrderToDb } from "@/lib/catalog/db";
+import { isDbConfigured } from "@/lib/db/client";
 import { HttpShopflowClient } from "./http";
 import { withResilientReads } from "./resilient";
 
@@ -25,13 +28,26 @@ if (!USE_SHOPFLOW && process.env.SHOPFLOW_MODE === "http") {
   console.warn("[catalog] SHOPFLOW_MODE=http is ignored — the built-in catalogue is used. Set CATALOG_SOURCE=shopflow to switch.");
 }
 
+/*
+  Order of preference: an explicit external Shopflow, then the admin-managed
+  database (DATABASE_URL), then the built-in catalogue.
+*/
 export function getShopflow(): ShopflowClient {
   if (client) return client;
-  client = withResilientReads(USE_SHOPFLOW ? new HttpShopflowClient() : new MockShopflowClient());
+  client = withResilientReads(
+    USE_SHOPFLOW
+      ? new HttpShopflowClient()
+      : isDbConfigured
+        ? new CatalogEngine(loadDbCatalog, saveOrderToDb)
+        : new MockShopflowClient(),
+  );
   return client;
 }
 
 export const shopflow = getShopflow();
 
-/** True while the catalogue and orders run on the built-in client (no external order system). */
-export const SHOPFLOW_IS_MOCK = !USE_SHOPFLOW;
+/**
+ * True when no system keeps the order: no external Shopflow and no database.
+ * The checkout then treats the operator's Telegram message as the only record.
+ */
+export const SHOPFLOW_IS_MOCK = !USE_SHOPFLOW && !isDbConfigured;

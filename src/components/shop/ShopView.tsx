@@ -7,8 +7,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { ProductCard } from "@/components/product/ProductCard";
 import { chipClass } from "@/components/ui/Chip";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
-import { categoryCutout, productCutout } from "@/lib/content/product-cutouts";
-import { productBrand } from "@/lib/content/product-brands";
+import { categoryCutout } from "@/lib/content/product-cutouts";
 import { COMMERCE } from "@/lib/config/commerce";
 import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
 import {
@@ -27,6 +26,7 @@ import { isStocked } from "@/lib/shop/categories";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, breadcrumbLd, collectionLd } from "@/lib/seo/jsonld";
 import { categorySeoCopy } from "@/lib/content/category-seo";
+import { cutoutOf, brandOf } from "@/lib/catalog/product-facts";
 
 /** Shopflow filters by category and search; the rest runs over every matching product. */
 const PAGE_SIZE = 24;
@@ -68,7 +68,7 @@ export async function ShopView({
   // cutout pack shot lead and coffee and devices follow — as on the home page.
   const items =
     sort === "popular"
-      ? [...pool.items].sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+      ? [...pool.items].sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
       : pool.items;
   const facts = items.map((p) => toFacts(p, topics));
   const matchIds = new Set(applyFilters(facts, filters).map((f) => f.id));
@@ -83,7 +83,7 @@ export async function ShopView({
   const heading = search ? t("searchResults", { query: search }) : active ? active.name : t("title");
 
   const brandNames = Object.fromEntries(
-    pool.items.map((p) => productBrand(p.slug)).filter(Boolean).map((b) => [b!.slug, b!.name]),
+    pool.items.map((p) => brandOf(p)).filter(Boolean).map((b) => [b!.slug, b!.name]),
   );
   const goalNames = Object.fromEntries(topics.map((topic) => [topic.slug, topic.name]));
   const ctx: PanelContext = { facts, filters, sort, basePath, keep, brandNames, goalNames };

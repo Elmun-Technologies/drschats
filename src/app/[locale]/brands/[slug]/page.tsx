@@ -11,10 +11,10 @@ import { listingMetadata } from "@/lib/seo/page-meta";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { brandBySlug } from "@/lib/content/product-brands";
 import { getBrandInfos } from "@/lib/content/brand-info";
-import { productCutout } from "@/lib/content/product-cutouts";
-import { PRODUCT_UNITS, type DoseUnit } from "@/lib/content/product-units";
+import { type DoseUnit } from "@/lib/content/product-units";
 import { Chip } from "@/components/ui/Chip";
 import { ProductGrid } from "@/components/home/HomeBlocks";
+import { cutoutOf, unitOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 
@@ -22,13 +22,13 @@ type Params = Promise<{ locale: Locale; slug: string }>;
 
 export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: Promise<{ form?: string }> }): Promise<Metadata> {
   const [{ locale, slug }, query] = await Promise.all([params, searchParams]);
-  const brand = brandBySlug(slug);
-  if (!brand) return {};
   const [t, listing] = await Promise.all([
     getTranslations({ locale, namespace: "shop.brands" }),
     getAllProducts({ locale, sort: "popular" }),
   ]);
   const info = (await getBrandInfos(locale, listing.items)).find((b) => b.slug === slug);
+  const brand = info ?? brandBySlug(slug);
+  if (!brand) return {};
   return listingMetadata({
     locale,
     kind: "brand",
@@ -49,7 +49,6 @@ export default async function BrandPage({ params, searchParams }: { params: Para
   const { locale, slug } = await params;
   const { form } = await searchParams;
   setRequestLocale(locale);
-  if (!brandBySlug(slug)) notFound();
 
   const [t, tb, tp, ts, listing] = await Promise.all([
     getTranslations("pages.brands"),
@@ -61,15 +60,15 @@ export default async function BrandPage({ params, searchParams }: { params: Para
   const brand = (await getBrandInfos(locale, listing.items)).find((b) => b.slug === slug);
   if (!brand || brand.products.length === 0) notFound();
 
-  const products = [...brand.products].sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)));
+  const products = [...brand.products].sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)));
   const forms = new Map<DoseUnit, number>();
   for (const p of products) {
-    const unit = PRODUCT_UNITS[p.slug]?.unit;
+    const unit = unitOf(p)?.unit;
     if (unit) forms.set(unit, (forms.get(unit) ?? 0) + 1);
   }
   const activeForm = form === "tablet" || form === "capsule" ? form : null;
-  const shown = activeForm ? products.filter((p) => PRODUCT_UNITS[p.slug]?.unit === activeForm) : products;
-  const shots = products.map((p) => productCutout(p.slug)).filter((s): s is string => Boolean(s)).slice(0, 3);
+  const shown = activeForm ? products.filter((p) => unitOf(p)?.unit === activeForm) : products;
+  const shots = products.map((p) => cutoutOf(p)).filter((s): s is string => Boolean(s)).slice(0, 3);
 
   const facts = [
     { title: tb("originTitle"), text: tb("originText") },

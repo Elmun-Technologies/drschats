@@ -28,6 +28,7 @@ import {
   SectionHead,
 } from "@/components/home/HomeBlocks";
 import { isStocked } from "@/lib/shop/categories";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 
@@ -79,14 +80,14 @@ export default async function HomePage({
   // Products with a cutout pack shot lead every rail: they are the supplement
   // lines the design is built around, the rest (coffee, devices) follow.
   const catalogue = [...promotable(listing.items)].sort(
-    (a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)),
+    (a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)),
   );
   const shelves = categories.filter(isStocked);
   const deals = byDeepestDiscount(catalogue).slice(0, 6);
   const dealIds = new Set(deals.map((p) => p.id));
   const weeklyDeals = deals.map(toMenuDeal).filter((d): d is MenuDeal => d !== null);
   const swissEnergy = catalogue
-    .filter((p) => p.slug.startsWith("swiss-energy-") && productCutout(p.slug))
+    .filter((p) => p.slug.startsWith("swiss-energy-") && cutoutOf(p))
     .slice(0, 8);
   const curated = catalogue.filter((p) => !dealIds.has(p.id)).slice(0, 12);
   const bundle = promotions.find((p) => p.type === "buy_x_get_y");

@@ -7,10 +7,10 @@ import Image from "next/image";
 import { BRAND } from "@/lib/brand";
 import { COMMERCE } from "@/lib/config/commerce";
 import { getAllProducts } from "@/lib/shop/all-products";
-import { productBrand } from "@/lib/content/product-brands";
 import { Link } from "@/lib/i18n/navigation";
 import { InfoShell } from "@/components/info/InfoShell";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { brandOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 3600;
 
@@ -26,7 +26,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
 
   // Counted from the live catalogue, so the numbers cannot drift from it.
   const catalogue = await getAllProducts({ locale });
-  const brands = [...new Set(catalogue.items.map((p) => productBrand(p.slug)?.name).filter((n): n is string => Boolean(n)))];
+  const brands = [...new Set(catalogue.items.map((p) => brandOf(p)?.name).filter((n): n is string => Boolean(n)))];
   const hours = COMMERCE.delivery.tashkent.hours;
   const days = COMMERCE.returns.unopenedWindowDays;
   const stats = [

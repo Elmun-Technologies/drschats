@@ -6,11 +6,11 @@ import { Link } from "@/lib/i18n/navigation";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, itemListLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { productCutout } from "@/lib/content/product-cutouts";
 import { getBrandInfos } from "@/lib/content/brand-info";
 import { buttonVariants } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 
@@ -69,7 +69,7 @@ export default async function BrandsPage({
 
       <section className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
         {shown.map((b) => {
-          const shots = b.products.map((p) => productCutout(p.slug)).filter((s): s is string => Boolean(s)).slice(0, 2);
+          const shots = b.products.map((p) => cutoutOf(p)).filter((s): s is string => Boolean(s)).slice(0, 2);
           const body = (
             <>
               {b.country && <span className="relative z-[1] text-sm font-semibold text-ink-2">{b.country}</span>}

@@ -60,6 +60,10 @@ const BASELINE = new Map(
     globby: "pulled in by the Sanity CLI chain — closed by sanity@6",
     micromatch: "pulled in by the Sanity CLI chain — closed by sanity@6",
     "preferred-pm": "pulled in by the Sanity CLI chain — closed by sanity@6",
+    // vite@5 under @sanity/cli and @vitejs/plugin-react (Studio build tooling, never in the
+    // site bundle). The lockfile had it flagged dev-only until an npm install recomputed the
+    // flags; `npm audit fix` cannot move it — sanity pins the range.
+    vite: "Sanity Studio build tooling (vite@5) — closed by sanity@6",
     postcss: "only fix is next@16 — major framework upgrade",
   }),
 );

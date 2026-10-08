@@ -14,8 +14,7 @@ import { useCart } from "@/lib/cart/store";
 import { cartLineId } from "@/lib/cart/pricing";
 import { trackAddToCart } from "@/lib/analytics/events";
 import { WishlistButton } from "@/components/product/WishlistButton";
-import { productCutout } from "@/lib/content/product-cutouts";
-import { unitPrice } from "@/lib/content/product-units";
+import { cutoutOf, unitPriceOf } from "@/lib/catalog/product-facts";
 
 /*
   The catalogue card (design: ProductCardV3).
@@ -51,10 +50,10 @@ export function ProductCard({
   useEffect(() => setMounted(true), []);
 
   const href = `/product/${product.slug}`;
-  const image = productCutout(product.slug) ?? product.images[0]?.url;
+  const image = cutoutOf(product) ?? product.images[0]?.url;
   const discount = discountPercent(product.price, product.oldPrice);
   const hit = product.badges?.some((b) => HIT_BADGES.has(b));
-  const perUnit = unitPrice(product.slug, product.price);
+  const perUnit = unitPriceOf(product);
   const inCart = mounted && qty > 0;
 
   function handleAdd() {

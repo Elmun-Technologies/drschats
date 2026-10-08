@@ -13,11 +13,11 @@ import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { Link } from "@/lib/i18n/navigation";
-import { productCutout } from "@/lib/content/product-cutouts";
 import { cn, formatDate, formatMoney } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
 import { ShareRow } from "@/components/blog/ShareRow";
 import { clampDescription, seoTitle } from "@/lib/seo/page-meta";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -138,7 +138,7 @@ export default async function ArticlePage({
               <h2 id="article-related" className="text-lg font-bold">{t("relatedProducts")}</h2>
               <ul className="flex flex-col gap-2.5">
                 {relatedProducts.map((p) => {
-                  const image = productCutout(p.slug) ?? p.images[0]?.url;
+                  const image = cutoutOf(p) ?? p.images[0]?.url;
                   return (
                     <li key={p.id}>
                       <Link href={`/product/${p.slug}`} className="flex items-center gap-3.5 rounded-[16px] border border-line p-2.5 hover:border-line-strong">

@@ -8,10 +8,10 @@ import { BRAND } from "@/lib/brand";
 import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney } from "@/lib/utils";
 import { byDeepestDiscount } from "@/lib/shop/discounts";
-import { productCutout } from "@/lib/content/product-cutouts";
 import { FIRST_ORDER_PERCENT, RECURRING_PERCENT } from "@/lib/subscription/plans";
 import { ProductGrid } from "@/components/home/HomeBlocks";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
 
@@ -40,7 +40,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
   ]);
 
   const deals = byDeepestDiscount(
-    [...listing.items].sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug))),
+    [...listing.items].sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b))),
   );
   const bundle = promotions.find((p) => p.type === "buy_x_get_y");
   const free = formatMoney(COMMERCE.freeShippingOver, locale);

@@ -10,12 +10,10 @@ import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { COMPARE_LIMIT, useCompare } from "@/lib/compare/store";
 import { useCart } from "@/lib/cart/store";
 import { trackAddToCart } from "@/lib/analytics/events";
-import { productBrand } from "@/lib/content/product-brands";
-import { productCutout } from "@/lib/content/product-cutouts";
-import { PRODUCT_UNITS, unitPrice } from "@/lib/content/product-units";
 import { discountPercent } from "@/components/ui/Price";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
+import { cutoutOf, unitOf, unitPriceOf, brandOf } from "@/lib/catalog/product-facts";
 
 /*
   Design: CompareV3. Every cell is the product's own data; a missing value is
@@ -46,7 +44,7 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
     {
       label: t("unit"),
       values: products.map((p) => {
-        const u = unitPrice(p.slug, p.price);
+        const u = unitPriceOf(p);
         return u ? common("perUnit", { price: formatMoney(Math.round(u.amount), locale), unit: common(u.unit === "tablet" ? "unitTablet" : "unitCapsule") }) : dash;
       }),
     },
@@ -58,12 +56,12 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
     {
       label: t("form"),
       values: products.map((p) => {
-        const unit = PRODUCT_UNITS[p.slug]?.unit;
+        const unit = unitOf(p)?.unit;
         return unit ? ts(unit === "tablet" ? "formTablet" : "formCapsule") : dash;
       }),
     },
     { label: t("pack"), values: products.map((p) => (p.servings != null ? String(p.servings) : dash)) },
-    { label: t("brand"), values: products.map((p) => productBrand(p.slug)?.name ?? dash) },
+    { label: t("brand"), values: products.map((p) => brandOf(p)?.name ?? dash) },
     { label: t("origin"), values: products.map((p) => p.origin ?? dash) },
   ];
   const diff = (values: string[]) => new Set(values).size > 1;
@@ -113,7 +111,7 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
                 </Button>
               </div>
               {products.map((p) => {
-                const image = productCutout(p.slug) ?? p.images[0]?.url;
+                const image = cutoutOf(p) ?? p.images[0]?.url;
                 return (
                   <div key={p.id} className="relative flex flex-col gap-2.5">
                     <button
