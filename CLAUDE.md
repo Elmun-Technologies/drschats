@@ -222,7 +222,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1475 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1474 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -552,7 +552,7 @@ Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa
 - **Tibbiy vaʼda yoʻq:** «davolaydi», «stressni kamaytiradi», «100% natija» kabi soʻzlar ishlatilmaydi.
 - **Oʻzbek apostrofi** — `ʻ` (U+02BB): oʻ, gʻ, soʻm. Oddiy `'` emas. `uz.json` va kontent fayllari normallashtirilgan (oʻ/gʻ → `ʻ`, tutuq → `ʼ`). Qidiruv `lib/search/fold.ts` orqali barcha apostrof shakllarini bitta deb hisoblaydi — mijoz `go'zallik` yozsa ham topadi
 - **Narx formati:** `79 000 soʻm` (minglik boʻsh joy bilan). Birlik narxi kartada: `3 950 soʻm / tabletka`.
-- **Toʻlov logotiplari** — faqat `PaymentMark`/`PaymentMarks` (`components/ui/PaymentMarks.tsx`), roʻyxat `lib/config/payment-brands.ts`. Uzcard, Humo, Visa, Mastercard — rasmiy belgilar (`public/images/payments/`), kuryer terminalida qabul qilinadi. Payme/Click/Uzum — hozircha nom (rasmiy fayl yoʻq); brend-kit SVG qoʻyilib `src` yozilsa hamma joy oʻzi almashadi. Onlayn provayder belgisi faqat merchant ID sozlanganda chiqadi
+- **Toʻlov logotiplari** — faqat `PaymentMark`/`PaymentMarks` (`components/ui/PaymentMarks.tsx`), roʻyxat `lib/config/payment-brands.ts`. Uzcard, Humo, Visa, Mastercard — rasmiy belgilar (`public/images/payments/`), onlayn toʻlov (Payme/Click/Uzum) orqali qabul qilinadi. **Yetkazib berishda toʻlov faqat naqd pul** (2026-10 qaror) — kuryer karta qabul qilmaydi. Payme/Click/Uzum — hozircha nom (rasmiy fayl yoʻq); brend-kit SVG qoʻyilib `src` yozilsa hamma joy oʻzi almashadi. Provayder va karta belgilari (`ONLINE_PAYMENT_MARKS`, `lib/config/payments.ts`) faqat merchant ID sozlanganda chiqadi — undan oldin faqat «Naqd pul»
 
 ### Tokenlar (`design/tokens.json` → `src/styles/globals.css` ikkinchi `@theme` bloki)
 - Ranglar: `bg #FFFFFF`, `tile #F1F3F0`, `tile-hover #E6E8E5`, `chip-strong #E3E6E9`, `line #E4E6E8`, `line-strong #D9DCDF`, `ink #17191B`, `ink-2 #44494E`, `muted #63686E`, `dark-panel #1C1F22`, `on-dark-2 #C9CDD1`, `red #C8161D`, `yellow #FFD43B`, `yellow-banner #FFE58A`, `forest #0F2D24`, `gold #B8954F`.

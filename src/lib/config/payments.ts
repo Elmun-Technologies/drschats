@@ -1,3 +1,5 @@
+import { CARD_BRANDS, type PaymentBrandId } from "@/lib/config/payment-brands";
+
 /*
   Payment providers, and whether we can actually take a payment yet.
 
@@ -43,3 +45,12 @@ export const ONLINE_PROVIDERS = PAYMENT_PROVIDERS.filter((p) => p.configured);
 export function onlinePaymentAvailable(): boolean {
   return ONLINE_PROVIDERS.length > 0;
 }
+
+/*
+  Marks to show wherever the site lists how to pay. Delivery is cash only, so
+  the card networks belong to online payment and appear together with it —
+  before a provider is configured no card mark is shown anywhere.
+*/
+export const ONLINE_PAYMENT_MARKS: PaymentBrandId[] = ONLINE_PROVIDERS.length
+  ? [...ONLINE_PROVIDERS.map((p) => p.id), ...CARD_BRANDS]
+  : [];

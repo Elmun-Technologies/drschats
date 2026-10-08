@@ -83,8 +83,8 @@ screens = [
                 "<b>Yetkazib berish</b>\n\n• Toshkent — Yandex Dostavka, 24 soat ichida\n• Viloyatlar — BTS, 1–3 kun\n• Oʻzi olib ketish — Toshkentdagi ombordan, bepul\n\n300 000 soʻmdan ortiq xaridga yetkazish bepul.",
                 "<b>Доставка</b>\n\n• Ташкент — Яндекс Доставка, в течение 24 часов\n• Регионы — BTS, 1–3 дня\n• Самовывоз — со склада в Ташкенте, бесплатно\n\nПри заказе от 300 000 сум доставка бесплатная.")}, False),
             btn("info_pay", "💳 Toʻlov", "💳 Оплата", {"type": "text", "text": L(
-                "<b>Toʻlov usullari</b>\n\nPayme, Click, Uzum — onlayn.\nNaqd yoki karta — yetkazishda kuryerga.",
-                "<b>Способы оплаты</b>\n\nPayme, Click, Uzum — онлайн.\nНаличные или карта — курьеру при доставке.")}, False),
+                "<b>Toʻlov usullari</b>\n\nPayme, Click, Uzum — onlayn.\nYetkazib berishda — faqat naqd pul.",
+                "<b>Способы оплаты</b>\n\nPayme, Click, Uzum — онлайн.\nПри доставке — только наличные.")}, False),
             btn("info_docs", "📄 Sertifikatlar", "📄 Сертификаты", {"type": "url", "url": SITE + "/licenses"}, False),
             btn("info_about", "🏢 Biz haqimizda", "🏢 О нас", {"type": "url", "url": SITE + "/about"}, False),
             btn("info_b2b", "🏥 Dorixonalar uchun", "🏥 Для аптек", {"type": "form", "formId": "b2b"}),
