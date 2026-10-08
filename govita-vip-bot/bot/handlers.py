@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from html import escape
 import logging
 from datetime import date, datetime, timedelta
 
@@ -32,7 +33,8 @@ def now_local() -> datetime:
 @router.message(CommandStart())
 async def start(m: Message, state: FSMContext, db):
     await state.clear()
-    c = await db.ensure_customer(m.from_user.id, m.from_user.full_name)
+    c = await db.ensure_customer(m.from_user.id, escape(m.from_user.full_name))
+    await db.run("UPDATE customers SET blocked_at=NULL WHERE tg_id=?", m.from_user.id)
     pl = L.parse_payload(m.text)
     if pl:
         kind, val = pl
@@ -67,7 +69,7 @@ async def on_contact(m: Message, state: FSMContext, db):
     if not L.contact_is_own(m.contact.user_id, m.from_user.id):
         return await m.answer(T["contactNotOwn"], reply_markup=contact_kb())
     phone = L.canonical_phone(m.contact.phone_number)
-    await db.ensure_customer(m.from_user.id, m.from_user.full_name)
+    await db.ensure_customer(m.from_user.id, escape(m.from_user.full_name))
     res = await db.link_phone(m.from_user.id, phone)
     log.info("contact tg=%s phone=%s res=%s", m.from_user.id, L.mask_phone(phone), res)
     if res == "conflict":
@@ -102,7 +104,7 @@ async def notify_operator(m, text):
         try:
             await m.bot.send_message(int(cfg.operator_chat_id), text)
         except Exception as e:  # noqa
-            log.warning("operator notify failed: %s", e)
+            log.warning("operator notify failed")
 
 
 # ---------------- Bosh menyu ----------------
@@ -272,6 +274,14 @@ async def cb_rem_t(q: CallbackQuery, db):
 
 
 async def create_reminder(m, db, tg_id, pid, hhmm):
+    c = await db.customer(tg_id)
+    owned = await db.one("SELECT 1 FROM order_items oi JOIN orders o ON o.code=oi.order_code "
+                         "WHERE o.phone=? AND oi.product_id=?", c["phone"] if c else None, pid)
+    if not owned:
+        return await m.answer("Mahsulot topilmadi.")
+    import re
+    if not re.fullmatch(r"([01]\d|2[0-3]):[0-5]\d", hhmm):
+        return await m.answer("Vaqt notoʻgʻri.")
     course = await db.one("SELECT * FROM courses WHERE tg_id=? AND product_id=? ORDER BY id DESC", tg_id, pid)
     ends = course["ends_on"] if course else None
     await db.run("INSERT INTO reminders(tg_id,product_id,hhmm,ends_on) VALUES(?,?,?,?)", tg_id, pid, hhmm, ends)
@@ -339,17 +349,10 @@ async def cb_ce(q: CallbackQuery, db):
 # ---------------- Obunalar ----------------
 @router.callback_query(F.data.startswith("sub:new:"))
 async def cb_sub_new(q: CallbackQuery, db):
-    _, _, pid, days = q.data.split(":")
-    p = await db.product(int(pid))
-    nd = date.today() + timedelta(days=int(days))
-    sid = await db.run("INSERT INTO subscriptions(tg_id,product_id,interval_days,next_date,next_pct) VALUES(?,?,?,?,?)",
-                       q.from_user.id, p["id"], int(days), nd.isoformat(), cfg.sub_next_pct)
-    await q.message.answer(
-        f"🔁 Obuna yoqildi: <b>{p['short']}</b>, har {days} kunda.\n"
-        f"Bugungi buyurtma −{cfg.sub_first_pct}%: {L.som(L.sub_price(p['price'], cfg.sub_first_pct))}\n"
-        f"Keyingi yetkazish: <b>{L.fmt_day(nd)}</b> · {L.som(L.sub_price(p['price'], cfg.sub_next_pct))} (−{cfg.sub_next_pct}%)",
-        reply_markup=kb([b("🔁 Obunalarim", "m:subs")]))
     await q.answer()
+    await q.message.answer("Obuna avtomatik buyurtma tizimi hali ulanmagan. "
+                           "Hozircha operator orqali rasmiylashtiring.",
+                           reply_markup=kb([b("💬 Operator", "m:op")]))
 
 
 @router.callback_query(F.data == "m:subs")
@@ -525,7 +528,7 @@ async def op_msg(m: Message, state: FSMContext, db):
     await state.clear()
     await db.run("INSERT INTO leads(tg_id,tag,text,created_at) VALUES(?,?,?,?)", m.from_user.id, tag,
                  m.text or "", datetime.utcnow().isoformat())
-    await notify_operator(m, f"💬 [{tag}] {m.from_user.full_name} (tg={m.from_user.id}):\n{m.text}")
+    await notify_operator(m, f"💬 [{tag}] {escape(m.from_user.full_name)} (tg={m.from_user.id}):\n{escape(m.text or '')}")
     await m.answer(T["opSent"].format(hours=cfg.support_hours.split(", ")[-1]))
 
 

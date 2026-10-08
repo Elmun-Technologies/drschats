@@ -6,6 +6,7 @@ from datetime import date, datetime, timedelta
 import aiosqlite
 
 SCHEMA = """
+CREATE TABLE IF NOT EXISTS catalog_cache(id TEXT PRIMARY KEY, payload TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS customers(
   tg_id INTEGER PRIMARY KEY, phone TEXT, name TEXT, club_joined_at TEXT,
   club_source TEXT, referred_by INTEGER, promo_on INTEGER DEFAULT 1,
@@ -35,6 +36,7 @@ CREATE TABLE IF NOT EXISTS leads(
   id INTEGER PRIMARY KEY AUTOINCREMENT, tg_id INTEGER, tag TEXT, text TEXT, created_at TEXT);
 CREATE TABLE IF NOT EXISTS notif_log(
   id INTEGER PRIMARY KEY AUTOINCREMENT, tg_id INTEGER, kind TEXT, ref TEXT, created_at TEXT);
+CREATE UNIQUE INDEX IF NOT EXISTS ux_notif ON notif_log(tg_id,kind,ref);
 """
 
 
@@ -46,6 +48,8 @@ class DB:
     async def open(self):
         self.c = await aiosqlite.connect(self.path)
         self.c.row_factory = aiosqlite.Row
+        await self.c.execute("PRAGMA busy_timeout=5000")
+        await self.c.execute("PRAGMA journal_mode=WAL")
         await self.c.executescript(SCHEMA)
         await self.c.commit()
         return self

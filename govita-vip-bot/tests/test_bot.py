@@ -72,3 +72,35 @@ async def test_no_course_msg_if_subscribed(db):
     await db.run("INSERT INTO courses(tg_id,product_id,order_code,ends_on) VALUES(1,1,'GV-10248','2026-10-12')")
     await db.run("INSERT INTO subscriptions(tg_id,product_id,interval_days,next_date,next_pct) VALUES(1,1,30,'2026-11-01',15)")
     assert await W.tick_courses(bot, db, datetime(2026, 10, 10, 12)) == 0
+
+
+async def test_due_subscription_does_not_lose_delivery(db):
+    bot = AsyncMock()
+    await db.run("INSERT INTO subscriptions(tg_id,product_id,interval_days,next_date,next_pct) VALUES(1,1,30,'2026-10-01',15)")
+    await W.tick_subscriptions(bot, db, datetime(2026, 10, 10, 12))
+    s = await db.one('SELECT * FROM subscriptions LIMIT 1')
+    assert s['next_date'] == '2026-10-01'
+
+
+def test_backend_refuses_insecure_url():
+    from bot.backend import GoVitaBackend
+    with pytest.raises(ValueError):
+        GoVitaBackend('http://example.com/api/bot', 'test_key')
+    with pytest.raises(ValueError):
+        GoVitaBackend('https://user:pass@example.com/api/bot', 'test_key')
+    with pytest.raises(ValueError):
+        GoVitaBackend('https://example.com/api/bot', '')
+
+
+@pytest.mark.parametrize('path', ['https://other.test', '//other.test', '/../orders', '/orders?token=x'])
+async def test_backend_refuses_unsafe_endpoint(path):
+    from bot.backend import GoVitaBackend
+    api = GoVitaBackend('https://example.com/api/bot', 'govita_test_key')
+    with pytest.raises(ValueError):
+        await api.request('GET', path)
+
+
+def test_backend_accepts_govita_service_key():
+    from bot.backend import GoVitaBackend
+    api = GoVitaBackend('https://example.com/api/bot/', 'govita_test_key')
+    assert api.base == 'https://example.com/api/bot'

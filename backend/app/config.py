@@ -30,6 +30,12 @@ class Settings(BaseSettings):
     # email real people.
     marketing_api_key: str = ""
 
+    # Separate privileges: bot service never receives the admin login secret.
+    bot_api_key: str = ""
+    bot_admin_key: str = ""
+    bot_admin_session_secret: str = ""
+    telegram_mode: str = "webhook"  # polling: external aiogram is the sole update engine
+
     # How far ahead a birthday reminder goes out. A greeting is worth little on
     # the day itself if the customer wanted to order something for it.
     birthday_lead_days: int = 7

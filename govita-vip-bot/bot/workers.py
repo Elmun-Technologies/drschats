@@ -132,14 +132,14 @@ async def tick_subscriptions(bot, db, now=None):
                             kb([b("⏭ Bu safar oʻtkazish", f"sub:skip:{s['id']}"), b("📅 Sanani surish", f"sub:mv:{s['id']}")],
                                [b("✏️ Oʻzgartirish", f"sub:open:{s['id']}")]))
         elif nd <= today:
-            # Buyurtma yaratish — ShopFlow/do'kon integratsiyasi; bu yerda keyingi sanaga oʻtkaziladi va operator xabardor qilinadi
-            nxt = nd + timedelta(days=s["interval_days"])
-            cur = await db.c.execute("UPDATE subscriptions SET next_date=? WHERE id=? AND next_date=?",
-                                     (nxt.isoformat(), s["id"], s["next_date"]))
-            await db.c.commit()
-            if cur.rowcount == 1 and cfg.operator_chat_id:
+            # Do not advance dates or drop deliveries without an order ID.
+            # GoVita admin API adapter is not implemented yet.
+            # Leave the run due and surface it once for manual reconciliation.
+            ref = f"{s['id']}:{s['next_date']}"
+            if cfg.operator_chat_id and await db.log(s['tg_id'], 'subscription_due', ref):
                 await safe_send(bot, db, int(cfg.operator_chat_id),
-                                f"🔁 Obuna buyurtmasi: sub#{s['id']} tg={s['tg_id']} {s['short']} × {s['qty']}")
+                                f"⚠️ Obuna buyurtmasini tasdiqlash kerak: sub#{s['id']} "
+                                f"tg={s['tg_id']} {s['short']} × {s['qty']}. Sana o‘zgartirilmadi.")
 
 
 async def run_loop(bot, db):
@@ -155,5 +155,5 @@ async def run_loop(bot, db):
                 if n.minute == 0:
                     await tick_courses(bot, db, n)
         except Exception:
-            log.exception("worker tick failed")
+            log.error("worker tick failed (details suppressed to protect credentials)")
         await asyncio.sleep(10)

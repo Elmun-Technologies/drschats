@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import OTP_HMAC_KEY_MIN_BYTES, get_settings
-from app.routers import auth, marketing, orders, profile, subscriptions, telegram_hook
+from app.routers import auth, marketing, orders, profile, subscriptions, telegram_hook, bot_admin, bot_service
 
 logging.basicConfig(level=logging.INFO)
 
@@ -37,6 +37,17 @@ if settings.is_production and len(settings.otp_hmac_key.encode()) < OTP_HMAC_KEY
 if settings.is_production and settings.otp_debug_echo:
     raise RuntimeError("OTP_DEBUG_ECHO must be off in production")
 
+if settings.telegram_mode not in {"webhook", "polling"}:
+    raise RuntimeError("TELEGRAM_MODE must be webhook or polling")
+if settings.is_production:
+    for label, value in (("BOT_API_KEY", settings.bot_api_key),
+                         ("BOT_ADMIN_KEY", settings.bot_admin_key),
+                         ("BOT_ADMIN_SESSION_SECRET", settings.bot_admin_session_secret)):
+        if value and len(value.encode()) < 32:
+            raise RuntimeError(f"{label} must have at least 32 bytes")
+    if settings.bot_admin_key and not settings.bot_admin_session_secret:
+        raise RuntimeError("BOT_ADMIN_SESSION_SECRET required with BOT_ADMIN_KEY")
+
 app = FastAPI(
     title="Go Vita API",
     version="0.1.0",
@@ -47,7 +58,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origin_list,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -57,6 +68,8 @@ app.include_router(profile.router)
 app.include_router(subscriptions.router)
 app.include_router(marketing.router)
 app.include_router(telegram_hook.router)
+app.include_router(bot_admin.router)
+app.include_router(bot_service.router)
 
 
 @app.get("/health", tags=["ops"])
