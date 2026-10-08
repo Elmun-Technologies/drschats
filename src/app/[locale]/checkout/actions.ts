@@ -1,7 +1,9 @@
 "use server";
 
 import { headers } from "next/headers";
-import { shopflow } from "@/lib/shopflow";
+import { SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
+import { isLiveDeployment } from "@/lib/config/live";
+import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
 import { repriceOrder } from "@/lib/cart/reprice";
 import { ONLINE_PROVIDERS } from "@/lib/config/payments";
@@ -15,7 +17,7 @@ import { formatMoney } from "@/lib/utils";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
-async function notifyOperatorOfOrder(order: OrderRequest, orderId: string) {
+async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Promise<boolean> {
   const items = order.items
     .map((i) => `  • ${i.name} × ${i.quantity}${i.upsellDiscountPercent ? ` (−${i.upsellDiscountPercent}%)` : ""}${i.subscription ? ` · obuna ${i.subscription.intervalDays} kun` : ""}`)
     .join("\n");
@@ -38,7 +40,7 @@ async function notifyOperatorOfOrder(order: OrderRequest, orderId: string) {
 
   // Plain text: a "_" or "*" in a customer's name or address would make
   // Telegram reject a Markdown message, and the order would never reach anyone.
-  await notifyOperator(text);
+  return notifyOperator(text);
 }
 
 /**
@@ -89,6 +91,18 @@ export async function submitOrder(payload: OrderRequest): Promise<OrderResult & 
     return { ok: false, error: "payment_unavailable" };
   }
 
+  /*
+    Without the real backend the operator's Telegram message is the only record
+    of an order. On the live site an order that cannot reach anyone is refused
+    up front, so the customer is told to call instead of being thanked for an
+    order nobody will see.
+  */
+  const telegramIsTheRecord = SHOPFLOW_IS_MOCK && isLiveDeployment();
+  if (telegramIsTheRecord && !isOperatorChannelConfigured()) {
+    console.error("[checkout] refused: no order backend and no operator channel configured");
+    return { ok: false, error: "failed" };
+  }
+
   try {
     /*
       Prices, discounts and totals are the server's, not the browser's: each
@@ -107,19 +121,22 @@ export async function submitOrder(payload: OrderRequest): Promise<OrderResult & 
     const result = await shopflow.createOrder(order);
     if (result.ok && result.orderId) {
       /*
-        All three awaited, not fire-and-forget. A serverless function is frozen
-        the moment the response is returned, so anything still in flight at that
-        point is dropped — an order confirmation that races the shutdown is one
-        that never arrives, and the customer is left with nothing but a success
-        page. Promise.all keeps them concurrent, which is the part that matters
-        for latency; the await is what makes them actually happen.
+        Everything awaited, not fire-and-forget: a serverless function is frozen
+        the moment the response is returned, so anything still in flight is
+        dropped.
 
-        None of the three can fail the order: notifyOperator and sendCampaign
-        both swallow their own errors, and requestEmailOptIn records a
-        preference that is worth less than the sale already made.
+        The operator goes first. When Telegram is the only record of the order
+        (no real backend yet), a failed delivery means there is no order, so the
+        customer is told and no confirmation goes out. With the real backend the
+        order already exists and a missed notification cannot undo it. Email
+        and the opt-in swallow their own errors and never fail the order.
       */
+      const delivered = await notifyOperatorOfOrder(order, result.orderId);
+      if (telegramIsTheRecord && !delivered) {
+        console.error(`[checkout] order ${result.orderId} not delivered to the operator channel`);
+        return { ok: false, error: "failed" };
+      }
       await Promise.all([
-        notifyOperatorOfOrder(order, result.orderId),
         emailOrderConfirmation(order, result.orderId),
         order.customer.email && order.customer.marketingOptIn
           ? requestEmailOptIn({

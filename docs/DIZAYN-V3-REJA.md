@@ -333,6 +333,25 @@ Qarorlar:
 - `Disclaimer` V3 tokenlariga oʻtkazildi (barcha sahifalarda).
 - `/quiz/result` audit roʻyxatiga qoʻshildi.
 
+## 11-bosqich — maʼlumot sahifalari, blog, 404 (bajarildi)
+
+| Ekran | Nima |
+|---|---|
+| InfoNavV3 | `components/info/InfoShell.tsx` — desktopda chap menyu (Xaridorlarga / Kompaniya) + «Savolingiz bormi?» kartasi, telefonda chip qatori. Yetkazish, toʻlov, kafolat, chegirmalar, biz haqimizda, litsenziyalar, hamkorlar, aloqa, rekvizitlar, maxfiylik, oferta, qayerdan sotib olish — hammasi shu layout'da |
+| PartnersV3 | Yangi `/partners`. Ariza formasi va aloqa formasi → `app/actions/leads.ts` → operator Telegram'i (Zod + limit; kanal yoʻq boʻlsa telefon taklif qilinadi) |
+| BlogV3 / ArticleV3 | `BlogIndex` (blog + kategoriya), maqola: mos mahsulotlar paneli, ulashish, boshqa maqolalar |
+| NotFoundV3 | qidiruv, ikki tugma, mashhur kategoriyalar |
+| MenuMobileV3 | 4-bosqichda qilingan katalog ekrani — oʻzgarmadi |
+
+Qarorlar (faqat real maʼlumot):
+- Toʻlov provayderi merchant ID boʻlmasa «Tez kunda»; «Biz haqimizda» raqamlari jonli katalogdan; rekvizitlar `BRAND` dan (dizayndagi «Go Vita Healthcare MCHJ» emas — reyestrdagi nom).
+- Dizayndagi «−10% savatchada avtomatik» yolgʻon boʻlardi: birinchi buyurtma chegirmasini operator qoʻllaydi — matn shunga moslandi.
+- Yetkazish FAQ «1–2 / 2–5 ish kuni» edi — `COMMERCE` (24 soat / 1–3 kun) bilan tenglashtirildi.
+- Oferta matni yoʻq: sahifa buni ochiq aytadi va amaldagi shartlar sahifalariga olib boradi.
+- `/news` dagi 3 ta yangilik oʻylab topilgan edi («2000-chi hamkor dorixona») — olib tashlandi, boʻsh boʻlim 404. Boʻsh blog kategoriyasi ham 404.
+- Blog rasmlari placeholder SVG oʻrniga stok foto; maqolalardagi oʻlik mahsulot slug'lari tuzatildi (+ test).
+- `/experts` demo profillari (AI portretlar bilan) olib tashlandi — boʻlim 404.
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -392,7 +411,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 8 | Aksiya, brend, sevimli, taqqoslash ✅ | yuqorida | — |
 | 9 | Kabinet ✅ | yuqorida | — |
 | 10 | Test ✅ | yuqorida | — |
-| 11 | Maʼlumot sahifalari, blog, 404 | InfoSidebar layout | — |
+| 11 | Maʼlumot sahifalari, blog, 404 ✅ | yuqorida | — |
 | 12 | Yakuniy | skrinshot taqqoslash, eski yashil/legacy tokenlarni oʻchirish, Lighthouse | `grep legacy-` = 0 |
 
 ## Xavflar

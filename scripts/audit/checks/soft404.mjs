@@ -43,7 +43,9 @@ const SHOULD_BE_404 = [
  * not know is only a bug if it still answers 200 for the ones it does. Without
  * these, a site-wide failure would read as a clean pass.
  */
-const SHOULD_BE_200 = ["", "/products", "/goals", "/symptoms", "/vitamins", "/blog", "/experts", "/programs"];
+// /experts is not here: with no real specialist on file the section does not
+// exist and answers 404 by design (lib/content/experts.ts).
+const SHOULD_BE_200 = ["", "/products", "/goals", "/symptoms", "/vitamins", "/blog", "/programs", "/partners"];
 
 export async function run(_browser, locale) {
   const base = process.env.BASE_URL ?? "http://localhost:3000";

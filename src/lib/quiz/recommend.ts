@@ -7,6 +7,7 @@ import { getHealthTopics } from "@/lib/content/health-topics.sanity";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import { scoreCatalogue } from "@/lib/personalization/catalogue";
 import { getQuizQuestions } from "./questions";
+import { fitsAudience, isRestrictedAudience } from "./audience-fit";
 import { buildQuizResult, type QuizAnswers, type QuizResult } from "./engine";
 
 const MAX_PRODUCTS = 6;
@@ -47,12 +48,27 @@ export async function buildQuizPlan(answers: QuizAnswers, locale: Locale): Promi
     .filter((i): i is Ingredient => Boolean(i))
     .slice(0, MAX_INGREDIENTS);
 
-  const products = scoreCatalogue(pool.items, allTopics, allIngredients, {
+  const fitting = pool.items.filter((p) => fitsAudience(p, answers));
+  let products = scoreCatalogue(fitting, allTopics, allIngredients, {
     topics: result.topics,
     ingredients: result.ingredients,
   })
     .slice(0, MAX_PRODUCTS)
     .map(({ product, reasons }) => ({ product, reasons }));
+
+  /*
+    A child or an expectant mother is offered only products made for them
+    (audience-fit.ts). When none of those happens to score on the chosen
+    topics, the products made for that audience are still the answer — the
+    reason given is the audience itself.
+  */
+  if (products.length === 0 && isRestrictedAudience(answers)) {
+    const who = questions.find((q) => q.id === "who")?.options.find((o) => o.id === answers.who?.[0])?.label;
+    products = fitting
+      .filter((p) => p.inStock)
+      .slice(0, MAX_PRODUCTS)
+      .map((product) => ({ product, reasons: who ? [who] : [] }));
+  }
 
   return { result, topics, ingredients, products };
 }
