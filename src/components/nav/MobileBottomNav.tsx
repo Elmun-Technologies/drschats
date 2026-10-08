@@ -55,7 +55,7 @@ export function MobileBottomNav({
       )}
       <nav
         aria-label={t("mainNav")}
-        className="fixed inset-x-0 bottom-0 z-50 h-[var(--bottom-nav)] border-t border-line bg-bg pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 h-[var(--tab-bar)] border-t border-line bg-bg pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
       >
         <div className="grid h-full grid-cols-5 px-1 pb-2.5 pt-1.5">
           <Tab href="/" label={nav("home")} icon={ICONS.home} active={!menuOpen && pathname === "/"} />
@@ -180,7 +180,7 @@ function CatalogScreen({
         // query, and the pathname effect would leave the screen covering it.
         if ((e.target as HTMLElement).closest("a")) onClose();
       }}
-      className="fixed inset-x-0 top-0 bottom-[var(--bottom-nav)] z-40 overflow-y-auto bg-bg lg:hidden"
+      className="fixed inset-x-0 top-0 bottom-[var(--tab-bar)] z-40 overflow-y-auto bg-bg lg:hidden"
     >
       <div className="flex flex-col gap-5 pb-6">
         <div className="flex items-center justify-between pl-4 pr-2 pt-3">

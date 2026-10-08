@@ -133,6 +133,53 @@ Audit: 0 (filtr sheet ochilgan holat ham auditga qoʻshildi).
 Filtrlash Shopflow'dan olingan 100 talik pool ustida bajariladi (kategoriya va
 qidiruv serverda). Katalog 100 dan oshsa, filtrlarni backend'ga oʻtkazish kerak.
 
+## 5-bosqich — mahsulot sahifasi (bajarildi)
+
+ProductV3 / ProductMobileV3: breadcrumb, sarlavha, meta qator (sharhlar soni —
+real, savol-javob soni, brend → katalog filtri, sevimlilar, ulashish);
+vertikal thumbnaillar + tile ustida kesma rasm; oʻrta ustun (qadoq hajmi,
+nuqtali xususiyatlar, tarkib qisqasi); xarid kartasi (narx, eski narx, −%,
+birlik narxi + tejash, «Bir martalik» / «Obuna bilan — arzonroq» + 30/45/60/90
+kun, miqdor, «Savatga qoʻshish», «Hozir buyurtma berish», «Sotuvda bor»);
+yetkazish va toʻlov paneli (`COMMERCE` + sozlangan provayderlar). Sticky
+tablar (scrollspy) va oʻngda sticky mini karta. Telefonda bitta DOM `order-*`
+bilan qayta tartiblanadi; Tavsif / Barcha xususiyatlar / Savol-javob /
+Hujjatlar — akkordeon (`Collapsible`, `<details>` emas; anchor ochadi).
+Pastki xarid paneli tab bar ustida `fixed`.
+
+Uchala «qoʻshish» tugmasi (karta, mobil panel, mini karta) bitta holatni
+oʻqiydi — `product/purchase.ts` (zustand, persist emas): kartada obuna
+tanlansa, panel ham obunani qoʻshadi. Savatga qoʻshish, analytics va JSON-LD
+oʻzgarmadi.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| «Taqqoslash» | meta qatorda | yoʻq | `/compare` 8-bosqichda |
+| «Kunlik doza», «Yosh», «Rasmiy import qiluvchi» | xususiyatlarda | yoʻq | katalogda bu maydonlar yoʻq — oʻylab topilmaydi |
+| Qabul qilish | 3 panel (Qancha/Qachon/Qanday) | bitta panel (`howToUse` matni) | maʼlumot strukturalanmagan |
+| «Sotuvda bor · Toshkentdagi omborda» | — | «Sotuvda bor» | ombor maʼlumoti yoʻq |
+| «Bu mahsulot bilan birga olishadi» | sarlavha | «Oʻxshash mahsulotlar» | sotuv tarixi yoʻq — daʼvo boʻlardi |
+| Upsell taklifi | yoʻq | «Birga qoʻshsangiz — arzonroq» (real chegirma) | biznes-logika saqlanadi; «Koʻpincha birga olishadi» izohi olib tashlandi |
+| «Savol berish», «Sharh yozish» | tugma | `/contact` havolasi | savol/sharh backend'i yoʻq |
+| Eski narx | `89 000` | `89 000` (valyutasiz) | dizayndagidek |
+
+**Tibbiy vaʼdalar** `mock.ts` dan olib tashlandi (uz + ru): «davolaydi»,
+«stressni kamaytiradi», «kuchaytiradi», «mustahkamlaydi», «samarali»,
+«Stressga qarshi vitaminlar» va h.k. Oʻrniga tarkib va «… normal faoliyatiga
+hissa qoʻshadi» shaklidagi neytral iboralar. Namuna sharhlar (`NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF`
+bilan yoqiladigan) tegilmadi — ular default'da koʻrinmaydi.
+
+**Oʻchirildi:** `components/bespoke/` (6 ta qoʻlda yozilgan sahifa — birortasining
+slug'i katalogda yoʻq edi, ya'ni hech qachon ochilmagan), `StickyBuyBar`
+(yuqoridagi panel — dizaynda mini karta va mobil panel), `ProductTabs`,
+`SimilarProducts` (oʻxshashlar endi serverda hisoblanadi).
+
+**Yangi tokenlar** (`globals.css`): `--tab-bar` (faqat tab bar), `--buy-bar`
+(`[data-buy-bar]` sahifada boʻlsa 4.5rem), `--bottom-nav` = ikkalasining
+yigʻindisi — footer, toast va «yuqoriga» tugmasi panelni oʻzi chetlab oʻtadi.
+`--header-sticky` (lg: 130px) — scroll qilingan desktop header balandligi.
+Audit: 0 (mobil akkordeonlar ochilgan holat ham qoʻshildi).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -186,7 +233,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 2 | ProductCard + UI ✅ | yuqorida | — |
 | 3 | Bosh sahifa ✅ | yuqorida | — |
 | 4 | Katalog ✅ | yuqorida | — |
-| 5 | Mahsulot | galereya, xarid bloki, sticky tablar, mobil fixed panel | tibbiy vaʼdalarni matndan olib tashlash — kontent oʻzgarishi |
+| 5 | Mahsulot ✅ | yuqorida | — |
 | 6 | Savat | progress, upsell, 3 qadam, sticky xulosa | savol 2; checkout server action va Zod sxemasi oʻzgarmaydi |
 | 7 | Qidiruv | `/search` route + header takliflari | — |
 | 8 | Aksiya, brend, sevimli, taqqoslash | `/sale`, `/brands/[slug]`, `/compare` | savol 3 |

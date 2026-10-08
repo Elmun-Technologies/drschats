@@ -137,7 +137,7 @@ chaqirilgandan **keyin** chizing.
 | `nav/` | MobileBottomNav — 5 tab (V3 TabBar), `lg:hidden`; "Katalog" tabi katalog ekranini (dialog) ochadi, "Savat" — drawer |
 | `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
 | `cart/` | CartDrawer (Framer Motion slide-in) |
-| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
+| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate (PDP V3, server; bitta DOM, telefonda `order-*`), BuyBox (+ `MobileBuyBar`, `MiniBuyCard`), `purchase.ts` (uchala «qo'shish» tugmasining umumiy holati — rejim, oraliq, miqdor), SubscribeToSave, ProductGallery, ProductSections (`SectionNav` scrollspy, `Collapsible` — desktopda ochiq, telefonda akkordeon), WishlistButton, ShareButton, OutOfStockNotify |
 | `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
 | `checkout/` | CheckoutForm (react-hook-form + Zod) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
@@ -201,7 +201,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1022 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1079 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -451,6 +451,12 @@ oxirida `grep -r legacy- src` boʻsh boʻlishi va eski `@theme` bloki oʻchishi 
 
 **Breakpoint:** desktop header va footer ustunlari `lg` (1024px) dan; undan
 pastda mobil header + tab bar. `--bottom-nav` ham 1023.98px gacha nolmas.
+`--bottom-nav` = `--tab-bar` + `--buy-bar`: mahsulot sahifasining fixed xarid
+paneli `data-buy-bar` atributi bilan `--buy-bar` ni yoqadi (`:root:has(...)`),
+shuning uchun footer va toast'lar panelni o'zi chetlab o'tadi. Tab bar o'zi
+`--tab-bar` dan balandlik oladi. `--header-sticky` — scroll qilingan desktop
+header balandligi (130px); uning ostidagi sticky element shundan `top` oladi —
+header o'zgarsa, qiymatni qayta o'lchang.
 Faqat desktop header sticky — telefonda tab bar doim ko'rinadi.
 
 **Yopiq akkordeon kontentini chizmang** (`<details>` emas). Chrome yopiq

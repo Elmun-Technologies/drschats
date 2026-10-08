@@ -87,6 +87,16 @@ const STATES = [
     open: (page) => page.locator('button[aria-haspopup="dialog"]:has-text("Filtrlar"), button[aria-haspopup="dialog"]:has-text("Фильтры")').first().click(),
   },
   {
+    name: "product page accordions",
+    viewport: MOBILE,
+    path: "/product/swiss-energy-immunovit-30",
+    open: async (page) => {
+      for (const btn of await page.locator('section > h2 > button[aria-expanded="false"]').all()) {
+        if (await btn.isVisible()) await btn.click();
+      }
+    },
+  },
+  {
     name: "cart drawer",
     viewport: DESKTOP,
     path: "",
