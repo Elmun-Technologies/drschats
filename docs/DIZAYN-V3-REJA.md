@@ -216,13 +216,42 @@ kelishishni talab qiladi.
 Oʻchirildi: `CartPageView`, `SuccessCheckmark`. Audit: 0 (toʻldirilgan savat
 holati ham qoʻshildi).
 
+## 7-bosqich — qidiruv (bajarildi)
+
+SearchV3 / SearchEmptyV3 / SearchMobileV3. Yangi **`/search?q=`** sahifasi
+(`noindex, follow`): sarlavha + soni, natijadagi kategoriyalar chiplari
+(sonlari bilan, `&category=`), setka, «Kerakli mahsulotni topmadingizmi?»
+paneli (Telegram + test), «Sara mahsulotlar». Natija yoʻq: «Qidirib koʻring»
+chiplari, «Mahsulot kelganda xabar beramiz» formasi (`notifyRestock` —
+operatorning Telegram kanaliga; analytics `search_notify`), «Balki sizga
+kerakdir». Header takliflari: kategoriyalar chiplari, 3 ta mahsulot (rasm,
+nom, brend, narx), «Barcha N ta natijani koʻrsatish» (`/api/search` endi
+`total` qaytaradi). Telefonda qidiruv ekrani: chapda «orqaga», roʻyxat ekran
+ichida, pastda tugma. `/products?q=` ham ishlashda davom etadi.
+
+**Tuzatilgan xato:** JSON-LD `SearchAction` `/products?search=` ga yoʻnaltirardi,
+sahifa esa `?q=` ni oʻqiydi — Google sitelinks qidiruvi boʻsh natija berardi.
+Endi `/search?q=`.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| Soʻrov variantlari («vitamin C 550 mg») | bor | yoʻq | soʻrovlar statistikasi yoʻq — oʻylab topilgan boʻlardi |
+| «Mashhur soʻrovlar» | bor | «Qidirib koʻring» — faqat bugun natija beradigan atamalar | mashhurlik maʼlumoti yoʻq |
+| «Boshqa xaridorlar koʻp izlaydi» | sarlavha | «Sara mahsulotlar» | xaridorlar statistikasi yoʻq |
+| Shakl chiplari («Kapsulalar») | bor | faqat kategoriyalar | shakl 12 mahsulotda maʼlum |
+| Ochiq takliflar ostida sahifani qoraytirish | bor | yoʻq | header'dagi qatlam bilan ziddiyat; keyin qoʻshish mumkin |
+
+`OutOfStockNotify` V3 ga oʻtkazildi va umumlashtirildi (`label`, `submitLabel`,
+`event`, `bare`). Audit: 0 (yangi: `/search` natija va boʻsh holatlari,
+telefonda soʻrov yozilgan qidiruv ekrani).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
 |---|---|---|---|
 | HomeV3 | `/` | bor | qayta chiziladi |
 | CatalogV3 | `/catalog/[category]` | `/products`, `/products/[category]` | **mavjud URL qoladi** (SEO, sitemap, ichki havolalar) |
-| SearchV3 / SearchEmptyV3 | `/search?q=` | yoʻq (faqat header'dagi `SearchBox`) | **yangi route** |
+| SearchV3 / SearchEmptyV3 | `/search?q=` | bor | ✅ 7-bosqich |
 | SaleV3 | `/sale` | yoʻq | **yangi route** — `oldPrice` bor mahsulotlar filtri |
 | BrandsV3 | `/brands` | bor | qayta chiziladi |
 | BrandV3 | `/brands/[slug]` | yoʻq | **yangi route** |
@@ -271,7 +300,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 4 | Katalog ✅ | yuqorida | — |
 | 5 | Mahsulot ✅ | yuqorida | — |
 | 6 | Savat ✅ | yuqorida | — |
-| 7 | Qidiruv | `/search` route + header takliflari | — |
+| 7 | Qidiruv ✅ | yuqorida | — |
 | 8 | Aksiya, brend, sevimli, taqqoslash | `/sale`, `/brands/[slug]`, `/compare` | savol 3 |
 | 9 | Kabinet | sidebar, buyurtma timeline, obunalar | backend'da yoʻq funksiyalar roʻyxati alohida beriladi |
 | 10 | Test | savol/natija UI | quiz logikasi qoladi |

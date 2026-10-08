@@ -88,6 +88,7 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
   quiz/                    # AI konsultant (savol → tavsiya), quiz/result/
   goals/ symptoms/ vitamins/   # sog'liq mavzulari — [slug] bilan
   programs/                # 30 kunlik dasturlar, [slug] bilan
+  search/                  # qidiruv natijalari (?q=, &category=), noindex
   products/page.tsx        # mahsulotlar katalogi (filter, sort, pagination)
   products/[category]/     # kategoriya sahifasi
   product/[slug]/          # mahsulot detail sahifasi
@@ -202,14 +203,14 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1104 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1125 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
 
 ## SEO
 
-- **JSON-LD**: WebSite (SearchAction), LocalBusiness (PharmacyOrDrugstore), Product, FAQ, BreadcrumbList — `src/lib/seo/jsonld.tsx`
+- **JSON-LD**: WebSite (SearchAction → `/search?q=`), LocalBusiness (PharmacyOrDrugstore), Product, FAQ, BreadcrumbList — `src/lib/seo/jsonld.tsx`
 - **Sitemap**: reyting ≥4.5 → priority 0.9; boshqalar 0.8; kategoriyalar 0.7 — `src/app/sitemap.ts`
 - **hreflang**: next-intl orqali avtomatik
 - **robots.txt**: `/cart`, `/checkout` — noindex

@@ -313,7 +313,7 @@ export function websiteLd(locale: Locale) {
       "@type": "SearchAction",
       target: {
         "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/${locale}/products?search={search_term_string}`,
+        urlTemplate: `${SITE_URL}/${locale}/search?q={search_term_string}`,
       },
       "query-input": "required name=search_term_string",
     },

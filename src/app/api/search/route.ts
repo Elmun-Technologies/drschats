@@ -1,5 +1,6 @@
 import { shopflow } from "@/lib/shopflow";
 import { isLocale, routing } from "@/lib/i18n/routing";
+import { productCutout } from "@/lib/content/product-cutouts";
 
 /*
   Type-ahead for the header search.
@@ -18,7 +19,7 @@ export async function GET(req: Request) {
   const localeParam = url.searchParams.get("locale");
   const locale = isLocale(localeParam) ? localeParam : routing.defaultLocale;
 
-  if (q.length < MIN_QUERY) return Response.json({ items: [] });
+  if (q.length < MIN_QUERY) return Response.json({ items: [], total: 0 });
 
   try {
     const result = await shopflow.getProducts({ locale, search: q, pageSize: LIMIT });
@@ -29,14 +30,14 @@ export async function GET(req: Request) {
       name: p.name,
       price: p.price,
       oldPrice: p.oldPrice,
-      image: p.images[0]?.url ?? null,
+      image: productCutout(p.slug) ?? p.images[0]?.url ?? null,
     }));
     return Response.json(
-      { items },
+      { items, total: result.total },
       { headers: { "Cache-Control": "public, max-age=60, stale-while-revalidate=300" } },
     );
   } catch {
     // A failing suggest must never break typing: the form still submits.
-    return Response.json({ items: [] });
+    return Response.json({ items: [], total: 0 });
   }
 }

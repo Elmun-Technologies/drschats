@@ -5,8 +5,32 @@ import { useTranslations } from "next-intl";
 import { notifyRestock } from "@/app/actions/notifyRestock";
 import { track } from "@/lib/analytics/events";
 import { ErrorNote } from "@/components/ui/ErrorNote";
+import { Button } from "@/components/ui/Button";
+import { inputClass } from "@/components/ui/Field";
+import { cn } from "@/lib/utils";
 
-export function OutOfStockNotify({ productId, productName }: { productId: string; productName: string }) {
+/*
+  "Tell me when it is here" — for a product that is out of stock, and for a
+  search that found nothing (then `productId` is the query). Both land in the
+  operator's Telegram through `notifyRestock`.
+*/
+export function OutOfStockNotify({
+  productId,
+  productName,
+  label,
+  submitLabel,
+  event = "restock_notify",
+  bare = false,
+}: {
+  productId: string;
+  productName: string;
+  /** Text above the field; the out-of-stock sentence by default. */
+  label?: string;
+  submitLabel?: string;
+  event?: string;
+  /** No panel around it — the caller already draws one. */
+  bare?: boolean;
+}) {
   const t = useTranslations("outOfStock");
   const [phone, setPhone] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "sent" | "failed">("idle");
@@ -33,7 +57,7 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
       decide what to restock.
     */
     if (result.ok) {
-      track("restock_notify", { product_id: productId, value: 0 });
+      track(event, { product_id: productId, value: 0 });
       setState("sent");
     } else {
       setState("failed");
@@ -42,20 +66,22 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
 
   if (state === "sent") {
     return (
-      <div className="rounded-2xl border border-legacy-line bg-surface-2 px-5 py-4 text-center">
-        <p className="text-sm font-semibold text-fg">{t("success")}</p>
-      </div>
+      <p role="status" className={cn("text-[15px] font-semibold", !bare && "rounded-[20px] bg-tile px-5 py-4")}>
+        {t("success")}
+      </p>
     );
   }
 
   return (
-    <div className="rounded-2xl border border-legacy-line bg-surface-2 px-5 py-4">
-      <label htmlFor="restock-phone" className="mb-3 block text-sm text-legacy-muted">
-        {t("notify")}
-      </label>
-      <form onSubmit={handleSubmit} className="flex gap-2">
+    <div className={cn("flex flex-col gap-3", !bare && "rounded-[20px] bg-tile px-5 py-4")}>
+      {label !== "" && (
+        <label htmlFor={`notify-${productId}`} className="text-[15px] leading-[22px] text-ink-2">
+          {label ?? t("notify")}
+        </label>
+      )}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:flex-row">
         <input
-          id="restock-phone"
+          id={`notify-${productId}`}
           name="phone"
           type="tel"
           value={phone}
@@ -68,17 +94,14 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
           autoComplete="tel"
           required
           minLength={9}
+          aria-label={label === "" ? t("phone") : undefined}
           aria-describedby={state === "failed" ? "restock-error" : undefined}
           aria-invalid={state === "failed" || undefined}
-          className="flex-1 rounded-xl border border-legacy-line bg-surface px-4 py-2.5 text-sm outline-none focus:border-accent"
+          className={cn(inputClass, "min-w-0 flex-1")}
         />
-        <button
-          type="submit"
-          disabled={state === "loading"}
-          className="rounded-xl bg-fg px-4 py-2.5 text-sm font-semibold text-legacy-ink disabled:opacity-60 hover:bg-accent-strong hover:text-legacy-ink"
-        >
-          {state === "loading" ? t("submitting") : t("submit")}
-        </button>
+        <Button type="submit" disabled={state === "loading"} className="h-[52px] shrink-0">
+          {state === "loading" ? t("submitting") : (submitLabel ?? t("submit"))}
+        </Button>
       </form>
       {/*
         Told plainly, and in the same place as the field. A form that thanks
@@ -86,7 +109,7 @@ export function OutOfStockNotify({ productId, productName }: { productId: string
         not take it: the first teaches them not to come back.
       */}
       {state === "failed" && (
-        <span id="restock-error" className="mt-3 block">
+        <span id="restock-error" className="block">
           <ErrorNote>{t("error")}</ErrorNote>
         </span>
       )}

@@ -81,6 +81,16 @@ const STATES = [
     open: (page) => page.locator('header button[aria-haspopup="dialog"]').first().click(),
   },
   {
+    name: "mobile search with a query",
+    viewport: MOBILE,
+    path: "",
+    open: async (page) => {
+      await page.locator('header button[aria-haspopup="dialog"]').first().click();
+      await page.locator('[role="dialog"] input[role="combobox"]').fill("vitamin");
+      await page.waitForTimeout(1400);
+    },
+  },
+  {
     name: "catalogue filter sheet",
     viewport: MOBILE,
     path: "/products",

@@ -17,7 +17,9 @@ export const PATHS = [
   "/products",
   "/product/swiss-energy-immunovit-30",
   "/cart",
-  "/checkout",
+  "/search?q=vitamin",
+  // No results: the notify form and the suggested terms.
+  "/search?q=topilmaydigan",
   "/goals",
   "/quiz",
   "/programs",

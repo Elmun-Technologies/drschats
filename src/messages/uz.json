@@ -552,6 +552,29 @@
       "categories": "Boʻlimlar",
       "priceMin": "Eng past narx",
       "priceMax": "Eng yuqori narx"
+    },
+    "search": {
+      "title": "Qidiruv",
+      "resultsFor": "«{query}» boʻyicha",
+      "count": "{count} ta mahsulot",
+      "all": "Hammasi",
+      "categories": "Kategoriyalar",
+      "products": "Mahsulotlar",
+      "showAll": "Barcha {count} ta natijani koʻrsatish",
+      "showResults": "Natijalarni koʻrsatish",
+      "helpTitle": "Kerakli mahsulotni topmadingizmi?",
+      "helpText": "Operatorga yozing — tarkib va mavjudligi boʻyicha javob beradi.",
+      "emptyTitle": "«{query}» boʻyicha hech narsa topilmadi",
+      "emptyText": "Bu mahsulot hozircha katalogda yoʻq. Soʻzni tekshiring yoki umumiyroq soʻz bilan qidiring.",
+      "startTitle": "Nima qidiryapsiz?",
+      "startText": "Vitamin, brend yoki tarkib nomini yozing — masalan, magniy.",
+      "tryTitle": "Qidirib koʻring",
+      "notifyTitle": "Mahsulot kelganda xabar beramiz",
+      "notifyText": "Telefon raqamingizni qoldiring — kerakli mahsulot assortimentga qoʻshilsa, operator xabar beradi.",
+      "notifySubmit": "Xabar bering",
+      "orTelegram": "Yoki Telegramda yozing",
+      "maybe": "Balki sizga kerakdir",
+      "back": "Orqaga"
     }
   },
   "cart": {

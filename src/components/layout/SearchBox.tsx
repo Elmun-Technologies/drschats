@@ -3,8 +3,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/lib/i18n/navigation";
-import { formatMoney } from "@/lib/utils";
-import { getCategoryIcon } from "@/lib/shop/category-icons";
+import { cn, formatMoney } from "@/lib/utils";
+import { productBrand } from "@/lib/content/product-brands";
+import { chipClass } from "@/components/ui/Chip";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Category } from "@/lib/shopflow/types";
 
@@ -40,22 +41,28 @@ export function SearchBox({
   onNavigate,
   className = "",
   autoFocus = false,
+  inline = false,
+  leading,
 }: {
   categories?: Category[];
   onNavigate?: () => void;
   className?: string;
   /** Set when the field opens in its own screen (mobile search). */
   autoFocus?: boolean;
+  /** The suggestions fill the screen below the field instead of dropping over the page. */
+  inline?: boolean;
+  /** Drawn before the field, inside the same row (the mobile screen's back button). */
+  leading?: React.ReactNode;
 }) {
   const t = useTranslations("common");
-  const shop = useTranslations("shop");
-  const nav = useTranslations("nav");
+  const ts = useTranslations("shop.search");
   const header = useTranslations("header");
   const locale = useLocale() as Locale;
   const router = useRouter();
 
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState<Suggestion[]>([]);
+  const [total, setTotal] = useState(0);
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
 
@@ -73,7 +80,7 @@ export function SearchBox({
     trimmed.length >= MIN_QUERY
       ? categories
           .filter((c) => c.name.toLowerCase().includes(trimmed.toLowerCase()))
-          .slice(0, 3)
+          .slice(0, 4)
           .map((c) => ({
             kind: "category" as const,
             key: `c-${c.id}`,
@@ -101,7 +108,7 @@ export function SearchBox({
   const options: Option[] = isSearching
     ? [
         ...categoryMatches,
-        ...products.map((p) => ({
+        ...products.slice(0, inline ? 4 : 3).map((p) => ({
           kind: "product" as const,
           key: `p-${p.slug}`,
           label: p.name,
@@ -114,6 +121,7 @@ export function SearchBox({
   useEffect(() => {
     if (trimmed.length < MIN_QUERY) {
       setProducts([]);
+      setTotal(0);
       return;
     }
 
@@ -127,8 +135,9 @@ export function SearchBox({
           { signal: controller.signal },
         );
         if (!res.ok) return;
-        const data = (await res.json()) as { items?: Suggestion[] };
+        const data = (await res.json()) as { items?: Suggestion[]; total?: number };
         setProducts(data.items ?? []);
+        setTotal(data.total ?? data.items?.length ?? 0);
       } catch {
         // Aborted or offline — the form still submits.
       }
@@ -161,7 +170,7 @@ export function SearchBox({
     setOpen(false);
     setActive(-1);
     onNavigate?.();
-    router.push({ pathname: "/products", query: { q: trimmed } });
+    router.push({ pathname: "/search", query: { q: trimmed } });
   }
 
   function submit(e: React.FormEvent) {
@@ -191,133 +200,172 @@ export function SearchBox({
     }
   }
 
-  const showList = open && options.length > 0;
+  const showList = inline || (open && (options.length > 0 || trimmed.length > 0));
   const optionId = (i: number) => `${listboxId}-opt-${i}`;
+  const categoryOptions = options.filter((o) => o.kind === "category");
+  const productOptions = options.filter((o) => o.kind === "product");
+  const indexOf = (opt: Option) => options.indexOf(opt);
+  const optionProps = (opt: Option) => {
+    const i = indexOf(opt);
+    return {
+      id: optionId(i),
+      role: "option" as const,
+      "aria-selected": i === active,
+      // pointerdown, not click: it fires before the input blurs, so the list
+      // is still mounted when the choice is made.
+      onPointerDown: (e: React.PointerEvent) => {
+        e.preventDefault();
+        go(opt.href);
+      },
+      onMouseEnter: () => setActive(i),
+    };
+  };
 
   return (
-    <div ref={rootRef} className={`relative ${className}`}>
-      <form
-        onSubmit={submit}
-        /* The input clears its own outline, and nothing replaced it — tabbing
-           into search gave no visual signal at all. The ring goes on the form
-           so it traces the rounded field rather than the bare input. */
-        className="flex h-[52px] items-center gap-2.5 rounded-[14px] bg-tile pl-[18px] pr-1.5 focus-within:ring-2 focus-within:ring-ink focus-within:ring-offset-2 focus-within:ring-offset-bg"
-      >
-        <input
-          ref={inputRef}
-          type="text"
-          role="combobox"
-          aria-expanded={showList}
-          aria-controls={listboxId}
-          aria-autocomplete="list"
-          aria-activedescendant={showList && active >= 0 ? optionId(active) : undefined}
-          aria-label={t("search")}
-          autoComplete="off"
-          value={query}
-          onChange={(e) => {
-            setQuery(e.target.value);
-            setOpen(true);
-            setActive(-1);
-          }}
-          onFocus={() => setOpen(true)}
-          onKeyDown={onKeyDown}
-          placeholder={header("searchPlaceholder")}
-          className="h-11 min-w-0 flex-1 bg-transparent text-base text-ink outline-none placeholder:text-muted"
-        />
-        <button
-          type="submit"
-          aria-label={t("search")}
-          className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] bg-ink text-white transition-colors hover:bg-black"
+    <div ref={rootRef} className={cn("relative", inline && "flex min-h-0 flex-1 flex-col", className)}>
+      <div className="flex items-center gap-2">
+        {leading}
+        <form
+          onSubmit={submit}
+          /* The input clears its own outline, and nothing replaced it — tabbing
+             into search gave no visual signal at all. The ring goes on the form
+             so it traces the rounded field rather than the bare input. */
+          className="flex h-[52px] min-w-0 flex-1 items-center gap-2.5 rounded-[14px] bg-tile pl-[18px] pr-1.5 focus-within:ring-2 focus-within:ring-ink focus-within:ring-offset-2 focus-within:ring-offset-bg"
         >
-          <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <circle cx="11" cy="11" r="7" />
-            <path d="M21 21l-4-4" />
-          </svg>
-        </button>
-      </form>
+          <input
+            ref={inputRef}
+            type="text"
+            role="combobox"
+            aria-expanded={showList}
+            aria-controls={listboxId}
+            aria-autocomplete="list"
+            aria-activedescendant={showList && active >= 0 ? optionId(active) : undefined}
+            aria-label={t("search")}
+            autoComplete="off"
+            value={query}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              setOpen(true);
+              setActive(-1);
+            }}
+            onFocus={() => setOpen(true)}
+            onKeyDown={onKeyDown}
+            placeholder={inline ? header("searchShort") : header("searchPlaceholder")}
+            className="h-11 min-w-0 flex-1 bg-transparent text-base text-ink outline-none placeholder:text-muted"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={() => {
+                setQuery("");
+                inputRef.current?.focus();
+              }}
+              aria-label={t("close")}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-bg"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M6 6l12 12M18 6L6 18" />
+              </svg>
+            </button>
+          )}
+          <button
+            type="submit"
+            aria-label={t("search")}
+            className="flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[10px] bg-ink text-white transition-colors hover:bg-black"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <circle cx="11" cy="11" r="7" />
+              <path d="M21 21l-4-4" />
+            </svg>
+          </button>
+        </form>
+      </div>
 
       {showList && (
-        <ul
-          id={listboxId}
-          role="listbox"
-          aria-label={t("search")}
-          className="absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-y-auto rounded-[20px] border border-line bg-bg py-2 shadow-pop"
+        <div
+          className={cn(
+            "flex flex-col bg-bg",
+            inline
+              ? "-mx-4 mt-3 min-h-0 flex-1 border-t border-line"
+              : "absolute inset-x-0 top-[calc(100%+8px)] z-50 max-h-[70vh] overflow-hidden rounded-[20px] shadow-pop",
+          )}
         >
-          {(isSearching ? categoryMatches.length > 0 : popular.length > 0) && (
-            <li role="presentation" className="px-4 pb-1 pt-2 text-[13px] font-semibold text-muted">
-              {isSearching ? nav("shopByCategories") : t("popularCategories")}
-            </li>
-          )}
-
-          {options.map((opt, i) => (
-            <li
-              key={opt.key}
-              id={optionId(i)}
-              role="option"
-              aria-selected={i === active}
-              // pointerdown, not click: it fires before the input blurs, so the
-              // list is still mounted when the choice is made.
-              onPointerDown={(e) => {
-                e.preventDefault();
-                go(opt.href);
-              }}
-              onMouseEnter={() => setActive(i)}
-              className={`flex cursor-pointer items-center gap-3 px-4 py-2.5 ${i === active ? "bg-tile" : ""}`}
-            >
-              {opt.kind === "product" ? (
-                <>
-                  {opt.product.image ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
-                      src={opt.product.image}
-                      alt=""
-                      width={40}
-                      height={40}
-                      loading="lazy"
-                      className="h-10 w-10 shrink-0 rounded-lg bg-tile object-contain"
-                    />
-                  ) : (
-                    <span className="h-10 w-10 shrink-0 rounded-lg bg-tile" />
-                  )}
-                  <span className="min-w-0 flex-1 truncate text-[15px] text-ink">{opt.label}</span>
-                  <span className="shrink-0 text-[15px] font-bold tabular-nums text-ink">
-                    {formatMoney(opt.product.price, locale)}
-                  </span>
-                </>
-              ) : (
-                <>
-                  {/* The same glyph the category rail uses. One shared hamburger
-                      here made six different categories look like one row
-                      repeated. */}
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-tile text-ink">
-                    <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={getCategoryIcon(opt.slug)} />
-                    </svg>
-                  </span>
-                  <span className="min-w-0 flex-1 truncate text-[15px] font-medium text-ink">
-                    {opt.label}
-                  </span>
-                </>
-              )}
-            </li>
-          ))}
-
+          <ul id={listboxId} role="listbox" aria-label={t("search")} className="min-h-0 flex-1 overflow-y-auto">
+            {categoryOptions.length > 0 && (
+              <li role="presentation" className="flex flex-col gap-2.5 px-4 pb-3.5 pt-4 lg:px-5">
+                <span className="text-[13px] font-semibold uppercase tracking-[0.04em] text-muted">
+                  {ts("categories")}
+                </span>
+                <ul role="group" className="flex flex-wrap gap-2">
+                  {categoryOptions.map((opt) => (
+                    <li
+                      key={opt.key}
+                      {...optionProps(opt)}
+                      className={cn(chipClass(indexOf(opt) === active), "h-11 cursor-pointer lg:h-9")}
+                    >
+                      {opt.label}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            )}
+            {productOptions.length > 0 && (
+              <li role="presentation" className="flex flex-col border-t border-line py-2 first:border-t-0">
+                <span className="px-4 pb-1.5 pt-3 text-[13px] font-semibold uppercase tracking-[0.04em] text-muted lg:px-5">
+                  {ts("products")}
+                </span>
+                <ul role="group">
+                  {productOptions.map((opt) => {
+                    if (opt.kind !== "product") return null;
+                    const brand = productBrand(opt.product.slug);
+                    return (
+                      <li
+                        key={opt.key}
+                        {...optionProps(opt)}
+                        className={cn("flex cursor-pointer items-center gap-3 px-4 py-1.5 lg:px-5 lg:py-2", indexOf(opt) === active && "bg-tile")}
+                      >
+                        {opt.product.image ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img
+                            src={opt.product.image}
+                            alt=""
+                            width={56}
+                            height={56}
+                            loading="lazy"
+                            className="h-[60px] w-[60px] shrink-0 rounded-[14px] bg-tile object-contain p-1.5 lg:h-14 lg:w-14 lg:rounded-[12px]"
+                          />
+                        ) : (
+                          <span className="h-[60px] w-[60px] shrink-0 rounded-[14px] bg-tile lg:h-14 lg:w-14" />
+                        )}
+                        <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                          <span className="line-clamp-2 text-[15px] leading-[19px] lg:truncate">{opt.label}</span>
+                          {brand && <span className="hidden text-[13px] text-muted lg:block">{brand.name}</span>}
+                          <span className="text-base font-bold tabular-nums lg:hidden">{formatMoney(opt.product.price, locale)}</span>
+                        </span>
+                        <span className="hidden shrink-0 text-base font-bold tabular-nums lg:block">
+                          {formatMoney(opt.product.price, locale)}
+                        </span>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </li>
+            )}
+          </ul>
           {/* Present whenever there is a query, so a search with no suggestions
-              still shows where Enter is about to take you. Without a query it
-              would read “ ” bo‘yicha natijalar and go nowhere on click. */}
+              still shows where Enter is about to take you. */}
           {trimmed.length > 0 && (
-            <li
-              role="presentation"
-              onPointerDown={(e) => {
-                e.preventDefault();
-                goToResults();
-              }}
-              className="mt-1 cursor-pointer border-t border-line px-4 pb-1 pt-3 text-[15px] font-semibold text-ink"
-            >
-              {shop("searchResults", { query: trimmed })}
-            </li>
+            <div className={cn("px-4 pb-5 pt-3 lg:px-5", inline && "border-t border-line")}>
+              <button
+                type="button"
+                onClick={goToResults}
+                className="flex h-[52px] w-full items-center justify-center rounded-[14px] bg-ink px-4 text-base font-semibold text-white transition-colors hover:bg-black lg:h-12 lg:rounded-sm"
+              >
+                {total > 0 ? ts("showAll", { count: total }) : ts("showResults")}
+              </button>
+            </div>
           )}
-        </ul>
+        </div>
       )}
     </div>
   );

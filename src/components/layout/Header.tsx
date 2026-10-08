@@ -198,21 +198,26 @@ function MobileHeader({ categories }: { categories: Category[] }) {
           aria-modal="true"
           aria-label={t("searchShort")}
           tabIndex={-1}
-          className="fixed inset-0 z-[60] flex flex-col gap-3 bg-bg px-4 pt-3"
+          className="fixed inset-0 z-[60] flex flex-col bg-bg px-4 pt-3"
         >
-          <div className="flex items-start gap-2">
-            <SearchBox categories={categories} autoFocus onNavigate={closeSearch} className="min-w-0 flex-1" />
-            <button
-              type="button"
-              onClick={closeSearch}
-              aria-label={t("closeSearch")}
-              className="flex h-[52px] w-11 shrink-0 items-center justify-center"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
-                <path d={ICONS.close} />
-              </svg>
-            </button>
-          </div>
+          <SearchBox
+            categories={categories}
+            autoFocus
+            inline
+            onNavigate={closeSearch}
+            leading={
+              <button
+                type="button"
+                onClick={closeSearch}
+                aria-label={t("closeSearch")}
+                className="-ml-3 flex h-12 w-11 shrink-0 items-center justify-center"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 6l-6 6 6 6" />
+                </svg>
+              </button>
+            }
+          />
         </div>
       )}
     </div>
