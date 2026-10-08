@@ -2,7 +2,6 @@ import "@/styles/globals.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { onest, playfair } from "@/styles/fonts";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getMessages, getTranslations } from "next-intl/server";
 import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routing";
@@ -58,9 +57,13 @@ export default async function LocaleLayout({
   const weeklyDeal = toMenuDeal(deals?.items[0]);
 
   return (
-    <html lang={localeHtmlLang[locale as Locale]} className={`${onest.variable} ${playfair.variable}`}>
+    <html lang={localeHtmlLang[locale as Locale]}>
       <head>
         <link rel="manifest" href="/manifest.json" />
+        {/* Latin Onest and the wordmark face are on every first paint; the
+            other subsets load only when a page needs their characters. */}
+        <link rel="preload" href="/fonts/onest-v11/onest-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        <link rel="preload" href="/fonts/playfair-v40/playfair-500-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <meta name="theme-color" content="#ffffff" />
         <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>

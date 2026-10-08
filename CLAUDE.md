@@ -490,7 +490,7 @@ Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa
 
 ### Tokenlar (`design/tokens.json` → `src/styles/globals.css` ikkinchi `@theme` bloki)
 - Ranglar: `bg #FFFFFF`, `tile #F1F3F0`, `tile-hover #E6E8E5`, `chip-strong #E3E6E9`, `line #E4E6E8`, `line-strong #D9DCDF`, `ink #17191B`, `ink-2 #44494E`, `muted #63686E`, `dark-panel #1C1F22`, `on-dark-2 #C9CDD1`, `red #C8161D`, `yellow #FFD43B`, `yellow-banner #FFE58A`, `forest #0F2D24`, `gold #B8954F`.
-- Shrift: **Onest** 400/500/600/700 (`next/font/google`, `latin` + `cyrillic`) → `font-onest`. Logo — Playfair Display 500 → `font-logo`. Ikkalasi `src/styles/fonts.ts` da; `preload: false` — 1-bosqichda `--font-sans` Onest'ga oʻtganda yoqiladi.
+- Shrift: **Onest** (variable, latin + latin-ext + cyrillic + cyrillic-ext) → `font-sans`/`font-onest`; logo — Playfair Display 500 → `font-logo`. **Self-hosted**: fayllar `public/fonts/<nom>-v<versiya>/`, `@font-face` `globals.css` da, preload `[locale]/layout.tsx` da. `next/font/google` ishlatilmaydi — build vaqtidagi Google so'rovi bir marta yiqilib CI'ni sindirdi. Yangi versiya — yangi papka (fayllar `immutable` keshlanadi).
 - Radius: badge `9999px`, tugma/input/chip `12px`, mahsulot rasmi `16px`, karta/panel `20px`, plitka/banner `24–28px`.
 - Soya: faqat strelka tugmalari, xarid bloki va popoverlarda (`tokens.json` → `shadow`).
 - Konteyner: `max-width: 1296px; padding: 0 24px`. Mobil gutter 16px.

@@ -100,8 +100,8 @@
 
   /* Typography */
   /* Onest everywhere since V3 stage 1 — the design has one UI face. */
-  --font-display: var(--font-onest-face), "Segoe UI", Arial, sans-serif;
-  --font-sans: var(--font-onest-face), "Segoe UI", Arial, sans-serif;
+  --font-display: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
+  --font-sans: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -160,8 +160,8 @@
   --color-forest: #0f2d24;
   --color-gold: #b8954f;
 
-  --font-onest: var(--font-onest-face), "Segoe UI", Arial, sans-serif;
-  --font-logo: var(--font-playfair-face), Georgia, serif;
+  --font-onest: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
+  --font-logo: "Playfair Display", "Playfair Display Fallback", Georgia, serif;
 
   --text-h-hero: 40px;
   --text-h-hero--line-height: 46px;
@@ -195,6 +195,69 @@
   --shadow-arrow: 0 2px 10px rgba(23, 25, 27, 0.12);
   --shadow-buybox: 0 4px 24px rgba(23, 25, 27, 0.06);
   --shadow-pop: 0 20px 48px rgba(23, 25, 27, 0.25);
+}
+
+/*
+  V3 faces, self-hosted from public/fonts (see the README there). One variable
+  Onest file per Google subset, so a Russian page loads cyrillic and an Uzbek
+  page does not. The fallback faces carry the metric overrides next/font used
+  to generate, so the swap does not shift the layout.
+*/
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-cyrillic-ext.woff2") format("woff2");
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Onest Fallback";
+  src: local("Arial");
+  ascent-override: 92.2%;
+  descent-override: 28.99%;
+  line-gap-override: 0%;
+  size-adjust: 105.2%;
+}
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/playfair-v40/playfair-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Playfair Display Fallback";
+  src: local("Times New Roman");
+  ascent-override: 97.25%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+  size-adjust: 111.26%;
 }
 
 /* The V3 content column: 1296px wide, 24px gutter on desktop, 16px on phones. */

@@ -10,7 +10,7 @@ tugaganda yangilanadi.
 |---|---|---|
 | Tokenlar ayni nomlar bilan | `src/styles/globals.css`, ikkinchi `@theme` | yoʻq — hali hech kim ishlatmaydi |
 | Toʻqnashgan eski tokenlar → `legacy-*` (116 fayl, 635 qator) | `src/**` | yoʻq — kompilyatsiya qilingan CSS qoidama-qoida bir xil |
-| Onest + Playfair Display | `src/styles/fonts.ts`, `[locale]/layout.tsx` | yoʻq — `--font-sans` hali Exo 2, `preload: false` |
+| Onest + Playfair Display | `public/fonts/`, `globals.css` (`@font-face`), `[locale]/layout.tsx` (preload) | yoʻq — `--font-sans` hali Exo 2, `preload: false` |
 | 20 ta kesma + 12 ta stok foto | `public/images/products/`, `public/images/stock/` | yoʻq |
 | slug → kesma xaritasi (19 ta, test bilan) | `src/lib/content/product-cutouts.ts` | yoʻq — 2-bosqichda ProductCard ulaydi |
 | `design/` Tailwind va ESLint'dan chiqarildi | `globals.css`, `eslint.config.mjs` | yoʻq |
@@ -26,6 +26,11 @@ va yangi kod darhol yakuniy nom bilan yoziladi.
 topshiriqdagidek `next/font/google` bilan ulandi — u ham build vaqtida yuklab,
 oʻz domenimizdan beradi (CSP oʻzgarmaydi). Narxi: build Google Fonts'ga
 tarmoq talab qiladi (Vercel va GitHub Actions'da bor).
+
+**Yangilandi (3-bosqichdan keyin):** shu xavf amalga oshdi — CI build'ida
+Google Fonts CSS'i kelmadi va `next/font` yiqildi. Shriftlar endi
+`public/fonts/` da (Google'ning oʻsha woff2 subset fayllari, OFL) va oddiy
+`@font-face` bilan ulanadi; build tarmoqqa bogʻliq emas.
 
 ## 1-bosqich — layout (bajarildi)
 
