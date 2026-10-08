@@ -69,6 +69,9 @@ export async function QuizPlanView({
 
   return (
     <div className="wrap flex flex-col gap-8 pb-9 pt-4 lg:gap-12 lg:pb-20 lg:pt-8">
+      {/* A red-flag answer comes first — before any button that puts the plan
+          in the cart, so nobody reaches checkout without reading it. */}
+      {result.seeDoctor && doctor}
       <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-12">
         <div className="flex flex-col gap-3 lg:gap-4">
           <span className="text-[15px] font-semibold text-ink-2">{t("resultEyebrow")}</span>
@@ -111,8 +114,6 @@ export async function QuizPlanView({
           </div>
         )}
       </div>
-
-      {result.seeDoctor && doctor}
 
       {empty ? (
         <div className="flex flex-col items-center gap-5 rounded-[20px] bg-tile p-8 text-center lg:p-10">
