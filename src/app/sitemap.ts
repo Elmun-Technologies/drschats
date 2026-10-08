@@ -38,7 +38,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPaths = [
     "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
     "/loyalty", "/ingredients", "/brands", "/news", "/payment", "/guarantee",
-    "/requisites", "/licenses", "/quiz", "/programs", "/where-to-buy",
+    "/requisites", "/licenses", "/quiz", "/programs", "/where-to-buy", "/partners",
     "/reviews", "/sale",
     ...TOPIC_KINDS.map((kind) => TOPIC_BASE_PATH[kind]).filter((p) => populatedFamilies.has(p)),
   ];

@@ -1,6 +1,7 @@
 "use client";
 
 import { cloneElement, useEffect, useId, useState, type ReactNode } from "react";
+import { REGION_KEYS } from "@/lib/checkout/regions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -33,22 +34,6 @@ import { PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments
   key is what travels to the backend, so an order stays readable whichever
   language it was placed in.
 */
-const REGION_KEYS = [
-  "tashkentCity",
-  "tashkent",
-  "samarkand",
-  "fergana",
-  "andijan",
-  "namangan",
-  "bukhara",
-  "khorezm",
-  "kashkadarya",
-  "surkhandarya",
-  "syrdarya",
-  "jizzakh",
-  "navoi",
-  "karakalpakstan",
-] as const;
 
 /*
   Design: CartV3 / CartMobileV3 — the cart and the order form on one page.

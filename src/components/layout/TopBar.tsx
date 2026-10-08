@@ -16,7 +16,7 @@ export function TopBar() {
     { href: "/payment", label: nav("payment") },
     { href: "/guarantee", label: t("guarantee") },
     { href: "/loyalty", label: t("loyalty") },
-    { href: "/where-to-buy", label: t("forPharmacies") },
+    { href: "/partners", label: t("forPharmacies") },
   ];
   return (
     <div className="wrap flex h-10 items-center gap-6 text-sm text-ink-2">

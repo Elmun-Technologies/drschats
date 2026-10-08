@@ -3,10 +3,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { PageHero } from "@/components/page/PageHero";
-import { FaqSection } from "@/components/page/FaqSection";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/animation/Reveal";
+import { PAYMENT_PROVIDERS } from "@/lib/config/payments";
+import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
+import { cn } from "@/lib/utils";
 
 export const revalidate = 3600;
 
@@ -16,71 +15,58 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return buildPageMetadata({ locale, path: "/payment", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
-const METHOD_ICONS: Record<number, string> = {
-  0: "M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z",
-  1: "M17 9V7a5 5 0 00-10 0v2H5a2 2 0 00-2 2v8a2 2 0 002 2h14a2 2 0 002-2v-8a2 2 0 00-2-2h-2zm-6 0V7a3 3 0 016 0v2H7zm5 5v2h-4v-2h4z",
-  2: "M2 6a2 2 0 012-2h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6zm2 0v2h16V6H4zm0 5v5h16v-5H4zm3 2h4v2H7v-2z",
-  3: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z",
-};
-
-const METHOD_COLORS = [
-  "border-[#00B9F2]/30 bg-[#00B9F2]/8",
-  "border-[#00AAEE]/30 bg-[#00AAEE]/8",
-  "border-accent/30 bg-surface-2",
-  "border-legacy-line bg-surface-2",
-];
-
-const ICON_COLORS = ["text-[#00B9F2]", "text-[#00AAEE]", "text-signal", "text-legacy-muted"];
-
 export default async function PaymentPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("pages.payment");
-  const dt = await getTranslations("pages");
-  const methods = t.raw("methods") as { title: string; text: string; meta: string }[];
-  const faq = t.raw("faq") as { question: string; answer: string }[];
+  const t = await getTranslations("pages.v3");
+  const faq = t.raw("payment.faq") as { question: string; answer: string }[];
+
+  // A provider shows as available only once its merchant id is configured;
+  // until then it says "soon" — the page never promises a route checkout lacks.
+  const methods = [
+    ...PAYMENT_PROVIDERS.map((p) => ({
+      title: p.label,
+      badge: p.configured ? t("online") : t("soon"),
+      text: p.configured ? t("payment.providerText", { name: p.label }) : t("payment.providerSoon", { name: p.label }),
+      muted: !p.configured,
+    })),
+    { title: t("payment.codTitle"), badge: t("onDelivery"), text: t("payment.codText"), muted: false },
+  ];
 
   return (
-    <div className="pb-24">
+    <InfoShell active="payment" crumb={t("nav.paymentShort")}>
       <JsonLd data={faqLd(faq)} />
-      <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/payment` }])} />
-      <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
+      <JsonLd data={breadcrumbLd([{ name: t("nav.payment"), url: `${SITE_URL}/${locale}/payment` }])} />
+      <InfoHeader title={t("nav.payment")} lead={t("payment.lead")} />
 
-      <Container className="mt-14">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {methods.map((m, i) => (
-            <Reveal key={m.title} index={i}>
-              <div className={`flex h-full flex-col rounded-2xl border p-6 ${METHOD_COLORS[i] ?? "border-legacy-line bg-surface"}`}>
-                <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-legacy-ink/40 ${ICON_COLORS[i] ?? "text-fg"}`}>
-                  <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
-                    <path d={METHOD_ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                </div>
-                <span className="mb-2 w-fit rounded-full bg-legacy-ink/30 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-legacy-muted">
-                  {m.meta}
-                </span>
-                <h3 className="font-display text-lg font-bold text-fg">{m.title}</h3>
-                <p className="mt-2 flex-1 text-sm text-legacy-muted">{m.text}</p>
-              </div>
-            </Reveal>
-          ))}
-        </div>
-
-        {/* Security note */}
-        <Reveal className="mt-10">
-          <div className="flex items-start gap-4 rounded-2xl border border-accent/30 bg-surface-2 p-6">
-            <svg viewBox="0 0 24 24" className="mt-0.5 h-6 w-6 shrink-0 text-fg" fill="none" stroke="currentColor" strokeWidth="1.8">
-              <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-            <div>
-              <p className="font-semibold text-fg">{t("secureTitle")}</p>
-              <p className="mt-1 text-sm text-legacy-muted">{t("secureNote")}</p>
+      <div className="grid gap-3 sm:grid-cols-2 lg:gap-4">
+        {methods.map((m) => (
+          <div key={m.title} className="flex min-h-[150px] flex-col justify-between gap-6 rounded-[20px] bg-tile p-5 lg:min-h-[180px] lg:p-7">
+            <div className="flex items-start justify-between gap-3">
+              <h2 className="text-2xl font-bold lg:text-[30px] lg:leading-9">{m.title}</h2>
+              <span className={cn("inline-flex h-7 items-center rounded-pill bg-bg px-2.5 text-[13px] font-semibold", m.muted && "text-ink-2")}>
+                {m.badge}
+              </span>
             </div>
+            <p className="text-[15px] leading-[22px] text-ink-2 lg:text-base lg:leading-6">{m.text}</p>
           </div>
-        </Reveal>
-      </Container>
+        ))}
+      </div>
 
-      <FaqSection heading={dt("deliveryFaqTitle")} items={faq} />
-    </div>
+      <div className="flex items-start gap-4 rounded-[20px] border border-line p-5 lg:items-center lg:gap-5 lg:px-8 lg:py-7">
+        <span aria-hidden className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-tile lg:h-14 lg:w-14">
+          <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z" />
+            <path d="M9 12l2 2 4-4" />
+          </svg>
+        </span>
+        <div className="flex flex-col gap-1">
+          <h2 className="text-lg font-bold lg:text-xl">{t("payment.safeTitle")}</h2>
+          <p className="text-[15px] leading-[22px] text-ink-2 lg:text-base lg:leading-6">{t("payment.safeText")}</p>
+        </div>
+      </div>
+
+      <InfoFaq title={t("faqTitle")} items={faq} />
+    </InfoShell>
   );
 }

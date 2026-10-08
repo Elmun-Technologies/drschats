@@ -1338,11 +1338,15 @@
     "deliveryFaq": [
       {
         "question": "Yetkazib berish qancha vaqt oladi?",
-        "answer": "Toshkent bo’ylab 1–2 ish kuni, viloyatlarga EMU orqali 2–5 ish kuni."
+        "answer": "Toshkent boʻylab 24 soat ichida, viloyatlarga EMU pochta orqali 1–3 kun. Aniq muddatni operator tasdiqlashda aytadi."
       },
       {
         "question": "Yetkazib berish bepulmi?",
         "answer": "Toshkentda ham, viloyatlarda ham 300 000 so'mdan ortiq xaridga bepul."
+      },
+      {
+        "question": "Yetkazib berishda toʻlasam boʻladimi?",
+        "answer": "Albatta — naqd yoki karta orqali kuryerga toʻlashingiz mumkin."
       }
     ],
     "whereToBuy": {
@@ -1358,6 +1362,328 @@
       "orderOnline": "Saytdan buyurtma qilish",
       "askUs": "Savol berish",
       "b2bNote": "Dorixona tarmog'i bo'lsangiz yoki ulgurji xarid bo'yicha savolingiz bo'lsa:"
+    },
+    "v3": {
+      "nav": {
+        "buyers": "Xaridorlarga",
+        "company": "Kompaniya",
+        "home": "Bosh sahifa",
+        "sections": "Boʻlimlar",
+        "delivery": "Yetkazib berish",
+        "payment": "Toʻlov usullari",
+        "guarantee": "Kafolat va qaytarish",
+        "loyalty": "Chegirma tizimi va obuna",
+        "about": "Biz haqimizda",
+        "licenses": "Litsenziya va sertifikatlar",
+        "partners": "Dorixonalar va hamkorlar",
+        "blog": "Sogʻliq blogi va yangiliklar",
+        "contact": "Aloqa",
+        "deliveryShort": "Yetkazib berish",
+        "paymentShort": "Toʻlov",
+        "guaranteeShort": "Kafolat",
+        "loyaltyShort": "Chegirmalar",
+        "aboutShort": "Biz haqimizda",
+        "licensesShort": "Litsenziyalar",
+        "partnersShort": "Hamkorlar",
+        "blogShort": "Blog",
+        "contactShort": "Aloqa"
+      },
+      "help": {
+        "title": "Savolingiz bormi?",
+        "text": "Operator Telegram yoki telefon orqali javob beradi."
+      },
+      "faqTitle": "Savol-javob",
+      "free": "Bepul",
+      "online": "Onlayn",
+      "onDelivery": "Yetkazishda",
+      "soon": "Tez kunda",
+      "delivery": {
+        "lead": "Toshkent va butun Oʻzbekiston boʻylab tez va ishonchli yetkazib berish.",
+        "leadShort": "Toshkent va butun Oʻzbekiston boʻylab.",
+        "heroTitle": "{amount} soʻmdan ortiq xaridga — bepul yetkazib berish",
+        "heroShort": "{amount} soʻmdan ortiq xaridga — bepul",
+        "heroText": "Toshkent va viloyatlar uchun bir xil shart.",
+        "courierTitle": "Toshkent boʻylab — kuryer",
+        "courierTime": "{hours} soat ichida",
+        "feeNote": "{amount} soʻmdan ortiq xaridga bepul. Aks holda — {fee} soʻm.",
+        "postTitle": "Viloyatlarga — EMU pochta",
+        "postTime": "1–3 kun",
+        "pickupTitle": "Oʻzi olib ketish",
+        "pickupText": "Toshkent shahridagi omborimizdan.",
+        "pricesTitle": "Narxlar",
+        "colMethod": "Usul",
+        "colBelow": "{amount} soʻmgacha",
+        "colAbove": "{amount} soʻmdan",
+        "rowCourier": "Kuryer, Toshkent",
+        "rowPost": "EMU pochta, viloyatlar",
+        "rowPickup": "Oʻzi olib ketish",
+        "noteOnline": "Buyurtma onlayn toʻlov bilan darhol tasdiqlanadi. Operator faqat aniqlashtirish uchun qoʻngʻiroq qiladi.",
+        "noteCall": "Buyurtmadan keyin operator tasdiqlash uchun qoʻngʻiroq qiladi va aniq yetkazish vaqtini aytadi."
+      },
+      "payment": {
+        "lead": "Onlayn yoki buyurtmani qabul qilganda — qaysi biri qulay boʻlsa.",
+        "providerText": "{name} orqali onlayn toʻlov. Buyurtma darhol tasdiqlanadi.",
+        "providerSoon": "{name} orqali onlayn toʻlov tez orada ulanadi.",
+        "codTitle": "Naqd / karta",
+        "codText": "Yetkazib berishda naqd yoki karta orqali kuryerga.",
+        "safeTitle": "Xavfsiz toʻlov",
+        "safeText": "Onlayn toʻlov Payme, Click va Uzum shlyuzlari orqali amalga oshiriladi; karta maʼlumotlari bizda saqlanmaydi.",
+        "faq": [
+          {
+            "question": "Toʻlov xavfsizmi?",
+            "answer": "Ha, onlayn toʻlov Payme, Click va Uzum shlyuzlari orqali amalga oshiriladi. Karta maʼlumotlari bizning saytda saqlanmaydi."
+          },
+          {
+            "question": "Yetkazib berishda toʻlasam boʻladimi?",
+            "answer": "Albatta — naqd yoki karta orqali kuryerga toʻlashingiz mumkin."
+          }
+        ]
+      },
+      "guarantee": {
+        "lead": "Sifat hujjatlari va qaytarish shartlari.",
+        "bigLabel": "kun ichida qaytarish",
+        "heroTitle": "Ochilmagan qadoq — {days} kun ichida qabul qilamiz",
+        "heroText": "Yaroqlilik muddati va saqlash shartlari buzilmagan boʻlishi kerak. Qaytarilgan mahsulot uchun toʻlovingiz toʻliq qaytariladi.",
+        "stepsTitle": "Qaytarish tartibi",
+        "steps": [
+          "Operatorga qoʻngʻiroq qiling yoki Telegram orqali yozing.",
+          "Mahsulotni asl qadoqda kuryerga topshiring.",
+          "Toʻlov 3–10 ish kunida qaytariladi."
+        ],
+        "cards": [
+          {
+            "title": "{days} kunlik qaytarish",
+            "text": "Ochilmagan qadoqdagi mahsulot {days} kun ichida qabul qilinadi."
+          },
+          {
+            "title": "Rasmiy import",
+            "text": "Mahsulotlar zavod va import hujjatlari bilan keladi."
+          },
+          {
+            "title": "Hujjatlar soʻrov boʻyicha",
+            "text": "Zavod va sifat hujjatlari nusxasini soʻrov boʻyicha yuboramiz."
+          }
+        ],
+        "devicesTitle": "Tibbiy jihozlar uchun",
+        "devicesText": "Tibbiy jihozlarga ishlab chiqaruvchi kafolati amal qiladi — muddat va shartlar qadoqdagi kafolat talonida.",
+        "devicesCta": "Qaytarish uchun yozish"
+      },
+      "loyalty": {
+        "lead": "Saytda amalda ishlaydigan uchta chegirma — boshqa yashirin daraja, ball va keshbek yoʻq.",
+        "firstTitle": "Birinchi buyurtma",
+        "firstText": "Birinchi buyurtmangizda {percent}% chegirma. Har bir mijoz uchun bir marta.",
+        "firstNote": "Promokod kerak emas — operator buyurtmani tasdiqlashda qoʻllaydi.",
+        "subTitle": "Obuna (Subscribe & Save)",
+        "subText": "Bugungi yetkazishda {first}% chegirma, keyingi har bir yetkazishda {next}%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.",
+        "subNote": "Istalgan vaqtda toʻxtatish, oʻtkazib yuborish yoki bekor qilish mumkin.",
+        "clubTitle": "VIP klub (Telegram-bot)",
+        "clubText": "{amount} soʻmdan yuqori buyurtmalarga bepul yetkazish, klub takliflari va qabul eslatmalari.",
+        "clubNote": "Qoʻshimcha foiz chegirma vaʼda qilinmaydi.",
+        "howTitle": "Qanday ishlaydi",
+        "how": [
+          {
+            "title": "Mahsulotni tanlang",
+            "text": "Katalogdan kerakli mahsulotni yoki obunani tanlang."
+          },
+          {
+            "title": "Buyurtma bering",
+            "text": "Savatchada telefon raqamingizni qoldiring va buyurtmani rasmiylashtiring."
+          },
+          {
+            "title": "Chegirma avtomatik",
+            "text": "Obuna chegirmasi savatchada koʻrinadi; birinchi buyurtma chegirmasini operator tasdiqlashda qoʻllaydi. Promokod shart emas."
+          }
+        ],
+        "rulesTitle": "Bir xil qoidalar",
+        "rules": [
+          "Bepul yetkazish chegarasi butun saytda bir xil: {amount} soʻm.",
+          "Yetkazib berish muddati: Toshkent boʻylab {hours} soat, viloyatlarga 1–3 kun.",
+          "Chegirmalar qoʻshilmaydi — eng kattasi qoʻllanadi.",
+          "Chizilgan «eski narx» faqat real pasaytirilgan narx uchun koʻrsatiladi."
+        ],
+        "b2bTitle": "Dorixonalar va hamkorlar uchun",
+        "b2bText": "Ulgurji narx, hudud va toʻlov muddati alohida shartnomada kelishiladi. Bu sahifadagi chakana chegirmalar bilan aralashmaydi.",
+        "b2bCta": "Hamkorlik boʻyicha yozish"
+      },
+      "about": {
+        "lead": "Vitaminlar va biologik faol qoʻshimchalarni Oʻzbekistonga rasmiy import qiluvchi va yetkazib beruvchi.",
+        "body": "Katalogimiz rasmiy import qilingan brendlardan tashkil topgan — {brands}. Har bir mahsulot zavod hujjatlari bilan keladi, narx va yetkazish shartlari bitta — savatchada koʻrinadigan narx bilan bir xil. Rasmiy import qiluvchi — {importer}.",
+        "statBrands": "Brend",
+        "statProducts": "Katalogdagi mahsulot",
+        "statDelivery": "Toshkentda yetkazish",
+        "statReturns": "Qaytarish muddati",
+        "hours": "{hours} soat",
+        "days": "{days} kun",
+        "missionLabel": "Maqsadimiz",
+        "mission": "Oilalar uchun kundalik vitamin va minerallarni tushunarli narxda, ortiqcha vaʼdalarsiz yetkazib berish.",
+        "values": [
+          {
+            "title": "Hujjatlar",
+            "text": "Har bir partiya zavod hujjatlari bilan keladi; nusxasini soʻrov boʻyicha yuboramiz."
+          },
+          {
+            "title": "Ochiq narx",
+            "text": "Chegirma faqat real pasayishda. Chizilgan «eski narx» oʻylab topilmaydi."
+          },
+          {
+            "title": "Masʼuliyat",
+            "text": "Tibbiy vaʼda bermaymiz: mahsulot dori vositasi emas, savollar boʻlsa shifokorga murojaat qiling."
+          }
+        ],
+        "pathTitle": "Mahsulot javongacha nimalardan oʻtadi",
+        "pathLead": "Har bir bosqichda hujjat qoladi.",
+        "path": [
+          {
+            "title": "Kelib chiqishi",
+            "text": "Mamlakat har bir mahsulot sahifasida qadoqdagi yozuvga muvofiq."
+          },
+          {
+            "title": "Ishlab chiqarish",
+            "text": "Korxonalar oʻz zavod hujjatlari bilan ishlaydi."
+          },
+          {
+            "title": "Import hujjatlari",
+            "text": "Har bir partiya import va roʻyxatdan oʻtkazish hujjatlari bilan."
+          },
+          {
+            "title": "Sifat nazorati",
+            "text": "Saqlash shartlari omborimizda kuzatiladi."
+          },
+          {
+            "title": "Yetkazib berish",
+            "text": "Toshkent boʻylab {hours} soatda."
+          }
+        ],
+        "reqTitle": "Rekvizitlar",
+        "reqName": "Tashkilot nomi",
+        "reqImporter": "Rasmiy import qiluvchi",
+        "reqAddress": "Yuridik manzil",
+        "reqStir": "STIR (INN)",
+        "reqLicence": "Litsenziya raqami",
+        "reqPhone": "Telefon",
+        "reqEmail": "Email",
+        "pending": "Maʼlumot tayyorlanmoqda — telefon orqali soʻrang",
+        "reqAll": "Barcha rekvizitlar"
+      },
+      "licenses": {
+        "lead": "Faoliyatimiz hujjatlari va ularni qanday soʻrash mumkinligi.",
+        "items": [
+          {
+            "tag": "Litsenziya",
+            "title": "Faoliyat litsenziyasi",
+            "text": "{legalName} nomiga berilgan. Litsenziya raqamini soʻrov boʻyicha taqdim etamiz."
+          },
+          {
+            "tag": "Reyestr",
+            "title": "Davlat roʻyxatidan oʻtish guvohnomasi",
+            "text": "Har bir BAD Oʻzbekiston davlat reyestrida roʻyxatdan oʻtgan; guvohnoma nusxasini soʻrov boʻyicha yuboramiz."
+          },
+          {
+            "tag": "Import",
+            "title": "Import hujjatlari",
+            "text": "Har bir partiya bojxona va import hujjatlari bilan keladi."
+          },
+          {
+            "tag": "Zavod",
+            "title": "Ishlab chiqaruvchi sertifikatlari",
+            "text": "Zavod sertifikatlari har bir partiya bilan keladi; nusxasini soʻrov boʻyicha yuboramiz."
+          },
+          {
+            "tag": "Shartnoma",
+            "title": "Rasmiy import shartnomalari",
+            "text": "Yetkazib beruvchilar bilan tuzilgan shartnomalar asosida."
+          },
+          {
+            "tag": "Soʻrov",
+            "title": "Hujjat soʻrash",
+            "text": "Istalgan mahsulot uchun hujjat nusxasini Telegram yoki telefon orqali soʻrang."
+          }
+        ],
+        "licenceNo": "Litsenziya raqami: {number}",
+        "ctaTitle": "Hujjat kerakmi?",
+        "ctaText": "Zavod sertifikati, import yoki roʻyxatdan oʻtkazish hujjati — istalgan mahsulot uchun nusxasini Telegram yoki telefon orqali soʻrang.",
+        "cta": "Sertifikat soʻrash",
+        "note": "Sertifikat yoki litsenziya raqami koʻrsatilmagan joyda u hali tayyorlanmoqda — toʻqib chiqarilmaydi."
+      },
+      "partners": {
+        "title": "Dorixonalar va hamkorlar uchun",
+        "eyebrow": "B2B · Ulgurji",
+        "lead": "Ulgurji narx, hudud va toʻlov muddati alohida shartnomada kelishiladi. Chakana chegirmalar bilan aralashmaydi.",
+        "cta": "Ariza qoldirish",
+        "kinds": {
+          "pharmacy": {
+            "title": "Dorixonalar uchun",
+            "text": "Ulgurji narxlar, assortiment va yetkazib berish shartlari."
+          },
+          "distribution": {
+            "title": "Distributorlik",
+            "text": "Viloyatlarda hamkorlik va rasmiy vakillik."
+          },
+          "corporate": {
+            "title": "Korporativ buyurtma (B2B)",
+            "text": "Xodimlar uchun toʻplamlar, sovgʻa va korporativ dasturlar."
+          }
+        },
+        "whereTitle": "Mahsulotlarimiz qaysi dorixonalarda bor",
+        "whereCta": "Dorixonalar roʻyxati",
+        "formTitle": "Hamkorlik arizasi",
+        "company": "Kompaniya yoki dorixona nomi",
+        "companyPh": "Dorixona yoki kompaniya nomi",
+        "kind": "Yoʻnalish",
+        "contact": "Kontakt shaxs",
+        "contactPh": "Ism familiya",
+        "phone": "Telefon raqami",
+        "region": "Hudud",
+        "branches": "Filiallar soni, ixtiyoriy",
+        "branchesPh": "Masalan, 5",
+        "note": "Izoh",
+        "notePh": "Qaysi brendlar va hajm qiziqtiradi",
+        "submit": "Ariza yuborish",
+        "hint": "Menejer siz bilan bogʻlanadi.",
+        "sent": "Ariza qabul qilindi. Menejer ish vaqtida siz bilan bogʻlanadi.",
+        "errorInvalid": "Maydonlarni toʻgʻri toʻldiring.",
+        "errorLimit": "Juda koʻp urinish. Birozdan keyin qayta urinib koʻring.",
+        "errorUnavailable": "Ariza hozir yuborilmadi. Iltimos, {phone} raqamiga qoʻngʻiroq qiling."
+      },
+      "contact": {
+        "title": "Biz bilan bogʻlaning",
+        "lead": "Savollaringiz bormi? Biz yordam berishga tayyormiz.",
+        "phone": "Telefon",
+        "hours": "Dushanba–Shanba, 09:00–18:00",
+        "email": "Email",
+        "emailHint": "24 soat ichida javob beramiz",
+        "address": "Manzil",
+        "city": "Toshkent shahri",
+        "country": "Oʻzbekiston",
+        "topicsTitle": "Qaysi masala boʻyicha murojaat qilyapsiz?",
+        "topicsLead": "Har bir yoʻnalish uchun alohida kanal — javob tezroq keladi.",
+        "topics": {
+          "orders": {
+            "title": "Buyurtma va yetkazib berish",
+            "text": "Buyurtma holati, oʻzgartirish, qaytarish."
+          },
+          "advice": {
+            "title": "Mahsulot boʻyicha maslahat",
+            "text": "Qaysi mahsulot mos kelishi, tarkib va qabul tartibi."
+          },
+          "whatsapp": {
+            "title": "WhatsApp orqali yozish",
+            "text": "Qoʻngʻiroq qilishga qulay boʻlmasa — yozib qoldiring."
+          }
+        },
+        "telegram": "Telegramda yozish",
+        "more": "Batafsil",
+        "formTitle": "Xabar yozing",
+        "name": "Ismingiz",
+        "namePh": "Ism familiya",
+        "message": "Xabar",
+        "messagePh": "Savolingizni yozing",
+        "submit": "Yuborish",
+        "sent": "Xabaringiz qabul qilindi. Operator ish vaqtida javob beradi.",
+        "phoneField": "Telefon raqami"
+      },
+      "offerPending": "Ommaviy oferta matni yurist tomonidan tayyorlanmoqda. Ungacha savdo shartlari quyidagi sahifalarda — ular saytda amalda ishlaydigan qoidalar:",
+      "offerLinks": "Shartlar"
     }
   },
   "socialProof": {

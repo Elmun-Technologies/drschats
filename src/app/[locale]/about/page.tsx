@@ -3,11 +3,13 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/animation/Reveal";
-import { PageHero } from "@/components/page/PageHero";
-import { QualityChain } from "@/components/page/QualityChain";
+import Image from "next/image";
 import { BRAND } from "@/lib/brand";
+import { COMMERCE } from "@/lib/config/commerce";
+import { getAllProducts } from "@/lib/shop/all-products";
+import { productBrand } from "@/lib/content/product-brands";
+import { Link } from "@/lib/i18n/navigation";
+import { InfoShell } from "@/components/info/InfoShell";
 
 export const revalidate = 3600;
 
@@ -17,103 +19,111 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   return buildPageMetadata({ locale, path: "/about", title: `${t("title")} — Go Vita`, description: t("subtitle") });
 }
 
-const VALUE_ICONS = [
-  "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
-  "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z",
-  "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z",
-];
-
-const VALUE_COLORS = [
-  { bg: "bg-surface-2", text: "text-fg", border: "border-legacy-line" },
-  { bg: "bg-signal-soft", text: "text-signal", border: "border-signal/25" },
-  { bg: "bg-danger/10", text: "text-danger", border: "border-danger/20" },
-];
-
-/*
-  These chips used to be a permanent "we are certified" strip: cGMP, ISO 22000,
-  Halal, IFOS. The shop holds none of those certificates — its manufacturers may
-  hold some, and the customer is entitled to see which one applies to which
-  product rather than a row of unexplained logos. So the strip now states the
-  one thing that is always true: the paperwork exists and is available on
-  request, with a link to ask for it.
-*/
-
 export default async function AboutPage({ params }: { params: Promise<{ locale: Locale }> }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  const t = await getTranslations("pages.about");
-  const stats = t.raw("stats") as { value: string; label: string }[];
-  const values = t.raw("values") as { title: string; text: string }[];
+  const t = await getTranslations("pages.v3");
+
+  // Counted from the live catalogue, so the numbers cannot drift from it.
+  const catalogue = await getAllProducts({ locale });
+  const brands = [...new Set(catalogue.items.map((p) => productBrand(p.slug)?.name).filter((n): n is string => Boolean(n)))];
+  const hours = COMMERCE.delivery.tashkent.hours;
+  const days = COMMERCE.returns.unopenedWindowDays;
+  const stats = [
+    { value: String(brands.length), label: t("about.statBrands") },
+    { value: String(catalogue.total), label: t("about.statProducts") },
+    { value: t("about.hours", { hours }), label: t("about.statDelivery") },
+    { value: t("about.days", { days }), label: t("about.statReturns") },
+  ];
+  const values = t.raw("about.values") as { title: string; text: string }[];
+  const path = (t.raw("about.path") as { title: string; text: string }[]).map((s) => ({
+    ...s,
+    text: s.text.replace("{hours}", String(hours)),
+  }));
+  const pending = t("about.pending");
+  const requisites = [
+    { label: t("about.reqName"), value: BRAND.legalName },
+    { label: t("about.reqImporter"), value: BRAND.legal.importer },
+    { label: t("about.reqAddress"), value: locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address },
+    { label: t("about.reqStir"), value: BRAND.legal.stir },
+    { label: t("about.reqLicence"), value: BRAND.legal.licence || pending },
+    { label: t("about.reqPhone"), value: BRAND.contact.phone, href: `tel:${BRAND.contact.phoneHref}` },
+    { label: t("about.reqEmail"), value: BRAND.contact.email, href: `mailto:${BRAND.contact.email}` },
+  ];
 
   return (
-    <div className="pb-24">
+    <InfoShell active="about" crumb={t("nav.about")}>
       <JsonLd data={organizationLd(locale)} />
-      <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/about` }])} />
-      <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
+      <JsonLd data={breadcrumbLd([{ name: t("nav.about"), url: `${SITE_URL}/${locale}/about` }])} />
 
-      <Container className="pt-10">
-        {/* Intro text */}
-        <Reveal>
-          <p className="max-w-3xl text-lg leading-relaxed text-legacy-muted">{t("intro")}</p>
-        </Reveal>
+      <div className="grid items-center gap-6 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-8">
+        <div className="flex flex-col gap-3 lg:gap-4">
+          <h1 className="text-[28px] font-bold leading-[34px] lg:text-[44px] lg:leading-[50px]">{BRAND.name}</h1>
+          <p className="text-[17px] leading-[26px] text-ink-2 lg:text-lg">{t("about.lead")}</p>
+          <p className="text-[15px] leading-6 text-ink-2 lg:text-base">
+            {t("about.body", { brands: brands.join(", "), importer: BRAND.legal.importer })}
+          </p>
+        </div>
+        <div className="relative aspect-[4/3] overflow-hidden rounded-[20px] lg:aspect-auto lg:h-[314px]">
+          <Image src="/images/stock/st-pharmacist-shelf.webp" alt="" fill sizes="(max-width: 1024px) 100vw, 420px" className="object-cover" />
+        </div>
+      </div>
 
-        {/* Stats */}
-        <div className="mt-12 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {stats.map((s, i) => (
-            <Reveal key={s.label} index={i}>
-              <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-6 text-center">
-                <div className="font-display text-3xl font-extrabold text-fg sm:text-4xl">{s.value}</div>
-                <div className="mt-2 text-sm font-medium text-legacy-muted">{s.label}</div>
-              </div>
-            </Reveal>
+      <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4 lg:gap-4">
+        {stats.map((s) => (
+          <div key={s.label} className="flex flex-col-reverse gap-1 rounded-[20px] bg-tile p-5 lg:p-6">
+            <dt className="text-sm text-ink-2">{s.label}</dt>
+            <dd className="text-[26px] font-bold leading-8 lg:text-[34px] lg:leading-10">{s.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div className="flex flex-col gap-2 rounded-[24px] bg-dark-panel p-6 text-white lg:px-9 lg:py-8">
+        <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-on-dark-2">{t("about.missionLabel")}</span>
+        <p className="text-xl font-bold leading-7 lg:text-[28px] lg:leading-9">{t("about.mission")}</p>
+      </div>
+
+      <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">
+        {values.map((v) => (
+          <div key={v.title} className="flex flex-col gap-2 rounded-[20px] border border-line p-5 lg:p-6">
+            <h2 className="text-xl font-bold">{v.title}</h2>
+            <p className="text-[15px] leading-[22px] text-ink-2">{v.text}</p>
+          </div>
+        ))}
+      </div>
+
+      <section aria-labelledby="about-path" className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1">
+          <h2 id="about-path" className="text-[22px] font-bold leading-7 lg:text-[26px] lg:leading-8">{t("about.pathTitle")}</h2>
+          <p className="text-[15px] text-ink-2">{t("about.pathLead")}</p>
+        </div>
+        <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {path.map((s, i) => (
+            <li key={s.title} className="flex flex-col gap-2 rounded-[20px] bg-tile p-5">
+              <span aria-hidden className="flex h-9 w-9 items-center justify-center rounded-full bg-ink text-[15px] font-bold text-white">{i + 1}</span>
+              <h3 className="mt-1 text-base font-bold">{s.title}</h3>
+              <p className="text-sm leading-5 text-ink-2">{s.text}</p>
+            </li>
           ))}
-        </div>
+        </ol>
+      </section>
 
-        {/* Mission banner */}
-        <Reveal index={4}>
-          <div className="mt-6 rounded-2xl border border-accent/20 bg-surface-2 px-6 py-5">
-            <p className="text-sm font-medium leading-relaxed text-fg">{t("mission")}</p>
-          </div>
-        </Reveal>
-
-        {/* Values */}
-        <div className="mt-16 grid gap-5 sm:grid-cols-3">
-          {values.map((v, i) => {
-            const c = VALUE_COLORS[i % VALUE_COLORS.length];
-            return (
-              <Reveal key={v.title} index={i} className="h-full">
-                <div className={`h-full rounded-2xl border ${c.border} bg-legacy-ink p-7`}>
-                  <span className={`flex h-12 w-12 items-center justify-center rounded-xl ${c.bg} ${c.text}`}>
-                    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-                      <path d={VALUE_ICONS[i % VALUE_ICONS.length]} />
-                    </svg>
-                  </span>
-                  <h2 className="mt-5 font-display text-lg font-bold text-fg">{v.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-legacy-muted">{v.text}</p>
-                </div>
-              </Reveal>
-            );
-          })}
-        </div>
-
-        {/* Certifications strip */}
-        <Reveal index={5}>
-          <div className="mt-14 flex flex-wrap items-center gap-3 rounded-2xl border border-legacy-line bg-surface px-6 py-5">
-            <span className="mr-2 text-xs font-semibold uppercase tracking-widest text-faint">
-              {t("certsLabel")}
-            </span>
-            <p className="text-sm leading-relaxed text-legacy-muted">{t("certsNote")}</p>
-            <a
-              href={`mailto:${BRAND.contact.email}?subject=Sertifikat%20so'rovi`}
-              className="rounded-full border border-legacy-line-strong bg-legacy-ink px-4 py-1.5 text-sm font-semibold text-fg transition-colors hover:border-brand-deep/40"
-            >
-              {t("certsCta")}
-            </a>
-          </div>
-        </Reveal>
-
-        <QualityChain />
-      </Container>
-    </div>
+      <section aria-labelledby="about-req" className="flex flex-col gap-3 rounded-[20px] border border-line p-5 lg:p-7">
+        <h2 id="about-req" className="text-[22px] font-bold leading-7">{t("about.reqTitle")}</h2>
+        <dl className="flex flex-col">
+          {requisites.map((r) => (
+            <div key={r.label} className="flex flex-col gap-1 border-b border-line py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+              <dt className="text-[15px] text-ink-2">{r.label}</dt>
+              <dd className="text-[15px] font-semibold sm:text-right">
+                {r.href ? <a href={r.href} className="hover:underline">{r.value}</a> : r.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        <Link href="/requisites" className="inline-flex min-h-11 items-center self-start text-[15px] font-semibold underline underline-offset-4">
+          {t("about.reqAll")}
+        </Link>
+      </section>
+    </InfoShell>
   );
 }

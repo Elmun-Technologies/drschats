@@ -3,8 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, organizationLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { PageHero } from "@/components/page/PageHero";
-import { InfoTable } from "@/components/page/InfoTable";
+import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { BRAND } from "@/lib/brand";
 
 export const revalidate = 3600;
@@ -50,11 +49,18 @@ export default async function RequisitesPage({ params }: { params: Promise<{ loc
   ];
 
   return (
-    <div className="pb-24">
+    <InfoShell crumb={t("crumb")}>
       <JsonLd data={organizationLd(locale)} />
       <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/requisites` }])} />
-      <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
-      <InfoTable rows={rows} />
-    </div>
+      <InfoHeader title={t("title")} lead={t("subtitle")} />
+      <dl className="flex flex-col rounded-[20px] border border-line px-5 py-2 lg:px-7">
+        {rows.map((r, i) => (
+          <div key={r.label} className={`flex flex-col gap-1 py-3.5 sm:flex-row sm:justify-between sm:gap-6 ${i < rows.length - 1 ? "border-b border-line" : ""}`}>
+            <dt className="text-[15px] text-ink-2">{r.label}</dt>
+            <dd className="text-[15px] font-semibold sm:max-w-[60%] sm:text-right">{r.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </InfoShell>
   );
 }
