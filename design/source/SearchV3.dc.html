@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — qidiruv</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.sg{display:flex;align-items:center;gap:12px;padding:10px 20px;font-size:16px;color:#17191B;text-decoration:none}
+.sg:hover{background:#F1F3F0}
+.sg b{font-weight:700}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0; position: relative">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Qidiruv</span></nav>
+<div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: -6px"><h1 class="h1">«vitamin C» boʻyicha</h1><span style="font-size: 17px; color: #63686E">4 ta mahsulot</span></div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="chip on">Hammasi <small>4</small></span><a class="chip" href="#">Shipuchi tabletkalar <small>2</small></a><a class="chip" href="#">Kapsulalar <small>2</small></a><a class="chip" href="#">Immunitet <small>1</small></a><a class="chip" href="#">Goʻzallik <small>1</small></a></div>
+<div class="grid6"><sc-for list="{{res}}" as="p" hint-placeholder-count="4"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+<div class="panel" style="padding: 24px 28px; display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 19px; font-weight: 700">Kerakli mahsulotni topmadingizmi?</span><span class="p">Operatorga yozing — tarkib va qabul tartibi boʻyicha maslahat beradi.</span></div>
+<div style="display: flex; gap: 8px"><a class="btn" href="https://t.me/govita_uz">Telegramda yozish</a><a class="btn-o" href="QuizV3.dc.html">Vitamin tanlash testi</a></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 16px; padding-top: 16px">
+<h2 class="h2" style="font-size: 26px">Boshqa xaridorlar koʻp izlaydi</h2>
+<div class="grid6"><sc-for list="{{more}}" as="p" hint-placeholder-count="6"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+
+<div style="position: absolute; inset: 0; background: rgba(23,25,27,.40); z-index: 4"></div>
+<div class="wrap" style="position: absolute; top: 46px; left: 0; right: 0; z-index: 5">
+<div style="margin-left: 258px; width: 697px; background: #FFFFFF; border-radius: 20px; box-shadow: 0 20px 48px rgba(23,25,27,.25); overflow: hidden">
+<div style="display: flex; align-items: center; gap: 10px; height: 64px; padding: 0 8px 0 20px; border-bottom: 1px solid #E4E6E8">
+<span style="flex: 1; font-size: 17px; color: #17191B">vitamin C<span style="display: inline-block; width: 2px; height: 20px; background: #17191B; vertical-align: -4px; margin-left: 1px"></span></span>
+<button type="button" aria-label="Tozalash" style="width: 40px; height: 40px; border: 0; border-radius: 20px; background: #F1F3F0; color: #17191B; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+<span style="width: 48px; height: 48px; border-radius: 12px; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></span>
+</div>
+<div style="display: flex; flex-direction: column; padding: 8px 0">
+<sc-for list="{{sugg}}" as="s" hint-placeholder-count="3"><a class="sg" href="SearchV3.dc.html"><svg class="ic" viewBox="0 0 24 24" style="color: #8A8F95"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span><b>vitamin C</b>{{s}}</span></a></sc-for>
+</div>
+<div style="padding: 8px 20px 14px; display: flex; flex-direction: column; gap: 10px; border-top: 1px solid #E4E6E8">
+<span style="font-size: 13px; font-weight: 600; color: #63686E; letter-spacing: .04em; text-transform: uppercase; padding-top: 8px">Kategoriyalar</span>
+<div style="display: flex; gap: 8px"><a class="chip" href="CatalogV3.dc.html" style="height: 36px">Shipuchi tabletkalar</a><a class="chip" href="CatalogV3.dc.html" style="height: 36px">Immunitet</a><a class="chip" href="CatalogV3.dc.html" style="height: 36px">Goʻzallik</a></div>
+</div>
+<div style="padding: 8px 0 8px; border-top: 1px solid #E4E6E8">
+<span style="display: block; font-size: 13px; font-weight: 600; color: #63686E; letter-spacing: .04em; text-transform: uppercase; padding: 14px 20px 6px">Mahsulotlar</span>
+<sc-for list="{{prods}}" as="p" hint-placeholder-count="3">
+<a class="sg" href="ProductV3.dc.html" style="padding: 8px 20px">
+<span style="width: 56px; height: 56px; border-radius: 12px; background: #F1F3F0; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{p.img}}" alt="" style="width: 46px; height: 46px; object-fit: contain"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{p.name}}</span><span class="small">{{p.brand}}</span></span>
+<span style="font-size: 16px; font-weight: 700; white-space: nowrap">{{p.priceF}} soʻm</span>
+</a>
+</sc-for>
+</div>
+<div style="padding: 12px 20px 20px"><a class="btn" href="SearchV3.dc.html" style="width: 100%">Barcha 4 ta natijani koʻrsatish</a></div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      res: gvList(["vitc", "immuno", "mag", "hns"]),
+      more: gvList(["multi", "calci", "prenatal", "kids", "neuro", "gold"]),
+      sugg: [" 550 mg", " shipuchi tabletka", " va rux"],
+      prods: gvList(["vitc", "immuno", "mag"])
+    };
+  }
+}
+</script>
+</body>
+</html>

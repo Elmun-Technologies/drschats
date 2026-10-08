@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — dorixonalar va hamkorlar uchun</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Dorixonalar va hamkorlar uchun</span></nav>
+<div style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; align-items: start">
+<dc-import name="InfoNavV3" active="partners" hint-size="100%,760px"></dc-import>
+<article style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr); gap: 0; border-radius: 28px; overflow: hidden; background: #1C1F22; color: #FFFFFF">
+<div style="padding: 40px; display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #A9AEB3">B2B · ulgurji</span>
+<h1 style="margin: 0; font-size: 40px; line-height: 46px; font-weight: 700">Dorixonalar va hamkorlar uchun</h1>
+<p style="margin: 0; font-size: 17px; line-height: 26px; color: #C9CDD1">Ulgurji narx, hudud va toʻlov muddati alohida shartnomada kelishiladi. Chakana chegirmalar bilan aralashmaydi.</p>
+<a class="btn-w" href="#ariza" style="align-self: flex-start; margin-top: 8px">Ariza qoldirish</a>
+</div>
+<img src="{{photo}}" alt="Farmatsevt xaridorga maslahat bermoqda" style="width: 100%; height: 100%; min-height: 320px; object-fit: cover; display: block">
+</section>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{dirs}}" as="d" hint-placeholder-count="3"><div class="panel" style="padding: 28px; display: flex; flex-direction: column; gap: 10px"><span style="font-size: 21px; font-weight: 700">{{d.t}}</span><span class="p">{{d.s}}</span></div></sc-for>
+</section>
+<section id="ariza" class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 18px">
+<h2 class="h3" style="font-size: 24px">Hamkorlik arizasi</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<label class="fl">Kompaniya yoki dorixona nomi<span class="inp ph">Dorixona yoki kompaniya nomi</span></label>
+<label class="fl">Yoʻnalish<span class="inp">Dorixonalar uchun<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M6 9l6 6 6-6"/></svg></span></label>
+<label class="fl">Kontakt shaxs<span class="inp ph">Ism familiya</span></label>
+<label class="fl">Telefon raqami<span class="inp ph">+998 90 123 45 67</span></label>
+<label class="fl">Hudud<span class="inp">Toshkent shahri<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M6 9l6 6 6-6"/></svg></span></label>
+<label class="fl">Filiallar soni, ixtiyoriy<span class="inp ph">Masalan, 5</span></label>
+</div>
+<label class="fl">Izoh<span class="inp ph" style="height: 96px; align-items: flex-start; padding-top: 14px">Qaysi brendlar va hajm qiziqtiradi</span></label>
+<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap"><button type="button" class="btn" style="height: 52px; padding: 0 32px">Ariza yuborish</button><span class="small" style="font-size: 14px">Menejer siz bilan bogʻlanadi.</span></div>
+</section>
+</article>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      photo: PH.pharmHelp,
+      dirs: [
+        { t: "Dorixonalar uchun", s: "Ulgurji narxlar, assortiment va yetkazib berish shartlari." },
+        { t: "Distributorlik", s: "Viloyatlarda hamkorlik va rasmiy vakillik." },
+        { t: "Korporativ buyurtma (B2B)", s: "Xodimlar uchun toʻplamlar, sovgʻa va korporativ dasturlar." }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

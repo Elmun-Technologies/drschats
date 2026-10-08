@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Header</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.hu a{color:#44494E;text-decoration:none}
+.hu a:hover{color:#17191B}
+.hi{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:64px;font-size:13px;color:#17191B;text-decoration:none;position:relative}
+.nav a{font-size:15px;font-weight:500;color:#17191B;text-decoration:none;white-space:nowrap;padding:14px 0;border-bottom:2px solid transparent}
+.nav a:hover{border-color:#17191B}
+</style>
+</helmet>
+<header class="gv" style="width: 100%; background: #FFFFFF; border-bottom: 1px solid #E4E6E8">
+<div class="wrap hu" style="height: 40px; display: flex; align-items: center; gap: 24px; font-size: 14px">
+<a href="ContactV3.dc.html" style="display: inline-flex; gap: 6px; align-items: center; color: #17191B; font-weight: 600"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M12 21s-7-6-7-12a7 7 0 0 1 14 0c0 6-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>Toshkent</a>
+<a href="DeliveryV3.dc.html">Yetkazib berish</a>
+<a href="PaymentV3.dc.html">Toʻlov</a>
+<a href="GuaranteeV3.dc.html">Kafolat va qaytarish</a>
+<a href="LoyaltyV3.dc.html">Chegirma tizimi</a>
+<a href="PartnersV3.dc.html">Dorixonalar uchun</a>
+<span style="flex: 1"></span>
+<a href="https://t.me/govita_uz">Telegram</a>
+<a href="tel:+998712007080" style="color: #17191B; font-weight: 700">+998 71 200 70 80</a>
+<span style="display: inline-flex; gap: 8px; font-weight: 600"><a href="HomeV3.dc.html" style="color: #17191B">UZ</a><span style="color: #C9CDD1">|</span><a href="HomeV3.dc.html">RU</a></span>
+</div>
+<div class="wrap" style="height: 76px; display: flex; align-items: center; gap: 20px">
+<a href="HomeV3.dc.html" aria-label="GoVita bosh sahifa" style="text-decoration: none; color: #0F2D24; font-family: 'Playfair Display', Georgia, serif; font-size: 34px; line-height: 40px; font-weight: 500; letter-spacing: -0.02em; flex: none">go<span style="color: #B8954F">v</span>ita</a>
+<a class="btn" href="MegaMenuV3.dc.html" style="height: 52px; padding: 0 22px; flex: none"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>Katalog</a>
+<label style="flex: 1; min-width: 0; display: flex; align-items: center; height: 52px; border-radius: 14px; background: #F1F3F0; padding: 0 6px 0 18px; gap: 10px">
+<span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Qidiruv</span>
+<input type="search" placeholder="Vitamin, brend yoki tarkib — masalan, magniy" style="flex: 1; min-width: 0; border: 0; outline: none; background: transparent; font: 400 16px Onest, sans-serif; color: #17191B">
+<a href="SearchV3.dc.html" aria-label="Qidirish" style="width: 42px; height: 42px; border-radius: 10px; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></a>
+</label>
+<nav aria-label="Foydalanuvchi" style="display: flex; gap: 4px; flex: none">
+<a class="hi" href="CompareV3.dc.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="M6 20V10M12 20V4M18 20v-7"/></svg>Taqqoslash</a>
+<a class="hi" href="FavoritesV3.dc.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Sevimlilar</a>
+<a class="hi" href="LoginV3.dc.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>Kirish</a>
+<a class="hi" href="CartV3.dc.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"/></svg>Savat<sc-if value="{{hasCart}}" hint-placeholder-val="{{true}}"><span style="position: absolute; top: -4px; left: 50%; margin-left: 4px; min-width: 20px; height: 20px; padding: 0 5px; box-sizing: border-box; border-radius: 10px; background: #C8161D; color: #FFFFFF; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center">{{cartCount}}</span></sc-if></a>
+</nav>
+</div>
+<nav class="wrap nav" aria-label="Kategoriyalar" style="display: flex; gap: 26px; overflow: hidden">
+<a href="SaleV3.dc.html" style="color: #C8161D; font-weight: 600">Aksiyalar</a>
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="9"><a href="{{c.h}}" style="{{c.st}}">{{c.t}}</a></sc-for>
+</nav>
+</header>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["none","Vitaminlar","Minerallar","Immunitet","Goʻzallik","Bolalar uchun","Brendlar"],"default":"none"},"cartCount":{"editor":"int","default":3},"$preview":{"width":1440,"height":169}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var a = this.props.active ?? "none";
+    var n = this.props.cartCount ?? 3;
+    var list = ["Vitaminlar", "Minerallar", "Immunitet", "Goʻzallik", "Bolalar uchun", "Homiladorlik", "Shipuchi tabletkalar", "Tibbiy ovqatlanish", "Tibbiy jihozlar", "Brendlar"];
+    return {
+      cartCount: n, hasCart: n > 0,
+      cats: list.map(function (t) { return { t: t, h: t === "Brendlar" ? "BrandsV3.dc.html" : "CatalogV3.dc.html", st: t === a ? "border-color: #17191B; font-weight: 700" : "" }; })
+    };
+  }
+}
+</script>
+</body>
+</html>

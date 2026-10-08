@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — maqola</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.ar p{margin:0;font-size:18px;line-height:30px;color:#2E3236}
+.ar h2{margin:16px 0 0;font-size:26px;line-height:32px;font-weight:700}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 32px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><a href="BlogV3.dc.html">Sogʻliq blogi</a><span>/</span><span style="color: #17191B">Yangi Swiss Energy liniyasi keldi</span></nav>
+<div style="display: grid; grid-template-columns: minmax(0, 760px) 340px; gap: 64px; justify-content: space-between; align-items: start">
+<article class="ar" style="display: flex; flex-direction: column; gap: 20px">
+<span style="display: flex; gap: 10px; align-items: center"><span class="b-soft"># yangilik</span><span class="small" style="font-size: 14px">1 iyun 2026 · 3 daqiqa oʻqish</span></span>
+<h1 class="h1" style="font-size: 44px; line-height: 50px">Yangi Swiss Energy liniyasi keldi</h1>
+<p style="font-size: 20px; line-height: 31px; color: #17191B">Shveytsariyadan yangi shipuchi vitaminlar assortimenti omborimizga yetib keldi. Barcha mahsulotlar zavod va import hujjatlari bilan.</p>
+<img src="{{img}}" alt="Apelsin boʻlagi va shipuchi tabletkalar" style="width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 24px; display: block; margin: 8px 0">
+<h2>Katalogdagi Swiss Energy mahsulotlaridan</h2>
+<p>Vitamin C 550 mg — apelsin taʼmli shipuchi tabletka: 550 mg askorbin kislotasi, kuniga bir tabletka, suvda eritib ichiladi. Qadoqda 20 tabletka.</p>
+<p>ImmunoVit — echinacea, propolis, vitamin C va rux bir kapsulada. Qadoqda 30 kapsula.</p>
+<p>Prenatal Forte — homiladorlik davri uchun 20 vitamin va mineral, folat 400 mkg, temir 14 mg. Qabuldan oldin shifokor bilan maslahatlashing.</p>
+<h2>Qayerdan olish mumkin</h2>
+<p>Mahsulotlar saytda sotuvda. Toshkent boʻylab kuryer 24 soat ichida yetkazadi, viloyatlarga EMU pochta orqali 1–3 kunda. 300 000 soʻmdan ortiq buyurtmalar bepul yetkaziladi.</p>
+<div class="panel" style="padding: 22px 24px; font-size: 15px; line-height: 22px; color: #2E3236; margin-top: 8px">Biologik faol qoʻshimchalar dori vositasi emas. Doimiy dori qabul qilsangiz, homilador boʻlsangiz yoki surunkali kasalligingiz boʻlsa, avval shifokor bilan maslahatlashing.</div>
+<div style="display: flex; gap: 8px; align-items: center; padding-top: 8px"><span style="font-size: 15px; font-weight: 600; margin-right: 6px">Ulashish:</span><a class="chip" href="#">Telegram</a><a class="chip" href="#">Facebook</a><a class="chip" href="#">Havolani nusxalash</a></div>
+</article>
+<aside style="position: sticky; top: 24px; display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 20px; font-weight: 700">Mos mahsulotlar</span>
+<sc-for list="{{rel}}" as="p" hint-placeholder-count="3">
+<a class="card" href="ProductV3.dc.html" style="padding: 12px; display: flex; gap: 12px; align-items: center; text-decoration: none; color: #17191B">
+<span style="width: 72px; height: 72px; border-radius: 14px; background: #F1F3F0; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{p.img}}" alt="" style="width: 62px; height: 62px; object-fit: contain"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 4px; min-width: 0"><span style="font-size: 15px; line-height: 20px">{{p.short}}</span><span style="font-size: 17px; font-weight: 700">{{p.priceF}} soʻm</span></span>
+</a>
+</sc-for>
+<a class="btn" href="BrandV3.dc.html" style="margin-top: 4px">Barcha Swiss Energy mahsulotlari</a>
+</aside>
+</div>
+<section style="display: flex; flex-direction: column; gap: 20px; padding-top: 24px">
+<div class="sh"><h2 class="h2" style="font-size: 26px">Boshqa yangiliklar</h2><a class="more" href="BlogV3.dc.html">Blogga qaytish<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px">
+<a href="BlogV3.dc.html" style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px; align-items: center; text-decoration: none; color: #17191B"><img src="{{s1}}" alt="" style="width: 200px; height: 140px; object-fit: cover; border-radius: 18px"><span style="display: flex; flex-direction: column; gap: 6px"><span class="small">12 may 2026</span><span style="font-size: 20px; font-weight: 700">Toshkentda yangi ombor ochildi</span></span></a>
+<a href="BlogV3.dc.html" style="display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 20px; align-items: center; text-decoration: none; color: #17191B"><img src="{{s2}}" alt="" style="width: 200px; height: 140px; object-fit: cover; border-radius: 18px"><span style="display: flex; flex-direction: column; gap: 6px"><span class="small">20 aprel 2026</span><span style="font-size: 20px; font-weight: 700">2000-chi hamkor dorixona</span></span></a>
+</div>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2200}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() { return { img: PH.orange, s1: PH.pharmShelf, s2: PH.pharmHelp, rel: gvList(["vitc", "immuno", "prenatal"]) }; }
+}
+</script>
+</body>
+</html>

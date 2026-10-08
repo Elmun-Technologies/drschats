@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — yetkazib berish, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+<main style="display: flex; flex-direction: column; gap: 18px; padding: 4px 0 28px">
+<div class="hs px" style="gap: 6px"><span class="chip on" style="height: 36px">Yetkazib berish</span><a class="chip" href="#" style="height: 36px">Toʻlov</a><a class="chip" href="#" style="height: 36px">Kafolat</a><a class="chip" href="#" style="height: 36px">Chegirmalar</a><a class="chip" href="#" style="height: 36px">Aloqa</a></div>
+<div class="px" style="display: flex; flex-direction: column; gap: 6px"><h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">Yetkazib berish</h1><span class="p" style="font-size: 16px">Toshkent va butun Oʻzbekiston boʻylab.</span></div>
+<div class="px"><div style="border-radius: 22px; overflow: hidden; background: #1C1F22; color: #FFFFFF">
+<img src="{{door}}" alt="Kuryer buyurtmani topshirmoqda" style="width: 100%; height: 170px; object-fit: cover; display: block">
+<div style="padding: 18px; display: flex; flex-direction: column; gap: 6px"><span style="font-size: 21px; line-height: 26px; font-weight: 700">300 000 soʻmdan ortiq xaridga — bepul</span><span style="font-size: 14px; color: #C9CDD1">Toshkent va viloyatlar uchun bir xil shart.</span></div>
+</div></div>
+<div class="px" style="display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{ways}}" as="w" hint-placeholder-count="3">
+<div class="panel" style="padding: 18px; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start">
+<span style="width: 44px; height: 44px; border-radius: 22px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24"><path d="{{w.d}}"/></svg></span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">{{w.t}}</span><span style="font-size: 20px; font-weight: 700">{{w.time}}</span><span style="font-size: 14px; line-height: 19px; color: #2E3236">{{w.s}}</span></span>
+</div>
+</sc-for>
+</div>
+<div class="px" style="display: flex; flex-direction: column">
+<h2 style="margin: 0 0 6px; font-size: 21px; font-weight: 700">Savol-javob</h2>
+<sc-for list="{{faq}}" as="f" hint-placeholder-count="2"><div style="display: flex; flex-direction: column; gap: 4px; padding: 14px 0; border-bottom: 1px solid #E4E6E8"><span style="font-size: 16px; font-weight: 700">{{f.q}}</span><span style="font-size: 15px; line-height: 21px; color: #44494E">{{f.a}}</span></div></sc-for>
+</div>
+</main>
+<dc-import name="FooterMobileV3" hint-size="100%,877px"></dc-import>
+<div style="position: relative; z-index: 5"><dc-import name="TabBarV3" active="home" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      door: PH.door,
+      ways: [
+        { t: "Toshkent boʻylab — kuryer", time: "24 soat ichida", s: "300 000 soʻmdan bepul, aks holda 30 000 soʻm.", d: "M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" },
+        { t: "Viloyatlarga — EMU pochta", time: "1–3 kun", s: "300 000 soʻmdan bepul, aks holda 30 000 soʻm.", d: "M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10" },
+        { t: "Oʻzi olib ketish", time: "Bepul", s: "Toshkent shahridagi omborimizdan.", d: "M4 10l8-6 8 6v10H4zM10 20v-6h4v6" }
+      ],
+      faq: [
+        { q: "Yetkazib berish qancha vaqt oladi?", a: "Toshkent boʻylab 24 soat ichida. Viloyatlarga 1–3 kunda." },
+        { q: "Yetkazib berishda toʻlasam boʻladimi?", a: "Albatta — naqd yoki karta orqali kuryerga." }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

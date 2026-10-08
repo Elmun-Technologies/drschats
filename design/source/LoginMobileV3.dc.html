@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — kirish, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+</style>
+</helmet>
+<div class="gv" style="position: relative; height: 844px; overflow: hidden; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+<main class="px" style="display: flex; flex-direction: column; gap: 18px; padding-top: 12px">
+<div style="display: flex; gap: 6px"><span style="flex: 1; height: 4px; border-radius: 2px; background: #17191B"></span><span style="flex: 1; height: 4px; border-radius: 2px; background: #E3E6E9"></span></div>
+<h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">Shaxsiy kabinet</h1>
+<p class="p" style="font-size: 16px">Telefon raqamingizni kiriting — Telegram orqali kirish kodini yuboramiz.</p>
+<label class="fl">Telefon raqami<span class="inp" style="border-color: #17191B; height: 56px; font-size: 18px">+998 90 123 45 67</span></label>
+<button type="button" class="btn" style="height: 56px; font-size: 17px; border-radius: 14px">Kodni olish</button>
+<div class="panel" style="padding: 16px 18px; display: flex; flex-direction: column; gap: 6px; border-radius: 16px"><span style="font-size: 15px; font-weight: 700">Kod Telegram orqali keladi</span><span style="font-size: 14px; line-height: 20px; color: #2E3236">Avval botni ishga tushiring va raqamingizni ulashing — kod oʻsha yerga keladi.</span><a href="https://t.me/govita_uz" style="font-size: 15px; font-weight: 600; margin-top: 2px">Telegram'da botni ochish</a></div>
+<p class="small" style="font-size: 14px">Hisobsiz ham buyurtma berishingiz mumkin. Roʻyxatdan oʻtsangiz, shu raqam bilan berilgan avvalgi buyurtmalar avtomatik biriktiriladi.</p>
+</main>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; z-index: 5"><dc-import name="TabBarV3" active="user" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

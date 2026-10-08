@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — savat, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+.sum{display:flex;justify-content:space-between;gap:12px;font-size:16px}
+.mstep{display:flex;flex-direction:column;gap:14px;padding:20px}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+
+<main style="display: flex; flex-direction: column; gap: 16px; padding: 4px 0 28px">
+<div class="px" style="display: flex; align-items: baseline; gap: 10px"><h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">Savat</h1><span style="font-size: 15px; color: #63686E">3 ta mahsulot</span></div>
+<div class="px"><div class="panel" style="padding: 14px 16px; display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 15px; line-height: 20px">Bepul yetkazib berishgacha <b>63 000 soʻm</b> qoldi</span>
+<div style="height: 6px; border-radius: 3px; background: #DCDFDB"><div style="width: 79%; height: 6px; border-radius: 3px; background: #17191B"></div></div>
+</div></div>
+<div class="px" style="display: flex; flex-direction: column">
+<sc-for list="{{items}}" as="it" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: 92px minmax(0, 1fr); gap: 14px; padding: 16px 0; border-bottom: 1px solid #E4E6E8">
+<span style="width: 92px; height: 92px; border-radius: 16px; background: #F1F3F0; display: flex; align-items: center; justify-content: center"><img src="{{it.img}}" alt="{{it.name}}" style="width: 76px; height: 76px; object-fit: contain"></span>
+<div style="display: flex; flex-direction: column; gap: 4px; min-width: 0">
+<div style="display: flex; align-items: baseline; gap: 6px"><span style="font-size: 18px; font-weight: 700">{{it.sum}} soʻm</span><span style="font-size: 13px; color: #63686E; text-decoration: line-through">{{it.oldSum}}</span></div>
+<span style="font-size: 15px; line-height: 20px">{{it.name}}</span>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-top: 6px">
+<div style="display: flex; align-items: center; justify-content: space-between; width: 116px; height: 40px; border-radius: 12px; background: #F1F3F0">
+<button type="button" aria-label="Kamaytirish" style="width: 40px; height: 40px; border: 0; background: transparent; font: 500 20px Onest, sans-serif; color: #17191B">−</button><span style="font-size: 16px; font-weight: 700">{{it.q}}</span><button type="button" aria-label="Koʻpaytirish" style="width: 40px; height: 40px; border: 0; background: transparent; font: 500 20px Onest, sans-serif; color: #17191B">+</button>
+</div>
+<div style="display: flex">
+<button type="button" aria-label="Sevimlilarga" style="width: 44px; height: 44px; border: 0; background: transparent; color: #44494E; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></button>
+<button type="button" aria-label="Oʻchirish" style="width: 44px; height: 44px; border: 0; background: transparent; color: #44494E; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg></button>
+</div>
+</div>
+</div>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span class="px" style="font-size: 17px; font-weight: 700">Buyurtmangizga qoʻshing</span>
+<div class="hs px" style="gap: 8px">
+<sc-for list="{{ups}}" as="u" hint-placeholder-count="3">
+<div class="panel" style="flex: none; width: 240px; display: flex; gap: 10px; align-items: center; padding: 10px; border-radius: 16px">
+<span style="width: 56px; height: 56px; border-radius: 12px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{u.img}}" alt="" style="width: 46px; height: 46px; object-fit: contain"></span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{u.short}}</span><span style="font-size: 15px; font-weight: 700">{{u.priceF}} soʻm</span></div>
+<span style="width: 38px; height: 38px; border-radius: 12px; background: #17191B; color: #FFFFFF; font-size: 20px; display: flex; align-items: center; justify-content: center; flex: none">+</span>
+</div>
+</sc-for>
+</div>
+</div>
+<div class="px" style="display: flex; flex-direction: column; gap: 12px">
+<div class="card mstep">
+<h2 class="h3" style="display: flex; gap: 10px; align-items: center; font-size: 19px"><span class="num" style="width: 30px; height: 30px; font-size: 15px">1</span>Aloqa maʼlumotlari</h2>
+<label class="fl">Ism familiya<span class="inp">Dilnoza Karimova</span></label>
+<label class="fl">Telefon raqami<span class="inp">+998 90 123 45 67</span></label>
+</div>
+<div class="card mstep">
+<h2 class="h3" style="display: flex; gap: 10px; align-items: center; font-size: 19px"><span class="num" style="width: 30px; height: 30px; font-size: 15px">2</span>Yetkazib berish</h2>
+<label class="opt on"><span class="rd on"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Kuryer orqali</span><span style="font-size: 14px; color: #44494E">Toshkent — 24 soatda, 30 000 soʻm</span></span></label>
+<label class="opt"><span class="rd"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Oʻzi olib ketish</span><span style="font-size: 14px; color: #44494E">Toshkentdagi omborimizdan, bepul</span></span></label>
+<label class="fl">Viloyat / shahar<span class="inp">Toshkent shahri<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M6 9l6 6 6-6"/></svg></span></label>
+<label class="fl">Manzil<span class="inp ph">Koʻcha, uy, kvartira</span></label>
+</div>
+<div class="card mstep">
+<h2 class="h3" style="display: flex; gap: 10px; align-items: center; font-size: 19px"><span class="num" style="width: 30px; height: 30px; font-size: 15px">3</span>Toʻlov</h2>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+<sc-for list="{{pay}}" as="p" hint-placeholder-count="4"><label class="opt {{p.c}}" style="padding: 14px"><span class="rd {{p.c}}"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">{{p.t}}</span><span style="font-size: 13px; color: #44494E">{{p.s}}</span></span></label></sc-for>
+</div>
+</div>
+<div class="panel mstep">
+<div class="sum"><span style="color: #44494E">Mahsulotlar, 3 ta</span><span>267 000 soʻm</span></div>
+<div class="sum"><span style="color: #44494E">Aksiya chegirmasi</span><span style="color: #C8161D; font-weight: 600">−30 000 soʻm</span></div>
+<div class="sum"><span style="color: #44494E">Yetkazib berish</span><span>30 000 soʻm</span></div>
+<div class="sum" style="padding-top: 12px; border-top: 1px solid #DCDFDB; font-size: 22px; font-weight: 700"><span>Jami</span><span>267 000 soʻm</span></div>
+<span class="small">Buyurtmani yuborish orqali ommaviy oferta va maxfiylik siyosati shartlariga rozilik bildirasiz.</span>
+</div>
+</div>
+</main>
+
+<dc-import name="FooterMobileV3" hint-size="100%,877px"></dc-import>
+<div style="position: relative; z-index: 5">
+<div style="display: flex; gap: 10px; align-items: center; padding: 10px 16px; background: #FFFFFF; border-top: 1px solid #E4E6E8">
+<div style="display: flex; flex-direction: column; flex: none"><span style="font-size: 13px; color: #44494E">Jami</span><span style="font-size: 19px; line-height: 23px; font-weight: 700">267 000 soʻm</span></div>
+<a class="btn" href="OrderSuccessMobileV3.dc.html" style="flex: 1; height: 52px; border-radius: 14px">Buyurtmani yuborish</a>
+</div>
+<dc-import name="TabBarV3" active="cart" hint-size="100%,68px"></dc-import>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      items: [
+        { name: "Dr. Frei Antistress Magniy B6, 20 shipuchi tabletka", img: GV.mag.img, q: 2, sum: "158 000", oldSum: "178 000" },
+        { name: "Dr. Frei Multivitamins + Biotin, 20 shipuchi tabletka", img: GV.multi.img, q: 1, sum: "79 000", oldSum: "89 000" }
+      ],
+      ups: gvList(["vitc", "gold", "kids"]),
+      pay: [{ t: "Payme", s: "Onlayn", c: "on" }, { t: "Click", s: "Onlayn", c: "" }, { t: "Uzum", s: "Onlayn", c: "" }, { t: "Naqd / karta", s: "Yetkazishda", c: "" }]
+    };
+  }
+}
+</script>
+</body>
+</html>

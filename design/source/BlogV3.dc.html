@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — sogʻliq blogi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.nw img{width:100%;aspect-ratio:3/2;object-fit:cover;border-radius:20px;display:block}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 32px; padding-top: 20px; padding-bottom: 72px">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Sogʻliq blogi</span></nav>
+<h1 class="h1" style="font-size: 44px; line-height: 50px">Sogʻliq blogi</h1>
+<p class="lead">Vitaminlar va sogʻlom hayot haqida foydali maqolalar, kompaniya yangiliklari.</p>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="chip on">Hammasi</span><a class="chip" href="#">Yangiliklar</a><sc-for list="{{cats}}" as="c" hint-placeholder-count="8"><a class="chip" href="#">{{c}}</a></sc-for></div>
+<a href="ArticleV3.dc.html" style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 0; border-radius: 28px; overflow: hidden; background: #F1F3F0; text-decoration: none; color: #17191B">
+<img src="{{feat}}" alt="Apelsin boʻlagi va shipuchi tabletkalar" style="width: 100%; height: 420px; object-fit: cover; display: block">
+<span style="padding: 40px; display: flex; flex-direction: column; gap: 14px; justify-content: center">
+<span style="display: flex; gap: 10px; align-items: center"><span class="b-soft" style="background: #FFFFFF">Tavsiya etilgan maqola</span><span class="small">1 iyun 2026 · 3 daqiqa oʻqish</span></span>
+<span style="font-size: 36px; line-height: 42px; font-weight: 700; letter-spacing: -0.01em">Yangi Swiss Energy liniyasi keldi</span>
+<span class="lead">Shveytsariyadan yangi shipuchi vitaminlar assortimenti: nima keldi va qanday qabul qilinadi.</span>
+<span class="btn" style="align-self: flex-start; margin-top: 8px">Oʻqish</span>
+</span>
+</a>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px">
+<sc-for list="{{news}}" as="n" hint-placeholder-count="3">
+<a class="nw" href="ArticleV3.dc.html" style="display: flex; flex-direction: column; gap: 12px; text-decoration: none; color: #17191B">
+<img src="{{n.img}}" alt="">
+<span style="display: flex; justify-content: space-between; align-items: center"><span class="b-soft"># {{n.tag}}</span><span class="small">{{n.d}}</span></span>
+<span style="font-size: 21px; line-height: 27px; font-weight: 700">{{n.t}}</span>
+<span class="p">{{n.s}}</span>
+</a>
+</sc-for>
+</section>
+<section style="padding: 36px 40px; border-radius: 28px; background: #1C1F22; color: #FFFFFF; display: flex; gap: 24px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 640px"><span style="font-size: 26px; font-weight: 700">Yangi maqolalar tez orada qoʻshiladi</span><span style="font-size: 16px; line-height: 24px; color: #C9CDD1">Ovqatlanish, vitaminlar, homiladorlik va bolalar boʻlimlari tayyorlanmoqda. Chiqishi bilan Telegram kanalimizda xabar beramiz.</span></div>
+<a class="btn-w" href="https://t.me/govita_uz">Telegram kanalga oʻtish</a>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      feat: PH.orange,
+      cats: ["Ovqatlanish", "Vitaminlar", "Turmush tarzi", "Tadqiqotlar", "Bolalar", "Homiladorlik", "Sport"],
+      news: [
+        { t: "Yangi Swiss Energy liniyasi keldi", s: "Shveytsariyadan yangi shipuchi vitaminlar assortimenti.", d: "1 iyun 2026", tag: "yangilik", img: PH.citrus },
+        { t: "Toshkentda yangi ombor ochildi", s: "Tezroq yetkazib berish uchun yangi logistika markazi.", d: "12 may 2026", tag: "yangilik", img: PH.pharmShelf },
+        { t: "2000-chi hamkor dorixona", s: "Hamkorlik tarmogʻimiz yana kengaydi.", d: "20 aprel 2026", tag: "yangilik", img: PH.pharmHelp }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

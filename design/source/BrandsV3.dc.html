@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — brendlar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.bc{min-height:300px;padding:28px;display:flex;flex-direction:column;gap:8px;border-radius:28px}
+.bc .pk{position:absolute;right:20px;bottom:18px;display:flex;align-items:flex-end}
+.bc .pk img{width:120px;height:120px;object-fit:contain;margin-left:-26px}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" active="Brendlar" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 32px; padding-top: 20px; padding-bottom: 72px">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Brendlar</span></nav>
+<h1 class="h1">Brendlar</h1>
+<p class="lead" style="max-width: 780px">Katalogdagi barcha brendlar Oʻzbekistonga rasmiy import qilinadi. Rasmiy import qiluvchi — Alimkhanov Pharm Group.</p>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="chip on">Hammasi</span><a class="chip" href="#">Shveytsariya</a><a class="chip" href="#">Fransiya</a><a class="chip" href="#">Germaniya</a><a class="chip" href="#">Yaponiya</a></div>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{brands}}" as="b" hint-placeholder-count="6">
+<a class="tile bc" href="BrandV3.dc.html">
+<span style="font-size: 14px; font-weight: 600; color: #44494E; position: relative; z-index: 1">{{b.c}}</span>
+<span style="font-size: 34px; line-height: 38px; font-weight: 700; letter-spacing: -0.02em; position: relative; z-index: 1">{{b.n}}</span>
+<span style="font-size: 16px; line-height: 23px; color: #2E3236; max-width: 230px; position: relative; z-index: 1">{{b.t}}</span>
+<span class="pk"><sc-for list="{{b.imgs}}" as="i" hint-placeholder-count="2"><img src="{{i}}" alt=""></sc-for></span>
+<span class="arr-s" style="margin-top: auto; background: #FFFFFF; position: relative; z-index: 1"><svg class="ic" viewBox="0 0 24 24"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+</a>
+</sc-for>
+</section>
+<div class="card" style="padding: 28px 32px; display: flex; gap: 20px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 6px; max-width: 760px"><span style="font-size: 20px; font-weight: 700">Hujjat kerakmi?</span><span class="p">Zavod sertifikati, import yoki roʻyxatdan oʻtkazish hujjati — istalgan mahsulot uchun nusxasini soʻrov boʻyicha yuboramiz.</span></div>
+<a class="btn" href="LicensesV3.dc.html">Hujjatlarni koʻrish</a>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var I = function (ks) { return ks.map(function (k) { return GV[k].img; }); };
+    return {
+      brands: [
+        { n: "Swiss Energy", c: "Shveytsariya", t: "Vitamin va shipuchi tabletkalar liniyasi.", imgs: I(["immuno", "visio"]) },
+        { n: "Dr. Frei", c: "Shveytsariya", t: "Swiss Energy'ning shipuchi tabletkalar va oʻlchov asboblari liniyasi.", imgs: I(["mag", "tono"]) },
+        { n: "Delical", c: "Fransiya", t: "Yuqori kaloriyali klinik ovqatlanish ichimliklari.", imgs: I(["dvan", "dcho"]) },
+        { n: "Peano", c: "Germaniya", t: "Tashqi qoʻllash uchun balzam.", imgs: I(["peano"]) },
+        { n: "Aminomorin", c: "Yaponiya", t: "Aminokislota kompleksi.", imgs: I(["amino"]) },
+        { n: "HIEW", c: "Yaponiya", t: "Sovutuvchi plastir.", imgs: [] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

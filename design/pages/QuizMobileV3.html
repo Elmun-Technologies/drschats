@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="uz"><head><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>GoVita — test, mobil</title>
+<style>x-dc{display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Playfair+Display:wght@500&amp;display=swap"><style>
+body{margin:0;background:#FFFFFF}
+a{color:#17191B}a:hover{color:#000000}
+.gv{font-family:Onest,'Segoe UI',Arial,sans-serif;color:#17191B;background:#FFFFFF}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1296px;margin:0 auto;padding:0 24px;box-sizing:border-box;width:100%}
+.h1{margin:0;font-size:36px;line-height:42px;font-weight:700;letter-spacing:-.015em}
+.h2{margin:0;font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.01em}
+.h3{margin:0;font-size:20px;line-height:26px;font-weight:700}
+.lead{margin:0;font-size:17px;line-height:26px;color:#44494E}
+.p{margin:0;font-size:15px;line-height:23px;color:#44494E}
+.small{font-size:13px;line-height:18px;color:#63686E}
+.sh{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.more{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:600;color:#17191B;text-decoration:none;white-space:nowrap}
+.more:hover{text-decoration:underline}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:12px;background:#17191B;color:#FFFFFF;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn:hover{background:#000000;color:#FFFFFF}
+.btn-l{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#F1F3F0;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-l:hover{background:#E6E8E5;color:#17191B}
+.btn-w{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 28px;border-radius:14px;background:#FFFFFF;color:#17191B;font:600 17px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap}
+.btn-o{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#FFFFFF;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:1.5px solid #D9DCDF;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.arrow{width:56px;height:56px;border-radius:28px;border:0;background:#FFFFFF;color:#17191B;box-shadow:0 2px 10px rgba(23,25,27,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:none}
+.arr-s{width:48px;height:48px;border-radius:24px;background:#E3E6E9;color:#17191B;display:flex;align-items:center;justify-content:center;flex:none}
+.tile{border-radius:24px;background:#F1F3F0;text-decoration:none;color:#17191B;position:relative;overflow:hidden;box-sizing:border-box}
+.tile:hover{color:#17191B;background:#EAECE9}
+.chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:12px;background:#F1F3F0;color:#17191B;font-size:15px;font-weight:500;text-decoration:none;white-space:nowrap;flex:none;box-sizing:border-box}
+.chip small{font-size:14px;color:#63686E;font-weight:400}
+.chip.on{background:#17191B;color:#FFFFFF}
+.chip.on small{color:#C9CDD1}
+.b-sale{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#C8161D;color:#FFFFFF;font-size:14px;font-weight:700;white-space:nowrap}
+.b-hit{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#FFD43B;color:#17191B;font-size:14px;font-weight:700;white-space:nowrap}
+.b-soft{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#E3E6E9;color:#17191B;font-size:13px;font-weight:600;white-space:nowrap}
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;font-size:14px;color:#63686E}
+.crumbs a{color:#63686E;text-decoration:none}
+.crumbs a:hover{color:#17191B}
+.card{border:1px solid #E4E6E8;border-radius:20px;background:#FFFFFF;box-sizing:border-box}
+.panel{border-radius:20px;background:#F1F3F0;box-sizing:border-box}
+.fl{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#44494E;font-weight:500}
+.inp{height:52px;border:1.5px solid #D9DCDF;border-radius:12px;padding:0 16px;font:400 16px Onest,sans-serif;color:#17191B;width:100%;box-sizing:border-box;background:#FFFFFF;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph{color:#8A8F95}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:14px;border:1.5px solid #E4E6E8;cursor:pointer;background:#FFFFFF;box-sizing:border-box}
+.opt.on{border-color:#17191B}
+.rd{width:20px;height:20px;border-radius:10px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;margin-top:1px}
+.rd.on{border:6px solid #17191B}
+.cb{display:flex;align-items:center;gap:10px;font-size:15px;color:#17191B;cursor:pointer}
+.cb i{width:20px;height:20px;border-radius:6px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;display:flex;align-items:center;justify-content:center}
+.cb i.on{background:#17191B;border-color:#17191B}
+.cb em{font-style:normal;color:#63686E;font-size:14px;margin-left:auto}
+.tab{font-size:16px;font-weight:500;color:#63686E;text-decoration:none;padding:16px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:#17191B;font-weight:600;border-color:#17191B}
+.row-l{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #E4E6E8;font-size:15px}
+.sp{display:flex;gap:8px;font-size:15px;line-height:22px}
+.sp span:first-child{color:#63686E;flex:none}
+.sp i{flex:1;border-bottom:1px dotted #C9CDD1;transform:translateY(-6px)}
+.faq{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px;border-bottom:1px solid #E4E6E8;font-size:17px;font-weight:500;color:#17191B;text-decoration:none}
+.faq:hover{color:#000000}
+.grid6{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:24px 12px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:24px 12px}
+.hs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.side a{display:block;padding:10px 14px;border-radius:10px;font-size:15px;color:#17191B;text-decoration:none}
+.side a:hover{background:#F1F3F0}
+.side a.on{background:#F1F3F0;font-weight:600}
+.num{width:36px;height:36px;border-radius:18px;background:#17191B;color:#FFFFFF;font-size:16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.qo{display:flex;align-items:center;gap:14px;padding:12px;border-radius:18px;border:2px solid transparent;background:#F1F3F0;text-decoration:none;color:#17191B}
+.qo.on{border-color:#17191B;background:#FFFFFF}
+.qo img{width:64px;height:64px;border-radius:12px;object-fit:cover;flex:none}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="QuizMobileV3"><div class="gv" style="position: relative; height: 844px; overflow: hidden; display: flex; flex-direction: column; width: 100%;"><div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 8px 8px;"><a href="HomeMobileV3.html" aria-label="Orqaga" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: rgb(23, 25, 27);"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M15 6l-6 6 6 6"></path></svg></a><span style="font-size: 15px; font-weight: 600;">Vitamin tanlash testi · 1 / 5</span><a href="HomeMobileV3.html" aria-label="Yopish" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: rgb(23, 25, 27);"><svg class="ic" viewBox="0 0 24 24" style="width: 22px; height: 22px;"><path d="M6 6l12 12M18 6L6 18"></path></svg></a></div><div style="display: flex; gap: 4px; padding: 0px 16px;"><span style="flex: 1 1 0%; height: 4px; border-radius: 2px; background: rgb(23, 25, 27);"></span><span style="flex: 1 1 0%; height: 4px; border-radius: 2px; background: rgb(227, 230, 233);"></span><span style="flex: 1 1 0%; height: 4px; border-radius: 2px; background: rgb(227, 230, 233);"></span><span style="flex: 1 1 0%; height: 4px; border-radius: 2px; background: rgb(227, 230, 233);"></span><span style="flex: 1 1 0%; height: 4px; border-radius: 2px; background: rgb(227, 230, 233);"></span></div><div style="padding: 20px 16px 0px; display: flex; flex-direction: column; gap: 8px;"><h1 style="margin: 0px; font-size: 28px; line-height: 34px; font-weight: 700;">Kimga tanlaymiz?</h1><p class="p">Natija tashxis emas, balki mahsulot tanlashga yordam.</p></div><div style="padding: 16px; display: flex; flex-direction: column; gap: 8px;"><a class="qo on" href="QuizMobileV3.html"><img src="../assets/st-aud-woman.webp" alt="Ayol uyda" style="object-position: center 30%;"><span style="flex: 1 1 0%; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;"><span class="sc-interp">Oʻzim uchun — ayol</span></span><span style="font-size: 13px; color: rgb(68, 73, 78);"><span class="sc-interp">Kundalik vitamin va minerallar</span></span></span><span style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; border: 7px solid rgb(23, 25, 27);"></span></a><a class="qo " href="QuizMobileV3.html"><img src="../assets/st-aud-man.webp" alt="Erkak oshxonada" style="object-position: 70% center;"><span style="flex: 1 1 0%; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;"><span class="sc-interp">Oʻzim uchun — erkak</span></span><span style="font-size: 13px; color: rgb(68, 73, 78);"><span class="sc-interp">Energiya va tiklanish</span></span></span><span style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; border: 2px solid rgb(169, 174, 179);"></span></a><a class="qo " href="QuizMobileV3.html"><img src="../assets/st-aud-child.webp" alt="Bola" style="object-position: center center;"><span style="flex: 1 1 0%; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;"><span class="sc-interp">Farzandim uchun</span></span><span style="font-size: 13px; color: rgb(68, 73, 78);"><span class="sc-interp">Bolalar multivitaminlari</span></span></span><span style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; border: 2px solid rgb(169, 174, 179);"></span></a><a class="qo " href="QuizMobileV3.html"><img src="../assets/st-aud-pregnancy.webp" alt="Homilador ayol" style="object-position: 60% center;"><span style="flex: 1 1 0%; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;"><span class="sc-interp">Homiladorlik davri</span></span><span style="font-size: 13px; color: rgb(68, 73, 78);"><span class="sc-interp">Homiladorlik uchun komplekslar</span></span></span><span style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; border: 2px solid rgb(169, 174, 179);"></span></a><a class="qo " href="QuizMobileV3.html"><img src="../assets/st-aud-senior.webp" alt="Keksa juftlik" style="object-position: center center;"><span style="flex: 1 1 0%; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;"><span class="sc-interp">Ota-onam uchun</span></span><span style="font-size: 13px; color: rgb(68, 73, 78);"><span class="sc-interp">60+ uchun vitamin va minerallar</span></span></span><span style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; border: 2px solid rgb(169, 174, 179);"></span></a><a class="qo " href="QuizMobileV3.html"><img src="../assets/st-aud-recovery.webp" alt="Ayol pled oʻranib" style="object-position: center center;"><span style="flex: 1 1 0%; display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 16px; font-weight: 700;"><span class="sc-interp">Kasallikdan keyin</span></span><span style="font-size: 13px; color: rgb(68, 73, 78);"><span class="sc-interp">Tiklanish davri uchun ovqatlanish</span></span></span><span style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; border: 2px solid rgb(169, 174, 179);"></span></a></div><div style="position: absolute; left: 0px; right: 0px; bottom: 0px; padding: 12px 16px 20px; background: rgb(255, 255, 255); border-top: 1px solid rgb(228, 230, 232); display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px;"><button type="button" class="btn-l" style="height: 52px;">Oʻtkazish</button><a class="btn" href="QuizMobileV3.html" style="height: 52px; border-radius: 14px;">Keyingi</a></div></div></div></div>
+
+
+
+</body></html>

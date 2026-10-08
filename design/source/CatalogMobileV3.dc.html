@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — katalog, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+.msub{width:112px;height:112px;flex:none;display:flex;flex-direction:column;padding:10px 10px 0;border-radius:18px}
+.msub span{font-size:13px;line-height:16px;font-weight:600;position:relative;z-index:1}
+.msub img{position:absolute;right:2px;bottom:2px;width:64px;height:64px;object-fit:contain}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+
+<main style="display: flex; flex-direction: column; gap: 16px; padding: 4px 0 32px">
+<div class="px" style="display: flex; flex-direction: column; gap: 4px">
+<a href="MenuMobileV3.dc.html" style="display: inline-flex; align-items: center; gap: 4px; font-size: 14px; color: #44494E; text-decoration: none"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M15 6l-6 6 6 6"/></svg>Katalog</a>
+<h1 style="margin: 0; font-size: 26px; line-height: 32px; font-weight: 700">Vitaminlar va minerallar</h1>
+<span style="font-size: 15px; color: #63686E">13 ta mahsulot</span>
+</div>
+<div class="hs px" style="gap: 8px">
+<sc-for list="{{subs}}" as="s" hint-placeholder-count="5"><a class="tile msub" href="CatalogMobileV3.dc.html"><span>{{s.t}}</span><img src="{{s.img}}" alt=""></a></sc-for>
+</div>
+<div class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; position: sticky; top: 0; z-index: 2; background: #FFFFFF; padding-top: 4px; padding-bottom: 4px">
+<a class="btn-l" href="FiltersMobileV3.dc.html" style="height: 44px; font-size: 15px"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M4 6h16M7 12h10M10 18h4"/></svg>Filtrlar<span style="min-width: 20px; height: 20px; padding: 0 6px; box-sizing: border-box; border-radius: 10px; background: #17191B; color: #FFFFFF; font-size: 12px; display: inline-flex; align-items: center; justify-content: center">1</span></a>
+<button type="button" class="btn-l" style="height: 44px; font-size: 15px"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M7 4v16M3 16l4 4 4-4M17 20V4M13 8l4-4 4 4"/></svg>Ommabop</button>
+</div>
+<div class="hs px" style="gap: 6px; margin-top: -6px">
+<span class="chip on" style="height: 36px; font-size: 14px">Sotuvda bor<svg class="ic" viewBox="0 0 24 24" style="width: 14px; height: 14px"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+<span class="chip" style="height: 36px; font-size: 14px">Chegirmadagilar <small>3</small></span>
+<span class="chip" style="height: 36px; font-size: 14px">Swiss Energy <small>8</small></span>
+<span class="chip" style="height: 36px; font-size: 14px">Dr. Frei <small>4</small></span>
+</div>
+<div class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 10px">
+<sc-for list="{{first}}" as="p" hint-placeholder-count="4"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,400px"></dc-import></sc-for>
+</div>
+<div class="px"><a href="QuizMobileV3.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 20px; border-radius: 24px; background: #1C1F22; color: #FFFFFF; text-decoration: none">
+<span style="font-size: 19px; line-height: 24px; font-weight: 700">Qaysi vitamin kerak — bilmaysizmi?</span>
+<span style="font-size: 14px; line-height: 20px; color: #C9CDD1">Vitamin tanlash testi: bir necha savol, natijada mos mahsulotlar.</span>
+<span class="btn-w" style="align-self: flex-start; height: 44px; padding: 0 18px; font-size: 15px; margin-top: 4px">Testni boshlash</span>
+</a></div>
+<div class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 10px">
+<sc-for list="{{second}}" as="p" hint-placeholder-count="4"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,400px"></dc-import></sc-for>
+</div>
+<div class="px" style="display: flex; flex-direction: column; gap: 10px; align-items: center">
+<span style="font-size: 14px; color: #44494E">13 tadan 8 tasi koʻrsatildi</span>
+<div style="width: 100%; height: 4px; border-radius: 2px; background: #E4E6E8"><div style="width: 62%; height: 4px; border-radius: 2px; background: #17191B"></div></div>
+<button type="button" class="btn-l" style="width: 100%; margin-top: 4px">Yana 5 ta koʻrsatish</button>
+</div>
+</main>
+
+<dc-import name="FooterMobileV3" hint-size="100%,877px"></dc-import>
+<div style="position: relative; z-index: 5"><dc-import name="TabBarV3" active="catalog" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var o = { href: "ProductMobileV3.dc.html" };
+    var list = [gv("vitc", o), gv("mag", o), gv("multi", { href: o.href, inCart: true }), gv("immuno", o), gv("prenatal", o), gv("kids", o), gv("hns", o), gv("calci", o)];
+    var S = function (t, k) { return { t: t, img: GV[k].img }; };
+    return {
+      first: list.slice(0, 4), second: list.slice(4),
+      subs: [S("Shipuchi tabletkalar", "vitc"), S("Kapsulalar", "visio"), S("Multivitaminlar", "multi"), S("Magniy", "mag"), S("Kalsiy va D3", "calci"), S("Kollagen", "collagen")]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — katalog</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.sub{height:120px;display:flex;flex-direction:column;justify-content:space-between;padding:16px 16px 0;border-radius:20px}
+.sub span{font-size:16px;line-height:20px;font-weight:600;position:relative;z-index:1}
+.sub small{font-size:13px;color:#63686E;font-weight:400}
+.sub img{position:absolute;right:6px;bottom:4px;width:78px;height:78px;object-fit:contain}
+.fg{display:flex;flex-direction:column;gap:12px;padding:20px 0;border-bottom:1px solid #E4E6E8}
+.fg h3{margin:0;font-size:16px;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.sort{font-size:15px;color:#44494E;text-decoration:none;padding:8px 14px;border-radius:10px}
+.sort.on{color:#17191B;font-weight:600;background:#F1F3F0}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" active="Vitaminlar" hint-size="100%,169px"></dc-import>
+
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><a href="MegaMenuV3.dc.html">Katalog</a><span>/</span><span style="color: #17191B">Vitaminlar va minerallar</span></nav>
+<div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-top: -6px"><h1 class="h1">Vitaminlar va minerallar</h1><span style="font-size: 17px; color: #63686E">13 ta mahsulot</span></div>
+
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{subs}}" as="s" hint-placeholder-count="6">
+<a class="tile sub" href="CatalogV3.dc.html"><span>{{s.t}}<br><small>{{s.n}} ta</small></span><img src="{{s.img}}" alt=""></a>
+</sc-for>
+</div>
+
+<div style="display: grid; grid-template-columns: 272px minmax(0, 1fr); gap: 32px; align-items: start">
+<aside aria-label="Filtrlar" style="display: flex; flex-direction: column">
+<div class="fg" style="padding-top: 0">
+<h3>Narx, soʻm</h3>
+<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px"><span class="inp" style="height: 44px; font-size: 15px">69 000</span><span class="inp" style="height: 44px; font-size: 15px">379 000</span></div>
+<div style="position: relative; height: 22px; margin: 0 10px">
+<span style="position: absolute; left: 0; right: 0; top: 9px; height: 4px; border-radius: 2px; background: #17191B"></span>
+<span style="position: absolute; left: -10px; top: 1px; width: 20px; height: 20px; border-radius: 10px; background: #FFFFFF; border: 2px solid #17191B; box-sizing: border-box"></span>
+<span style="position: absolute; right: -10px; top: 1px; width: 20px; height: 20px; border-radius: 10px; background: #FFFFFF; border: 2px solid #17191B; box-sizing: border-box"></span>
+</div>
+</div>
+<div class="fg">
+<label class="cb" style="font-weight: 600"><i class="on"><svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: none; stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round"><path d="M5 12l5 5 9-10"/></svg></i>Sotuvda bor<em>13</em></label>
+<label class="cb" style="font-weight: 600"><i></i>Chegirmadagilar<em>3</em></label>
+<label class="cb" style="font-weight: 600"><i></i>Obuna bilan arzonroq<em>13</em></label>
+</div>
+<sc-for list="{{filters}}" as="f" hint-placeholder-count="4">
+<div class="fg">
+<h3>{{f.t}}<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M6 15l6-6 6 6"/></svg></h3>
+<sc-for list="{{f.o}}" as="o" hint-placeholder-count="3"><label class="cb"><i class="{{o.c}}"><svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: none; stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round"><path d="M5 12l5 5 9-10"/></svg></i>{{o.t}}<em>{{o.n}}</em></label></sc-for>
+</div>
+</sc-for>
+<div style="padding-top: 20px; display: flex; flex-direction: column; gap: 8px">
+<button type="button" class="btn" style="width: 100%">13 ta mahsulotni koʻrsatish</button>
+<button type="button" class="btn-l" style="width: 100%; background: transparent">Filtrlarni tozalash</button>
+</div>
+<a class="tile" href="QuizV3.dc.html" style="margin-top: 24px; padding: 22px; display: flex; flex-direction: column; gap: 8px; border-radius: 20px">
+<span style="font-size: 18px; line-height: 23px; font-weight: 700">Qaysi vitamin kerak — bilmaysizmi?</span>
+<span style="font-size: 14px; line-height: 20px; color: #44494E">Vitamin tanlash testi: bir necha savol, natijada mos mahsulotlar roʻyxati.</span>
+<span class="btn" style="align-self: flex-start; height: 44px; margin-top: 6px">Testni boshlash</span>
+</a>
+</aside>
+
+<section style="display: flex; flex-direction: column; gap: 20px; min-width: 0">
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
+<div style="display: flex; gap: 4px; flex-wrap: wrap; align-items: center">
+<span style="font-size: 15px; color: #63686E; margin-right: 6px">Saralash:</span>
+<a class="sort on" href="CatalogV3.dc.html">Ommabop</a><a class="sort" href="CatalogV3.dc.html">Arzonroq</a><a class="sort" href="CatalogV3.dc.html">Qimmatroq</a><a class="sort" href="CatalogV3.dc.html">Chegirma</a><a class="sort" href="CatalogV3.dc.html">Yangi</a>
+</div>
+<div style="display: flex; gap: 6px">
+<button type="button" aria-label="Plitka koʻrinishi" style="width: 40px; height: 40px; border-radius: 10px; border: 0; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg></button>
+<button type="button" aria-label="Roʻyxat koʻrinishi" style="width: 40px; height: 40px; border-radius: 10px; border: 0; background: #F1F3F0; color: #17191B; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+</div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<span class="chip on">Sotuvda bor<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M6 6l12 12M18 6L6 18"/></svg></span>
+<button type="button" class="chip" style="border: 0; background: transparent; font-family: inherit; text-decoration: underline; cursor: pointer">Hammasini tozalash</button>
+</div>
+
+<div class="grid4" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
+<sc-for list="{{first}}" as="p" hint-placeholder-count="8"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for>
+</div>
+
+<a href="LoyaltyV3.dc.html" style="display: flex; align-items: center; gap: 24px; padding: 24px 32px; border-radius: 24px; background: #1C1F22; color: #FFFFFF; text-decoration: none; position: relative; overflow: hidden; min-height: 150px; box-sizing: border-box">
+<span style="flex: 1; display: flex; flex-direction: column; gap: 6px; position: relative; z-index: 1"><span style="font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #A9AEB3">Subscribe &amp; Save</span><span style="font-size: 26px; line-height: 31px; font-weight: 700">Obuna: bugun −10%, keyin har safar −15%</span><span style="font-size: 15px; color: #C9CDD1">Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz. Istalgan vaqtda bekor qilish mumkin.</span></span>
+<span class="btn-w" style="position: relative; z-index: 1">Batafsil</span>
+</a>
+
+<div class="grid4" style="grid-template-columns: repeat(4, minmax(0, 1fr))">
+<sc-for list="{{rest}}" as="p" hint-placeholder-count="5"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for>
+</div>
+
+<div style="display: flex; flex-direction: column; align-items: center; gap: 12px; padding-top: 8px">
+<span style="font-size: 15px; color: #44494E">13 ta mahsulotdan 13 tasi koʻrsatildi</span>
+<div style="width: 280px; height: 4px; border-radius: 2px; background: #17191B"></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 14px; padding-top: 24px">
+<h2 class="h3">Shu boʻlimda koʻp qidiriladi</h2>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{tags}}" as="t" hint-placeholder-count="8"><a class="chip" href="SearchV3.dc.html">{{t}}</a></sc-for></div>
+</div>
+
+<div style="display: flex; flex-direction: column; gap: 10px; padding-top: 16px; max-width: 820px">
+<h2 class="h3">Vitaminlar va minerallarni Toshkentda xarid qilish</h2>
+<p class="p">Go Vita katalogida Swiss Energy, Dr. Frei va Aminomorin vitaminlari: shipuchi tabletkalar, kapsulalar va kukunlar. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan. Toshkent boʻylab kuryer 24 soat ichida yetkazadi, 300 000 soʻmdan ortiq buyurtmalar bepul.</p>
+</div>
+</section>
+</div>
+</main>
+
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3000}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var list = [gv("vitc"), gv("mag"), gv("multi", { inCart: true }), gv("immuno"), gv("prenatal"), gv("kids"), gv("hns"), gv("calci"), gv("gold"), gv("neuro"), gv("visio"), gv("amino"), gv("collagen")];
+    var S = function (t, n, k) { return { t: t, n: n, img: GV[k].img }; };
+    var O = function (t, n, on) { return { t: t, n: n, c: on ? "on" : "" }; };
+    return {
+      first: list.slice(0, 8), rest: list.slice(8),
+      subs: [S("Shipuchi tabletkalar", 5, "vitc"), S("Kapsulalar", 7, "visio"), S("Multivitaminlar", 3, "multi"), S("Magniy", 1, "mag"), S("Kalsiy va D3", 1, "calci"), S("Kollagen", 1, "collagen")],
+      filters: [
+        { t: "Brend", o: [O("Swiss Energy", 8), O("Dr. Frei", 4), O("Aminomorin", 1)] },
+        { t: "Shakli", o: [O("Kapsula", 7), O("Shipuchi tabletka", 5), O("Kukun", 1)] },
+        { t: "Kim uchun", o: [O("Kattalar", 11), O("Bolalar, 7 yoshdan", 1), O("Homiladorlar", 1)] },
+        { t: "Ishlab chiqarilgan", o: [O("Shveytsariya", 12), O("Yaponiya", 1)] }
+      ],
+      tags: ["Magniy B6", "Vitamin C shipuchi", "Kalsiy D3 K2", "Biotin", "Kollagen kukun", "Bolalar vitaminlari", "Homiladorlar uchun", "B guruhi vitaminlari"]
+    };
+  }
+}
+</script>
+</body>
+</html>

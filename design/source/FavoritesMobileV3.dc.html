@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — sevimlilar, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+<main style="display: flex; flex-direction: column; gap: 16px; padding: 4px 0 28px">
+<div class="px" style="display: flex; align-items: baseline; gap: 10px"><h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">Sevimlilar</h1><span style="font-size: 15px; color: #63686E">5 ta mahsulot</span></div>
+<div class="px"><button type="button" class="btn" style="width: 100%">Hammasini savatga · 1 278 900 soʻm</button></div>
+<div class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 10px">
+<sc-for list="{{fav}}" as="p" hint-placeholder-count="5"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,400px"></dc-import></sc-for>
+</div>
+<div class="px"><div class="panel" style="padding: 18px; display: flex; flex-direction: column; gap: 10px"><span style="font-size: 17px; font-weight: 700">Roʻyxat faqat shu qurilmada saqlangan</span><span class="p">Kabinetga kiring — sevimlilar telefon raqamingizga biriktiriladi.</span><a class="btn" href="LoginMobileV3.dc.html" style="align-self: flex-start; height: 44px">Kabinetga kirish</a></div></div>
+</main>
+<dc-import name="FooterMobileV3" hint-size="100%,877px"></dc-import>
+<div style="position: relative; z-index: 5"><dc-import name="TabBarV3" active="fav" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() { return { fav: gvList(["immuno", "mag", "calci", "prenatal", "collagen"], { fav: true, href: "ProductMobileV3.dc.html" }) }; }
+}
+</script>
+</body>
+</html>

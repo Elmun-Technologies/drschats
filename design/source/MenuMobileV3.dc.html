@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — katalog menyusi, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.mi{display:flex;align-items:center;gap:14px;min-height:64px;padding:0 16px;border-bottom:1px solid #EEF0F1;font-size:17px;font-weight:500;color:#17191B;text-decoration:none}
+.mi img{width:44px;height:44px;object-fit:contain;flex:none}
+.ml{display:flex;align-items:center;justify-content:space-between;min-height:52px;padding:0 16px;font-size:16px;color:#17191B;text-decoration:none}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+<main style="display: flex; flex-direction: column; gap: 20px; padding: 0 0 24px">
+<h1 style="margin: 0; padding: 4px 16px 0; font-size: 28px; line-height: 34px; font-weight: 700">Katalog</h1>
+<nav aria-label="Kategoriyalar" style="display: flex; flex-direction: column">
+<a class="mi" href="SaleMobileV3.dc.html" style="color: #C8161D; font-weight: 700"><span style="width: 44px; height: 44px; border-radius: 22px; background: #FDE8E8; display: flex; align-items: center; justify-content: center; flex: none">%</span>Aksiyalar</a>
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="9"><a class="mi" href="CatalogMobileV3.dc.html"><img src="{{c.img}}" alt="">{{c.t}}<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-left: auto; color: #8A8F95"><path d="M9 6l6 6-6 6"/></svg></a></sc-for>
+<a class="mi" href="BrandsV3.dc.html"><span style="width: 44px; height: 44px; border-radius: 22px; background: #F1F3F0; display: flex; align-items: center; justify-content: center; flex: none; font-size: 14px; font-weight: 700">Aa</span>Brendlar<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-left: auto; color: #8A8F95"><path d="M9 6l6 6-6 6"/></svg></a>
+</nav>
+<div style="padding: 0 16px"><a href="QuizMobileV3.dc.html" style="display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 22px; background: #1C1F22; color: #FFFFFF; text-decoration: none"><span style="font-size: 18px; font-weight: 700">Vitamin tanlash testi</span><span style="font-size: 14px; color: #C9CDD1">2 daqiqada mos vitaminlarni tanlang</span></a></div>
+<nav aria-label="Xaridorlarga" style="display: flex; flex-direction: column; background: #F1F3F0; margin: 0 16px; border-radius: 20px; padding: 6px 0">
+<sc-for list="{{links}}" as="l" hint-placeholder-count="6"><a class="ml" href="{{l.h}}">{{l.t}}<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px; color: #8A8F95"><path d="M9 6l6 6-6 6"/></svg></a></sc-for>
+</nav>
+<div style="padding: 0 16px; display: flex; flex-direction: column; gap: 4px"><a href="tel:+998712007080" style="font-size: 22px; font-weight: 700; color: #17191B; text-decoration: none">+998 71 200 70 80</a><span style="font-size: 14px; color: #44494E">Dushanba–Shanba, 09:00–18:00 · UZ | RU</span></div>
+</main>
+<div style="position: relative; z-index: 5"><dc-import name="TabBarV3" active="catalog" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var C = function (t, k) { return { t: t, img: GV[k].img }; };
+    return {
+      cats: [C("Vitaminlar va minerallar", "neuro"), C("Immunitet", "immuno"), C("Goʻzallik", "hns"), C("Bolalar uchun", "kids"), C("Homiladorlik", "prenatal"), C("Shipuchi tabletkalar", "vitc"), C("Tibbiy ovqatlanish", "dvan"), C("Teri parvarishi", "peano"), C("Tibbiy jihozlar", "tono")],
+      links: [{ t: "Yetkazib berish", h: "DeliveryMobileV3.dc.html" }, { t: "Toʻlov usullari", h: "DeliveryMobileV3.dc.html" }, { t: "Kafolat va qaytarish", h: "DeliveryMobileV3.dc.html" }, { t: "Chegirma tizimi", h: "DeliveryMobileV3.dc.html" }, { t: "Biz haqimizda", h: "DeliveryMobileV3.dc.html" }, { t: "Aloqa", h: "DeliveryMobileV3.dc.html" }]
+    };
+  }
+}
+</script>
+</body>
+</html>

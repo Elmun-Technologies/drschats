@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — profilim</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.sec{padding:28px;display:flex;flex-direction:column;gap:16px}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 40px; align-items: start; padding-top: 32px; padding-bottom: 72px">
+<dc-import name="AccountNavV3" active="profile" hint-size="100%,520px"></dc-import>
+<div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+<h1 class="h1" style="margin-bottom: 8px">Mening profilim</h1>
+<div class="card sec">
+<h2 class="h3">Asosiy maʼlumotlar</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<label class="fl">Ismingiz<span class="inp">Dilnoza Karimova</span></label>
+<label class="fl">Telefon raqami<span class="inp">+998 90 123 45 67</span></label>
+<label class="fl">Elektron pochta<span class="inp">dilnoza@example.com<span style="font-size: 14px; font-weight: 600">Tasdiqlash</span></span></label>
+<label class="fl">Tugʻilgan kuningiz<span class="inp ph">Bir hafta oldin eslatamiz</span></label>
+</div>
+</div>
+<div class="card sec">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 class="h3">Sizni nima bezovta qiladi</h2><span class="small" style="font-size: 14px">3 ta tanlandi</span></div>
+<p class="p" style="margin-top: -8px">Tanlaganlaringiz katalogdagi tavsiyalarni oʻzgartiradi.</p>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{goals}}" as="g" hint-placeholder-count="8"><span class="chip {{g.c}}">{{g.t}}</span></sc-for></div>
+</div>
+<div class="card sec">
+<h2 class="h3">Kim uchun tanlaysiz</h2>
+<p class="p" style="margin-top: -8px">Bola uchun doza ham, shakl ham boshqacha boʻladi. Tugʻilgan sanani yozsangiz — oldindan eslatib turamiz.</p>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{fam}}" as="f" hint-placeholder-count="2"><div class="panel" style="padding: 18px; display: flex; flex-direction: column; gap: 4px; border-radius: 16px"><span style="font-size: 17px; font-weight: 700">{{f.n}}</span><span class="small" style="font-size: 14px">{{f.r}}</span></div></sc-for>
+<button type="button" style="border: 1.5px dashed #A9AEB3; border-radius: 16px; background: transparent; font: 600 16px Onest, sans-serif; color: #17191B; min-height: 80px; cursor: pointer">+ Yangi aʼzo qoʻshish</button>
+</div>
+</div>
+<div class="card sec">
+<h2 class="h3">Eslatmalar</h2>
+<p class="p" style="margin-top: -8px">Nimani va qachon eslatishimiz — quyida. Eslatmalar Telegram orqali keladi.</p>
+<sc-for list="{{rem}}" as="r" hint-placeholder-count="3"><div class="row-l"><span style="font-weight: 600">{{r.t}}</span><span style="color: #44494E">{{r.d}}</span></div></sc-for>
+<a class="btn-o" href="https://t.me/govita_uz" style="align-self: flex-start">Telegram botni ulash</a>
+</div>
+<p class="small" style="font-size: 14px">Maʼlumotlaringiz uchinchi shaxslarga berilmaydi. Har bir xatda obunani bekor qilish havolasi bor.</p>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var G = function (t, on) { return { t: t, c: on ? "on" : "" }; };
+    return {
+      goals: [G("Immunitet", true), G("Charchoq", true), G("Uyqu"), G("Soch, teri va tirnoq", true), G("Suyak va boʻgʻimlar"), G("Koʻz"), G("Asab tizimi"), G("Homiladorlik")],
+      fam: [{ n: "Ali", r: "Farzandim · 8 yosh" }, { n: "Rustam", r: "Turmush oʻrtogʻim" }],
+      rem: [{ t: "«Prenatal Forte» tugayapti", d: "Bugun" }, { t: "Ali uchun oʻquv yili boshlanmoqda", d: "Sentabr" }, { t: "Tugʻilgan kuningiz", d: "Sana kiritilmagan" }]
+    };
+  }
+}
+</script>
+</body>
+</html>

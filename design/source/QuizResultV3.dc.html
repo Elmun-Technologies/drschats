@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — test natijasi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 32px; padding-top: 32px; padding-bottom: 72px">
+<section style="display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 32px; align-items: start">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 15px; font-weight: 600; color: #44494E">Sizning tanlovingiz</span>
+<h1 class="h1" style="font-size: 44px; line-height: 50px">Mos keladigan mahsulotlar</h1>
+<p class="lead">Javoblaringiz asosida tuzilgan roʻyxat. Bu tibbiy tashxis emas — doimiy dori qabul qilsangiz yoki surunkali kasalligingiz boʻlsa, shifokor bilan maslahatlashing.</p>
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px">
+<span style="font-size: 17px; font-weight: 700">Nimaga eʼtibor berish kerak</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="chip on">Immunitet</span><span class="chip on">Charchoq</span><span class="chip on">Soch, teri va tirnoq</span><span class="chip">Ayol, 25–44 yosh</span></div>
+</div>
+</div>
+<div style="padding: 28px; border-radius: 24px; background: #1C1F22; color: #FFFFFF; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 14px; color: #A9AEB3">Tavsiya etilgan toʻplam · 3 ta mahsulot</span>
+<span style="font-size: 34px; line-height: 40px; font-weight: 700">797 850 soʻm</span>
+<span style="font-size: 15px; line-height: 22px; color: #C9CDD1">Obuna bilan: birinchi yetkazish −10%, keyingilari −15%. 300 000 soʻmdan yuqori buyurtma bepul yetkaziladi.</span>
+<a class="btn-w" href="CartV3.dc.html" style="margin-top: 6px">Rejani savatga qoʻshish (3)</a>
+<a href="QuizV3.dc.html" style="color: #FFFFFF; font-size: 15px; font-weight: 600; text-align: center">Testni qayta oʻtish</a>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 12px">
+<h2 class="h2" style="font-size: 26px">Tavsiya etilgan vitaminlar toʻplami</h2>
+<p class="p" style="margin-top: -6px">Javoblaringiz va yosh guruhingiz boʻyicha tanlandi. Tavsiyalar ishlab chiqaruvchining rasmiy yoʻriqnomalari asosida tuzilgan.</p>
+<sc-for list="{{rec}}" as="r" hint-placeholder-count="3">
+<div class="card" style="padding: 20px; display: grid; grid-template-columns: 140px minmax(0, 1fr) 220px; gap: 24px; align-items: center">
+<a href="ProductV3.dc.html" style="height: 140px; border-radius: 18px; background: #F1F3F0; display: flex; align-items: center; justify-content: center"><img src="{{r.p.img}}" alt="" style="width: 118px; height: 118px; object-fit: contain"></a>
+<div style="display: flex; flex-direction: column; gap: 8px">
+<span style="font-size: 19px; font-weight: 700">{{r.p.name}}</span>
+<span style="font-size: 15px; line-height: 22px; color: #2E3236"><b>Nega:</b> {{r.why}}</span>
+<span style="font-size: 14px; line-height: 20px; color: #44494E"><b>Izoh:</b> {{r.note}}</span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; align-items: stretch">
+<span style="font-size: 22px; font-weight: 700">{{r.p.priceF}} soʻm</span>
+<span class="small">{{r.unit}}</span>
+<button type="button" class="btn-l">Savatga</button>
+</div>
+</div>
+</sc-for>
+</section>
+
+<section class="panel" style="padding: 28px 32px; display: grid; grid-template-columns: 56px minmax(0, 1fr) auto; gap: 20px; align-items: center">
+<span style="width: 56px; height: 56px; border-radius: 28px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 26px; height: 26px"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M12 12h.01"/><circle cx="12" cy="12" r="9"/></svg></span>
+<div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 19px; font-weight: 700">Avval shifokor bilan maslahatlashing</span><span class="p">Doimiy dori qabul qilish, homiladorlik yoki uzoq davom etgan charchoq boʻlsa — vitamin qabul qilishdan oldin mutaxassisga murojaat qiling.</span></div>
+<a class="btn-o" href="ContactV3.dc.html" style="background: transparent">Mutaxassis bilan bogʻlanish</a>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      rec: [
+        { p: gv("immuno"), why: "siz «Immunitet» yoʻnalishini tanladingiz — tarkibida echinacea, propolis, vitamin C va rux.", note: "Immunitet mavsumida kunlik ratsionni toʻldirish uchun.", unit: "8 865 soʻm / kapsula" },
+        { p: gv("neuro"), why: "siz «Charchoq» yoʻnalishini tanladingiz — B guruhi vitaminlari kompleksi.", note: "Uzoq davom etgan charchoqda avval shifokorga murojaat qiling.", unit: "8 865 soʻm / kapsula" },
+        { p: gv("hns"), why: "siz «Soch, teri va tirnoq» yoʻnalishini tanladingiz — tarkibida biotin, rux, vitamin C va E.", note: "Qabul tartibi qadoqda va mahsulot sahifasida.", unit: "8 865 soʻm / kapsula" }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

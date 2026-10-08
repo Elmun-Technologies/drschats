@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — yetkazib berish</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Yetkazib berish</span></nav>
+<div style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; align-items: start">
+<dc-import name="InfoNavV3" active="delivery" hint-size="100%,760px"></dc-import>
+<article style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 12px"><h1 class="h1" style="font-size: 40px; line-height: 46px">Yetkazib berish</h1><p class="lead">Toshkent va butun Oʻzbekiston boʻylab tez va ishonchli yetkazib berish.</p></div>
+<section style="display: grid; grid-template-columns: minmax(0, 1fr) 300px; align-items: center; gap: 24px; padding: 32px 36px; border-radius: 28px; background: #1C1F22; color: #FFFFFF; overflow: hidden; position: relative; min-height: 220px; box-sizing: border-box">
+<div style="display: flex; flex-direction: column; gap: 10px; position: relative; z-index: 1"><span style="font-size: 34px; line-height: 40px; font-weight: 700">300 000 soʻmdan ortiq xaridga — bepul yetkazib berish</span><span style="font-size: 16px; color: #C9CDD1">Toshkent va viloyatlar uchun bir xil shart.</span></div>
+<img src="{{door}}" alt="Kuryer buyurtmani eshik oldida topshirmoqda" style="width: 100%; height: 200px; object-fit: cover; border-radius: 20px">
+</section>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{ways}}" as="w" hint-placeholder-count="3">
+<div class="panel" style="padding: 28px; display: flex; flex-direction: column; gap: 10px">
+<span style="width: 52px; height: 52px; border-radius: 26px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="{{w.d}}"/></svg></span>
+<span style="font-size: 20px; font-weight: 700; margin-top: 6px">{{w.t}}</span>
+<span style="font-size: 28px; font-weight: 700">{{w.time}}</span>
+<span class="p">{{w.s}}</span>
+</div>
+</sc-for>
+</section>
+<section class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 4px">
+<h2 class="h3" style="font-size: 24px; margin-bottom: 12px">Narxlar</h2>
+<div class="row-l" style="font-weight: 600; color: #63686E; font-size: 14px"><span style="flex: 1">Usul</span><span style="width: 200px">300 000 soʻmgacha</span><span style="width: 200px">300 000 soʻmdan</span></div>
+<sc-for list="{{prices}}" as="p" hint-placeholder-count="3"><div class="row-l" style="font-size: 16px"><span style="flex: 1; font-weight: 600">{{p.t}}</span><span style="width: 200px">{{p.a}}</span><span style="width: 200px; font-weight: 700">{{p.b}}</span></div></sc-for>
+</section>
+<section style="display: flex; flex-direction: column">
+<h2 class="h3" style="font-size: 24px; margin-bottom: 8px">Savol-javob</h2>
+<sc-for list="{{faq}}" as="f" hint-placeholder-count="3"><div style="display: flex; flex-direction: column; gap: 6px; padding: 18px 0; border-bottom: 1px solid #E4E6E8"><span style="font-size: 17px; font-weight: 700">{{f.q}}</span><span class="p" style="font-size: 16px">{{f.a}}</span></div></sc-for>
+</section>
+<p class="small" style="font-size: 14px">Buyurtma onlayn toʻlov bilan darhol tasdiqlanadi. Operator faqat aniqlashtirish uchun qoʻngʻiroq qiladi.</p>
+</article>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2100}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      door: PH.door,
+      ways: [
+        { t: "Toshkent boʻylab — kuryer", time: "24 soat ichida", s: "300 000 soʻmdan ortiq xaridga bepul. Aks holda — 30 000 soʻm.", d: "M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" },
+        { t: "Viloyatlarga — EMU pochta", time: "1–3 kun", s: "300 000 soʻmdan ortiq xaridga bepul. Aks holda — 30 000 soʻm.", d: "M4 7l8-4 8 4v10l-8 4-8-4zM4 7l8 4 8-4M12 11v10" },
+        { t: "Oʻzi olib ketish", time: "Bepul", s: "Toshkent shahridagi omborimizdan.", d: "M4 10l8-6 8 6v10H4zM10 20v-6h4v6" }
+      ],
+      prices: [{ t: "Kuryer, Toshkent", a: "30 000 soʻm", b: "Bepul" }, { t: "EMU pochta, viloyatlar", a: "30 000 soʻm", b: "Bepul" }, { t: "Oʻzi olib ketish", a: "Bepul", b: "Bepul" }],
+      faq: [
+        { q: "Yetkazib berish qancha vaqt oladi?", a: "Toshkent boʻylab 24 soat ichida. Viloyatlarga 1–3 kunda — operator tasdiqlashda aniq muddatni aytadi." },
+        { q: "Yetkazib berish bepulmi?", a: "Toshkentda ham, viloyatlarda ham 300 000 soʻmdan ortiq xaridga bepul." },
+        { q: "Yetkazib berishda toʻlasam boʻladimi?", a: "Albatta — naqd yoki karta orqali kuryerga toʻlashingiz mumkin." }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Maʼlumot menyusi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}
+.in{display:block;padding:11px 14px;border-radius:12px;font-size:16px;color:#17191B;text-decoration:none}
+.in:hover{background:#F1F3F0}
+</style>
+</helmet>
+<nav aria-label="Maʼlumot sahifalari" style="width: 100%; display: flex; flex-direction: column; gap: 22px; font-family: Onest, 'Segoe UI', Arial, sans-serif; color: #17191B">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 2px">
+<span style="font-size: 13px; font-weight: 600; color: #63686E; letter-spacing: .05em; text-transform: uppercase; padding: 0 14px 8px">{{g.t}}</span>
+<sc-for list="{{g.l}}" as="l" hint-placeholder-count="5"><a class="in" href="{{l.h}}" style="{{l.st}}">{{l.t}}</a></sc-for>
+</div>
+</sc-for>
+<a href="https://t.me/govita_uz" style="display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 18px; background: #1C1F22; color: #FFFFFF; text-decoration: none">
+<span style="font-size: 16px; font-weight: 700">Savolingiz bormi?</span>
+<span style="font-size: 14px; line-height: 20px; color: #C9CDD1">Operator Telegram yoki telefon orqali javob beradi.</span>
+<span style="font-size: 18px; font-weight: 700; margin-top: 4px">+998 71 200 70 80</span>
+</a>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["delivery","payment","guarantee","loyalty","about","licenses","partners","contact","blog"],"default":"delivery"},"$preview":{"width":280,"height":760}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var a = this.props.active ?? "delivery";
+    var L = function (id, t, h) { return { t: t, h: h, st: id === a ? "background: #F1F3F0; font-weight: 700" : "" }; };
+    return {
+      groups: [
+        { t: "Xaridorlarga", l: [L("delivery", "Yetkazib berish", "DeliveryV3.dc.html"), L("payment", "Toʻlov usullari", "PaymentV3.dc.html"), L("guarantee", "Kafolat va qaytarish", "GuaranteeV3.dc.html"), L("loyalty", "Chegirma tizimi va obuna", "LoyaltyV3.dc.html")] },
+        { t: "Kompaniya", l: [L("about", "Biz haqimizda", "AboutV3.dc.html"), L("licenses", "Litsenziya va sertifikatlar", "LicensesV3.dc.html"), L("partners", "Dorixonalar va hamkorlar", "PartnersV3.dc.html"), L("blog", "Sogʻliq blogi va yangiliklar", "BlogV3.dc.html"), L("contact", "Aloqa", "ContactV3.dc.html")] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

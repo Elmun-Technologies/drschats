@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="uz"><head><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>Tab bar</title>
+<style>x-dc{display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;display=swap"><style>
+body{margin:0}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="TabBarV3"><nav aria-label="Asosiy navigatsiya" style="width: 100%; height: 68px; box-sizing: border-box; padding: 6px 4px 10px; background: rgb(255, 255, 255); border-top: 1px solid rgb(228, 230, 232); display: grid; grid-template-columns: repeat(5, minmax(0px, 1fr)); font-family: Onest, &quot;Segoe UI&quot;, Arial, sans-serif;"><a href="HomeMobileV3.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: rgb(23, 25, 27); font-size: 11px; font-weight: 700;"><svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 11l8-7 8 7v9h-5v-6H9v6H4z"></path></svg>
+<span class="sc-interp">Bosh sahifa</span>
+</a><a href="MenuMobileV3.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: rgb(99, 104, 110); font-size: 11px; font-weight: 500;"><svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"></path></svg>
+<span class="sc-interp">Katalog</span>
+</a><a href="CartMobileV3.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: rgb(99, 104, 110); font-size: 11px; font-weight: 500;"><svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"></path></svg>
+<span class="sc-interp">Savat</span>
+<span style="position: absolute; top: 0px; left: 50%; margin-left: 5px; min-width: 18px; height: 18px; padding: 0px 4px; box-sizing: border-box; border-radius: 9px; background: rgb(200, 22, 29); color: rgb(255, 255, 255); font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center;">3</span></a><a href="FavoritesMobileV3.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: rgb(99, 104, 110); font-size: 11px; font-weight: 500;"><svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>
+<span class="sc-interp">Sevimlilar</span>
+</a><a href="AccountMobileV3.html" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: rgb(99, 104, 110); font-size: 11px; font-weight: 500;"><svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>
+<span class="sc-interp">Kabinet</span>
+</a></nav></div></div>
+
+
+
+</body></html>

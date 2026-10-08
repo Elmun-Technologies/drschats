@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — bosh sahifa, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+.msh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding:0 16px}
+.mst{margin:0;font-size:22px;line-height:28px;font-weight:700}
+.mct{height:132px;display:flex;flex-direction:column;padding:12px 12px 0;border-radius:18px}
+.mct span{font-size:14px;line-height:17px;font-weight:600;position:relative;z-index:1}
+.mct img{position:absolute;right:2px;bottom:2px;width:82px;height:82px;object-fit:contain}
+</style>
+</helmet>
+<div class="gv" style="{{rootStyle}}; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+
+<main style="display: flex; flex-direction: column; gap: 32px; padding: 4px 0 36px">
+<nav class="hs px" aria-label="Tezkor kategoriyalar">
+<a class="chip" href="SaleMobileV3.dc.html" style="color: #C8161D; font-weight: 600">Aksiyalar</a>
+<sc-for list="{{quick}}" as="q" hint-placeholder-count="5"><a class="chip" href="CatalogMobileV3.dc.html">{{q}}</a></sc-for>
+</nav>
+
+<section class="px" style="display: flex; flex-direction: column; gap: 12px; margin-top: -12px">
+<a class="tile" href="ProductMobileV3.dc.html" style="display: flex; flex-direction: column; border-radius: 24px; padding: 20px 20px 0; min-height: 360px">
+<span class="b-soft" style="align-self: flex-start; background: #FFFFFF; font-size: 12px; height: 24px">Swiss Energy ImmunoVit · 30 kapsula</span>
+<span style="font-size: 25px; line-height: 30px; font-weight: 700; letter-spacing: -0.01em; margin-top: 12px; position: relative; z-index: 1">Echinacea, propolis, vitamin C va rux — bir kapsulada</span>
+<span class="btn" style="align-self: flex-start; margin-top: 14px; height: 44px; padding: 0 18px; font-size: 15px; position: relative; z-index: 1">ImmunoVit haqida</span>
+<img src="{{immuno}}" alt="Swiss Energy ImmunoVit qadogʻi" style="position: absolute; right: 6px; bottom: 6px; width: 176px; height: 176px; object-fit: contain">
+</a>
+<div style="display: flex; gap: 6px; justify-content: center"><span style="width: 20px; height: 6px; border-radius: 3px; background: #17191B"></span><span style="width: 6px; height: 6px; border-radius: 3px; background: #C9CDD1"></span><span style="width: 6px; height: 6px; border-radius: 3px; background: #C9CDD1"></span></div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px; margin-top: -10px">
+<div class="msh"><h2 class="mst">Kategoriyalar</h2><a class="more" href="MenuMobileV3.dc.html" style="font-size: 15px">Hammasi</a></div>
+<div class="px" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="6"><a class="tile mct" href="CatalogMobileV3.dc.html"><span>{{c.t}}</span><img src="{{c.img}}" alt=""></a></sc-for>
+</div>
+</section>
+
+<section class="px">
+<a class="tile" href="ProductMobileV3.dc.html" style="display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px; align-items: center; padding: 18px; border-radius: 24px">
+<span style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 18px; font-weight: 700">Haftaning taklifi</span>
+<span class="b-sale" style="align-self: flex-start">−11%</span>
+<span style="display: flex; gap: 8px; align-items: baseline"><span style="font-size: 22px; font-weight: 700">79 000 soʻm</span><span style="font-size: 14px; color: #63686E; text-decoration: line-through">89 000</span></span>
+<span style="font-size: 14px; line-height: 19px; color: #2E3236">Dr. Frei Antistress Magniy B6, 20 tabletka</span>
+</span>
+<img src="{{mag}}" alt="" style="width: 120px; height: 120px; object-fit: contain">
+</a>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<div class="msh"><h2 class="mst">Aksiyadagi mahsulotlar</h2><a class="more" href="SaleMobileV3.dc.html" style="font-size: 15px">Hammasi</a></div>
+<div class="hs px" style="gap: 10px">
+<sc-for list="{{deals}}" as="p" hint-placeholder-count="4"><div style="width: 160px; flex: none"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,400px"></dc-import></div></sc-for>
+</div>
+</section>
+
+<section class="px">
+<div style="padding: 20px; border-radius: 24px; background: #1C1F22; color: #FFFFFF; display: flex; flex-direction: column; gap: 14px">
+<div style="display: flex; justify-content: space-between; align-items: flex-end"><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #A9AEB3">Shveytsariya</span><span style="font-size: 28px; line-height: 32px; font-weight: 700">Swiss Energy</span></span><a href="BrandV3.dc.html" style="color: #FFFFFF; font-size: 15px; font-weight: 600">Brend</a></div>
+<div class="hs" style="gap: 8px">
+<sc-for list="{{brand}}" as="p" hint-placeholder-count="3"><div style="width: 160px; flex: none"><dc-import name="ProductCardV3" item="{{p}}" on-card="{{true}}" hint-size="100%,420px"></dc-import></div></sc-for>
+</div>
+</div>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<div class="msh"><h2 class="mst">Koʻp sotib olinadi</h2><a class="more" href="CatalogMobileV3.dc.html" style="font-size: 15px">Hammasi</a></div>
+<div class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 10px">
+<sc-for list="{{hits}}" as="p" hint-placeholder-count="6"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,400px"></dc-import></sc-for>
+</div>
+<div class="px"><a class="btn-l" href="CatalogMobileV3.dc.html" style="width: 100%">Barcha mahsulotlar</a></div>
+</section>
+
+<section class="px">
+<a href="SaleMobileV3.dc.html" style="display: flex; gap: 16px; align-items: center; padding: 20px; border-radius: 24px; background: #FFE58A; text-decoration: none; color: #17191B">
+<span style="font-size: 48px; line-height: 46px; font-weight: 700; letter-spacing: -0.03em; flex: none">2+1</span>
+<span style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 18px; font-weight: 700">2 oling — 3-si sovgʻa</span><span style="font-size: 14px; line-height: 19px; color: #2E3236">Tanlangan mahsulotlarga. Sovgʻa savatchada avtomatik qoʻshiladi.</span></span>
+</a>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 14px">
+<div class="msh"><h2 class="mst">Kim uchun tanlaysiz?</h2><a class="more" href="QuizMobileV3.dc.html" style="font-size: 15px">Test</a></div>
+<div class="hs px" style="gap: 10px">
+<sc-for list="{{aud}}" as="a" hint-placeholder-count="6">
+<a href="CatalogMobileV3.dc.html" style="width: 136px; flex: none; display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #17191B">
+<img src="{{a.img}}" alt="{{a.alt}}" style="width: 136px; height: 170px; object-fit: cover; object-position: {{a.pos}}; border-radius: 18px; display: block">
+<span style="font-size: 15px; font-weight: 700">{{a.t}}</span>
+</a>
+</sc-for>
+</div>
+</section>
+
+<section class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+<sc-for list="{{svc}}" as="s" hint-placeholder-count="4">
+<a class="tile" href="{{s.h}}" style="min-height: 168px; padding: 16px; display: flex; flex-direction: column; gap: 6px; border-radius: 20px">
+<span style="font-size: 17px; line-height: 21px; font-weight: 700; position: relative; z-index: 1">{{s.t}}</span>
+<span style="font-size: 13px; line-height: 17px; color: #2E3236; position: relative; z-index: 1">{{s.s}}</span>
+<span class="arr-s" style="margin-top: auto; width: 40px; height: 40px; background: #FFFFFF; position: relative; z-index: 1"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M7 17L17 7M9 7h8v8"/></svg></span>
+</a>
+</sc-for>
+</section>
+
+<section class="px" style="display: flex; flex-direction: column">
+<h2 class="mst" style="margin-bottom: 6px">Koʻp soʻraladigan savollar</h2>
+<sc-for list="{{faq}}" as="f" hint-placeholder-count="4"><a class="faq" href="#" style="font-size: 16px; min-height: 58px">{{f}}<svg class="ic" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></a></sc-for>
+<div style="margin-top: 20px; padding: 20px; border-radius: 24px; background: #1C1F22; color: #FFFFFF; display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 20px; font-weight: 700">Tanlashda yordam kerakmi?</span>
+<a href="tel:+998712007080" style="font-size: 24px; font-weight: 700; color: #FFFFFF; text-decoration: none">+998 71 200 70 80</a>
+<a class="btn-w" href="https://t.me/govita_uz" style="height: 48px; font-size: 16px">Telegramda yozish</a>
+</div>
+</section>
+</main>
+
+<dc-import name="FooterMobileV3" hint-size="100%,877px"></dc-import>
+<div style="{{barStyle}}"><dc-import name="TabBarV3" active="home" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"screen":{"editor":"toggle","default":false},"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var screen = !!this.props.screen;
+    var o = { href: "ProductMobileV3.dc.html" };
+    var C = function (t, k) { return { t: t, img: GV[k].img }; };
+    return {
+      rootStyle: screen ? "position: relative; height: 844px; overflow: hidden; display: flex; flex-direction: column" : "position: relative; display: flex; flex-direction: column",
+      barStyle: screen ? "position: absolute; left: 0; right: 0; bottom: 0; z-index: 5" : "position: relative; z-index: 5",
+      immuno: GV.immuno.img, mag: GV.mag.img,
+      quick: ["Vitaminlar", "Immunitet", "Goʻzallik", "Bolalar uchun", "Homiladorlik", "Tibbiy jihozlar"],
+      cats: [C("Vitaminlar", "neuro"), C("Minerallar", "calci"), C("Immunitet", "immuno"), C("Goʻzallik", "hns"), C("Bolalar uchun", "kids"), C("Shipuchi", "vitc")],
+      deals: [gv("mag", o), gv("multi", { href: o.href, inCart: true }), gv("kids", o), gv("dvan", o)],
+      brand: gvList(["immuno", "hns", "calci"], o),
+      hits: gvList(["vitc", "immuno", "prenatal", "hns", "calci", "gold"], o),
+      aud: [
+        { t: "Ayolga", img: PH.woman, alt: "Ayol uyda", pos: "center 30%" }, { t: "Erkakka", img: PH.man, alt: "Erkak oshxonada", pos: "70% center" },
+        { t: "Bolaga", img: PH.child, alt: "Bola nonushta qilmoqda", pos: "center" }, { t: "Boʻlajak onaga", img: PH.preg, alt: "Homilador ayol", pos: "60% center" },
+        { t: "60 yoshdan keyin", img: PH.senior, alt: "Keksa juftlik", pos: "center" }, { t: "Tiklanish davrida", img: PH.recovery, alt: "Ayol pled oʻranib dam olmoqda", pos: "center" }
+      ],
+      svc: [
+        { t: "Vitamin tanlash testi", s: "2 daqiqada mos vitaminlar", h: "QuizMobileV3.dc.html" },
+        { t: "Obuna", s: "Bugun −10%, keyin −15%", h: "DeliveryMobileV3.dc.html" },
+        { t: "Yetkazib berish", s: "Toshkentga 24 soatda", h: "DeliveryMobileV3.dc.html" },
+        { t: "Dorixonalar uchun", s: "Ulgurji shartlar", h: "DeliveryMobileV3.dc.html" }
+      ],
+      faq: ["Buyurtma qanday rasmiylashtiriladi?", "Yetkazib berish qancha vaqt oladi?", "Toʻlovni qanday amalga oshirish mumkin?", "Mahsulotni qaytarish mumkinmi?"]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="uz"><head><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>GoVita — shaxsiy kabinet</title>
+<style>x-dc{display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;family=Playfair+Display:wght@500&amp;display=swap"><style>
+body{margin:0;background:#FFFFFF}
+a{color:#17191B}a:hover{color:#000000}
+.gv{font-family:Onest,'Segoe UI',Arial,sans-serif;color:#17191B;background:#FFFFFF}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1296px;margin:0 auto;padding:0 24px;box-sizing:border-box;width:100%}
+.h1{margin:0;font-size:36px;line-height:42px;font-weight:700;letter-spacing:-.015em}
+.h2{margin:0;font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.01em}
+.h3{margin:0;font-size:20px;line-height:26px;font-weight:700}
+.lead{margin:0;font-size:17px;line-height:26px;color:#44494E}
+.p{margin:0;font-size:15px;line-height:23px;color:#44494E}
+.small{font-size:13px;line-height:18px;color:#63686E}
+.sh{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.more{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:600;color:#17191B;text-decoration:none;white-space:nowrap}
+.more:hover{text-decoration:underline}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:12px;background:#17191B;color:#FFFFFF;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn:hover{background:#000000;color:#FFFFFF}
+.btn-l{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#F1F3F0;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-l:hover{background:#E6E8E5;color:#17191B}
+.btn-w{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 28px;border-radius:14px;background:#FFFFFF;color:#17191B;font:600 17px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap}
+.btn-o{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#FFFFFF;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:1.5px solid #D9DCDF;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.arrow{width:56px;height:56px;border-radius:28px;border:0;background:#FFFFFF;color:#17191B;box-shadow:0 2px 10px rgba(23,25,27,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:none}
+.arr-s{width:48px;height:48px;border-radius:24px;background:#E3E6E9;color:#17191B;display:flex;align-items:center;justify-content:center;flex:none}
+.tile{border-radius:24px;background:#F1F3F0;text-decoration:none;color:#17191B;position:relative;overflow:hidden;box-sizing:border-box}
+.tile:hover{color:#17191B;background:#EAECE9}
+.chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:12px;background:#F1F3F0;color:#17191B;font-size:15px;font-weight:500;text-decoration:none;white-space:nowrap;flex:none;box-sizing:border-box}
+.chip small{font-size:14px;color:#63686E;font-weight:400}
+.chip.on{background:#17191B;color:#FFFFFF}
+.chip.on small{color:#C9CDD1}
+.b-sale{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#C8161D;color:#FFFFFF;font-size:14px;font-weight:700;white-space:nowrap}
+.b-hit{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#FFD43B;color:#17191B;font-size:14px;font-weight:700;white-space:nowrap}
+.b-soft{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#E3E6E9;color:#17191B;font-size:13px;font-weight:600;white-space:nowrap}
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;font-size:14px;color:#63686E}
+.crumbs a{color:#63686E;text-decoration:none}
+.crumbs a:hover{color:#17191B}
+.card{border:1px solid #E4E6E8;border-radius:20px;background:#FFFFFF;box-sizing:border-box}
+.panel{border-radius:20px;background:#F1F3F0;box-sizing:border-box}
+.fl{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#44494E;font-weight:500}
+.inp{height:52px;border:1.5px solid #D9DCDF;border-radius:12px;padding:0 16px;font:400 16px Onest,sans-serif;color:#17191B;width:100%;box-sizing:border-box;background:#FFFFFF;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph{color:#8A8F95}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:14px;border:1.5px solid #E4E6E8;cursor:pointer;background:#FFFFFF;box-sizing:border-box}
+.opt.on{border-color:#17191B}
+.rd{width:20px;height:20px;border-radius:10px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;margin-top:1px}
+.rd.on{border:6px solid #17191B}
+.cb{display:flex;align-items:center;gap:10px;font-size:15px;color:#17191B;cursor:pointer}
+.cb i{width:20px;height:20px;border-radius:6px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;display:flex;align-items:center;justify-content:center}
+.cb i.on{background:#17191B;border-color:#17191B}
+.cb em{font-style:normal;color:#63686E;font-size:14px;margin-left:auto}
+.tab{font-size:16px;font-weight:500;color:#63686E;text-decoration:none;padding:16px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:#17191B;font-weight:600;border-color:#17191B}
+.row-l{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #E4E6E8;font-size:15px}
+.sp{display:flex;gap:8px;font-size:15px;line-height:22px}
+.sp span:first-child{color:#63686E;flex:none}
+.sp i{flex:1;border-bottom:1px dotted #C9CDD1;transform:translateY(-6px)}
+.faq{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px;border-bottom:1px solid #E4E6E8;font-size:17px;font-weight:500;color:#17191B;text-decoration:none}
+.faq:hover{color:#000000}
+.grid6{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:24px 12px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:24px 12px}
+.hs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.side a{display:block;padding:10px 14px;border-radius:10px;font-size:15px;color:#17191B;text-decoration:none}
+.side a:hover{background:#F1F3F0}
+.side a.on{background:#F1F3F0;font-weight:600}
+.num{width:36px;height:36px;border-radius:18px;background:#17191B;color:#FFFFFF;font-size:16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+</style><style>
+body{margin:0;background:#FFFFFF}
+a{color:#17191B}a:hover{color:#000000}
+.gv{font-family:Onest,'Segoe UI',Arial,sans-serif;color:#17191B;background:#FFFFFF}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1296px;margin:0 auto;padding:0 24px;box-sizing:border-box;width:100%}
+.h1{margin:0;font-size:36px;line-height:42px;font-weight:700;letter-spacing:-.015em}
+.h2{margin:0;font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.01em}
+.h3{margin:0;font-size:20px;line-height:26px;font-weight:700}
+.lead{margin:0;font-size:17px;line-height:26px;color:#44494E}
+.p{margin:0;font-size:15px;line-height:23px;color:#44494E}
+.small{font-size:13px;line-height:18px;color:#63686E}
+.sh{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.more{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:600;color:#17191B;text-decoration:none;white-space:nowrap}
+.more:hover{text-decoration:underline}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:12px;background:#17191B;color:#FFFFFF;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn:hover{background:#000000;color:#FFFFFF}
+.btn-l{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#F1F3F0;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-l:hover{background:#E6E8E5;color:#17191B}
+.btn-w{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 28px;border-radius:14px;background:#FFFFFF;color:#17191B;font:600 17px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap}
+.btn-o{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#FFFFFF;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:1.5px solid #D9DCDF;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.arrow{width:56px;height:56px;border-radius:28px;border:0;background:#FFFFFF;color:#17191B;box-shadow:0 2px 10px rgba(23,25,27,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:none}
+.arr-s{width:48px;height:48px;border-radius:24px;background:#E3E6E9;color:#17191B;display:flex;align-items:center;justify-content:center;flex:none}
+.tile{border-radius:24px;background:#F1F3F0;text-decoration:none;color:#17191B;position:relative;overflow:hidden;box-sizing:border-box}
+.tile:hover{color:#17191B;background:#EAECE9}
+.chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:12px;background:#F1F3F0;color:#17191B;font-size:15px;font-weight:500;text-decoration:none;white-space:nowrap;flex:none;box-sizing:border-box}
+.chip small{font-size:14px;color:#63686E;font-weight:400}
+.chip.on{background:#17191B;color:#FFFFFF}
+.chip.on small{color:#C9CDD1}
+.b-sale{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#C8161D;color:#FFFFFF;font-size:14px;font-weight:700;white-space:nowrap}
+.b-hit{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#FFD43B;color:#17191B;font-size:14px;font-weight:700;white-space:nowrap}
+.b-soft{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#E3E6E9;color:#17191B;font-size:13px;font-weight:600;white-space:nowrap}
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;font-size:14px;color:#63686E}
+.crumbs a{color:#63686E;text-decoration:none}
+.crumbs a:hover{color:#17191B}
+.card{border:1px solid #E4E6E8;border-radius:20px;background:#FFFFFF;box-sizing:border-box}
+.panel{border-radius:20px;background:#F1F3F0;box-sizing:border-box}
+.fl{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#44494E;font-weight:500}
+.inp{height:52px;border:1.5px solid #D9DCDF;border-radius:12px;padding:0 16px;font:400 16px Onest,sans-serif;color:#17191B;width:100%;box-sizing:border-box;background:#FFFFFF;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph{color:#8A8F95}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:14px;border:1.5px solid #E4E6E8;cursor:pointer;background:#FFFFFF;box-sizing:border-box}
+.opt.on{border-color:#17191B}
+.rd{width:20px;height:20px;border-radius:10px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;margin-top:1px}
+.rd.on{border:6px solid #17191B}
+.cb{display:flex;align-items:center;gap:10px;font-size:15px;color:#17191B;cursor:pointer}
+.cb i{width:20px;height:20px;border-radius:6px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;display:flex;align-items:center;justify-content:center}
+.cb i.on{background:#17191B;border-color:#17191B}
+.cb em{font-style:normal;color:#63686E;font-size:14px;margin-left:auto}
+.tab{font-size:16px;font-weight:500;color:#63686E;text-decoration:none;padding:16px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:#17191B;font-weight:600;border-color:#17191B}
+.row-l{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #E4E6E8;font-size:15px}
+.sp{display:flex;gap:8px;font-size:15px;line-height:22px}
+.sp span:first-child{color:#63686E;flex:none}
+.sp i{flex:1;border-bottom:1px dotted #C9CDD1;transform:translateY(-6px)}
+.faq{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px;border-bottom:1px solid #E4E6E8;font-size:17px;font-weight:500;color:#17191B;text-decoration:none}
+.faq:hover{color:#000000}
+.grid6{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:24px 12px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:24px 12px}
+.hs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.side a{display:block;padding:10px 14px;border-radius:10px;font-size:15px;color:#17191B;text-decoration:none}
+.side a:hover{background:#F1F3F0}
+.side a.on{background:#F1F3F0;font-weight:600}
+.num{width:36px;height:36px;border-radius:18px;background:#17191B;color:#FFFFFF;font-size:16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.hu a{color:#44494E;text-decoration:none}
+.hu a:hover{color:#17191B}
+.hi{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:64px;font-size:13px;color:#17191B;text-decoration:none;position:relative}
+.nav a{font-size:15px;font-weight:500;color:#17191B;text-decoration:none;white-space:nowrap;padding:14px 0;border-bottom:2px solid transparent}
+.nav a:hover{border-color:#17191B}
+</style><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;display=swap"><style>
+body{margin:0}
+.an{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;font-size:16px;color:#17191B;text-decoration:none}
+.an:hover{background:#F1F3F0}
+</style><style>
+body{margin:0;background:#FFFFFF}
+a{color:#17191B}a:hover{color:#000000}
+.gv{font-family:Onest,'Segoe UI',Arial,sans-serif;color:#17191B;background:#FFFFFF}
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.75;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.wrap{max-width:1296px;margin:0 auto;padding:0 24px;box-sizing:border-box;width:100%}
+.h1{margin:0;font-size:36px;line-height:42px;font-weight:700;letter-spacing:-.015em}
+.h2{margin:0;font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.01em}
+.h3{margin:0;font-size:20px;line-height:26px;font-weight:700}
+.lead{margin:0;font-size:17px;line-height:26px;color:#44494E}
+.p{margin:0;font-size:15px;line-height:23px;color:#44494E}
+.small{font-size:13px;line-height:18px;color:#63686E}
+.sh{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:baseline;justify-content:space-between}
+.more{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:600;color:#17191B;text-decoration:none;white-space:nowrap}
+.more:hover{text-decoration:underline}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 24px;border-radius:12px;background:#17191B;color:#FFFFFF;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn:hover{background:#000000;color:#FFFFFF}
+.btn-l{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#F1F3F0;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.btn-l:hover{background:#E6E8E5;color:#17191B}
+.btn-w{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 28px;border-radius:14px;background:#FFFFFF;color:#17191B;font:600 17px Onest,sans-serif;text-decoration:none;border:0;cursor:pointer;white-space:nowrap}
+.btn-o{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:48px;padding:0 22px;border-radius:12px;background:#FFFFFF;color:#17191B;font:600 16px Onest,sans-serif;text-decoration:none;border:1.5px solid #D9DCDF;cursor:pointer;white-space:nowrap;box-sizing:border-box}
+.arrow{width:56px;height:56px;border-radius:28px;border:0;background:#FFFFFF;color:#17191B;box-shadow:0 2px 10px rgba(23,25,27,.12);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex:none}
+.arr-s{width:48px;height:48px;border-radius:24px;background:#E3E6E9;color:#17191B;display:flex;align-items:center;justify-content:center;flex:none}
+.tile{border-radius:24px;background:#F1F3F0;text-decoration:none;color:#17191B;position:relative;overflow:hidden;box-sizing:border-box}
+.tile:hover{color:#17191B;background:#EAECE9}
+.chip{display:inline-flex;align-items:center;gap:6px;height:40px;padding:0 16px;border-radius:12px;background:#F1F3F0;color:#17191B;font-size:15px;font-weight:500;text-decoration:none;white-space:nowrap;flex:none;box-sizing:border-box}
+.chip small{font-size:14px;color:#63686E;font-weight:400}
+.chip.on{background:#17191B;color:#FFFFFF}
+.chip.on small{color:#C9CDD1}
+.b-sale{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#C8161D;color:#FFFFFF;font-size:14px;font-weight:700;white-space:nowrap}
+.b-hit{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#FFD43B;color:#17191B;font-size:14px;font-weight:700;white-space:nowrap}
+.b-soft{display:inline-flex;align-items:center;height:26px;padding:0 10px;border-radius:13px;background:#E3E6E9;color:#17191B;font-size:13px;font-weight:600;white-space:nowrap}
+.crumbs{display:flex;gap:8px;flex-wrap:wrap;font-size:14px;color:#63686E}
+.crumbs a{color:#63686E;text-decoration:none}
+.crumbs a:hover{color:#17191B}
+.card{border:1px solid #E4E6E8;border-radius:20px;background:#FFFFFF;box-sizing:border-box}
+.panel{border-radius:20px;background:#F1F3F0;box-sizing:border-box}
+.fl{display:flex;flex-direction:column;gap:8px;font-size:14px;color:#44494E;font-weight:500}
+.inp{height:52px;border:1.5px solid #D9DCDF;border-radius:12px;padding:0 16px;font:400 16px Onest,sans-serif;color:#17191B;width:100%;box-sizing:border-box;background:#FFFFFF;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ph{color:#8A8F95}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:14px;border:1.5px solid #E4E6E8;cursor:pointer;background:#FFFFFF;box-sizing:border-box}
+.opt.on{border-color:#17191B}
+.rd{width:20px;height:20px;border-radius:10px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;margin-top:1px}
+.rd.on{border:6px solid #17191B}
+.cb{display:flex;align-items:center;gap:10px;font-size:15px;color:#17191B;cursor:pointer}
+.cb i{width:20px;height:20px;border-radius:6px;border:1.5px solid #A9AEB3;box-sizing:border-box;flex:none;display:flex;align-items:center;justify-content:center}
+.cb i.on{background:#17191B;border-color:#17191B}
+.cb em{font-style:normal;color:#63686E;font-size:14px;margin-left:auto}
+.tab{font-size:16px;font-weight:500;color:#63686E;text-decoration:none;padding:16px 0;border-bottom:2px solid transparent;white-space:nowrap}
+.tab.on{color:#17191B;font-weight:600;border-color:#17191B}
+.row-l{display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #E4E6E8;font-size:15px}
+.sp{display:flex;gap:8px;font-size:15px;line-height:22px}
+.sp span:first-child{color:#63686E;flex:none}
+.sp i{flex:1;border-bottom:1px dotted #C9CDD1;transform:translateY(-6px)}
+.faq{display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:64px;border-bottom:1px solid #E4E6E8;font-size:17px;font-weight:500;color:#17191B;text-decoration:none}
+.faq:hover{color:#000000}
+.grid6{display:grid;grid-template-columns:repeat(auto-fill,minmax(188px,1fr));gap:24px 12px}
+.grid4{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:24px 12px}
+.hs{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none}
+.hs::-webkit-scrollbar{display:none}
+.side a{display:block;padding:10px 14px;border-radius:10px;font-size:15px;color:#17191B;text-decoration:none}
+.side a:hover{background:#F1F3F0}
+.side a.on{background:#F1F3F0;font-weight:600}
+.num{width:36px;height:36px;border-radius:18px;background:#17191B;color:#FFFFFF;font-size:16px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.fcol a{font-size:15px;line-height:20px;color:#2E3236;text-decoration:none}
+.fcol a:hover{color:#000000;text-decoration:underline}
+.soc{width:48px;height:48px;border-radius:24px;background:#FFFFFF;color:#17191B;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.soc:hover{background:#17191B;color:#FFFFFF}
+.pay{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:10px;background:#FFFFFF;font-size:15px;font-weight:700;color:#17191B;letter-spacing:-.01em}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="AccountV3"><div class="gv" style="display: flex; flex-direction: column; min-width: 0px;"><div class="sc-host" data-sc-name="HeaderV3"><header class="gv" style="width: 100%; background: rgb(255, 255, 255); border-bottom: 1px solid rgb(228, 230, 232);"><div class="wrap hu" style="height: 40px; display: flex; align-items: center; gap: 24px; font-size: 14px;"><a href="ContactV3.html" style="display: inline-flex; gap: 6px; align-items: center; color: rgb(23, 25, 27); font-weight: 600;"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M12 21s-7-6-7-12a7 7 0 0 1 14 0c0 6-7 12-7 12z"></path><circle cx="12" cy="9" r="2.5"></circle></svg>Toshkent</a><a href="DeliveryV3.html">Yetkazib berish</a><a href="PaymentV3.html">Toʻlov</a><a href="GuaranteeV3.html">Kafolat va qaytarish</a><a href="LoyaltyV3.html">Chegirma tizimi</a><a href="PartnersV3.html">Dorixonalar uchun</a><span style="flex: 1 1 0%;"></span><a href="https://t.me/govita_uz">Telegram</a><a href="tel:+998712007080" style="color: rgb(23, 25, 27); font-weight: 700;">+998 71 200 70 80</a><span style="display: inline-flex; gap: 8px; font-weight: 600;"><a href="HomeV3.html" style="color: rgb(23, 25, 27);">UZ</a><span style="color: rgb(201, 205, 209);">|</span><a href="HomeV3.html">RU</a></span></div><div class="wrap" style="height: 76px; display: flex; align-items: center; gap: 20px;"><a href="HomeV3.html" aria-label="GoVita bosh sahifa" style="text-decoration: none; color: rgb(15, 45, 36); font-family: &quot;Playfair Display&quot;, Georgia, serif; font-size: 34px; line-height: 40px; font-weight: 500; letter-spacing: -0.02em; flex: 0 0 auto;">go<span style="color: rgb(184, 149, 79);">v</span>ita</a><a class="btn" href="MegaMenuV3.html" style="height: 52px; padding: 0px 22px; flex: 0 0 auto;"><svg class="ic" viewBox="0 0 24 24"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"></path></svg>Katalog</a><label style="flex: 1 1 0%; min-width: 0px; display: flex; align-items: center; height: 52px; border-radius: 14px; background: rgb(241, 243, 240); padding: 0px 6px 0px 18px; gap: 10px;"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px);">Qidiruv</span><input type="search" placeholder="Vitamin, brend yoki tarkib — masalan, magniy" style="flex: 1 1 0%; min-width: 0px; border: 0px; outline: none; background: transparent; font: 400 16px Onest, sans-serif; color: rgb(23, 25, 27);"><a href="SearchV3.html" aria-label="Qidirish" style="width: 42px; height: 42px; border-radius: 10px; background: rgb(23, 25, 27); color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center;"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"></circle><path d="M20 20l-4-4"></path></svg></a></label><nav aria-label="Foydalanuvchi" style="display: flex; gap: 4px; flex: 0 0 auto;"><a class="hi" href="CompareV3.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M6 20V10M12 20V4M18 20v-7"></path></svg>Taqqoslash</a><a class="hi" href="FavoritesV3.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg>Sevimlilar</a><a class="hi" href="LoginV3.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg>Kirish</a><a class="hi" href="CartV3.html"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"></path></svg>Savat<span style="position: absolute; top: -4px; left: 50%; margin-left: 4px; min-width: 20px; height: 20px; padding: 0px 5px; box-sizing: border-box; border-radius: 10px; background: rgb(200, 22, 29); color: rgb(255, 255, 255); font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center;"><span class="sc-interp">3</span></span></a></nav></div><nav class="wrap nav" aria-label="Kategoriyalar" style="display: flex; gap: 26px; overflow: hidden;"><a href="SaleV3.html" style="color: rgb(200, 22, 29); font-weight: 600;">Aksiyalar</a><a href="CatalogV3.html" style=""><span class="sc-interp">Vitaminlar</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Minerallar</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Immunitet</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Goʻzallik</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Bolalar uchun</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Homiladorlik</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Shipuchi tabletkalar</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Tibbiy ovqatlanish</span></a><a href="CatalogV3.html" style=""><span class="sc-interp">Tibbiy jihozlar</span></a><a href="BrandsV3.html" style=""><span class="sc-interp">Brendlar</span></a></nav></header></div><main class="wrap" style="display: grid; grid-template-columns: 280px minmax(0px, 1fr); gap: 40px; align-items: start; padding-top: 32px; padding-bottom: 72px;"><div class="sc-host" data-sc-name="AccountNavV3"><nav aria-label="Kabinet" style="width: 100%; display: flex; flex-direction: column; gap: 4px; font-family: Onest, &quot;Segoe UI&quot;, Arial, sans-serif; color: rgb(23, 25, 27);"><div style="display: flex; gap: 14px; align-items: center; padding: 6px 4px 18px;"><span style="width: 56px; height: 56px; border-radius: 28px; background: rgb(23, 25, 27); color: rgb(255, 255, 255); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700;">D</span><span style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 18px; font-weight: 700;">Dilnoza Karimova</span><span style="font-size: 14px; color: rgb(68, 73, 78);">+998 90 123 45 67</span></span></div><a class="an" href="AccountV3.html" style="background: rgb(241, 243, 240); font-weight: 700;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto;"><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"></path></svg><span class="sc-interp">Buyurtmalarim</span><span style="margin-left: auto; font-size: 14px; color: rgb(99, 104, 110);"><span class="sc-interp">3</span></span></a><a class="an" href="SubscriptionsV3.html" style=""><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto;"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"></path></svg><span class="sc-interp">Obunalarim</span><span style="margin-left: auto; font-size: 14px; color: rgb(99, 104, 110);"><span class="sc-interp">1</span></span></a><a class="an" href="FavoritesV3.html" style=""><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto;"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg><span class="sc-interp">Sevimlilar</span><span style="margin-left: auto; font-size: 14px; color: rgb(99, 104, 110);"><span class="sc-interp">5</span></span></a><a class="an" href="QuizV3.html" style=""><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto;"><path d="M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"></path></svg><span class="sc-interp">Sogʻliq testi</span><span style="margin-left: auto; font-size: 14px; color: rgb(99, 104, 110);"><span class="sc-interp"></span></span></a><a class="an" href="ProfileV3.html" style=""><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto;"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg><span class="sc-interp">Profilim</span><span style="margin-left: auto; font-size: 14px; color: rgb(99, 104, 110);"><span class="sc-interp"></span></span></a><a class="an" href="LoginV3.html" style="color: rgb(68, 73, 78); margin-top: 8px; border-top: 1px solid rgb(228, 230, 232); border-radius: 0px; padding-top: 18px;"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentcolor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round;"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"></path></svg>Chiqish</a></nav></div><div style="display: flex; flex-direction: column; gap: 32px; min-width: 0px;"><div style="display: flex; flex-direction: column; gap: 6px;"><span style="font-size: 16px; color: rgb(68, 73, 78);">Xush kelibsiz, Dilnoza</span><h1 class="h1">Shaxsiy kabinet</h1></div><div style="display: grid; grid-template-columns: repeat(4, minmax(0px, 1fr)); gap: 12px;"><a class="tile" href="FavoritesV3.html" style="padding: 20px; display: flex; flex-direction: column; gap: 6px; border-radius: 20px; min-height: 140px;"><svg class="ic" viewBox="0 0 24 24" style="width: 26px; height: 26px;"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"></path></svg><span style="font-size: 17px; font-weight: 700; margin-top: auto;"><span class="sc-interp">Sevimlilar</span></span><span style="font-size: 14px; color: rgb(68, 73, 78);"><span class="sc-interp">5 ta mahsulot</span></span></a><a class="tile" href="SubscriptionsV3.html" style="padding: 20px; display: flex; flex-direction: column; gap: 6px; border-radius: 20px; min-height: 140px;"><svg class="ic" viewBox="0 0 24 24" style="width: 26px; height: 26px;"><path d="M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4"></path></svg><span style="font-size: 17px; font-weight: 700; margin-top: auto;"><span class="sc-interp">Obunalarim</span></span><span style="font-size: 14px; color: rgb(68, 73, 78);"><span class="sc-interp">1 ta faol</span></span></a><a class="tile" href="QuizV3.html" style="padding: 20px; display: flex; flex-direction: column; gap: 6px; border-radius: 20px; min-height: 140px;"><svg class="ic" viewBox="0 0 24 24" style="width: 26px; height: 26px;"><path d="M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11"></path></svg><span style="font-size: 17px; font-weight: 700; margin-top: auto;"><span class="sc-interp">Sogʻliq testi</span></span><span style="font-size: 14px; color: rgb(68, 73, 78);"><span class="sc-interp">Shaxsiy tavsiya oling</span></span></a><a class="tile" href="ProfileV3.html" style="padding: 20px; display: flex; flex-direction: column; gap: 6px; border-radius: 20px; min-height: 140px;"><svg class="ic" viewBox="0 0 24 24" style="width: 26px; height: 26px;"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"></path></svg><span style="font-size: 17px; font-weight: 700; margin-top: auto;"><span class="sc-interp">Profilim</span></span><span style="font-size: 14px; color: rgb(68, 73, 78);"><span class="sc-interp">Maqsadlar, oila, eslatmalar</span></span></a></div><a class="card" href="ProductV3.html" style="padding: 20px 24px; display: flex; gap: 18px; align-items: center; text-decoration: none; color: rgb(23, 25, 27); border-color: rgb(23, 25, 27);"><span style="width: 64px; height: 64px; border-radius: 14px; background: rgb(241, 243, 240); display: flex; align-items: center; justify-content: center; flex: 0 0 auto;"><img src="../assets/c-swiss-energy-prenatal-forte-60.png" alt="" style="width: 54px; height: 54px; object-fit: contain;"></span><span style="flex: 1 1 0%; display: flex; flex-direction: column; gap: 4px;"><span style="font-size: 13px; font-weight: 600; color: rgb(99, 104, 110); letter-spacing: 0.04em; text-transform: uppercase;">Eslatma · bugun</span><span style="font-size: 18px; font-weight: 700;">Kursingiz tugayapti: «Prenatal Forte»</span></span><span class="btn">Takrorlash</span></a><section style="display: flex; flex-direction: column; gap: 16px;"><div class="sh"><h2 class="h2" style="font-size: 26px;">Buyurtmalarim</h2><div style="display: flex; gap: 6px;"><span class="chip on" style="height: 36px;">Hammasi</span><span class="chip" style="height: 36px;">Faol</span><span class="chip" style="height: 36px;">Yetkazilgan</span></div></div><a class="card" href="OrderDetailV3.html" style="padding: 22px 24px; display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 16px; align-items: center; text-decoration: none; color: rgb(23, 25, 27);"><div style="display: flex; flex-direction: column; gap: 12px;"><div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;"><span style="font-size: 18px; font-weight: 700;">№ <span class="sc-interp">GV-10248</span></span><span class="small" style="font-size: 14px;"><span class="sc-interp">8 oktabr 2026</span></span><span class="b-soft" style="background: rgb(23, 25, 27); color: rgb(255, 255, 255);"><span class="sc-interp">Yoʻlda</span></span></div><div style="display: flex; gap: 8px;"><span style="width: 56px; height: 56px; border-radius: 12px; background: rgb(241, 243, 240); display: flex; align-items: center; justify-content: center;"><img src="../assets/c-dr-frei-antistress-magniy-20-3.png" alt="" style="width: 46px; height: 46px; object-fit: contain;"></span><span style="width: 56px; height: 56px; border-radius: 12px; background: rgb(241, 243, 240); display: flex; align-items: center; justify-content: center;"><img src="../assets/c-dr-frei-multivitamins-biotin-20-4.png" alt="" style="width: 46px; height: 46px; object-fit: contain;"></span></div></div><div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;"><span style="font-size: 20px; font-weight: 700;"><span class="sc-interp">267 000 soʻm</span></span><span style="display: inline-flex; gap: 6px; align-items: center; font-size: 15px; font-weight: 600;">Batafsil<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M9 6l6 6-6 6"></path></svg></span></div></a><a class="card" href="OrderDetailV3.html" style="padding: 22px 24px; display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 16px; align-items: center; text-decoration: none; color: rgb(23, 25, 27);"><div style="display: flex; flex-direction: column; gap: 12px;"><div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;"><span style="font-size: 18px; font-weight: 700;">№ <span class="sc-interp">GV-09871</span></span><span class="small" style="font-size: 14px;"><span class="sc-interp">14 sentabr 2026</span></span><span class="b-soft" style=""><span class="sc-interp">Yetkazildi</span></span></div><div style="display: flex; gap: 8px;"><span style="width: 56px; height: 56px; border-radius: 12px; background: rgb(241, 243, 240); display: flex; align-items: center; justify-content: center;"><img src="../assets/c-swiss-energy-immunovit-30-hero.png" alt="" style="width: 46px; height: 46px; object-fit: contain;"></span><span style="width: 56px; height: 56px; border-radius: 12px; background: rgb(241, 243, 240); display: flex; align-items: center; justify-content: center;"><img src="../assets/c-swiss-energy-vitamin-c-20-2.png" alt="" style="width: 46px; height: 46px; object-fit: contain;"></span></div></div><div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;"><span style="font-size: 20px; font-weight: 700;"><span class="sc-interp">372 950 soʻm</span></span><span style="display: inline-flex; gap: 6px; align-items: center; font-size: 15px; font-weight: 600;">Batafsil<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M9 6l6 6-6 6"></path></svg></span></div></a><a class="card" href="OrderDetailV3.html" style="padding: 22px 24px; display: grid; grid-template-columns: minmax(0px, 1fr) auto; gap: 16px; align-items: center; text-decoration: none; color: rgb(23, 25, 27);"><div style="display: flex; flex-direction: column; gap: 12px;"><div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap;"><span style="font-size: 18px; font-weight: 700;">№ <span class="sc-interp">GV-09310</span></span><span class="small" style="font-size: 14px;"><span class="sc-interp">2 avgust 2026</span></span><span class="b-soft" style=""><span class="sc-interp">Yetkazildi</span></span></div><div style="display: flex; gap: 8px;"><span style="width: 56px; height: 56px; border-radius: 12px; background: rgb(241, 243, 240); display: flex; align-items: center; justify-content: center;"><img src="../assets/c-swiss-energy-prenatal-forte-60.png" alt="" style="width: 46px; height: 46px; object-fit: contain;"></span></div></div><div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;"><span style="font-size: 20px; font-weight: 700;"><span class="sc-interp">341 100 soʻm</span></span><span style="display: inline-flex; gap: 6px; align-items: center; font-size: 15px; font-weight: 600;">Batafsil<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><path d="M9 6l6 6-6 6"></path></svg></span></div></a></section></div></main><div class="sc-host" data-sc-name="FooterV3"><footer class="gv" style="width: 100%; background: rgb(241, 243, 240); margin-top: 0px;"><div class="wrap" style="display: flex; flex-direction: column; gap: 40px; padding-top: 48px; padding-bottom: 32px;"><div style="display: grid; grid-template-columns: minmax(0px, 1.1fr) minmax(0px, 2fr); gap: 48px;"><div style="display: flex; flex-direction: column; gap: 20px;"><a href="HomeV3.html" style="text-decoration: none; color: rgb(15, 45, 36); font-family: &quot;Playfair Display&quot;, Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 500; letter-spacing: -0.02em;">go<span style="color: rgb(184, 149, 79);">v</span>ita</a><p class="p" style="max-width: 340px; color: rgb(46, 50, 54);">Vitaminlar va biologik faol qoʻshimchalarni Oʻzbekistonga rasmiy import qiluvchi onlayn doʻkon.</p><div style="display: flex; flex-direction: column; gap: 4px;"><a href="tel:+998712007080" style="font-size: 28px; line-height: 34px; font-weight: 700; color: rgb(23, 25, 27); text-decoration: none;">+998 71 200 70 80</a><span style="font-size: 15px; color: rgb(68, 73, 78);">Dushanba–Shanba, 09:00–18:00</span></div><div style="display: flex; gap: 8px; flex-wrap: wrap;"><a class="btn" href="https://t.me/govita_uz"><svg class="ic" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg>Telegramda yozish</a><a class="btn-o" href="ContactV3.html" style="background: transparent;">Barcha kontaktlar</a></div></div><div style="display: grid; grid-template-columns: repeat(3, minmax(0px, 1fr)) minmax(0px, 1.2fr); gap: 32px;"><nav class="fcol" aria-label="Katalog" style="display: flex; flex-direction: column; gap: 14px;"><span style="font-size: 17px; font-weight: 700;"><span class="sc-interp">Katalog</span></span><a href="CatalogV3.html"><span class="sc-interp">Vitaminlar</span></a><a href="CatalogV3.html"><span class="sc-interp">Minerallar</span></a><a href="CatalogV3.html"><span class="sc-interp">Immunitet</span></a><a href="CatalogV3.html"><span class="sc-interp">Goʻzallik</span></a><a href="CatalogV3.html"><span class="sc-interp">Bolalar uchun</span></a><a href="CatalogV3.html"><span class="sc-interp">Tibbiy jihozlar</span></a><a href="SaleV3.html"><span class="sc-interp">Aksiyalar</span></a><a href="BrandsV3.html"><span class="sc-interp">Brendlar</span></a></nav><nav class="fcol" aria-label="Xaridorlarga" style="display: flex; flex-direction: column; gap: 14px;"><span style="font-size: 17px; font-weight: 700;"><span class="sc-interp">Xaridorlarga</span></span><a href="DeliveryV3.html"><span class="sc-interp">Yetkazib berish</span></a><a href="PaymentV3.html"><span class="sc-interp">Toʻlov usullari</span></a><a href="GuaranteeV3.html"><span class="sc-interp">Kafolat va qaytarish</span></a><a href="LoyaltyV3.html"><span class="sc-interp">Chegirma tizimi</span></a><a href="QuizV3.html"><span class="sc-interp">Vitamin tanlash testi</span></a><a href="AccountV3.html"><span class="sc-interp">Shaxsiy kabinet</span></a></nav><nav class="fcol" aria-label="Kompaniya" style="display: flex; flex-direction: column; gap: 14px;"><span style="font-size: 17px; font-weight: 700;"><span class="sc-interp">Kompaniya</span></span><a href="AboutV3.html"><span class="sc-interp">Biz haqimizda</span></a><a href="LicensesV3.html"><span class="sc-interp">Litsenziya va sertifikatlar</span></a><a href="BlogV3.html"><span class="sc-interp">Sogʻliq blogi</span></a><a href="PartnersV3.html"><span class="sc-interp">Dorixonalar uchun</span></a><a href="PartnersV3.html"><span class="sc-interp">Distributorlik</span></a><a href="ContactV3.html"><span class="sc-interp">Aloqa</span></a></nav><a href="https://t.me/govita_uz" style="align-self: start; display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 20px; background: rgb(23, 25, 27); color: rgb(255, 255, 255); text-decoration: none;"><span style="font-size: 13px; font-weight: 600; color: rgb(201, 205, 209); letter-spacing: 0.04em; text-transform: uppercase;">VIP Salomatlik Klubi</span><span style="font-size: 19px; line-height: 24px; font-weight: 700;">Klubga Telegram-bot orqali qoʻshiling</span><span style="font-size: 14px; line-height: 20px; color: rgb(201, 205, 209);">Buyurtma holati, qabul eslatmalari va klub takliflari.</span><span class="btn-w" style="height: 44px; padding: 0px 18px; font-size: 15px; align-self: flex-start; margin-top: 4px;">Botni ochish</span></a></div></div><div style="display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; padding-top: 28px; border-top: 1px solid rgb(220, 223, 219);"><div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center;"><span style="font-size: 15px; font-weight: 600; margin-right: 4px;">Toʻlov usullari</span><span class="pay">Payme</span><span class="pay">Click</span><span class="pay">Uzum</span><span class="pay" style="font-weight: 600;">Naqd / karta</span></div><div style="display: flex; gap: 10px; align-items: center;"><span style="font-size: 15px; font-weight: 600; margin-right: 6px;">Biz ijtimoiy tarmoqlarda</span><a class="soc" href="https://t.me/govita_uz" aria-label="Telegram"><svg class="ic" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"></path><path d="M9 13l12-9"></path></svg></a><a class="soc" href="https://instagram.com/govita_uz" aria-label="Instagram"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"></rect><circle cx="12" cy="12" r="3.5"></circle><path d="M17 7h.01"></path></svg></a><a class="soc" href="https://facebook.com/govita.uz" aria-label="Facebook"><svg class="ic" viewBox="0 0 24 24"><path d="M14 21v-8h3l.5-3.5H14V7.5c0-1 .4-1.7 1.8-1.7H18V2.7A24 24 0 0 0 15.4 2.5C12.9 2.5 11 4 11 6.9v2.6H8V13h3v8"></path></svg></a></div></div><div style="display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: flex-start; justify-content: space-between; font-size: 14px; line-height: 20px; color: rgb(68, 73, 78);"><span style="flex: 1 1 520px; max-width: 760px;">© 2026 Go Vita. Rasmiy import qiluvchi — Alimkhanov Pharm Group. Biologik faol qoʻshimchalar dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing.</span><span style="display: flex; gap: 20px; flex-wrap: wrap;"><a href="HomeV3.html" style="color: rgb(46, 50, 54);">Ommaviy oferta</a><a href="HomeV3.html" style="color: rgb(46, 50, 54);">Maxfiylik siyosati</a><a href="AboutV3.html" style="color: rgb(46, 50, 54);">Rekvizitlar</a></span></div></div></footer></div></div></div></div>
+
+
+
+</body></html>

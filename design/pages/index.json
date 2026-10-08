@@ -1,0 +1,394 @@
+[
+ {
+  "file": "HomeV3",
+  "title": "Bosh sahifa",
+  "width": 1440,
+  "height": 6333,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "MegaMenuV3",
+  "title": "Katalog menyusi ochiq",
+  "width": 1440,
+  "height": 927,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "CatalogV3",
+  "title": "Katalog",
+  "width": 1440,
+  "height": 3446,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "SearchV3",
+  "title": "Qidiruv — takliflar va natijalar",
+  "width": 1440,
+  "height": 1970,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "SearchEmptyV3",
+  "title": "Qidiruv — natija yoʻq",
+  "width": 1440,
+  "height": 1646,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "SaleV3",
+  "title": "Aksiyalar",
+  "width": 1440,
+  "height": 2040,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "BrandsV3",
+  "title": "Brendlar",
+  "width": 1440,
+  "height": 1856,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "BrandV3",
+  "title": "Brend — Swiss Energy",
+  "width": 1440,
+  "height": 2542,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "ProductV3",
+  "title": "Mahsulot",
+  "width": 1440,
+  "height": 5252,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "CompareV3",
+  "title": "Taqqoslash",
+  "width": 1440,
+  "height": 1887,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "FavoritesV3",
+  "title": "Sevimlilar",
+  "width": 1440,
+  "height": 1993,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "CartV3",
+  "title": "Savat va rasmiylashtirish",
+  "width": 1440,
+  "height": 2485,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "CartEmptyV3",
+  "title": "Boʻsh savat",
+  "width": 1440,
+  "height": 1817,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "OrderSuccessV3",
+  "title": "Buyurtma qabul qilindi",
+  "width": 1440,
+  "height": 1570,
+  "group": "Desktop — xarid yoʻli"
+ },
+ {
+  "file": "LoginV3",
+  "title": "Kirish — Telegram kodi",
+  "width": 1440,
+  "height": 1483,
+  "group": "Desktop — kabinet va vitamin testi"
+ },
+ {
+  "file": "AccountV3",
+  "title": "Kabinet — buyurtmalar",
+  "width": 1440,
+  "height": 1759,
+  "group": "Desktop — kabinet va vitamin testi"
+ },
+ {
+  "file": "OrderDetailV3",
+  "title": "Buyurtma tafsiloti",
+  "width": 1440,
+  "height": 1511,
+  "group": "Desktop — kabinet va vitamin testi"
+ },
+ {
+  "file": "SubscriptionsV3",
+  "title": "Obunalarim",
+  "width": 1440,
+  "height": 1728,
+  "group": "Desktop — kabinet va vitamin testi"
+ },
+ {
+  "file": "ProfileV3",
+  "title": "Profilim",
+  "width": 1440,
+  "height": 2091,
+  "group": "Desktop — kabinet va vitamin testi"
+ },
+ {
+  "file": "QuizV3",
+  "title": "Vitamin testi — savol",
+  "width": 1440,
+  "height": 1791,
+  "group": "Desktop — kabinet va vitamin testi"
+ },
+ {
+  "file": "QuizResultV3",
+  "title": "Vitamin testi — natija",
+  "width": 1440,
+  "height": 1988,
+  "group": "Desktop — kabinet va vitamin testi"
+ },
+ {
+  "file": "DeliveryV3",
+  "title": "Yetkazib berish",
+  "width": 1440,
+  "height": 2313,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "PaymentV3",
+  "title": "Toʻlov usullari",
+  "width": 1440,
+  "height": 1768,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "GuaranteeV3",
+  "title": "Kafolat va qaytarish",
+  "width": 1440,
+  "height": 1683,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "LoyaltyV3",
+  "title": "Chegirma tizimi",
+  "width": 1440,
+  "height": 2123,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "AboutV3",
+  "title": "Biz haqimizda",
+  "width": 1440,
+  "height": 2585,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "LicensesV3",
+  "title": "Litsenziya va sertifikatlar",
+  "width": 1440,
+  "height": 1830,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "PartnersV3",
+  "title": "Dorixonalar va hamkorlar",
+  "width": 1440,
+  "height": 2051,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "ContactV3",
+  "title": "Aloqa",
+  "width": 1440,
+  "height": 2060,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "BlogV3",
+  "title": "Sogʻliq blogi",
+  "width": 1440,
+  "height": 2080,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "ArticleV3",
+  "title": "Maqola",
+  "width": 1440,
+  "height": 2383,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "NotFoundV3",
+  "title": "404",
+  "width": 1440,
+  "height": 1569,
+  "group": "Desktop — maʼlumot sahifalari, blog, 404"
+ },
+ {
+  "file": "HomeMobileFirstV3",
+  "title": "Bosh sahifa — birinchi ekran",
+  "width": 390,
+  "height": 844,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "HomeMobileV3",
+  "title": "Bosh sahifa — toʻliq",
+  "width": 390,
+  "height": 5529,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "MenuMobileV3",
+  "title": "Katalog menyusi",
+  "width": 390,
+  "height": 1497,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "CatalogMobileV3",
+  "title": "Katalog",
+  "width": 390,
+  "height": 3309,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "FiltersMobileV3",
+  "title": "Filtrlar",
+  "width": 390,
+  "height": 844,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "SearchMobileV3",
+  "title": "Qidiruv",
+  "width": 390,
+  "height": 844,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "ProductMobileFirstV3",
+  "title": "Mahsulot — birinchi ekran",
+  "width": 390,
+  "height": 844,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "ProductMobileV3",
+  "title": "Mahsulot — toʻliq",
+  "width": 390,
+  "height": 3989,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "SaleMobileV3",
+  "title": "Aksiyalar",
+  "width": 390,
+  "height": 2625,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "FavoritesMobileV3",
+  "title": "Sevimlilar",
+  "width": 390,
+  "height": 2524,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "CartMobileV3",
+  "title": "Savat",
+  "width": 390,
+  "height": 2956,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "OrderSuccessMobileV3",
+  "title": "Buyurtma qabul qilindi",
+  "width": 390,
+  "height": 935,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "LoginMobileV3",
+  "title": "Kirish",
+  "width": 390,
+  "height": 844,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "AccountMobileV3",
+  "title": "Kabinet",
+  "width": 390,
+  "height": 1043,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "QuizMobileV3",
+  "title": "Vitamin testi",
+  "width": 390,
+  "height": 844,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "DeliveryMobileV3",
+  "title": "Yetkazib berish",
+  "width": 390,
+  "height": 2118,
+  "group": "Mobil — 390 px. Pastki panellar kodda position: fixed"
+ },
+ {
+  "file": "HeaderV3",
+  "title": "Header",
+  "width": 1440,
+  "height": 167,
+  "group": "Komponentlar — Claude Code uchun"
+ },
+ {
+  "file": "FooterV3",
+  "title": "Footer",
+  "width": 1440,
+  "height": 570,
+  "group": "Komponentlar — Claude Code uchun"
+ },
+ {
+  "file": "HeaderMobileV3",
+  "title": "Header mobil",
+  "width": 390,
+  "height": 116,
+  "group": "Komponentlar — Claude Code uchun"
+ },
+ {
+  "file": "TabBarV3",
+  "title": "Tab bar",
+  "width": 390,
+  "height": 68,
+  "group": "Komponentlar — Claude Code uchun"
+ },
+ {
+  "file": "FooterMobileV3",
+  "title": "Footer mobil",
+  "width": 390,
+  "height": 877,
+  "group": "Komponentlar — Claude Code uchun"
+ },
+ {
+  "file": "ProductCardV3",
+  "title": "Mahsulot kartasi",
+  "width": 232,
+  "height": 414,
+  "group": "Komponentlar — Claude Code uchun"
+ },
+ {
+  "file": "AccountNavV3",
+  "title": "Kabinet menyusi",
+  "width": 280,
+  "height": 389,
+  "group": "Komponentlar — Claude Code uchun"
+ },
+ {
+  "file": "InfoNavV3",
+  "title": "Maʼlumot menyusi",
+  "width": 280,
+  "height": 634,
+  "group": "Komponentlar — Claude Code uchun"
+ }
+]

@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — test, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.qo{display:flex;align-items:center;gap:14px;padding:12px;border-radius:18px;border:2px solid transparent;background:#F1F3F0;text-decoration:none;color:#17191B}
+.qo.on{border-color:#17191B;background:#FFFFFF}
+.qo img{width:64px;height:64px;border-radius:12px;object-fit:cover;flex:none}
+</style>
+</helmet>
+<div class="gv" style="position: relative; height: 844px; overflow: hidden; display: flex; flex-direction: column; width: 100%">
+<div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 8px 8px 8px">
+<a href="HomeMobileV3.dc.html" aria-label="Orqaga" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #17191B"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="M15 6l-6 6 6 6"/></svg></a>
+<span style="font-size: 15px; font-weight: 600">Vitamin tanlash testi · 1 / 5</span>
+<a href="HomeMobileV3.dc.html" aria-label="Yopish" style="width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; color: #17191B"><svg class="ic" viewBox="0 0 24 24" style="width: 22px; height: 22px"><path d="M6 6l12 12M18 6L6 18"/></svg></a>
+</div>
+<div style="display: flex; gap: 4px; padding: 0 16px"><span style="flex: 1; height: 4px; border-radius: 2px; background: #17191B"></span><span style="flex: 1; height: 4px; border-radius: 2px; background: #E3E6E9"></span><span style="flex: 1; height: 4px; border-radius: 2px; background: #E3E6E9"></span><span style="flex: 1; height: 4px; border-radius: 2px; background: #E3E6E9"></span><span style="flex: 1; height: 4px; border-radius: 2px; background: #E3E6E9"></span></div>
+<div style="padding: 20px 16px 0; display: flex; flex-direction: column; gap: 8px">
+<h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">Kimga tanlaymiz?</h1>
+<p class="p">Natija tashxis emas, balki mahsulot tanlashga yordam.</p>
+</div>
+<div style="padding: 16px; display: flex; flex-direction: column; gap: 8px">
+<sc-for list="{{opts}}" as="o" hint-placeholder-count="6">
+<a class="qo {{o.c}}" href="QuizMobileV3.dc.html"><img src="{{o.img}}" alt="{{o.alt}}" style="object-position: {{o.pos}}"><span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">{{o.t}}</span><span style="font-size: 13px; color: #44494E">{{o.s}}</span></span><span style="width: 24px; height: 24px; border-radius: 12px; box-sizing: border-box; {{o.rd}}"></span></a>
+</sc-for>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 20px; background: #FFFFFF; border-top: 1px solid #E4E6E8; display: grid; grid-template-columns: 1fr 1.6fr; gap: 8px"><button type="button" class="btn-l" style="height: 52px">Oʻtkazish</button><a class="btn" href="QuizMobileV3.dc.html" style="height: 52px; border-radius: 14px">Keyingi</a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var O = function (t, s, img, alt, pos, on) { return { t: t, s: s, img: img, alt: alt, pos: pos, c: on ? "on" : "", rd: on ? "border: 7px solid #17191B" : "border: 2px solid #A9AEB3" }; };
+    return { opts: [
+      O("Oʻzim uchun — ayol", "Kundalik vitamin va minerallar", PH.woman, "Ayol uyda", "center 30%", true),
+      O("Oʻzim uchun — erkak", "Energiya va tiklanish", PH.man, "Erkak oshxonada", "70% center"),
+      O("Farzandim uchun", "Bolalar multivitaminlari", PH.child, "Bola", "center"),
+      O("Homiladorlik davri", "Homiladorlik uchun komplekslar", PH.preg, "Homilador ayol", "60% center"),
+      O("Ota-onam uchun", "60+ uchun vitamin va minerallar", PH.senior, "Keksa juftlik", "center"),
+      O("Kasallikdan keyin", "Tiklanish davri uchun ovqatlanish", PH.recovery, "Ayol pled oʻranib", "center")
+    ] };
+  }
+}
+</script>
+</body>
+</html>

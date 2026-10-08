@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — sahifa topilmadi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.ct{height:180px;display:flex;flex-direction:column;padding:20px 20px 0;border-radius:22px}
+.ct span{font-size:18px;font-weight:600;position:relative;z-index:1}
+.ct img{position:absolute;right:8px;bottom:6px;width:120px;height:120px;object-fit:contain}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 48px; padding-top: 56px; padding-bottom: 80px">
+<section style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px">
+<span style="font-size: 160px; line-height: 150px; font-weight: 700; letter-spacing: -0.05em">404</span>
+<h1 class="h1">Sahifa topilmadi</h1>
+<p class="lead" style="max-width: 520px">Havola eskirgan yoki sahifa koʻchirilgan boʻlishi mumkin. Qidiruvdan foydalaning yoki katalogga oʻting.</p>
+<label style="display: flex; align-items: center; width: 560px; height: 56px; border-radius: 16px; background: #F1F3F0; padding: 0 6px 0 20px; gap: 10px; margin-top: 8px"><span style="position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0)">Qidiruv</span><input type="search" placeholder="Vitamin, brend yoki tarkib" style="flex: 1; border: 0; outline: none; background: transparent; font: 400 17px Onest, sans-serif"><a href="SearchV3.dc.html" aria-label="Qidirish" style="width: 44px; height: 44px; border-radius: 12px; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg></a></label>
+<div style="display: flex; gap: 10px; margin-top: 6px"><a class="btn" href="HomeV3.dc.html">Bosh sahifaga qaytish</a><a class="btn-o" href="CatalogV3.dc.html">Doʻkonga oʻtish</a></div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="h3" style="font-size: 24px">Mashhur kategoriyalar</h2>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="5"><a class="tile ct" href="CatalogV3.dc.html"><span>{{c.t}}</span><img src="{{c.img}}" alt=""></a></sc-for>
+</div>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var C = function (t, k) { return { t: t, img: GV[k].img }; };
+    return { cats: [C("Vitaminlar", "neuro"), C("Immunitet", "immuno"), C("Goʻzallik", "hns"), C("Bolalar uchun", "kids"), C("Shipuchi tabletkalar", "vitc")] };
+  }
+}
+</script>
+</body>
+</html>

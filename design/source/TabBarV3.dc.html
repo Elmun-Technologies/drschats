@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Tab bar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}
+</style>
+</helmet>
+<nav aria-label="Asosiy navigatsiya" style="width: 100%; height: 68px; box-sizing: border-box; padding: 6px 4px 10px; background: #FFFFFF; border-top: 1px solid #E4E6E8; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); font-family: Onest, 'Segoe UI', Arial, sans-serif">
+<sc-for list="{{tabs}}" as="t" hint-placeholder-count="5">
+<a href="{{t.href}}" style="position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; text-decoration: none; color: {{t.color}}; font-size: 11px; font-weight: {{t.w}}">
+<svg viewBox="0 0 24 24" style="width: 26px; height: 26px; fill: {{t.fill}}; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round"><path d="{{t.d}}"/></svg>
+{{t.label}}
+<sc-if value="{{t.badge}}" hint-placeholder-val="{{false}}"><span style="position: absolute; top: 0; left: 50%; margin-left: 5px; min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box; border-radius: 9px; background: #C8161D; color: #FFFFFF; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center">3</span></sc-if>
+</a>
+</sc-for>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["home","catalog","cart","fav","user"],"default":"home"},"$preview":{"width":390,"height":68}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var a = this.props.active ?? "home";
+    var defs = [
+      { id: "home", label: "Bosh sahifa", href: "HomeMobileV3.dc.html", d: "M4 11l8-7 8 7v9h-5v-6H9v6H4z" },
+      { id: "catalog", label: "Katalog", href: "MenuMobileV3.dc.html", d: "M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z" },
+      { id: "cart", label: "Savat", href: "CartMobileV3.dc.html", d: "M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" },
+      { id: "fav", label: "Sevimlilar", href: "FavoritesMobileV3.dc.html", d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" },
+      { id: "user", label: "Kabinet", href: "AccountMobileV3.dc.html", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" }
+    ];
+    return { tabs: defs.map(function (t) { var on = t.id === a; return { label: t.label, href: t.href, d: t.d, color: on ? "#17191B" : "#63686E", w: on ? 700 : 500, fill: "none", badge: t.id === "cart" }; }) };
+  }
+}
+</script>
+</body>
+</html>

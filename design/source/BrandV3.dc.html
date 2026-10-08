@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — Swiss Energy</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" active="Brendlar" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 36px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><a href="BrandsV3.dc.html">Brendlar</a><span>/</span><span style="color: #17191B">Swiss Energy</span></nav>
+<section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 24px; padding: 48px 56px; border-radius: 32px; background: #1C1F22; color: #FFFFFF; margin-top: -16px">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 14px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #A9AEB3">Shveytsariya · rasmiy import</span>
+<h1 style="margin: 0; font-size: 64px; line-height: 66px; font-weight: 700; letter-spacing: -0.03em">Swiss Energy</h1>
+<p style="margin: 0; font-size: 18px; line-height: 27px; color: #C9CDD1; max-width: 480px">Shveytsariyaning vitamin va shipuchi tabletkalari liniyasi. Kapsulalar, shipuchi tabletkalar va kollagen kukuni — barchasi zavod hujjatlari bilan.</p>
+<div style="display: flex; gap: 32px; margin-top: 8px">
+<span style="display: flex; flex-direction: column"><span style="font-size: 32px; font-weight: 700">8</span><span style="font-size: 14px; color: #A9AEB3">mahsulot katalogda</span></span>
+<span style="display: flex; flex-direction: column"><span style="font-size: 32px; font-weight: 700">24 soat</span><span style="font-size: 14px; color: #A9AEB3">Toshkentga yetkazish</span></span>
+</div>
+</div>
+<div style="display: flex; justify-content: center; align-items: flex-end; gap: 0">
+<img src="{{a}}" alt="" style="width: 200px; height: 200px; object-fit: contain; margin-right: -30px">
+<img src="{{b}}" alt="" style="width: 260px; height: 260px; object-fit: contain; position: relative">
+<img src="{{c}}" alt="" style="width: 200px; height: 200px; object-fit: contain; margin-left: -30px">
+</div>
+</section>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap">
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><span class="chip on">Hammasi <small>8</small></span><a class="chip" href="#">Kapsulalar <small>6</small></a><a class="chip" href="#">Shipuchi tabletkalar <small>1</small></a><a class="chip" href="#">Kukun <small>1</small></a></div>
+<span style="font-size: 15px; color: #44494E">Saralash: <b style="color: #17191B">Ommabop</b></span>
+</div>
+<div class="grid4" style="grid-template-columns: repeat(4, minmax(0, 1fr))"><sc-for list="{{list}}" as="p" hint-placeholder-count="8"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{facts}}" as="f" hint-placeholder-count="3"><div class="panel" style="padding: 28px; display: flex; flex-direction: column; gap: 8px"><span style="font-size: 19px; font-weight: 700">{{f.t}}</span><span class="p">{{f.s}}</span></div></sc-for>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      a: GV.visio.img, b: GV.immuno.img, c: GV.calci.img,
+      list: gvList(["vitc", "immuno", "hns", "calci", "neuro", "visio", "prenatal", "collagen"]),
+      facts: [
+        { t: "Kelib chiqishi", s: "Qaysi mamlakatda ishlab chiqarilgani har bir mahsulot sahifasida qadoqdagi yozuvga muvofiq koʻrsatiladi." },
+        { t: "Ishlab chiqaruvchi hujjatlari", s: "Har bir partiya zavod hujjatlari bilan keladi; sertifikat nusxasini soʻrov boʻyicha yuboramiz." },
+        { t: "Rasmiy import shartnomasi", s: "Swiss Energy yetkazib beruvchisi bilan tuzilgan shartnoma asosida import qilinadi." }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>
