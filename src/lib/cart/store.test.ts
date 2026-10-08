@@ -81,13 +81,16 @@ describe("cart lines", () => {
 });
 
 describe("syncPrices", () => {
-  it("updates stale prices and drops products no longer sold", () => {
+  it("updates stale prices", () => {
     useCart.getState().add(product(), 1, { silent: true });
-    useCart.getState().add(product({ productId: "gone", slug: "gone" }), 1, { silent: true });
     useCart.getState().syncPrices({ p1: { price: 120000, oldPrice: 150000, inStock: true } });
+    expect(useCart.getState().lines[0]).toMatchObject({ productId: "p1", price: 120000, oldPrice: 150000 });
+  });
 
-    const { lines } = useCart.getState();
-    expect(lines).toHaveLength(1);
-    expect(lines[0]).toMatchObject({ productId: "p1", price: 120000, oldPrice: 150000 });
+  it("never removes a line, so a failed catalogue read cannot empty the cart", () => {
+    useCart.getState().add(product(), 1, { silent: true });
+    useCart.getState().add(product({ productId: "p2", slug: "p2" }), 1, { silent: true });
+    useCart.getState().syncPrices({});
+    expect(useCart.getState().lines).toHaveLength(2);
   });
 });

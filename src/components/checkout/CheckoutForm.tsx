@@ -120,7 +120,9 @@ export function CheckoutForm({
   if (!mounted) return <div className="min-h-[60vh]" />;
   if (lines.length === 0) return <EmptyCart recommended={recommended} />;
 
-  const ladderSteps = buildUpsellLadder(lines, recommended);
+  // Paid steps only. The cart shows the steps side by side, so the free last
+  // step would be free for nothing; it is earned in the step-by-step modal.
+  const ladderSteps = buildUpsellLadder(lines, recommended).filter((s) => s.stepType !== "free_gift");
   const payChoice = payment === "online" ? provider : "cod";
   const choosePay = (value: string) => {
     if (value === "cod") {

@@ -13,14 +13,34 @@ import { cartLineId, computeTotals, type CartLine } from "./pricing";
   products.
 */
 
-/** Every discount an offer on the site can carry: ladder steps, rail offers, programs, the free gift. */
-const OFFER_PERCENTS = new Set([10, 12, 15, 20, 100]);
+/** The upsell ladder's steps: −10%, −15%, −20%, or free (lib/upsell/ladder.ts). */
+const LADDER_PERCENTS = new Set([10, 15, 20, 100]);
+
+/**
+ * The offers the shop actually made, gathered by the caller:
+ * - `programs`: product slug → the discounts of the programmes that contain it;
+ * - `rail`: product slug → the discount the product page's upsell rail offers
+ *   for it, next to a product already in this order.
+ */
+export interface OfferContext {
+  programs: Map<string, Set<number>>;
+  rail: Map<string, Set<number>>;
+  /** Slugs the upsell ladder draws from (the popular pool the cart and the modal use). */
+  ladderPool: Set<string>;
+}
+
+const NO_OFFERS: OfferContext = { programs: new Map(), rail: new Map(), ladderPool: new Set() };
 
 export type RepriceResult =
   | { ok: true; order: OrderRequest }
   | { ok: false; error: "unknown_product" | "out_of_stock" | "invalid_offer" };
 
-export function repriceOrder(order: OrderRequest, products: Product[], promotions: Promotion[]): RepriceResult {
+export function repriceOrder(
+  order: OrderRequest,
+  products: Product[],
+  promotions: Promotion[],
+  offers: OfferContext = NO_OFFERS,
+): RepriceResult {
   const byId = new Map(products.map((p) => [p.id, p]));
   const lines: CartLine[] = [];
 
@@ -29,7 +49,6 @@ export function repriceOrder(order: OrderRequest, products: Product[], promotion
     if (!product || product.slug !== item.slug) return { ok: false, error: "unknown_product" };
     if (!product.inStock) return { ok: false, error: "out_of_stock" };
     const percent = item.upsellDiscountPercent;
-    if (percent !== undefined && !OFFER_PERCENTS.has(percent)) return { ok: false, error: "invalid_offer" };
     lines.push({
       lineId: cartLineId(product.id, item.subscription),
       productId: product.id,
@@ -41,6 +60,26 @@ export function repriceOrder(order: OrderRequest, products: Product[], promotion
       upsellDiscountPercent: percent,
       subscription: item.subscription,
     });
+  }
+
+  /*
+    Every discounted line has to be an offer the shop made. A programme
+    discount needs the product to be in a programme at that percent; a rail
+    discount needs the rail beside a product in this order to offer it. What
+    is left can only be a ladder step: a product from the ladder's pool, at a
+    ladder percent, alongside something bought at full price — the ladder is
+    offered on top of a cart, never instead of one. (The cart rebuilds the
+    ladder after every accepted step, so several lines can share a percent.)
+  */
+  const base = lines.filter((l) => !l.upsellDiscountPercent);
+  for (const l of lines) {
+    const percent = l.upsellDiscountPercent;
+    if (!percent) continue;
+    if (offers.programs.get(l.slug)?.has(percent)) continue;
+    if (offers.rail.get(l.slug)?.has(percent)) continue;
+    if (!LADDER_PERCENTS.has(percent) || base.length === 0 || !offers.ladderPool.has(l.slug)) {
+      return { ok: false, error: "invalid_offer" };
+    }
   }
 
   /*

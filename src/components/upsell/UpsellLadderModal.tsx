@@ -227,8 +227,8 @@ export function UpsellLadderModal() {
                   onClick={handleAccept}
                   className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
                     isFreeGift
-                      ? "bg-ink text-ink hover:brightness-95"
-                      : "bg-ink text-ink hover:bg-black hover:text-white"
+                      ? "bg-ink text-white hover:brightness-95"
+                      : "bg-ink text-white hover:bg-black"
                   }`}
                 >
                   {isFreeGift ? t("freeGiftCta") : t("accept")}

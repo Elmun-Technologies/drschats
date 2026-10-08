@@ -56,8 +56,10 @@ async function deliver(scope: string, phoneNumber: string, lines: string[]): Pro
     return { ok: false, error: "unavailable" };
   }
 
-  await notifyOperator(lines.join("\n"));
-  return { ok: true };
+  // The Telegram message is the only copy of the lead: if it did not arrive,
+  // say so, so the form offers the phone number instead of a false "sent".
+  const delivered = await notifyOperator(lines.join("\n"));
+  return delivered ? { ok: true } : { ok: false, error: "unavailable" };
 }
 
 export async function submitPartnerLead(input: PartnerLead, regionLabel: string): Promise<LeadResult> {

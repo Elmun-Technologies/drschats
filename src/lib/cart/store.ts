@@ -23,7 +23,7 @@ interface CartState {
   setQuantity: (lineId: string, quantity: number) => void;
   /**
    * Bring stored lines up to today's catalogue: a cart lives thirty days, so
-   * its prices can be stale. Products no longer sold leave the cart.
+   * its prices can be stale. Only prices change; no line is removed here.
    */
   syncPrices: (current: Record<string, { price: number; oldPrice?: number; inStock: boolean }>) => void;
   clear: () => void;
@@ -75,15 +75,14 @@ export const useCart = create<CartState>()(
       syncPrices: (current) =>
         set((state) => {
           let changed = false;
-          const lines = state.lines.flatMap((l) => {
+          // A product missing from the map is left alone: an empty or partial
+          // catalogue read (a failed request) must never empty someone's cart.
+          // The server refuses lines it does not sell, with a message.
+          const lines = state.lines.map((l) => {
             const now = current[l.productId];
-            if (!now) {
-              changed = true;
-              return [];
-            }
-            if (now.price === l.price && now.oldPrice === l.oldPrice) return [l];
+            if (!now || (now.price === l.price && now.oldPrice === l.oldPrice)) return l;
             changed = true;
-            return [{ ...l, price: now.price, oldPrice: now.oldPrice }];
+            return { ...l, price: now.price, oldPrice: now.oldPrice };
           });
           return changed ? { lines } : state;
         }),

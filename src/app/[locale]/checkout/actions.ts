@@ -5,9 +5,10 @@ import { SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
 import { isLiveDeployment } from "@/lib/config/live";
 import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
-import { repriceOrder } from "@/lib/cart/reprice";
+import { repriceOrder, type OfferContext } from "@/lib/cart/reprice";
+import { getPrograms } from "@/lib/content/programs";
 import { ONLINE_PROVIDERS } from "@/lib/config/payments";
-import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
+import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
 import { clientIp, withinRateLimit } from "@/lib/rate-limit";
 import { notifyOperator } from "@/lib/notifications/operator";
 import { siteOrigin } from "@/lib/email/config";
@@ -72,6 +73,38 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
   });
 }
 
+/*
+  The offers this order could have come from: programmes (static content) and
+  the product-page upsell rail beside each full-price line. Read from the same
+  sources the pages that made the offers read, so a discount is accepted only
+  where the shop actually showed it.
+*/
+async function offerContext(order: OrderRequest, products: Product[]): Promise<OfferContext> {
+  const programs = new Map<string, Set<number>>();
+  for (const program of getPrograms(order.locale)) {
+    if (!program.discountPercent) continue;
+    for (const slug of program.productSlugs) {
+      if (!programs.has(slug)) programs.set(slug, new Set());
+      programs.get(slug)!.add(program.discountPercent);
+    }
+  }
+
+  const rail = new Map<string, Set<number>>();
+  const bySlug = new Map(products.map((p) => [p.slug, p]));
+  const anchors = order.items.filter((i) => !i.upsellDiscountPercent).map((i) => bySlug.get(i.slug)?.id).filter(Boolean) as string[];
+  const [lists, pool] = await Promise.all([
+    Promise.all(anchors.map((id) => shopflow.getUpsells(id, order.locale).catch(() => []))),
+    // The pool getUpsellProducts and the cart page hand to buildUpsellLadder.
+    shopflow.getProducts({ locale: order.locale, sort: "popular", pageSize: 30 }).catch(() => ({ items: [] as Product[] })),
+  ]);
+  for (const offer of lists.flat()) {
+    if (!rail.has(offer.product.slug)) rail.set(offer.product.slug, new Set());
+    rail.get(offer.product.slug)!.add(offer.discountPercent);
+  }
+  const ladderPool = new Set(pool.items.filter((p) => p.inStock).map((p) => p.slug));
+  return { programs, rail, ladderPool };
+}
+
 export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "failed";
 
 export async function submitOrder(payload: OrderRequest): Promise<OrderResult & { error?: OrderError; total?: number }> {
@@ -114,7 +147,8 @@ export async function submitOrder(payload: OrderRequest): Promise<OrderResult & 
       Promise.all(slugs.map((slug) => shopflow.getProduct(slug, request.locale))),
       shopflow.getPromotions(request.locale).catch(() => []),
     ]);
-    const priced = repriceOrder(request, products.filter((p): p is NonNullable<typeof p> => p !== null), promotions);
+    const found = products.filter((p): p is NonNullable<typeof p> => p !== null);
+    const priced = repriceOrder(request, found, promotions, await offerContext(request, found));
     if (!priced.ok) return { ok: false, error: priced.error };
     const order = priced.order;
 
