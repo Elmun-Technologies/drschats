@@ -1,114 +1,18 @@
 "use client";
 
 import { useMemo, useRef, useState } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { AnimatePresence, motion } from "framer-motion";
-import { useRouter } from "@/lib/i18n/navigation";
+import { Link, useRouter } from "@/lib/i18n/navigation";
 import { visibleQuestions, type QuizQuestion } from "@/lib/quiz/questions";
 import { buildQuizResult, saveQuiz, type QuizAnswers } from "@/lib/quiz/engine";
 import { encodeAnswers } from "@/lib/quiz/recommend";
 import { useProfile } from "@/lib/profile/store";
 import { track } from "@/lib/analytics/events";
+import { AUDIENCE_PHOTOS, audienceSubtitleKey } from "@/lib/content/audience";
+import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-
-function renderOptionIcon(id: string) {
-  if (id.includes("woman")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" />
-      </svg>
-    );
-  }
-  if (id.includes("man")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
-      </svg>
-    );
-  }
-  if (id.includes("child")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" /><path d="M9 10h.01" /><path d="M15 10h.01" /><path d="M9.5 15a3.5 3.5 0 0 0 5 0" />
-      </svg>
-    );
-  }
-  if (id.includes("parent")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-      </svg>
-    );
-  }
-  if (id.includes("fatigue")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
-      </svg>
-    );
-  }
-  if (id.includes("sleep")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-      </svg>
-    );
-  }
-  if (id.includes("stress")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" />
-      </svg>
-    );
-  }
-  if (id.includes("colds")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="M12 8v8m-4-4h8" />
-      </svg>
-    );
-  }
-  if (id.includes("hair") || id.includes("beauty")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M12 2L9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2z" />
-      </svg>
-    );
-  }
-  if (id.includes("bones")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <rect x="3" y="8" width="18" height="8" rx="3" /><circle cx="7" cy="12" r="1.5" /><circle cx="17" cy="12" r="1.5" />
-      </svg>
-    );
-  }
-  if (id.includes("heart")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-      </svg>
-    );
-  }
-  if (id.includes("focus") || id.includes("brain")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="6" /><circle cx="12" cy="12" r="2" />
-      </svg>
-    );
-  }
-  if (id.includes("sun") || id.includes("almost-none") || id.includes("lt1") || id.includes("1-3") || id.includes("gt3")) {
-    return (
-      <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-        <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-      </svg>
-    );
-  }
-  return (
-    <svg className="h-5 w-5 shrink-0 text-signal" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-      <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" />
-    </svg>
-  );
-}
 
 export function QuizFlow({
   questions,
@@ -119,6 +23,8 @@ export function QuizFlow({
   initialAnswers?: QuizAnswers;
 }) {
   const t = useTranslations("quiz");
+  const tv = useTranslations("quiz.v3");
+  const ta = useTranslations("home.audience");
   const router = useRouter();
   // Start past whatever arrived answered, so a shortcut saves a step instead
   // of re-asking what the visitor just told us.
@@ -139,6 +45,8 @@ export function QuizFlow({
   const question = visible[stepIndex];
   const selected = useMemo(() => answers[question.id] ?? [], [answers, question.id]);
   const progress = Math.round(((stepIndex + 1) / visible.length) * 100);
+  const photos = question.options.every((o) => AUDIENCE_PHOTOS[o.id]);
+  const lead = question.hint ?? (stepIndex === 0 ? tv("lead") : undefined);
   const isLast = stepIndex === visible.length - 1;
 
   function toggle(optionId: string) {
@@ -202,33 +110,51 @@ export function QuizFlow({
     router.push(`/quiz/result?a=${encodeURIComponent(encodeAnswers(answers))}`);
   }
 
+
+  const backIcon = (
+    <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M15 6l-6 6 6 6" />
+    </svg>
+  );
+
   return (
-    <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between text-xs sm:text-sm text-legacy-muted">
-        <div className="flex items-center gap-2">
-          <span className="rounded-full border border-legacy-line bg-surface-2 px-3 py-1 text-xs font-semibold tabular-nums text-fg">
+    <div className="mx-auto flex max-w-[1032px] flex-col gap-5 lg:gap-7">
+      <div className="flex flex-col gap-2.5 lg:gap-3">
+        <div className="flex items-center justify-between gap-2">
+          <button
+            type="button"
+            onClick={() => setStep((s) => Math.max(0, s - 1))}
+            disabled={step === 0}
+            aria-label={t("back")}
+            className="-ml-2.5 flex h-11 w-11 items-center justify-center rounded-sm disabled:opacity-30 lg:hidden"
+          >
+            {backIcon}
+          </button>
+          <span className="text-[15px] font-semibold lg:text-ink-2">
+            {t("eyebrow")}
+            <span className="lg:hidden"> · {t("stepOf", { step: stepIndex + 1, total: visible.length })}</span>
+          </span>
+          <span className="hidden text-[15px] font-semibold tabular-nums lg:inline">
             {t("stepOf", { step: stepIndex + 1, total: visible.length })}
           </span>
-          {/* The duration lives in the page title. A second, different estimate
-              ("~1.5 daqiqa" against "2 daqiqada") only made both look made up. */}
+          <Link href="/" aria-label={tv("close")} className="-mr-2.5 flex h-11 w-11 items-center justify-center rounded-sm lg:hidden">
+            <svg viewBox="0 0 24 24" aria-hidden className="h-[22px] w-[22px]" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
+              <path d="M6 6l12 12M18 6L6 18" />
+            </svg>
+          </Link>
         </div>
-        <span className="font-semibold tabular-nums text-legacy-muted">{progress}%</span>
-      </div>
-
-      <div
-        role="progressbar"
-        aria-valuenow={progress}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={t("progressLabel")}
-        className="mt-3 h-2 overflow-hidden rounded-full bg-surface-2 p-0.5"
-      >
-        {/* Progress is a health-tool measure, so it fills in the health colour.
-            Gold is held back for the buttons that take money. */}
         <div
-          className="h-full rounded-full bg-signal transition-[width] duration-500 ease-out"
-          style={{ width: `${progress}%` }}
-        />
+          role="progressbar"
+          aria-valuenow={progress}
+          aria-valuemin={0}
+          aria-valuemax={100}
+          aria-label={t("progressLabel")}
+          className="flex gap-1.5"
+        >
+          {visible.map((q, i) => (
+            <span key={q.id} className={cn("h-1.5 flex-1 rounded-[3px] transition-colors", i <= stepIndex ? "bg-ink" : "bg-chip-strong")} />
+          ))}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -238,122 +164,147 @@ export function QuizFlow({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -24 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8"
+          className="flex flex-col gap-5 lg:gap-7"
         >
-          <fieldset>
-            <legend id={`q-${question.id}`} className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
+          <div className="flex flex-col gap-2 lg:gap-2.5">
+            <h1 id={`q-${question.id}`} className="text-[28px] font-bold leading-[34px] lg:text-[40px] lg:leading-[46px]">
               {question.question}
-            </legend>
-            {question.hint && <p className="mt-2 text-sm text-legacy-muted">{question.hint}</p>}
-
-            {/* role="radio" has to be owned by a radiogroup — a fieldset maps to
-                plain `group`, which leaves the radios unowned and costs the
-                "N of M" position a screen reader would otherwise announce. */}
-            <div
-              ref={optionsRef}
-              role={question.multiSelect ? undefined : "radiogroup"}
-              aria-labelledby={question.multiSelect ? undefined : `q-${question.id}`}
-              onKeyDown={onOptionKeyDown}
-              className="mt-6 grid gap-3 sm:grid-cols-1"
-            >
-              {question.options.map((option, index) => {
-                const isSelected = selected.includes(option.id);
-                // Roving tabindex: Tab reaches the group once, arrows move within.
-                const roving = question.multiSelect
-                  ? undefined
-                  : isSelected || (selected.length === 0 && index === 0)
-                    ? 0
-                    : -1;
-                return (
-                  <button
-                    key={option.id}
-                    type="button"
-                    role={question.multiSelect ? "checkbox" : "radio"}
-                    aria-checked={isSelected}
-                    tabIndex={roving}
-                    onClick={() => toggle(option.id)}
-                    className={cn(
-                      "group flex items-center justify-between gap-4 rounded-2xl border px-5 py-4 text-left text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
-                      isSelected
-                        ? "border-signal/50 bg-signal-soft text-fg"
-                        : "border-legacy-line bg-surface text-legacy-muted hover:border-legacy-line-strong hover:text-fg",
-                    )}
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-surface-2 transition-colors group-hover:bg-surface-3">
-                        {renderOptionIcon(option.id)}
-                      </div>
-                      <span className="text-base font-semibold">{option.label}</span>
-                    </div>
-
-                    <span
-                      aria-hidden
-                      className={cn(
-                        "flex h-5 w-5 shrink-0 items-center justify-center border transition-all",
-                        question.multiSelect ? "rounded-md" : "rounded-full",
-                        isSelected ? "border-signal bg-signal text-white" : "border-legacy-line-strong",
-                      )}
-                    >
-                      {isSelected && (
-                        <svg viewBox="0 0 20 20" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.8">
-                          <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                      )}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Context for the question. It was labelled "Tibbiy konsilium
-                izohi" — a medical-consilium note, hard-coded in Uzbek on the
-                Russian page too — for text no council has reviewed. It is what
-                it actually is: a note. */}
-            {question.guidance && (
-              <div className="mt-5 rounded-2xl border border-signal/20 bg-signal-soft/50 p-4 text-xs sm:text-sm">
-                <div className="flex items-start gap-3">
-                  <div className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-signal text-[11px] font-bold text-white">
-                    i
-                  </div>
-                  <div>
-                    <span className="mb-0.5 block font-semibold text-fg">{t("guidanceLabel")}</span>
-                    <span className="leading-relaxed text-legacy-muted">{question.guidance}</span>
-                  </div>
-                </div>
-              </div>
+            </h1>
+            {lead && (
+              <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">
+                {question.hint ?? (
+                  <>
+                    <span className="hidden lg:inline">{lead}</span>
+                    <span className="lg:hidden">{tv("leadShort")}</span>
+                  </>
+                )}
+              </p>
             )}
-          </fieldset>
+          </div>
+
+          {/* role="radio" has to be owned by a radiogroup, or the radios lose
+              the "N of M" position a screen reader would announce. */}
+          <div
+            ref={optionsRef}
+            role={question.multiSelect ? "group" : "radiogroup"}
+            aria-labelledby={`q-${question.id}`}
+            onKeyDown={onOptionKeyDown}
+            className={cn("grid gap-2.5", photos ? "lg:grid-cols-3 lg:gap-4" : "lg:grid-cols-2 lg:gap-3")}
+          >
+            {question.options.map((option, index) => {
+              const isSelected = selected.includes(option.id);
+              // Roving tabindex: Tab reaches the group once, arrows move within.
+              const roving = question.multiSelect
+                ? undefined
+                : isSelected || (selected.length === 0 && index === 0)
+                  ? 0
+                  : -1;
+              const photo = photos ? AUDIENCE_PHOTOS[option.id] : undefined;
+              const subtitle = photo ? ta(audienceSubtitleKey(option.id)) : undefined;
+              return (
+                <button
+                  key={option.id}
+                  type="button"
+                  role={question.multiSelect ? "checkbox" : "radio"}
+                  aria-checked={isSelected}
+                  tabIndex={roving}
+                  onClick={() => toggle(option.id)}
+                  className={cn(
+                    "relative flex items-center gap-3.5 rounded-[16px] border-2 bg-tile p-2.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2",
+                    photo ? "lg:flex-col lg:items-stretch lg:gap-0 lg:overflow-hidden lg:rounded-[20px] lg:p-0" : "min-h-16 px-4 py-3",
+                    isSelected ? "border-ink" : "border-transparent hover:bg-tile-hover",
+                  )}
+                >
+                  {photo && (
+                    <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[12px] lg:aspect-[4/3] lg:h-auto lg:w-full lg:rounded-none">
+                      <Image
+                        src={photo.src}
+                        alt=""
+                        fill
+                        sizes="(max-width: 1024px) 64px, 330px"
+                        className="object-cover"
+                        style={{ objectPosition: photo.position }}
+                      />
+                    </span>
+                  )}
+                  <span className={cn("flex min-w-0 flex-1 flex-col gap-0.5", photo && "lg:px-[18px] lg:pb-[18px] lg:pt-4")}>
+                    <span className={cn("font-bold", photo ? "text-[17px] lg:text-[19px]" : "text-base lg:text-[17px]")}>{option.label}</span>
+                    {subtitle && <span className="text-sm leading-[19px] text-ink-2">{subtitle}</span>}
+                  </span>
+                  <Indicator selected={isSelected} multi={question.multiSelect} photo={Boolean(photo)} />
+                </button>
+              );
+            })}
+          </div>
+
+          {question.guidance && (
+            <p className="rounded-[16px] bg-tile px-4 py-3.5 text-sm leading-5 text-ink-2 lg:px-5 lg:text-[15px] lg:leading-[22px]">
+              <span className="font-semibold text-ink">{t("guidanceLabel")}:</span> {question.guidance}
+            </p>
+          )}
         </motion.div>
       </AnimatePresence>
 
-      <div className="mt-8 flex items-center justify-between gap-3">
-        <button
-          type="button"
+      {/* Phones: the two forward actions sit in a fixed bar above the tab bar;
+          `data-buy-bar` makes the footer and toasts step around it. */}
+      <div
+        data-buy-bar
+        className="fixed inset-x-0 bottom-[var(--tab-bar)] z-40 flex h-[var(--buy-bar)] items-center gap-2.5 border-t border-line bg-bg px-4 lg:static lg:h-auto lg:justify-between lg:border-0 lg:px-0 lg:pt-2"
+      >
+        <Button
+          variant="ghost"
           onClick={() => setStep((s) => Math.max(0, s - 1))}
           disabled={step === 0}
-          className="rounded-full px-5 py-2.5 text-sm font-semibold text-legacy-muted transition-colors hover:bg-surface-2 hover:text-fg disabled:opacity-40 disabled:hover:bg-transparent"
+          className="hidden bg-transparent disabled:opacity-40 lg:inline-flex"
         >
+          {backIcon}
           {t("back")}
-        </button>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={goNext}
-            className="rounded-full px-4 py-2.5 text-sm font-medium text-legacy-muted transition-colors hover:bg-surface-2 hover:text-fg"
-          >
-            {t("skip")}
-          </button>
-          <button
-            type="button"
-            onClick={goNext}
-            disabled={selected.length === 0 || submitting}
-            className="rounded-full bg-fg px-8 py-3.5 text-sm font-bold text-legacy-ink transition-colors hover:bg-brand-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-legacy-ink disabled:opacity-40"
-          >
+        </Button>
+        <div className="flex flex-1 gap-2.5 lg:flex-none lg:gap-2">
+          <Button variant="light" onClick={goNext} className="flex-1 lg:flex-none">
+            <span className="lg:hidden">{tv("skipShort")}</span>
+            <span className="hidden lg:inline">{t("skip")}</span>
+          </Button>
+          <Button onClick={goNext} disabled={selected.length === 0 || submitting} className="flex-[1.6] lg:flex-none lg:px-8">
             {isLast ? t("finish") : t("next")}
-          </button>
+          </Button>
         </div>
       </div>
     </div>
+  );
+}
+
+function Indicator({ selected, multi, photo }: { selected: boolean; multi: boolean; photo: boolean }) {
+  const check = (
+    <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12l5 5 9-10" />
+    </svg>
+  );
+  return (
+    <>
+      {photo && (
+        <span
+          aria-hidden
+          className={cn(
+            "absolute right-3.5 top-3.5 hidden h-8 w-8 items-center justify-center rounded-full border-2 border-white text-white lg:flex",
+            selected ? "bg-ink" : "bg-ink/25",
+          )}
+        >
+          {selected && check}
+        </span>
+      )}
+      <span
+        aria-hidden
+        className={cn(
+          "flex h-6 w-6 shrink-0 items-center justify-center border-2",
+          multi ? "rounded-[7px]" : "rounded-full",
+          selected ? "border-ink" : "border-[#8A8F95]",
+          multi && selected && "bg-ink text-white",
+          photo && "lg:hidden",
+        )}
+      >
+        {selected && (multi ? check : <span className="h-3 w-3 rounded-full bg-ink" />)}
+      </span>
+    </>
   );
 }

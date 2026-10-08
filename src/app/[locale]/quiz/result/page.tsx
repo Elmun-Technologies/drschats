@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildQuizPlan, decodeAnswers } from "@/lib/quiz/recommend";
+import { getQuizQuestions } from "@/lib/quiz/questions";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { QuizPlanView } from "@/components/quiz/QuizPlanView";
@@ -45,5 +46,12 @@ export default async function QuizResultPage({
   // Null while there is no verified expert; QuizPlanView hides the block then.
   const reviewer = reviewerResult ?? undefined;
 
-  return <QuizPlanView plan={plan} reviewer={reviewer} locale={locale} />;
+  // The visitor's own "who" and "age" answers, shown back as one chip.
+  const audience = getQuizQuestions(locale)
+    .filter((q) => q.id === "who" || q.id === "age")
+    .map((q) => q.options.find((o) => answers[q.id]?.includes(o.id))?.label)
+    .filter(Boolean)
+    .join(", ");
+
+  return <QuizPlanView plan={plan} reviewer={reviewer} audience={audience || undefined} locale={locale} />;
 }

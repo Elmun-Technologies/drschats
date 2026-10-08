@@ -1509,7 +1509,17 @@
     "doctorCta": "Shifokorlarimiz",
     "reviewedNote": "Tavsiyalar ishlab chiqaruvchining rasmiy yo'riqnomalari asosida tuzilgan",
     "findAI": "Test bilan topish",
-    "doctorConsultLabel": "Mutaxassis bilan bog‘lanish"
+    "doctorConsultLabel": "Mutaxassis bilan bog‘lanish",
+    "v3": {
+      "lead": "Tanlang — test qolgan savollarni beradi va mos mahsulotlarni koʻrsatadi. Natija tashxis emas, balki mahsulot tanlashga yordam.",
+      "leadShort": "Natija tashxis emas, balki mahsulot tanlashga yordam.",
+      "close": "Testdan chiqish",
+      "skipShort": "Oʻtkazish",
+      "planLabel": "Tavsiya etilgan toʻplam · {count} ta mahsulot",
+      "planNote": "Obuna bilan: birinchi yetkazish −{first}%, keyingilari −{next}%. {free}dan yuqori buyurtma bepul yetkaziladi.",
+      "doctorGeneral": "Doimiy dori qabul qilish, homiladorlik yoki uzoq davom etgan charchoq boʻlsa — vitamin qabul qilishdan oldin mutaxassisga murojaat qiling.",
+      "doctorContact": "Mutaxassis bilan bogʻlanish"
+    }
   },
   "programs": {
     "plural": "Dasturlar",

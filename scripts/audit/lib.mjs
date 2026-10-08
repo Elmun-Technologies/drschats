@@ -22,6 +22,8 @@ export const PATHS = [
   "/search?q=topilmaydigan",
   "/goals",
   "/quiz",
+  // A filled-in result: the plan panel, the product rows and the doctor note.
+  "/quiz/result?a=who.self-woman~age.18-35~concerns.fatigue_colds_hair-skin",
   "/programs",
   "/blog",
   "/experts",
