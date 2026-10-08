@@ -9,9 +9,9 @@ import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
 import { topicsForProduct } from "@/lib/shop/product-topics";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
-import { getBespokeComponent } from "@/components/bespoke/registry";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
-import { SimilarProducts } from "@/components/personalization/SimilarProducts";
+import { getSimilarProducts } from "@/lib/personalization/engine";
+import { productCutout } from "@/lib/content/product-cutouts";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -66,8 +66,11 @@ export default async function ProductPage({
     ?? categories.find((c) => c.slug === product.categorySlug);
 
   const topics = topicsForProduct(product, allTopics);
+  // Products with a cut-out pack shot first, as on every other rail.
+  const similar = getSimilarProducts(product, allProducts.items, 12)
+    .sort((a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)))
+    .slice(0, 6);
 
-  const Bespoke = getBespokeComponent(slug);
   const [reviewerResult, authorResult] = await Promise.all([
     reviewerForKey(product.id, locale),
     reviewerForKey(product.slug, locale),
@@ -91,12 +94,16 @@ export default async function ProductPage({
         ])}
       />
       <ViewTracker slug={product.slug} categorySlug={product.categorySlug ?? ""} price={product.price} />
-      {Bespoke ? (
-        <Bespoke product={product} upsells={upsells} locale={locale} />
-      ) : (
-        <ProductTemplate product={product} upsells={upsells} locale={locale} reviewer={reviewer} topics={topics} />
-      )}
-      <SimilarProducts currentProduct={product} allProducts={allProducts.items} />
+      <ProductTemplate
+        product={product}
+        category={category}
+        upsells={upsells}
+        similar={similar}
+        allProducts={allProducts.items}
+        locale={locale}
+        reviewer={reviewer}
+        topics={topics}
+      />
     </>
   );
 }

@@ -11,5 +11,5 @@ export const HEALTH_LINKS = [
   { key: "programs", href: "/programs" },
 ] as const;
 
-/** Until /sale exists (stage 8) the deals sort of the catalogue is the sale page. */
-export const SALE_HREF = "/products?sort=deals";
+/** The sale page (design: SaleV3). The catalogue still filters with ?sale=1. */
+export const SALE_HREF = "/sale";

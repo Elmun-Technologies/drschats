@@ -16,10 +16,12 @@ import { CatalogMenu } from "./CatalogMenu";
 import { SALE_HREF } from "./nav-links";
 import { SearchBox } from "./SearchBox";
 import { WishlistLink } from "./WishlistLink";
+import { CompareLink } from "./CompareLink";
 import { AccountLink } from "./AccountLink";
 import { Logo } from "./Logo";
 import { ICONS } from "./header-item";
 import type { MenuDeal } from "./menu-deal";
+import { isStocked } from "@/lib/shop/categories";
 
 /*
   Design: HeaderV3 (lg and up) and HeaderMobileV3 (below lg, where the fixed
@@ -52,7 +54,7 @@ export function Header({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const shelves = categories.filter((c) => c.productCount);
+  const shelves = categories.filter(isStocked);
   // Hidden until the account area can answer: the link and the route read the
   // same predicate, so the link can never point at a 404.
   const showAccount = accountAreaAvailable(isApiConfigured());
@@ -78,6 +80,7 @@ export function Header({
           <CatalogMenu categories={categories} topicPaths={topicPaths} deal={deal} />
           <SearchBox categories={categories} className="min-w-0 flex-1" />
           <nav aria-label={t("userNav")} className="flex shrink-0 gap-1">
+            <CompareLink label={t("compare")} />
             <WishlistLink label={nav("wishlist")} />
             {showAccount && <AccountLink />}
             <CartButton label={nav("cart")} />
@@ -197,21 +200,26 @@ function MobileHeader({ categories }: { categories: Category[] }) {
           aria-modal="true"
           aria-label={t("searchShort")}
           tabIndex={-1}
-          className="fixed inset-0 z-[60] flex flex-col gap-3 bg-bg px-4 pt-3"
+          className="fixed inset-0 z-[60] flex flex-col bg-bg px-4 pt-3"
         >
-          <div className="flex items-start gap-2">
-            <SearchBox categories={categories} autoFocus onNavigate={closeSearch} className="min-w-0 flex-1" />
-            <button
-              type="button"
-              onClick={closeSearch}
-              aria-label={t("closeSearch")}
-              className="flex h-[52px] w-11 shrink-0 items-center justify-center"
-            >
-              <svg viewBox="0 0 24 24" aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round">
-                <path d={ICONS.close} />
-              </svg>
-            </button>
-          </div>
+          <SearchBox
+            categories={categories}
+            autoFocus
+            inline
+            onNavigate={closeSearch}
+            leading={
+              <button
+                type="button"
+                onClick={closeSearch}
+                aria-label={t("closeSearch")}
+                className="-ml-3 flex h-12 w-11 shrink-0 items-center justify-center"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M15 6l-6 6 6 6" />
+                </svg>
+              </button>
+            }
+          />
         </div>
       )}
     </div>

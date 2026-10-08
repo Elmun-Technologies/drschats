@@ -27,6 +27,7 @@ import {
   QuickChips,
   SectionHead,
 } from "@/components/home/HomeBlocks";
+import { isStocked } from "@/lib/shop/categories";
 
 export const revalidate = 300;
 
@@ -80,7 +81,7 @@ export default async function HomePage({
   const catalogue = [...promotable(listing.items)].sort(
     (a, b) => Number(!productCutout(a.slug)) - Number(!productCutout(b.slug)),
   );
-  const shelves = categories.filter((c) => c.productCount);
+  const shelves = categories.filter(isStocked);
   const deals = byDeepestDiscount(catalogue).slice(0, 6);
   const dealIds = new Set(deals.map((p) => p.id));
   const weeklyDeals = deals.map(toMenuDeal).filter((d): d is MenuDeal => d !== null);

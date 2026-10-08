@@ -100,8 +100,8 @@ const rawCategories: RawCategory[] = [
     slug: "immunity",
     name: { uz: "Immunitet", ru: "Иммунитет" },
     description: {
-      uz: "Himoyani kuchaytiruvchi komplekslar.",
-      ru: "Комплексы для укрепления защиты.",
+      uz: "Mavsumiy davr uchun vitamin komplekslari.",
+      ru: "Витаминные комплексы на сезонный период.",
     },
     image: img("cat-immunity", "Immunity").url,
   },
@@ -691,8 +691,8 @@ const rawProducts: RawProduct[] = [
       ru: "Витамины для волос, ногтей и кожи — 30 капсул",
     },
     description: {
-      uz: "Swiss Energy Hair Nail & Skin — tibbiy achitqi ekstrakti, pantoten kislota, L-sistein, L-metionin, niatsin, sink, biotin, B1 va B6 vitamini. Soch va tirnoqni mustahkamlaydi, terini yaxshilaydi.",
-      ru: "Swiss Energy Hair Nail & Skin — экстракт медицинских дрожжей, пантотеновая кислота, L-цистеин, L-метионин, ниацин, цинк, биотин, витамин B1 и B6. Укрепляет волосы и ногти, улучшает кожу.",
+      uz: "Swiss Energy Hair Nail & Skin — tibbiy achitqi ekstrakti, pantoten kislota, L-sistein, L-metionin, niatsin, sink, biotin, B1 va B6 vitamini. Soch, tirnoq va teri uchun komponentlar bir kapsulada.",
+      ru: "Swiss Energy Hair Nail & Skin — экстракт медицинских дрожжей, пантотеновая кислота, L-цистеин, L-метионин, ниацин, цинк, биотин, витамин B1 и B6. Компоненты для волос, ногтей и кожи в одной капсуле.",
     },
     highlights: {
       uz: ["Biotin + Sink", "L-sistein + L-metionin", "B1 va B6 vitamini", "30 kapsula"],
@@ -700,14 +700,14 @@ const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "sparkle", title: "Mustahkam soch", description: "Biotin va sink sochni ichkaridan mustahkamlaydi." },
-        { icon: "sparkle", title: "Sog'lom tirnoq", description: "L-sistein tirnoq sinishini kamaytiradi." },
-        { icon: "sparkle", title: "Yorqin teri", description: "Niatsin va B vitaminlari teri holatini yaxshilaydi." },
+        { icon: "sparkle", title: "Soch", description: "Biotin va sink sochning normal holatini saqlashga hissa qoʻshadi." },
+        { icon: "sparkle", title: "Tirnoq", description: "Sink tirnoqning normal holatini saqlashga hissa qoʻshadi." },
+        { icon: "sparkle", title: "Teri", description: "Niatsin va biotin terining normal holatini saqlashga hissa qoʻshadi." },
       ],
       ru: [
-        { icon: "sparkle", title: "Крепкие волосы", description: "Биотин и цинк укрепляют волосы изнутри." },
-        { icon: "sparkle", title: "Здоровые ногти", description: "L-цистеин уменьшает ломкость ногтей." },
-        { icon: "sparkle", title: "Сияющая кожа", description: "Ниацин и B-витамины улучшают состояние кожи." },
+        { icon: "sparkle", title: "Волосы", description: "Биотин и цинк способствуют поддержанию нормального состояния волос." },
+        { icon: "sparkle", title: "Ногти", description: "Цинк способствует поддержанию нормального состояния ногтей." },
+        { icon: "sparkle", title: "Кожа", description: "Ниацин и биотин способствуют поддержанию нормального состояния кожи." },
       ],
     },
     ingredients: {
@@ -783,8 +783,8 @@ const rawProducts: RawProduct[] = [
       ru: "Компрессорный небулайзер — для взрослых и детей",
     },
     description: {
-      uz: "Dr. Frei Turbo Base — kompressorli nebulayzer ingalyator. Nafas yo'llari kasalliklarini davolash uchun. Kattalar va bolalarga mos, oddiy foydalanish.",
-      ru: "Dr. Frei Turbo Base — компрессорный небулайзер-ингалятор. Для лечения заболеваний дыхательных путей. Подходит взрослым и детям, простое использование.",
+      uz: "Dr. Frei Turbo Base — kompressorli nebulayzer ingalyator. Shifokor tayinlagan dorini nafas yoʻllariga yetkazish uchun. Kattalar va bolalarga mos, oddiy foydalanish.",
+      ru: "Dr. Frei Turbo Base — компрессорный небулайзер-ингалятор. Для ингаляций препаратами, назначенными врачом. Подходит взрослым и детям, простое использование.",
     },
     highlights: {
       uz: ["Kompressorli nebulayzer", "Kattalar va bolalar uchun", "Oddiy foydalanish", "Dr. Frei brendidan"],
@@ -792,11 +792,11 @@ const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "shield", title: "Nafas yo'llari davolash", description: "Bronxit, astma, ARVI uchun samarali." },
+        { icon: "shield", title: "Ingalyatsiya", description: "Shifokor tayinlagan dori bilan uyda ingalyatsiya qilish uchun." },
         { icon: "sparkle", title: "Mayda zarrachalar", description: "Dori quyi nafas yo'llariga yetib boradi." },
       ],
       ru: [
-        { icon: "shield", title: "Лечение дыхательных путей", description: "Эффективен при бронхите, астме, ОРВИ." },
+        { icon: "shield", title: "Ингаляции", description: "Для домашних ингаляций препаратом, назначенным врачом." },
         { icon: "sparkle", title: "Мелкие частицы", description: "Лекарство достигает нижних дыхательных путей." },
       ],
     },
@@ -1004,11 +1004,11 @@ const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "shield", title: "Immunitetni kuchaytirish", description: "Echinacea va propolis immun tizimni faollashtiradi." },
+        { icon: "shield", title: "Immunitet", description: "Vitamin C va rux immun tizimning normal faoliyatiga hissa qoʻshadi." },
         { icon: "bolt", title: "Antioksidant", description: "Vitamin C hujayralarni himoya qiladi." },
       ],
       ru: [
-        { icon: "shield", title: "Укрепление иммунитета", description: "Эхинацея и прополис активируют иммунную систему." },
+        { icon: "shield", title: "Иммунитет", description: "Витамин C и цинк способствуют нормальной работе иммунной системы." },
         { icon: "bolt", title: "Антиоксидант", description: "Витамин C защищает клетки." },
       ],
     },
@@ -1141,13 +1141,13 @@ const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "shield", title: "Immunitet", description: "Vitaminlar kompleksi mavsumiy himoyani kuchaytiradi." },
-        { icon: "bolt", title: "Energiya", description: "B vitaminlari charchoqni kamaytiradi." },
+        { icon: "shield", title: "Immunitet", description: "Vitamin C immun tizimning normal faoliyatiga hissa qoʻshadi." },
+        { icon: "bolt", title: "Energiya", description: "B guruhi vitaminlari normal energiya almashinuviga hissa qoʻshadi." },
         { icon: "sparkle", title: "Tez so'rilish", description: "Shipuchi format tez ishlaydi." },
       ],
       ru: [
-        { icon: "shield", title: "Иммунитет", description: "Комплекс витаминов усиливает сезонную защиту." },
-        { icon: "bolt", title: "Энергия", description: "B-витамины снижают усталость." },
+        { icon: "shield", title: "Иммунитет", description: "Витамин C способствует нормальной работе иммунной системы." },
+        { icon: "bolt", title: "Энергия", description: "Витамины группы B способствуют нормальному энергетическому обмену." },
         { icon: "sparkle", title: "Быстрое усвоение", description: "Шипучий формат действует быстро." },
       ],
     },
@@ -1278,11 +1278,11 @@ const rawProducts: RawProduct[] = [
     benefits: {
       uz: [
         { icon: "eye", title: "Ko'z sog'lig'i", description: "Lyutein va vitamin A ko'rish o'tkirligini qo'llab-quvvatlaydi." },
-        { icon: "shield", title: "Immunitet", description: "Vitamin C va E immun tizimni mustahkamlaydi." },
+        { icon: "shield", title: "Immunitet", description: "Vitamin C immun tizimning normal faoliyatiga hissa qoʻshadi." },
       ],
       ru: [
         { icon: "eye", title: "Здоровье глаз", description: "Лютеин и витамин A поддерживают остроту зрения." },
-        { icon: "shield", title: "Иммунитет", description: "Витамин C и E укрепляют иммунную систему." },
+        { icon: "shield", title: "Иммунитет", description: "Витамин C способствует нормальной работе иммунной системы." },
       ],
     },
     ingredients: {
@@ -1350,13 +1350,13 @@ const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "bolt", title: "Kalsiy + D3", description: "Kalsiy 200 mg va D3 2,3 mkg — mustahkam suyaklar va tishlar uchun." },
-        { icon: "shield", title: "Immunitet", description: "Vitamin C 60 mg va A himoyani kuchaytiradi." },
+        { icon: "bolt", title: "Kalsiy + D3", description: "Kalsiy 200 mg va D3 2,3 mkg suyak va tishlarning normal holatini saqlashga hissa qoʻshadi." },
+        { icon: "shield", title: "Immunitet", description: "Vitamin C va A immun tizimning normal faoliyatiga hissa qoʻshadi." },
         { icon: "sparkle", title: "Diqqat va xotira", description: "B guruhi vitaminlari maktab yuklamasida qo'llab-quvvatlaydi." },
       ],
       ru: [
-        { icon: "bolt", title: "Кальций + D3", description: "Кальций 200 мг и D3 2,3 мкг — крепкие кости и зубы." },
-        { icon: "shield", title: "Иммунитет", description: "Витамин C 60 мг и A укрепляют защиту." },
+        { icon: "bolt", title: "Кальций + D3", description: "Кальций 200 мг и D3 2,3 мкг способствуют поддержанию нормального состояния костей и зубов." },
+        { icon: "shield", title: "Иммунитет", description: "Витамины C и A способствуют нормальной работе иммунной системы." },
         { icon: "sparkle", title: "Внимание и память", description: "Витамины группы B поддерживают при школьных нагрузках." },
       ],
     },
@@ -1446,14 +1446,14 @@ const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "shield", title: "Kuchli immunitet", description: "Yuqori doza vitamin C immun tizimni faollashtiradi." },
-        { icon: "bolt", title: "Energiya va faollik", description: "Jismoniy charchashga qarshi samarali." },
-        { icon: "sparkle", title: "Antioksidant", description: "Hujayralarni erkin radikallardan himoya qiladi." },
+        { icon: "shield", title: "Immunitet", description: "Vitamin C immun tizimning normal faoliyatiga hissa qoʻshadi." },
+        { icon: "bolt", title: "Energiya va faollik", description: "Vitamin C charchoq hissini kamaytirishga hissa qoʻshadi." },
+        { icon: "sparkle", title: "Antioksidant", description: "Vitamin C hujayralarni oksidlovchi stressdan himoyalashga hissa qoʻshadi." },
       ],
       ru: [
-        { icon: "shield", title: "Крепкий иммунитет", description: "Высокая доза витамина C активирует иммунную систему." },
-        { icon: "bolt", title: "Энергия и активность", description: "Эффективен против физической усталости." },
-        { icon: "sparkle", title: "Антиоксидант", description: "Защищает клетки от свободных радикалов." },
+        { icon: "shield", title: "Иммунитет", description: "Витамин C способствует нормальной работе иммунной системы." },
+        { icon: "bolt", title: "Энергия и активность", description: "Витамин C способствует уменьшению утомляемости." },
+        { icon: "sparkle", title: "Антиоксидант", description: "Витамин C способствует защите клеток от окислительного стресса." },
       ],
     },
     ingredients: {
@@ -1508,12 +1508,12 @@ const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Arzon narx kafolati"], ru: ["Акция", "Гарантия низкой цены"] },
     name: { uz: "Dr. Frei Antistress Magniy B6 20", ru: "Dr. Frei Антистресс Магний B6 20" },
     tagline: {
-      uz: "Stressga qarshi vitaminlar — magniy B6, taurin, vitamin C va K",
-      ru: "Витамины от стресса — магний B6, таурин, витамин C и K",
+      uz: "Magniy B6, taurin, vitamin C va K — shipuchi tabletkada",
+      ru: "Магний B6, таурин, витамины C и K — в шипучей таблетке",
     },
     description: {
-      uz: "Dr. Frei Antistress — magniy, B6 vitamini, taurin, vitamin C va K bilan boyitilgan shipuchi tabletkalar. Stress, charchoq va ta'sirlanishni kamaytiradi. 20 tabletka.",
-      ru: "Dr. Frei Антистресс — шипучие таблетки с магнием, витамином B6, таурином, витамином C и K. Снижает стресс, усталость и раздражительность. 20 таблеток.",
+      uz: "Dr. Frei Antistress — magniy, B6 vitamini, taurin, vitamin C va K bilan boyitilgan shipuchi tabletkalar. Bir tabletka bir stakan suvda eriydi. 20 tabletka.",
+      ru: "Dr. Frei Антистресс — шипучие таблетки с магнием, витамином B6, таурином, витамином C и K. Одна таблетка растворяется в стакане воды. 20 таблеток.",
     },
     highlights: {
       uz: ["Magniy + B6", "Taurin", "Vitamin C + K", "20 shipuchi tabletka"],
@@ -1521,13 +1521,13 @@ const rawProducts: RawProduct[] = [
     },
     benefits: {
       uz: [
-        { icon: "moon", title: "Stressni kamaytirish", description: "Magniy va taurin asab tizimini tinchlantiradi." },
-        { icon: "bolt", title: "Energiya", description: "Charchoq va ta'sirlanishni kamaytiradi." },
+        { icon: "moon", title: "Asab tizimi", description: "Magniy va B6 vitamini asab tizimining normal faoliyatiga hissa qoʻshadi." },
+        { icon: "bolt", title: "Energiya", description: "Magniy normal energiya almashinuviga hissa qoʻshadi." },
         { icon: "shield", title: "Asab tizimi", description: "B6 vitamini miya faoliyatini qo'llab-quvvatlaydi." },
       ],
       ru: [
-        { icon: "moon", title: "Снижение стресса", description: "Магний и таурин успокаивают нервную систему." },
-        { icon: "bolt", title: "Энергия", description: "Снижает усталость и раздражительность." },
+        { icon: "moon", title: "Нервная система", description: "Магний и витамин B6 способствуют нормальной работе нервной системы." },
+        { icon: "bolt", title: "Энергия", description: "Магний способствует нормальному энергетическому обмену." },
         { icon: "shield", title: "Нервная система", description: "Витамин B6 поддерживает работу мозга." },
       ],
     },
@@ -1553,11 +1553,11 @@ const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "Uyquga yordami bormi?", answer: "Ha, magniy uyquni yaxshilashga yordam beradi, kechqurun qabul qilish tavsiya etiladi." },
+        { question: "Uyquga yordami bormi?", answer: "Magniyni kechqurun qabul qilish tavsiya etiladi. Uyqu bilan bogʻliq muammolar boʻyicha shifokor bilan maslahatlashing." },
         { question: "Har kuni ichsa bo'ladimi?", answer: "Ha, kunlik qabul uchun mo'ljallangan." },
       ],
       ru: [
-        { question: "Помогает ли со сном?", answer: "Да, магний помогает улучшить сон, рекомендуется вечерний приём." },
+        { question: "Помогает ли со сном?", answer: "Магний рекомендуется принимать вечером. С проблемами сна обратитесь к врачу." },
         { question: "Можно принимать каждый день?", answer: "Да, предназначен для ежедневного приёма." },
       ],
     },

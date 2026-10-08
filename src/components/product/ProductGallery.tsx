@@ -4,19 +4,31 @@ import Image from "next/image";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
+import { DiscountBadge } from "@/components/ui/Price";
+import { Badge } from "@/components/ui/Badge";
 import type { ProductImage } from "@/lib/shopflow/types";
 
+/*
+  Design: ProductV3 gallery — 76px thumbnails on the left, the shot on a tile
+  square. Phones (ProductMobileV3): a swipeable square with a "1 / 3" counter
+  and dots. The first image is the cut-out pack shot when one exists, drawn at
+  80% like the cards; the photos after it fill the tile.
+*/
 export function ProductGallery({
   images,
+  cutout = false,
   discountPercent = 0,
-  inStock = true,
+  guaranteeLabel,
+  outOfStockLabel,
 }: {
   images: ProductImage[];
+  /** The first image is a transparent cut-out, not a photo. */
+  cutout?: boolean;
   discountPercent?: number;
-  inStock?: boolean;
+  guaranteeLabel?: string;
+  outOfStockLabel?: string;
 }) {
   const t = useTranslations("product.gallery");
-  const tc = useTranslations("common");
   const trackRef = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState(0);
   const total = images.length;
@@ -52,8 +64,37 @@ export function ProductGallery({
 
   if (total === 0) return null;
 
+  const isCutout = (i: number) => cutout && i === 0;
+
   return (
-    <div className="flex flex-col gap-4 lg:flex-row-reverse lg:items-start">
+    <div className="flex gap-3">
+      {total > 1 && (
+        <div className="hidden shrink-0 flex-col gap-2.5 lg:flex">
+          {images.map((img, i) => (
+            <button
+              key={`thumb-${img.url}-${i}`}
+              type="button"
+              onClick={() => goTo(i)}
+              aria-label={t("thumb", { index: i + 1 })}
+              aria-current={i === active}
+              className={cn(
+                "relative h-[76px] w-[76px] overflow-hidden rounded-[14px] border-2 bg-tile transition-colors",
+                i === active ? "border-ink" : "border-transparent hover:border-line-strong",
+              )}
+            >
+              <Image
+                src={img.url}
+                alt=""
+                fill
+                loading="lazy"
+                sizes="76px"
+                className={isCutout(i) ? "object-contain p-1.5" : "object-cover"}
+              />
+            </button>
+          ))}
+        </div>
+      )}
+
       <div
         role="group"
         aria-roledescription="carousel"
@@ -68,17 +109,17 @@ export function ProductGallery({
             goTo(active - 1);
           }
         }}
-        className="min-w-0 flex-1 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-legacy-ink"
+        className="flex min-w-0 flex-1 flex-col gap-2.5 rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2"
       >
         <div className="relative">
           <div
             ref={trackRef}
-            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl border border-legacy-line/60 bg-surface-2"
+            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl bg-tile"
           >
             {images.map((img, i) => (
               <div
                 key={`${img.url}-${i}`}
-                className="relative aspect-square w-full shrink-0 snap-center lg:aspect-[4/5] p-6 flex items-center justify-center"
+                className="relative aspect-square w-full shrink-0 snap-center"
                 aria-hidden={i !== active}
               >
                 <Image
@@ -87,51 +128,26 @@ export function ProductGallery({
                   fill
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
-                  sizes="(max-width: 1024px) 100vw, 45vw"
-                  className="object-contain transition-transform duration-700 p-4"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  className={isCutout(i) ? "object-contain p-[9%] lg:p-[10%]" : "object-cover"}
                 />
               </div>
             ))}
           </div>
 
-          {discountPercent > 0 && (
-            <span className="pointer-events-none absolute left-4 top-4 rounded-full border border-legacy-line-strong bg-surface-2 px-3.5 py-1.5 text-xs font-extrabold tracking-wider text-brand-deep">
-              −{discountPercent}%
-            </span>
-          )}
-
-          {!inStock && (
-            <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-legacy-ink/90 px-3 py-1 text-xs font-semibold text-legacy-muted shadow-sm">
-              {tc("outOfStock")}
-            </span>
+          {(discountPercent > 0 || guaranteeLabel || outOfStockLabel) && (
+            <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5 lg:left-4 lg:top-4">
+              <DiscountBadge percent={discountPercent} className="h-[26px] px-2.5 text-sm" />
+              {guaranteeLabel && <Badge tone="hit" className="text-sm">{guaranteeLabel}</Badge>}
+              {outOfStockLabel && <Badge className="text-sm">{outOfStockLabel}</Badge>}
+            </div>
           )}
 
           {total > 1 && (
             <>
-              <button
-                type="button"
-                onClick={() => goTo(active - 1)}
-                disabled={active === 0}
-                aria-label={t("previous")}
-                className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-legacy-line bg-legacy-ink/90 text-fg shadow-sm backdrop-blur transition-opacity hover:bg-legacy-ink disabled:pointer-events-none disabled:opacity-0 lg:flex"
-              >
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-              <button
-                type="button"
-                onClick={() => goTo(active + 1)}
-                disabled={active === total - 1}
-                aria-label={t("next")}
-                className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-legacy-line bg-legacy-ink/90 text-fg shadow-sm backdrop-blur transition-opacity hover:bg-legacy-ink disabled:pointer-events-none disabled:opacity-0 lg:flex"
-              >
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-                  <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </button>
-
-              <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-legacy-ink/90 px-2.5 py-1 text-xs font-semibold text-legacy-muted shadow-sm">
+              <ArrowButton side="left" label={t("previous")} disabled={active === 0} onClick={() => goTo(active - 1)} />
+              <ArrowButton side="right" label={t("next")} disabled={active === total - 1} onClick={() => goTo(active + 1)} />
+              <span className="pointer-events-none absolute bottom-3 right-3 rounded-[12px] bg-bg px-2.5 py-1 text-[13px] font-semibold tabular-nums lg:hidden">
                 {t("counter", { index: active + 1, total })}
               </span>
             </>
@@ -141,7 +157,7 @@ export function ProductGallery({
         {/* The visible dot stays 6px; the button around it is 24px square so
             a thumb can actually land on it (WCAG 2.2 target size). */}
         {total > 1 && (
-          <div className="mt-3 flex justify-center lg:hidden">
+          <div className="flex justify-center lg:hidden">
             {images.map((img, i) => (
               <button
                 key={`dot-${img.url}-${i}`}
@@ -153,10 +169,7 @@ export function ProductGallery({
               >
                 <span
                   aria-hidden
-                  className={cn(
-            "h-1.5 rounded-full transition-all",
-                    i === active ? "w-6 bg-fg" : "w-1.5 bg-surface-3",
-                  )}
+                  className={cn("h-1.5 rounded-full transition-all", i === active ? "w-5 bg-ink" : "w-1.5 bg-on-dark-2")}
                 />
               </button>
             ))}
@@ -167,26 +180,35 @@ export function ProductGallery({
           {t("counter", { index: active + 1, total })}
         </p>
       </div>
-
-      {total > 1 && (
-        <div className="hidden gap-3 lg:flex lg:w-16 lg:shrink-0 lg:flex-col">
-          {images.map((img, i) => (
-            <button
-              key={`thumb-${img.url}-${i}`}
-              type="button"
-              onClick={() => goTo(i)}
-              aria-label={t("thumb", { index: i + 1 })}
-              aria-current={i === active}
-              className={cn(
-            "relative h-20 w-16 shrink-0 overflow-hidden rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
-                i === active ? "border-accent" : "border-legacy-line hover:border-legacy-line-strong",
-              )}
-            >
-              <Image src={img.url} alt="" fill loading="lazy" sizes="64px" className="object-cover" />
-            </button>
-          ))}
-        </div>
-      )}
     </div>
+  );
+}
+
+function ArrowButton({
+  side,
+  label,
+  disabled,
+  onClick,
+}: {
+  side: "left" | "right";
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={label}
+      className={cn(
+        "absolute top-1/2 hidden h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full bg-bg text-ink shadow-arrow transition-opacity disabled:pointer-events-none disabled:opacity-0 lg:flex",
+        side === "left" ? "left-4" : "right-4",
+      )}
+    >
+      <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d={side === "left" ? "M15 6l-6 6 6 6" : "M9 6l6 6-6 6"} />
+      </svg>
+    </button>
   );
 }

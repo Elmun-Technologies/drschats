@@ -25,6 +25,7 @@ export function CountBadge({ children }: { children: ReactNode }) {
 }
 
 export const ICONS = {
+  compare: "M6 20V10M12 20V4M18 20v-7",
   heart: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z",
   user: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6",
   bag: "M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2",

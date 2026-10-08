@@ -25,6 +25,7 @@ export const STORAGE_KEYS = {
   cookieConsent: `${PREFIX}cookie-consent`,
   // Post-rebrand, so they have no legacy counterpart to migrate.
   session: `${PREFIX}session`,
+  compare: `${PREFIX}compare`,
   profile: `${PREFIX}profile`,
 } as const;
 

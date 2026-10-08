@@ -5,11 +5,15 @@ import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import type { UpsellOffer } from "@/lib/shopflow/types";
 import { formatMoney } from "@/lib/utils";
-import { Badge } from "@/components/ui/Badge";
+import { Link } from "@/lib/i18n/navigation";
+import { DiscountBadge } from "@/components/ui/Price";
+import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { trackAddToCart } from "@/lib/analytics/events";
+import { productCutout } from "@/lib/content/product-cutouts";
 
-export function UpsellRail({ offers }: { offers: UpsellOffer[] }) {
+/** Companion offers from the catalogue, each with its real extra discount. */
+export function UpsellRail({ offers, title }: { offers: UpsellOffer[]; title: string }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("product");
   const add = useCart((s) => s.add);
@@ -17,27 +21,30 @@ export function UpsellRail({ offers }: { offers: UpsellOffer[] }) {
   if (offers.length === 0) return null;
 
   return (
-    <div>
-      <h2 className="mb-6 font-display text-2xl font-semibold">{t("upsell")}</h2>
-      <div className="grid gap-4 sm:grid-cols-3">
-        {offers.map(({ product, discountPercent, reason }) => {
+    <section aria-labelledby="pdp-upsell" className="wrap flex flex-col gap-3.5 lg:gap-6">
+      <h2 id="pdp-upsell" className="text-[22px] font-bold leading-7 lg:text-h-section lg:leading-9">
+        {title}
+      </h2>
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {offers.map(({ product, discountPercent }) => {
           const discounted = Math.round(product.price * (1 - discountPercent / 100));
+          const image = productCutout(product.slug) ?? product.images[0]?.url;
           return (
-            <div key={product.id} className="flex gap-4 rounded-xl border border-legacy-line bg-surface p-4">
-              <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-surface-2">
-                <Image src={product.images[0]?.url ?? ""} alt={product.name} fill sizes="80px" className="object-cover" />
-              </div>
-              <div className="flex flex-1 flex-col">
-                <p className="text-xs text-faint">{reason}</p>
-                <p className="mt-0.5 text-sm font-medium">{product.name}</p>
-                <Badge tone="gold" className="mt-1 w-fit">
-                  {t("upsellDiscount", { percent: discountPercent })}
-                </Badge>
-                <div className="mt-auto flex items-center justify-between pt-2">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-sm font-semibold text-fg">{formatMoney(discounted, locale)}</span>
-                  </div>
-                  <button
+            <div key={product.id} className="flex gap-4 rounded-[20px] bg-tile p-4">
+              <Link href={`/product/${product.slug}`} className="relative h-24 w-24 shrink-0 rounded-[16px] bg-bg">
+                {image && <Image src={image} alt={product.name} fill sizes="96px" className="object-contain p-2" />}
+              </Link>
+              <div className="flex min-w-0 flex-1 flex-col gap-1">
+                <Link href={`/product/${product.slug}`} className="text-[15px] font-medium leading-5 hover:underline">
+                  {product.name}
+                </Link>
+                <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-1">
+                  <span className="flex items-center gap-2">
+                    <span className="text-lg font-bold">{formatMoney(discounted, locale)}</span>
+                    <DiscountBadge percent={discountPercent} />
+                  </span>
+                  <Button
+                    size="sm"
                     onClick={() => {
                       add(
                         {
@@ -53,16 +60,15 @@ export function UpsellRail({ offers }: { offers: UpsellOffer[] }) {
                       );
                       trackAddToCart(product.slug, discounted, 1);
                     }}
-                    className="rounded-full bg-accent px-4 py-1.5 text-xs font-semibold text-brand-deep transition-transform"
                   >
                     {t("addUpsell")}
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+    </section>
   );
 }

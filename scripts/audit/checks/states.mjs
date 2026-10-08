@@ -81,6 +81,67 @@ const STATES = [
     open: (page) => page.locator('header button[aria-haspopup="dialog"]').first().click(),
   },
   {
+    name: "mobile search with a query",
+    viewport: MOBILE,
+    path: "",
+    open: async (page) => {
+      await page.locator('header button[aria-haspopup="dialog"]').first().click();
+      await page.locator('[role="dialog"] input[role="combobox"]').fill("vitamin");
+      await page.waitForTimeout(1400);
+    },
+  },
+  {
+    name: "catalogue filter sheet",
+    viewport: MOBILE,
+    path: "/products",
+    open: (page) => page.locator('button[aria-haspopup="dialog"]:has-text("Filtrlar"), button[aria-haspopup="dialog"]:has-text("Фильтры")').first().click(),
+  },
+  {
+    name: "product page accordions",
+    viewport: MOBILE,
+    path: "/product/swiss-energy-immunovit-30",
+    open: async (page) => {
+      for (const btn of await page.locator('section > h2 > button[aria-expanded="false"]').all()) {
+        if (await btn.isVisible()) await btn.click();
+      }
+    },
+  },
+  {
+    name: "cart page with items",
+    viewport: MOBILE,
+    path: "/cart",
+    open: async (page) => {
+      await page.evaluate(() => {
+        const line = { productId: "p-antistress", slug: "dr-frei-antistress-magniy-20", name: "Antistress", image: "", price: 79000, oldPrice: 89000, lineId: "p-antistress", quantity: 2 };
+        localStorage.setItem("govita-cart", JSON.stringify({ state: { lines: [line], _savedAt: Date.now() }, version: 0 }));
+      });
+      await page.reload({ waitUntil: "networkidle" });
+    },
+  },
+  {
+    name: "compare table with products",
+    viewport: MOBILE,
+    path: "/compare",
+    open: async (page) => {
+      await page.evaluate(() =>
+        localStorage.setItem("govita-compare", JSON.stringify({ state: { items: ["p-antistress", "p-dr-frei-multi"] }, version: 0 })),
+      );
+      await page.reload({ waitUntil: "networkidle" });
+      await page.locator('button[aria-pressed]').last().click();
+    },
+  },
+  {
+    name: "wishlist with products",
+    viewport: MOBILE,
+    path: "/wishlist",
+    open: async (page) => {
+      await page.evaluate(() =>
+        localStorage.setItem("govita-wishlist", JSON.stringify({ state: { items: ["p-antistress", "p-dr-frei-multi"] }, version: 0 })),
+      );
+      await page.reload({ waitUntil: "networkidle" });
+    },
+  },
+  {
     name: "cart drawer",
     viewport: DESKTOP,
     path: "",

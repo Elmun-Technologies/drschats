@@ -4,7 +4,18 @@ import { useWishlist } from "@/lib/wishlist/store";
 import { useTranslations } from "next-intl";
 import { track } from "@/lib/analytics/events";
 
-export function WishlistButton({ productId, className = "" }: { productId: string; className?: string }) {
+export function WishlistButton({
+  productId,
+  className = "",
+  label,
+  iconClassName = "h-[18px] w-[18px]",
+}: {
+  productId: string;
+  className?: string;
+  /** Visible text beside the heart; without it the button is icon-only. */
+  label?: { add: string; saved: string };
+  iconClassName?: string;
+}) {
   const t = useTranslations("wishlist");
   const { toggle, has } = useWishlist();
   const saved = has(productId);
@@ -19,12 +30,15 @@ export function WishlistButton({ productId, className = "" }: { productId: strin
   return (
     <button
       onClick={handleClick}
-      aria-label={saved ? t("remove") : t("add")}
+      type="button"
+      aria-label={label ? undefined : saved ? t("remove") : t("add")}
+      aria-pressed={label ? saved : undefined}
       className={`flex items-center justify-center rounded-full transition-colors ${saved ? "text-red" : "text-ink hover:text-red"} ${className}`}
     >
-      <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <svg viewBox="0 0 24 24" aria-hidden className={iconClassName} fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" />
       </svg>
+      {label && (saved ? label.saved : label.add)}
     </button>
   );
 }

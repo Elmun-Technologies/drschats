@@ -17,7 +17,9 @@ export const PATHS = [
   "/products",
   "/product/swiss-energy-immunovit-30",
   "/cart",
-  "/checkout",
+  "/search?q=vitamin",
+  // No results: the notify form and the suggested terms.
+  "/search?q=topilmaydigan",
   "/goals",
   "/quiz",
   "/programs",
@@ -30,6 +32,9 @@ export const PATHS = [
   "/wishlist",
   "/reviews",
   "/brands",
+  "/brands/swiss-energy",
+  "/sale",
+  "/compare",
   // A route that does not exist, so the 404 page is measured too — it is the
   // one page every wrong URL lands on, and it was never in this list.
   "/sahifa-yoq",

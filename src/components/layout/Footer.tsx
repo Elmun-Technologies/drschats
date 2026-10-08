@@ -11,6 +11,7 @@ import { HEALTH_LINKS, SALE_HREF } from "./nav-links";
 import { ICONS } from "./header-item";
 import { Logo } from "./Logo";
 import { FooterAccordion } from "./FooterAccordion";
+import { isStocked } from "@/lib/shop/categories";
 
 interface FooterLink {
   href: string;
@@ -46,7 +47,7 @@ export function Footer({
     {
       title: t("catalog"),
       links: [
-        ...categories.filter((c) => c.productCount).slice(0, 6).map((c) => ({ href: `/products/${c.slug}`, label: c.name })),
+        ...categories.filter(isStocked).slice(0, 6).map((c) => ({ href: `/products/${c.slug}`, label: c.name })),
         { href: SALE_HREF, label: nav("topDeals") },
         { href: "/brands", label: nav("brands") },
         { href: "/ingredients", label: nav("ingredients") },

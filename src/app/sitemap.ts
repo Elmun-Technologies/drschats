@@ -8,6 +8,7 @@ import { getProgramSlugs } from "@/lib/content/programs.sanity";
 import { BLOG_CATEGORY_KEYS } from "@/lib/content/blog-categories";
 import { TOPIC_BASE_PATH, TOPIC_KINDS } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
+import { productBrand } from "@/lib/content/product-brands";
 import type { Product } from "@/lib/shopflow/types";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -38,16 +39,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "", "/products", "/about", "/blog", "/contact", "/experts", "/delivery",
     "/loyalty", "/ingredients", "/brands", "/news", "/payment", "/guarantee",
     "/requisites", "/licenses", "/quiz", "/programs", "/where-to-buy",
-    "/reviews",
+    "/reviews", "/sale",
     ...TOPIC_KINDS.map((kind) => TOPIC_BASE_PATH[kind]).filter((p) => populatedFamilies.has(p)),
   ];
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
+  // A brand page with no products is an empty page — listed once it has one.
+  const brandPaths = [...new Set(allProducts.items.map((p) => productBrand(p.slug)?.slug).filter(Boolean))].map(
+    (slug) => `/brands/${slug}`,
+  );
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
   const expertPaths = expertSlugs.map((slug) => `/experts/${slug}`);
   const topicPaths = healthTopics.map((t) => `${TOPIC_BASE_PATH[t.kind]}/${t.slug}`);
   const blogCategoryPaths = BLOG_CATEGORY_KEYS.map((key) => `/blog/category/${key}`);
   const programPaths = programSlugs.map((slug) => `/programs/${slug}`);
-  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...blogPaths, ...expertPaths, ...topicPaths, ...programPaths, ...blogCategoryPaths];
+  const allPaths = [...staticPaths, ...categoryPaths, ...productPaths, ...brandPaths, ...blogPaths, ...expertPaths, ...topicPaths, ...programPaths, ...blogCategoryPaths];
 
   return allPaths.map((path) => {
     const languages: Record<string, string> = {};

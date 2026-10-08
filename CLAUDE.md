@@ -88,14 +88,19 @@ src/app/[locale]/          # barcha sahifalar locale prefix bilan
   quiz/                    # AI konsultant (savol → tavsiya), quiz/result/
   goals/ symptoms/ vitamins/   # sog'liq mavzulari — [slug] bilan
   programs/                # 30 kunlik dasturlar, [slug] bilan
+  search/                  # qidiruv natijalari (?q=, &category=), noindex
   products/page.tsx        # mahsulotlar katalogi (filter, sort, pagination)
   products/[category]/     # kategoriya sahifasi
   product/[slug]/          # mahsulot detail sahifasi
-  cart/ checkout/          # savatcha, buyurtma, checkout/success/
+  cart/                    # savat + buyurtma formasi bitta sahifada (V3)
+  checkout/                # → /cart redirect; checkout/success/ va server action shu yerda
   account/                 # kabinet — API sozlanmagan bo'lsa notFound()
   profile/                 # sog'liq profili — API'siz ham ishlaydi (brauzerda)
   email/preferences/       # obuna sozlamalari (xatdagi havolalar shu yerga tushadi)
-  blog/ news/ experts/ brands/ ingredients/ reviews/ loyalty/
+  sale/                    # aksiyalar (V3) — SALE_HREF shu yerga
+  brands/ brands/[slug]/   # brendlar va brend sahifasi (mahsulotsiz brend → 404)
+  compare/                 # taqqoslash (govita-compare, brauzerda)
+  blog/ news/ experts/ ingredients/ reviews/ loyalty/
   lp/[campaign]/           # landing pages (kampaniyalar)
   [...rest]/               # catch-all → lokalizatsiyalangan 404
   not-found.tsx error.tsx
@@ -123,6 +128,7 @@ chaqirilgandan **keyin** chizing.
 | `marketing/` | Backend'ning navbatiga server-to-server klient |
 | `notifications/` | Telegram — operator va mijoz kanallari |
 | `wishlist/` | Zustand persist store (`govita-wishlist`) |
+| `compare/` | Taqqoslash store'i (`govita-compare`, 4 tagacha — eng eskisi tushadi) |
 | `analytics/` | GTM dataLayer, Meta Pixel, Yandex Metrika events |
 | `i18n/` | next-intl routing, navigation helpers |
 | `seo/` | Metadata builder, JSON-LD (WebSite, LocalBusiness, Product, FAQ, Breadcrumb) |
@@ -136,10 +142,10 @@ chaqirilgandan **keyin** chizing.
 | `layout/` | Header (desktop + mobil, V3), CatalogMenu (mega-menyu), TopBar (utility qator), SearchBox, Footer (+ FooterAccordion), CookieConsent. Umumiy havolalar `nav-links.ts` da — server komponent `"use client"` moduldan konstanta ololmaydi |
 | `nav/` | MobileBottomNav — 5 tab (V3 TabBar), `lg:hidden`; "Katalog" tabi katalog ekranini (dialog) ochadi, "Savat" — drawer |
 | `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
-| `cart/` | CartDrawer (Framer Motion slide-in) |
-| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
-| `shop/` | ShopView (server), FilterBar, Pagination |
-| `checkout/` | CheckoutForm (react-hook-form + Zod) |
+| `cart/` | CartDrawer (Framer Motion slide-in; tugmasi `/cart` ga), CartLines (V3 qatorlar + upsell ladder takliflari) |
+| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate (PDP V3, server; bitta DOM, telefonda `order-*`), BuyBox (+ `MobileBuyBar`, `MiniBuyCard`), `purchase.ts` (uchala «qo'shish» tugmasining umumiy holati — rejim, oraliq, miqdor), SubscribeToSave, ProductGallery, ProductSections (`SectionNav` scrollspy, `Collapsible` — desktopda ochiq, telefonda akkordeon), WishlistButton, ShareButton, OutOfStockNotify |
+| `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
+| `checkout/` | CheckoutForm — `/cart` sahifasining o'zi: savat, 3 qadam, xulosa, mobil fixed panel; bitta `<form>` (react-hook-form + Zod, sxema va payload o'zgarmagan) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
 | `personalization/` | ViewTracker, PurchaseTracker, PersonalizedRail, RecentlyViewed, SimilarProducts |
 | `social-proof/` | LivePurchaseToast (har 35s, Framer Motion) |
@@ -201,14 +207,14 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 991 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1184 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
 
 ## SEO
 
-- **JSON-LD**: WebSite (SearchAction), LocalBusiness (PharmacyOrDrugstore), Product, FAQ, BreadcrumbList — `src/lib/seo/jsonld.tsx`
+- **JSON-LD**: WebSite (SearchAction → `/search?q=`), LocalBusiness (PharmacyOrDrugstore), Product, FAQ, BreadcrumbList — `src/lib/seo/jsonld.tsx`
 - **Sitemap**: reyting ≥4.5 → priority 0.9; boshqalar 0.8; kategoriyalar 0.7 — `src/app/sitemap.ts`
 - **hreflang**: next-intl orqali avtomatik
 - **robots.txt**: `/cart`, `/checkout` — noindex
@@ -451,6 +457,12 @@ oxirida `grep -r legacy- src` boʻsh boʻlishi va eski `@theme` bloki oʻchishi 
 
 **Breakpoint:** desktop header va footer ustunlari `lg` (1024px) dan; undan
 pastda mobil header + tab bar. `--bottom-nav` ham 1023.98px gacha nolmas.
+`--bottom-nav` = `--tab-bar` + `--buy-bar`: mahsulot sahifasining fixed xarid
+paneli `data-buy-bar` atributi bilan `--buy-bar` ni yoqadi (`:root:has(...)`),
+shuning uchun footer va toast'lar panelni o'zi chetlab o'tadi. Tab bar o'zi
+`--tab-bar` dan balandlik oladi. `--header-sticky` — scroll qilingan desktop
+header balandligi (130px); uning ostidagi sticky element shundan `top` oladi —
+header o'zgarsa, qiymatni qayta o'lchang.
 Faqat desktop header sticky — telefonda tab bar doim ko'rinadi.
 
 **Yopiq akkordeon kontentini chizmang** (`<details>` emas). Chrome yopiq
@@ -528,6 +540,7 @@ Tab bar va PDP/savatdagi xarid paneli — **`position: fixed`**. Hech qachon `po
 - Rasm: `next/image` bilan, `fill` + `sizes` prop majburiy
 - Cart, wishlist, upsell — Zustand persist (localStorage)
 - Server actions — `"use server"` + Zod validation + try/catch
+- **Server komponentga kerak bo'lgan konstanta/funksiya `"use client"` faylda turmasin.** U serverga qiymat emas, client reference bo'lib keladi va `.map is not a function` kabi xato faqat runtime'da chiqadi (V3 da ikki marta: `nav-links.ts`, `catalog-sort.ts`). Oddiy modulga chiqaring
 - Komment yozmaslik (obvious bo'lmasa) — kod o'zi gapirsin
 - Build tekshirish: `npm run build` — 0 xatolik
 

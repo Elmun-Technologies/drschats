@@ -106,20 +106,193 @@ ScienceSection) va `CountdownTimer` — dizayn qoidasi taymerni taqiqlaydi va u
 faqat DealOfDay'da ishlatilgan edi. `FaqAccordion` V3 ga moslandi
 (`defaultOpen` prop) — FAQ ishlatiladigan hamma sahifada ko'rinadi.
 
+## 4-bosqich — katalog va filtrlar (bajarildi)
+
+CatalogV3 / CatalogMobileV3 / FiltersMobileV3: breadcrumb, sarlavha + soni,
+kategoriya plitkalari, chapda filtrlar (narx, sotuvda bor, chegirmadagilar,
+sogʻliq maqsadlari, brend, shakli, mamlakat — har birida jonli son), saralash,
+faol filtr chiplari, setkada test va obuna bannerlari, "N tadan M tasi
+koʻrsatildi" + "Yana N ta koʻrsatish", kategoriya SEO matni. Telefonda sticky
+"Filtrlar / Ommabop" va pastdan chiqadigan sheet (jonli "N ta mahsulotni
+koʻrsatish"). Filtrlar URL'da (`stock`, `sale`, `brand`, `form`, `origin`,
+`goal`, `min`, `max`, `sort`, `page`), eski `origin`/`goal` havolalari ishlaydi.
+Audit: 0 (filtr sheet ochilgan holat ham auditga qoʻshildi).
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| Subkategoriya plitkalari | kategoriya ichidagi boʻlimlar | barcha kategoriyalar (joriysi qora) | katalogda subkategoriya yoʻq |
+| "Kim uchun" filtri | Kattalar / Bolalar / Homiladorlar | **Sogʻliq maqsadlari** (mavjud mavzular) | "kim uchun" maʼlumoti yoʻq; maqsadlar real va sogʻliq yoʻli saqlanadi |
+| "Obuna bilan arzonroq" | filtr | yoʻq | obuna sotuvdagi har bir mahsulotga ochiq — "Sotuvda bor" bilan bir xil |
+| Shakli | kapsula / shipuchi / kukun | kapsula / shipuchi tabletka | shakl faqat 12 mahsulotda maʼlum (`product-units.ts`) |
+| Narx slayderi | ikki tutqichli | faqat ikki maydon | maydonlar aniqroq; slayder keyin qoʻshilishi mumkin |
+| Plitka / roʻyxat tugmalari | bor | yoʻq | roʻyxat kartasi dizaynda yoʻq |
+| "Shu boʻlimda koʻp qidiriladi" | teglar | yoʻq | qidiruv statistikasi yoʻq — oʻylab topilgan teglar boʻlardi |
+| "Ommabop" tartibi | — | kesma rasmli qoʻshimchalar oldinda | sotuv tarixi yoʻq; bosh sahifa bilan bir xil qoida |
+| "Aksiyalar" havolasi | `/sale` | `/products?sale=1&sort=deals` | endi haqiqatan faqat chegirmadagilar chiqadi; `/sale` 8-bosqichda |
+
+Filtrlash Shopflow'dan sahifalab olingan barcha mos mahsulotlar ustida bajariladi (kategoriya va
+qidiruv serverda; `lib/shop/all-products.ts`, 20 sahifagacha). Katalog minglab mahsulotga yetsa, filtrlarni backend'ga oʻtkazish kerak.
+
+## 5-bosqich — mahsulot sahifasi (bajarildi)
+
+ProductV3 / ProductMobileV3: breadcrumb, sarlavha, meta qator (sharhlar soni —
+real, savol-javob soni, brend → katalog filtri, sevimlilar, ulashish);
+vertikal thumbnaillar + tile ustida kesma rasm; oʻrta ustun (qadoq hajmi,
+nuqtali xususiyatlar, tarkib qisqasi); xarid kartasi (narx, eski narx, −%,
+birlik narxi + tejash, «Bir martalik» / «Obuna bilan — arzonroq» + 30/45/60/90
+kun, miqdor, «Savatga qoʻshish», «Hozir buyurtma berish», «Sotuvda bor»);
+yetkazish va toʻlov paneli (`COMMERCE` + sozlangan provayderlar). Sticky
+tablar (scrollspy) va oʻngda sticky mini karta. Telefonda bitta DOM `order-*`
+bilan qayta tartiblanadi; Tavsif / Barcha xususiyatlar / Savol-javob /
+Hujjatlar — akkordeon (`Collapsible`, `<details>` emas; anchor ochadi).
+Pastki xarid paneli tab bar ustida `fixed`.
+
+Uchala «qoʻshish» tugmasi (karta, mobil panel, mini karta) bitta holatni
+oʻqiydi — `product/purchase.ts` (zustand, persist emas): kartada obuna
+tanlansa, panel ham obunani qoʻshadi. Savatga qoʻshish, analytics va JSON-LD
+oʻzgarmadi.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| «Taqqoslash» | meta qatorda | yoʻq | `/compare` 8-bosqichda |
+| «Kunlik doza», «Yosh», «Rasmiy import qiluvchi» | xususiyatlarda | yoʻq | katalogda bu maydonlar yoʻq — oʻylab topilmaydi |
+| Qabul qilish | 3 panel (Qancha/Qachon/Qanday) | bitta panel (`howToUse` matni) | maʼlumot strukturalanmagan |
+| «Sotuvda bor · Toshkentdagi omborda» | — | «Sotuvda bor» | ombor maʼlumoti yoʻq |
+| «Bu mahsulot bilan birga olishadi» | sarlavha | «Oʻxshash mahsulotlar» | sotuv tarixi yoʻq — daʼvo boʻlardi |
+| Upsell taklifi | yoʻq | «Birga qoʻshsangiz — arzonroq» (real chegirma) | biznes-logika saqlanadi; «Koʻpincha birga olishadi» izohi olib tashlandi |
+| «Savol berish», «Sharh yozish» | tugma | `/contact` havolasi | savol/sharh backend'i yoʻq |
+| Eski narx | `89 000` | `89 000` (valyutasiz) | dizayndagidek |
+
+**Tibbiy vaʼdalar** `mock.ts` dan olib tashlandi (uz + ru): «davolaydi»,
+«stressni kamaytiradi», «kuchaytiradi», «mustahkamlaydi», «samarali»,
+«Stressga qarshi vitaminlar» va h.k. Oʻrniga tarkib va «… normal faoliyatiga
+hissa qoʻshadi» shaklidagi neytral iboralar. Namuna sharhlar (`NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF`
+bilan yoqiladigan) tegilmadi — ular default'da koʻrinmaydi.
+
+**Oʻchirildi:** `components/bespoke/` (6 ta qoʻlda yozilgan sahifa — birortasining
+slug'i katalogda yoʻq edi, ya'ni hech qachon ochilmagan), `StickyBuyBar`
+(yuqoridagi panel — dizaynda mini karta va mobil panel), `ProductTabs`,
+`SimilarProducts` (oʻxshashlar endi serverda hisoblanadi).
+
+**Yangi tokenlar** (`globals.css`): `--tab-bar` (faqat tab bar), `--buy-bar`
+(`[data-buy-bar]` sahifada boʻlsa 4.5rem), `--bottom-nav` = ikkalasining
+yigʻindisi — footer, toast va «yuqoriga» tugmasi panelni oʻzi chetlab oʻtadi.
+`--header-sticky` (lg: 130px) — scroll qilingan desktop header balandligi.
+Audit: 0 (mobil akkordeonlar ochilgan holat ham qoʻshildi).
+
+## 6-bosqich — savat va buyurtma (bajarildi)
+
+CartV3 / CartMobileV3 / CartEmptyV3 / OrderSuccessV3: savat va rasmiylashtirish
+**bitta sahifada** (`/cart`) — savol 2 ga default javob, dizayn shunday;
+`/checkout` → `/cart` redirect (eski havolalar ishlaydi), `/checkout/success`
+oʻz joyida. Bepul yetkazishgacha progress, qatorlar (miqdor ≥ 1, sevimlilarga,
+oʻchirish), «Buyurtmangizga qoʻshing va tejang» (upsell ladder), 3 qadam
+(aloqa, yetkazish, toʻlov), oʻngda sticky xulosa, telefonda pastda fixed
+«Jami + Buyurtmani yuborish». Butun sahifa bitta `<form>`.
+
+**Oʻzgarmadi:** Zod sxemasi, `OrderRequest` payload, `submitOrder` server
+action, `computeTotals`, upsell ladder'ga beriladigan mahsulotlar roʻyxati
+(popular, 20), `trackLead`, `trackBeginCheckout` (drawer tugmasi endi `/cart`
+ga olib boradi), `PurchaseTracker`.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| «Hammasini tanlash» / tanlanganlarni oʻchirish | bor | yoʻq | tanlash buyurtma tarkibini oʻzgartirmaydi — bu yangi logika boʻlardi; har qatorda «Olib tashlash» bor |
+| «Aksiya chegirmasi», «Birinchi buyurtma −10%» | alohida qatorlar | bitta «Chegirma» qatori | `computeTotals` chegirmani yigʻindi qaytaradi; boʻlish — biznes-logika |
+| Payme / Click / Uzum | tanlanadi | merchant id yoʻq boʻlsa «tez orada», tanlanmaydi | ishlamaydigan toʻlov yoʻlini vaʼda qilmaslik |
+| Kabinetga biriktirish matni | bor | faqat «Hisobsiz ham buyurtma berishingiz mumkin» | backend deploy qilinmagan |
+| Boʻsh savat: «−10% avtomatik qoʻllanadi» | bor | yoʻq | −10% faqat obunaga tegishli — umumiy vaʼda notoʻgʻri |
+| Boʻsh savat: «Koʻp sotib olinadi» | sarlavha | «Sara mahsulotlar» | sotuv tarixi yoʻq |
+| Natija: «Payme · toʻlandi», «Toʻlov tasdiqlandi» | bor | yoʻq; 1-qadam «Buyurtma qabul qilindi» | naqd toʻlovda bu yolgʻon; sahifa toʻlov holatini bilmaydi |
+| Natija: buyurtma tarkibi, manzil | oʻng panel | yoʻq | savat redirect'dan oldin tozalanadi; maʼlumot faqat buyurtma raqami |
+| Natija: «Telegram orqali kuzatish» | bot | «Telegramda yozish» → `BRAND.social.telegram` | bot nomi hali yoʻq (OPEN-QUESTIONS #9); eski `@drschatsstorebot` olib tashlandi |
+
+**Topilgan nuqson (tuzatilmadi — biznes-logika):** «Oʻzi olib ketish»
+tanlanganda ham `computeTotals` 30 000 soʻm yetkazish qoʻshadi; usul narxga
+taʼsir qilmaydi. Yetkazish sahifasi esa olib ketishni «bepul» deydi.
+Tuzatish `computeTotals` ga `method` qoʻshishni va backend bilan
+kelishishni talab qiladi.
+
+Oʻchirildi: `CartPageView`, `SuccessCheckmark`. Audit: 0 (toʻldirilgan savat
+holati ham qoʻshildi).
+
+## 7-bosqich — qidiruv (bajarildi)
+
+SearchV3 / SearchEmptyV3 / SearchMobileV3. Yangi **`/search?q=`** sahifasi
+(`noindex, follow`): sarlavha + soni, natijadagi kategoriyalar chiplari
+(sonlari bilan, `&category=`), setka, «Kerakli mahsulotni topmadingizmi?»
+paneli (Telegram + test), «Sara mahsulotlar». Natija yoʻq: «Qidirib koʻring»
+chiplari, «Mahsulot kelganda xabar beramiz» formasi (`notifyRestock` —
+operatorning Telegram kanaliga; analytics `search_notify`), «Balki sizga
+kerakdir». Header takliflari: kategoriyalar chiplari, 3 ta mahsulot (rasm,
+nom, brend, narx), «Barcha N ta natijani koʻrsatish» (`/api/search` endi
+`total` qaytaradi). Telefonda qidiruv ekrani: chapda «orqaga», roʻyxat ekran
+ichida, pastda tugma. `/products?q=` ham ishlashda davom etadi.
+
+**Tuzatilgan xato:** JSON-LD `SearchAction` `/products?search=` ga yoʻnaltirardi,
+sahifa esa `?q=` ni oʻqiydi — Google sitelinks qidiruvi boʻsh natija berardi.
+Endi `/search?q=`.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| Soʻrov variantlari («vitamin C 550 mg») | bor | yoʻq | soʻrovlar statistikasi yoʻq — oʻylab topilgan boʻlardi |
+| «Mashhur soʻrovlar» | bor | «Qidirib koʻring» — faqat bugun natija beradigan atamalar | mashhurlik maʼlumoti yoʻq |
+| «Boshqa xaridorlar koʻp izlaydi» | sarlavha | «Sara mahsulotlar» | xaridorlar statistikasi yoʻq |
+| Shakl chiplari («Kapsulalar») | bor | faqat kategoriyalar | shakl 12 mahsulotda maʼlum |
+| Ochiq takliflar ostida sahifani qoraytirish | bor | yoʻq | header'dagi qatlam bilan ziddiyat; keyin qoʻshish mumkin |
+
+`OutOfStockNotify` V3 ga oʻtkazildi va umumlashtirildi (`label`, `submitLabel`,
+`event`, `bare`). Audit: 0 (yangi: `/search` natija va boʻsh holatlari,
+telefonda soʻrov yozilgan qidiruv ekrani).
+
+## 8-bosqich — aksiyalar, brendlar, sevimlilar, taqqoslash (bajarildi)
+
+Foydalanuvchi qarori: zip'dagi dizayn 1:1, taqqoslash ham.
+
+- **`/sale`** (SaleV3): aksiya kartalari, chegirmadagi mahsulotlar
+  (`byDeepestDiscount`), «Bir xil qoidalar», Telegram paneli. `SALE_HREF` →
+  `/sale` (katalogdagi `?sale=1` ishlayveradi).
+- **`/brands`** (BrandsV3): mamlakat chiplari (`?country=`), kesma rasmli brend
+  plitkalari, «Hujjat kerakmi?». Brend maʼlumoti `lib/content/brand-info.ts`:
+  nom — slug'dan, mamlakat/matn — Sanity yoki i18n, mahsulotlar — katalogdan.
+- **`/brands/[slug]`** (BrandV3, yangi): qora hero (katalogdagi soni, yetkazish
+  muddati, 3 ta kesma rasm), shakl chiplari (`?form=`), setka, 3 ta fakt.
+  Nomaʼlum yoki mahsulotsiz brend → 404. PDP'dagi brend havolasi shu yerga.
+- **`/wishlist`** (FavoritesV3): «Hammasini savatga · summa», Hammasi /
+  Chegirmadagilar / Sotuvda bor chiplari, qurilma haqida panel, tavsiyalar.
+- **`/compare`** (CompareV3, yangi): `lib/compare/store.ts` (`govita-compare`,
+  4 tagacha, testli), header'da «Taqqoslash» ikonkasi, PDP'da tugma; jadvalda
+  farqli qatorlar `tile` fonida, «Faqat farqlar». Telefonda ustunlar 150px,
+  yonga scroll.
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| «Birinchi buyurtma −10%» kartasi | bor | yoʻq | `computeTotals` da −10% faqat obunaga — savat bu narxni olmaydi |
+| «Chegirmalar qoʻshilmaydi — eng kattasi» | qoida | yoʻq | upsell va aksiyalar qoʻshiladi — qoida notoʻgʻri boʻlardi |
+| 2+1 kartasi | doim | faqat `buy_x_get_y` aksiya ishlayotganda, matni aksiyaning oʻzidan | real maʼlumot |
+| Klub: «Telegram-bot» | bot | Telegram kanal | bot nomi hali yoʻq (OPEN-QUESTIONS #9) |
+| Sevimlilar: «Ulashish» | tugma | yoʻq | roʻyxat brauzerda — havola boshqa odamda boʻsh roʻyxat ochadi |
+| Sevimlilar: «Kabinetga kiring — raqamga biriktiriladi» | bor | «Brauzer tozalansa, roʻyxat oʻchadi» | sevimlilar backend'ga sinxron qilinmaydi (OPEN-QUESTIONS #14) |
+| Taqqoslash: «Yosh» qatori | bor | yoʻq | katalogda maydon yoʻq |
+| Brend sahifasi: «Saralash: Ommabop» | bor | yoʻq | brendda 14 tagacha mahsulot — kesma rasmlilar oldinda |
+
+Audit: 0 (yangi yoʻllar: `/sale`, `/brands/swiss-energy`, `/compare`;
+holatlar: mahsulotli taqqoslash + «Faqat farqlar», mahsulotli sevimlilar).
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
 |---|---|---|---|
 | HomeV3 | `/` | bor | qayta chiziladi |
 | CatalogV3 | `/catalog/[category]` | `/products`, `/products/[category]` | **mavjud URL qoladi** (SEO, sitemap, ichki havolalar) |
-| SearchV3 / SearchEmptyV3 | `/search?q=` | yoʻq (faqat header'dagi `SearchBox`) | **yangi route** |
+| SearchV3 / SearchEmptyV3 | `/search?q=` | bor | ✅ 7-bosqich |
 | SaleV3 | `/sale` | yoʻq | **yangi route** — `oldPrice` bor mahsulotlar filtri |
 | BrandsV3 | `/brands` | bor | qayta chiziladi |
 | BrandV3 | `/brands/[slug]` | yoʻq | **yangi route** |
 | ProductV3 | `/product/[slug]` | bor | qayta chiziladi |
 | CompareV3 | `/compare` | yoʻq, **store ham yoʻq** | yangi funksiya — savol 3 |
 | FavoritesV3 | `/wishlist` | bor | qayta chiziladi |
-| CartV3 (savat + checkout bitta sahifada) | `/cart` | `/cart` va `/checkout` alohida | savol 2 |
+| CartV3 (savat + checkout bitta sahifada) | `/cart` | `/cart`; `/checkout` → redirect | ✅ 6-bosqich |
 | OrderSuccessV3 | `/checkout/success` | bor | qayta chiziladi |
 | LoginV3 | `/account/login` | `/account` ichida `AuthForm` (Telegram OTP, 6 xona) | oqim saqlanadi; URL savol 4 |
 | AccountV3, OrderDetailV3, SubscriptionsV3, ProfileV3 | `/account/...` | bitta `/account` sahifasi + alohida `/profile` (brauzerdagi sogʻliq profili) | savol 4 |
@@ -158,11 +331,11 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 1 | Layout ✅ | yuqorida | — |
 | 2 | ProductCard + UI ✅ | yuqorida | — |
 | 3 | Bosh sahifa ✅ | yuqorida | — |
-| 4 | Katalog | filtrlar (brend, shakl, kim uchun, mamlakat — soni bilan), mobil sheet | "shakl", "kim uchun" maydonlari maʼlumotda bor-yoʻqligini tekshirish |
-| 5 | Mahsulot | galereya, xarid bloki, sticky tablar, mobil fixed panel | tibbiy vaʼdalarni matndan olib tashlash — kontent oʻzgarishi |
-| 6 | Savat | progress, upsell, 3 qadam, sticky xulosa | savol 2; checkout server action va Zod sxemasi oʻzgarmaydi |
-| 7 | Qidiruv | `/search` route + header takliflari | — |
-| 8 | Aksiya, brend, sevimli, taqqoslash | `/sale`, `/brands/[slug]`, `/compare` | savol 3 |
+| 4 | Katalog ✅ | yuqorida | — |
+| 5 | Mahsulot ✅ | yuqorida | — |
+| 6 | Savat ✅ | yuqorida | — |
+| 7 | Qidiruv ✅ | yuqorida | — |
+| 8 | Aksiya, brend, sevimli, taqqoslash ✅ | yuqorida | — |
 | 9 | Kabinet | sidebar, buyurtma timeline, obunalar | backend'da yoʻq funksiyalar roʻyxati alohida beriladi |
 | 10 | Test | savol/natija UI | quiz logikasi qoladi |
 | 11 | Maʼlumot sahifalari, blog, 404 | InfoSidebar layout | — |
