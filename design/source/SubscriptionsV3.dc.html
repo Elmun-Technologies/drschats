@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — obunalarim</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.kv{display:flex;flex-direction:column;gap:2px}
+.kv span:first-child{font-size:14px;color:#63686E}
+.kv span:last-child{font-size:17px;font-weight:700}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 40px; align-items: start; padding-top: 32px; padding-bottom: 72px">
+<dc-import name="AccountNavV3" active="subs" hint-size="100%,520px"></dc-import>
+<div style="display: flex; flex-direction: column; gap: 24px; min-width: 0">
+<h1 class="h1">Obunalarim</h1>
+<p class="lead" style="margin-top: -12px">Bugun −10%, keyingi har bir yetkazishda −15%. Istalgan vaqtda oʻzgartirish, toʻxtatish yoki bekor qilish mumkin.</p>
+<sc-for list="{{subs}}" as="s" hint-placeholder-count="2">
+<div class="card" style="padding: 28px; display: flex; flex-direction: column; gap: 22px">
+<div style="display: flex; gap: 20px; align-items: center">
+<span style="width: 96px; height: 96px; border-radius: 18px; background: #F1F3F0; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{s.img}}" alt="" style="width: 80px; height: 80px; object-fit: contain"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 6px"><span style="display: flex; gap: 10px; align-items: center"><span style="font-size: 20px; font-weight: 700">{{s.n}}</span><span class="b-soft" style="{{s.bst}}">{{s.status}}</span></span><span class="p">{{s.next}}</span></span>
+</div>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; padding: 18px 20px; border-radius: 16px; background: #F1F3F0">
+<div class="kv"><span>Har yetkazishda</span><span>{{s.price}}</span></div>
+<div class="kv"><span>Chegirma</span><span>−15%</span></div>
+<div class="kv"><span>Oraliq</span><span>{{s.every}}</span></div>
+<div class="kv"><span>Yetkazib berish</span><span>Kuryer, Toshkent</span></div>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<sc-for list="{{s.acts}}" as="a" hint-placeholder-count="3"><button type="button" class="{{a.c}}" style="height: 44px">{{a.t}}</button></sc-for>
+</div>
+</div>
+</sc-for>
+<div class="panel" style="padding: 24px 28px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 18px; font-weight: 700">Yangi obuna qoʻshish</span><span class="p">Mahsulot sahifasida «Obuna bilan — arzonroq» variantini tanlang.</span></div>
+<a class="btn" href="CatalogV3.dc.html">Katalogga oʻtish</a>
+</div>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      subs: [
+        { img: GV.vitc.img, n: "Swiss Energy Vitamin C 550 mg", status: "Faol", bst: "background: #17191B; color: #FFFFFF", next: "Keyingi yetkazish: 4 noyabr 2026", price: "90 950 soʻm", every: "Har 30 kunda",
+          acts: [{ t: "Bittasini oʻtkazib yuborish", c: "btn-l" }, { t: "Oraliqni oʻzgartirish", c: "btn-l" }, { t: "Toʻxtatish", c: "btn-o" }, { t: "Bekor qilish", c: "btn-o" }] },
+        { img: GV.mag.img, n: "Dr. Frei Antistress Magniy B6", status: "Toʻxtatilgan", bst: "", next: "Siz toʻxtatgansiz. Davom ettirsangiz, keyingi yetkazish 30 kundan keyin.", price: "67 150 soʻm", every: "Har 30 kunda",
+          acts: [{ t: "Davom ettirish", c: "btn" }, { t: "Bekor qilish", c: "btn-o" }] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

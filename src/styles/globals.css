@@ -12,6 +12,9 @@
 */
 @source not "../../docs";
 
+/* The design handoff is reference HTML full of its own class names. */
+@source not "../../design";
+
 /*
   Go Vita design tokens — "Warm Apothecary".
 
@@ -41,12 +44,12 @@
     action colour.  The values below remain semantic so every existing page
     receives the same visual language without tying components to a brand name.
   */
-  --color-ink: #fffdf9;
+  --color-legacy-ink: #fffdf9;
   --color-surface: #f8f6f1;
   --color-surface-2: #f1eee7;
   --color-surface-3: #e7e1d7;
-  --color-line: rgba(49, 43, 33, 0.10);
-  --color-line-strong: rgba(49, 43, 33, 0.18);
+  --color-legacy-line: rgba(49, 43, 33, 0.10);
+  --color-legacy-line-strong: rgba(49, 43, 33, 0.18);
 
   /* Warm charcoal replaces cold navy as the contrast ground. */
   --color-brand-deep: #2d2a25;
@@ -58,7 +61,7 @@
      (#766f64) measured 4.29:1 on surface-2 — under the 4.5 floor, exactly
      where card metadata (origin, servings, "12 dona") is printed. */
   --color-fg: #2d2a25;
-  --color-muted: #5f594f;
+  --color-legacy-muted: #5f594f;
   --color-faint: #6a6359;
 
   /* Action — antique gold. `accent` is deliberately light and stays a
@@ -77,7 +80,7 @@
 
   /* Money + rating. `gold` is used as a surface/CTA, while `gold-ink` is the
      darker accessible version for copy on porcelain backgrounds. */
-  --color-gold: #d1ac59;
+  --color-legacy-gold: #d1ac59;
   --color-gold-ink: #755a26;
   --color-gold-soft: #f6ecd7;
 
@@ -96,8 +99,9 @@
   --color-pastel-sky: #eff4f5;
 
   /* Typography */
-  --font-display: var(--font-exo2), ui-sans-serif, system-ui, sans-serif;
-  --font-sans: var(--font-exo2), ui-sans-serif, system-ui, sans-serif;
+  /* Onest everywhere since V3 stage 1 — the design has one UI face. */
+  --font-display: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
+  --font-sans: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
 
   /* Radii */
   --radius-sm: 0.5rem;
@@ -119,12 +123,159 @@
   --shadow-xs: 0 1px 2px rgba(45, 42, 37, 0.05);
   --shadow-sm: 0 2px 6px -2px rgba(45, 42, 37, 0.10);
   --shadow-card: 0 10px 30px -22px rgba(45, 42, 37, 0.35);
-  --shadow-pop: 0 24px 48px -24px rgba(45, 42, 37, 0.35);
+  --shadow-legacy-pop: 0 24px 48px -24px rgba(45, 42, 37, 0.35);
   --shadow-cta: 0 8px 22px -14px rgba(101, 76, 33, 0.7);
 
   /* Animations */
   --animate-marquee: marquee 28s linear infinite;
   --animate-float: float 6s ease-in-out infinite;
+}
+
+/*
+  GoVita V3 tokens — design/tokens.json, names kept exactly as the design hands
+  them over. Five of them (ink, line, line-strong, muted, gold, plus shadow-pop)
+  already existed with a different meaning — the old `ink` was the light page
+  ground, the new one is near-black — so the old ones were renamed to
+  `legacy-*` rather than overwritten. Every `legacy-*` utility dies with the
+  page that still uses it; none may be added in new code.
+
+  Radii md (16px) and lg (24px) already match the design; sm moves from 8px to
+  12px, which nothing used before.
+*/
+@theme {
+  --color-bg: #ffffff;
+  --color-tile: #f1f3f0;
+  --color-tile-hover: #e6e8e5;
+  --color-chip-strong: #e3e6e9;
+  --color-line: #e4e6e8;
+  --color-line-strong: #d9dcdf;
+  --color-ink: #17191b;
+  --color-ink-2: #44494e;
+  --color-muted: #63686e;
+  --color-dark-panel: #1c1f22;
+  --color-on-dark-2: #c9cdd1;
+  --color-red: #c8161d;
+  --color-yellow: #ffd43b;
+  --color-yellow-banner: #ffe58a;
+  --color-forest: #0f2d24;
+  --color-gold: #b8954f;
+
+  --font-onest: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
+  --font-logo: "Playfair Display", "Playfair Display Fallback", Georgia, serif;
+
+  --text-h-hero: 40px;
+  --text-h-hero--line-height: 46px;
+  --text-h-hero--letter-spacing: -0.02em;
+  --text-h-page: 36px;
+  --text-h-page--line-height: 42px;
+  --text-h-page--letter-spacing: -0.015em;
+  --text-h-section: 30px;
+  --text-h-section--line-height: 36px;
+  --text-h-section--letter-spacing: -0.01em;
+  --text-title: 20px;
+  --text-title--line-height: 26px;
+  --text-lead: 17px;
+  --text-lead--line-height: 26px;
+  --text-body: 15px;
+  --text-body--line-height: 23px;
+  --text-card-title: 15px;
+  --text-card-title--line-height: 20px;
+  --text-caption: 13px;
+  --text-caption--line-height: 17px;
+  --text-price: 20px;
+  --text-price--line-height: 26px;
+  --text-price-l: 34px;
+  --text-price-l--line-height: 40px;
+  --text-button: 16px;
+  --text-button--line-height: 20px;
+
+  --radius-pill: 9999px;
+  --radius-sm: 12px;
+
+  --shadow-arrow: 0 2px 10px rgba(23, 25, 27, 0.12);
+  --shadow-buybox: 0 4px 24px rgba(23, 25, 27, 0.06);
+  --shadow-pop: 0 20px 48px rgba(23, 25, 27, 0.25);
+}
+
+/*
+  V3 faces, self-hosted from public/fonts (see the README there). One variable
+  Onest file per Google subset, so a Russian page loads cyrillic and an Uzbek
+  page does not. The fallback faces carry the metric overrides next/font used
+  to generate, so the swap does not shift the layout.
+*/
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-cyrillic-ext.woff2") format("woff2");
+  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Onest";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/onest-v11/onest-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Onest Fallback";
+  src: local("Arial");
+  ascent-override: 92.2%;
+  descent-override: 28.99%;
+  line-gap-override: 0%;
+  size-adjust: 105.2%;
+}
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/fonts/playfair-v40/playfair-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Playfair Display Fallback";
+  src: local("Times New Roman");
+  ascent-override: 97.25%;
+  descent-override: 22.56%;
+  line-gap-override: 0%;
+  size-adjust: 111.26%;
+}
+
+/* The V3 content column: 1296px wide, 24px gutter on desktop, 16px on phones. */
+@utility wrap {
+  width: 100%;
+  max-width: 1296px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+  @media (min-width: 768px) {
+    padding-inline: 1.5rem;
+  }
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @keyframes marquee {
@@ -251,14 +402,14 @@
   each other — the scroll button sat squarely on the "home" tab.
 
   One token instead. `--bottom-nav` is the space the mobile tab bar occupies
-  (zero once it hides at md), and everything pinned to the bottom offsets by it.
+  (zero once it hides at lg), and everything pinned to the bottom offsets by it.
   MobileBottomNav sets its own height from the same token, so the number cannot
   drift out of sync with the thing it describes.
 */
 :root {
   --bottom-nav: 0px;
 }
-@media (max-width: 767.98px) {
+@media (max-width: 1023.98px) {
   :root {
     --bottom-nav: calc(4.25rem + env(safe-area-inset-bottom, 0px));
   }
@@ -318,8 +469,16 @@
   color-scheme: light;
 }
 
-* {
-  border-color: var(--color-line);
+/*
+  Default border colour, in the base layer. Unlayered, it outranked every
+  `border-*` colour utility (cascade layers lose to unlayered rules), so
+  `border-transparent`, `border-ink` and `border-white/15` all silently drew
+  the hairline colour instead.
+*/
+@layer base {
+  * {
+    border-color: var(--color-line);
+  }
 }
 
 /*
@@ -344,11 +503,11 @@
     Keyboard focus, visible everywhere.
 
     Components that set their own Tailwind ring keep it; this is the fallback
-    for the custom buttons that only reset the outline. Signal green rather
-    than gold: focus is a state, not a call to spend money.
+    for the custom buttons that only reset the outline. Ink, because the V3
+    design has no green and focus is a state, not a call to spend money.
   */
   :focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
 
@@ -356,7 +515,14 @@
      sticky header (72px row + 40px utility bar + 56px nav row at lg). */
   :target,
   [id] {
-    scroll-margin-top: 8.5rem;
+    scroll-margin-top: 1rem;
+  }
+  /* Only the desktop header is sticky: 76px main row + ~50px category row. */
+  @media (min-width: 1024px) {
+    :target,
+    [id] {
+      scroll-margin-top: 8.5rem;
+    }
   }
 }
 
@@ -382,8 +548,8 @@ html {
 }
 
 body {
-  background-color: var(--color-ink);
-  color: var(--color-fg);
+  background-color: var(--color-bg);
+  color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;

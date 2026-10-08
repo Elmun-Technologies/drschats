@@ -110,7 +110,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
   if (lines.length === 0) {
     return (
       <div className="flex flex-col items-center gap-5 py-24 text-center">
-        <p className="text-lg text-muted">{tc("empty")}</p>
+        <p className="text-lg text-legacy-muted">{tc("empty")}</p>
         <Link href="/products" className={buttonVariants("dark")}>
           {tc("emptyCta")}
         </Link>
@@ -197,7 +197,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
             />
           </Field>
           {emailEntered && (
-            <label className="flex items-start gap-3 text-sm text-muted">
+            <label className="flex items-start gap-3 text-sm text-legacy-muted">
               <input
                 type="checkbox"
                 {...register("subscribe")}
@@ -243,14 +243,14 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
             travels with the order, and a provider with no merchant id
             configured is shown as unavailable rather than advertised.
           */}
-          <fieldset className="rounded-2xl border border-line/60 bg-surface p-4">
+          <fieldset className="rounded-2xl border border-legacy-line/60 bg-surface p-4">
             <legend className="px-1 text-xs font-bold uppercase tracking-wider text-fg">
               {t("paymentTitle")}
             </legend>
 
             {onlinePaymentAvailable() && (
               <div className="mt-2 space-y-2">
-                <div className="flex items-start gap-3 rounded-xl border border-line bg-ink p-3">
+                <div className="flex items-start gap-3 rounded-xl border border-legacy-line bg-legacy-ink p-3">
                   <input
                     id="payment-online"
                     type="radio"
@@ -262,7 +262,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     <label htmlFor="payment-online" className="block cursor-pointer text-sm font-semibold text-fg">
                       {t("payOnline")}
                     </label>
-                    <p className="mt-0.5 text-xs text-muted">{t("payOnlineNote")}</p>
+                    <p className="mt-0.5 text-xs text-legacy-muted">{t("payOnlineNote")}</p>
                     {/* Providers are radios of their own — nesting them inside
                         the parent's <label> made one click select two things. */}
                     <div className="mt-2 flex flex-wrap gap-2">
@@ -272,8 +272,8 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                           htmlFor={`provider-${p.id}`}
                           className={`flex items-center gap-2 rounded-lg border px-2.5 py-1.5 text-xs font-bold ${
                             p.configured
-                              ? "cursor-pointer border-line-strong bg-surface text-fg"
-                              : "border-line bg-surface-2 text-faint"
+                              ? "cursor-pointer border-legacy-line-strong bg-surface text-fg"
+                              : "border-legacy-line bg-surface-2 text-faint"
                           }`}
                         >
                           <input
@@ -294,7 +294,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               </div>
             )}
 
-            <label className="mt-2 flex cursor-pointer items-start gap-3 rounded-xl border border-line bg-ink p-3">
+            <label className="mt-2 flex cursor-pointer items-start gap-3 rounded-xl border border-legacy-line bg-legacy-ink p-3">
               <input
                 type="radio"
                 value="cod"
@@ -306,7 +306,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               </span>
             </label>
 
-            <p className="pt-2 text-xs text-muted">
+            <p className="pt-2 text-xs text-legacy-muted">
               {onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}
             </p>
             {errors.provider?.message && (
@@ -327,8 +327,8 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                   key={step.product.id}
                   className={`flex items-center gap-4 rounded-xl border p-3 transition-all ${
                     step.stepType === "free_gift"
-                      ? "border-line-strong bg-surface-2"
-                      : "border-line bg-surface"
+                      ? "border-legacy-line-strong bg-surface-2"
+                      : "border-legacy-line bg-surface"
                   }`}
                 >
                   <div className="relative h-16 w-14 shrink-0 overflow-hidden rounded-lg bg-surface-2">
@@ -364,8 +364,8 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                     }
                     className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
                       step.stepType === "free_gift"
-                        ? "bg-accent text-brand-deep hover:bg-accent-strong hover:text-ink"
-                        : "border border-line-strong bg-surface-2 text-fg hover:bg-surface-3"
+                        ? "bg-accent text-brand-deep hover:bg-accent-strong hover:text-legacy-ink"
+                        : "border border-legacy-line-strong bg-surface-2 text-fg hover:bg-surface-3"
                     }`}
                   >
                     {step.stepType === "free_gift" ? t("upsellFree") : t("upsellAdd")}
@@ -388,13 +388,13 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
           <Button type="submit" size="lg" className="w-full" disabled={submitting}>
             {submitting ? t("submitting") : t("submit")}
           </Button>
-          <p className="text-center text-sm text-muted">{t("operatorNote")}</p>
+          <p className="text-center text-sm text-legacy-muted">{t("operatorNote")}</p>
         </div>
       </form>
 
       {/* Summary */}
       <aside className="[order:2] lg:[order:2] lg:sticky lg:top-24 lg:self-start lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="rounded-2xl border border-line bg-surface p-6">
+        <div className="rounded-2xl border border-legacy-line bg-surface p-6">
           <h2 className="mb-5 font-display text-lg font-semibold">{t("summary")}</h2>
           <div className="space-y-4">
             {lines.map((l) => (
@@ -406,13 +406,13 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
                   <p className="text-sm font-medium">{l.name}</p>
                   {l.oldPrice && l.oldPrice > l.price && (
                     <div className="mt-0.5 flex items-center gap-2">
-                      <span className="text-xs text-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
+                      <span className="text-xs text-legacy-muted line-through">{formatMoney(l.oldPrice, locale)}</span>
                       <Badge tone="gold" className="px-1.5 py-0 text-[10px]">
                         −{Math.round((1 - l.price / l.oldPrice) * 100)}%
                       </Badge>
                     </div>
                   )}
-                  <div className="mt-1 flex items-center gap-1 text-xs text-muted">
+                  <div className="mt-1 flex items-center gap-1 text-xs text-legacy-muted">
                     {/*
                       Stopping at 1 rather than letting "−" fall through to 0.
                       The store treats 0 as "remove", so one more press than
@@ -455,7 +455,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
             ))}
           </div>
 
-          <div className="mt-6 space-y-2 border-t border-line pt-4 text-sm">
+          <div className="mt-6 space-y-2 border-t border-legacy-line pt-4 text-sm">
             <SummaryRow label={tc("subtotal")} value={formatMoney(totals.subtotal, locale)} />
             {totals.discount > 0 && (
               <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} accent />
@@ -464,12 +464,12 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               label={tc("shipping")}
               value={totals.shipping === 0 ? tc("free") : formatMoney(totals.shipping, locale)}
             />
-            <div className="flex items-center justify-between border-t border-line pt-3 text-base font-semibold">
+            <div className="flex items-center justify-between border-t border-legacy-line pt-3 text-base font-semibold">
               <span>{tc("total")}</span>
               <span>{formatMoney(totals.total, locale)}</span>
             </div>
             {totals.hasSubscription && (
-              <p className="pt-1 text-xs text-muted">
+              <p className="pt-1 text-xs text-legacy-muted">
                 {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })}{" "}
                 {ts("benefitControl")}
               </p>
@@ -478,7 +478,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
               const totalSavings = lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
               if (totalSavings > 0) {
                 return (
-                  <div className="mt-4 rounded-xl border border-line bg-surface-2 p-3 text-centerter">
+                  <div className="mt-4 rounded-xl border border-legacy-line bg-surface-2 p-3 text-centerter">
                     <p className="text-sm font-semibold text-brand-deep">
                       {t("savings", { amount: formatMoney(totalSavings, locale) })}
                     </p>
@@ -496,7 +496,7 @@ export function CheckoutForm({ recommended }: { recommended: Product[] }) {
 }
 
 const inputClass =
-  "w-full rounded-xl border border-line bg-surface-2 px-4 py-3 text-sm text-fg outline-none transition-colors placeholder:text-faint focus:border-accent";
+  "w-full rounded-xl border border-legacy-line bg-surface-2 px-4 py-3 text-sm text-fg outline-none transition-colors placeholder:text-faint focus:border-accent";
 
 /*
   The error used to be a span inside the <label>, which made it part of the
@@ -537,7 +537,7 @@ function Field({
 
   return (
     <div>
-      <label htmlFor={fieldId} className="mb-2 block text-sm font-medium text-muted">
+      <label htmlFor={fieldId} className="mb-2 block text-sm font-medium text-legacy-muted">
         {label}
       </label>
       {control}
@@ -558,8 +558,8 @@ function Field({
 function SummaryRow({ label, value, accent }: { label: string; value: string; accent?: boolean }) {
   return (
     <div className="flex items-center justify-between">
-      <span className="text-muted">{label}</span>
-      <span className={accent ? "font-semibold text-fg" : "text-muted"}>{value}</span>
+      <span className="text-legacy-muted">{label}</span>
+      <span className={accent ? "font-semibold text-fg" : "text-legacy-muted"}>{value}</span>
     </div>
   );
 }

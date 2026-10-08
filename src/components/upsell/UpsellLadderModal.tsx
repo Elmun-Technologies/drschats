@@ -106,7 +106,7 @@ export function UpsellLadderModal() {
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className={`overflow-hidden rounded-2xl border border-line shadow-[var(--shadow-pop)] ${isFreeGift ? "bg-signal-soft" : "bg-surface"}`}>
+            <div className={`overflow-hidden rounded-2xl border border-legacy-line shadow-[var(--shadow-legacy-pop)] ${isFreeGift ? "bg-signal-soft" : "bg-surface"}`}>
               {/* Header */}
               <div className={`px-5 py-4 ${isFreeGift ? "bg-signal-soft/60" : "bg-surface-2"}`}>
                 <div className="flex items-center justify-between">
@@ -145,7 +145,7 @@ export function UpsellLadderModal() {
                   </motion.p>
                 )}
                 {!isFreeGift && displaySavings === 0 && (
-                  <p className="mt-1 text-sm text-muted">{t("growSavings")}</p>
+                  <p className="mt-1 text-sm text-legacy-muted">{t("growSavings")}</p>
                 )}
               </div>
 
@@ -167,7 +167,7 @@ export function UpsellLadderModal() {
                 </div>
 
                 <div className="flex flex-1 flex-col justify-center">
-                  <p className="text-xs text-muted">{step.reason}</p>
+                  <p className="text-xs text-legacy-muted">{step.reason}</p>
                   {/* Names the dialog: what a screen reader announces on open
                       is the product being offered. */}
                   <p id="upsell-offer-title" className="mt-0.5 font-medium text-fg">{step.product.name}</p>
@@ -194,7 +194,7 @@ export function UpsellLadderModal() {
                         <span className="font-display text-base font-bold text-fg">
                           {formatMoney(step.discountedPrice, locale)}
                         </span>
-                        <span className="rounded border border-line bg-surface-2 px-1.5 py-0.5 text-xs font-bold text-muted">
+                        <span className="rounded border border-legacy-line bg-surface-2 px-1.5 py-0.5 text-xs font-bold text-legacy-muted">
                           −{step.discountPercent}%
                         </span>
                       </>
@@ -227,15 +227,15 @@ export function UpsellLadderModal() {
                   onClick={handleAccept}
                   className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
                     isFreeGift
-                      ? "bg-gold text-fg hover:brightness-95"
-                      : "bg-accent text-brand-deep hover:bg-accent-strong hover:text-ink"
+                      ? "bg-legacy-gold text-fg hover:brightness-95"
+                      : "bg-accent text-brand-deep hover:bg-accent-strong hover:text-legacy-ink"
                   }`}
                 >
                   {isFreeGift ? t("freeGiftCta") : t("accept")}
                 </button>
                 <button
                   onClick={() => { trackUpsellSkip(currentStep + 1, step.product.id); skipStep(); }}
-                  className="rounded-full border border-line px-4 py-3 text-sm text-muted transition-colors hover:border-line-strong hover:text-fg"
+                  className="rounded-full border border-legacy-line px-4 py-3 text-sm text-legacy-muted transition-colors hover:border-legacy-line-strong hover:text-fg"
                 >
                   {t("skip")}
                 </button>

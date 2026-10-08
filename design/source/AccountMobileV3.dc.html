@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — kabinet, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+.ml{display:flex;align-items:center;gap:14px;min-height:56px;padding:0 16px;font-size:16px;color:#17191B;text-decoration:none;border-bottom:1px solid #EEF0F1}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+<main style="display: flex; flex-direction: column; gap: 18px; padding: 8px 0 28px">
+<div class="px" style="display: flex; gap: 14px; align-items: center">
+<span style="width: 56px; height: 56px; border-radius: 28px; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700">D</span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 20px; font-weight: 700">Dilnoza Karimova</span><span style="font-size: 14px; color: #44494E">+998 90 123 45 67</span></span>
+</div>
+<div class="px"><a class="card" href="ProductMobileV3.dc.html" style="padding: 14px; display: flex; gap: 12px; align-items: center; text-decoration: none; color: #17191B; border-color: #17191B">
+<span style="width: 56px; height: 56px; border-radius: 12px; background: #F1F3F0; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{pre}}" alt="" style="width: 48px; height: 48px; object-fit: contain"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 12px; font-weight: 600; color: #63686E; text-transform: uppercase; letter-spacing: .04em">Eslatma · bugun</span><span style="font-size: 15px; line-height: 20px; font-weight: 700">«Prenatal Forte» tugayapti</span></span>
+<span class="btn" style="height: 40px; padding: 0 14px; font-size: 14px">Takrorlash</span>
+</a></div>
+<div class="px" style="display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 21px; font-weight: 700">Buyurtmalarim</h2><a href="#" style="font-size: 15px; font-weight: 600">Hammasi · 3</a></div>
+<sc-for list="{{orders}}" as="o" hint-placeholder-count="2">
+<a class="card" href="#" style="padding: 16px; display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: #17191B">
+<span style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 16px; font-weight: 700">№ {{o.n}}</span><span class="b-soft" style="{{o.st}}">{{o.s}}</span></span>
+<span style="display: flex; justify-content: space-between; align-items: center"><span style="display: flex; gap: 6px"><sc-for list="{{o.imgs}}" as="i" hint-placeholder-count="2"><span style="width: 48px; height: 48px; border-radius: 10px; background: #F1F3F0; display: flex; align-items: center; justify-content: center"><img src="{{i}}" alt="" style="width: 40px; height: 40px; object-fit: contain"></span></sc-for></span><span style="display: flex; flex-direction: column; align-items: flex-end"><span style="font-size: 17px; font-weight: 700">{{o.t}}</span><span class="small">{{o.d}}</span></span></span>
+</a>
+</sc-for>
+</div>
+<nav aria-label="Kabinet" style="display: flex; flex-direction: column; border-top: 1px solid #EEF0F1">
+<sc-for list="{{menu}}" as="m" hint-placeholder-count="5"><a class="ml" href="{{m.h}}"><svg class="ic" viewBox="0 0 24 24"><path d="{{m.d}}"/></svg>{{m.t}}<span style="margin-left: auto; font-size: 14px; color: #63686E">{{m.n}}</span><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px; color: #8A8F95"><path d="M9 6l6 6-6 6"/></svg></a></sc-for>
+<a class="ml" href="LoginMobileV3.dc.html" style="color: #44494E"><svg class="ic" viewBox="0 0 24 24"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg>Chiqish</a>
+</nav>
+</main>
+<div style="position: relative; z-index: 5"><dc-import name="TabBarV3" active="user" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      pre: GV.prenatal.img,
+      orders: [
+        { n: "GV-10248", s: "Yoʻlda", st: "background: #17191B; color: #FFFFFF", t: "267 000 soʻm", d: "8 oktabr", imgs: [GV.mag.img, GV.multi.img] },
+        { n: "GV-09871", s: "Yetkazildi", st: "", t: "372 950 soʻm", d: "14 sentabr", imgs: [GV.immuno.img, GV.vitc.img] }
+      ],
+      menu: [
+        { t: "Obunalarim", n: "1", h: "#", d: "M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4" },
+        { t: "Sevimlilar", n: "5", h: "FavoritesMobileV3.dc.html", d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" },
+        { t: "Sogʻliq testi", n: "", h: "QuizMobileV3.dc.html", d: "M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11" },
+        { t: "Profilim", n: "", h: "#", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" },
+        { t: "Aloqa", n: "", h: "DeliveryMobileV3.dc.html", d: "M4 5h16v11H9l-5 4z" }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -57,7 +57,7 @@ export function ProfileView() {
           <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             {t("title")}
           </h1>
-          <p className="mt-2 text-muted">{t("subtitle")}</p>
+          <p className="mt-2 text-legacy-muted">{t("subtitle")}</p>
         </header>
         <div className="mx-auto mt-10 h-96 max-w-3xl animate-pulse rounded-2xl bg-surface" />
       </Container>
@@ -72,7 +72,7 @@ export function ProfileView() {
         <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
           {profile.name ? t("titleNamed", { name: profile.name }) : t("title")}
         </h1>
-        <p className="mt-2 text-muted">{t("subtitle")}</p>
+        <p className="mt-2 text-legacy-muted">{t("subtitle")}</p>
         {!hasSignal(profile) && (
           <p className="mt-4 rounded-2xl border border-accent/40 bg-surface-2/40 px-4 py-3 text-sm text-fg">
             {t("quizHint")}{" "}
@@ -87,7 +87,7 @@ export function ProfileView() {
         <section aria-labelledby="profile-details">
           <h2 id="profile-details" className="font-display text-lg font-bold tracking-tight">{t("details.title")}
           </h2>
-          <p className="mt-1 text-sm text-muted">{t("details.description")}</p>
+          <p className="mt-1 text-sm text-legacy-muted">{t("details.description")}</p>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <ProfileField
               label={t("details.name")}
@@ -123,10 +123,10 @@ export function ProfileView() {
         <ConsentPanel />
         <ProfileOffers />
 
-        <section aria-labelledby="profile-data" className="border-t border-line pt-8">
+        <section aria-labelledby="profile-data" className="border-t border-legacy-line pt-8">
           <h2 id="profile-data" className="font-display text-lg font-bold tracking-tight">{t("data.title")}
           </h2>
-          <p className="mt-1 text-sm text-muted">{t("data.description")}</p>
+          <p className="mt-1 text-sm text-legacy-muted">{t("data.description")}</p>
           {confirmingReset ? (
             <div className="mt-4 flex flex-wrap items-center gap-3">
               <p role="alert" className="text-sm font-medium text-fg">
@@ -145,7 +145,7 @@ export function ProfileView() {
               <button
                 type="button"
                 onClick={() => setConfirmingReset(false)}
-                className="min-h-11 rounded-full border border-line px-5 text-sm font-semibold text-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+                className="min-h-11 rounded-full border border-legacy-line px-5 text-sm font-semibold text-legacy-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
               >
                 {t("data.cancel")}
               </button>
@@ -154,7 +154,7 @@ export function ProfileView() {
             <button
               type="button"
               onClick={() => setConfirmingReset(true)}
-              className="mt-4 min-h-11 rounded-full border border-line px-5 text-sm font-semibold text-muted transition-colors hover:border-danger hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+              className="mt-4 min-h-11 rounded-full border border-legacy-line px-5 text-sm font-semibold text-legacy-muted transition-colors hover:border-danger hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
             >
               {t("data.clear")}
             </button>

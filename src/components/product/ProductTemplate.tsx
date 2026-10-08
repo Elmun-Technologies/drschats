@@ -65,7 +65,7 @@ export async function ProductTemplate({
             <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {product.highlights.map((h, i) => (
                 <Reveal key={h} index={i} as="li">
-                  <div className="flex h-full items-start gap-3 rounded-xl border border-line bg-surface p-5">
+                  <div className="flex h-full items-start gap-3 rounded-xl border border-legacy-line bg-surface p-5">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg">
                       <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4">
                         <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />

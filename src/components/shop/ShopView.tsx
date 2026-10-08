@@ -169,7 +169,7 @@ export async function ShopView({
                 href={buildQuery({ goal: undefined, page: undefined })}
                 className={cn(
             "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
-                  !goal ? "border-brand-deep bg-brand-deep text-white shadow-xs" : "border-line/80 bg-white text-brand-deep hover:border-gold/60",
+                  !goal ? "border-brand-deep bg-brand-deep text-white shadow-xs" : "border-legacy-line/80 bg-white text-brand-deep hover:border-legacy-gold/60",
                 )}
               >
                 {t("all")}
@@ -182,7 +182,7 @@ export async function ShopView({
             "shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition-all",
                     facet.slug === goal
                       ? "border-brand-deep bg-brand-deep text-white shadow-xs"
-                      : "border-line/80 bg-white text-brand-deep hover:border-gold/60",
+                      : "border-legacy-line/80 bg-white text-brand-deep hover:border-legacy-gold/60",
                   )}
                 >
                   {facet.name}
@@ -198,7 +198,7 @@ export async function ShopView({
           <Link
             href="/products"
             className={cn(
-            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", !activeCategory ? "border-line-strong bg-surface-2 text-fg" : "border-line text-muted")}
+            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", !activeCategory ? "border-legacy-line-strong bg-surface-2 text-fg" : "border-legacy-line text-legacy-muted")}
           >
             {t("all")}
           </Link>
@@ -207,7 +207,7 @@ export async function ShopView({
               key={c.id}
               href={`/products/${c.slug}`}
               className={cn(
-            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", c.slug === activeCategory ? "border-line-strong bg-surface-2 text-fg" : "border-line text-muted")}
+            "shrink-0 rounded-full border px-4 py-2 text-sm font-medium transition-colors", c.slug === activeCategory ? "border-legacy-line-strong bg-surface-2 text-fg" : "border-legacy-line text-legacy-muted")}
             >
               {c.name}
             </Link>
@@ -217,19 +217,19 @@ export async function ShopView({
         <div className="grid gap-8 lg:grid-cols-[260px_1fr]">
           {/* Sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-24 lg:self-start">
-            <div className="rounded-2xl border border-line bg-ink p-5">
+            <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-5">
               <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-fg">{t("categoriesTitle")}</h2>
               <ul className="space-y-1">
                 <li>
                   <Link href="/products" className={cn(
-            "block rounded-lg px-3 py-2 text-sm transition-colors", !activeCategory ? "bg-surface-2 font-semibold text-fg" : "text-muted hover:bg-surface hover:text-fg")}>
+            "block rounded-lg px-3 py-2 text-sm transition-colors", !activeCategory ? "bg-surface-2 font-semibold text-fg" : "text-legacy-muted hover:bg-surface hover:text-fg")}>
                     {t("all")}
                   </Link>
                 </li>
                 {categories.map((c) => (
                   <li key={c.id}>
                     <Link href={`/products/${c.slug}`} className={cn(
-            "flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors", c.slug === activeCategory ? "bg-surface-2 font-semibold text-accent-strong" : "text-muted hover:bg-surface hover:text-fg")}>
+            "flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors", c.slug === activeCategory ? "bg-surface-2 font-semibold text-accent-strong" : "text-legacy-muted hover:bg-surface hover:text-fg")}>
                       {c.name}
                       {c.productCount ? <span className="text-xs tabular-nums text-faint">{c.productCount}</span> : null}
                     </Link>
@@ -260,7 +260,7 @@ export async function ShopView({
                     key={f.key}
                     href={buildQuery({ ...f.clear, page: undefined })}
                     aria-label={t("removeFilter", { name: f.label })}
-                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-surface-2 px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-fg hover:text-ink"
+                    className="group inline-flex items-center gap-1.5 rounded-full border border-accent bg-surface-2 px-3 py-1.5 text-sm font-medium text-accent-strong transition-colors hover:bg-fg hover:text-legacy-ink"
                   >
                     {f.label}
                     <svg viewBox="0 0 24 24" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
@@ -271,7 +271,7 @@ export async function ShopView({
                 {activeFilters.length > 1 && (
                   <Link
                     href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
-                    className="text-sm font-semibold text-muted underline-offset-4 hover:text-fg hover:underline"
+                    className="text-sm font-semibold text-legacy-muted underline-offset-4 hover:text-fg hover:underline"
                   >
                     {t("clearFilters")}
                   </Link>
@@ -279,7 +279,7 @@ export async function ShopView({
               </div>
             )}
 
-            <div className="mb-6 flex flex-wrap items-center justify-end gap-4 rounded-2xl border border-line bg-surface px-5 py-3">
+            <div className="mb-6 flex flex-wrap items-center justify-end gap-4 rounded-2xl border border-legacy-line bg-surface px-5 py-3">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="text-sm text-faint">{t("sort")}:</span>
                 {sorts.map((s) => (
@@ -287,7 +287,7 @@ export async function ShopView({
                     key={s}
                     href={sortQuery(s)}
                     className={cn(
-            "rounded-full px-3 py-1.5 text-sm transition-colors", s === sort ? "bg-surface-2 font-semibold text-fg" : "text-muted hover:text-fg")}
+            "rounded-full px-3 py-1.5 text-sm transition-colors", s === sort ? "bg-surface-2 font-semibold text-fg" : "text-legacy-muted hover:text-fg")}
                   >
                     {t(sortLabelKey[s])}
                   </Link>
@@ -297,13 +297,13 @@ export async function ShopView({
 
             {result.items.length === 0 ? (
               <div className="py-24 text-center">
-                <p className="text-muted">{t("empty")}</p>
+                <p className="text-legacy-muted">{t("empty")}</p>
                 {/* An empty result caused by filters needs a way out that is
                     not the browser back button. */}
                 {activeFilters.length > 0 && (
                   <Link
                     href={buildQuery({ q: undefined, goal: undefined, origin: undefined, min: undefined, max: undefined, page: undefined })}
-                    className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
+                    className="mt-4 inline-flex rounded-full bg-fg px-5 py-2.5 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
                   >
                     {t("clearFilters")}
                   </Link>

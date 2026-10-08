@@ -89,7 +89,7 @@ export default async function ArticlePage({
 
       {/* Hero */}
       <Container size="narrow">
-        <Link href="/blog" className="text-sm text-muted hover:text-fg">
+        <Link href="/blog" className="text-sm text-legacy-muted hover:text-fg">
           ← {t("backToBlog")}
         </Link>
         <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -104,14 +104,14 @@ export default async function ArticlePage({
         <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
           {article.title}
         </h1>
-        <p className="mt-5 text-xl text-muted">{article.excerpt}</p>
+        <p className="mt-5 text-xl text-legacy-muted">{article.excerpt}</p>
         <div className="mt-6 flex items-center justify-between gap-4">
           {reviewer && <ReviewedBy expert={reviewer} />}
         </div>
       </Container>
 
       <Container size="narrow" className="mt-10">
-        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-line bg-surface-2">
+        <div className="relative aspect-[16/9] overflow-hidden rounded-2xl border border-legacy-line bg-surface-2">
           <Image src={article.image} alt={article.title} fill priority sizes="(max-width: 768px) 100vw, 768px" className="object-cover" />
         </div>
       </Container>
@@ -125,7 +125,7 @@ export default async function ArticlePage({
                 <h2 className="font-display text-2xl font-semibold tracking-tight">{section.heading}</h2>
                 <div className="mt-4 space-y-4">
                   {section.paragraphs.map((p, j) => (
-                    <p key={j} className="text-lg leading-relaxed text-muted">{p}</p>
+                    <p key={j} className="text-lg leading-relaxed text-legacy-muted">{p}</p>
                   ))}
                 </div>
               </section>
@@ -137,7 +137,7 @@ export default async function ArticlePage({
 
       {/* Related products */}
       {relatedProducts.length > 0 && (
-        <section className="border-t border-line py-20">
+        <section className="border-t border-legacy-line py-20">
           <Container>
             <h2 className="mb-10 font-display text-2xl font-extrabold tracking-tight sm:text-3xl">{t("relatedProducts")}</h2>
             <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">

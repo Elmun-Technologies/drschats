@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — sevimlilar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 28px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Sevimlilar</span></nav>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: -10px">
+<div style="display: flex; align-items: baseline; gap: 14px"><h1 class="h1">Sevimlilar</h1><span style="font-size: 17px; color: #63686E">5 ta mahsulot</span></div>
+<div style="display: flex; gap: 8px"><button type="button" class="btn-o">Ulashish</button><button type="button" class="btn">Hammasini savatga · 1 278 900 soʻm</button></div>
+</div>
+<div style="display: flex; gap: 8px"><span class="chip on">Hammasi <small>5</small></span><a class="chip" href="#">Chegirmada <small>1</small></a><a class="chip" href="#">Sotuvda bor <small>5</small></a></div>
+<div class="grid6"><sc-for list="{{fav}}" as="p" hint-placeholder-count="5"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+<div class="panel" style="padding: 24px 28px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; gap: 14px; align-items: center"><span style="width: 48px; height: 48px; border-radius: 24px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 700">Roʻyxat faqat shu qurilmada saqlangan</span><span class="p">Kabinetga kiring — sevimlilar telefon raqamingizga biriktiriladi.</span></span></div>
+<a class="btn" href="LoginV3.dc.html">Kabinetga kirish</a>
+</div>
+<section style="display: flex; flex-direction: column; gap: 20px; padding-top: 16px">
+<h2 class="h2" style="font-size: 26px">Sizga yoqishi mumkin</h2>
+<div class="grid6"><sc-for list="{{rec}}" as="p" hint-placeholder-count="6"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var f = { fav: true };
+    return {
+      fav: gvList(["immuno", "mag", "calci", "prenatal", "collagen"], f),
+      rec: gvList(["hns", "vitc", "neuro", "visio", "multi", "gold"])
+    };
+  }
+}
+</script>
+</body>
+</html>

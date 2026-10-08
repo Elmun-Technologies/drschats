@@ -11,7 +11,7 @@ export function ArticleCard({ article, index = 0 }: { article: Article; index?: 
     <Reveal index={index} className="h-full">
       <Link
         href={`/blog/${article.slug}`}
-        className="group relative flex h-[400px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-500 hover:shadow-[var(--shadow-pop)]"
+        className="group relative flex h-[400px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-500 hover:shadow-[var(--shadow-legacy-pop)]"
       >
         <div className="absolute inset-0 z-0">
           <Image

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Footer</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.fcol a{font-size:15px;line-height:20px;color:#2E3236;text-decoration:none}
+.fcol a:hover{color:#000000;text-decoration:underline}
+.soc{width:48px;height:48px;border-radius:24px;background:#FFFFFF;color:#17191B;display:flex;align-items:center;justify-content:center;text-decoration:none}
+.soc:hover{background:#17191B;color:#FFFFFF}
+.pay{display:inline-flex;align-items:center;height:40px;padding:0 16px;border-radius:10px;background:#FFFFFF;font-size:15px;font-weight:700;color:#17191B;letter-spacing:-.01em}
+</style>
+</helmet>
+<footer class="gv" style="width: 100%; background: #F1F3F0; margin-top: 0">
+<div class="wrap" style="display: flex; flex-direction: column; gap: 40px; padding-top: 48px; padding-bottom: 32px">
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr); gap: 48px">
+<div style="display: flex; flex-direction: column; gap: 20px">
+<a href="HomeV3.dc.html" style="text-decoration: none; color: #0F2D24; font-family: 'Playfair Display', Georgia, serif; font-size: 40px; line-height: 44px; font-weight: 500; letter-spacing: -0.02em">go<span style="color: #B8954F">v</span>ita</a>
+<p class="p" style="max-width: 340px; color: #2E3236">Vitaminlar va biologik faol qoʻshimchalarni Oʻzbekistonga rasmiy import qiluvchi onlayn doʻkon.</p>
+<div style="display: flex; flex-direction: column; gap: 4px">
+<a href="tel:+998712007080" style="font-size: 28px; line-height: 34px; font-weight: 700; color: #17191B; text-decoration: none">+998 71 200 70 80</a>
+<span style="font-size: 15px; color: #44494E">Dushanba–Shanba, 09:00–18:00</span>
+</div>
+<div style="display: flex; gap: 8px; flex-wrap: wrap">
+<a class="btn" href="https://t.me/govita_uz"><svg class="ic" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l12-9"/></svg>Telegramda yozish</a>
+<a class="btn-o" href="ContactV3.dc.html" style="background: transparent">Barcha kontaktlar</a>
+</div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.2fr); gap: 32px">
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="3">
+<nav class="fcol" aria-label="{{c.t}}" style="display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 17px; font-weight: 700">{{c.t}}</span>
+<sc-for list="{{c.l}}" as="l" hint-placeholder-count="5"><a href="{{l.h}}">{{l.t}}</a></sc-for>
+</nav>
+</sc-for>
+<a href="https://t.me/govita_uz" style="align-self: start; display: flex; flex-direction: column; gap: 10px; padding: 22px; border-radius: 20px; background: #17191B; color: #FFFFFF; text-decoration: none">
+<span style="font-size: 13px; font-weight: 600; color: #C9CDD1; letter-spacing: .04em; text-transform: uppercase">VIP Salomatlik Klubi</span>
+<span style="font-size: 19px; line-height: 24px; font-weight: 700">Klubga Telegram-bot orqali qoʻshiling</span>
+<span style="font-size: 14px; line-height: 20px; color: #C9CDD1">Buyurtma holati, qabul eslatmalari va klub takliflari.</span>
+<span class="btn-w" style="height: 44px; padding: 0 18px; font-size: 15px; align-self: flex-start; margin-top: 4px">Botni ochish</span>
+</a>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 20px 40px; align-items: center; justify-content: space-between; padding-top: 28px; border-top: 1px solid #DCDFDB">
+<div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<span style="font-size: 15px; font-weight: 600; margin-right: 4px">Toʻlov usullari</span>
+<span class="pay">Payme</span><span class="pay">Click</span><span class="pay">Uzum</span><span class="pay" style="font-weight: 600">Naqd / karta</span>
+</div>
+<div style="display: flex; gap: 10px; align-items: center">
+<span style="font-size: 15px; font-weight: 600; margin-right: 6px">Biz ijtimoiy tarmoqlarda</span>
+<a class="soc" href="https://t.me/govita_uz" aria-label="Telegram"><svg class="ic" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l12-9"/></svg></a>
+<a class="soc" href="https://instagram.com/govita_uz" aria-label="Instagram"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/><path d="M17 7h.01"/></svg></a>
+<a class="soc" href="https://facebook.com/govita.uz" aria-label="Facebook"><svg class="ic" viewBox="0 0 24 24"><path d="M14 21v-8h3l.5-3.5H14V7.5c0-1 .4-1.7 1.8-1.7H18V2.7A24 24 0 0 0 15.4 2.5C12.9 2.5 11 4 11 6.9v2.6H8V13h3v8"/></svg></a>
+</div>
+</div>
+
+<div style="display: flex; flex-wrap: wrap; gap: 12px 32px; align-items: flex-start; justify-content: space-between; font-size: 14px; line-height: 20px; color: #44494E">
+<span style="flex: 1 1 520px; max-width: 760px">© 2026 Go Vita. Rasmiy import qiluvchi — Alimkhanov Pharm Group. Biologik faol qoʻshimchalar dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing.</span>
+<span style="display: flex; gap: 20px; flex-wrap: wrap"><a href="HomeV3.dc.html" style="color: #2E3236">Ommaviy oferta</a><a href="HomeV3.dc.html" style="color: #2E3236">Maxfiylik siyosati</a><a href="AboutV3.dc.html" style="color: #2E3236">Rekvizitlar</a></span>
+</div>
+</div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":560}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var L = function (t, h) { return { t: t, h: h }; };
+    return {
+      cols: [
+        { t: "Katalog", l: [L("Vitaminlar", "CatalogV3.dc.html"), L("Minerallar", "CatalogV3.dc.html"), L("Immunitet", "CatalogV3.dc.html"), L("Goʻzallik", "CatalogV3.dc.html"), L("Bolalar uchun", "CatalogV3.dc.html"), L("Tibbiy jihozlar", "CatalogV3.dc.html"), L("Aksiyalar", "SaleV3.dc.html"), L("Brendlar", "BrandsV3.dc.html")] },
+        { t: "Xaridorlarga", l: [L("Yetkazib berish", "DeliveryV3.dc.html"), L("Toʻlov usullari", "PaymentV3.dc.html"), L("Kafolat va qaytarish", "GuaranteeV3.dc.html"), L("Chegirma tizimi", "LoyaltyV3.dc.html"), L("Vitamin tanlash testi", "QuizV3.dc.html"), L("Shaxsiy kabinet", "AccountV3.dc.html")] },
+        { t: "Kompaniya", l: [L("Biz haqimizda", "AboutV3.dc.html"), L("Litsenziya va sertifikatlar", "LicensesV3.dc.html"), L("Sogʻliq blogi", "BlogV3.dc.html"), L("Dorixonalar uchun", "PartnersV3.dc.html"), L("Distributorlik", "PartnersV3.dc.html"), L("Aloqa", "ContactV3.dc.html")] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

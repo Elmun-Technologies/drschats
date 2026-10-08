@@ -18,9 +18,9 @@ export function PageHero({
   const t = useTranslations("product");
   return (
     <>
-      <div className="border-b border-line bg-surface">
+      <div className="border-b border-legacy-line bg-surface">
         <Container className="flex flex-wrap items-center gap-2 py-4 text-sm">
-          <Link href="/" className="text-muted hover:text-fg">{t("breadcrumbHome")}</Link>
+          <Link href="/" className="text-legacy-muted hover:text-fg">{t("breadcrumbHome")}</Link>
           <span className="text-faint">/</span>
           <span className="font-semibold text-fg">{crumb}</span>
         </Container>
@@ -37,7 +37,7 @@ export function PageHero({
           </Reveal>
           {subtitle && (
             <Reveal index={2}>
-              <p className="mt-4 text-lg text-muted">{subtitle}</p>
+              <p className="mt-4 text-lg text-legacy-muted">{subtitle}</p>
             </Reveal>
           )}
         </div>

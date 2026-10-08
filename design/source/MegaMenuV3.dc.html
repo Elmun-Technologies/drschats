@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — katalog menyusi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.mc{display:flex;align-items:center;gap:12px;padding:8px 12px;border-radius:14px;font-size:16px;font-weight:500;color:#17191B;text-decoration:none}
+.mc:hover{background:#F1F3F0}
+.mc.on{background:#F1F3F0;font-weight:700}
+.mc img{width:40px;height:40px;object-fit:contain;flex:none}
+.mg a{font-size:15px;line-height:20px;color:#2E3236;text-decoration:none}
+.mg a:hover{color:#000000;text-decoration:underline}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0; position: relative">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<div style="position: relative; height: 760px; background: rgba(23,25,27,.45)">
+<div style="background: #FFFFFF; border-radius: 0 0 28px 28px; box-shadow: 0 16px 40px rgba(23,25,27,.18)">
+<div class="wrap" style="display: grid; grid-template-columns: 300px minmax(0, 1fr) 300px; gap: 32px; padding-top: 24px; padding-bottom: 32px">
+<nav aria-label="Katalog boʻlimlari" style="display: flex; flex-direction: column; gap: 2px; border-right: 1px solid #E4E6E8; padding-right: 20px">
+<a class="mc" href="SaleV3.dc.html" style="color: #C8161D; font-weight: 700"><span style="width: 40px; height: 40px; border-radius: 20px; background: #FDE8E8; display: flex; align-items: center; justify-content: center; font-weight: 700">%</span>Aksiyalar</a>
+<sc-for list="{{cats}}" as="c" hint-placeholder-count="9"><a class="mc {{c.on}}" href="CatalogV3.dc.html"><img src="{{c.img}}" alt="">{{c.t}}<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px; margin-left: auto; color: #8A8F95"><path d="M9 6l6 6-6 6"/></svg></a></sc-for>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; justify-content: space-between; align-items: baseline"><h2 class="h2" style="font-size: 26px">Vitaminlar va minerallar</h2><a class="more" href="CatalogV3.dc.html" style="font-size: 15px">Barcha 13 ta mahsulot<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="mg" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px">
+<sc-for list="{{groups}}" as="g" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 12px"><span style="font-size: 16px; font-weight: 700">{{g.t}}</span><sc-for list="{{g.l}}" as="l" hint-placeholder-count="5"><a href="CatalogV3.dc.html">{{l}}</a></sc-for></div>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px; margin-top: 8px">
+<span style="font-size: 16px; font-weight: 700">Brendlar</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><a class="chip" href="BrandV3.dc.html">Swiss Energy</a><a class="chip" href="BrandV3.dc.html">Dr. Frei</a><a class="chip" href="BrandV3.dc.html">Aminomorin</a></div>
+</div>
+</div>
+<a class="tile" href="ProductV3.dc.html" style="display: flex; flex-direction: column; gap: 8px; padding: 24px; border-radius: 24px; min-height: 420px">
+<span style="font-size: 22px; font-weight: 700">Haftaning taklifi</span>
+<span class="b-sale" style="align-self: flex-start">−11%</span>
+<span style="display: flex; align-items: baseline; gap: 8px"><span style="font-size: 26px; font-weight: 700">79 000 soʻm</span><span style="font-size: 15px; color: #63686E; text-decoration: line-through">89 000</span></span>
+<span style="font-size: 15px; line-height: 21px; color: #2E3236">Dr. Frei Antistress Magniy B6, 20 shipuchi tabletka</span>
+<img src="{{mag}}" alt="" style="width: 200px; height: 200px; object-fit: contain; align-self: center; margin-top: auto">
+</a>
+</div>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":929}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var C = function (t, k, on) { return { t: t, img: GV[k].img, on: on ? "on" : "" }; };
+    return {
+      mag: GV.mag.img,
+      cats: [C("Vitaminlar va minerallar", "neuro", true), C("Immunitet", "immuno"), C("Goʻzallik", "hns"), C("Bolalar uchun", "kids"), C("Homiladorlik", "prenatal"), C("Shipuchi tabletkalar", "vitc"), C("Tibbiy ovqatlanish", "dvan"), C("Teri parvarishi", "peano"), C("Tibbiy jihozlar", "tono")],
+      groups: [
+        { t: "Shakli boʻyicha", l: ["Shipuchi tabletkalar", "Kapsulalar", "Kukunlar"] },
+        { t: "Tarkib boʻyicha", l: ["Multivitaminlar", "Magniy", "Kalsiy va D3", "Vitamin C", "B guruhi vitaminlari", "Kollagen", "Aminokislotalar"] },
+        { t: "Kim uchun", l: ["Ayollar uchun", "Erkaklar uchun", "Bolalar uchun, 7 yoshdan", "Homiladorlik davri", "60 yoshdan keyin"] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

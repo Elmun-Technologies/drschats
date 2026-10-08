@@ -73,13 +73,13 @@ export default async function ContactPage({
           <h1 className="font-display text-4xl font-extrabold tracking-tight sm:text-6xl">{t("title")}</h1>
         </Reveal>
         <Reveal index={1}>
-          <p className="mt-6 text-xl text-muted">{t("subtitle")}</p>
+          <p className="mt-6 text-xl text-legacy-muted">{t("subtitle")}</p>
         </Reveal>
 
         <div className="mt-12 space-y-4">
           {cards.map((card, i) => (
             <Reveal key={i} index={i}>
-              <div className="flex items-center gap-5 rounded-2xl border border-line bg-surface p-6">
+              <div className="flex items-center gap-5 rounded-2xl border border-legacy-line bg-surface p-6">
                 <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-surface-2 text-fg">
                   {card.icon}
                 </span>
@@ -92,7 +92,7 @@ export default async function ContactPage({
                   ) : (
                     <p className="mt-1 text-lg font-semibold text-fg">{card.value}</p>
                   )}
-                  {card.hint && <p className="mt-0.5 text-sm text-muted">{card.hint}</p>}
+                  {card.hint && <p className="mt-0.5 text-sm text-legacy-muted">{card.hint}</p>}
                 </div>
               </div>
             </Reveal>
@@ -114,9 +114,9 @@ export default async function ContactPage({
             </span>
             <div>
               <p className="font-semibold text-fg">{t("telegramTitle")}</p>
-              <p className="mt-0.5 text-sm text-muted">{t("telegramHint")}</p>
+              <p className="mt-0.5 text-sm text-legacy-muted">{t("telegramHint")}</p>
             </div>
-            <svg viewBox="0 0 24 24" className="ml-auto h-5 w-5 shrink-0 text-muted" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <svg viewBox="0 0 24 24" className="ml-auto h-5 w-5 shrink-0 text-legacy-muted" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </a>

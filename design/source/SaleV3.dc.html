@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — aksiyalar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.pr{min-height:240px;padding:28px;display:flex;flex-direction:column;gap:10px;border-radius:28px;text-decoration:none;color:#17191B;position:relative;overflow:hidden;box-sizing:border-box}
+.pr .big{font-size:56px;line-height:56px;font-weight:700;letter-spacing:-.03em}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 40px; padding-top: 20px; padding-bottom: 72px">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Aksiyalar</span></nav>
+<h1 class="h1">Aksiyalar va chegirmalar</h1>
+<p class="lead" style="max-width: 760px">Saytda amalda ishlaydigan chegirmalar — yashirin daraja, ball va keshbek yoʻq. Chegirma savatchada avtomatik qoʻllanadi, promokod kerak emas.</p>
+</div>
+
+<section style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px">
+<a class="pr" href="CatalogV3.dc.html" style="background: #1C1F22; color: #FFFFFF"><span class="big">−10%</span><span style="font-size: 21px; font-weight: 700; margin-top: 8px">Birinchi buyurtma</span><span style="font-size: 15px; line-height: 21px; color: #C9CDD1">Har bir mijoz uchun bir marta. Savatchada avtomatik.</span></a>
+<a class="pr" href="LoyaltyV3.dc.html" style="background: #F1F3F0"><span class="big">−15%</span><span style="font-size: 21px; font-weight: 700; margin-top: 8px">Obuna</span><span style="font-size: 15px; line-height: 21px; color: #2E3236">Bugun −10%, keyingi har bir yetkazishda −15%. Har 30, 45, 60 yoki 90 kunda.</span></a>
+<a class="pr" href="CatalogV3.dc.html" style="background: #FFE58A"><span class="big">2+1</span><span style="font-size: 21px; font-weight: 700; margin-top: 8px">2 oling — 3-si sovgʻa</span><span style="font-size: 15px; line-height: 21px; color: #2E3236">Tanlangan mahsulotlarga. Sovgʻa savatchada avtomatik qoʻshiladi.</span></a>
+<a class="pr" href="DeliveryV3.dc.html" style="background: #F1F3F0"><span class="big" style="font-size: 44px">0 soʻm</span><span style="font-size: 21px; font-weight: 700; margin-top: 8px">Bepul yetkazish</span><span style="font-size: 15px; line-height: 21px; color: #2E3236">300 000 soʻmdan ortiq xaridga — Toshkent va viloyatlar uchun bir xil shart.</span></a>
+</section>
+
+<section style="display: flex; flex-direction: column; gap: 24px">
+<div class="sh"><h2 class="h2">Chegirmadagi mahsulotlar</h2><span style="font-size: 16px; color: #44494E">6 ta mahsulot</span></div>
+<div class="grid6"><sc-for list="{{deals}}" as="p" hint-placeholder-count="6"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+</section>
+
+<section style="display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px">
+<div class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<h2 class="h3" style="font-size: 24px">Bir xil qoidalar</h2>
+<sc-for list="{{rules}}" as="r" hint-placeholder-count="4"><div style="display: flex; gap: 12px; font-size: 16px; line-height: 23px"><svg class="ic" viewBox="0 0 24 24" style="margin-top: 2px"><path d="M5 12l5 5 9-10"/></svg><span>{{r}}</span></div></sc-for>
+</div>
+<a href="https://t.me/govita_uz" style="padding: 32px; border-radius: 20px; background: #1C1F22; color: #FFFFFF; text-decoration: none; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: #A9AEB3">VIP Salomatlik Klubi</span>
+<span style="font-size: 26px; line-height: 32px; font-weight: 700">Yangi aksiyalarni birinchi boʻlib biling</span>
+<span style="font-size: 16px; line-height: 24px; color: #C9CDD1">Telegram-botda klub takliflari, buyurtma holati va qabul eslatmalari. Qoʻshimcha foiz chegirma vaʼda qilinmaydi.</span>
+<span class="btn-w" style="align-self: flex-start; margin-top: auto">Telegram-botni ochish</span>
+</a>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2000}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      deals: gvList(["mag", "multi", "kids", "dvan", "dcho", "dapr"]),
+      rules: ["Bepul yetkazish chegarasi butun saytda bir xil: 300 000 soʻm.", "Yetkazib berish muddati: Toshkent boʻylab 24 soat, viloyatlarga 1–3 kun.", "Chegirmalar qoʻshilmaydi — eng kattasi qoʻllanadi.", "Chizilgan «eski narx» faqat real pasaytirilgan narx uchun koʻrsatiladi."]
+    };
+  }
+}
+</script>
+</body>
+</html>

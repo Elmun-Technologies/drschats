@@ -26,7 +26,7 @@ export default async function LicensesPage({ params }: { params: Promise<{ local
       <JsonLd data={breadcrumbLd([{ name: t("crumb"), url: `${SITE_URL}/${locale}/licenses` }])} />
       <PageHero crumb={t("crumb")} eyebrow={t("eyebrow")} title={t("title")} subtitle={t("subtitle")} />
       <CardGrid items={items} columns={3} withImage={false} />
-      <p className="mx-auto mt-10 max-w-3xl px-6 text-sm leading-relaxed text-muted">{t("note")}</p>
+      <p className="mx-auto mt-10 max-w-3xl px-6 text-sm leading-relaxed text-legacy-muted">{t("note")}</p>
     </div>
   );
 }

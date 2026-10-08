@@ -3,12 +3,19 @@
 import { useId, useState } from "react";
 import type { FaqItem } from "@/lib/shopflow/types";
 
-export function FaqAccordion({ items }: { items: FaqItem[] }) {
+export function FaqAccordion({
+  items,
+  defaultOpen = 0,
+}: {
+  items: FaqItem[];
+  /** Index of the answer shown on load; null starts with all closed. */
+  defaultOpen?: number | null;
+}) {
   const uid = useId();
-  const [open, setOpen] = useState<number | null>(0);
+  const [open, setOpen] = useState<number | null>(defaultOpen);
 
   return (
-    <div className="divide-y divide-line border-y border-line">
+    <div className="divide-y divide-line border-b border-line">
       {items.map((item, i) => {
         const isOpen = open === i;
         const triggerId = `${uid}-faq-trigger-${i}`;
@@ -22,16 +29,16 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
                 aria-expanded={isOpen}
                 aria-controls={panelId}
                 onClick={() => setOpen(isOpen ? null : i)}
-                className="flex w-full items-center justify-between gap-4 py-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal"
+                className="flex min-h-[58px] w-full items-center justify-between gap-3 py-3 text-left text-base font-medium text-ink lg:min-h-16 lg:text-[17px]"
               >
-                <span className="font-medium text-fg">{item.question}</span>
+                <span>{item.question}</span>
                 <svg
                   viewBox="0 0 24 24"
                   aria-hidden
-                  className={`h-5 w-5 shrink-0 text-fg transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
+                  className={`h-5 w-5 shrink-0 transition-transform duration-300 ${isOpen ? "rotate-45" : ""}`}
                   fill="none"
                   stroke="currentColor"
-                  strokeWidth="2"
+                  strokeWidth="1.75"
                 >
                   <path d="M12 5v14M5 12h14" strokeLinecap="round" />
                 </svg>
@@ -49,7 +56,7 @@ export function FaqAccordion({ items }: { items: FaqItem[] }) {
               className="accordion-panel"
             >
               <div>
-                <p className="pb-5 text-muted">{item.answer}</p>
+                <p className="pb-5 text-body text-ink-2">{item.answer}</p>
               </div>
             </div>
           </div>

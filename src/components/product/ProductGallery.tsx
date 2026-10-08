@@ -68,12 +68,12 @@ export function ProductGallery({
             goTo(active - 1);
           }
         }}
-        className="min-w-0 flex-1 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink"
+        className="min-w-0 flex-1 rounded-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-legacy-ink"
       >
         <div className="relative">
           <div
             ref={trackRef}
-            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl border border-line/60 bg-surface-2"
+            className="no-scrollbar flex snap-x snap-mandatory overflow-x-auto overscroll-x-contain rounded-3xl border border-legacy-line/60 bg-surface-2"
           >
             {images.map((img, i) => (
               <div
@@ -95,13 +95,13 @@ export function ProductGallery({
           </div>
 
           {discountPercent > 0 && (
-            <span className="pointer-events-none absolute left-4 top-4 rounded-full border border-line-strong bg-surface-2 px-3.5 py-1.5 text-xs font-extrabold tracking-wider text-brand-deep">
+            <span className="pointer-events-none absolute left-4 top-4 rounded-full border border-legacy-line-strong bg-surface-2 px-3.5 py-1.5 text-xs font-extrabold tracking-wider text-brand-deep">
               −{discountPercent}%
             </span>
           )}
 
           {!inStock && (
-            <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-ink/90 px-3 py-1 text-xs font-semibold text-muted shadow-sm">
+            <span className="pointer-events-none absolute right-3 top-3 rounded-full bg-legacy-ink/90 px-3 py-1 text-xs font-semibold text-legacy-muted shadow-sm">
               {tc("outOfStock")}
             </span>
           )}
@@ -113,7 +113,7 @@ export function ProductGallery({
                 onClick={() => goTo(active - 1)}
                 disabled={active === 0}
                 aria-label={t("previous")}
-                className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-ink/90 text-fg shadow-sm backdrop-blur transition-opacity hover:bg-ink disabled:pointer-events-none disabled:opacity-0 lg:flex"
+                className="absolute left-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-legacy-line bg-legacy-ink/90 text-fg shadow-sm backdrop-blur transition-opacity hover:bg-legacy-ink disabled:pointer-events-none disabled:opacity-0 lg:flex"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d="M15 5l-7 7 7 7" strokeLinecap="round" strokeLinejoin="round" />
@@ -124,14 +124,14 @@ export function ProductGallery({
                 onClick={() => goTo(active + 1)}
                 disabled={active === total - 1}
                 aria-label={t("next")}
-                className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-line bg-ink/90 text-fg shadow-sm backdrop-blur transition-opacity hover:bg-ink disabled:pointer-events-none disabled:opacity-0 lg:flex"
+                className="absolute right-3 top-1/2 hidden h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full border border-legacy-line bg-legacy-ink/90 text-fg shadow-sm backdrop-blur transition-opacity hover:bg-legacy-ink disabled:pointer-events-none disabled:opacity-0 lg:flex"
               >
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
                   <path d="M9 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
 
-              <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-ink/90 px-2.5 py-1 text-xs font-semibold text-muted shadow-sm">
+              <span className="pointer-events-none absolute bottom-3 right-3 rounded-full bg-legacy-ink/90 px-2.5 py-1 text-xs font-semibold text-legacy-muted shadow-sm">
                 {t("counter", { index: active + 1, total })}
               </span>
             </>
@@ -179,7 +179,7 @@ export function ProductGallery({
               aria-current={i === active}
               className={cn(
             "relative h-20 w-16 shrink-0 overflow-hidden rounded-lg border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal",
-                i === active ? "border-accent" : "border-line hover:border-line-strong",
+                i === active ? "border-accent" : "border-legacy-line hover:border-legacy-line-strong",
               )}
             >
               <Image src={img.url} alt="" fill loading="lazy" sizes="64px" className="object-cover" />

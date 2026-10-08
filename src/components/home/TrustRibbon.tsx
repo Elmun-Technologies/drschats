@@ -44,17 +44,17 @@ export function TrustRibbon() {
   ];
 
   return (
-    <div className="border-y border-line bg-surface py-6">
+    <div className="border-y border-legacy-line bg-surface py-6">
       <Container>
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
           {trustItems.map((item, idx) => (
-            <div key={idx} className="flex items-center gap-3.5 rounded-xl border border-line bg-ink p-3.5">
+            <div key={idx} className="flex items-center gap-3.5 rounded-xl border border-legacy-line bg-legacy-ink p-3.5">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-signal-soft">
                 {item.icon}
               </div>
               <div>
                 <p className="font-display text-sm font-bold text-fg">{item.title}</p>
-                <p className="mt-0.5 text-xs leading-snug text-muted">{item.desc}</p>
+                <p className="mt-0.5 text-xs leading-snug text-legacy-muted">{item.desc}</p>
               </div>
             </div>
           ))}

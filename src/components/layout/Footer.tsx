@@ -1,122 +1,239 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
-import { Container } from "@/components/ui/Container";
-import { Logo } from "./Logo";
+import { cn } from "@/lib/utils";
 import { BRAND } from "@/lib/brand";
+import { isApiConfigured } from "@/lib/api/client";
+import { accountAreaAvailable } from "@/lib/config/demo";
+import { ONLINE_PROVIDERS } from "@/lib/config/payments";
 import { isNavigable } from "@/lib/content/nav-sections";
+import type { Category } from "@/lib/shopflow/types";
+import { HEALTH_LINKS, SALE_HREF } from "./nav-links";
+import { ICONS } from "./header-item";
+import { Logo } from "./Logo";
+import { FooterAccordion } from "./FooterAccordion";
 
-export function Footer({ topicPaths = [] }: { topicPaths?: string[] }) {
-  const show = (href: string) => isNavigable(href, topicPaths);
+interface FooterLink {
+  href: string;
+  label: string;
+}
+
+/*
+  Design: FooterV3 (md and up) and FooterMobileV3 (columns as an accordion).
+
+  Payment pills list only providers that can take a payment today
+  (lib/config/payments) plus cash/card on delivery, and the club card goes to
+  the bot when one is configured, the channel otherwise — the same rule the
+  home page's club block follows.
+*/
+export function Footer({
+  categories = [],
+  topicPaths = [],
+}: {
+  categories?: Category[];
+  topicPaths?: string[];
+}) {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
+  const header = useTranslations("header");
   const contact = useTranslations("contact");
   const legal = useTranslations("legal");
-  const experts = useTranslations("experts");
-  const loyalty = useTranslations("loyalty");
-  const ingredients = useTranslations("ingredients_page");
-  const health = useTranslations("health");
   const year = new Date().getFullYear();
 
+  const bot = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.trim().replace(/^@/, "");
+  const clubHref = bot ? `https://t.me/${bot}` : BRAND.social.telegram;
+
+  const columns: { title: string; links: FooterLink[] }[] = [
+    {
+      title: t("catalog"),
+      links: [
+        ...categories.filter((c) => c.productCount).slice(0, 6).map((c) => ({ href: `/products/${c.slug}`, label: c.name })),
+        { href: SALE_HREF, label: nav("topDeals") },
+        { href: "/brands", label: nav("brands") },
+        { href: "/ingredients", label: nav("ingredients") },
+      ],
+    },
+    {
+      title: t("customers"),
+      links: [
+        { href: "/delivery", label: t("delivery") },
+        { href: "/payment", label: t("paymentMethods") },
+        { href: "/guarantee", label: header("guarantee") },
+        { href: "/loyalty", label: header("loyalty") },
+        // The design lists the quiz here; the other health journeys follow it.
+        ...HEALTH_LINKS.filter((l) => isNavigable(l.href, topicPaths)).map((l) => ({ href: l.href, label: nav(l.key) })),
+        ...(accountAreaAvailable(isApiConfigured()) ? [{ href: "/account", label: nav("account") }] : []),
+        { href: "/profile", label: nav("profile") },
+      ],
+    },
+    {
+      title: nav("about"),
+      links: [
+        { href: "/about", label: nav("aboutUs") },
+        { href: "/licenses", label: nav("licenses") },
+        { href: "/blog", label: nav("blog") },
+        { href: "/news", label: nav("news") },
+        { href: "/where-to-buy", label: header("forPharmacies") },
+        { href: "/contact", label: nav("contact") },
+      ],
+    },
+  ];
+
+  const payments = [...ONLINE_PROVIDERS.map((p) => p.label), t("cash")];
+
   return (
-    <footer className="bg-brand-deep pb-[var(--bottom-nav)] text-white/70">
-      <Container className="section-y-tight">
-        <div className="grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-[1.2fr_1fr_1fr_1fr_1fr_1.1fr]">
-          <div>
-            <div className="text-2xl text-white">
-              <Logo className="text-2xl" onDark />
+    <footer className="bg-tile pb-[var(--bottom-nav)] text-ink">
+      {/* pb-16 clears the back-to-top button (0.75rem + 36px above the tab bar),
+          which floats over the right edge where the legal links wrap to. */}
+      <div className="wrap flex flex-col gap-6 pb-16 pt-7 md:gap-10 md:pt-12">
+        <div className="grid gap-6 md:gap-12 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
+          <div className="flex flex-col gap-5">
+            <Link href="/" aria-label={header("homeLabel")} className="self-start">
+              <Logo className="text-[32px] md:text-[40px]" />
+            </Link>
+            <p className="hidden max-w-[340px] text-body text-ink-2 md:block">{t("about")}</p>
+            <div className="flex flex-col gap-1">
+              <a href={`tel:${BRAND.contact.phoneHref}`} className="text-[26px] font-bold leading-8 md:text-[28px] md:leading-[34px]">
+                {BRAND.contact.phone}
+              </a>
+              <span className="text-[15px] text-ink-2">{contact("workHours")}</span>
             </div>
-            <p className="mt-4 max-w-xs text-sm text-white/55">{t("tagline")}</p>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href={BRAND.social.telegram}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-sm bg-ink px-6 text-button font-semibold text-white transition-colors hover:bg-black md:flex-none"
+              >
+                <Icon d={ICONS.telegram} />
+                {t("writeTelegram")}
+              </a>
+              <Link
+                href="/contact"
+                className="hidden h-12 items-center justify-center rounded-sm border-[1.5px] border-line-strong px-[22px] text-button font-semibold transition-colors hover:border-ink md:inline-flex"
+              >
+                {t("allContacts")}
+              </Link>
+            </div>
           </div>
 
-          <FooterCol title={t("shop")}>
-            <FooterLink href="/products">{nav("products")}</FooterLink>
-            <FooterLink href="/where-to-buy">{nav("whereToBuy")}</FooterLink>
-            <FooterLink href="/brands">{nav("brands")}</FooterLink>
-            <FooterLink href="/ingredients">{ingredients("title")}</FooterLink>
-            <FooterLink href="/licenses">{nav("licenses")}</FooterLink>
-          </FooterCol>
-
-          <FooterCol title={health("goal.plural")}>
-            <FooterLink href="/quiz">{nav("quiz")}</FooterLink>
-            {show("/goals") && <FooterLink href="/goals">{nav("goals")}</FooterLink>}
-            {show("/symptoms") && <FooterLink href="/symptoms">{nav("symptoms")}</FooterLink>}
-            <FooterLink href="/programs">{nav("programs")}</FooterLink>
-            {show("/vitamins") && <FooterLink href="/vitamins">{nav("vitamins")}</FooterLink>}
-          </FooterCol>
-
-          <FooterCol title={t("company")}>
-            <FooterLink href="/about">{nav("aboutUs")}</FooterLink>
-            <FooterLink href="/news">{nav("news")}</FooterLink>
-            <FooterLink href="/experts">{experts("badge")}</FooterLink>
-            <FooterLink href="/reviews">{nav("reviews")}</FooterLink>
-            <FooterLink href="/blog">{nav("blog")}</FooterLink>
-            <FooterLink href="/requisites">{nav("requisites")}</FooterLink>
-          </FooterCol>
-
-          <FooterCol title={t("support")}>
-            <FooterLink href="/delivery">{t("delivery")}</FooterLink>
-            <FooterLink href="/payment">{nav("payment")}</FooterLink>
-            <FooterLink href="/guarantee">{nav("guarantee")}</FooterLink>
-            <FooterLink href="/loyalty">{loyalty("title")}</FooterLink>
-            <FooterLink href="/privacy">{t("privacy")}</FooterLink>
-          </FooterCol>
-
-          <div>
-            <h2 className="mb-4 font-display text-xs font-extrabold uppercase tracking-[0.18em] text-white/55">{nav("contact")}</h2>
-            <ul className="space-y-3 text-sm">
-              <li><a href={`tel:${BRAND.contact.phoneHref}`} className="transition-colors hover:text-white">{BRAND.contact.phone}</a></li>
-              <li><a href={`mailto:${BRAND.contact.email}`} className="transition-colors hover:text-white">{BRAND.contact.email}</a></li>
-              <li className="text-white/55">{contact("addressValue")}</li>
-            </ul>
-            <div className="mt-5 flex gap-3">
-              <a href={BRAND.social.telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition-all duration-300 hover:border-white/40 hover:bg-white/10 hover:text-white">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.04 9.608c-.15.675-.546.84-1.107.522l-3.063-2.257-1.478 1.42c-.163.163-.3.3-.617.3l.22-3.118 5.67-5.12c.247-.22-.054-.342-.383-.122L7.04 14.572l-3.007-.94c-.653-.204-.666-.653.137-.966l11.732-4.522c.545-.197 1.02.133.66.104z" />
-                </svg>
-              </a>
-              <a href={BRAND.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition-all duration-300 hover:border-white/40 hover:bg-white/10 hover:text-white">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                </svg>
-              </a>
-              <a href={BRAND.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-white/5 text-white/70 transition-all duration-300 hover:border-white/40 hover:bg-white/10 hover:text-white">
-                <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
-              </a>
-            </div>
+          <div className="grid gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.2fr)]">
+            {/* Mobile: the club card leads, then the columns fold. */}
+            <ClubCard
+              href={clubHref}
+              eyebrow={t("clubEyebrow")}
+              title={t("clubTitle")}
+              text={t("clubText")}
+              cta={t("clubCta")}
+              className="order-first md:order-last"
+            />
+            {columns.map((col) => (
+              <FooterColumn key={col.title} title={col.title} links={col.links} />
+            ))}
           </div>
         </div>
 
-        {/* Law-mandated БАД disclaimer (UZ Law "On Advertising", art. 35) */}
-        <div className="mt-10 rounded-xl border border-white/15 bg-white/5 p-4 text-sm text-white/80">
-          <span className="font-semibold text-white">{legal("notMedicine")}.</span> {legal("footer")}
+        <div className="flex flex-col gap-5 border-line-strong md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-x-10 md:border-t md:pt-7">
+          <div className="flex flex-col gap-2.5 md:flex-row md:flex-wrap md:items-center md:gap-3">
+            <span className="text-[15px] font-semibold md:mr-1">{t("paymentMethods")}</span>
+            <div className="flex flex-wrap gap-2 md:gap-3">
+              {payments.map((p) => (
+                <span key={p} className="inline-flex h-9 items-center rounded-[10px] bg-bg px-3 text-sm font-bold md:h-10 md:px-4 md:text-[15px]">
+                  {p}
+                </span>
+              ))}
+            </div>
+          </div>
+          <div className="flex items-center gap-2.5">
+            <span className="mr-1.5 hidden text-[15px] font-semibold md:inline">{t("social")}</span>
+            <SocialLink href={BRAND.social.telegram} label="Telegram" d={ICONS.telegram} />
+            <SocialLink href={BRAND.social.instagram} label="Instagram" d="M8 4h8a4 4 0 0 1 4 4v8a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8a4 4 0 0 1 4-4zM12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM17 7h.01" />
+            <SocialLink href={BRAND.social.facebook} label="Facebook" d="M14 21v-8h3l.5-3.5H14V7.5c0-1 .4-1.7 1.8-1.7H18V2.7A24 24 0 0 0 15.4 2.5C12.9 2.5 11 4 11 6.9v2.6H8V13h3v8" />
+          </div>
         </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-3 border-t border-white/10 pt-6 text-sm text-white/60">
-          <span>© {year} Go Vita. {t("rights")}</span>
-          <span className="rounded-full border border-white/15 px-3 py-1 text-xs">{t("qualityBadge")}</span>
+        <div className="flex flex-col gap-3 text-[13px] leading-[19px] text-ink-2 md:flex-row md:flex-wrap md:items-start md:justify-between md:gap-x-8 md:text-sm md:leading-5">
+          <p className="max-w-[760px] md:flex-[1_1_520px]">
+            © {year} Go Vita. {t("importer", { name: BRAND.legal.importer })} {legal("footer")}
+          </p>
+          <span className="flex flex-wrap gap-x-5 gap-y-1">
+            <Link href="/offer" className="underline-offset-2 hover:underline">{t("offer")}</Link>
+            <Link href="/privacy" className="underline-offset-2 hover:underline">{t("privacy")}</Link>
+            <Link href="/requisites" className="underline-offset-2 hover:underline">{nav("requisites")}</Link>
+          </span>
         </div>
-      </Container>
+      </div>
     </footer>
   );
 }
 
-function FooterCol({ title, children }: { title: string; children: React.ReactNode }) {
+function FooterColumn({ title, links }: { title: string; links: FooterLink[] }) {
   return (
-    <div>
-      <h2 className="mb-4 font-display text-xs font-extrabold uppercase tracking-[0.18em] text-white/55">{title}</h2>
-      <ul className="space-y-3">{children}</ul>
-    </div>
+    <>
+      <nav aria-label={title} className="hidden flex-col gap-3.5 md:flex">
+        <span className="text-[17px] font-bold">{title}</span>
+        {links.map((l) => (
+          <Link key={l.href} href={l.href} className="text-[15px] leading-5 text-ink-2 hover:text-black hover:underline">
+            {l.label}
+          </Link>
+        ))}
+      </nav>
+      <FooterAccordion title={title} links={links} />
+    </>
   );
 }
 
-function FooterLink({ href, children }: { href: string; children: React.ReactNode }) {
+function ClubCard({
+  href,
+  eyebrow,
+  title,
+  text,
+  cta,
+  className,
+}: {
+  href: string;
+  eyebrow: string;
+  title: string;
+  text: string;
+  cta: string;
+  className?: string;
+}) {
   return (
-    <li>
-      <Link href={href} className="inline-block text-sm text-white/75 transition-colors duration-200 hover:text-white">
-        {children}
-      </Link>
-    </li>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn("flex flex-col gap-2.5 self-start rounded-[20px] bg-ink p-5 text-white md:p-[22px]", className)}
+    >
+      <span className="text-xs font-semibold uppercase tracking-[0.04em] text-on-dark-2 md:text-[13px]">
+        {eyebrow}
+      </span>
+      <span className="text-lg font-bold leading-[23px] md:text-[19px] md:leading-6">{title}</span>
+      <span className="text-sm leading-5 text-on-dark-2">{text}</span>
+      <span className="mt-1 hidden h-11 items-center self-start whitespace-nowrap rounded-[14px] bg-bg px-[18px] text-[15px] font-semibold text-ink md:inline-flex">
+        {cta}
+      </span>
+    </a>
+  );
+}
+
+function SocialLink({ href, label, d }: { href: string; label: string; d: string }) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="flex h-12 w-12 items-center justify-center rounded-full bg-bg transition-colors hover:bg-ink hover:text-white"
+    >
+      <Icon d={d} />
+    </a>
+  );
+}
+
+function Icon({ d }: { d: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+      <path d={d} />
+    </svg>
   );
 }

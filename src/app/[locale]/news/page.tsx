@@ -33,7 +33,7 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: L
         {/* Featured article */}
         {featured && (
           <Reveal>
-            <div className="mb-10 flex flex-col overflow-hidden rounded-3xl border border-line bg-ink sm:flex-row">
+            <div className="mb-10 flex flex-col overflow-hidden rounded-3xl border border-legacy-line bg-legacy-ink sm:flex-row">
               <div className="flex aspect-video shrink-0 items-center justify-center bg-surface-2 sm:aspect-auto sm:w-64">
                 <svg viewBox="0 0 24 24" className="h-16 w-16 text-accent/40" fill="none" stroke="currentColor" strokeWidth="1">
                   <path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z" strokeLinecap="round" strokeLinejoin="round" />
@@ -45,7 +45,7 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: L
                   {featured.meta}
                 </span>
                 <h2 className="font-display text-2xl font-extrabold text-fg">{featured.title}</h2>
-                <p className="mt-3 text-muted">{featured.text}</p>
+                <p className="mt-3 text-legacy-muted">{featured.text}</p>
               </div>
             </div>
           </Reveal>
@@ -56,12 +56,12 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: L
           <div className="grid gap-4 sm:grid-cols-2">
             {rest.map((item, i) => (
               <Reveal key={item.title} index={i}>
-                <div className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6 transition-colors hover:border-line-strong">
+                <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-6 transition-colors hover:border-legacy-line-strong">
                   <span className="mb-3 w-fit rounded-full bg-surface-2 px-2.5 py-1 text-xs font-medium text-faint">
                     {item.meta}
                   </span>
                   <h3 className="font-display text-lg font-bold text-fg">{item.title}</h3>
-                  <p className="mt-2 flex-1 text-sm text-muted">{item.text}</p>
+                  <p className="mt-2 flex-1 text-sm text-legacy-muted">{item.text}</p>
                 </div>
               </Reveal>
             ))}

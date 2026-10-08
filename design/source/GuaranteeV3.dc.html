@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — kafolat va qaytarish</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Kafolat va qaytarish</span></nav>
+<div style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; align-items: start">
+<dc-import name="InfoNavV3" active="guarantee" hint-size="100%,760px"></dc-import>
+<article style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 12px"><h1 class="h1" style="font-size: 40px; line-height: 46px">Kafolat va qaytarish</h1><p class="lead">Sifat hujjatlari va qaytarish shartlari.</p></div>
+<section style="display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; align-items: center; padding: 32px 36px; border-radius: 28px; background: #1C1F22; color: #FFFFFF">
+<span style="display: flex; flex-direction: column"><span style="font-size: 96px; line-height: 92px; font-weight: 700; letter-spacing: -0.04em">14</span><span style="font-size: 17px; color: #C9CDD1">kun ichida qaytarish</span></span>
+<span style="display: flex; flex-direction: column; gap: 8px"><span style="font-size: 24px; line-height: 30px; font-weight: 700">Ochilmagan qadoq — 14 kun ichida qabul qilamiz</span><span style="font-size: 16px; line-height: 24px; color: #C9CDD1">Yaroqlilik muddati va saqlash shartlari buzilmagan boʻlishi kerak. Qaytarilgan mahsulot uchun toʻlovingiz toʻliq qaytariladi.</span></span>
+</section>
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="h3" style="font-size: 24px">Qaytarish tartibi</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="3"><div class="panel" style="padding: 26px; display: flex; flex-direction: column; gap: 12px"><span class="num">{{s.n}}</span><span style="font-size: 17px; line-height: 24px; font-weight: 600">{{s.t}}</span></div></sc-for>
+</div>
+</section>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{points}}" as="p" hint-placeholder-count="3"><div class="card" style="padding: 26px; display: flex; flex-direction: column; gap: 8px"><span style="font-size: 19px; font-weight: 700">{{p.t}}</span><span class="p">{{p.s}}</span></div></sc-for>
+</section>
+<section class="panel" style="padding: 26px 28px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px"><span style="font-size: 18px; font-weight: 700">Tibbiy jihozlar uchun</span><span class="p">Dr. Frei A20 tonometrida 2 yil davomida ishlab chiqaruvchi nuqsonlari bepul taʼmirlanadi.</span></div>
+<a class="btn" href="ContactV3.dc.html">Qaytarish uchun yozish</a>
+</section>
+</article>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      steps: [{ n: "1", t: "Operatorga qoʻngʻiroq qiling yoki Telegram orqali yozing." }, { n: "2", t: "Mahsulotni asl qadoqda kuryerga topshiring." }, { n: "3", t: "Toʻlov 3–10 ish kunida qaytariladi." }],
+      points: [
+        { t: "14 kunlik qaytarish", s: "Ochilmagan qadoqdagi mahsulot 14 kun ichida qabul qilinadi." },
+        { t: "Rasmiy import", s: "Mahsulotlar zavod va import hujjatlari bilan keladi." },
+        { t: "Hujjatlar soʻrov boʻyicha", s: "Zavod va sifat hujjatlari nusxasini soʻrov boʻyicha yuboramiz." }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

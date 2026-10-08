@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — buyurtma qabul qilindi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" cart-count="{{0}}" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 32px; align-items: start; padding-top: 40px; padding-bottom: 72px">
+<div style="display: flex; flex-direction: column; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<span style="width: 72px; height: 72px; border-radius: 36px; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 36px; height: 36px; stroke-width: 2.25"><path d="M5 12l5 5 9-10"/></svg></span>
+<h1 class="h1" style="font-size: 44px; line-height: 50px">Buyurtmangiz qabul qilindi!</h1>
+<p class="lead">Rahmat, Dilnoza. Tez orada operatorimiz siz bilan bogʻlanadi.</p>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 4px">
+<span class="panel" style="padding: 14px 20px; display: flex; flex-direction: column; gap: 2px; border-radius: 16px"><span class="small">Buyurtma raqami</span><span style="font-size: 20px; font-weight: 700">№ GV-10248</span></span>
+<span class="panel" style="padding: 14px 20px; display: flex; flex-direction: column; gap: 2px; border-radius: 16px"><span class="small">Toʻlov</span><span style="font-size: 20px; font-weight: 700">Payme · toʻlandi</span></span>
+<span class="panel" style="padding: 14px 20px; display: flex; flex-direction: column; gap: 2px; border-radius: 16px"><span class="small">Yetkazib berish</span><span style="font-size: 20px; font-weight: 700">Kuryer, 24 soat ichida</span></span>
+</div>
+</div>
+<div class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 4px">
+<h2 class="h3" style="font-size: 24px; margin-bottom: 16px">Keyingi qadamlar</h2>
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="3">
+<div style="display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 16px; padding-bottom: 20px">
+<span style="display: flex; flex-direction: column; align-items: center; gap: 6px"><span class="num" style="{{s.st}}">{{s.n}}</span></span>
+<span style="display: flex; flex-direction: column; gap: 4px; padding-top: 6px"><span style="font-size: 17px; font-weight: 700">{{s.t}}</span><span class="p">{{s.s}}</span></span>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; gap: 10px; flex-wrap: wrap">
+<a class="btn" href="https://t.me/govita_uz" style="height: 56px; padding: 0 28px; font-size: 17px; border-radius: 14px"><svg class="ic" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l12-9"/></svg>Telegram orqali kuzatish</a>
+<a class="btn-o" href="OrderDetailV3.dc.html" style="height: 56px; padding: 0 28px; font-size: 17px; border-radius: 14px">Buyurtma tafsilotlari</a>
+<a class="btn-l" href="CatalogV3.dc.html" style="height: 56px; padding: 0 28px; font-size: 17px; border-radius: 14px; background: transparent">Xaridni davom ettirish</a>
+</div>
+</div>
+<aside class="panel" style="padding: 28px; display: flex; flex-direction: column; gap: 14px">
+<span style="font-size: 20px; font-weight: 700">Buyurtma tarkibi</span>
+<sc-for list="{{items}}" as="it" hint-placeholder-count="2">
+<div style="display: flex; gap: 12px; align-items: center"><span style="width: 64px; height: 64px; border-radius: 14px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{it.img}}" alt="" style="width: 54px; height: 54px; object-fit: contain"></span><span style="flex: 1; font-size: 15px; line-height: 20px">{{it.n}}</span><span style="font-size: 16px; font-weight: 700; white-space: nowrap">{{it.s}}</span></div>
+</sc-for>
+<div style="display: flex; flex-direction: column; gap: 8px; padding-top: 14px; border-top: 1px solid #DCDFDB; font-size: 15px">
+<span style="display: flex; justify-content: space-between"><span style="color: #44494E">Chegirmalar</span><span>−30 000 soʻm</span></span>
+<span style="display: flex; justify-content: space-between"><span style="color: #44494E">Yetkazib berish</span><span>30 000 soʻm</span></span>
+<span style="display: flex; justify-content: space-between; font-size: 22px; font-weight: 700; padding-top: 6px"><span>Jami</span><span>267 000 soʻm</span></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding-top: 14px; border-top: 1px solid #DCDFDB; font-size: 15px; line-height: 21px"><span style="font-weight: 700">Manzil</span><span style="color: #2E3236">Toshkent shahri, Koʻcha, uy, kvartira</span><span style="color: #2E3236">+998 90 123 45 67</span></div>
+</aside>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      steps: [
+        { n: "1", t: "Toʻlov tasdiqlandi", s: "Buyurtma operator navbatiga tushdi.", st: "" },
+        { n: "2", t: "Buyurtma yigʻiladi", s: "24–48 soat ichida yigʻilib, joʻnatishga tayyorlanadi.", st: "background: #E3E6E9; color: #17191B" },
+        { n: "3", t: "Kuryer yetkazib beradi", s: "Kuryer buyurtmani manzilingizga yetkazib beradi.", st: "background: #E3E6E9; color: #17191B" }
+      ],
+      items: [{ img: GV.mag.img, n: "Antistress Magniy B6 × 2", s: "158 000 soʻm" }, { img: GV.multi.img, n: "Multivitamins + Biotin × 1", s: "79 000 soʻm" }]
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -75,16 +75,16 @@ export default async function ReviewsPage({
           <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
             {t("title")}
           </h1>
-          <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
+          <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
 
           {average > 0 && (
-            <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-line bg-surface px-5 py-4">
+            <div className="mt-6 flex flex-wrap items-center gap-4 rounded-2xl border border-legacy-line bg-surface px-5 py-4">
               <span className="font-display text-3xl font-extrabold text-fg">
                 {average.toFixed(1)}
               </span>
               <StarRating rating={average} />
               {totalReviews > 0 && (
-                <span className="text-sm text-muted">{t("basedOn", { count: totalReviews })}</span>
+                <span className="text-sm text-legacy-muted">{t("basedOn", { count: totalReviews })}</span>
               )}
             </div>
           )}
@@ -109,8 +109,8 @@ export default async function ReviewsPage({
           </h2>
 
           {productReviews.length === 0 ? (
-            <div className="mt-6 rounded-2xl border border-line bg-surface p-10 text-center">
-              <p className="text-muted">{t("empty")}</p>
+            <div className="mt-6 rounded-2xl border border-legacy-line bg-surface p-10 text-center">
+              <p className="text-legacy-muted">{t("empty")}</p>
               <Link href="/products" className={`${buttonVariants("secondary")} mt-6`}>
                 {t("browse")}
               </Link>
@@ -119,15 +119,15 @@ export default async function ReviewsPage({
             <ul className="mt-6 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {productReviews.map((review, i) => (
                 <Reveal key={`${review.product.slug}-${review.author}-${i}`} index={Math.min(i, 6)} as="li" className="h-full">
-                  <figure className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6">
+                  <figure className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-6">
                     <div className="flex items-center justify-between gap-3">
                       <StarRating rating={review.rating} />
                       {review.date && <time className="text-xs text-faint">{review.date}</time>}
                     </div>
-                    <blockquote className="mt-4 flex-1 text-muted">
+                    <blockquote className="mt-4 flex-1 text-legacy-muted">
                       &ldquo;{review.text}&rdquo;
                     </blockquote>
-                    <figcaption className="mt-4 border-t border-line pt-3">
+                    <figcaption className="mt-4 border-t border-legacy-line pt-3">
                       <span className="block text-sm font-medium text-fg">{review.author}</span>
                       <Link
                         href={`/product/${review.product.slug}`}
@@ -155,7 +155,7 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
   const embed = story.videoUrl ? toYouTubeEmbed(story.videoUrl) : null;
 
   return (
-    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-line bg-surface">
+    <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-legacy-line bg-surface">
       {embed && (
         <div className="relative aspect-video w-full bg-surface-2">
           <iframe
@@ -170,11 +170,11 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
       )}
 
       {!embed && story.beforeImage && story.afterImage && (
-        <div className="grid grid-cols-2 gap-px bg-line">
+        <div className="grid grid-cols-2 gap-px bg-legacy-line">
           {[story.beforeImage, story.afterImage].map((src, i) => (
             <div key={src} className="relative aspect-square bg-surface-2">
               <Image src={src} alt="" fill sizes="(max-width: 1024px) 50vw, 300px" className="object-cover" />
-              <span className="absolute left-2 top-2 rounded-full bg-ink/90 px-2.5 py-1 text-[11px] font-semibold text-fg">
+              <span className="absolute left-2 top-2 rounded-full bg-legacy-ink/90 px-2.5 py-1 text-[11px] font-semibold text-fg">
                 {i === 0 ? "1" : "2"}
               </span>
             </div>
@@ -187,10 +187,10 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
           {kindLabel}
         </span>
         {story.rating != null && <StarRating rating={story.rating} className="mt-3" />}
-        <blockquote className="mt-3 flex-1 text-muted">&ldquo;{story.quote}&rdquo;</blockquote>
-        <figcaption className="mt-4 border-t border-line pt-3 text-sm font-medium text-fg">
+        <blockquote className="mt-3 flex-1 text-legacy-muted">&ldquo;{story.quote}&rdquo;</blockquote>
+        <figcaption className="mt-4 border-t border-legacy-line pt-3 text-sm font-medium text-fg">
           {story.author}
-          {story.city && <span className="text-muted"> — {story.city}</span>}
+          {story.city && <span className="text-legacy-muted"> — {story.city}</span>}
         </figcaption>
       </div>
     </article>

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — buyurtma qabul qilindi, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+<main style="display: flex; flex-direction: column; gap: 20px; padding: 16px 0 28px">
+<div class="px" style="display: flex; flex-direction: column; gap: 12px">
+<span style="width: 64px; height: 64px; border-radius: 32px; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 32px; height: 32px; stroke-width: 2.25"><path d="M5 12l5 5 9-10"/></svg></span>
+<h1 style="margin: 0; font-size: 30px; line-height: 36px; font-weight: 700">Buyurtmangiz qabul qilindi!</h1>
+<span class="p" style="font-size: 16px">Rahmat, Dilnoza. Tez orada operatorimiz siz bilan bogʻlanadi.</span>
+</div>
+<div class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px">
+<span class="panel" style="padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; border-radius: 16px"><span class="small">Buyurtma raqami</span><span style="font-size: 18px; font-weight: 700">№ GV-10248</span></span>
+<span class="panel" style="padding: 14px 16px; display: flex; flex-direction: column; gap: 2px; border-radius: 16px"><span class="small">Jami</span><span style="font-size: 18px; font-weight: 700">267 000 soʻm</span></span>
+</div>
+<div class="px"><div class="card" style="padding: 20px; display: flex; flex-direction: column; gap: 16px">
+<span style="font-size: 19px; font-weight: 700">Keyingi qadamlar</span>
+<sc-for list="{{steps}}" as="s" hint-placeholder-count="3"><div style="display: flex; gap: 14px"><span class="num" style="width: 32px; height: 32px; font-size: 15px; {{s.st}}">{{s.n}}</span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">{{s.t}}</span><span style="font-size: 14px; line-height: 19px; color: #44494E">{{s.s}}</span></span></div></sc-for>
+</div></div>
+<div class="px" style="display: flex; flex-direction: column; gap: 8px">
+<a class="btn" href="https://t.me/govita_uz" style="height: 52px; border-radius: 14px">Telegram orqali kuzatish</a>
+<a class="btn-l" href="HomeMobileV3.dc.html" style="height: 52px; border-radius: 14px">Xaridni davom ettirish</a>
+</div>
+</main>
+<div style="position: relative; z-index: 5"><dc-import name="TabBarV3" active="cart" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var g = "background: #E3E6E9; color: #17191B";
+    return { steps: [
+      { n: "1", t: "Toʻlov tasdiqlandi", s: "Buyurtma operator navbatiga tushdi.", st: "" },
+      { n: "2", t: "Buyurtma yigʻiladi", s: "24–48 soat ichida joʻnatishga tayyorlanadi.", st: g },
+      { n: "3", t: "Kuryer yetkazib beradi", s: "Buyurtma manzilingizga yetkaziladi.", st: g }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

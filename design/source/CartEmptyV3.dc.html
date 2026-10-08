@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — boʻsh savat</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" cart-count="{{0}}" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 48px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Savat</span></nav>
+<section class="panel" style="padding: 64px 32px; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 14px; border-radius: 32px; margin-top: -24px">
+<span style="width: 96px; height: 96px; border-radius: 48px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 44px; height: 44px; stroke-width: 1.5"><path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2"/></svg></span>
+<h1 class="h1" style="margin-top: 6px">Savatchangiz boʻsh</h1>
+<p class="lead" style="max-width: 520px">Mahsulotlarni koʻrib chiqing va keraklilarini savatga qoʻshing. Birinchi buyurtmaga −10% chegirma savatchada avtomatik qoʻllanadi.</p>
+<div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center"><a class="btn" href="CatalogV3.dc.html" style="height: 56px; padding: 0 32px; font-size: 17px; border-radius: 14px">Doʻkonga oʻtish</a><a class="btn-o" href="QuizV3.dc.html" style="height: 56px; padding: 0 28px; font-size: 17px; border-radius: 14px; background: transparent">Vitamin tanlash testi</a></div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 24px">
+<div class="sh"><h2 class="h2">Koʻp sotib olinadi</h2><a class="more" href="CatalogV3.dc.html">Barchasi<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></div>
+<div class="grid6"><sc-for list="{{hits}}" as="p" hint-placeholder-count="6"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() { return { hits: gvList(["vitc", "immuno", "mag", "hns", "calci", "prenatal"]) }; }
+}
+</script>
+</body>
+</html>

@@ -63,16 +63,16 @@ export function WishlistView({ allProducts }: { allProducts: Product[] }) {
           {t("title")}
         </h1>
         {products.length > 0 && (
-          <p className="mt-2 text-muted">{t("count", { count: products.length })}</p>
+          <p className="mt-2 text-legacy-muted">{t("count", { count: products.length })}</p>
         )}
       </header>
 
       {products.length === 0 ? (
-        <div className="rounded-2xl border border-line bg-surface px-6 py-16 text-center">
-          <p className="text-muted">{t("empty")}</p>
+        <div className="rounded-2xl border border-legacy-line bg-surface px-6 py-16 text-center">
+          <p className="text-legacy-muted">{t("empty")}</p>
           <Link
             href="/products"
-            className="mt-5 inline-flex rounded-full bg-fg px-6 py-3 text-sm font-bold text-ink transition-colors hover:bg-accent-strong hover:text-ink"
+            className="mt-5 inline-flex rounded-full bg-fg px-6 py-3 text-sm font-bold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink"
           >
             {t("emptyCta")}
           </Link>

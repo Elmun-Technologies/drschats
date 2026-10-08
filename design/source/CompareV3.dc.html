@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — taqqoslash</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.cr{display:grid;grid-template-columns:240px repeat(3,minmax(0,1fr));gap:16px;padding:18px 0;border-bottom:1px solid #E4E6E8;font-size:16px;align-items:start}
+.cr span:first-child{color:#63686E}
+.cr.diff{background:#F1F3F0;border-radius:12px;border-bottom-color:transparent;padding-left:12px;padding-right:12px;margin:0 -12px}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Taqqoslash</span></nav>
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-top: -10px">
+<div style="display: flex; align-items: baseline; gap: 14px"><h1 class="h1">Taqqoslash</h1><span style="font-size: 17px; color: #63686E">3 ta mahsulot</span></div>
+<div style="display: flex; gap: 6px; align-items: center"><span style="font-size: 15px; color: #44494E; margin-right: 6px">Koʻrsatish:</span><span class="chip on" style="height: 36px">Hammasi</span><span class="chip" style="height: 36px">Faqat farqlar</span></div>
+</div>
+<div style="display: grid; grid-template-columns: 240px repeat(3, minmax(0, 1fr)); gap: 16px; align-items: start; position: sticky; top: 0; background: #FFFFFF; padding: 12px 0; z-index: 2">
+<div style="display: flex; flex-direction: column; gap: 10px; padding-top: 8px"><span class="small" style="font-size: 14px">Shipuchi tabletkalar</span><button type="button" class="btn-l" style="height: 40px; font-size: 14px; align-self: flex-start">Roʻyxatni tozalash</button></div>
+<sc-for list="{{items}}" as="p" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 10px; position: relative">
+<button type="button" aria-label="Olib tashlash" style="position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; border-radius: 18px; border: 0; background: #FFFFFF; color: #17191B; display: flex; align-items: center; justify-content: center; z-index: 1"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+<a href="ProductV3.dc.html" style="height: 200px; border-radius: 20px; background: #F1F3F0; display: flex; align-items: center; justify-content: center"><img src="{{p.img}}" alt="{{p.name}}" style="width: 170px; height: 170px; object-fit: contain"></a>
+<span style="font-size: 16px; line-height: 21px; min-height: 42px">{{p.name}}</span>
+<div style="display: flex; gap: 8px; align-items: center"><span style="font-size: 22px; font-weight: 700">{{p.priceF}} soʻm</span><span style="font-size: 14px; color: #63686E; text-decoration: line-through">{{p.oldF}}</span></div>
+<button type="button" class="btn" style="width: 100%">Savatga</button>
+</div>
+</sc-for>
+</div>
+<div style="display: flex; flex-direction: column">
+<sc-for list="{{rows}}" as="r" hint-placeholder-count="9"><div class="cr {{r.d}}"><span>{{r.k}}</span><span>{{r.a}}</span><span>{{r.b}}</span><span>{{r.c}}</span></div></sc-for>
+</div>
+<span class="small" style="font-size: 14px">Maʼlumot mahsulot sahifalari va qadoqdagi yozuvga asoslangan. Biologik faol qoʻshimchalar dori vositasi emas.</span>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var R = function (k, a, b, c, d) { return { k: k, a: a, b: b, c: c, d: d ? "diff" : "" }; };
+    return {
+      items: gvList(["mag", "multi", "kids"]),
+      rows: [
+        R("Narx", "79 000 soʻm", "79 000 soʻm", "79 000 soʻm"),
+        R("Birlik narxi", "3 950 soʻm / tabletka", "3 950 soʻm / tabletka", "3 950 soʻm / tabletka"),
+        R("Chegirma", "−11%", "−11%", "−11%"),
+        R("Asosiy tarkib", "Magniy, B6, taurin, vitamin C va K", "Multivitaminlar va biotin", "Bolalar uchun multivitaminlar", true),
+        R("Yosh", "14 yoshdan", "14 yoshdan", "7 yoshdan", true),
+        R("Shakli", "Shipuchi tabletka", "Shipuchi tabletka", "Shipuchi tabletka"),
+        R("Qadoqda", "20 tabletka", "20 tabletka", "20 tabletka"),
+        R("Brend", "Dr. Frei", "Dr. Frei", "Dr. Frei"),
+        R("Ishlab chiqarilgan", "Shveytsariya", "Shveytsariya", "Shveytsariya")
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

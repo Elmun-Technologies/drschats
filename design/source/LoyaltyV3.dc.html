@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — chegirma tizimi va obuna</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Chegirma tizimi</span></nav>
+<div style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; align-items: start">
+<dc-import name="InfoNavV3" active="loyalty" hint-size="100%,760px"></dc-import>
+<article style="display: flex; flex-direction: column; gap: 36px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 12px"><h1 class="h1" style="font-size: 40px; line-height: 46px">Chegirma tizimi</h1><p class="lead">Saytda amalda ishlaydigan uchta chegirma — boshqa yashirin daraja, ball va keshbek yoʻq.</p></div>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{progs}}" as="p" hint-placeholder-count="3">
+<div style="padding: 28px; border-radius: 24px; display: flex; flex-direction: column; gap: 10px; {{p.st}}">
+<span style="font-size: 40px; line-height: 44px; font-weight: 700; letter-spacing: -0.02em">{{p.b}}</span>
+<span style="font-size: 21px; font-weight: 700; margin-top: 6px">{{p.t}}</span>
+<span style="font-size: 15px; line-height: 22px; {{p.ts}}">{{p.s}}</span>
+<span style="font-size: 14px; line-height: 20px; margin-top: auto; padding-top: 10px; {{p.ns}}">{{p.n}}</span>
+</div>
+</sc-for>
+</section>
+<section style="display: flex; flex-direction: column; gap: 16px">
+<h2 class="h3" style="font-size: 24px">Qanday ishlaydi</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{how}}" as="h" hint-placeholder-count="3"><div class="card" style="padding: 26px; display: flex; flex-direction: column; gap: 10px"><span class="num">{{h.n}}</span><span style="font-size: 18px; font-weight: 700">{{h.t}}</span><span class="p">{{h.s}}</span></div></sc-for>
+</div>
+</section>
+<section class="panel" style="padding: 32px; display: flex; flex-direction: column; gap: 14px">
+<h2 class="h3" style="font-size: 24px">Bir xil qoidalar</h2>
+<sc-for list="{{rules}}" as="r" hint-placeholder-count="4"><div style="display: flex; gap: 12px; font-size: 16px; line-height: 23px"><svg class="ic" viewBox="0 0 24 24" style="margin-top: 2px"><path d="M5 12l5 5 9-10"/></svg><span>{{r}}</span></div></sc-for>
+</section>
+<section class="card" style="padding: 28px 32px; display: flex; gap: 16px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 4px; max-width: 640px"><span style="font-size: 19px; font-weight: 700">Dorixonalar va hamkorlar uchun</span><span class="p">Ulgurji narx, hudud va toʻlov muddati alohida shartnomada kelishiladi. Bu sahifadagi chakana chegirmalar bilan aralashmaydi.</span></div>
+<a class="btn-o" href="PartnersV3.dc.html">Hamkorlik boʻyicha yozish</a>
+</section>
+</article>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1900}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var dark = "background: #1C1F22; color: #FFFFFF", light = "background: #F1F3F0";
+    return {
+      progs: [
+        { b: "−10%", t: "Birinchi buyurtma", s: "Birinchi buyurtmangizda 10% chegirma. Har bir mijoz uchun bir marta.", n: "Promokod kerak emas — savatchada avtomatik.", st: dark, ts: "color: #C9CDD1", ns: "color: #A9AEB3" },
+        { b: "−10% → −15%", t: "Obuna (Subscribe & Save)", s: "Bugungi yetkazishda 10% chegirma, keyingi har bir yetkazishda 15%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.", n: "Istalgan vaqtda toʻxtatish, oʻtkazib yuborish yoki bekor qilish mumkin.", st: light, ts: "color: #2E3236", ns: "color: #44494E" },
+        { b: "Bepul", t: "VIP klub (Telegram-bot)", s: "300 000 soʻmdan yuqori buyurtmalarga bepul yetkazish, klub takliflari va qabul eslatmalari.", n: "Qoʻshimcha foiz chegirma vaʼda qilinmaydi.", st: light, ts: "color: #2E3236", ns: "color: #44494E" }
+      ],
+      how: [{ n: "1", t: "Mahsulotni tanlang", s: "Katalogdan kerakli mahsulotni yoki obunani tanlang." }, { n: "2", t: "Buyurtma bering", s: "Onlayn toʻlov bilan buyurtma darhol tasdiqlanadi." }, { n: "3", t: "Chegirma avtomatik", s: "Chegirma savatchada koʻrinadi — promokod kiritish shart emas." }],
+      rules: ["Bepul yetkazish chegarasi butun saytda bir xil: 300 000 soʻm.", "Yetkazib berish muddati: Toshkent boʻylab 24 soat, viloyatlarga 1–3 kun.", "Chegirmalar qoʻshilmaydi — eng kattasi qoʻllanadi.", "Chizilgan «eski narx» faqat real pasaytirilgan narx uchun koʻrsatiladi."]
+    };
+  }
+}
+</script>
+</body>
+</html>

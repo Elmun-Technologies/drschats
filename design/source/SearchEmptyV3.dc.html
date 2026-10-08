@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — qidiruv natija bermadi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 40px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Qidiruv</span></nav>
+<section style="display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 32px; align-items: start; margin-top: -16px">
+<div style="display: flex; flex-direction: column; gap: 16px">
+<h1 class="h1">«omega 3» boʻyicha hech narsa topilmadi</h1>
+<p class="lead">Bu mahsulot hozircha katalogda yoʻq. Soʻzni tekshiring yoki umumiyroq soʻz bilan qidiring.</p>
+<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 8px">
+<span style="font-size: 16px; font-weight: 700">Mashhur soʻrovlar</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap"><sc-for list="{{tags}}" as="t" hint-placeholder-count="6"><a class="chip" href="SearchV3.dc.html">{{t}}</a></sc-for></div>
+</div>
+</div>
+<div class="panel" style="padding: 28px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 20px; font-weight: 700">Mahsulot kelganda xabar beramiz</span>
+<span class="p">Telefon raqamingizni qoldiring — kerakli mahsulot assortimentga qoʻshilsa, operator xabar beradi.</span>
+<div style="display: flex; gap: 8px; margin-top: 4px"><span class="inp" style="flex: 1">+998 90 000 00 00</span><button type="button" class="btn" style="height: 52px">Xabar bering</button></div>
+<a href="https://t.me/govita_uz" style="font-size: 15px; font-weight: 600">Yoki Telegramda yozing</a>
+</div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 24px">
+<h2 class="h2">Balki sizga kerakdir</h2>
+<div class="grid6"><sc-for list="{{rec}}" as="p" hint-placeholder-count="6"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,414px"></dc-import></sc-for></div>
+</section>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() { return { tags: ["Vitamin C", "Magniy B6", "Kalsiy D3", "Biotin", "Kollagen", "Bolalar vitaminlari"], rec: gvList(["immuno", "neuro", "visio", "calci", "vitc", "collagen"]) }; }
+}
+</script>
+</body>
+</html>

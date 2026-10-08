@@ -45,7 +45,7 @@ export function SectionHeading({
           <p
             className={cn(
               "mb-3 text-xs font-semibold uppercase tracking-[0.22em]",
-              dark ? "text-white/60" : "text-muted",
+              dark ? "text-white/60" : "text-legacy-muted",
             )}
           >
             {eyebrow}
@@ -64,7 +64,7 @@ export function SectionHeading({
       </Reveal>
       {subtitle && (
         <Reveal index={2}>
-          <p className={cn("mt-4 text-pretty text-base sm:text-lg", dark ? "text-white/70" : "text-muted")}>
+          <p className={cn("mt-4 text-pretty text-base sm:text-lg", dark ? "text-white/70" : "text-legacy-muted")}>
             {subtitle}
           </p>
         </Reveal>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — shaxsiy kabinet</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 40px; align-items: start; padding-top: 32px; padding-bottom: 72px">
+<dc-import name="AccountNavV3" active="orders" hint-size="100%,520px"></dc-import>
+<div style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 6px"><span style="font-size: 16px; color: #44494E">Xush kelibsiz, Dilnoza</span><h1 class="h1">Shaxsiy kabinet</h1></div>
+
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{sc}}" as="s" hint-placeholder-count="4"><a class="tile" href="{{s.h}}" style="padding: 20px; display: flex; flex-direction: column; gap: 6px; border-radius: 20px; min-height: 140px"><svg class="ic" viewBox="0 0 24 24" style="width: 26px; height: 26px"><path d="{{s.d}}"/></svg><span style="font-size: 17px; font-weight: 700; margin-top: auto">{{s.t}}</span><span style="font-size: 14px; color: #44494E">{{s.s}}</span></a></sc-for>
+</div>
+
+<a class="card" href="ProductV3.dc.html" style="padding: 20px 24px; display: flex; gap: 18px; align-items: center; text-decoration: none; color: #17191B; border-color: #17191B">
+<span style="width: 64px; height: 64px; border-radius: 14px; background: #F1F3F0; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{mag}}" alt="" style="width: 54px; height: 54px; object-fit: contain"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 4px"><span style="font-size: 13px; font-weight: 600; color: #63686E; letter-spacing: .04em; text-transform: uppercase">Eslatma · bugun</span><span style="font-size: 18px; font-weight: 700">Kursingiz tugayapti: «Prenatal Forte»</span></span>
+<span class="btn">Takrorlash</span>
+</a>
+
+<section style="display: flex; flex-direction: column; gap: 16px">
+<div class="sh"><h2 class="h2" style="font-size: 26px">Buyurtmalarim</h2><div style="display: flex; gap: 6px"><span class="chip on" style="height: 36px">Hammasi</span><span class="chip" style="height: 36px">Faol</span><span class="chip" style="height: 36px">Yetkazilgan</span></div></div>
+<sc-for list="{{orders}}" as="o" hint-placeholder-count="3">
+<a class="card" href="OrderDetailV3.dc.html" style="padding: 22px 24px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: center; text-decoration: none; color: #17191B">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; gap: 14px; align-items: center; flex-wrap: wrap"><span style="font-size: 18px; font-weight: 700">№ {{o.n}}</span><span class="small" style="font-size: 14px">{{o.d}}</span><span class="b-soft" style="{{o.st}}">{{o.s}}</span></div>
+<div style="display: flex; gap: 8px"><sc-for list="{{o.imgs}}" as="i" hint-placeholder-count="2"><span style="width: 56px; height: 56px; border-radius: 12px; background: #F1F3F0; display: flex; align-items: center; justify-content: center"><img src="{{i}}" alt="" style="width: 46px; height: 46px; object-fit: contain"></span></sc-for></div>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px"><span style="font-size: 20px; font-weight: 700">{{o.t}}</span><span style="display: inline-flex; gap: 6px; align-items: center; font-size: 15px; font-weight: 600">Batafsil<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M9 6l6 6-6 6"/></svg></span></div>
+</a>
+</sc-for>
+</section>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      mag: GV.prenatal.img,
+      sc: [
+        { t: "Sevimlilar", s: "5 ta mahsulot", h: "FavoritesV3.dc.html", d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" },
+        { t: "Obunalarim", s: "1 ta faol", h: "SubscriptionsV3.dc.html", d: "M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4" },
+        { t: "Sogʻliq testi", s: "Shaxsiy tavsiya oling", h: "QuizV3.dc.html", d: "M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11" },
+        { t: "Profilim", s: "Maqsadlar, oila, eslatmalar", h: "ProfileV3.dc.html", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" }
+      ],
+      orders: [
+        { n: "GV-10248", d: "8 oktabr 2026", s: "Yoʻlda", st: "background: #17191B; color: #FFFFFF", t: "267 000 soʻm", imgs: [GV.mag.img, GV.multi.img] },
+        { n: "GV-09871", d: "14 sentabr 2026", s: "Yetkazildi", st: "", t: "372 950 soʻm", imgs: [GV.immuno.img, GV.vitc.img] },
+        { n: "GV-09310", d: "2 avgust 2026", s: "Yetkazildi", st: "", t: "341 100 soʻm", imgs: [GV.prenatal.img] }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

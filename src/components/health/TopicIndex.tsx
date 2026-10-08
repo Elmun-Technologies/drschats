@@ -85,7 +85,7 @@ export async function TopicIndex({
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
                   href="/quiz"
-                  className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-6 py-3 text-sm font-bold text-brand-deep transition-colors hover:bg-surface-2"
+                  className="inline-flex items-center gap-2 rounded-full border border-legacy-line-strong bg-legacy-ink px-6 py-3 text-sm font-bold text-brand-deep transition-colors hover:bg-surface-2"
                 >
                   {health("topicIndex.takeQuiz")}
                   <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -106,7 +106,7 @@ export async function TopicIndex({
 
       {/* Topics Grid */}
       {topics.length > 0 && (
-        <section className="py-16 sm:py-20 bg-ink border-t border-line/30">
+        <section className="py-16 sm:py-20 bg-legacy-ink border-t border-legacy-line/30">
           <Container>
             <div className="flex items-center justify-between mb-10">
               <div>
@@ -118,7 +118,7 @@ export async function TopicIndex({
               </div>
               <Link
                 href="/quiz"
-                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-line-strong bg-ink px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-deep transition-colors hover:bg-surface-2"
+                className="hidden sm:inline-flex items-center gap-2 rounded-full border border-legacy-line-strong bg-legacy-ink px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-brand-deep transition-colors hover:bg-surface-2"
               >
                 {health("topicIndex.findAI")}
                 <svg viewBox="0 0 20 20" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5">
@@ -132,7 +132,7 @@ export async function TopicIndex({
                 <Reveal key={topic.slug} index={Math.min(i, 6)} as="li" className="h-full">
                   <Link
                     href={`${TOPIC_BASE_PATH[kind]}/${topic.slug}`}
-                    className="group relative flex h-[420px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-[var(--shadow-pop)]"
+                    className="group relative flex h-[420px] flex-col justify-end overflow-hidden rounded-2xl border border-white/10 bg-brand-deep transition-all duration-700 hover:shadow-[var(--shadow-legacy-pop)]"
                   >
                     <div className="absolute inset-0 z-0">
                       <Image

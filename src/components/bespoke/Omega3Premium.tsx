@@ -32,14 +32,14 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
           behind the headline, tinted green, and faded in on scroll. The
           shopper's first impression of the flagship product was a grey box.
         */}
-        <div className="absolute inset-0 -z-10 bg-ink">
+        <div className="absolute inset-0 -z-10 bg-legacy-ink">
           <div className="product-hero" />
         </div>
 
         <motion.div style={{ y: textY }} className="w-full pb-24 pt-10">
           <Container>
             <Reveal>
-              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-line bg-surface-2 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+              <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-legacy-line bg-surface-2 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-legacy-muted">
                 {product.badges[0]}
               </p>
             </Reveal>
@@ -49,20 +49,20 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
               </h1>
             </Reveal>
             <Reveal index={2}>
-              <p className="mt-6 max-w-xl text-lg text-muted">{product.tagline}</p>
+              <p className="mt-6 max-w-xl text-lg text-legacy-muted">{product.tagline}</p>
             </Reveal>
           </Container>
         </motion.div>
       </section>
 
       {/* Giant stat band */}
-      <section className="border-y border-line bg-surface py-20">
+      <section className="border-y border-legacy-line bg-surface py-20">
         <Container>
           <div className="grid gap-10 sm:grid-cols-3">
             {product.highlights.slice(0, 3).map((h, i) => (
               <Reveal key={h} index={i} className="text-center">
                 <div className="font-display text-3xl font-bold text-fg sm:text-4xl">{h.split(" ")[0]}</div>
-                <p className="mt-2 text-sm text-muted">{h.split(" ").slice(1).join(" ")}</p>
+                <p className="mt-2 text-sm text-legacy-muted">{h.split(" ").slice(1).join(" ")}</p>
               </Reveal>
             ))}
           </div>
@@ -99,21 +99,21 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
           <Reveal>
             <h2 className="font-display text-2xl font-extrabold tracking-tight sm:text-4xl">{t("ingredients")}</h2>
           </Reveal>
-          <Reveal index={1} className="mt-8 overflow-hidden rounded-2xl border border-line">
+          <Reveal index={1} className="mt-8 overflow-hidden rounded-2xl border border-legacy-line">
             <table className="w-full text-left text-sm">
-              <thead className="bg-surface-2 text-muted">
+              <thead className="bg-surface-2 text-legacy-muted">
                 <tr>
                   <th className="px-6 py-4 font-medium">{t("ingredientName")}</th>
                   <th className="px-6 py-4 font-medium">{t("ingredientAmount")}</th>
                   <th className="px-6 py-4 font-medium">{t("ingredientDV")}</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-line">
+              <tbody className="divide-y divide-legacy-line">
                 {product.ingredients.map((row) => (
                   <tr key={row.name} className="bg-surface">
                     <td className="px-6 py-4 font-medium text-fg">{row.name}</td>
-                    <td className="px-6 py-4 text-muted">{row.amount}</td>
-                    <td className="px-6 py-4 text-muted">{row.dailyValue ?? "—"}</td>
+                    <td className="px-6 py-4 text-legacy-muted">{row.amount}</td>
+                    <td className="px-6 py-4 text-legacy-muted">{row.dailyValue ?? "—"}</td>
                   </tr>
                 ))}
               </tbody>
@@ -148,9 +148,9 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
             <div className="grid gap-4 md:grid-cols-2">
               {product.reviews.map((r, i) => (
                 <Reveal key={i} index={i}>
-                  <figure className="h-full rounded-2xl border border-line bg-surface p-6">
+                  <figure className="h-full rounded-2xl border border-legacy-line bg-surface p-6">
                     <StarRating rating={r.rating} />
-                    <blockquote className="mt-4 text-muted">“{r.text}”</blockquote>
+                    <blockquote className="mt-4 text-legacy-muted">“{r.text}”</blockquote>
                     <figcaption className="mt-4 text-sm font-medium text-fg">{r.author}</figcaption>
                   </figure>
                 </Reveal>
@@ -165,7 +165,7 @@ export function Omega3Premium({ product, upsells }: BespokeProps) {
 
 function BenefitStory({ product, benefitsLabel }: { product: Product; benefitsLabel: string }) {
   return (
-    <section className="relative border-y border-line bg-surface py-24">
+    <section className="relative border-y border-legacy-line bg-surface py-24">
       <Container>
         <Reveal>
           <h2 className="mb-16 max-w-2xl font-display text-2xl font-extrabold tracking-tight sm:text-4xl">{benefitsLabel}
@@ -179,13 +179,13 @@ function BenefitStory({ product, benefitsLabel }: { product: Product; benefitsLa
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-              className="group grid items-center gap-6 border-t border-line py-10 md:grid-cols-[80px_1fr_1.2fr]"
+              className="group grid items-center gap-6 border-t border-legacy-line py-10 md:grid-cols-[80px_1fr_1.2fr]"
             >
               <span className="font-display text-2xl font-bold text-faint transition-colors group-hover:text-fg">
                 0{i + 1}
               </span>
               <h3 className="font-display text-2xl font-semibold">{b.title}</h3>
-              <p className="text-muted">{b.description}</p>
+              <p className="text-legacy-muted">{b.description}</p>
             </motion.div>
           ))}
         </div>

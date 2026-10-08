@@ -47,7 +47,7 @@ export default async function GuaranteePage({ params }: { params: Promise<{ loca
             </div>
             <p className="font-display text-5xl font-extrabold text-fg">30</p>
             <p className="font-display text-xl font-bold text-fg">{t("badgeLabel")}</p>
-            <p className="max-w-sm text-sm text-muted">{t("badgeDesc")}</p>
+            <p className="max-w-sm text-sm text-legacy-muted">{t("badgeDesc")}</p>
           </div>
         </Reveal>
 
@@ -55,14 +55,14 @@ export default async function GuaranteePage({ params }: { params: Promise<{ loca
         <div className="grid gap-4 sm:grid-cols-3">
           {points.map((p, i) => (
             <Reveal key={p.title} index={i}>
-              <div className="flex h-full flex-col rounded-2xl border border-line bg-surface p-6">
+              <div className="flex h-full flex-col rounded-2xl border border-legacy-line bg-surface p-6">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-surface-2 text-fg">
                   <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d={POINT_ICONS[i] ?? ""} strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </div>
                 <h3 className="font-display text-lg font-bold text-fg">{p.title}</h3>
-                <p className="mt-2 flex-1 text-sm text-muted">{p.text}</p>
+                <p className="mt-2 flex-1 text-sm text-legacy-muted">{p.text}</p>
               </div>
             </Reveal>
           ))}
@@ -70,7 +70,7 @@ export default async function GuaranteePage({ params }: { params: Promise<{ loca
 
         {/* Return steps */}
         <Reveal className="mt-14">
-          <div className="rounded-2xl border border-line bg-ink p-8">
+          <div className="rounded-2xl border border-legacy-line bg-legacy-ink p-8">
             <h2 className="mb-8 font-display text-lg font-bold text-fg">{t("howToReturn")}</h2>
             <div className="relative grid gap-6 sm:grid-cols-3">
               {[t("returnStep1"), t("returnStep2"), t("returnStep3")].map((step, i) => (
@@ -78,7 +78,7 @@ export default async function GuaranteePage({ params }: { params: Promise<{ loca
                   <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-signal text-sm font-bold text-white">
                     {i + 1}
                   </span>
-                  <p className="text-sm text-muted">{step}</p>
+                  <p className="text-sm text-legacy-muted">{step}</p>
                 </div>
               ))}
             </div>

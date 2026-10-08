@@ -2,42 +2,36 @@ import { cn } from "@/lib/utils";
 import type { ButtonHTMLAttributes } from "react";
 
 /*
-  Variants, and the one rule they encode.
+  Buttons (design: kit `.btn`, `.btn-l`, `.btn-o`).
 
-  `primary` and `gold` are the money colours: use them for actions that put
-  something in the cart or complete an order ("Savatga qo'shish", "Sotib
-  olish", "Rasmiylashtirish"). `secondary` and `ghost` are for navigation,
-  filters and links — including "Katalogga o'tish".
-
-  When every button is gold, none of them reads as the one that spends money.
-  `gold` exists for dark backgrounds where `accent` (the antique gold used as a
-  fill on light surfaces) does not carry enough weight.
-
-  `dark` is the graphite button: the primary action of a surface that is not
-  commerce — "Keyingi" in the vitamin quiz, "Katalogni ko'rish". It is the
-  strongest thing on the screen without borrowing the money colour.
+  One primary colour: ink with white text, for the action of a surface —
+  add to cart, checkout, the quiz's "next". `light` is the tile-grey button
+  (the card's "Savatga" before anything is in the cart), `secondary` the
+  outlined one for navigation and second choices, `ghost` a bare text button.
+  `dark` and `gold` are kept as aliases of `primary` so older call sites
+  compile; the design has no gold button.
 */
-type Variant = "primary" | "secondary" | "ghost" | "dark" | "gold";
+type Variant = "primary" | "light" | "secondary" | "ghost" | "dark" | "gold";
 type Size = "sm" | "md" | "lg";
 
 export function buttonVariants(variant: Variant = "primary", size: Size = "md") {
   const base =
-    "inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg font-bold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal focus-visible:ring-offset-2 focus-visible:ring-offset-ink disabled:cursor-not-allowed disabled:opacity-50";
+    "inline-flex cursor-pointer items-center justify-center gap-2 whitespace-nowrap rounded-sm font-semibold transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-2 focus-visible:ring-offset-bg disabled:cursor-not-allowed disabled:opacity-50";
 
+  const ink = "bg-ink text-white hover:bg-black hover:text-white";
   const variants: Record<Variant, string> = {
-    primary:
-      "bg-accent text-brand-deep shadow-[var(--shadow-cta)] hover:bg-accent-strong hover:text-ink",
-    secondary:
-      "border border-line-strong bg-ink text-fg hover:border-fg/30 hover:bg-surface",
-    ghost: "text-fg hover:bg-surface-2",
-    dark: "bg-brand-deep text-white hover:bg-fg/90",
-    gold: "bg-gold text-brand-deep shadow-[var(--shadow-cta)] hover:bg-[#dfbc70]",
+    primary: ink,
+    dark: ink,
+    gold: ink,
+    light: "bg-tile text-ink hover:bg-tile-hover",
+    secondary: "border-[1.5px] border-line-strong bg-bg text-ink hover:border-ink",
+    ghost: "text-ink hover:bg-tile",
   };
 
   const sizes: Record<Size, string> = {
-    sm: "h-9 px-4 text-sm",
-    md: "h-11 px-6 text-sm",
-    lg: "h-14 px-8 text-base",
+    sm: "h-10 px-4 text-[15px]",
+    md: "h-12 px-6 text-base",
+    lg: "h-[52px] px-7 text-[17px]",
   };
 
   return cn(base, variants[variant], sizes[size]);
@@ -48,13 +42,6 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: Size;
 }
 
-export function Button({
-  variant,
-  size,
-  className,
-  ...props
-}: ButtonProps) {
-  return (
-    <button className={cn(buttonVariants(variant, size), className)} {...props} />
-  );
+export function Button({ variant, size, className, ...props }: ButtonProps) {
+  return <button className={cn(buttonVariants(variant, size), className)} {...props} />;
 }

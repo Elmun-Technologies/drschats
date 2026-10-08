@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — vitamin tanlash testi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.qa{display:flex;flex-direction:column;border-radius:24px;overflow:hidden;border:2px solid transparent;background:#F1F3F0;text-decoration:none;color:#17191B;position:relative}
+.qa img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block}
+.qa.on{border-color:#17191B}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 28px; padding-top: 40px; padding-bottom: 80px; max-width: 1080px">
+<div style="display: flex; flex-direction: column; gap: 12px">
+<div style="display: flex; justify-content: space-between; align-items: center"><span style="font-size: 15px; font-weight: 600; color: #44494E">Vitamin tanlash testi</span><span style="font-size: 15px; font-weight: 600">1 / 5</span></div>
+<div style="display: flex; gap: 6px"><span style="flex: 1; height: 6px; border-radius: 3px; background: #17191B"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: #E3E6E9"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: #E3E6E9"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: #E3E6E9"></span><span style="flex: 1; height: 6px; border-radius: 3px; background: #E3E6E9"></span></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<h1 class="h1" style="font-size: 40px; line-height: 46px">Kimga tanlaymiz?</h1>
+<p class="lead">Tanlang — test qolgan savollarni beradi va mos mahsulotlarni koʻrsatadi. Natija tashxis emas, balki mahsulot tanlashga yordam.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{opts}}" as="o" hint-placeholder-count="6">
+<a class="qa {{o.c}}" href="QuizV3.dc.html">
+<img src="{{o.img}}" alt="{{o.alt}}" style="object-position: {{o.pos}}">
+<span style="padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 19px; font-weight: 700">{{o.t}}</span><span style="font-size: 14px; color: #44494E">{{o.s}}</span></span>
+<span style="position: absolute; top: 14px; right: 14px; width: 32px; height: 32px; border-radius: 16px; background: {{o.bg}}; border: 2px solid #FFFFFF; box-sizing: border-box; display: flex; align-items: center; justify-content: center; color: #FFFFFF"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px; stroke-width: 3"><path d="{{o.ck}}"/></svg></span>
+</a>
+</sc-for>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px">
+<button type="button" class="btn-l" style="background: transparent"><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M15 6l-6 6 6 6"/></svg>Orqaga</button>
+<div style="display: flex; gap: 8px"><button type="button" class="btn-l">Oʻtkazib yuborish</button><a class="btn" href="QuizResultV3.dc.html" style="padding: 0 32px">Keyingi</a></div>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1700}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    var O = function (t, s, img, alt, pos, on) { return { t: t, s: s, img: img, alt: alt, pos: pos, c: on ? "on" : "", bg: on ? "#17191B" : "rgba(23,25,27,.25)", ck: on ? "M5 12l5 5 9-10" : "" }; };
+    return {
+      opts: [
+        O("Oʻzim uchun — ayol", "Kundalik vitamin va minerallar", PH.woman, "Ayol uyda", "center 30%", true),
+        O("Oʻzim uchun — erkak", "Energiya va tiklanish uchun komplekslar", PH.man, "Erkak oshxonada", "70% center"),
+        O("Farzandim uchun", "Bolalar multivitaminlari", PH.child, "Bola nonushta qilmoqda", "center"),
+        O("Homiladorlik davri", "Homiladorlik davri uchun komplekslar", PH.preg, "Homilador ayol", "60% center"),
+        O("Ota-onam uchun", "60+ uchun vitamin va minerallar", PH.senior, "Keksa juftlik", "center"),
+        O("Kasallikdan keyin", "Tiklanish davri uchun ovqatlanish", PH.recovery, "Ayol pled oʻranib dam olmoqda", "center")
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

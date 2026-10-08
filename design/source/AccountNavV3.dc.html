@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Kabinet menyusi</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}
+.an{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:12px;font-size:16px;color:#17191B;text-decoration:none}
+.an:hover{background:#F1F3F0}
+</style>
+</helmet>
+<nav aria-label="Kabinet" style="width: 100%; display: flex; flex-direction: column; gap: 4px; font-family: Onest, 'Segoe UI', Arial, sans-serif; color: #17191B">
+<div style="display: flex; gap: 14px; align-items: center; padding: 6px 4px 18px">
+<span style="width: 56px; height: 56px; border-radius: 28px; background: #17191B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 700">D</span>
+<span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 18px; font-weight: 700">Dilnoza Karimova</span><span style="font-size: 14px; color: #44494E">+998 90 123 45 67</span></span>
+</div>
+<sc-for list="{{items}}" as="i" hint-placeholder-count="7">
+<a class="an" href="{{i.h}}" style="{{i.st}}"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; flex: none"><path d="{{i.d}}"/></svg>{{i.t}}<span style="margin-left: auto; font-size: 14px; color: #63686E">{{i.n}}</span></a>
+</sc-for>
+<a class="an" href="LoginV3.dc.html" style="color: #44494E; margin-top: 8px; border-top: 1px solid #E4E6E8; border-radius: 0; padding-top: 18px"><svg viewBox="0 0 24 24" style="width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round"><path d="M15 4h4v16h-4M10 8l-4 4 4 4M6 12h10"/></svg>Chiqish</a>
+</nav>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"active":{"editor":"enum","options":["orders","subs","fav","profile","quiz"],"default":"orders"},"$preview":{"width":280,"height":520}}'>
+class Component extends DCLogic {
+  renderVals() {
+    var a = this.props.active ?? "orders";
+    var defs = [
+      { id: "orders", t: "Buyurtmalarim", h: "AccountV3.dc.html", n: "3", d: "M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" },
+      { id: "subs", t: "Obunalarim", h: "SubscriptionsV3.dc.html", n: "1", d: "M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4" },
+      { id: "fav", t: "Sevimlilar", h: "FavoritesV3.dc.html", n: "5", d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" },
+      { id: "quiz", t: "Sogʻliq testi", h: "QuizV3.dc.html", n: "", d: "M9 11l3 3 8-8M20 12v7a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h11" },
+      { id: "profile", t: "Profilim", h: "ProfileV3.dc.html", n: "", d: "M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" }
+    ];
+    return { items: defs.map(function (x) { return { t: x.t, h: x.h, n: x.n, d: x.d, st: x.id === a ? "background: #F1F3F0; font-weight: 700" : "" }; }) };
+  }
+}
+</script>
+</body>
+</html>

@@ -21,7 +21,7 @@ export async function DoctorVideo({ slug, locale }: { slug: string; locale: Loca
   const t = await getTranslations("product");
 
   return (
-    <figure className="overflow-hidden rounded-2xl border border-line bg-surface">
+    <figure className="overflow-hidden rounded-2xl border border-legacy-line bg-surface">
       <video
         className="aspect-video w-full bg-surface-2 object-cover"
         controls
@@ -31,13 +31,13 @@ export async function DoctorVideo({ slug, locale }: { slug: string; locale: Loca
       >
         <source src={video.videoSrc} type="video/mp4" />
       </video>
-      <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-line px-5 py-4">
+      <figcaption className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-legacy-line px-5 py-4">
         {/* The trust colour: a named specialist explaining the product is a
             claim about the product, so it wears the colour reserved for the
             things the shop can stand behind. */}
         <span className="font-display text-sm font-bold text-fg">{video.doctorName}</span>
         <span className="text-xs font-semibold uppercase tracking-wide text-signal">{t("reviewedBy")}</span>
-        <p className="w-full text-sm text-muted">{video.caption[locale]}</p>
+        <p className="w-full text-sm text-legacy-muted">{video.caption[locale]}</p>
       </figcaption>
     </figure>
   );

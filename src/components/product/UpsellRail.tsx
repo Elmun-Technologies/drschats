@@ -23,7 +23,7 @@ export function UpsellRail({ offers }: { offers: UpsellOffer[] }) {
         {offers.map(({ product, discountPercent, reason }) => {
           const discounted = Math.round(product.price * (1 - discountPercent / 100));
           return (
-            <div key={product.id} className="flex gap-4 rounded-xl border border-line bg-surface p-4">
+            <div key={product.id} className="flex gap-4 rounded-xl border border-legacy-line bg-surface p-4">
               <div className="relative h-24 w-20 shrink-0 overflow-hidden rounded-lg bg-surface-2">
                 <Image src={product.images[0]?.url ?? ""} alt={product.name} fill sizes="80px" className="object-cover" />
               </div>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="uz"><head><style>
+    .sc-placeholder{background:color-mix(in srgb,currentColor 8%,transparent);
+      border:1px solid color-mix(in srgb,currentColor 50%,transparent);
+      border-radius:2px;box-sizing:border-box;overflow:hidden}
+    @keyframes sc-shine{0%{background-position:100% 50%}100%{background-position:0% 50%}}
+    html.sc-dc-streaming .sc-placeholder,
+    html.sc-dc-streaming .sc-interp.sc-missing{position:relative;
+      background:color-mix(in srgb,currentColor 5%,transparent);
+      border-color:transparent}
+    html.sc-dc-streaming .sc-placeholder::before,
+    html.sc-dc-streaming .sc-interp.sc-missing::before{content:'';
+      position:absolute;inset:0;pointer-events:none;
+      background:linear-gradient(90deg,rgba(217,119,87,0) 25%,rgba(247,225,211,.95) 37%,rgba(217,119,87,0) 63%);
+      background-size:400% 100%;animation:sc-shine 1.4s ease infinite}
+    html.sc-dc-streaming .sc-placeholder:nth-child(n+9 of .sc-placeholder)::before,
+    html.sc-dc-streaming .sc-interp.sc-missing:nth-child(n+9 of .sc-interp.sc-missing)::before{animation:none;
+      background:color-mix(in srgb,currentColor 8%,transparent)}
+    .sc-placeholder-error{padding:4px 8px;font:11px/1.4 ui-monospace,monospace;
+      color:color-mix(in srgb,currentColor 70%,transparent);word-break:break-word}
+    .sc-interp.sc-missing{display:inline-block;width:2em;height:1em;overflow:hidden;
+      vertical-align:text-bottom;background:rgba(255,255,255,.3);border:1px solid rgba(0,0,0,.5);
+      border-radius:2px;box-sizing:border-box;color:transparent;
+      user-select:none}
+    .sc-interp.sc-unresolved{font-family:ui-monospace,monospace;font-size:.85em;
+      color:color-mix(in srgb,currentColor 50%,transparent);
+      background:color-mix(in srgb,currentColor 10%,transparent);border-radius:3px;
+      padding:0 3px}
+    .sc-host.sc-has-error{position:relative}
+    .sc-logic-error{position:absolute;top:8px;left:8px;z-index:2147483647;max-width:60ch;
+      padding:6px 10px;background:#b00020;color:#fff;font:12px/1.4 ui-monospace,monospace;
+      border-radius:4px;white-space:pre-wrap;pointer-events:none}
+    /* Mirrors PRINT_BASELINE_CSS in apps/web deck-stage-export.ts — keep both
+       in sync until dc-runtime regains a build step. */
+    @media print {
+      @page { margin: 0.5cm; }
+      figure, table { break-inside: avoid; }
+      #dc-root, #dc-root > .sc-host { height: auto; }
+      *, *::before, *::after {
+        print-color-adjust: exact; -webkit-print-color-adjust: exact;
+        backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+        animation-delay: -99s !important; animation-duration: .001s !important;
+        animation-iteration-count: 1 !important; animation-fill-mode: both !important;
+        animation-play-state: running !important; transition-duration: 0s !important;
+      }
+    }
+  </style>
+<meta charset="utf-8">
+<title>Maʼlumot menyusi</title>
+<style>x-dc{display:none!important}</style>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&amp;display=swap"><style>
+body{margin:0}
+.in{display:block;padding:11px 14px;border-radius:12px;font-size:16px;color:#17191B;text-decoration:none}
+.in:hover{background:#F1F3F0}
+</style></head>
+<body>
+<div id="dc-root"><div class="sc-host" data-sc-name="InfoNavV3"><nav aria-label="Maʼlumot sahifalari" style="width: 100%; display: flex; flex-direction: column; gap: 22px; font-family: Onest, &quot;Segoe UI&quot;, Arial, sans-serif; color: rgb(23, 25, 27);"><div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600; color: rgb(99, 104, 110); letter-spacing: 0.05em; text-transform: uppercase; padding: 0px 14px 8px;"><span class="sc-interp">Xaridorlarga</span></span><a class="in" href="DeliveryV3.html" style="background: rgb(241, 243, 240); font-weight: 700;"><span class="sc-interp">Yetkazib berish</span></a><a class="in" href="PaymentV3.html" style=""><span class="sc-interp">Toʻlov usullari</span></a><a class="in" href="GuaranteeV3.html" style=""><span class="sc-interp">Kafolat va qaytarish</span></a><a class="in" href="LoyaltyV3.html" style=""><span class="sc-interp">Chegirma tizimi va obuna</span></a></div><div style="display: flex; flex-direction: column; gap: 2px;"><span style="font-size: 13px; font-weight: 600; color: rgb(99, 104, 110); letter-spacing: 0.05em; text-transform: uppercase; padding: 0px 14px 8px;"><span class="sc-interp">Kompaniya</span></span><a class="in" href="AboutV3.html" style=""><span class="sc-interp">Biz haqimizda</span></a><a class="in" href="LicensesV3.html" style=""><span class="sc-interp">Litsenziya va sertifikatlar</span></a><a class="in" href="PartnersV3.html" style=""><span class="sc-interp">Dorixonalar va hamkorlar</span></a><a class="in" href="BlogV3.html" style=""><span class="sc-interp">Sogʻliq blogi va yangiliklar</span></a><a class="in" href="ContactV3.html" style=""><span class="sc-interp">Aloqa</span></a></div><a href="https://t.me/govita_uz" style="display: flex; flex-direction: column; gap: 6px; padding: 18px; border-radius: 18px; background: rgb(28, 31, 34); color: rgb(255, 255, 255); text-decoration: none;"><span style="font-size: 16px; font-weight: 700;">Savolingiz bormi?</span><span style="font-size: 14px; line-height: 20px; color: rgb(201, 205, 209);">Operator Telegram yoki telefon orqali javob beradi.</span><span style="font-size: 18px; font-weight: 700; margin-top: 4px;">+998 71 200 70 80</span></a></nav></div></div>
+
+
+
+</body></html>

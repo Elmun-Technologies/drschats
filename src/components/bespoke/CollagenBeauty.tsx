@@ -19,7 +19,7 @@ export function CollagenBeauty({ product, upsells }: BespokeProps) {
         <div className="relative z-10 py-32">
           <Container>
             <Reveal>
-              <p className="mb-5 inline-flex rounded-full border border-line bg-surface-2 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-muted">
+              <p className="mb-5 inline-flex rounded-full border border-legacy-line bg-surface-2 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-legacy-muted">
                 {product.badges[0]}
               </p>
             </Reveal>
@@ -29,7 +29,7 @@ export function CollagenBeauty({ product, upsells }: BespokeProps) {
               </h1>
             </Reveal>
             <Reveal index={2}>
-              <p className="mt-6 max-w-md text-lg text-muted">{product.tagline}</p>
+              <p className="mt-6 max-w-md text-lg text-legacy-muted">{product.tagline}</p>
             </Reveal>
           </Container>
         </div>
@@ -47,7 +47,7 @@ export function CollagenBeauty({ product, upsells }: BespokeProps) {
       </section>
 
       {/* Benefits — soft glass cards */}
-      <section className="border-t border-line section-y">
+      <section className="border-t border-legacy-line section-y">
         <Container>
           <Reveal>
             <h2 className="mb-10 max-w-2xl font-display text-2xl font-extrabold tracking-tight sm:text-4xl">{t("benefits")}</h2>
@@ -55,9 +55,9 @@ export function CollagenBeauty({ product, upsells }: BespokeProps) {
           <div className="grid gap-5 md:grid-cols-2">
             {product.benefits.map((b, i) => (
               <Reveal key={b.title} index={i}>
-                <div className="relative h-full overflow-hidden rounded-2xl border border-line bg-surface p-8">
+                <div className="relative h-full overflow-hidden rounded-2xl border border-legacy-line bg-surface p-8">
                   <h3 className="font-display text-lg font-bold">{b.title}</h3>
-                  <p className="mt-3 text-muted">{b.description}</p>
+                  <p className="mt-3 text-legacy-muted">{b.description}</p>
                 </div>
               </Reveal>
             ))}

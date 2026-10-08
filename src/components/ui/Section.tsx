@@ -41,7 +41,7 @@ export function Section({
   "aria-labelledby"?: string;
 }) {
   const tones = {
-    ink: "bg-ink text-fg",
+    ink: "bg-legacy-ink text-fg",
     surface: "bg-surface text-fg",
     deep: "bg-brand-deep text-white",
     none: "",
@@ -56,7 +56,7 @@ export function Section({
       className={cn(
         size === "tight" ? "section-y-tight" : "section-y",
         tones,
-        showBorder && "border-t border-line",
+        showBorder && "border-t border-legacy-line",
         className,
       )}
     >

@@ -69,16 +69,16 @@ export function ConsultationModal({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-line bg-surface p-6 sm:p-8 shadow-[var(--shadow-pop)]">
+          <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-legacy-line bg-surface p-6 sm:p-8 shadow-[var(--shadow-legacy-pop)]">
             <button
               type="button"
               onClick={handleClose}
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-surface-2 text-muted hover:text-fg"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-surface-2 text-legacy-muted hover:text-fg"
             >
               ✕
             </button>
 
-            <div className="flex items-center gap-4 border-b border-line pb-5">
+            <div className="flex items-center gap-4 border-b border-legacy-line pb-5">
               <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-full border-2 border-signal">
                 <Image src={expert.image} alt={expert.name} fill className="object-cover" />
               </div>
@@ -87,7 +87,7 @@ export function ConsultationModal({
                   {t("consultModalTitle")}
                 </span>
                 <h3 className="font-display text-lg font-bold">{expert.name}</h3>
-                <p className="text-xs text-muted truncate">{expert.title}</p>
+                <p className="text-xs text-legacy-muted truncate">{expert.title}</p>
               </div>
             </div>
 
@@ -99,7 +99,7 @@ export function ConsultationModal({
                   </svg>
                 </div>
                 <h4 className="font-display text-lg font-bold">{t("successTitle")}</h4>
-                <p className="mt-2 text-sm text-muted leading-relaxed">{t("successMsg")}</p>
+                <p className="mt-2 text-sm text-legacy-muted leading-relaxed">{t("successMsg")}</p>
                 <div className="mt-6 flex flex-col gap-3">
                   <a
                     href={BRAND.social.telegram}
@@ -119,7 +119,7 @@ export function ConsultationModal({
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-                <p className="text-xs text-muted">{t("consultModalSub")}</p>
+                <p className="text-xs text-legacy-muted">{t("consultModalSub")}</p>
 
                 {/* Method selector */}
                 <div className="grid grid-cols-2 gap-3">
@@ -130,7 +130,7 @@ export function ConsultationModal({
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "telegram"
                         ? "border-signal bg-signal-soft text-signal"
-                        : "border-line bg-surface-2 text-muted",
+                        : "border-legacy-line bg-surface-2 text-legacy-muted",
                     )}
                   >
                     <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@ export function ConsultationModal({
                       "flex items-center justify-center gap-2 rounded-xl border p-3 text-xs font-bold transition-all",
                       method === "phone"
                         ? "border-signal bg-signal-soft text-signal"
-                        : "border-line bg-surface-2 text-muted",
+                        : "border-legacy-line bg-surface-2 text-legacy-muted",
                     )}
                   >
                     <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
@@ -163,7 +163,7 @@ export function ConsultationModal({
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t("namePlaceholder")}
-                    className="w-full rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
+                    className="w-full rounded-xl border border-legacy-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
                   />
                 </div>
 
@@ -175,7 +175,7 @@ export function ConsultationModal({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder={t("phonePlaceholder")}
-                    className="w-full rounded-xl border border-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
+                    className="w-full rounded-xl border border-legacy-line bg-surface-2 px-4 py-2.5 text-sm font-medium focus:border-signal focus:outline-none focus-visible:ring-2 focus-visible:ring-signal/40"
                   />
                 </div>
 

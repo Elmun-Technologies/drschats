@@ -86,7 +86,7 @@ export function PersonalizedRail({ allProducts, excludeSlugs = [] }: Props) {
         <Reveal className="mb-10">
           <p className="text-xs font-semibold uppercase tracking-widest text-fg">{t("eyebrow")}</p>
           <h2 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("title")}</h2>
-          <p className="mt-2 text-muted">{stated ? t("subtitleStated") : t("subtitle")}</p>
+          <p className="mt-2 text-legacy-muted">{stated ? t("subtitleStated") : t("subtitle")}</p>
         </Reveal>
 
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
@@ -98,7 +98,7 @@ export function PersonalizedRail({ allProducts, excludeSlugs = [] }: Props) {
                 <ProductCard product={entry.product} index={i} />
               </div>
               {entry.reasons.length > 0 && (
-                <p className="px-1 text-xs leading-snug text-muted">
+                <p className="px-1 text-xs leading-snug text-legacy-muted">
                   <span className="font-semibold text-fg">{t("because")}</span>{" "}
                   {entry.reasons.join(" · ")}
                 </p>

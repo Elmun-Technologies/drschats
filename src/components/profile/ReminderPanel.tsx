@@ -38,10 +38,10 @@ export function ReminderPanel() {
     <section aria-labelledby="profile-reminders">
       <h2 id="profile-reminders" className="font-display text-lg font-bold tracking-tight">{t("title")}
       </h2>
-      <p className="mt-1 text-sm text-muted">{t("description")}</p>
+      <p className="mt-1 text-sm text-legacy-muted">{t("description")}</p>
 
       {reminders.length === 0 ? (
-        <p className="mt-4 rounded-2xl border border-dashed border-line px-4 py-5 text-sm text-muted">
+        <p className="mt-4 rounded-2xl border border-dashed border-legacy-line px-4 py-5 text-sm text-legacy-muted">
           {t("empty")}
         </p>
       ) : (
@@ -49,9 +49,9 @@ export function ReminderPanel() {
           {reminders.map((reminder) => (
             <li
               key={reminder.id}
-              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-line bg-surface px-4 py-3"
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-2xl border border-legacy-line bg-surface px-4 py-3"
             >
-              <span className="rounded-full border border-line bg-surface-2 px-3 py-1 text-xs font-bold text-muted">
+              <span className="rounded-full border border-legacy-line bg-surface-2 px-3 py-1 text-xs font-bold text-legacy-muted">
                 {reminder.daysUntil === 0 ? t("today") : t("inDays", { days: reminder.daysUntil })}
               </span>
               <span className="text-sm text-fg">{describe(reminder, t)}</span>

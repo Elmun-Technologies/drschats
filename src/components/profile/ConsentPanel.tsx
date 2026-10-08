@@ -49,10 +49,10 @@ export function ConsentPanel() {
     <section aria-labelledby="profile-consent">
       <h2 id="profile-consent" className="font-display text-lg font-bold tracking-tight">{t("title")}
       </h2>
-      <p className="mt-1 text-sm text-muted">{t("description")}</p>
+      <p className="mt-1 text-sm text-legacy-muted">{t("description")}</p>
 
       <div className="mt-4 flex flex-col gap-3">
-        <label className="flex items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-4">
+        <label className="flex items-start gap-3 rounded-2xl border border-legacy-line bg-surface px-4 py-4">
           <input
             type="checkbox"
             checked={profile.consents.email}
@@ -61,12 +61,12 @@ export function ConsentPanel() {
           />
           <span>
             <span className="block font-semibold text-fg">{t("email")}</span>
-            <span className="mt-0.5 block text-sm text-muted">{t("emailNote")}</span>
+            <span className="mt-0.5 block text-sm text-legacy-muted">{t("emailNote")}</span>
             {profile.consents.email && !profile.email && (
               <span className="mt-2 block text-sm font-medium text-danger">{t("emailMissing")}</span>
             )}
             <span aria-live="polite" className="mt-2 block text-sm">
-              {emailState === "sending" && <span className="text-muted">{t("emailSending")}</span>}
+              {emailState === "sending" && <span className="text-legacy-muted">{t("emailSending")}</span>}
               {emailState === "sent" && (
                 <span className="font-medium text-fg">
                   {t("emailSent", { email: profile.email ?? "" })}
@@ -78,7 +78,7 @@ export function ConsentPanel() {
         </label>
 
         {telegramUrl && (
-          <label className="flex items-start gap-3 rounded-2xl border border-line bg-surface px-4 py-4">
+          <label className="flex items-start gap-3 rounded-2xl border border-legacy-line bg-surface px-4 py-4">
             <input
               type="checkbox"
               checked={profile.consents.telegram}
@@ -90,7 +90,7 @@ export function ConsentPanel() {
             />
             <span>
               <span className="block font-semibold text-fg">{t("telegram")}</span>
-              <span className="mt-0.5 block text-sm text-muted">{t("telegramNote")}</span>
+              <span className="mt-0.5 block text-sm text-legacy-muted">{t("telegramNote")}</span>
               {profile.consents.telegram && (
                 <a
                   href={telegramUrl}

@@ -63,7 +63,7 @@ export default async function QuizPage({
           <h1 className="mt-4 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
             {t("title")}
           </h1>
-          <p className="mt-4 text-lg text-muted">{t("subtitle")}</p>
+          <p className="mt-4 text-lg text-legacy-muted">{t("subtitle")}</p>
         </header>
 
         <div className="mt-10 sm:mt-12">

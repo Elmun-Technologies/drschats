@@ -58,10 +58,10 @@ export default async function SuccessPage({
           <SuccessCheckmark />
 
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">{t("title")}</h1>
-          <p className="mt-4 max-w-sm text-lg text-muted">{t("subtitle")}</p>
+          <p className="mt-4 max-w-sm text-lg text-legacy-muted">{t("subtitle")}</p>
 
           {shortOrder && (
-            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-line bg-surface px-6 py-4">
+            <div className="mt-6 flex items-center gap-3 rounded-2xl border border-legacy-line bg-surface px-6 py-4">
               <div className="text-left">
                 <p className="text-xs text-faint">{t("orderId")}</p>
                 <p className="mt-0.5 font-mono text-xl font-bold tracking-widest text-fg">#{shortOrder}</p>
@@ -73,14 +73,14 @@ export default async function SuccessPage({
             <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-faint">{t("whatsNext")}</p>
             <div className="grid gap-3 text-left sm:grid-cols-3">
               {steps.map((s, i) => (
-                <div key={s.key} className="relative rounded-2xl border border-line bg-surface p-5">
+                <div key={s.key} className="relative rounded-2xl border border-legacy-line bg-surface p-5">
                   <div className="mb-3 flex items-center gap-3">
                     <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-surface-2 text-fg">
                       {s.icon}
                     </span>
                     <span className="text-xs font-bold text-faint">{t("stepLabel", { n: i + 1 })}</span>
                   </div>
-                  <p className="text-sm leading-relaxed text-muted">{t(s.key as "step1")}</p>
+                  <p className="text-sm leading-relaxed text-legacy-muted">{t(s.key as "step1")}</p>
                 </div>
               ))}
             </div>
@@ -100,7 +100,7 @@ export default async function SuccessPage({
             </span>
             <div className="min-w-0 flex-1">
               <p className="font-semibold text-fg">{t("trackBot")}</p>
-              <p className="mt-0.5 text-sm text-muted">{t("trackBotDesc")}</p>
+              <p className="mt-0.5 text-sm text-legacy-muted">{t("trackBotDesc")}</p>
             </div>
             <span className="flex-shrink-0 text-[#229ED9]">
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">

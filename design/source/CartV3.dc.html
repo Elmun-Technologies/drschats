@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — savat va rasmiylashtirish</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.sum{display:flex;justify-content:space-between;gap:12px;font-size:16px}
+.lk{background:transparent;border:0;padding:0;font:500 14px Onest,sans-serif;color:#44494E;cursor:pointer;display:inline-flex;gap:6px;align-items:center}
+.lk:hover{color:#17191B}
+.step{display:flex;flex-direction:column;gap:18px;padding:28px}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" cart-count="{{3}}" hint-size="100%,169px"></dc-import>
+
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Savat</span></nav>
+<div style="display: flex; align-items: baseline; gap: 14px; margin-top: -6px"><h1 class="h1">Savat</h1><span style="font-size: 17px; color: #63686E">3 ta mahsulot</span></div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1fr) 400px; gap: 32px; align-items: start">
+<div style="display: flex; flex-direction: column; gap: 16px; min-width: 0">
+
+<div class="panel" style="padding: 18px 24px; display: flex; flex-direction: column; gap: 10px">
+<div style="display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; font-size: 16px"><span>Bepul yetkazib berishgacha <b>63 000 soʻm</b> qoldi</span><span style="color: #44494E">237 000 / 300 000 soʻm</span></div>
+<div style="height: 8px; border-radius: 4px; background: #DCDFDB"><div style="width: 79%; height: 8px; border-radius: 4px; background: #17191B"></div></div>
+</div>
+
+<div class="card" style="padding: 4px 24px">
+<div style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid #E4E6E8">
+<label class="cb" style="font-weight: 600"><i class="on"><svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: none; stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round"><path d="M5 12l5 5 9-10"/></svg></i>Hammasini tanlash</label>
+<button type="button" class="lk">Tanlanganlarni oʻchirish</button>
+</div>
+<sc-for list="{{items}}" as="it" hint-placeholder-count="2">
+<div style="display: grid; grid-template-columns: 20px 112px minmax(0, 1fr) 132px 150px; gap: 18px; align-items: start; padding: 22px 0; border-bottom: 1px solid #E4E6E8">
+<span class="cb" style="margin-top: 4px"><i class="on"><svg viewBox="0 0 24 24" style="width: 14px; height: 14px; fill: none; stroke: #FFFFFF; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round"><path d="M5 12l5 5 9-10"/></svg></i></span>
+<a href="ProductV3.dc.html" style="width: 112px; height: 112px; border-radius: 16px; background: #F1F3F0; display: flex; align-items: center; justify-content: center"><img src="{{it.img}}" alt="{{it.name}}" style="width: 92px; height: 92px; object-fit: contain"></a>
+<div style="display: flex; flex-direction: column; gap: 6px; min-width: 0">
+<a href="ProductV3.dc.html" style="font-size: 17px; line-height: 23px; text-decoration: none; font-weight: 500">{{it.name}}</a>
+<span class="small" style="font-size: 14px">{{it.brand}} · {{it.unit}}</span>
+<span style="display: flex; gap: 6px; align-items: center; font-size: 14px; color: #44494E"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z"/></svg>Toshkentga 24 soatda</span>
+<div style="display: flex; gap: 20px; margin-top: 6px">
+<button type="button" class="lk"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Sevimlilarga</button>
+<button type="button" class="lk"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>Oʻchirish</button>
+</div>
+</div>
+<div style="display: flex; align-items: center; justify-content: space-between; height: 48px; border-radius: 12px; background: #F1F3F0">
+<button type="button" aria-label="Kamaytirish" style="width: 44px; height: 48px; border: 0; background: transparent; font: 500 20px Onest, sans-serif; color: #17191B; cursor: pointer">−</button>
+<span style="font-size: 16px; font-weight: 700">{{it.q}}</span>
+<button type="button" aria-label="Koʻpaytirish" style="width: 44px; height: 48px; border: 0; background: transparent; font: 500 20px Onest, sans-serif; color: #17191B; cursor: pointer">+</button>
+</div>
+<div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px">
+<span style="font-size: 20px; font-weight: 700; white-space: nowrap">{{it.sum}} soʻm</span>
+<span style="font-size: 14px; color: #63686E; text-decoration: line-through">{{it.oldSum}}</span>
+<span class="small">{{it.each}}</span>
+</div>
+</div>
+</sc-for>
+<div style="display: flex; flex-direction: column; gap: 14px; padding: 22px 0 24px">
+<span style="font-size: 18px; font-weight: 700">Buyurtmangizga qoʻshing va tejang</span>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{ups}}" as="u" hint-placeholder-count="3">
+<div class="panel" style="display: flex; gap: 12px; align-items: center; padding: 12px; border-radius: 16px">
+<span style="width: 60px; height: 60px; border-radius: 12px; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{u.img}}" alt="" style="width: 50px; height: 50px; object-fit: contain"></span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; line-height: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{u.short}}</span><span style="font-size: 16px; font-weight: 700">{{u.priceF}} soʻm</span></div>
+<button type="button" aria-label="Qoʻshish" style="width: 40px; height: 40px; border-radius: 12px; border: 0; background: #17191B; color: #FFFFFF; font: 500 20px Onest, sans-serif; cursor: pointer; flex: none">+</button>
+</div>
+</sc-for>
+</div>
+</div>
+</div>
+
+<div class="card step">
+<h2 class="h3" style="display: flex; gap: 12px; align-items: center"><span class="num">1</span>Aloqa maʼlumotlari</h2>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px">
+<label class="fl">Ism familiya<span class="inp">Dilnoza Karimova</span></label>
+<label class="fl">Telefon raqami<span class="inp">+998 90 123 45 67</span></label>
+<label class="fl">Elektron pochta, ixtiyoriy<span class="inp ph">siz@example.com</span></label>
+</div>
+<span class="small" style="font-size: 14px">Hisobsiz ham buyurtma berishingiz mumkin. Kabinetga kirsangiz, shu raqam bilan berilgan buyurtmalar avtomatik biriktiriladi.</span>
+</div>
+
+<div class="card step">
+<h2 class="h3" style="display: flex; gap: 12px; align-items: center"><span class="num">2</span>Yetkazib berish</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px">
+<label class="opt on"><span class="rd on"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Kuryer orqali</span><span style="font-size: 14px; color: #44494E">Toshkent — 24 soat ichida, 30 000 soʻm</span></span></label>
+<label class="opt"><span class="rd"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 600">Oʻzi olib ketish</span><span style="font-size: 14px; color: #44494E">Toshkentdagi omborimizdan, bepul</span></span></label>
+</div>
+<div style="display: grid; grid-template-columns: 260px minmax(0, 1fr); gap: 14px">
+<label class="fl">Viloyat / shahar<span class="inp">Toshkent shahri<svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px"><path d="M6 9l6 6 6-6"/></svg></span></label>
+<label class="fl">Manzil<span class="inp ph">Koʻcha, uy, kvartira</span></label>
+</div>
+<label class="fl">Izoh, ixtiyoriy<span class="inp ph">Qoʻshimcha maʼlumot</span></label>
+</div>
+
+<div class="card step">
+<h2 class="h3" style="display: flex; gap: 12px; align-items: center"><span class="num">3</span>Toʻlov</h2>
+<div style="display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px">
+<sc-for list="{{pay}}" as="p" hint-placeholder-count="4">
+<label class="opt {{p.c}}"><span class="rd {{p.c}}"></span><span style="display: flex; flex-direction: column; gap: 2px"><span style="font-size: 16px; font-weight: 700">{{p.t}}</span><span style="font-size: 14px; color: #44494E">{{p.s}}</span></span></label>
+</sc-for>
+</div>
+<span class="small" style="font-size: 14px">Onlayn toʻlov Payme, Click va Uzum shlyuzlari orqali amalga oshiriladi; karta maʼlumotlari bizda saqlanmaydi.</span>
+</div>
+</div>
+
+<aside style="position: sticky; top: 16px; display: flex; flex-direction: column; gap: 12px">
+<div class="card" style="padding: 28px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 4px 24px rgba(23,25,27,.06)">
+<span style="font-size: 22px; font-weight: 700">Buyurtma tarkibi</span>
+<div class="sum"><span style="color: #44494E">Mahsulotlar, 3 ta</span><span>267 000 soʻm</span></div>
+<div class="sum"><span style="color: #44494E">Aksiya chegirmasi</span><span style="color: #C8161D; font-weight: 600">−30 000 soʻm</span></div>
+<div class="sum"><span style="color: #44494E">Yetkazib berish</span><span>30 000 soʻm</span></div>
+<div class="sum" style="padding-top: 14px; border-top: 1px solid #E4E6E8; font-size: 26px; font-weight: 700; align-items: baseline"><span>Jami</span><span>267 000 soʻm</span></div>
+<span class="b-soft" style="align-self: flex-start; height: 30px; font-size: 14px">Siz jami 30 000 soʻm tejadingiz</span>
+<a class="btn" href="OrderSuccessV3.dc.html" style="width: 100%; height: 56px; font-size: 17px; border-radius: 14px; margin-top: 4px">Buyurtmani yuborish</a>
+<label class="cb" style="font-size: 14px; line-height: 19px; color: #44494E; align-items: flex-start"><i></i>Aksiya va yangiliklar haqida xat olib turaman</label>
+<span class="small">Buyurtmani yuborish orqali <a href="#">ommaviy oferta</a> va <a href="#">maxfiylik siyosati</a> shartlariga rozilik bildirasiz.</span>
+</div>
+<div class="panel" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 12px; font-size: 14px; line-height: 19px">
+<span style="display: flex; gap: 10px"><svg class="ic" viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4"/></svg>14 kunlik qaytarish (ochilmagan qadoq)</span>
+<span style="display: flex; gap: 10px"><svg class="ic" viewBox="0 0 24 24"><path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5"/></svg>Xavfsiz toʻlov</span>
+<span style="display: flex; gap: 10px"><svg class="ic" viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg>Onlayn toʻlovda buyurtma darhol tasdiqlanadi. Operator faqat aniqlashtirish kerak boʻlsa qoʻngʻiroq qiladi.</span>
+</div>
+</aside>
+</div>
+</main>
+
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":2400}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      items: [
+        { name: "Dr. Frei Antistress Magniy B6, 20 shipuchi tabletka", brand: "Dr. Frei", unit: "20 tabletka", img: GV.mag.img, q: 2, sum: "158 000", oldSum: "178 000", each: "79 000 soʻm / dona" },
+        { name: "Dr. Frei Multivitamins + Biotin, 20 shipuchi tabletka", brand: "Dr. Frei", unit: "20 tabletka", img: GV.multi.img, q: 1, sum: "79 000", oldSum: "89 000", each: "" }
+      ],
+      ups: gvList(["vitc", "gold", "kids"]),
+      pay: [{ t: "Payme", s: "Onlayn", c: "on" }, { t: "Click", s: "Onlayn", c: "" }, { t: "Uzum", s: "Onlayn", c: "" }, { t: "Naqd / karta", s: "Yetkazishda", c: "" }]
+    };
+  }
+}
+</script>
+</body>
+</html>

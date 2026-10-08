@@ -1,42 +1,61 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { Reveal } from "@/components/animation/Reveal";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
-import { StarRating } from "@/components/ui/StarRating";
-import { DiscountBadge, Price } from "@/components/ui/Price";
+import { cn, formatMoney } from "@/lib/utils";
+import { DiscountBadge, Price, discountPercent } from "@/components/ui/Price";
+import { Badge } from "@/components/ui/Badge";
 import { useCart } from "@/lib/cart/store";
+import { cartLineId } from "@/lib/cart/pricing";
 import { trackAddToCart } from "@/lib/analytics/events";
 import { WishlistButton } from "@/components/product/WishlistButton";
+import { productCutout } from "@/lib/content/product-cutouts";
+import { unitPrice } from "@/lib/content/product-units";
 
 /*
-  The catalogue card.
+  The catalogue card (design: ProductCardV3).
 
-  Layout rules it now follows, after the client's catalogue pass:
+  Square tile-grey image block with the pack shot contained at 9% padding,
+  heart top-right, "−N%" and "Xit" pills bottom-left; price, the per-unit
+  price (its line is kept even when empty so a row of cards stays aligned),
+  a two-line name, the delivery promise and, at the bottom, "Savatga" — which
+  turns into a quantity stepper once the product is in the cart.
 
-  - **One ground.** The photo tile and the text block are the same surface
-    colour, so a card is one object rather than a picture sitting on a plate.
-    The photo keeps a hairline and a slightly recessed tone inside the card,
-    which is what separates image from copy without a second surface.
-  - **Nothing floats.** Badges, the wishlist button and the CTA all sit on the
-    card grid: image inset 12px on mobile, 16px from sm.
-  - **Two lines of title, always.** A fixed title block keeps the prices in a
-    row aligned across the grid — ragged card heights are what make a grid look
-    like it lost a column.
-  - **Money in one place.** Price (fluid, see ui/Price) and the struck-through
-    reference price under it; the CTA is the only gold element.
+  "Xit" shows only when the catalogue itself says bestseller; the design's
+  sample data is not a source of claims.
 */
-export function ProductCard({ product, index = 0 }: { product: Product; index?: number }) {
+const HIT_BADGES = new Set(["Bestseller", "Хит продаж", "Xit", "Хит"]);
+
+export function ProductCard({
+  product,
+  index = 0,
+  onCard = false,
+}: {
+  product: Product;
+  index?: number;
+  /** White card with its own padding, for rails set on a dark panel. */
+  onCard?: boolean;
+}) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const add = useCart((s) => s.add);
+  const setQuantity = useCart((s) => s.setQuantity);
+  const lineId = cartLineId(product.id);
+  const qty = useCart((s) => s.lines.find((l) => l.lineId === lineId)?.quantity ?? 0);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
-  const discount = product.oldPrice
-    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
-    : 0;
+  const href = `/product/${product.slug}`;
+  const image = productCutout(product.slug) ?? product.images[0]?.url;
+  const discount = discountPercent(product.price, product.oldPrice);
+  const hit = product.badges?.some((b) => HIT_BADGES.has(b));
+  const perUnit = unitPrice(product.slug, product.price);
+  const inCart = mounted && qty > 0;
 
   function handleAdd() {
     add({
@@ -54,114 +73,106 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
     <Reveal
       as="article"
       index={index % 4}
-      className="group relative flex flex-col overflow-hidden rounded-2xl border border-line bg-surface shadow-xs transition-all duration-300 hover:border-line-strong hover:shadow-[var(--shadow-card)]"
+      className={cn(
+        "group flex h-full flex-col gap-1.5 text-ink",
+        onCard && "rounded-[20px] bg-bg px-2.5 pb-3.5 pt-2.5",
+      )}
     >
-      {/* Photo */}
-      <div className="relative aspect-square w-full p-3 sm:p-4">
-        <div className="relative h-full w-full overflow-hidden rounded-xl bg-surface-2/70">
-          <Link
-            href={`/product/${product.slug}`}
-            className="relative block h-full w-full"
-            aria-label={product.name}
-          >
-            {product.images[0]?.url ? (
-              <Image
-                src={product.images[0].url}
-                alt={product.images[0].alt ?? product.name}
-                fill
-                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                className="object-contain p-2 transition-transform duration-500 ease-out group-hover:scale-[1.04]"
-              />
-            ) : (
-              /* Never an empty <img>, and never another product's picture. */
-              <span className="flex h-full w-full items-center justify-center p-3 text-center">
-                <span className="flex flex-col items-center gap-2">
-                  <svg viewBox="0 0 24 24" aria-hidden className="h-7 w-7 text-faint" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round">
-                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4zM3 6h18M16 10a4 4 0 0 1-8 0" />
-                  </svg>
-                  <span className="line-clamp-2 text-[11px] font-semibold text-faint">{product.name}</span>
-                </span>
-              </span>
-            )}
-          </Link>
-
-          {/* Badges — discount first; a second badge only if there is room. */}
-          <div className="pointer-events-none absolute left-2.5 top-2.5 z-10 flex max-w-[calc(100%-2.5rem)] flex-wrap items-center gap-1.5">
-            {discount > 0 ? (
-              <DiscountBadge percent={discount} />
-            ) : product.badges?.[0] ? (
-              <span className="rounded-full border border-line-strong bg-ink/90 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted backdrop-blur-xs">
-                {product.badges[0]}
-              </span>
-            ) : null}
-
-            {!product.inStock && (
-              <span className="rounded-full border border-danger/25 bg-danger/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-danger">
-                {t("outOfStock")}
-              </span>
-            )}
-          </div>
-
-          <div className="absolute right-2.5 top-2.5 z-10">
-            <WishlistButton
-              productId={product.id}
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-line bg-ink/90 text-fg shadow-xs backdrop-blur-xs transition-all duration-300 hover:border-line-strong hover:text-danger"
+      <div className="relative">
+        <Link
+          href={href}
+          aria-label={product.name}
+          className="relative block aspect-square overflow-hidden rounded-[16px] bg-tile"
+        >
+          {image ? (
+            <Image
+              src={image}
+              alt={product.images[0]?.alt ?? product.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 232px"
+              className="object-contain p-[9%] transition-transform duration-200 group-hover:scale-[1.03]"
             />
-          </div>
-        </div>
-      </div>
-
-      {/* Body */}
-      <div className="flex flex-1 flex-col px-3 pb-3 sm:px-4 sm:pb-4">
-        <Link href={`/product/${product.slug}`} className="group/title">
-          <h3 className="line-clamp-2 min-h-[2.5em] font-display text-sm font-bold leading-snug text-fg transition-colors duration-200 group-hover/title:text-signal sm:text-[0.95rem]">{product.name}
-          </h3>
+          ) : (
+            <span className="flex h-full w-full items-center justify-center p-4 text-center text-[13px] text-muted">
+              {product.name}
+            </span>
+          )}
         </Link>
 
-        {/* One metadata line: origin, then the first highlight. Never both
-            large — at 320px two wrapped lines of grey push the price below the
-            fold of the card. */}
-        <div className="mt-1.5 min-h-[1.15rem] text-[11px] leading-tight text-muted">
-          {product.origin && (
-            <span className="inline-flex items-center gap-1 font-semibold">
-              <svg viewBox="0 0 24 24" aria-hidden className="h-3 w-3 shrink-0" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1116 0Z" strokeLinecap="round" strokeLinejoin="round" />
-                <circle cx="12" cy="10" r="2.5" />
-              </svg>
-              {product.origin}
-            </span>
-          )}
-          {product.origin && product.highlights[0] && <span aria-hidden> · </span>}
-          {product.highlights[0] && <span className="line-clamp-1 inline">{product.highlights[0]}</span>}
-        </div>
-
-        <div className="mt-2 flex items-center justify-between gap-2">
-          <StarRating rating={product.rating} className="origin-left scale-90" />
-          {product.servings && (
-            <span className="truncate rounded-md bg-surface-2 px-1.5 py-0.5 text-[10px] font-semibold text-muted">
-              {product.servings}
-            </span>
-          )}
-        </div>
-
-        <Price
-          className="mt-2.5"
-          amount={product.price}
-          oldAmount={product.oldPrice}
-          locale={locale}
+        <WishlistButton
+          productId={product.id}
+          className="absolute right-2 top-2 h-9 w-9 bg-bg shadow-[0_1px_4px_rgba(23,25,27,0.08)]"
         />
 
-        <button
-          onClick={handleAdd}
-          disabled={!product.inStock}
-          className="mt-3 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-accent py-2.5 text-[11px] font-bold uppercase tracking-wider text-brand-deep shadow-[var(--shadow-cta)] transition-all duration-300 hover:bg-accent-strong hover:text-ink active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-surface-2 disabled:text-muted disabled:shadow-none sm:text-xs"
-        >
-          <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="2.5">
-            <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z" strokeLinejoin="round" />
-            <path d="M3 6h18M16 10a4 4 0 01-8 0" strokeLinecap="round" />
-          </svg>
-          {product.inStock ? t("addToCartShort") : t("outOfStock")}
-        </button>
+        {(discount > 0 || hit || !product.inStock) && (
+          <div className="pointer-events-none absolute bottom-2 left-2 flex gap-1">
+            <DiscountBadge percent={discount} />
+            {hit && <Badge tone="hit" className="h-6 px-[9px] text-[13px]">{t("hit")}</Badge>}
+            {!product.inStock && <Badge className="h-6 px-[9px]">{t("outOfStock")}</Badge>}
+          </div>
+        )}
+      </div>
+
+      <Price
+        amount={product.price}
+        oldAmount={product.oldPrice}
+        locale={locale}
+        layout="inline"
+        className="px-0.5 pt-1.5"
+      />
+      <span className="-mt-1 min-h-[17px] px-0.5 text-caption text-muted">
+        {perUnit &&
+          t("perUnit", {
+            price: formatMoney(perUnit.amount, locale),
+            unit: t(perUnit.unit === "tablet" ? "unitTablet" : "unitCapsule"),
+          })}
+      </span>
+      <Link href={href} className="line-clamp-2 min-h-10 px-0.5 text-card-title text-ink-2 hover:text-ink">
+        {product.name}
+      </Link>
+      <span className="flex items-center gap-1.5 px-0.5 text-caption text-muted">
+        <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+        </svg>
+        {t("delivery24")}
+      </span>
+
+      <div className="mt-auto pt-1.5">
+        {inCart ? (
+          <div className="flex h-11 items-center justify-between rounded-sm bg-ink text-white">
+            <button
+              type="button"
+              onClick={() => setQuantity(lineId, qty - 1)}
+              aria-label={t("decrease")}
+              className="flex h-11 w-11 items-center justify-center text-xl"
+            >
+              −
+            </button>
+            <span className="text-[15px] font-semibold" aria-live="polite">
+              {t("inCartQty", { count: qty })}
+            </span>
+            <button
+              type="button"
+              onClick={() => setQuantity(lineId, qty + 1)}
+              aria-label={t("increase")}
+              className="flex h-11 w-11 items-center justify-center text-xl"
+            >
+              +
+            </button>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={handleAdd}
+            disabled={!product.inStock}
+            className="flex h-11 w-full items-center justify-center gap-2 rounded-sm bg-tile text-[15px] font-semibold text-ink transition-colors hover:bg-ink hover:text-white disabled:cursor-not-allowed disabled:text-muted disabled:hover:bg-tile"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" />
+            </svg>
+            {product.inStock ? t("addToCartShort") : t("outOfStock")}
+          </button>
+        )}
       </div>
     </Reveal>
   );

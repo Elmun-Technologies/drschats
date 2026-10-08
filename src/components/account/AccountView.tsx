@@ -53,7 +53,7 @@ export function AccountView() {
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             {t("title")}
           </h1>
-          <p className="mt-2 text-muted">{t("subtitle")}</p>
+          <p className="mt-2 text-legacy-muted">{t("subtitle")}</p>
         </header>
         <div className="mx-auto h-64 max-w-md animate-pulse rounded-2xl bg-surface" />
       </Container>
@@ -67,7 +67,7 @@ export function AccountView() {
           <h1 className="font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             {t("title")}
           </h1>
-          <p className="mt-2 text-muted">{t("subtitle")}</p>
+          <p className="mt-2 text-legacy-muted">{t("subtitle")}</p>
         </header>
         <AuthForm />
       </Container>
@@ -82,12 +82,12 @@ export function AccountView() {
           <h1 className="mt-1 font-display text-3xl font-extrabold tracking-tight sm:text-4xl">
             {user.name}
           </h1>
-          <p className="mt-1 text-sm text-muted">{user.phone}</p>
+          <p className="mt-1 text-sm text-legacy-muted">{user.phone}</p>
         </div>
         <button
           type="button"
           onClick={signOut}
-          className="rounded-full border border-line px-5 py-2.5 text-sm font-semibold text-muted transition-colors hover:border-line-strong hover:text-fg"
+          className="rounded-full border border-legacy-line px-5 py-2.5 text-sm font-semibold text-legacy-muted transition-colors hover:border-legacy-line-strong hover:text-fg"
         >
           {t("signOut")}
         </button>
@@ -98,12 +98,12 @@ export function AccountView() {
           <Link
             key={item.key}
             href={item.href}
-            className="rounded-2xl border border-line bg-surface px-5 py-4 transition-colors hover:border-line-strong"
+            className="rounded-2xl border border-legacy-line bg-surface px-5 py-4 transition-colors hover:border-legacy-line-strong"
           >
             <span className="block font-display text-base font-bold text-fg">
               {t(`shortcut.${item.key}.title`)}
             </span>
-            <span className="mt-0.5 block text-sm text-muted">
+            <span className="mt-0.5 block text-sm text-legacy-muted">
               {t(`shortcut.${item.key}.description`)}
             </span>
           </Link>

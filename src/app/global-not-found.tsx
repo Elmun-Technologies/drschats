@@ -65,7 +65,7 @@ export default function GlobalNotFound() {
             <h1 lang="uz-UZ" className="mt-4 font-display text-2xl font-extrabold text-fg sm:text-3xl">
               {uz.common.notFoundTitle}
             </h1>
-            <p lang="ru-RU" className="mt-2 text-lg font-semibold text-muted">
+            <p lang="ru-RU" className="mt-2 text-lg font-semibold text-legacy-muted">
               {ru.common.notFoundTitle}
             </p>
 
@@ -73,14 +73,14 @@ export default function GlobalNotFound() {
               <Link
                 href={`/${defaultLocale}`}
                 lang="ru-RU"
-                className={`${LINK_BASE} bg-fg text-ink hover:bg-accent-strong hover:text-ink`}
+                className={`${LINK_BASE} bg-fg text-legacy-ink hover:bg-accent-strong hover:text-legacy-ink`}
               >
                 {ru.common.notFoundHome}
               </Link>
               <Link
                 href="/uz"
                 lang="uz-UZ"
-                className={`${LINK_BASE} border border-line bg-surface text-fg hover:border-line-strong hover:text-fg`}
+                className={`${LINK_BASE} border border-legacy-line bg-surface text-fg hover:border-legacy-line-strong hover:text-fg`}
               >
                 {uz.common.notFoundHome}
               </Link>

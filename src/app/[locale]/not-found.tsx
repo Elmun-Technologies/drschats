@@ -25,19 +25,19 @@ export default function NotFound() {
           <h1 className="mt-4 font-display text-2xl font-extrabold text-fg sm:text-3xl">
             {t("notFoundTitle")}
           </h1>
-          <p className="mt-3 text-muted">
+          <p className="mt-3 text-legacy-muted">
             {t("notFoundDesc")}
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-fg px-6 text-sm font-semibold text-ink transition-all hover:bg-accent-strong hover:text-ink"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-fg px-6 text-sm font-semibold text-legacy-ink transition-all hover:bg-accent-strong hover:text-legacy-ink"
             >
               {t("notFoundHome")}
             </Link>
             <Link
               href="/products"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-line bg-surface px-6 text-sm font-semibold text-fg transition-colors hover:border-line-strong hover:text-fg"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-legacy-line bg-surface px-6 text-sm font-semibold text-fg transition-colors hover:border-legacy-line-strong hover:text-fg"
             >
               {t("notFoundShop")}
             </Link>

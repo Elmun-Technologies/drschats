@@ -3,16 +3,16 @@ import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 
 /**
- * Renders the brand logo image when BRAND.logo is set, otherwise the text
- * wordmark. Drop a file in /public/brand and point BRAND.logo at it to switch.
+ * Renders the brand logo image when BRAND.logo is set, otherwise the
+ * Playfair wordmark. The wordmark is drawn, not read: it is aria-hidden and
+ * the link around it carries the name, which is also what keeps the gold "v"
+ * (a logotype, exempt from WCAG 1.4.3) out of the contrast audit.
  */
 export function Logo({
   className,
   onDark = false,
 }: {
   className?: string;
-  /** Lightens the accent half of the wordmark for the deep brand ground,
-      where the standard indigo measures 2.49:1 against 3:1 required. */
   onDark?: boolean;
 }) {
   if (BRAND.logo) {
@@ -28,11 +28,17 @@ export function Logo({
     );
   }
   return (
-    <span className={cn("font-display text-xl font-bold tracking-tight", className)}>
+    <span
+      aria-hidden
+      className={cn(
+        "font-logo font-medium leading-none tracking-[-0.02em]",
+        onDark ? "text-white" : "text-forest",
+        className,
+      )}
+    >
       {BRAND.wordmark.lead}
-      <span className={onDark ? "text-accent-on-dark" : "text-accent-strong"}>
-        {BRAND.wordmark.accent}
-      </span>
+      <span className="text-gold">{BRAND.wordmark.accent}</span>
+      {BRAND.wordmark.tail}
     </span>
   );
 }

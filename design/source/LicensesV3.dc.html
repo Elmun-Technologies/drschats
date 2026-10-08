@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — litsenziya va sertifikatlar</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Litsenziya va sertifikatlar</span></nav>
+<div style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; align-items: start">
+<dc-import name="InfoNavV3" active="licenses" hint-size="100%,760px"></dc-import>
+<article style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 12px"><h1 class="h1" style="font-size: 40px; line-height: 46px">Litsenziya va sertifikatlar</h1><p class="lead">Faoliyatimiz hujjatlari va ularni qanday soʻrash mumkinligi.</p></div>
+<section style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px">
+<sc-for list="{{items}}" as="i" hint-placeholder-count="6">
+<div class="card" style="padding: 26px; display: grid; grid-template-columns: 52px minmax(0, 1fr); gap: 16px; align-items: start">
+<span style="width: 52px; height: 52px; border-radius: 14px; background: #F1F3F0; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 13l2 2 4-4"/></svg></span>
+<span style="display: flex; flex-direction: column; gap: 6px"><span class="b-soft" style="align-self: flex-start">{{i.m}}</span><span style="font-size: 18px; font-weight: 700">{{i.t}}</span><span class="p">{{i.s}}</span></span>
+</div>
+</sc-for>
+</section>
+<section style="padding: 32px 36px; border-radius: 28px; background: #1C1F22; color: #FFFFFF; display: flex; gap: 24px; align-items: center; justify-content: space-between; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; gap: 8px; max-width: 620px"><span style="font-size: 26px; font-weight: 700">Hujjat kerakmi?</span><span style="font-size: 16px; line-height: 24px; color: #C9CDD1">Zavod sertifikati, import yoki roʻyxatdan oʻtkazish hujjati — istalgan mahsulot uchun nusxasini Telegram yoki telefon orqali soʻrang.</span></div>
+<a class="btn-w" href="https://t.me/govita_uz">Sertifikat soʻrash</a>
+</section>
+<p class="small" style="font-size: 14px">Sertifikat yoki litsenziya raqami koʻrsatilmagan joyda u hali tayyorlanmoqda — toʻqib chiqarilmaydi.</p>
+</article>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1600}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { items: [
+      { m: "Litsenziya", t: "Farmatsevtika faoliyati litsenziyasi", s: "Go Vita Healthcare MCHJ nomiga berilgan. Litsenziya raqamini soʻrov boʻyicha taqdim etamiz." },
+      { m: "Reyestr", t: "Davlat roʻyxatidan oʻtish guvohnomasi", s: "Har bir BAD Oʻzbekiston davlat reyestrida roʻyxatdan oʻtgan; guvohnoma raqami mahsulot sahifasida koʻrsatiladi." },
+      { m: "Import", t: "Import hujjatlari", s: "Har bir partiya bojxona va import hujjatlari bilan keladi." },
+      { m: "Zavod", t: "Ishlab chiqaruvchi sertifikatlari", s: "Zavod sertifikatlari har bir partiya bilan keladi; nusxasini soʻrov boʻyicha yuboramiz." },
+      { m: "Shartnoma", t: "Rasmiy import shartnomalari", s: "Swiss Energy, Dr. Frei va Delical yetkazib beruvchilari bilan tuzilgan shartnomalar asosida." },
+      { m: "Soʻrov", t: "Hujjat soʻrash", s: "Istalgan mahsulot uchun hujjat nusxasini Telegram yoki telefon orqali soʻrang." }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

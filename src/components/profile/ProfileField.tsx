@@ -47,7 +47,7 @@ export function ProfileField({
         autoComplete={autoComplete}
         aria-describedby={hint ? hintId : undefined}
         onChange={(e) => onChange(e.target.value)}
-        className="rounded-xl border border-line bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
+        className="rounded-xl border border-legacy-line bg-surface px-4 py-3 text-sm outline-none transition-colors focus:border-accent focus-visible:ring-2 focus-visible:ring-signal"
       />
       {hint && (
         <p id={hintId} className="text-xs text-faint">

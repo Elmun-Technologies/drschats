@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — aloqa</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.ch{padding:24px;display:flex;flex-direction:column;gap:8px;border-radius:20px;min-height:170px}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: flex; flex-direction: column; gap: 24px; padding-top: 20px; padding-bottom: 72px">
+<nav class="crumbs" aria-label="Joylashuv"><a href="HomeV3.dc.html">Bosh sahifa</a><span>/</span><span style="color: #17191B">Aloqa</span></nav>
+<div style="display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 48px; align-items: start">
+<dc-import name="InfoNavV3" active="contact" hint-size="100%,760px"></dc-import>
+<article style="display: flex; flex-direction: column; gap: 32px; min-width: 0">
+<div style="display: flex; flex-direction: column; gap: 12px"><h1 class="h1" style="font-size: 40px; line-height: 46px">Biz bilan bogʻlaning</h1><p class="lead">Savollaringiz bormi? Biz yordam berishga tayyormiz.</p></div>
+<section style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px">
+<div class="ch" style="background: #1C1F22; color: #FFFFFF"><span style="font-size: 15px; color: #A9AEB3">Telefon</span><a href="tel:+998712007080" style="font-size: 26px; font-weight: 700; color: #FFFFFF; text-decoration: none">+998 71 200 70 80</a><span style="font-size: 15px; color: #C9CDD1; margin-top: auto">Dushanba–Shanba, 09:00–18:00</span></div>
+<div class="ch panel"><span style="font-size: 15px; color: #44494E">Email</span><a href="mailto:info@govita.uz" style="font-size: 26px; font-weight: 700; text-decoration: none">info@govita.uz</a><span style="font-size: 15px; color: #44494E; margin-top: auto">24 soat ichida javob beramiz</span></div>
+<div class="ch panel"><span style="font-size: 15px; color: #44494E">Manzil</span><span style="font-size: 26px; font-weight: 700">Toshkent shahri</span><span style="font-size: 15px; color: #44494E; margin-top: auto">Oʻzbekiston</span></div>
+</section>
+<section style="display: flex; flex-direction: column; gap: 14px">
+<h2 class="h3" style="font-size: 24px">Qaysi masala boʻyicha murojaat qilyapsiz?</h2>
+<p class="p" style="font-size: 16px; margin-top: -4px">Har bir yoʻnalish uchun alohida kanal — javob tezroq keladi.</p>
+<div style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{ch}}" as="c" hint-placeholder-count="6">
+<a class="card" href="{{c.h}}" style="padding: 22px; display: flex; flex-direction: column; gap: 8px; text-decoration: none; color: #17191B; min-height: 150px">
+<span style="font-size: 18px; font-weight: 700">{{c.t}}</span><span class="p">{{c.s}}</span>
+<span style="margin-top: auto; display: inline-flex; gap: 6px; align-items: center; font-size: 15px; font-weight: 600">{{c.a}}<svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</a>
+</sc-for>
+</div>
+</section>
+<section class="card" style="padding: 32px; display: flex; flex-direction: column; gap: 16px">
+<h2 class="h3" style="font-size: 24px">Xabar yozing</h2>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px">
+<label class="fl">Ismingiz<span class="inp ph">Ism familiya</span></label>
+<label class="fl">Telefon raqami<span class="inp ph">+998 90 123 45 67</span></label>
+</div>
+<label class="fl">Xabar<span class="inp ph" style="height: 110px; align-items: flex-start; padding-top: 14px">Savolingizni yozing</span></label>
+<button type="button" class="btn" style="align-self: flex-start; height: 52px; padding: 0 32px">Yuborish</button>
+</section>
+</article>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1800}}'>
+class Component extends DCLogic {
+  renderVals() {
+    return { ch: [
+      { t: "Buyurtma va yetkazib berish", s: "Buyurtma holati, oʻzgartirish, qaytarish.", a: "Telegramda yozish", h: "https://t.me/govita_uz" },
+      { t: "Mahsulot boʻyicha maslahat", s: "Qaysi mahsulot mos kelishi, tarkib va qabul tartibi.", a: "Telegramda yozish", h: "https://t.me/govita_uz" },
+      { t: "WhatsApp orqali yozish", s: "Qoʻngʻiroq qilishga qulay boʻlmasa — yozib qoldiring.", a: "WhatsApp", h: "#" },
+      { t: "Dorixonalar uchun", s: "Ulgurji narxlar, assortiment va yetkazib berish shartlari.", a: "Batafsil", h: "PartnersV3.dc.html" },
+      { t: "Distributorlik", s: "Viloyatlarda hamkorlik va rasmiy vakillik.", a: "Batafsil", h: "PartnersV3.dc.html" },
+      { t: "Korporativ buyurtma (B2B)", s: "Xodimlar uchun toʻplamlar, sovgʻa va korporativ dasturlar.", a: "Batafsil", h: "PartnersV3.dc.html" }
+    ] };
+  }
+}
+</script>
+</body>
+</html>

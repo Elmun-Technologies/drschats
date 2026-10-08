@@ -18,8 +18,8 @@ export function CookieConsent() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-[calc(var(--bottom-nav)+0.75rem)] z-50 mx-auto max-w-3xl rounded-2xl border border-line bg-ink p-4 shadow-[var(--shadow-pop)] sm:flex sm:items-center sm:gap-4">
-      <p className="text-sm text-muted">
+    <div className="fixed inset-x-3 bottom-[calc(var(--bottom-nav)+0.75rem)] z-50 mx-auto max-w-3xl rounded-2xl border border-legacy-line bg-legacy-ink p-4 shadow-[var(--shadow-legacy-pop)] sm:flex sm:items-center sm:gap-4">
+      <p className="text-sm text-legacy-muted">
         {t("text")}{" "}
         <Link href="/privacy" className="text-fg underline">
           {t("more")}
@@ -30,7 +30,7 @@ export function CookieConsent() {
           localStorage.setItem(KEY, "1");
           setShow(false);
         }}
-        className="mt-3 w-full shrink-0 rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-ink transition-colors hover:bg-accent-strong hover:text-ink sm:mt-0 sm:w-auto"
+        className="mt-3 w-full shrink-0 rounded-full bg-fg px-5 py-2.5 text-sm font-semibold text-legacy-ink transition-colors hover:bg-accent-strong hover:text-legacy-ink sm:mt-0 sm:w-auto"
       >
         {t("accept")}
       </button>

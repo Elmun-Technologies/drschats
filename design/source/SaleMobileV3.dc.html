@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — aksiyalar, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.px{padding-left:16px;padding-right:16px}
+.pr{flex:none;width:250px;min-height:176px;padding:20px;display:flex;flex-direction:column;gap:6px;border-radius:22px;text-decoration:none;color:#17191B;box-sizing:border-box}
+.pr .big{font-size:40px;line-height:42px;font-weight:700;letter-spacing:-.03em}
+</style>
+</helmet>
+<div class="gv" style="position: relative; display: flex; flex-direction: column; width: 100%">
+<dc-import name="HeaderMobileV3" hint-size="100%,116px"></dc-import>
+<main style="display: flex; flex-direction: column; gap: 20px; padding: 4px 0 28px">
+<div class="px" style="display: flex; flex-direction: column; gap: 6px"><h1 style="margin: 0; font-size: 28px; line-height: 34px; font-weight: 700">Aksiyalar</h1><span style="font-size: 15px; line-height: 21px; color: #44494E">Chegirma savatchada avtomatik qoʻllanadi, promokod kerak emas.</span></div>
+<div class="hs px" style="gap: 10px">
+<a class="pr" href="CatalogMobileV3.dc.html" style="background: #1C1F22; color: #FFFFFF"><span class="big">−10%</span><span style="font-size: 18px; font-weight: 700">Birinchi buyurtma</span><span style="font-size: 14px; line-height: 19px; color: #C9CDD1">Har bir mijoz uchun bir marta.</span></a>
+<a class="pr" href="CatalogMobileV3.dc.html" style="background: #FFE58A"><span class="big">2+1</span><span style="font-size: 18px; font-weight: 700">2 oling — 3-si sovgʻa</span><span style="font-size: 14px; line-height: 19px; color: #2E3236">Tanlangan mahsulotlarga.</span></a>
+<a class="pr" href="DeliveryMobileV3.dc.html" style="background: #F1F3F0"><span class="big">−15%</span><span style="font-size: 18px; font-weight: 700">Obuna</span><span style="font-size: 14px; line-height: 19px; color: #2E3236">Bugun −10%, keyin har safar −15%.</span></a>
+</div>
+<div class="px" style="display: flex; justify-content: space-between; align-items: baseline"><h2 style="margin: 0; font-size: 22px; font-weight: 700">Chegirmadagi mahsulotlar</h2><span style="font-size: 14px; color: #44494E">6 ta</span></div>
+<div class="px" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px 10px">
+<sc-for list="{{deals}}" as="p" hint-placeholder-count="6"><dc-import name="ProductCardV3" item="{{p}}" hint-size="100%,400px"></dc-import></sc-for>
+</div>
+</main>
+<dc-import name="FooterMobileV3" hint-size="100%,877px"></dc-import>
+<div style="position: relative; z-index: 5"><dc-import name="TabBarV3" active="catalog" hint-size="100%,68px"></dc-import></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() { return { deals: gvList(["mag", "multi", "kids", "dvan", "dcho", "dapr"], { href: "ProductMobileV3.dc.html" }) }; }
+}
+</script>
+</body>
+</html>

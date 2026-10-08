@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Footer mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.acc{display:flex;justify-content:space-between;align-items:center;height:56px;border-bottom:1px solid #DCDFDB;color:#17191B;font-size:17px;font-weight:600;text-decoration:none}
+.soc{width:48px;height:48px;border-radius:24px;background:#FFFFFF;color:#17191B;display:flex;align-items:center;justify-content:center}
+.pay{display:inline-flex;align-items:center;height:36px;padding:0 12px;border-radius:10px;background:#FFFFFF;font-size:14px;font-weight:700;color:#17191B}
+</style>
+</helmet>
+<footer class="gv" style="width: 100%; background: #F1F3F0; padding: 28px 16px 28px; box-sizing: border-box; display: flex; flex-direction: column; gap: 24px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<a href="HomeMobileV3.dc.html" style="text-decoration: none; color: #0F2D24; font-family: 'Playfair Display', Georgia, serif; font-size: 32px; line-height: 36px; font-weight: 500">go<span style="color: #B8954F">v</span>ita</a>
+<a href="tel:+998712007080" style="font-size: 26px; line-height: 32px; font-weight: 700; color: #17191B; text-decoration: none; margin-top: 8px">+998 71 200 70 80</a>
+<span style="font-size: 15px; color: #44494E">Dushanba–Shanba, 09:00–18:00</span>
+<a class="btn" href="https://t.me/govita_uz" style="margin-top: 10px">Telegramda yozish</a>
+</div>
+<a href="https://t.me/govita_uz" style="display: flex; flex-direction: column; gap: 8px; padding: 20px; border-radius: 20px; background: #17191B; color: #FFFFFF; text-decoration: none">
+<span style="font-size: 12px; font-weight: 600; color: #C9CDD1; letter-spacing: .04em; text-transform: uppercase">VIP Salomatlik Klubi</span>
+<span style="font-size: 18px; line-height: 23px; font-weight: 700">Klubga Telegram-bot orqali qoʻshiling</span>
+<span style="font-size: 14px; line-height: 20px; color: #C9CDD1">Buyurtma holati, qabul eslatmalari va klub takliflari.</span>
+</a>
+<nav aria-label="Sayt boʻlimlari" style="display: flex; flex-direction: column">
+<sc-for list="{{cols}}" as="c" hint-placeholder-count="3">
+<a class="acc" href="HomeMobileV3.dc.html">{{c}}<svg class="ic" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></a>
+</sc-for>
+</nav>
+<div style="display: flex; flex-direction: column; gap: 10px">
+<span style="font-size: 15px; font-weight: 600">Toʻlov usullari</span>
+<div style="display: flex; flex-wrap: wrap; gap: 8px"><span class="pay">Payme</span><span class="pay">Click</span><span class="pay">Uzum</span><span class="pay" style="font-weight: 600">Naqd / karta</span></div>
+</div>
+<div style="display: flex; gap: 10px">
+<a class="soc" href="https://t.me/govita_uz" aria-label="Telegram"><svg class="ic" viewBox="0 0 24 24"><path d="M21 4L3 11l6 2 2 6 3-4 5 4z"/><path d="M9 13l12-9"/></svg></a>
+<a class="soc" href="https://instagram.com/govita_uz" aria-label="Instagram"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.5"/><path d="M17 7h.01"/></svg></a>
+<a class="soc" href="https://facebook.com/govita.uz" aria-label="Facebook"><svg class="ic" viewBox="0 0 24 24"><path d="M14 21v-8h3l.5-3.5H14V7.5c0-1 .4-1.7 1.8-1.7H18V2.7A24 24 0 0 0 15.4 2.5C12.9 2.5 11 4 11 6.9v2.6H8V13h3v8"/></svg></a>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; line-height: 19px; color: #44494E">
+<span>© 2026 Go Vita. Rasmiy import qiluvchi — Alimkhanov Pharm Group. Biologik faol qoʻshimchalar dori vositasi emas.</span>
+<span style="display: flex; gap: 16px; flex-wrap: wrap"><a href="#" style="color: #2E3236">Ommaviy oferta</a><a href="#" style="color: #2E3236">Maxfiylik siyosati</a><a href="#" style="color: #2E3236">Rekvizitlar</a></span>
+</div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+  renderVals() { return { cols: ["Katalog", "Xaridorlarga", "Kompaniya"] }; }
+}
+</script>
+</body>
+</html>

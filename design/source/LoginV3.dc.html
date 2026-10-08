@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — kabinetga kirish</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.otp{width:64px;height:72px;border-radius:14px;border:1.5px solid #D9DCDF;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;box-sizing:border-box}
+</style>
+</helmet>
+<div class="gv" style="display: flex; flex-direction: column; min-width: 0">
+<dc-import name="HeaderV3" hint-size="100%,169px"></dc-import>
+<main class="wrap" style="display: grid; grid-template-columns: minmax(0, 520px) minmax(0, 1fr); gap: 48px; align-items: start; padding-top: 48px; padding-bottom: 80px">
+<div class="card" style="padding: 40px; display: flex; flex-direction: column; gap: 20px; box-shadow: 0 4px 24px rgba(23,25,27,.06)">
+<div style="display: flex; gap: 6px"><span style="flex: 1; height: 4px; border-radius: 2px; background: #17191B"></span><span style="flex: 1; height: 4px; border-radius: 2px; background: #17191B"></span></div>
+<h1 class="h1" style="font-size: 32px; line-height: 38px">Kirish kodi</h1>
+<p class="p" style="font-size: 16px">+998 90 123 45 67 raqamiga bogʻlangan Telegram'ga kod yuborildi.</p>
+<div style="display: flex; gap: 10px">
+<span class="otp" style="border-color: #17191B">4</span><span class="otp" style="border-color: #17191B">7</span><span class="otp" style="border-color: #17191B">1</span><span class="otp" style="border: 2px solid #17191B"><span style="width: 2px; height: 30px; background: #17191B"></span></span><span class="otp"></span><span class="otp"></span>
+</div>
+<button type="button" class="btn" style="height: 56px; font-size: 17px; border-radius: 14px">Kirish</button>
+<div style="display: flex; justify-content: space-between; font-size: 15px"><a href="#" style="font-weight: 600">Raqamni oʻzgartirish</a><span style="color: #63686E">Qayta yuborish — 42 s</span></div>
+<div class="panel" style="padding: 18px 20px; display: flex; flex-direction: column; gap: 8px; border-radius: 16px">
+<span style="font-size: 15px; font-weight: 700">Kod kelmadimi?</span>
+<span style="font-size: 14px; line-height: 20px; color: #2E3236">Kod Telegram orqali keladi. Avval botni ishga tushiring va raqamingizni ulashing — bot oʻzi yozmagan raqamga xabar yubora olmaydi.</span>
+<a class="btn-o" href="https://t.me/govita_uz" style="align-self: flex-start; height: 44px; margin-top: 4px; background: transparent">Telegram'da botni ochish</a>
+</div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 20px; padding-top: 12px">
+<h2 class="h2">Shaxsiy kabinet</h2>
+<p class="lead">Buyurtmalaringiz, saqlangan mahsulotlar va sogʻliq rejangiz bir joyda.</p>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px">
+<sc-for list="{{perks}}" as="p" hint-placeholder-count="4"><div class="panel" style="padding: 22px; display: flex; flex-direction: column; gap: 8px"><svg class="ic" viewBox="0 0 24 24" style="width: 26px; height: 26px"><path d="{{p.d}}"/></svg><span style="font-size: 18px; font-weight: 700; margin-top: 4px">{{p.t}}</span><span class="p">{{p.s}}</span></div></sc-for>
+</div>
+<p class="small" style="font-size: 14px">Hisobsiz ham buyurtma berishingiz mumkin. Roʻyxatdan oʻtsangiz, shu telefon raqami bilan berilgan avvalgi buyurtmalaringiz avtomatik biriktiriladi.</p>
+</div>
+</main>
+<dc-import name="FooterV3" hint-size="100%,570px"></dc-import>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":1500}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() {
+    return {
+      perks: [
+        { t: "Buyurtmalarim", s: "Holat: qabul qilindi, tasdiqlandi, yoʻlda, yetkazildi.", d: "M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" },
+        { t: "Obunalar", s: "Keyingi yetkazishni oʻtkazib yuborish, toʻxtatish yoki bekor qilish.", d: "M4 12a8 8 0 0 1 14-5.3M20 4v4h-4M20 12a8 8 0 0 1-14 5.3M4 20v-4h4" },
+        { t: "Sevimlilar", s: "Saqlangan mahsulotlaringiz.", d: "M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z" },
+        { t: "Eslatmalar", s: "Kurs tugashi va tugʻilgan kunlar haqida — Telegram orqali.", d: "M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10 21h4" }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

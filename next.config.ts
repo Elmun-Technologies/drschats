@@ -53,6 +53,13 @@ const nextConfig: NextConfig = {
     const csp = cspHeaders(process.env);
     if (csp) routes[0].headers.push(csp);
 
+    // Self-hosted font files are versioned by folder (public/fonts/README.md),
+    // so a file at a given URL never changes.
+    routes.push({
+      source: "/fonts/:path*",
+      headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+    });
+
     return routes;
   },
   /*

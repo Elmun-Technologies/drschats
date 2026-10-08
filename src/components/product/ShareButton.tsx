@@ -21,7 +21,7 @@ export function ShareButton({ name }: { name: string }) {
     <button
       onClick={handleShare}
       aria-label={t("share")}
-      className="flex h-10 items-center gap-2 rounded-full border border-line px-4 text-sm text-muted transition-colors hover:border-line-strong hover:text-fg"
+      className="flex h-10 items-center gap-2 rounded-full border border-legacy-line px-4 text-sm text-legacy-muted transition-colors hover:border-legacy-line-strong hover:text-fg"
     >
       <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
         <circle cx="18" cy="5" r="3" />

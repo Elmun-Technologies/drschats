@@ -133,10 +133,11 @@ chaqirilgandan **keyin** chizing.
 
 | Papka | Asosiy komponentlar |
 |---|---|
-| `layout/` | Header, Footer, CookieConsent |
-| `nav/` | MobileBottomNav (4 tab, cart badge, md:hidden) |
+| `layout/` | Header (desktop + mobil, V3), CatalogMenu (mega-menyu), TopBar (utility qator), SearchBox, Footer (+ FooterAccordion), CookieConsent. Umumiy havolalar `nav-links.ts` da — server komponent `"use client"` moduldan konstanta ololmaydi |
+| `nav/` | MobileBottomNav — 5 tab (V3 TabBar), `lg:hidden`; "Katalog" tabi katalog ekranini (dialog) ochadi, "Savat" — drawer |
+| `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
 | `cart/` | CartDrawer (Framer Motion slide-in) |
-| `product/` | ProductCard, ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
+| `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
 | `shop/` | ShopView (server), FilterBar, Pagination |
 | `checkout/` | CheckoutForm (react-hook-form + Zod) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
@@ -144,7 +145,7 @@ chaqirilgandan **keyin** chizing.
 | `social-proof/` | LivePurchaseToast (har 35s, Framer Motion) |
 | `exit-intent/` | ExitIntentPopup (mouseleave + visibilitychange, sessionStorage once) |
 | `pwa/` | ServiceWorkerRegistration |
-| `ui/` | Button, Badge, Skeleton, ProductGridSkeleton, CountdownTimer, Price, StarRating, ScrollProgress, BackToTop |
+| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), Skeleton, StarRating, ScrollProgress, BackToTop |
 | `analytics/` | Analytics (GTM Script) |
 
 ## State Management
@@ -200,7 +201,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 919 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 991 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -425,6 +426,98 @@ NEXT_PUBLIC_ACCOUNT_DEMO=on          # faqat demo deploy uchun
 # Sanity Studio (production'da default: yopiq)
 SANITY_STUDIO_ENABLED=on             # + haqiqiy NEXT_PUBLIC_SANITY_PROJECT_ID kerak
 ```
+
+## Dizayn tizimi (GoVita V3 — 2026-10)
+
+UI `design/` dagi yakuniy dizaynga bosqichma-bosqich koʻchirilmoqda. Bosqichlar:
+`design/TASKS.md`; holat va qarorlar: [`docs/DIZAYN-V3-REJA.md`](docs/DIZAYN-V3-REJA.md).
+**Bosqichlar faqat foydalanuvchi aytganda, bittadan.** Biznes-logika (store'lar,
+i18n kalitlari, checkout oqimi, SEO/JSON-LD, analytics) oʻzgarmaydi — faqat
+koʻrinish qatlami.
+
+**Har UI ishining tartibi:**
+1. Oldin `design/pages/<Sahifa>.html` va `design/screenshots/<Sahifa>.jpg` ni oʻqing.
+2. Oxirida Playwright bilan 1440 va 390 kenglikda skrinshot olib, dizayn
+   skrinshoti bilan solishtiring va farqlarni roʻyxat qiling.
+3. Dizayn audit nolini buzsa (kontrast, tap-target, fokus…) — audit yutadi va
+   farq foydalanuvchiga aytiladi.
+
+**`legacy-*` tokenlar.** Dizayndagi `ink`, `line`, `line-strong`, `muted`, `gold`,
+`shadow-pop` nomlari eski tokenlarda boshqa maʼnoda band edi (eski `ink` — och
+sahifa foni, yangisi — deyarli qora). Eski tokenlar `legacy-*` ga mexanik
+koʻchirildi (koʻrinish oʻzgarmadi — kompilyatsiya qilingan CSS solishtirildi),
+yangilari ayni nomni oldi. **Yangi kodda `legacy-*` ishlatilmaydi**; 12-bosqich
+oxirida `grep -r legacy- src` boʻsh boʻlishi va eski `@theme` bloki oʻchishi kerak.
+
+**Breakpoint:** desktop header va footer ustunlari `lg` (1024px) dan; undan
+pastda mobil header + tab bar. `--bottom-nav` ham 1023.98px gacha nolmas.
+Faqat desktop header sticky — telefonda tab bar doim ko'rinadi.
+
+**Yopiq akkordeon kontentini chizmang** (`<details>` emas). Chrome yopiq
+`details` ichidagi havolalarni `content-visibility: hidden` bilan joylashtirib
+qo'yadi va bottom-edge/tap-target auditi ko'rinmaydigan havolalarni sanaydi
+(`FooterAccordion` shu sabab client komponent).
+
+**Global `border-color` `@layer base` ichida.** U layer'siz turganda har qanday
+`border-*` rang utility'sini bosib ketardi (layer'siz qoida har doim yutadi).
+
+`design/` Tailwind skaneridan (`@source not`) va ESLint'dan chiqarilgan — u
+maʼlumot, kod emas.
+
+**Kesma rasmlar:** `public/images/products/c-*.png`, slug → fayl
+`src/lib/content/product-cutouts.ts` da (test fayllar mavjudligini tekshiradi).
+**Birlik narxi** (`3 950 soʻm / tabletka`): `src/lib/content/product-units.ts` —
+`Product` turiga maydon qo'shilmadi; real API'ga o'tilganda bu ma'lumot API'dan
+kelishi kerak.
+
+**`cn()` V3 shrift o'lchamlarini biladi** (`src/lib/utils.ts`,
+`extendTailwindMerge`). Yangi `--text-*` token qo'shsangiz, uni o'sha ro'yxatga
+ham qo'shing — aks holda `cn("text-yangi", "text-muted")` o'lchamni tashlab
+yuboradi. `formatMoney` uz uchun `soʻm` (U+02BB) yozadi.
+Stok foto: `public/images/stock/st-*`.
+
+Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa>.html` va `design/screenshots/<Sahifa>.jpg` ni oʻqing. Dizayndan chetga chiqish faqat kelishilgan holda.
+
+### Qatʼiy qoidalar
+- **Yashil rang yoʻq.** Asosiy harakat — `ink` (#17191B) tugma, oq matn. Brend ranglari `forest` (#0F2D24) va `gold` (#B8954F) faqat logoda.
+- **Qizil (#C8161D)** faqat chegirma uchun (pill badge «−11%», «Aksiyalar» havolasi). **Sariq (#FFD43B)** faqat «Xit» / «Arzon narx kafolati».
+- **Faqat real maʼlumot.** Taymer, toʻqima sharh/reyting, «N kishi sotib oldi», oʻylab topilgan eski narx — yoʻq. Sharh boʻlmasa: «Hali sharh yoʻq» + «Sharh yozish».
+- **AI-generatsiya rasm ishlatilmaydi.** Mahsulot — haqiqiy packshotning fonidan ajratilgan PNG (`c-*.png`), `tile` (#F1F3F0) fonida `object-fit: contain`. Lifestyle — litsenziyali stok foto.
+- **BAD ogohlantirishi** mahsulot, test va maqola sahifalarida: «Biologik faol qoʻshimcha. Dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing.»
+- **Tibbiy vaʼda yoʻq:** «davolaydi», «stressni kamaytiradi», «100% natija» kabi soʻzlar ishlatilmaydi.
+- **Oʻzbek apostrofi** — `ʻ` (U+02BB): oʻ, gʻ, soʻm. Oddiy `'` emas.
+- **Narx formati:** `79 000 soʻm` (minglik boʻsh joy bilan). Birlik narxi kartada: `3 950 soʻm / tabletka`.
+
+### Tokenlar (`design/tokens.json` → `src/styles/globals.css` ikkinchi `@theme` bloki)
+- Ranglar: `bg #FFFFFF`, `tile #F1F3F0`, `tile-hover #E6E8E5`, `chip-strong #E3E6E9`, `line #E4E6E8`, `line-strong #D9DCDF`, `ink #17191B`, `ink-2 #44494E`, `muted #63686E`, `dark-panel #1C1F22`, `on-dark-2 #C9CDD1`, `red #C8161D`, `yellow #FFD43B`, `yellow-banner #FFE58A`, `forest #0F2D24`, `gold #B8954F`.
+- Shrift: **Onest** (variable, latin + latin-ext + cyrillic + cyrillic-ext) → `font-sans`/`font-onest`; logo — Playfair Display 500 → `font-logo`. **Self-hosted**: fayllar `public/fonts/<nom>-v<versiya>/`, `@font-face` `globals.css` da, preload `[locale]/layout.tsx` da. `next/font/google` ishlatilmaydi — build vaqtidagi Google so'rovi bir marta yiqilib CI'ni sindirdi. Yangi versiya — yangi papka (fayllar `immutable` keshlanadi).
+- Radius: badge `9999px`, tugma/input/chip `12px`, mahsulot rasmi `16px`, karta/panel `20px`, plitka/banner `24–28px`.
+- Soya: faqat strelka tugmalari, xarid bloki va popoverlarda (`tokens.json` → `shadow`).
+- Konteyner: `max-width: 1296px; padding: 0 24px`. Mobil gutter 16px.
+
+### Tipografiya (desktop / mobil)
+- Sahifa sarlavhasi 36/42 bold · mobil 28/34.
+- Boʻlim sarlavhasi 30/36 bold · mobil 22/28.
+- Asosiy matn 15–17px, `ink-2`. Meta 13–14px, `muted`.
+- Narx: kartada 20px bold, PDP'da 34px bold.
+
+### Komponentlar (dizayn fayli → React)
+| Dizayn | React komponenti | Eslatma |
+|---|---|---|
+| `HeaderV3` | `Header` | utility qator + logo + qora «Katalog» + qidiruv + ikonlar + kategoriya qatori; `active`, `cartCount` props |
+| `HeaderMobileV3` | `MobileHeader` | logo, shahar, til, telefon, qidiruv maydoni (bosilganda qidiruv ekrani) |
+| `TabBarV3` | `MobileTabBar` | `position: fixed; bottom: 0` + `env(safe-area-inset-bottom)`; kontentga pastdan joy |
+| `FooterV3` / `FooterMobileV3` | `Footer` | mobilda ustunlar akkordeon |
+| `ProductCardV3` | `ProductCard` | props: product, inCart/qty, fav; rasm `contain` + 9% padding; `onCard` (qora panel ichida oq fon) |
+| `AccountNavV3` | `AccountSidebar` | kabinet sahifalari |
+| `InfoNavV3` | `InfoSidebar` | maʼlumot sahifalari |
+
+### Mobil pastki panellar
+Tab bar va PDP/savatdagi xarid paneli — **`position: fixed`**. Hech qachon `position: absolute; top: Npx` bilan emas (avvalgi «sahifa boʻsh koʻrinadi» xatosi shundan edi). Dizayndagi «birinchi ekran» (390×844) artboardlari panelning ekrandagi oʻrnini koʻrsatadi.
+
+### Accessibility
+- Interaktiv elementlar — `<button>` / `<a href>`; ikon tugmalarida `aria-label`.
+- Teginish maydoni ≥ 44px. Matn kontrasti ≥ 4.5:1 (muted oqda 5.6:1).
 
 ## Ishlab chiqish qoidalari
 

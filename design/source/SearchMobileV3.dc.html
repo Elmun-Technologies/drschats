@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>GoVita — qidiruv, mobil</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700&family=Playfair+Display:wght@500&display=swap">
+<style>
+/*@KIT*/
+.sg{display:flex;align-items:center;gap:12px;min-height:52px;padding:0 16px;font-size:16px;color:#17191B;text-decoration:none}
+.lbl{font-size:13px;font-weight:600;color:#63686E;letter-spacing:.04em;text-transform:uppercase;padding:0 16px}
+</style>
+</helmet>
+<div class="gv" style="position: relative; height: 844px; overflow: hidden; display: flex; flex-direction: column; width: 100%">
+<div style="display: flex; gap: 8px; align-items: center; padding: 12px 16px; border-bottom: 1px solid #E4E6E8">
+<a href="HomeMobileV3.dc.html" aria-label="Orqaga" style="width: 40px; height: 48px; display: flex; align-items: center; justify-content: center; color: #17191B"><svg class="ic" viewBox="0 0 24 24" style="width: 24px; height: 24px"><path d="M15 6l-6 6 6 6"/></svg></a>
+<span style="flex: 1; display: flex; align-items: center; gap: 8px; height: 48px; padding: 0 6px 0 14px; border-radius: 14px; background: #F1F3F0; font-size: 16px">vitamin C<span style="width: 2px; height: 20px; background: #17191B; margin-left: -6px"></span><span style="flex: 1"></span><span style="width: 32px; height: 32px; border-radius: 16px; background: #FFFFFF; display: flex; align-items: center; justify-content: center"><svg class="ic" viewBox="0 0 24 24" style="width: 16px; height: 16px"><path d="M6 6l12 12M18 6L6 18"/></svg></span></span>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding-top: 8px">
+<sc-for list="{{sugg}}" as="s" hint-placeholder-count="3"><a class="sg" href="SearchMobileV3.dc.html"><svg class="ic" viewBox="0 0 24 24" style="color: #8A8F95"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg><span><b>vitamin C</b>{{s}}</span><svg class="ic" viewBox="0 0 24 24" style="width: 18px; height: 18px; margin-left: auto; color: #8A8F95"><path d="M7 17L17 7M9 7h8v8"/></svg></a></sc-for>
+</div>
+<div style="display: flex; flex-direction: column; gap: 10px; padding: 16px 0 8px; border-top: 1px solid #E4E6E8; margin-top: 8px">
+<span class="lbl">Kategoriyalar</span>
+<div class="hs" style="padding: 0 16px"><a class="chip" href="CatalogMobileV3.dc.html">Shipuchi tabletkalar</a><a class="chip" href="CatalogMobileV3.dc.html">Immunitet</a><a class="chip" href="CatalogMobileV3.dc.html">Goʻzallik</a></div>
+</div>
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 16px 0 0; border-top: 1px solid #E4E6E8; margin-top: 8px">
+<span class="lbl" style="padding-bottom: 6px">Mahsulotlar</span>
+<sc-for list="{{prods}}" as="p" hint-placeholder-count="4">
+<a class="sg" href="ProductMobileV3.dc.html" style="padding: 6px 16px">
+<span style="width: 60px; height: 60px; border-radius: 14px; background: #F1F3F0; display: flex; align-items: center; justify-content: center; flex: none"><img src="{{p.img}}" alt="" style="width: 50px; height: 50px; object-fit: contain"></span>
+<span style="flex: 1; display: flex; flex-direction: column; gap: 2px; min-width: 0"><span style="font-size: 15px; line-height: 19px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden">{{p.name}}</span><span style="font-size: 16px; font-weight: 700">{{p.priceF}} soʻm</span></span>
+</a>
+</sc-for>
+</div>
+<div style="position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 16px 20px; background: #FFFFFF; border-top: 1px solid #E4E6E8"><a class="btn" href="CatalogMobileV3.dc.html" style="width: 100%; height: 52px; border-radius: 14px">Barcha 4 ta natijani koʻrsatish</a></div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+//@DATA
+class Component extends DCLogic {
+  renderVals() { return { sugg: [" 550 mg", " shipuchi tabletka", " va rux"], prods: gvList(["vitc", "immuno", "mag", "hns"]) }; }
+}
+</script>
+</body>
+</html>

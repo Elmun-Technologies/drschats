@@ -61,7 +61,7 @@ export function ProductTabs({ product, t }: Props) {
       <div
         role="tablist"
         aria-label={t.tabsLabel}
-        className="no-scrollbar flex snap-x gap-1 overflow-x-auto rounded-2xl border border-line bg-surface p-1"
+        className="no-scrollbar flex snap-x gap-1 overflow-x-auto rounded-2xl border border-legacy-line bg-surface p-1"
       >
         {tabs.map((tab, i) => (
           <button
@@ -79,7 +79,7 @@ export function ProductTabs({ product, t }: Props) {
             onKeyDown={(e) => handleKeyDown(e, i)}
             className={cn(
             "shrink-0 snap-start whitespace-nowrap rounded-xl px-4 py-2.5 text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-signal sm:flex-1 sm:shrink",
-              active === tab.id ? "border border-line-strong bg-surface-2 text-fg" : "text-muted hover:text-fg",
+              active === tab.id ? "border border-legacy-line-strong bg-surface-2 text-fg" : "text-legacy-muted hover:text-fg",
             )}
           >
             {tab.label}
@@ -110,15 +110,15 @@ function BenefitsPanel({ product, t }: Props) {
   return (
     <div className="grid gap-10 lg:grid-cols-[1fr_1.2fr]">
       <div>
-        <p className="text-muted">{product.description}</p>
-        <div className="mt-6 rounded-2xl border border-line bg-surface p-5">
+        <p className="text-legacy-muted">{product.description}</p>
+        <div className="mt-6 rounded-2xl border border-legacy-line bg-surface p-5">
           <h3 className="mb-2 font-display text-base font-semibold">{t.howToUse}</h3>
-          <p className="text-sm text-muted">{product.howToUse}</p>
+          <p className="text-sm text-legacy-muted">{product.howToUse}</p>
         </div>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
         {product.benefits.map((b) => (
-          <div key={b.title} className="h-full rounded-2xl border border-line bg-surface p-5">
+          <div key={b.title} className="h-full rounded-2xl border border-legacy-line bg-surface p-5">
             <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-lg bg-surface-2 text-fg">
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6">
                 <circle cx="12" cy="12" r="9" />
@@ -126,7 +126,7 @@ function BenefitsPanel({ product, t }: Props) {
               </svg>
             </div>
             <h3 className="font-display text-sm font-semibold">{b.title}</h3>
-            <p className="mt-1 text-xs text-muted">{b.description}</p>
+            <p className="mt-1 text-xs text-legacy-muted">{b.description}</p>
           </div>
         ))}
       </div>
@@ -136,22 +136,22 @@ function BenefitsPanel({ product, t }: Props) {
 
 function IngredientsPanel({ product, t }: Props) {
   return (
-    <div className="overflow-hidden rounded-2xl border border-line">
+    <div className="overflow-hidden rounded-2xl border border-legacy-line">
       <div className="overflow-x-auto">
         <table className="w-full min-w-[300px] text-left text-sm">
-          <thead className="bg-surface-2 text-muted">
+          <thead className="bg-surface-2 text-legacy-muted">
             <tr>
               <th scope="col" className="px-3 py-3 font-medium sm:px-5">{t.ingredientName}</th>
               <th scope="col" className="px-3 py-3 font-medium sm:px-5">{t.ingredientAmount}</th>
               <th scope="col" className="px-3 py-3 font-medium sm:px-5">{t.ingredientDV}</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-line">
+          <tbody className="divide-y divide-legacy-line">
             {product.ingredients.map((row) => (
               <tr key={row.name} className="bg-surface">
                 <th scope="row" className="px-3 py-3 text-left font-medium text-fg sm:px-5">{row.name}</th>
-                <td className="px-3 py-3 text-muted sm:px-5">{row.amount}</td>
-                <td className="px-3 py-3 text-muted sm:px-5">{row.dailyValue ?? "—"}</td>
+                <td className="px-3 py-3 text-legacy-muted sm:px-5">{row.amount}</td>
+                <td className="px-3 py-3 text-legacy-muted sm:px-5">{row.dailyValue ?? "—"}</td>
               </tr>
             ))}
           </tbody>

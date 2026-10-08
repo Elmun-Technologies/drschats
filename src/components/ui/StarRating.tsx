@@ -24,7 +24,7 @@ export function StarRating({
             viewBox="0 0 20 20"
             className={cn(
               "h-4 w-4",
-              i < Math.round(rating) ? "fill-gold" : "fill-surface-3",
+              i < Math.round(rating) ? "fill-legacy-gold" : "fill-surface-3",
             )}
           >
             <path d="M10 1.5l2.6 5.27 5.82.85-4.21 4.1.99 5.78L10 14.77l-5.2 2.73.99-5.78-4.21-4.1 5.82-.85L10 1.5z" />
