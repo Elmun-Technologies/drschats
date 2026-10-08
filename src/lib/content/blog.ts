@@ -33,11 +33,17 @@ export interface Article {
   relatedProductSlugs: string[];
 }
 
-const img = (seed: string) => {
-  let h = 0;
-  for (let i = 0; i < seed.length; i++) h = (h * 31 + seed.charCodeAt(i)) >>> 0;
-  return `/placeholders/p${(h % 6) + 1}.svg`;
+/*
+  Licensed stock photos (public/images/stock), one per article. An article
+  without its own entry falls back to a neutral pack shot of capsules rather
+  than a drawn placeholder.
+*/
+const IMAGES: Record<string, string> = {
+  "blog-omega3": "/images/stock/st-cat-capsules.webp",
+  "blog-vitamind": "/images/stock/st-cat-orange.webp",
+  "blog-magnesium": "/images/stock/st-cat-citrus.webp",
 };
+const img = (seed: string) => IMAGES[seed] ?? "/images/stock/st-cat-capsules.webp";
 
 const rawArticles: RawArticle[] = [
   {
@@ -83,7 +89,8 @@ const rawArticles: RawArticle[] = [
         },
       },
     ],
-    relatedProductSlugs: ["omega-3-premium", "multivitamin-daily"],
+    // The catalogue carries no omega-3 yet; an unrelated pack is not a "related product".
+    relatedProductSlugs: [],
   },
   {
     slug: "qishda-vitamin-d",
@@ -126,7 +133,7 @@ const rawArticles: RawArticle[] = [
         },
       },
     ],
-    relatedProductSlugs: ["vitamin-d3-k2", "immuno-complex"],
+    relatedProductSlugs: ["swiss-energy-calcivit-30", "swiss-energy-immunovit-30"],
   },
   {
     slug: "magniy-va-uyqu",
@@ -158,7 +165,7 @@ const rawArticles: RawArticle[] = [
         },
       },
     ],
-    relatedProductSlugs: ["magnesium-b6", "collagen-beauty"],
+    relatedProductSlugs: ["dr-frei-antistress-magniy-20"],
   },
 ];
 

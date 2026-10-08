@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
@@ -21,6 +22,9 @@ export default async function NewsPage({ params }: { params: Promise<{ locale: L
   const t = await getTranslations("pages.news");
   const items = t.raw("items") as { title: string; text: string; meta: string }[];
 
+  // Only real announcements are published; with none on file the section does
+  // not exist (the footer and sitemap read the same list).
+  if (items.length === 0) notFound();
   const [featured, ...rest] = items;
 
   return (

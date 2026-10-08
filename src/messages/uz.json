@@ -80,7 +80,9 @@
     "hit": "Xit",
     "decrease": "Kamaytirish",
     "increase": "Koʻpaytirish",
-    "inCartQty": "{count} dona"
+    "inCartQty": "{count} dona",
+    "notFoundLead": "Havola eskirgan yoki sahifa koʻchirilgan boʻlishi mumkin. Qidiruvdan foydalaning yoki katalogga oʻting.",
+    "notFoundPopular": "Mashhur kategoriyalar"
   },
   "home": {
     "hero": {
@@ -874,7 +876,19 @@
       "pregnancy": "Homiladorlik",
       "sports": "Sport"
     },
-    "featuredLabel": "Tavsiya etilgan maqola"
+    "featuredLabel": "Tavsiya etilgan maqola",
+    "v3": {
+      "all": "Hammasi",
+      "read": "Oʻqish",
+      "soonTitle": "Yangi maqolalar tez orada qoʻshiladi",
+      "soonText": "Ovqatlanish, vitaminlar, homiladorlik va bolalar boʻlimlari tayyorlanmoqda. Chiqishi bilan Telegram kanalimizda xabar beramiz.",
+      "joinTelegram": "Telegram kanalga oʻtish",
+      "share": "Ulashish:",
+      "copyLink": "Havolani nusxalash",
+      "copied": "Havola nusxalandi",
+      "more": "Boshqa maqolalar",
+      "allProducts": "Barcha mahsulotlar"
+    }
   },
   "meta": {
     "homeTitle": "Go Vita — Evropa sifatidagi Vitaminlar va BAD",
@@ -1180,23 +1194,7 @@
       "eyebrow": "Kompaniya yangiliklari",
       "title": "Yangiliklar",
       "subtitle": "Go Vita hayotidan so‘nggi yangiliklar va e’lonlar.",
-      "items": [
-        {
-          "title": "Yangi Swiss Energy liniyasi keldi",
-          "text": "Shveytsariyadan yangi shipuchi vitaminlar assortimenti.",
-          "meta": "2026-06-01"
-        },
-        {
-          "title": "Toshkentda yangi ombor ochildi",
-          "text": "Tezroq yetkazib berish uchun yangi logistika markazi.",
-          "meta": "2026-05-12"
-        },
-        {
-          "title": "2000-chi hamkor dorixona",
-          "text": "Hamkorlik tarmog‘imiz yana kengaydi.",
-          "meta": "2026-04-20"
-        }
-      ]
+      "items": []
     },
     "payment": {
       "crumb": "To’lov",

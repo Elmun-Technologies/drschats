@@ -7,13 +7,11 @@ import {
   BLOG_CATEGORY_KEYS,
   articlesInCategory,
   isBlogCategoryKey,
+  usedCategoryKeys,
 } from "@/lib/content/blog-categories";
 import { buildPageMetadata, SITE_NAME, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { Link } from "@/lib/i18n/navigation";
-import { Container } from "@/components/ui/Container";
-import { Reveal } from "@/components/animation/Reveal";
-import { ArticleCard } from "@/components/blog/ArticleCard";
+import { BlogIndex } from "@/components/blog/BlogIndex";
 
 export const revalidate = 3600;
 
@@ -54,10 +52,12 @@ export default async function BlogCategoryPage({
   ]);
 
   const inCategory = articlesInCategory(articles, slug);
+  // An empty category is a dead end; the chips never link to one either.
+  if (inCategory.length === 0) notFound();
   const label = t(`categories.${slug}`);
 
   return (
-    <div className="pt-10 pb-24">
+    <>
       <JsonLd
         data={breadcrumbLd([
           { name: prod("breadcrumbHome"), url: `${SITE_URL}/${locale}` },
@@ -65,37 +65,14 @@ export default async function BlogCategoryPage({
           { name: label, url: `${SITE_URL}/${locale}/blog/category/${slug}` },
         ])}
       />
-      <Container>
-        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-2 text-sm text-faint">
-          <Link href="/" className="hover:text-fg">{prod("breadcrumbHome")}</Link>
-          <span>/</span>
-          <Link href="/blog" className="hover:text-fg">{t("title")}</Link>
-          <span>/</span>
-          <span className="text-fg">{label}</span>
-        </nav>
-
-        <header className="mt-8 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-fg">
-            {t("title")}
-          </p>
-          <h1 className="mt-3 font-display text-4xl font-extrabold tracking-tight text-balance sm:text-5xl">
-            {label}
-          </h1>
-          <p className="mt-4 text-lg text-legacy-muted">{t("categorySubtitle", { category: label })}</p>
-        </header>
-
-        {inCategory.length === 0 ? (
-          <p className="py-24 text-center text-legacy-muted">{t("categoryEmpty")}</p>
-        ) : (
-          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {inCategory.map((article, i) => (
-              <Reveal key={article.slug} index={Math.min(i, 6)}>
-                <ArticleCard article={article} />
-              </Reveal>
-            ))}
-          </div>
-        )}
-      </Container>
-    </div>
+      <BlogIndex
+        locale={locale}
+        articles={inCategory}
+        categories={usedCategoryKeys(articles)}
+        active={slug}
+        title={label}
+        lead={t("categorySubtitle", { category: label })}
+      />
+    </>
   );
 }
