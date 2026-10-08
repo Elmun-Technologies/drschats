@@ -20,6 +20,7 @@ import { AccountLink } from "./AccountLink";
 import { Logo } from "./Logo";
 import { ICONS } from "./header-item";
 import type { MenuDeal } from "./menu-deal";
+import { isStocked } from "@/lib/shop/categories";
 
 /*
   Design: HeaderV3 (lg and up) and HeaderMobileV3 (below lg, where the fixed
@@ -52,7 +53,7 @@ export function Header({
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  const shelves = categories.filter((c) => c.productCount);
+  const shelves = categories.filter(isStocked);
   // Hidden until the account area can answer: the link and the route read the
   // same predicate, so the link can never point at a 404.
   const showAccount = accountAreaAvailable(isApiConfigured());

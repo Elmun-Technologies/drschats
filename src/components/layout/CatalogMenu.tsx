@@ -12,6 +12,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import type { Category } from "@/lib/shopflow/types";
 import { discountPercent, type MenuDeal } from "./menu-deal";
 import { HEALTH_LINKS, SALE_HREF } from "./nav-links";
+import { isStocked } from "@/lib/shop/categories";
 
 /*
   The black "Katalog" button and its panel (design: MegaMenuV3).
@@ -38,7 +39,7 @@ export function CatalogMenu({
   const nav = useTranslations("nav");
   const health = useTranslations("health");
   const locale = useLocale() as Locale;
-  const visible = categories.filter((c) => c.productCount);
+  const visible = categories.filter(isStocked);
   const healthLinks = HEALTH_LINKS.filter((l) => isNavigable(l.href, topicPaths));
   const [open, setOpen] = useState(false);
   const [activeId, setActiveId] = useState<string | null>(null);
@@ -100,6 +101,11 @@ export function CatalogMenu({
             id={panelId}
             role="group"
             aria-label={t("catalog")}
+            onClick={(e) => {
+              // A link that only changes the query (Aksiyalar from /products)
+              // keeps the pathname, so the effect above would not close it.
+              if ((e.target as HTMLElement).closest("a")) setOpen(false);
+            }}
             className="absolute inset-x-0 top-full z-40 max-h-[calc(100dvh-11rem)] overflow-y-auto overscroll-contain rounded-b-[28px] bg-bg shadow-pop"
           >
             <div className="wrap grid grid-cols-[260px_minmax(0,1fr)] gap-8 pb-8 pt-6 xl:grid-cols-[300px_minmax(0,1fr)_300px]">
@@ -135,7 +141,7 @@ export function CatalogMenu({
                     href={`/products/${active.slug}`}
                     className="inline-flex items-center gap-1.5 text-[15px] font-semibold hover:underline"
                   >
-                    {t("allProducts", { count: active.productCount ?? 0 })}
+                    {active.productCount != null ? t("allProducts", { count: active.productCount }) : t("allProductsPlain")}
                     <ArrowIcon />
                   </Link>
                 </div>

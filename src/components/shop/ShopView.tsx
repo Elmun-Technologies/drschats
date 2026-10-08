@@ -22,6 +22,7 @@ import {
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { SORT_ORDER, sortKey, type CatalogSort } from "@/lib/shop/catalog-sort";
 import { CatalogSidebar, MobileFilterBar, type PanelContext } from "./CatalogFilterPanel";
+import { isStocked } from "@/lib/shop/categories";
 
 const PAGE_SIZE = 24;
 /** Shopflow filters by category and search; the rest runs over this pool. */
@@ -73,7 +74,7 @@ export async function ShopView({
   const remaining = matched.length - visible.length;
 
   const active = activeCategory ? categories.find((c) => c.slug === activeCategory) : undefined;
-  const shelves = categories.filter((c) => c.productCount);
+  const shelves = categories.filter(isStocked);
   const basePath = activeCategory ? `/products/${activeCategory}` : "/products";
   const keep: Record<string, string> = search ? { q: search } : {};
   const heading = search ? t("searchResults", { query: search }) : active ? active.name : t("title");
@@ -160,9 +161,11 @@ export async function ShopView({
             >
               <span className="relative z-10 text-[13px] font-semibold leading-4 lg:text-base lg:leading-5">
                 {c.name}
-                <small className={cn("block text-[13px] font-normal", current ? "text-on-dark-2" : "text-muted")}>
-                  {v3("count", { count: c.productCount ?? 0 })}
-                </small>
+                {c.productCount != null && (
+                  <small className={cn("block text-[13px] font-normal", current ? "text-on-dark-2" : "text-muted")}>
+                    {v3("count", { count: c.productCount })}
+                  </small>
+                )}
               </span>
               {img && (
                 <span className="absolute bottom-0.5 right-0.5 h-16 w-16 lg:bottom-1 lg:right-1.5 lg:h-[78px] lg:w-[78px]">

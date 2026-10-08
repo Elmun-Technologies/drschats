@@ -883,7 +883,8 @@
     "switchLocale": "Oʻzbek tili",
     "closeSearch": "Закрыть поиск",
     "closeCatalog": "Закрыть каталог",
-    "homeLabel": "GoVita — главная"
+    "homeLabel": "GoVita — главная",
+    "allProductsPlain": "Все товары"
   },
   "badges": {
     "hot": "НОВОЕ",

@@ -883,7 +883,8 @@
     "switchLocale": "Русский язык",
     "closeSearch": "Qidiruvni yopish",
     "closeCatalog": "Katalogni yopish",
-    "homeLabel": "GoVita bosh sahifa"
+    "homeLabel": "GoVita bosh sahifa",
+    "allProductsPlain": "Barcha mahsulotlar"
   },
   "badges": {
     "hot": "YANGI",
