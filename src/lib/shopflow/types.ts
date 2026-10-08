@@ -158,8 +158,14 @@ export interface OrderAttribution {
   utmSource?: string;
   utmMedium?: string;
   utmCampaign?: string;
+  utmContent?: string;
+  utmTerm?: string;
+  /** Ad click id as `gclid:…`, `fbclid:…`, `yclid:…`. */
+  clickId?: string;
   landing?: string;
   referrer?: string;
+  /** The first-touch source, when it differs from the latest one. */
+  firstSource?: string;
 }
 
 export interface OrderRequest {
@@ -179,7 +185,7 @@ export interface OrderRequest {
   };
   /**
    * How the customer intends to pay. `online` names the provider the payment
-   * page belongs to; `cod` is cash or card on delivery.
+   * page belongs to; `cod` is cash on delivery.
    */
   payment?: {
     method: "online" | "cod";

@@ -27,6 +27,7 @@ export const STORAGE_KEYS = {
   session: `${PREFIX}session`,
   compare: `${PREFIX}compare`,
   profile: `${PREFIX}profile`,
+  attribution: `${PREFIX}attribution`,
 } as const;
 
 let migrated = false;

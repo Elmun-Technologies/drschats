@@ -774,7 +774,9 @@
       "out_of_stock": "Savatdagi mahsulotlardan biri tugadi. Uni olib tashlab, qayta urinib koʻring.",
       "invalid_offer": "Taklif chegirmasi amal qilmaydi. Savatni yangilab, qayta urinib koʻring.",
       "payment_unavailable": "Bu toʻlov usuli hozir mavjud emas. Yetkazishda toʻlovni tanlang.",
-      "failed": "Buyurtma yuborilmadi. Qayta urinib koʻring yoki {phone} raqamiga qoʻngʻiroq qiling."
+      "failed": "Buyurtma yuborilmadi. Qayta urinib koʻring yoki {phone} raqamiga qoʻngʻiroq qiling.",
+      "offerRemoved": "«{name}» uchun taklif chegirmasi endi amal qilmaydi — u savatdan olib tashlandi. Buyurtmani qayta yuboring.",
+      "lineRemoved": "«{name}» hozir sotuvda yoʻq — u savatdan olib tashlandi. Buyurtmani qayta yuboring."
     }
   },
   "footer": {
@@ -1138,7 +1140,8 @@
     "freeGiftCta": "Sovgʻamni olaman!",
     "freeLabel": "BEPUL",
     "progressLabel": "Tejamkorlik: {amount}",
-    "progressSteps": "{done}/{total} qadam"
+    "progressSteps": "{done}/{total} qadam",
+    "offerReason": "Buyurtmangizga qoʻshimcha taklif"
   },
   "cookie": {
     "text": "Biz saytdan foydalanishni yaxshilash uchun cookie fayllardan foydalanamiz.",

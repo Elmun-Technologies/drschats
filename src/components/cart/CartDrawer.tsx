@@ -8,10 +8,9 @@ import type { Locale } from "@/lib/i18n/routing";
 import { useCart } from "@/lib/cart/store";
 import { useDialog } from "@/lib/ui/useDialog";
 import { usePromotions } from "@/lib/cart/promotions-context";
-import { computeTotals } from "@/lib/cart/pricing";
+import { computeTotals, lineQtyCap, lineListTotal, lineTotal } from "@/lib/cart/pricing";
 import { formatMoney } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
-import { trackBeginCheckout } from "@/lib/analytics/events";
 import { UpsellLadderModal } from "@/components/upsell/UpsellLadderModal";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 
@@ -20,6 +19,7 @@ export function CartDrawer() {
   const t = useTranslations("cart");
   const tc = useTranslations("common");
   const ts = useTranslations("subscription");
+  const tco = useTranslations("checkout");
   const { lines, isOpen, close, setQuantity, remove } = useCart();
   const promotions = usePromotions();
   const totals = computeTotals(lines, promotions);
@@ -90,7 +90,7 @@ export function CartDrawer() {
                       <div
                         className="h-full rounded-full bg-ink transition-[width] duration-700 ease-out"
                         style={{
-                          width: `${Math.min(100, ((totals.subtotal) / totals.freeShippingThreshold) * 100)}%`,
+                          width: `${Math.min(100, ((totals.freeShippingThreshold - totals.freeShippingRemaining) / totals.freeShippingThreshold) * 100)}%`,
                         }}
                       />
                     </div>
@@ -112,24 +112,25 @@ export function CartDrawer() {
                             </svg>
                           </button>
                         </div>
-                        <p className="mt-1 text-sm text-ink">{formatMoney(l.price, locale)}</p>
-                        {l.oldPrice && l.oldPrice > l.price && (
+                        <p className="mt-1 text-sm text-ink">{formatMoney(lineTotal(l), locale)}</p>
+                        {lineListTotal(l) && (
                           <div className="mt-0.5 flex items-center gap-2">
-                            <span className="text-xs text-ink-2 line-through">{formatMoney(l.oldPrice, locale)}</span>
+                            <span className="text-xs text-ink-2 line-through">{formatMoney(lineListTotal(l)!, locale)}</span>
                             <span className="rounded border border-line bg-tile px-1.5 py-0 text-[10px] font-medium text-ink-2">
-                              −{Math.round((1 - l.price / l.oldPrice) * 100)}%
+                              −{Math.round((1 - lineTotal(l) / lineListTotal(l)!) * 100)}%
                             </span>
                           </div>
                         )}
+                        {l.soldOut && <p role="status" className="mt-0.5 text-xs font-semibold text-red">{tc("outOfStock")}</p>}
                         {l.subscription && (
                           <p className="mt-0.5 text-xs font-semibold text-ink">
                             {ts("everyDays", { days: l.subscription.intervalDays })}
                           </p>
                         )}
                         <div className="mt-auto flex items-center gap-2 pt-2">
-                          <QtyButton onClick={() => setQuantity(l.lineId, l.quantity - 1)}>−</QtyButton>
+                          <QtyButton label={tco("decreaseFor", { name: l.name })} disabled={l.quantity <= 1} onClick={() => setQuantity(l.lineId, l.quantity - 1)}>−</QtyButton>
                           <span className="w-6 text-center text-sm">{l.quantity}</span>
-                          <QtyButton onClick={() => setQuantity(l.lineId, l.quantity + 1)}>+</QtyButton>
+                          <QtyButton label={tco("increaseFor", { name: l.name })} disabled={l.quantity >= lineQtyCap(l)} onClick={() => setQuantity(l.lineId, l.quantity + 1)}>+</QtyButton>
                         </div>
                       </div>
                     </div>
@@ -172,10 +173,7 @@ export function CartDrawer() {
                   })()}
                   <Link
                     href="/cart"
-                    onClick={() => {
-                      close();
-                      trackBeginCheckout(totals.total);
-                    }}
+                    onClick={close}
                     className={buttonVariants("primary", "lg") + " w-full"}
                   >
                     {t("checkout")}
@@ -191,11 +189,24 @@ export function CartDrawer() {
   );
 }
 
-function QtyButton({ children, onClick }: { children: React.ReactNode; onClick: () => void }) {
+function QtyButton({
+  children,
+  onClick,
+  label,
+  disabled,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+  label: string;
+  disabled?: boolean;
+}) {
   return (
     <button
+      type="button"
       onClick={onClick}
-      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-line-strong hover:text-ink"
+      disabled={disabled}
+      aria-label={label}
+      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-line-strong hover:text-ink disabled:opacity-40"
     >
       {children}
     </button>

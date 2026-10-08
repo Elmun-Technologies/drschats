@@ -13,19 +13,6 @@ export interface UpsellStep {
   cumulativeSavings: number;
   /** 'free_gift' means price ≤ cumulative savings → frame as FREE */
   stepType: "standard" | "free_gift";
-  reason: string;
-}
-
-const REASONS = [
-  "Ajoyib kombinatsiya",
-  "Koʻp tanlanadigan juft",
-  "Salomatlik uchun ideal",
-  "Ularni birga oling",
-  "Premium tanlov",
-];
-
-function pickReason(i: number): string {
-  return REASONS[i % REASONS.length];
 }
 
 /**
@@ -79,7 +66,6 @@ export function buildUpsellLadder(
     savedAmount: step1Saved,
     cumulativeSavings,
     stepType: "standard",
-    reason: pickReason(0),
   });
 
   // ── Step 2: 15% off, different category ──
@@ -108,7 +94,6 @@ export function buildUpsellLadder(
     savedAmount: step2Saved,
     cumulativeSavings,
     stepType: "standard",
-    reason: pickReason(1),
   });
 
   // ── Step 3: FREE gift if price ≤ cumulativeSavings, else 20% off cheapest ──
@@ -127,7 +112,6 @@ export function buildUpsellLadder(
       savedAmount: freeCandidate.price,
       cumulativeSavings: cumulativeSavings + freeCandidate.price,
       stepType: "free_gift",
-      reason: pickReason(2),
     });
   } else {
     // No product is truly free — pick cheapest with 20% off, frame as "nearly free"
@@ -142,7 +126,6 @@ export function buildUpsellLadder(
       savedAmount: step3Saved,
       cumulativeSavings: cumulativeSavings + step3Saved,
       stepType: "standard",
-      reason: pickReason(2),
     });
   }
 

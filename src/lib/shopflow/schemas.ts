@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { MAX_LINE_QTY } from "@/lib/cart/pricing";
 
 /*
   Runtime validation. The mock client returns data that satisfies these, and
@@ -122,7 +123,7 @@ export const orderRequestSchema = z.object({
         productId: z.string().max(120),
         slug: z.string().max(160),
         name: z.string().max(200),
-        quantity: z.number().int().positive().max(99),
+        quantity: z.number().int().positive().max(MAX_LINE_QTY),
         unitPrice: z.number().nonnegative(),
         subscription: z
           .object({ intervalDays: z.number().int().min(7).max(365) })
@@ -143,11 +144,15 @@ export const orderRequestSchema = z.object({
   locale: z.enum(["ru", "uz"]),
   attribution: z
     .object({
-      utmSource: z.string().optional(),
-      utmMedium: z.string().optional(),
-      utmCampaign: z.string().optional(),
-      landing: z.string().optional(),
-      referrer: z.string().optional(),
+      utmSource: z.string().max(200).optional(),
+      utmMedium: z.string().max(200).optional(),
+      utmCampaign: z.string().max(200).optional(),
+      utmContent: z.string().max(200).optional(),
+      utmTerm: z.string().max(200).optional(),
+      clickId: z.string().max(200).optional(),
+      landing: z.string().max(200).optional(),
+      referrer: z.string().max(200).optional(),
+      firstSource: z.string().max(200).optional(),
     })
     .optional(),
 });

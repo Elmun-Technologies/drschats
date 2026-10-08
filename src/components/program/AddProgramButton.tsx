@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import type { Product } from "@/lib/shopflow/types";
 import { useCart } from "@/lib/cart/store";
 import { useToast } from "@/lib/ui/toast";
-import { trackAddToCart, track } from "@/lib/analytics/events";
+import { track } from "@/lib/analytics/events";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 
@@ -47,7 +47,6 @@ export function AddProgramButton({
         1,
         { silent: true },
       );
-      trackAddToCart(product.slug, product.price, 1);
     }
     track("program_add", { program: slug, count: available.length, discount: discountPercent });
     notify();

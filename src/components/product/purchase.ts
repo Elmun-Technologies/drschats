@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { create } from "zustand";
 import type { Product } from "@/lib/shopflow/types";
 import { useCart } from "@/lib/cart/store";
-import { track, trackAddToCart } from "@/lib/analytics/events";
+import { track } from "@/lib/analytics/events";
 import { DEFAULT_INTERVAL, type IntervalDays } from "@/lib/subscription/plans";
 
 export type PurchaseMode = "one-time" | "subscription";
@@ -55,7 +55,6 @@ export function useAddToCart(product: Product) {
       },
       qty,
     );
-    trackAddToCart(product.slug, product.price, qty);
     if (subscribing) {
       track("subscription_add_to_cart", { slug: product.slug, intervalDays });
     }

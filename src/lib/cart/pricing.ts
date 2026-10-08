@@ -7,6 +7,18 @@ import {
 
 export const DEFAULT_SHIPPING = 30000;
 
+/** The order schema caps a line at 99 units (shopflow/schemas.ts). */
+export const MAX_LINE_QTY = 99;
+
+/** An offer price (upsell, programme, rail) is for a few units, not a stock-up. */
+export const MAX_OFFER_QTY = 3;
+
+/** The most units a line may hold: one free gift, a few at an offer price, otherwise the schema cap. */
+export function lineQtyCap(l: Pick<CartLine, "upsellDiscountPercent">): number {
+  if (l.upsellDiscountPercent === 100) return 1;
+  return l.upsellDiscountPercent ? MAX_OFFER_QTY : MAX_LINE_QTY;
+}
+
 export interface CartLine {
   /**
    * Identifies the line, not the product.
@@ -30,6 +42,8 @@ export interface CartLine {
   upsellDiscountPercent?: number;
   /** Set when the line was added as a repeating delivery. */
   subscription?: { intervalDays: number };
+  /** Set by `syncPrices` when the catalogue says the product is sold out. */
+  soldOut?: boolean;
 }
 
 export interface CartTotals {
@@ -51,9 +65,50 @@ export interface CartTotals {
   recurringTotal: number;
 }
 
-/** The line key for a product bought in a given mode. */
-export function cartLineId(productId: string, subscription?: { intervalDays: number }): string {
-  return subscription ? `${productId}:sub${subscription.intervalDays}` : productId;
+/**
+ * The line key for a product bought in a given mode and at a given offer.
+ *
+ * The offer percent is part of the key: adding at −15% a product that already
+ * sits in the cart at full price used to bump the full-price line, so the
+ * discount the button promised silently disappeared (and, the other way
+ * round, a later full-price add inherited the offer).
+ */
+export function cartLineId(
+  productId: string,
+  subscription?: { intervalDays: number },
+  offerPercent?: number,
+): string {
+  const base = subscription ? `${productId}:sub${subscription.intervalDays}` : productId;
+  return offerPercent ? `${base}:o${offerPercent}` : base;
+}
+
+/** What a line costs after its own offer (upsell, programme, gift), before promotions. */
+export function lineTotal(l: Pick<CartLine, "price" | "quantity" | "upsellDiscountPercent">): number {
+  const gross = l.price * l.quantity;
+  return gross - (l.upsellDiscountPercent ? Math.round((gross * l.upsellDiscountPercent) / 100) : 0);
+}
+
+/** The struck-through "before" figure for a line: its catalogue old price, or its price when an offer applies. */
+export function lineListTotal(l: Pick<CartLine, "price" | "oldPrice" | "quantity" | "upsellDiscountPercent">): number | null {
+  const ref = l.oldPrice && l.oldPrice > l.price ? l.oldPrice : l.upsellDiscountPercent ? l.price : null;
+  return ref ? ref * l.quantity : null;
+}
+
+type OfferLine = Pick<CartLine, "price" | "quantity" | "upsellDiscountPercent">;
+
+/**
+ * The free gift is the upsell ladder's last step: one unit, after two
+ * discounted steps, worth no more than those two saved. The server refuses an
+ * order that breaks this (reprice.ts), so the cart applies the same rule and
+ * drops a gift whose conditions stopped holding instead of letting checkout
+ * fail.
+ */
+export function freeGiftAllowed(lines: OfferLine[]): boolean {
+  const free = lines.filter((l) => l.upsellDiscountPercent === 100);
+  if (free.length === 0) return true;
+  const paid = lines.filter((l) => l.upsellDiscountPercent && l.upsellDiscountPercent < 100);
+  const saved = paid.reduce((sum, l) => sum + Math.round((l.price * (l.upsellDiscountPercent ?? 0)) / 100), 0);
+  return free.length === 1 && free[0].quantity === 1 && paid.length >= 2 && free[0].price <= saved;
 }
 
 /**

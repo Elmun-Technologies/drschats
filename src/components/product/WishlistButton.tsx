@@ -2,7 +2,7 @@
 
 import { useWishlist } from "@/lib/wishlist/store";
 import { useTranslations } from "next-intl";
-import { track } from "@/lib/analytics/events";
+import { track, trackAddToWishlist } from "@/lib/analytics/events";
 
 export function WishlistButton({
   productId,
@@ -24,7 +24,8 @@ export function WishlistButton({
     e.preventDefault();
     e.stopPropagation();
     toggle(productId);
-    track(saved ? "wishlist_remove" : "wishlist_add", { product_id: productId });
+    if (saved) track("remove_from_wishlist", { item_id: productId });
+    else trackAddToWishlist({ item_id: productId });
   }
 
   return (

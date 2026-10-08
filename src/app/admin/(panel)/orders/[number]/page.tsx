@@ -6,6 +6,7 @@ import { updateOrder } from "@/app/admin/_actions/orders";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, Field, PageHeader, inputClass, textareaClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { describeAttribution } from "@/lib/analytics/attribution";
 
 export const metadata = { title: "Buyurtma" };
 
@@ -61,7 +62,8 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
               <Row label="Izoh" value={o.delivery.note} />
               <Row label="Toʻlov" value={o.payment ? `${o.payment.method}${o.payment.provider ? ` · ${o.payment.provider}` : ""}` : null} />
               <Row label="Til" value={o.locale} />
-              <Row label="Manba" value={o.attribution?.utmSource ? `${o.attribution.utmSource} / ${o.attribution.utmMedium ?? "—"} / ${o.attribution.utmCampaign ?? "—"}` : null} />
+              <Row label="Manba" value={describeAttribution(o.attribution ?? undefined) || null} />
+              <Row label="Kirish sahifasi" value={o.attribution?.landing} />
             </dl>
           </Card>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { cloneElement, useEffect, useId, useState, type ReactNode } from "react";
+import { cloneElement, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { REGION_KEYS } from "@/lib/checkout/regions";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -22,7 +22,8 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { productCutout } from "@/lib/content/product-cutouts";
 import { CartLines } from "@/components/cart/CartLines";
 import { submitOrder } from "@/app/[locale]/checkout/actions";
-import { getAttribution, trackLead } from "@/lib/analytics/events";
+import { getAttribution, itemOf, trackBeginCheckout, trackOrder, trackViewCart } from "@/lib/analytics/events";
+import { trackPurchase } from "@/lib/personalization/tracker";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
@@ -61,6 +62,7 @@ export function CheckoutForm({
   const router = useRouter();
   const lines = useCart((s) => s.lines);
   const clear = useCart((s) => s.clear);
+  const removeLine = useCart((s) => s.remove);
   const promotions = usePromotions();
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
@@ -70,6 +72,14 @@ export function CheckoutForm({
   useEffect(() => {
     if (mounted) syncPrices(prices);
   }, [mounted, prices, syncPrices]);
+  const linesRef = useRef(lines);
+  linesRef.current = lines;
+  const analyticsItems = () => linesRef.current.map((l) => itemOf(l, l.quantity, l.upsellDiscountPercent));
+  useEffect(() => {
+    if (mounted && linesRef.current.length > 0) trackViewCart(analyticsItems());
+  }, [mounted]);
+  // begin_checkout: the first time the customer starts filling the order form.
+  const checkoutStarted = useRef(false);
 
   const schema = z.object({
     name: z.string().min(2, t("errorRequired")),
@@ -123,7 +133,12 @@ export function CheckoutForm({
 
   // Paid steps only. The cart shows the steps side by side, so the free last
   // step would be free for nothing; it is earned in the step-by-step modal.
-  const ladderSteps = buildUpsellLadder(lines, recommended).filter((s) => s.stepType !== "free_gift");
+  // Each ladder percent once: after an accept the ladder is rebuilt, and
+  // without this it would offer a fresh product at the same discount forever.
+  const takenPercents = new Set(lines.map((l) => l.upsellDiscountPercent).filter(Boolean));
+  const ladderSteps = buildUpsellLadder(lines, recommended).filter(
+    (s) => s.stepType !== "free_gift" && !takenPercents.has(s.discountPercent),
+  );
   const payChoice = payment === "online" ? provider : "cod";
   const choosePay = (value: string) => {
     if (value === "cod") {
@@ -187,17 +202,39 @@ export function CheckoutForm({
 
     const res = await submitOrder(payload);
     if (res.ok && res.orderId) {
-      trackLead(res.orderId, res.total ?? totals.total);
+      trackOrder(res.orderId, { total: res.total ?? totals.total, shipping: totals.shipping }, analyticsItems());
+      // Before clear(): the reorder reminders and the "already bought" signal read this history.
+      trackPurchase(lines.map((l) => ({ slug: l.slug, name: l.name })));
       clear();
       router.push(`/checkout/success?order=${res.orderId}`);
+      return;
+    }
+    /*
+      A line the server refused (sold out, or an offer that no longer holds) is
+      taken out of the cart and named, so pressing the button again works —
+      "refresh the cart" left the same line in place and the order stuck.
+    */
+    const culprit = res.slug ? lines.find((l) => l.slug === res.slug && (res.error !== "invalid_offer" || l.upsellDiscountPercent)) : undefined;
+    if (culprit && (res.error === "out_of_stock" || res.error === "invalid_offer" || res.error === "unknown_product")) {
+      removeLine(culprit.lineId);
+      setServerError(te(res.error === "invalid_offer" ? "offerRemoved" : "lineRemoved", { name: culprit.name }));
     } else {
       setServerError(te(res.error ?? "failed", { phone: BRAND.contact.phone }));
-      setSubmitting(false);
     }
+    setSubmitting(false);
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} noValidate className="flex flex-col gap-4 lg:gap-6">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      onFocusCapture={() => {
+        if (checkoutStarted.current) return;
+        checkoutStarted.current = true;
+        trackBeginCheckout(totals.total, analyticsItems());
+      }}
+      noValidate
+      className="flex flex-col gap-4 lg:gap-6"
+    >
       <Heading count={totals.itemCount} />
 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_400px] lg:gap-8">

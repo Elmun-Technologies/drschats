@@ -9,7 +9,7 @@ import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { DiscountBadge, discountPercent } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
-import { trackViewProduct } from "@/lib/analytics/events";
+import { itemOf, trackViewProduct } from "@/lib/analytics/events";
 import type { Expert } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
@@ -41,8 +41,8 @@ export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Exp
   useEffect(() => reset(product.id), [reset, product.id]);
 
   useEffect(() => {
-    trackViewProduct(product.slug, product.price);
-  }, [product.slug, product.price]);
+    trackViewProduct(itemOf(product));
+  }, [product]);
 
   return (
     <div className="flex flex-col gap-4 lg:rounded-[20px] lg:border lg:border-line lg:bg-bg lg:p-6 lg:shadow-buybox">

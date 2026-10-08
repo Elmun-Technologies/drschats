@@ -11,7 +11,7 @@ import { useUpsell } from "@/lib/upsell/store";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { getUpsellProducts } from "@/app/actions/getUpsellProducts";
 import { formatMoney } from "@/lib/utils";
-import { trackAddToCart, trackUpsellView, trackUpsellAccept, trackUpsellSkip } from "@/lib/analytics/events";
+import { trackUpsellView, trackUpsellAccept, trackUpsellSkip } from "@/lib/analytics/events";
 
 export function UpsellLadderModal() {
   const locale = useLocale() as Locale;
@@ -48,10 +48,6 @@ export function UpsellLadderModal() {
   const step = steps[currentStep];
   if (!step) return null;
 
-  // Track impression when step changes
-  // (we call it inline; effect would cause double-fire on strict mode)
-
-
   const isFreeGift = step.stepType === "free_gift";
   const totalSteps = steps.length;
   const displaySavings = cumulativeSavings;
@@ -70,7 +66,6 @@ export function UpsellLadderModal() {
       },
       1,
     );
-    trackAddToCart(step.product.slug, step.discountedPrice, 1);
     nextStep(step.savedAmount);
   }
 
@@ -167,7 +162,7 @@ export function UpsellLadderModal() {
                 </div>
 
                 <div className="flex flex-1 flex-col justify-center">
-                  <p className="text-xs text-ink-2">{step.reason}</p>
+                  <p className="text-xs text-ink-2">{t("offerReason")}</p>
                   {/* Names the dialog: what a screen reader announces on open
                       is the product being offered. */}
                   <p id="upsell-offer-title" className="mt-0.5 font-medium text-ink">{step.product.name}</p>

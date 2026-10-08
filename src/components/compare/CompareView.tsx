@@ -9,7 +9,6 @@ import type { Product } from "@/lib/shopflow/types";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { COMPARE_LIMIT, useCompare } from "@/lib/compare/store";
 import { useCart } from "@/lib/cart/store";
-import { trackAddToCart } from "@/lib/analytics/events";
 import { discountPercent } from "@/components/ui/Price";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
@@ -139,7 +138,6 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
                       disabled={!p.inStock}
                       onClick={() => {
                         add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice });
-                        trackAddToCart(p.slug, p.price, 1);
                       }}
                     >
                       {p.inStock ? common("addToCartShort") : common("outOfStock")}
