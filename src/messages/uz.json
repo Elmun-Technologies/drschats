@@ -294,6 +294,94 @@
     "catalog": {
       "subtitle": "Katalog",
       "title": "Sara mahsulotlar"
+    },
+    "v3": {
+      "all": "Hammasi",
+      "prevSlide": "Oldingi slayd",
+      "nextSlide": "Keyingi slayd",
+      "slides": "Slaydlar",
+      "prevOffer": "Oldingi taklif",
+      "nextOffer": "Keyingi taklif",
+      "trust": [
+        {
+          "title": "Rasmiy import",
+          "text": "Mahsulot ishlab chiqaruvchining hujjatlari bilan"
+        },
+        {
+          "title": "Sifat hujjatlari",
+          "text": "Sertifikatlar soʻrov boʻyicha taqdim etiladi"
+        },
+        {
+          "title": "Real narx",
+          "text": "Chegirma faqat real pasayishda koʻrsatiladi"
+        },
+        {
+          "title": "Yetkazib berish",
+          "text": "Toshkent boʻylab {hours} soatda, viloyatlarga 1–3 kunda"
+        }
+      ],
+      "deals": {
+        "title": "Aksiyadagi mahsulotlar",
+        "all": "Barcha aksiyalar"
+      },
+      "brand": {
+        "eyebrow": "Shveytsariya",
+        "text": "Shveytsariyaning vitamin va shipuchi tabletkalari liniyasi. Rasmiy import qilinadi.",
+        "cta": "Brendga oʻtish",
+        "short": "Brend",
+        "next": "Keyingi mahsulotlar",
+        "prev": "Oldingi mahsulotlar"
+      },
+      "popular": {
+        "all": "Barchasi",
+        "allProducts": "Barcha mahsulotlar"
+      },
+      "promo": {
+        "cta": "Mahsulotlarni koʻrish"
+      },
+      "audience": {
+        "title": "Kim uchun tanlaysiz?",
+        "quiz": "Vitamin tanlash testi",
+        "short": "Test"
+      },
+      "services": [
+        {
+          "title": "Vitamin tanlash testi",
+          "text": "Savollarga javob bering — mos vitaminlarni tanlaymiz",
+          "short": "Mos vitaminlarni tanlang"
+        },
+        {
+          "title": "Obuna",
+          "text": "Bugun −{first}%, keyingi har bir yetkazishda −{recurring}%",
+          "short": "Bugun −{first}%, keyin −{recurring}%"
+        },
+        {
+          "title": "Yetkazib berish",
+          "text": "Toshkentga {hours} soatda, {free} soʻmdan bepul",
+          "short": "Toshkentga {hours} soatda"
+        },
+        {
+          "title": "Dorixonalar uchun",
+          "text": "Ulgurji narx, hudud va toʻlov muddati alohida shartnomada",
+          "short": "Ulgurji shartlar"
+        }
+      ],
+      "origin": {
+        "link": "Litsenziya va sertifikatlar"
+      },
+      "news": {
+        "all": "Barcha yangiliklar",
+        "tag": "# yangilik"
+      },
+      "help": {
+        "title": "Tanlashda yordam kerakmi?",
+        "text": "Qaysi mahsulot mos kelishi, tarkib va qabul tartibi boʻyicha operator maslahat beradi.",
+        "quiz": "Testdan oʻtish"
+      },
+      "seo": {
+        "title": "Go Vita — vitaminlar va BAD onlayn doʻkoni",
+        "text": "Go Vita — Oʻzbekistonga rasmiy import qilinadigan vitaminlar va biologik faol qoʻshimchalar. Katalogda Swiss Energy, Dr. Frei, Delical, Aminomorin va Peano mahsulotlari: vitamin va minerallar, shipuchi tabletkalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Toshkent boʻylab kuryer {hours} soat ichida yetkazadi, viloyatlarga 1–3 kunda. {free} soʻmdan ortiq buyurtmalar bepul yetkaziladi."
+      }
     }
   },
   "product": {
