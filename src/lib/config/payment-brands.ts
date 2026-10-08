@@ -1,8 +1,8 @@
 /*
   Payment brand marks shown on the site (footer, cart, product page, /payment).
 
-  Card networks accepted at delivery (courier terminal): Uzcard, Humo, Visa,
-  Mastercard — the files in public/images/payments/ are the networks' own
+  Card networks accepted with online payment (Payme, Click, Uzum): Uzcard,
+  Humo, Visa, Mastercard — delivery itself is cash only. The files in public/images/payments/ are the networks' own
   marks. Payme, Click and Uzum have no official file in the repo yet, so they
   render as a plain name chip; drop the provider's brand-kit SVG into
   public/images/payments/ and set `src` here — every surface switches at once.
@@ -31,5 +31,5 @@ export const PAYMENT_BRANDS: Record<PaymentBrandId, PaymentBrand> = {
   mastercard: { label: "Mastercard", src: "/images/payments/mastercard.svg", ratio: 152.4 / 108, h: 22 },
 };
 
-/** Cards the courier terminal takes on delivery. */
+/** Cards accepted through online payment (shown only once a provider is configured). */
 export const CARD_BRANDS: PaymentBrandId[] = ["uzcard", "humo", "visa", "mastercard"];

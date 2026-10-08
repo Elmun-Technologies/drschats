@@ -348,8 +348,8 @@
           "action": {
             "type": "text",
             "text": {
-              "uz": "<b>Toʻlov usullari</b>\n\nPayme, Click, Uzum — onlayn.\nNaqd yoki karta — yetkazishda kuryerga.",
-              "ru": "<b>Способы оплаты</b>\n\nPayme, Click, Uzum — онлайн.\nНаличные или карта — курьеру при доставке."
+              "uz": "<b>Toʻlov usullari</b>\n\nPayme, Click, Uzum — onlayn.\nYetkazib berishda — faqat naqd pul.",
+              "ru": "<b>Способы оплаты</b>\n\nPayme, Click, Uzum — онлайн.\nПри доставке — только наличные."
             }
           },
           "fullWidth": false

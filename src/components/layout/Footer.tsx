@@ -4,8 +4,7 @@ import { cn } from "@/lib/utils";
 import { BRAND } from "@/lib/brand";
 import { isApiConfigured } from "@/lib/api/client";
 import { accountAreaAvailable } from "@/lib/config/demo";
-import { ONLINE_PROVIDERS } from "@/lib/config/payments";
-import { CARD_BRANDS, type PaymentBrandId } from "@/lib/config/payment-brands";
+import { ONLINE_PAYMENT_MARKS } from "@/lib/config/payments";
 import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { isNavigable } from "@/lib/content/nav-sections";
 import type { Category } from "@/lib/shopflow/types";
@@ -24,7 +23,7 @@ interface FooterLink {
   Design: FooterV3 (md and up) and FooterMobileV3 (columns as an accordion).
 
   Payment pills list only providers that can take a payment today
-  (lib/config/payments) plus cash/card on delivery, and the club card goes to
+  (lib/config/payments) plus cash on delivery, and the club card goes to
   the bot when one is configured, the channel otherwise — the same rule the
   home page's club block follows.
 */
@@ -84,9 +83,6 @@ export function Footer({
     },
   ];
 
-  // Online providers appear once they can take a payment; the cards are what the courier terminal accepts.
-  const payments: PaymentBrandId[] = [...ONLINE_PROVIDERS.map((p) => p.id), ...CARD_BRANDS];
-
   return (
     <footer className="bg-tile pb-[var(--bottom-nav)] text-ink">
       {/* pb-16 clears the back-to-top button (0.75rem + 36px above the tab bar),
@@ -143,7 +139,7 @@ export function Footer({
           <div className="flex flex-col gap-2.5 md:flex-row md:flex-wrap md:items-center md:gap-3">
             <span className="text-[15px] font-semibold md:mr-1">{t("paymentMethods")}</span>
             <div className="flex flex-wrap gap-2 md:gap-3">
-              <PaymentMarks ids={payments} label={t("paymentMethods")} />
+              <PaymentMarks ids={ONLINE_PAYMENT_MARKS} label={t("paymentMethods")} />
               <span className="inline-flex h-10 items-center rounded-[10px] bg-bg px-3 text-[15px] font-bold">{t("cash")}</span>
             </div>
           </div>

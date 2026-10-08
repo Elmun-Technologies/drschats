@@ -50,6 +50,7 @@ export function PaymentMarks({
   className?: string;
   chipClassName?: string;
 }) {
+  if (ids.length === 0) return null;
   return (
     <ul aria-label={label} className={cn("flex flex-wrap items-center gap-2", className)}>
       {ids.map((id) => (

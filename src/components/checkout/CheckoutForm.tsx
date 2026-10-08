@@ -25,8 +25,7 @@ import { submitOrder } from "@/app/[locale]/checkout/actions";
 import { getAttribution, trackLead } from "@/lib/analytics/events";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
-import { ONLINE_PROVIDERS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
-import { CARD_BRANDS } from "@/lib/config/payment-brands";
+import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 
 /*
@@ -318,10 +317,6 @@ export function CheckoutForm({
                 {errors.provider.message}
               </p>
             )}
-            <div className="flex flex-col gap-2 rounded-[14px] bg-tile px-3.5 py-3 sm:flex-row sm:items-center sm:justify-between">
-              <span className="text-sm font-semibold text-ink-2">{t("cardsOnDelivery")}</span>
-              <PaymentMarks ids={CARD_BRANDS} size="sm" label={t("cardsOnDelivery")} />
-            </div>
             <p className="text-sm text-muted">{onlinePaymentAvailable() ? tv("gatewayNote") : t("payUnavailable")}</p>
           </Step>
         </div>
@@ -376,7 +371,7 @@ export function CheckoutForm({
             <TrustRow d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4">{tc("trustGuarantee")}</TrustRow>
             <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>
             <TrustRow d="M4 5h16v11H9l-5 4z">{onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}</TrustRow>
-            <PaymentMarks ids={[...ONLINE_PROVIDERS.map((p) => p.id), ...CARD_BRANDS]} size="sm" label={t("paymentTitle")} className="pt-1" />
+            <PaymentMarks ids={ONLINE_PAYMENT_MARKS} size="sm" label={t("paymentTitle")} className="pt-1" />
           </div>
         </aside>
       </div>

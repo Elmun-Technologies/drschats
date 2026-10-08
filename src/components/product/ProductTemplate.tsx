@@ -8,8 +8,7 @@ import type { Category, Product, UpsellOffer } from "@/lib/shopflow/types";
 import type { Expert } from "@/lib/content/experts";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import { COMMERCE } from "@/lib/config/commerce";
-import { ONLINE_PROVIDERS } from "@/lib/config/payments";
-import { CARD_BRANDS } from "@/lib/config/payment-brands";
+import { ONLINE_PAYMENT_MARKS, ONLINE_PROVIDERS } from "@/lib/config/payments";
 import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { discountPercent } from "@/components/ui/Price";
 import { buttonVariants } from "@/components/ui/Button";
@@ -94,7 +93,7 @@ export async function ProductTemplate({
       note: ONLINE_PROVIDERS.length
         ? tv("paymentOnline", { providers: ONLINE_PROVIDERS.map((p) => p.label).join(", ") })
         : tv("paymentCod"),
-      marks: [...ONLINE_PROVIDERS.map((p) => p.id), ...CARD_BRANDS],
+      marks: ONLINE_PAYMENT_MARKS,
     },
   ];
 
