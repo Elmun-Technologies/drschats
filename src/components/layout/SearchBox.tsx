@@ -8,6 +8,7 @@ import { chipClass } from "@/components/ui/Chip";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Category } from "@/lib/shopflow/types";
 import { brandOf } from "@/lib/catalog/product-facts";
+import { fold } from "@/lib/search/fold";
 
 interface Suggestion {
   slug: string;
@@ -79,7 +80,7 @@ export function SearchBox({
   const categoryMatches: Option[] =
     trimmed.length >= MIN_QUERY
       ? categories
-          .filter((c) => c.name.toLowerCase().includes(trimmed.toLowerCase()))
+          .filter((c) => fold(c.name).includes(fold(trimmed)))
           .slice(0, 4)
           .map((c) => ({
             kind: "category" as const,

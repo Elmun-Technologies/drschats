@@ -550,8 +550,9 @@ Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa
 - **AI-generatsiya rasm ishlatilmaydi.** Mahsulot — haqiqiy packshotning fonidan ajratilgan PNG (`c-*.png`), `tile` (#F1F3F0) fonida `object-fit: contain`. Lifestyle — litsenziyali stok foto.
 - **BAD ogohlantirishi** mahsulot, test va maqola sahifalarida: «Biologik faol qoʻshimcha. Dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing.»
 - **Tibbiy vaʼda yoʻq:** «davolaydi», «stressni kamaytiradi», «100% natija» kabi soʻzlar ishlatilmaydi.
-- **Oʻzbek apostrofi** — `ʻ` (U+02BB): oʻ, gʻ, soʻm. Oddiy `'` emas.
+- **Oʻzbek apostrofi** — `ʻ` (U+02BB): oʻ, gʻ, soʻm. Oddiy `'` emas. `uz.json` va kontent fayllari normallashtirilgan (oʻ/gʻ → `ʻ`, tutuq → `ʼ`). Qidiruv `lib/search/fold.ts` orqali barcha apostrof shakllarini bitta deb hisoblaydi — mijoz `go'zallik` yozsa ham topadi
 - **Narx formati:** `79 000 soʻm` (minglik boʻsh joy bilan). Birlik narxi kartada: `3 950 soʻm / tabletka`.
+- **Toʻlov logotiplari** — faqat `PaymentMark`/`PaymentMarks` (`components/ui/PaymentMarks.tsx`), roʻyxat `lib/config/payment-brands.ts`. Uzcard, Humo, Visa, Mastercard — rasmiy belgilar (`public/images/payments/`), kuryer terminalida qabul qilinadi. Payme/Click/Uzum — hozircha nom (rasmiy fayl yoʻq); brend-kit SVG qoʻyilib `src` yozilsa hamma joy oʻzi almashadi. Onlayn provayder belgisi faqat merchant ID sozlanganda chiqadi
 
 ### Tokenlar (`design/tokens.json` → `src/styles/globals.css` ikkinchi `@theme` bloki)
 - Ranglar: `bg #FFFFFF`, `tile #F1F3F0`, `tile-hover #E6E8E5`, `chip-strong #E3E6E9`, `line #E4E6E8`, `line-strong #D9DCDF`, `ink #17191B`, `ink-2 #44494E`, `muted #63686E`, `dark-panel #1C1F22`, `on-dark-2 #C9CDD1`, `red #C8161D`, `yellow #FFD43B`, `yellow-banner #FFE58A`, `forest #0F2D24`, `gold #B8954F`.

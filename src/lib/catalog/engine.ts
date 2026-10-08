@@ -14,6 +14,7 @@ import type {
   OrderResult,
 } from "@/lib/shopflow/types";
 import type { RawCategory, RawProduct, RawPromotion } from "@/lib/shopflow/mock";
+import { fold } from "@/lib/search/fold";
 
 /*
   The catalogue's read logic, independent of where the rows come from: the
@@ -32,6 +33,7 @@ export interface CatalogData {
 export type OrderSink = (payload: OrderRequest) => Promise<OrderResult>;
 
 const listed = (p: RawProduct) => (p.kind ?? "core") !== "unlisted";
+
 
 function resolveCategory(c: RawCategory, data: CatalogData, locale: Locale): Category {
   return {
@@ -157,16 +159,16 @@ export class CatalogEngine implements ShopflowClient {
     if (minPrice != null) items = items.filter((p) => p.price >= minPrice);
     if (maxPrice != null) items = items.filter((p) => p.price <= maxPrice);
     if (search) {
-      const q = search.toLowerCase();
+      const q = fold(search);
       const aliasesFor = (slug: string) => {
         const raw = data.products.find((r) => r.slug === slug);
         return raw?.searchAliases ? Object.values(raw.searchAliases).flat() : [];
       };
       items = items.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.tagline.toLowerCase().includes(q) ||
-          aliasesFor(p.slug).some((alias) => alias.toLowerCase().includes(q)),
+          fold(p.name).includes(q) ||
+          fold(p.tagline).includes(q) ||
+          aliasesFor(p.slug).some((alias) => fold(alias).includes(q)),
       );
     }
     items = sortProducts(items, sort);
@@ -189,7 +191,7 @@ export class CatalogEngine implements ShopflowClient {
       .slice(0, 3)
       .map((p) => resolveProduct(p, data, locale));
     const reasons: Record<Locale, string> = {
-      uz: "Ko'pincha shu bilan birga olishadi",
+      uz: "Koʻpincha shu bilan birga olishadi",
       ru: "Часто покупают вместе",
     };
     return others.map((product) => ({ product, discountPercent: 15, reason: reasons[locale] }));

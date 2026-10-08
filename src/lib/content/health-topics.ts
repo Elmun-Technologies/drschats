@@ -87,18 +87,18 @@ const raw: RawHealthTopic[] = [
       ru: "Доказанные нутриенты для укрепления иммунной системы",
     },
     intro: {
-      uz: "Immun tizimi kundalik ovqatlanish, uyqu sifati va mikroelementlar balansiga tayanadi. Quyida immunitetni qo'llab-quvvatlash uchun zarur asosiy moddalar keltirilgan.",
+      uz: "Immun tizimi kundalik ovqatlanish, uyqu sifati va mikroelementlar balansiga tayanadi. Quyida immunitetni qoʻllab-quvvatlash uchun zarur asosiy moddalar keltirilgan.",
       ru: "Иммунная система напрямую зависит от питания, качества сна и баланса микроэлементов. Ниже — ключевые нутриенты для надежной защиты организма.",
     },
     sections: {
       uz: [
         {
           title: "Immunitet qanday ishlaydi?",
-          body: "Immun tizimi organizmga kiruvchi virus va bakteriyalardan himoya qiluvchi murakkab mexanizmdir. Vitamin D3, Sink va Vitamin C bu tizimning to'g'ri ishlashi uchun asosiy qurilish g'ishtlari sanaladi.",
+          body: "Immun tizimi organizmga kiruvchi virus va bakteriyalardan himoya qiluvchi murakkab mexanizmdir. Vitamin D3, Sink va Vitamin C bu tizimning toʻgʻri ishlashi uchun asosiy qurilish gʻishtlari sanaladi.",
         },
         {
           title: "Profilaktika va qabul tartibi",
-          body: "Mavsumiy shamollashlar davrida yoki intensiv aqliy/jismoniy yuklamalarda profilaktik kurslar o'tkazish tavsiya etiladi. Yog'da eriydigan vitaminlar (D3) yog'li taom bilan yaxshi so'riladi.",
+          body: "Mavsumiy shamollashlar davrida yoki intensiv aqliy/jismoniy yuklamalarda profilaktik kurslar oʻtkazish tavsiya etiladi. Yogʻda eriydigan vitaminlar (D3) yogʻli taom bilan yaxshi soʻriladi.",
         },
       ],
       ru: [
@@ -116,8 +116,8 @@ const raw: RawHealthTopic[] = [
       uz: [
         "Vitamin D3 — immun hujayralari faolligi",
         "Vitamin C — antioksidant himoya va fagotsitoz",
-        "Sink — shilliq qavatlar butunligi va antiviral to'siq",
-        "Sifatli uyqu va to'laqonli oqsil ratsioni",
+        "Sink — shilliq qavatlar butunligi va antiviral toʻsiq",
+        "Sifatli uyqu va toʻlaqonli oqsil ratsioni",
       ],
       ru: [
         "Витамин D3 — регуляция иммунного ответа",
@@ -137,8 +137,8 @@ const raw: RawHealthTopic[] = [
           answer: "Profilaktika maqsadida kuz-qish mavsumida yoki holsizlik sezilganda 1–2 oylik kurs shaklida qabul qilish maqsadga muvofiq.",
         },
         {
-          question: "Bolalar uchun kattalar vitaminlari to'g'ri keladimi?",
-          answer: "Yo'q, bolalarda dozalar tana vazniga qarab belgilanadi. Bolalar uchun maxsus ishlab chiqilgan shakllarni tanlang.",
+          question: "Bolalar uchun kattalar vitaminlari toʻgʻri keladimi?",
+          answer: "Yoʻq, bolalarda dozalar tana vazniga qarab belgilanadi. Bolalar uchun maxsus ishlab chiqilgan shakllarni tanlang.",
         },
       ],
       ru: [
@@ -162,13 +162,13 @@ const raw: RawHealthTopic[] = [
       ru: "Глубокий сон и восстановление нервной системы",
     },
     intro: {
-      uz: "Uyqu sifatining buzilishi stress, magniy yetishmovchiligi va asab qo'zg'aluvchanligi bilan bevosita bog'liq. To'g'ri nutriyentlar chuqur uyqu fazasini tiklashga yordam beradi.",
+      uz: "Uyqu sifatining buzilishi stress, magniy yetishmovchiligi va asab qoʻzgʻaluvchanligi bilan bevosita bogʻliq. Toʻgʻri nutriyentlar chuqur uyqu fazasini tiklashga yordam beradi.",
       ru: "Нарушения сна связаны с дефицитом магния, перегрузкой нервной системы и вечерним экраном. Нутрицевтики помогают восстановить фазу глубокого сна.",
     },
     sections: {
       uz: [
         {
-          title: "Magniy va melatonin o'zaro ta'siri",
+          title: "Magniy va melatonin oʻzaro taʼsiri",
           body: "Magniy GABA (GAMK) retseptorlarini faollashtirib, miyani tinchlantiradi va tabiiy uyqu gormoni ishlab chiqarilishiga zamin yaratadi.",
         },
         {
@@ -189,7 +189,7 @@ const raw: RawHealthTopic[] = [
     },
     bullets: {
       uz: [
-        "Magniy xelat / sitrat — mushaklar bo'shashishi",
+        "Magniy xelat / sitrat — mushaklar boʻshashishi",
         "Vitamin B6 — asab impulslarini tartibga solish",
         "Yotishdan 1 soat oldin ekranlarni cheklash",
       ],
@@ -206,8 +206,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Magniy o'rganib qolish (qaramlik) chaqiradimi?",
-          answer: "Yo'q, magniy organizm uchun tabiiy mineral bo'lib, o'rganib qolish xususiyatiga ega emas.",
+          question: "Magniy oʻrganib qolish (qaramlik) chaqiradimi?",
+          answer: "Yoʻq, magniy organizm uchun tabiiy mineral boʻlib, oʻrganib qolish xususiyatiga ega emas.",
         },
       ],
       ru: [
@@ -227,18 +227,18 @@ const raw: RawHealthTopic[] = [
       ru: "Клеточная энергия, тонус и преодоление усталости",
     },
     intro: {
-      uz: "Surunkali charchoq ko'pincha B guruhi vitaminlari, temir, D3 va magniy yetishmovchiligidan kelib chiqadi. To'g'ri formulalar mitoxondriyalarni quvvat bilan ta'minlaydi.",
+      uz: "Surunkali charchoq koʻpincha B guruhi vitaminlari, temir, D3 va magniy yetishmovchiligidan kelib chiqadi. Toʻgʻri formulalar mitoxondriyalarni quvvat bilan taʼminlaydi.",
       ru: "Упадок сил часто вызван нехваткой витаминов группы B, железа или витамина D3. Сбалансированный комплекс питает митохондрии и возвращает ресурс.",
     },
     sections: {
       uz: [
         {
           title: "Hujayra energiyasi (ATF)",
-          body: "Mitoxondriyalar ATF energiyasini ishlab chiqarishi uchun B12, B6, magniy va kofermentlar kerak. Ushbu moddalar bo'lmasa organizm ovqatni energiyaga aylantirishda qiynaladi.",
+          body: "Mitoxondriyalar ATF energiyasini ishlab chiqarishi uchun B12, B6, magniy va kofermentlar kerak. Ushbu moddalar boʻlmasa organizm ovqatni energiyaga aylantirishda qiynaladi.",
         },
         {
           title: "Kunduzgi faollik",
-          body: "B guruhi va multivitaminlarni ertalab nonushta paytida qabul qilish kun bo'yi barqaror energiya bilan ta'minlaydi.",
+          body: "B guruhi va multivitaminlarni ertalab nonushta paytida qabul qilish kun boʻyi barqaror energiya bilan taʼminlaydi.",
         },
       ],
       ru: [
@@ -272,7 +272,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Natija qachon seziladi?",
-          answer: "Odatda muntazam qabul boshlanganidan 7–14 kun o'tgach ertalabki tetiklik va umumiy ish qobiliyati oshishi seziladi.",
+          answer: "Odatda muntazam qabul boshlanganidan 7–14 kun oʻtgach ertalabki tetiklik va umumiy ish qobiliyati oshishi seziladi.",
         },
       ],
       ru: [
@@ -286,20 +286,20 @@ const raw: RawHealthTopic[] = [
   {
     kind: "goal",
     slug: "beauty",
-    name: { uz: "Go'zallik (Soch, Teri, Tirnoq)", ru: "Красота (Волосы, Кожа, Ногти)" },
+    name: { uz: "Goʻzallik (Soch, Teri, Tirnoq)", ru: "Красота (Волосы, Кожа, Ногти)" },
     headline: {
-      uz: "Kollagen, biotin va antioksidantlar bilan tabiiy go'zallik",
+      uz: "Kollagen, biotin va antioksidantlar bilan tabiiy goʻzallik",
       ru: "Поддержка синтеза коллагена, эластичности кожи и густоты волос",
     },
     intro: {
-      uz: "Tashqi go'zallik ichki to'qimalar oziqlanishidan boshlanadi. Dengiz kollageni, biotin, sink va vitamin C teri tarangligini va soch o'sishini ta'minlaydi.",
+      uz: "Tashqi goʻzallik ichki toʻqimalar oziqlanishidan boshlanadi. Dengiz kollageni, biotin, sink va vitamin C teri tarangligini va soch oʻsishini taʼminlaydi.",
       ru: "Здоровье кожи, блеск волос и прочность ногтей формируются изнутри. Пептиды коллагена, биотин и цинк стимулируют обновление клеток дермы.",
     },
     sections: {
       uz: [
         {
           title: "Kollagen va Keratin sintezi",
-          body: "25 yoshdan so'ng organizmda tabiiy kollagen ishlab chiqarilishi har yili 1-1.5% ga kamayadi. Dengiz kollageni peptidlari terini namlantirish va ajinlarni kamaytirishga yordam beradi.",
+          body: "25 yoshdan soʻng organizmda tabiiy kollagen ishlab chiqarilishi har yili 1-1.5% ga kamayadi. Dengiz kollageni peptidlari terini namlantirish va ajinlarni kamaytirishga yordam beradi.",
         },
       ],
       ru: [
@@ -313,8 +313,8 @@ const raw: RawHealthTopic[] = [
       uz: [
         "Gidrolizlangan dengiz kollageni — elastiklik",
         "Biotin (B7) — soch tolalarini mustahkamlash",
-        "Vitamin C — kollagen tolalarini bog'lash",
-        "Sink — toza va sog'lom teri",
+        "Vitamin C — kollagen tolalarini bogʻlash",
+        "Sink — toza va sogʻlom teri",
       ],
       ru: [
         "Морские пептиды коллагена — упругость кожи",
@@ -331,7 +331,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Kollagenni qanday qabul qilish kerak?",
-          answer: "Ertalab och qoringa yoki ovqatdan 30 daqiqa oldin suv bilan ichish eng yaxshi so'rilishni ta'minlaydi. Kurs davomiyligi 2–3 oy.",
+          answer: "Ertalab och qoringa yoki ovqatdan 30 daqiqa oldin suv bilan ichish eng yaxshi soʻrilishni taʼminlaydi. Kurs davomiyligi 2–3 oy.",
         },
       ],
       ru: [
@@ -347,18 +347,18 @@ const raw: RawHealthTopic[] = [
     slug: "stress",
     name: { uz: "Stressdan himoya", ru: "Антистресс и нервная система" },
     headline: {
-      uz: "Asab tizimini qo'llab-quvvatlash va hissiy barqarorlik",
+      uz: "Asab tizimini qoʻllab-quvvatlash va hissiy barqarorlik",
       ru: "Баланс нейромедиаторов и устойчивость к психоэмоциональным перегрузкам",
     },
     intro: {
-      uz: "Doimiy stress magniy va B guruhi vitaminlarini organizmdan tez yuvilib ketishiga olib keladi. Bularni to'ldirish hissiy barqarorlikni tiklaydi.",
+      uz: "Doimiy stress magniy va B guruhi vitaminlarini organizmdan tez yuvilib ketishiga olib keladi. Bularni toʻldirish hissiy barqarorlikni tiklaydi.",
       ru: "Хронический стресс ускоряет выведение магния и истощает запасы витаминов B. Восполнение дефицита возвращает эмоциональный контроль.",
     },
     sections: {
       uz: [
         {
           title: "Kortizol va magniy balansi",
-          body: "Stress gormoni kortizol yuqori bo'lganda yurak urishi tezlashadi va mushaklar qisqaradi. Magniy xelati asab qo'zg'aluvchanligini me'yorga keltiradi.",
+          body: "Stress gormoni kortizol yuqori boʻlganda yurak urishi tezlashadi va mushaklar qisqaradi. Magniy xelati asab qoʻzgʻaluvchanligini meʼyorga keltiradi.",
         },
       ],
       ru: [
@@ -369,7 +369,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Magniy sitrat / xelat — tezkor tinchlantiruvchi ta'sir", "Vitamin B6 — asab impulslarini yaxshilash"],
+      uz: ["Magniy sitrat / xelat — tezkor tinchlantiruvchi taʼsir", "Vitamin B6 — asab impulslarini yaxshilash"],
       ru: ["Органический магний — снижение тревожности", "Витамин B6 — синтез серотонина"],
     },
     ingredientSlugs: ["magnesium", "vitamin-b12"],
@@ -396,11 +396,11 @@ const raw: RawHealthTopic[] = [
     slug: "digestion",
     name: { uz: "Hazm qilish va ichak", ru: "Здоровое пищеварение" },
     headline: {
-      uz: "Mikrobiota balansi, yengillik va to'g'ri o'zlashtirish",
+      uz: "Mikrobiota balansi, yengillik va toʻgʻri oʻzlashtirish",
       ru: "Баланс микрофлоры, комфорт и усвоение питательных веществ",
     },
     intro: {
-      uz: "Oziq moddalarning so'rilishi va immunitetning 70% qismi ichak salomatligiga bog'liq. Probiotiklar va fermentlar hazmni yengillashtiradi.",
+      uz: "Oziq moddalarning soʻrilishi va immunitetning 70% qismi ichak salomatligiga bogʻliq. Probiotiklar va fermentlar hazmni yengillashtiradi.",
       ru: "Более 70% иммунных клеток сосредоточено в кишечнике. Пробиотические культуры восстанавливают барьер и комфорт пищеварения.",
     },
     sections: {
@@ -449,14 +449,14 @@ const raw: RawHealthTopic[] = [
       ru: "Поддержка миокарда, эластичность сосудов и липидный профиль",
     },
     intro: {
-      uz: "Omega-3 yog' kislotalari, magniy va K2 vitamini qon tomirlar devorini toza va elastik saqlashda, yurak ritmini me'yorlashtirishda asosiy rol o'ynaydi.",
+      uz: "Omega-3 yog' kislotalari, magniy va K2 vitamini qon tomirlar devorini toza va elastik saqlashda, yurak ritmini meʼyorlashtirishda asosiy rol oʻynaydi.",
       ru: "Полиненасыщенные жирные кислоты Омега-3, магний и витамин K2 защищают сосуды от кальцификации и поддерживают ритм сердца.",
     },
     sections: {
       uz: [
         {
           title: "Omega-3 EPA va DHA kuchi",
-          body: "EPA qon tomir yallig'lanishini pasaytiradi, DHA esa hujayra membranalarini moslashuvchan qiladi va qon quyilish xavfini kamaytiradi.",
+          body: "EPA qon tomir yalligʻlanishini pasaytiradi, DHA esa hujayra membranalarini moslashuvchan qiladi va qon quyilish xavfini kamaytiradi.",
         },
       ],
       ru: [
@@ -467,7 +467,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Omega-3 EPA/DHA — xolesterin balansi", "Magniy — qon tomir spazmini oldini olish", "Vitamin K2 — kalsiyning tomirda cho'kishiga yo'l qo'ymaslik"],
+      uz: ["Omega-3 EPA/DHA — xolesterin balansi", "Magniy — qon tomir spazmini oldini olish", "Vitamin K2 — kalsiyning tomirda choʻkishiga yoʻl qoʻymaslik"],
       ru: ["Омега-3 высокой концентрации", "Органический магний против сосудистого спазма", "Витамин K2 для защиты артерий"],
     },
     ingredientSlugs: ["epa-dha", "magnesium", "vitamin-k2"],
@@ -492,20 +492,20 @@ const raw: RawHealthTopic[] = [
   {
     kind: "goal",
     slug: "joints",
-    name: { uz: "Bo'g'imlar va suyaklar", ru: "Суставы и связки" },
+    name: { uz: "Boʻgʻimlar va suyaklar", ru: "Суставы и связки" },
     headline: {
-      uz: "Erkin harakat, tog'ay to'qimasi tiklanishi va suyak mustahkamligi",
+      uz: "Erkin harakat, togʻay toʻqimasi tiklanishi va suyak mustahkamligi",
       ru: "Свобода движения, восстановление хрящей и плотность костей",
     },
     intro: {
-      uz: "Bo'g'imlar harakatchanligi kollagen, D3, K2 va kalsiy miqdoriga to'g'ridan-to'g'ri bog'liq. Ular birgalikda sinovial suyuqlik va tog'ay to'qimasini oziqlantiradi.",
+      uz: "Boʻgʻimlar harakatchanligi kollagen, D3, K2 va kalsiy miqdoriga toʻgʻridan-toʻgʻri bogʻliq. Ular birgalikda sinovial suyuqlik va togʻay toʻqimasini oziqlantiradi.",
       ru: "Здоровье опорно-двигательного аппарата требует комплексного подхода: пептиды коллагена, витамин D3+K2 и кальций питают хрящевую ткань.",
     },
     sections: {
       uz: [
         {
-          title: "Bo'g'im tog'aylarini tiklash",
-          body: "Kollagen peptidlari bo'g'imdagi yallig'lanishni kamaytiradi va tog'ay to'qimasi elastikligini oshiradi.",
+          title: "Boʻgʻim togʻaylarini tiklash",
+          body: "Kollagen peptidlari boʻgʻimdagi yalligʻlanishni kamaytiradi va togʻay toʻqimasi elastikligini oshiradi.",
         },
       ],
       ru: [
@@ -516,7 +516,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Kollagen peptidlari — tog'ay to'qimasi elastikligi", "Vitamin D3 + K2 — kalsiyning suyakka to'g'ri birikishi", "Kalsiy — suyak mustahkamligi"],
+      uz: ["Kollagen peptidlari — togʻay toʻqimasi elastikligi", "Vitamin D3 + K2 — kalsiyning suyakka toʻgʻri birikishi", "Kalsiy — suyak mustahkamligi"],
       ru: ["Пептиды коллагена для суставов", "Витамины D3 и K2 для минерализации костей", "Биодоступный кальций"],
     },
     ingredientSlugs: ["collagen", "vitamin-d3", "vitamin-k2", "calcium"],
@@ -527,7 +527,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Jismoniy mashqlar qiluvchilarga qaysi biri mos?",
-          answer: "Kollagen va D3+K2 kombinatsiyasi paylar va bo'g'imlarni jarohatlardan himoya qiladi.",
+          answer: "Kollagen va D3+K2 kombinatsiyasi paylar va boʻgʻimlarni jarohatlardan himoya qiladi.",
         },
       ],
       ru: [
@@ -554,7 +554,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           title: "Neyronlar oziqlanishi",
-          body: "Miya quruq moddasining 60% qismi yog'lardan iborat. DHA kislotasi neyron membranalarining asosiy elementi hisoblanadi.",
+          body: "Miya quruq moddasining 60% qismi yogʻlardan iborat. DHA kislotasi neyron membranalarining asosiy elementi hisoblanadi.",
         },
       ],
       ru: [
@@ -565,7 +565,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Omega-3 DHA — kognitiv o'tkirlik", "Vitamin B12 — nerv tolalari himoyasi", "Magniy — aqliy charchoqni kamaytirish"],
+      uz: ["Omega-3 DHA — kognitiv oʻtkirlik", "Vitamin B12 — nerv tolalari himoyasi", "Magniy — aqliy charchoqni kamaytirish"],
       ru: ["Высокая концентрация ДГК Омега-3", "Витамин B12 для проводимости нервных волокон", "Магний для устойчивости к нагрузкам"],
     },
     ingredientSlugs: ["epa-dha", "vitamin-b12", "magnesium"],
@@ -575,7 +575,7 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Imtihonlar yoki og'ir loyihalar davrida nima ichish kerak?",
+          question: "Imtihonlar yoki ogʻir loyihalar davrida nima ichish kerak?",
           answer: "Omega-3 va B-kompleks kombinatsiyasi aqliy charchoqni yengishga yordam beradi.",
         },
       ],
@@ -596,14 +596,14 @@ const raw: RawHealthTopic[] = [
       ru: "Оптимизация обмена веществ и контроль аппетита",
     },
     intro: {
-      uz: "Metabolizm sekinlashishi ko'pincha D vitamini, xrom, magniy va B vitaminlari tanqisligi bilan bog'liq. Balansni tiklash sog'lom vaznga erishishni tezlashtiradi.",
+      uz: "Metabolizm sekinlashishi koʻpincha D vitamini, xrom, magniy va B vitaminlari tanqisligi bilan bogʻliq. Balansni tiklash sogʻlom vaznga erishishni tezlashtiradi.",
       ru: "Нарушения метаболизма часто сопряжены с дефицитом витамина D и микроэлементов. Коррекция нутриентного статуса помогает нормализовать обмен веществ.",
     },
     sections: {
       uz: [
         {
           title: "Insulin sezgirligi va metabolizm",
-          body: "D3 vitamini va magniy hujayralarning insulinga sezgirligini oshirib, ortiqcha shirinlikka bo'lgan ehtiyojni kamaytiradi.",
+          body: "D3 vitamini va magniy hujayralarning insulinga sezgirligini oshirib, ortiqcha shirinlikka boʻlgan ehtiyojni kamaytiradi.",
         },
       ],
       ru: [
@@ -624,8 +624,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Vitaminlar vazn to'plashga olib kelmaydimi?",
-          answer: "Yo'q, sifatli vitaminlar kaloriyasiz bo'lib, faqat metabolizmni me'yorga soladi.",
+          question: "Vitaminlar vazn toʻplashga olib kelmaydimi?",
+          answer: "Yoʻq, sifatli vitaminlar kaloriyasiz boʻlib, faqat metabolizmni meʼyorga soladi.",
         },
       ],
       ru: [
@@ -647,18 +647,18 @@ const raw: RawHealthTopic[] = [
       ru: "Солнечный прогормон для костей, иммунитета и долголетия",
     },
     intro: {
-      uz: "Vitamin D3 (xolekalsiferol) organizmda yuzlab genlar faoliyatini boshqaradi. U kalsiy so'rilishi, immun hujayralar va yaxshi kayfiyat uchun muhimdir.",
+      uz: "Vitamin D3 (xolekalsiferol) organizmda yuzlab genlar faoliyatini boshqaradi. U kalsiy soʻrilishi, immun hujayralar va yaxshi kayfiyat uchun muhimdir.",
       ru: "Витамин D3 выполняет роль прогормона, регулируя работу иммунной, костной и эндокринной систем.",
     },
     sections: {
       uz: [
         {
           title: "Nima uchun D3 tanqisligi keng tarqalgan?",
-          body: "Kuyoshli mintaqalarda ham xonalarda o'tirish, quyosh kremlari va yopiq kiyimlar sababli aholining 70% dan ortig'ida D vitamini yetishmovchiligi kuzatiladi.",
+          body: "Kuyoshli mintaqalarda ham xonalarda oʻtirish, quyosh kremlari va yopiq kiyimlar sababli aholining 70% dan ortigʻida D vitamini yetishmovchiligi kuzatiladi.",
         },
         {
           title: "D3 va K2 sinergiyasi",
-          body: "D3 kalsiyning ichakda so'rilishini ta'minlasa, K2 vitamini kalsiyni qon tomirlariga emas, aynan suyaklarga yo'naltiradi.",
+          body: "D3 kalsiyning ichakda soʻrilishini taʼminlasa, K2 vitamini kalsiyni qon tomirlariga emas, aynan suyaklarga yoʻnaltiradi.",
         },
       ],
       ru: [
@@ -675,7 +675,7 @@ const raw: RawHealthTopic[] = [
     bullets: {
       uz: [
         "Profilaktik doza: 2000–5000 IU",
-        "Yog'li taom bilan nonushtada qabul qilinadi",
+        "Yogʻli taom bilan nonushtada qabul qilinadi",
         "K2 (MK-7) bilan birga ichish eng xavfsiz va samarali",
       ],
       ru: [
@@ -692,7 +692,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "D vitaminini yozda ham ichish kerakmi?",
-          answer: "Agar kunning ko'p qismini binoda o'tkazsangiz, yozda ham minimal profilaktik doza (1000–2000 IU) tavsiya etiladi.",
+          answer: "Agar kunning koʻp qismini binoda oʻtkazsangiz, yozda ham minimal profilaktik doza (1000–2000 IU) tavsiya etiladi.",
         },
       ],
       ru: [
@@ -712,14 +712,14 @@ const raw: RawHealthTopic[] = [
       ru: "Главный водорастворимый антиоксидант и защитник сосудов",
     },
     intro: {
-      uz: "Inson organizmi vitamin C ni o'zi ishlab chiqara olmaydi. U har kuni oziq-ovqat va sifatli qo'shimchalar orqali tushishi shart.",
+      uz: "Inson organizmi vitamin C ni oʻzi ishlab chiqara olmaydi. U har kuni oziq-ovqat va sifatli qoʻshimchalar orqali tushishi shart.",
       ru: "Витамин C не синтезируется в организме человека и должен поступать ежедневно для защиты клеток и синтеза коллагена.",
     },
     sections: {
       uz: [
         {
           title: "Asosiy vazifalari",
-          body: "Oksidlovchi stressdan himoya qiladi, qon tomirlar devorini mustahkamlaydi, kollagen tolalarini hosil qiladi va temir so'rilishini 3 baravargacha oshiradi.",
+          body: "Oksidlovchi stressdan himoya qiladi, qon tomirlar devorini mustahkamlaydi, kollagen tolalarini hosil qiladi va temir soʻrilishini 3 baravargacha oshiradi.",
         },
       ],
       ru: [
@@ -730,7 +730,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Antioksidant va viruslarga qarshi to'siq", "Kollagen va elastiklik", "Temir so'rilishini kuchaytirish"],
+      uz: ["Antioksidant va viruslarga qarshi toʻsiq", "Kollagen va elastiklik", "Temir soʻrilishini kuchaytirish"],
       ru: ["Антиоксидантная защита", "Кофактор выработки коллагена", "Усиление всасывания железа"],
     },
     ingredientSlugs: ["vitamin-c"],
@@ -741,7 +741,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Katta dozada vitamin C buyrakka zarar emasmi?",
-          answer: "Kunlik profilaktik me'yor 500–1000 mg ni tashkil etadi. Ko'p suv ichish buyraklar salomatligini ta'minlaydi.",
+          answer: "Kunlik profilaktik meʼyor 500–1000 mg ni tashkil etadi. Koʻp suv ichish buyraklar salomatligini taʼminlaydi.",
         },
       ],
       ru: [
@@ -757,7 +757,7 @@ const raw: RawHealthTopic[] = [
     slug: "magnesium",
     name: { uz: "Magniy", ru: "Магний" },
     headline: {
-      uz: "Tinch asablar, bo'shashgan mushaklar va chuqur uyqu",
+      uz: "Tinch asablar, boʻshashgan mushaklar va chuqur uyqu",
       ru: "Антистресс-минерал, мышечный релаксант и поддержка сердца",
     },
     intro: {
@@ -767,8 +767,8 @@ const raw: RawHealthTopic[] = [
     sections: {
       uz: [
         {
-          title: "Magniyning to'g'ri shakllari",
-          body: "Magniy xelati (bisglisinat) va sitrati oshqozonga yumshoq ta'sir qiladi va ichakda 80% gacha yuqori so'riladi.",
+          title: "Magniyning toʻgʻri shakllari",
+          body: "Magniy xelati (bisglisinat) va sitrati oshqozonga yumshoq taʼsir qiladi va ichakda 80% gacha yuqori soʻriladi.",
         },
       ],
       ru: [
@@ -779,7 +779,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Mushaklar spazmi va tortishishiga qarshi", "Stress va xavotirni kamaytirish", "Yurak ritmini qo'llab-quvvatlash"],
+      uz: ["Mushaklar spazmi va tortishishiga qarshi", "Stress va xavotirni kamaytirish", "Yurak ritmini qoʻllab-quvvatlash"],
       ru: ["Снятие мышечных судорог", "Снижение тревожности и стресса", "Поддержка сердечного ритма"],
     },
     ingredientSlugs: ["magnesium"],
@@ -806,18 +806,18 @@ const raw: RawHealthTopic[] = [
     slug: "zinc",
     name: { uz: "Sink", ru: "Цинк" },
     headline: {
-      uz: "Immun to'siq, toza teri va gormonlar balansi",
+      uz: "Immun toʻsiq, toza teri va gormonlar balansi",
       ru: "Микроэлемент для иммунитета, регенерации кожи и синтеза тестостерона",
     },
     intro: {
-      uz: "Sink — immun hujayralarining bo'linishi, oqsil sintezi va yaralarning tez bitishi uchun mas'ul bo'lgan muhim mineral.",
+      uz: "Sink — immun hujayralarining boʻlinishi, oqsil sintezi va yaralarning tez bitishi uchun masʼul boʻlgan muhim mineral.",
       ru: "Цинк необходим для работы ферментов антиоксидантной защиты, заживления тканей и поддержания гормонального баланса.",
     },
     sections: {
       uz: [
         {
           title: "Shamollash vaqtida sinkning roli",
-          body: "Shamollashning dastlabki kunlarida sink qabul qilish viruslarning ko'payishini to'xtatib, kasallik muddatini qisqartiradi.",
+          body: "Shamollashning dastlabki kunlarida sink qabul qilish viruslarning koʻpayishini toʻxtatib, kasallik muddatini qisqartiradi.",
         },
       ],
       ru: [
@@ -828,7 +828,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Immun tizimini tezkor kuchaytirish", "Akne va teri yallig'lanishlariga qarshi", "Soch o'sishini qo'llab-quvvatlash"],
+      uz: ["Immun tizimini tezkor kuchaytirish", "Akne va teri yalligʻlanishlariga qarshi", "Soch oʻsishini qoʻllab-quvvatlash"],
       ru: ["Усиление иммунной защиты", "Противовоспалительный эффект при акне", "Стимуляция роста волос"],
     },
     ingredientSlugs: ["zinc"],
@@ -838,8 +838,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Sinkni och qoringa ichsa bo'ladimi?",
-          answer: "Och qoringa ichilganda ko'ngil aynishi mumkin, shuning uchun sinkni doimo to'yib ovqatlangan holda ichish kerak.",
+          question: "Sinkni och qoringa ichsa boʻladimi?",
+          answer: "Och qoringa ichilganda koʻngil aynishi mumkin, shuning uchun sinkni doimo toʻyib ovqatlangan holda ichish kerak.",
         },
       ],
       ru: [
@@ -855,18 +855,18 @@ const raw: RawHealthTopic[] = [
     slug: "omega-3",
     name: { uz: "Omega-3 (EPA / DHA)", ru: "Омега-3 (ЭПК / ДГК)" },
     headline: {
-      uz: "Yurak, miya faoliyati, ko'rish va tomirlar elastikligi",
+      uz: "Yurak, miya faoliyati, koʻrish va tomirlar elastikligi",
       ru: "Эссенциальные полиненасыщенные жирные кислоты для сердца и мозга",
     },
     intro: {
-      uz: "Tozalangan chuqur dengiz baliq yog'idan olingan Omega-3 triglitserid shaklida eng yuqori bio-mavjudlikka ega.",
+      uz: "Tozalangan chuqur dengiz baliq yogʻidan olingan Omega-3 triglitserid shaklida eng yuqori bio-mavjudlikka ega.",
       ru: "Высокоочищенные жирные кислоты EPA и DHA в форме триглицеридов защищают сосуды и питают клетки головного мозга.",
     },
     sections: {
       uz: [
         {
           title: "Triglitserid shaklining afzalligi",
-          body: "Tabiiy triglitserid (TG) shaklidagi Omega-3 etil efirlarga nisbatan 70% ga yaxshiroq so'riladi va oshqozonni bezovta qilmaydi.",
+          body: "Tabiiy triglitserid (TG) shaklidagi Omega-3 etil efirlarga nisbatan 70% ga yaxshiroq soʻriladi va oshqozonni bezovta qilmaydi.",
         },
       ],
       ru: [
@@ -877,7 +877,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Yuqori EPA/DHA konsentratsiyasi", "Yurak ritmi va qon tomirlar elastikligi", "Miya va ko'rish o'tkirligi"],
+      uz: ["Yuqori EPA/DHA konsentratsiyasi", "Yurak ritmi va qon tomirlar elastikligi", "Miya va koʻrish oʻtkirligi"],
       ru: ["Высокая концентрация EPA/DHA", "Поддержка липидного профиля", "Когнитивные функции и зрение"],
     },
     ingredientSlugs: ["epa-dha"],
@@ -887,8 +887,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Baliq yog'i ta'mi keladimi?",
-          answer: "Zamonaviy molekulyar tozalash texnologiyasi tufayli yoqimsiz baliq hidi va ta'mi butunlay yo'qotilgan.",
+          question: "Baliq yogʻi taʼmi keladimi?",
+          answer: "Zamonaviy molekulyar tozalash texnologiyasi tufayli yoqimsiz baliq hidi va taʼmi butunlay yoʻqotilgan.",
         },
       ],
       ru: [
@@ -904,18 +904,18 @@ const raw: RawHealthTopic[] = [
     slug: "collagen",
     name: { uz: "Dengiz Kollageni", ru: "Морской Коллаген" },
     headline: {
-      uz: "Teri tarangligi, ajinlarga qarshi kurash va bo'g'imlar elastikligi",
+      uz: "Teri tarangligi, ajinlarga qarshi kurash va boʻgʻimlar elastikligi",
       ru: "Пептиды коллагена для плотности кожи, блеска волос и гибкости суставов",
     },
     intro: {
-      uz: "Gidrolizlangan kichik molekulyar dengiz kollageni organizm tomonidan darhol o'zlashtirilib, terining tabiiy karkasini tiklaydi.",
+      uz: "Gidrolizlangan kichik molekulyar dengiz kollageni organizm tomonidan darhol oʻzlashtirilib, terining tabiiy karkasini tiklaydi.",
       ru: "Низкомолекулярные пептиды рыбного коллагена проникают в глубокие слои дермы, стимулируя синтез собственного фибриллярного белка.",
     },
     sections: {
       uz: [
         {
           title: "Nima uchun dengiz kollageni?",
-          body: "Dengiz kollageni molekulalari qoramol kollageniga qaraganda ancha mayda bo'lib, ichakda 1.5 baravar tezroq va to'liq so'riladi.",
+          body: "Dengiz kollageni molekulalari qoramol kollageniga qaraganda ancha mayda boʻlib, ichakda 1.5 baravar tezroq va toʻliq soʻriladi.",
         },
       ],
       ru: [
@@ -953,7 +953,7 @@ const raw: RawHealthTopic[] = [
     slug: "vitamin-b12",
     name: { uz: "Vitamin B12", ru: "Витамин B12" },
     headline: {
-      uz: "Qon hosil bo'lishi, asab tolalari himoyasi va charchoqqa qarshi kurash",
+      uz: "Qon hosil boʻlishi, asab tolalari himoyasi va charchoqqa qarshi kurash",
       ru: "Кроветворение, защита нервных волокон и преодоление слабости",
     },
     intro: {
@@ -964,7 +964,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           title: "B12 tanqisligi xavfi",
-          body: "B12 yetishmovchiligi kamqonlik (anemiya), xotira pasayishi, qo'l-oyoqlarning uvishishi va doimiy holsizlikka sabab bo'ladi.",
+          body: "B12 yetishmovchiligi kamqonlik (anemiya), xotira pasayishi, qoʻl-oyoqlarning uvishishi va doimiy holsizlikka sabab boʻladi.",
         },
       ],
       ru: [
@@ -986,7 +986,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Vegetarianlarga B12 shartmi?",
-          answer: "Ha, B12 asosan hayvon mahsulotlarida bo'lgani sababli, go'sht kam iste'mol qiluvchilarga B12 qabul qilish majburiydir.",
+          answer: "Ha, B12 asosan hayvon mahsulotlarida boʻlgani sababli, goʻsht kam isteʼmol qiluvchilarga B12 qabul qilish majburiydir.",
         },
       ],
       ru: [
@@ -1002,18 +1002,18 @@ const raw: RawHealthTopic[] = [
     slug: "iron",
     name: { uz: "Temir (Xelat)", ru: "Хелат Железа" },
     headline: {
-      uz: "Gemoglobin va ferritin darajasini oshirish, to'qimalarga kislorod",
+      uz: "Gemoglobin va ferritin darajasini oshirish, toʻqimalarga kislorod",
       ru: "Восстановление ферритина и гемоглобина без раздражения желудка",
     },
     intro: {
-      uz: "Temir bisglisinat xelati oshqozonda noqulaylik chaqirmaydigan eng xavfsiz va tez o'zlashtiriladigan temir shaklidir.",
+      uz: "Temir bisglisinat xelati oshqozonda noqulaylik chaqirmaydigan eng xavfsiz va tez oʻzlashtiriladigan temir shaklidir.",
       ru: "Бисглицинат железа обладает высочайшей биодоступностью и не вызывает тошноты или запоров со стороны ЖКТ.",
     },
     sections: {
       uz: [
         {
           title: "Temir tanqisligi anemiyasi",
-          body: "Ferritin past bo'lganda to'qimalar kislorod ochligiga uchraydi: bosh aylanishi, soch to'kilishi va kuchsizlik yuzaga keladi.",
+          body: "Ferritin past boʻlganda toʻqimalar kislorod ochligiga uchraydi: bosh aylanishi, soch toʻkilishi va kuchsizlik yuzaga keladi.",
         },
       ],
       ru: [
@@ -1024,7 +1024,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Oshqozonni bezovta qilmaydigan bisglisinat shakli", "Vitamin C bilan birga yuqori so'rilish", "Kislorod tashilishi va tetiklik"],
+      uz: ["Oshqozonni bezovta qilmaydigan bisglisinat shakli", "Vitamin C bilan birga yuqori soʻrilish", "Kislorod tashilishi va tetiklik"],
       ru: ["Хелатная форма без побочных эффектов", "Максимальное усвоение с витамином C", "Устранение гипоксии и слабости"],
     },
     ingredientSlugs: ["iron", "vitamin-c"],
@@ -1035,7 +1035,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Temirni nimalar bilan ichish mumkin emas?",
-          answer: "Choy, kofe va sut mahsulotlari temir so'rilishini to'sadi. Ularni 2 soat oraliq bilan iste'mol qiling.",
+          answer: "Choy, kofe va sut mahsulotlari temir soʻrilishini toʻsadi. Ularni 2 soat oraliq bilan isteʼmol qiling.",
         },
       ],
       ru: [
@@ -1051,18 +1051,18 @@ const raw: RawHealthTopic[] = [
     slug: "calcium",
     name: { uz: "Kalsiy", ru: "Кальций" },
     headline: {
-      uz: "Mustahkam suyaklar, sog'lom tishlar va mushaklar kuchi",
+      uz: "Mustahkam suyaklar, sogʻlom tishlar va mushaklar kuchi",
       ru: "Минеральная плотность костей, здоровье зубов и проводимость мышц",
     },
     intro: {
-      uz: "Kalsiy suyak skeletining asosiy tayanchi. Uning to'g'ri o'zlashtirilishi uchun D3 va K2 vitaminlari kofaktor sifatida talab qilinadi.",
+      uz: "Kalsiy suyak skeletining asosiy tayanchi. Uning toʻgʻri oʻzlashtirilishi uchun D3 va K2 vitaminlari kofaktor sifatida talab qilinadi.",
       ru: "Кальций необходим для минерализации костей, свертывания крови и передачи нервных импульсов.",
     },
     sections: {
       uz: [
         {
           title: "Kalsiy sitratining afzalligi",
-          body: "Kalsiy sitrati oshqozon kislotaliligi past bo'lganda ham to'liq so'riladi va buyraklarda tosh hosil qilish xavfi eng kamdir.",
+          body: "Kalsiy sitrati oshqozon kislotaliligi past boʻlganda ham toʻliq soʻriladi va buyraklarda tosh hosil qilish xavfi eng kamdir.",
         },
       ],
       ru: [
@@ -1073,7 +1073,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Suyak sinishi va osteoporoz profilaktikasi", "D3 va K2 bilan to'g'ri birikish", "Tish emali mustahkamligi"],
+      uz: ["Suyak sinishi va osteoporoz profilaktikasi", "D3 va K2 bilan toʻgʻri birikish", "Tish emali mustahkamligi"],
       ru: ["Профилактика остеопении и остеопороза", "Синергия с D3 и K2", "Крепость зубной эмали"],
     },
     ingredientSlugs: ["calcium", "vitamin-d3", "vitamin-k2"],
@@ -1104,14 +1104,14 @@ const raw: RawHealthTopic[] = [
       ru: "Живые бактерии для микрофлоры, комфортного пищеварения и иммунитета",
     },
     intro: {
-      uz: "Mikroorganizmlarning foydali shtammlari ichak devorlarini himoya qiladi va yallig'lanishni kamaytiradi.",
+      uz: "Mikroorganizmlarning foydali shtammlari ichak devorlarini himoya qiladi va yalligʻlanishni kamaytiradi.",
       ru: "Комплекс лакто- и бифидобактерий восстанавливает микробиом после стрессов, неправильного питания и антибиотикотерапии.",
     },
     sections: {
       uz: [
         {
           title: "Shtammlar xilma-xilligi",
-          body: "Lactobacillus va Bifidobacterium birgalikda ichakning barcha bo'limlarida sog'lom muhitni ta'minlaydi.",
+          body: "Lactobacillus va Bifidobacterium birgalikda ichakning barcha boʻlimlarida sogʻlom muhitni taʼminlaydi.",
         },
       ],
       ru: [
@@ -1122,7 +1122,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Milliardlab jonli probiotik bakteriyalar", "Qorin dam bo'lishini bartaraf etish", "Hazm va immunitet balansi"],
+      uz: ["Milliardlab jonli probiotik bakteriyalar", "Qorin dam boʻlishini bartaraf etish", "Hazm va immunitet balansi"],
       ru: ["Миллиарды КОЕ живых бактерий", "Устранение вздутия и дискомфорта", "Поддержка иммунитета"],
     },
     ingredientSlugs: ["probiotics"],
@@ -1133,7 +1133,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Probiotiklarni muzlatgichda saqlash kerakmi?",
-          answer: "Zamonaviy mikrokapsulalangan shtammlar xona haroratida o'z faolligini to'liq saqlab qoladi.",
+          answer: "Zamonaviy mikrokapsulalangan shtammlar xona haroratida oʻz faolligini toʻliq saqlab qoladi.",
         },
       ],
       ru: [
@@ -1151,7 +1151,7 @@ const raw: RawHealthTopic[] = [
     slug: "fatigue",
     name: { uz: "Doimiy charchoq va quvvatsizlik", ru: "Хроническая усталость и упадок сил" },
     headline: {
-      uz: "Ertalabdan quvvatsizlik sabablari va energiyani tiklash yo'llari",
+      uz: "Ertalabdan quvvatsizlik sabablari va energiyani tiklash yoʻllari",
       ru: "Причины нехватки сил и пошаговый план восстановления энергии",
     },
     intro: {
@@ -1183,8 +1183,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Charchoq qachon o'tib ketadi?",
-          answer: "To'g'ri tanlangan vitaminlar va temir qabul qilinganda dastlabki 2 haftada kuch-quvvat tiklanishi boshlanadi.",
+          question: "Charchoq qachon oʻtib ketadi?",
+          answer: "Toʻgʻri tanlangan vitaminlar va temir qabul qilinganda dastlabki 2 haftada kuch-quvvat tiklanishi boshlanadi.",
         },
       ],
       ru: [
@@ -1198,20 +1198,20 @@ const raw: RawHealthTopic[] = [
   {
     kind: "symptom",
     slug: "hair-loss",
-    name: { uz: "Soch to'kilishi va sinishi", ru: "Выпадение и ломкость волос" },
+    name: { uz: "Soch toʻkilishi va sinishi", ru: "Выпадение и ломкость волос" },
     headline: {
-      uz: "Soch ildizlarini oziqlantirish, zichlik va o'sishni rag'batlantirish",
+      uz: "Soch ildizlarini oziqlantirish, zichlik va oʻsishni ragʻbatlantirish",
       ru: "Укрепление волосяных фолликулов, густота и блеск",
     },
     intro: {
-      uz: "Soch to'kilishi ko'pincha temir tanqisligi, biotin, sink va oqsil (kollagen) yetishmovchiligidan kelib chiqadi.",
+      uz: "Soch toʻkilishi koʻpincha temir tanqisligi, biotin, sink va oqsil (kollagen) yetishmovchiligidan kelib chiqadi.",
       ru: "Выпадение волос часто спровоцировано дефицитом железа (ферритина), цинка, биотина и пептидов коллагена.",
     },
     sections: {
       uz: [
         {
           title: "Soch follikulasi nima bilan oziqlanadi?",
-          body: "Soch 90% keratin oqsilidan iborat. Biotin, sink va aminokislotalar soch ildizini mustahkamlaydi va yangi sochlar o'sishini faollashtiradi.",
+          body: "Soch 90% keratin oqsilidan iborat. Biotin, sink va aminokislotalar soch ildizini mustahkamlaydi va yangi sochlar oʻsishini faollashtiradi.",
         },
       ],
       ru: [
@@ -1222,7 +1222,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Biotin va kollagen — soch karkasini mustahkamlash", "Sink — bosh terisi yog'lanishini nazorat qilish", "Temir va ferritin darajasini to'ldirish"],
+      uz: ["Biotin va kollagen — soch karkasini mustahkamlash", "Sink — bosh terisi yogʻlanishini nazorat qilish", "Temir va ferritin darajasini toʻldirish"],
       ru: ["Биотин и коллаген для кератина", "Цинк для здоровья кожи головы", "Восполнение уровня железа"],
     },
     ingredientSlugs: ["biotin", "collagen", "zinc", "iron"],
@@ -1232,8 +1232,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Natija qachon ko'rinadi?",
-          answer: "Sochning o'sish sikli sababli yangi sochlar paydo bo'lishi va to'kilish to'xtashi 1–2 oylik kursdan keyin yaqqol seziladi.",
+          question: "Natija qachon koʻrinadi?",
+          answer: "Sochning oʻsish sikli sababli yangi sochlar paydo boʻlishi va toʻkilish toʻxtashi 1–2 oylik kursdan keyin yaqqol seziladi.",
         },
       ],
       ru: [
@@ -1253,7 +1253,7 @@ const raw: RawHealthTopic[] = [
       ru: "Легкое засыпание, непрерывный сон и бодрое пробуждение",
     },
     intro: {
-      uz: "Kechqurun uxlashga qiynalish va tez-tez uyg'onish asab tizimida magniy va B vitaminlari yetishmovchiligidan darak beradi.",
+      uz: "Kechqurun uxlashga qiynalish va tez-tez uygʻonish asab tizimida magniy va B vitaminlari yetishmovchiligidan darak beradi.",
       ru: "Трудности с засыпанием и ночные пробуждения указывают на истощение запасов магния и повышенную возбудимость нервной системы.",
     },
     sections: {
@@ -1271,7 +1271,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Magniy xelat / B6 — kechki relaksatsiya", "Kechqurun kofein va spirtli ichimliklarni cheklash", "Xonani salqin va qorong'u saqlash"],
+      uz: ["Magniy xelat / B6 — kechki relaksatsiya", "Kechqurun kofein va spirtli ichimliklarni cheklash", "Xonani salqin va qorongʻu saqlash"],
       ru: ["Органический магний B6 за 40 минут до сна", "Ограничение кофеина во второй половине дня", "Проветривание спальни"],
     },
     ingredientSlugs: ["magnesium", "vitamin-b12"],
@@ -1282,7 +1282,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Uyqu dorilariga qaraganda magniyning farqi nima?",
-          answer: "Magniy sun'iy sedativ emas, u tabiiy minerallarni to'ldirib, tabiiy uyqu ritmini qaytaradi.",
+          answer: "Magniy sunʼiy sedativ emas, u tabiiy minerallarni toʻldirib, tabiiy uyqu ritmini qaytaradi.",
         },
       ],
       ru: [
@@ -1298,18 +1298,18 @@ const raw: RawHealthTopic[] = [
     slug: "frequent-colds",
     name: { uz: "Tez-tez shamollash", ru: "Частые простуды и слабый иммунитет" },
     headline: {
-      uz: "Tizimli immunitetni kuchaytirish va viruslarga qarshi to'siq",
+      uz: "Tizimli immunitetni kuchaytirish va viruslarga qarshi toʻsiq",
       ru: "Активация противовирусной защиты и укрепление барьеров",
     },
     intro: {
-      uz: "Yiliga 3-4 martadan ko'p shamollash immun tizimi resurslari tugaganini bildiradi. D3, Sink va C vitamini himoyani qayta tiklaydi.",
+      uz: "Yiliga 3-4 martadan koʻp shamollash immun tizimi resurslari tugaganini bildiradi. D3, Sink va C vitamini himoyani qayta tiklaydi.",
       ru: "Частые ОРВИ свидетельствуют о снижении местного и системного иммунитета. Протокол D3 + Цинк + Витамин C восстанавливает защиту.",
     },
     sections: {
       uz: [
         {
           title: "Antiviral himoya zanjiri",
-          body: "Sink viruslarning ko'payishiga to'sqinlik qiladi, D3 makrofaglarni faollashtiradi, C vitamini esa erkin radikallarni neytrallaydi.",
+          body: "Sink viruslarning koʻpayishiga toʻsqinlik qiladi, D3 makrofaglarni faollashtiradi, C vitamini esa erkin radikallarni neytrallaydi.",
         },
       ],
       ru: [
@@ -1331,7 +1331,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Shamollash boshlanganda nima qilish kerak?",
-          answer: "Dastlabki 3 kunda Sink va Vitamin C ni qabul qilish kasallikni yengil o'tishiga yordam beradi.",
+          answer: "Dastlabki 3 kunda Sink va Vitamin C ni qabul qilish kasallikni yengil oʻtishiga yordam beradi.",
         },
       ],
       ru: [
@@ -1351,7 +1351,7 @@ const raw: RawHealthTopic[] = [
       ru: "Снижение тревожности, внутреннее спокойствие и стрессоустойчивость",
     },
     intro: {
-      uz: "Ichki bezovtalik va stress magniy va B guruhi vitaminlari zaxirasini kamaytiradi. Ularni to'ldirish asab tizimini barqarorlashtiradi.",
+      uz: "Ichki bezovtalik va stress magniy va B guruhi vitaminlari zaxirasini kamaytiradi. Ularni toʻldirish asab tizimini barqarorlashtiradi.",
       ru: "Повышенная раздражительность часто связана с гипервозбудимостью нейронов из-за дефицита магния.",
     },
     sections: {
@@ -1394,9 +1394,9 @@ const raw: RawHealthTopic[] = [
   {
     kind: "symptom",
     slug: "digestive-bloat",
-    name: { uz: "Qorin dam bo'lishi va og'irlik", ru: "Вздутие и тяжесть в животе" },
+    name: { uz: "Qorin dam boʻlishi va ogʻirlik", ru: "Вздутие и тяжесть в животе" },
     headline: {
-      uz: "Yengil hazm, to'g'ri mikroflora va qorin damini bartaraf etish",
+      uz: "Yengil hazm, toʻgʻri mikroflora va qorin damini bartaraf etish",
       ru: "Устранение метеоризма, комфортное пищеварение и легкость",
     },
     intro: {
@@ -1407,7 +1407,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           title: "Mikroflorani qayta tiklash",
-          body: "Probiotik shtammlar patogen bakteriyalarni siqib chiqarib, ovqatning to'liq parchalanishini ta'minlaydi.",
+          body: "Probiotik shtammlar patogen bakteriyalarni siqib chiqarib, ovqatning toʻliq parchalanishini taʼminlaydi.",
         },
       ],
       ru: [
@@ -1428,8 +1428,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Probiotik qachon ta'sir qiladi?",
-          answer: "Dastlabki 3–5 kunda hazm yengillashishi va dam bo'lish kamayishi seziladi.",
+          question: "Probiotik qachon taʼsir qiladi?",
+          answer: "Dastlabki 3–5 kunda hazm yengillashishi va dam boʻlish kamayishi seziladi.",
         },
       ],
       ru: [
@@ -1443,20 +1443,20 @@ const raw: RawHealthTopic[] = [
   {
     kind: "symptom",
     slug: "joint-pain",
-    name: { uz: "Bo'g'imlarda og'riq va qisirlash", ru: "Дискомфорт и хруст в суставах" },
+    name: { uz: "Boʻgʻimlarda ogʻriq va qisirlash", ru: "Дискомфорт и хруст в суставах" },
     headline: {
-      uz: "Tog'ay to'qimasini oziqlantirish, moylash va harakat yengilligi",
+      uz: "Togʻay toʻqimasini oziqlantirish, moylash va harakat yengilligi",
       ru: "Питание хряща, выработка суставной жидкости и легкость движений",
     },
     intro: {
-      uz: "Bo'g'imlardagi qisirlash va noqulaylik sinovial suyuqlik kamayishi va kollagen tolalari eskirishi bilan bog'liq.",
+      uz: "Boʻgʻimlardagi qisirlash va noqulaylik sinovial suyuqlik kamayishi va kollagen tolalari eskirishi bilan bogʻliq.",
       ru: "Дискомфорт при ходьбе и хруст в коленях вызваны истончением суставного хряща и дефицитом коллагена.",
     },
     sections: {
       uz: [
         {
-          title: "Bo'g'imlar uchun nutriyentlar",
-          body: "Gidrolizlangan kollagen, D3, K2 va kalsiy birgalikda bo'g'im tog'aylarini tiklashda kuchli sinergiya beradi.",
+          title: "Boʻgʻimlar uchun nutriyentlar",
+          body: "Gidrolizlangan kollagen, D3, K2 va kalsiy birgalikda boʻgʻim togʻaylarini tiklashda kuchli sinergiya beradi.",
         },
       ],
       ru: [
@@ -1477,8 +1477,8 @@ const raw: RawHealthTopic[] = [
     faq: {
       uz: [
         {
-          question: "Kollagen bo'g'imlarga qanchada yordam beradi?",
-          answer: "Bo'g'im tog'aylarining yangilanishi sekin kechadi, shuning uchun minimal kurs 2–3 oyni tashkil etadi.",
+          question: "Kollagen boʻgʻimlarga qanchada yordam beradi?",
+          answer: "Boʻgʻim togʻaylarining yangilanishi sekin kechadi, shuning uchun minimal kurs 2–3 oyni tashkil etadi.",
         },
       ],
       ru: [

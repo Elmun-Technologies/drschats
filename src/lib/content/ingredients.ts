@@ -24,7 +24,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Omega-3 (EPA/DHA)", ru: "Омега-3 (EPA/DHA)" },
     role: { uz: "Yurak · miya · qon tomirlari", ru: "Сердце · мозг · сосуды" },
     description: {
-      uz: "Yuqori tozalikdagi to'yinmagan yog' kislotalari. Yurak ritmi, miya faoliyati, ko'rish o'tkirligi va qon tomirlar elastikligini qo'llab-quvvatlaydi.",
+      uz: "Yuqori tozalikdagi toʻyinmagan yog' kislotalari. Yurak ritmi, miya faoliyati, koʻrish oʻtkirligi va qon tomirlar elastikligini qoʻllab-quvvatlaydi.",
       ru: "Очищенные полиненасыщенные жирные кислоты для сердца, сосудов, зрения и когнитивных функций.",
     },
     inProducts: [],
@@ -34,7 +34,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Vitamin D3 (Xolekalsiferol)", ru: "Витамин D3 (Холекальциферол)" },
     role: { uz: "Suyak · immunitet · gormonlar", ru: "Кости · иммунитет · гормоны" },
     description: {
-      uz: "Quyosh vitamini. Kalsiy va fosfor so'rilishi, immun tizimi faolligi, energiya va kayfiyat barqarorligi uchun muhim biofaol modda.",
+      uz: "Quyosh vitamini. Kalsiy va fosfor soʻrilishi, immun tizimi faolligi, energiya va kayfiyat barqarorligi uchun muhim biofaol modda.",
       ru: "Солнечный витамин; регулирует усвоение кальция, поддерживает иммунитет, плотность костей и жизненный тонус.",
     },
     inProducts: ["swiss-energy-calcivit-30", "dr-frei-kids-multivitamins-20", "dr-frei-multivitamins-biotin-20"],
@@ -44,7 +44,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Vitamin K2 (Menaquinone MK-7)", ru: "Витамин K2 (Менахинон MK-7)" },
     role: { uz: "Suyak zichligi · qon tomir tozaligi", ru: "Плотность костей · здоровье сосудов" },
     description: {
-      uz: "Kalsiyni qon tomir devorlaridan suyak to'qimalariga yo'naltiruvchi maxsus vitamin. D3 bilan sinergiyada ishlaydi.",
+      uz: "Kalsiyni qon tomir devorlaridan suyak toʻqimalariga yoʻnaltiruvchi maxsus vitamin. D3 bilan sinergiyada ishlaydi.",
       ru: "Направляет кальций непосредственно в костную ткань, предотвращая его отложение в сосудах.",
     },
     inProducts: ["swiss-energy-calcivit-30", "swiss-energy-prenatal-forte-60"],
@@ -54,7 +54,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Magniy (Xelat / Sitrat / B6)", ru: "Магний (Хелат / Цитрат / B6)" },
     role: { uz: "Asab · mushaklar · sifatli uyqu", ru: "Нервная система · мышцы · сон" },
     description: {
-      uz: "Organizmda 300 dan ortiq biokimyoviy reaksiyalarda qatnashadi. Mushaklar spazmini yechadi, asab tizimini tinchlantiradi va uyquni me'yorlashtiradi.",
+      uz: "Organizmda 300 dan ortiq biokimyoviy reaksiyalarda qatnashadi. Mushaklar spazmini yechadi, asab tizimini tinchlantiradi va uyquni meʼyorlashtiradi.",
       ru: "Участвует более чем в 300 ферментативных реакциях; снижает нервную возбудимость, судороги и нормализует сон.",
     },
     inProducts: ["dr-frei-antistress-magniy-20"],
@@ -64,7 +64,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Vitamin C (L-Askorbin kislotasi)", ru: "Витамин C (L-Аскорбиновая кислота)" },
     role: { uz: "Antioksidant · immunitet · kollagen", ru: "Антиоксидант · иммунитет · коллаген" },
     description: {
-      uz: "Kuchli antioksidant. Hujayralarni oksidlanishdan himoya qiladi, kollagen sintezini rag'batlantiradi va temir moddasi so'rilishini oshiradi.",
+      uz: "Kuchli antioksidant. Hujayralarni oksidlanishdan himoya qiladi, kollagen sintezini ragʻbatlantiradi va temir moddasi soʻrilishini oshiradi.",
       ru: "Мощный антиоксидант; стимулирует выработку коллагена, укрепляет стенки капилляров и повышает сопротивляемость инфекциям.",
     },
     inProducts: ["swiss-energy-vitamin-c-20", "swiss-energy-immunovit-30", "dr-frei-multivitamins-biotin-20", "dr-frei-gold-vitamins-20", "dr-frei-antistress-magniy-20", "dr-frei-kids-multivitamins-20", "swiss-energy-prenatal-forte-60"],
@@ -74,7 +74,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Sink (Pikolinat / Sitrat)", ru: "Цинк (Пиколинат / Цитрат)" },
     role: { uz: "Immun hujayralar · teri · gormonal balans", ru: "Иммунные клетки · кожа · гормоны" },
     description: {
-      uz: "Immun hujayralari bo'linishi, jarohatlar bitishi, teri tozaligi va reproduktiv salomatlik uchun muhim mikroelement.",
+      uz: "Immun hujayralari boʻlinishi, jarohatlar bitishi, teri tozaligi va reproduktiv salomatlik uchun muhim mikroelement.",
       ru: "Ключевой минерал для дифференцировки Т-лимфоцитов, заживления тканей, здоровья кожи и выработки гормонов.",
     },
     inProducts: ["swiss-energy-immunovit-30", "swiss-energy-hair-nail-skin-30", "swiss-energy-visiovit-30", "dr-frei-gold-vitamins-20", "swiss-energy-calcivit-30"],
@@ -82,9 +82,9 @@ const raw: RawIngredient[] = [
   {
     slug: "collagen",
     name: { uz: "Gidrolizlangan Dengiz Kollageni", ru: "Гидролизованный морской коллаген" },
-    role: { uz: "Teri elastikligi · soch · bo'g'imlar", ru: "Упругость кожи · волосы · суставы" },
+    role: { uz: "Teri elastikligi · soch · boʻgʻimlar", ru: "Упругость кожи · волосы · суставы" },
     description: {
-      uz: "Kichik molekulyar oqsil peptidlari. Teri elastikligini tiklaydi, ajinlar paydo bo'lishini sekinlashtiradi va bo'g'im tog'aylarini oziqlantiradi.",
+      uz: "Kichik molekulyar oqsil peptidlari. Teri elastikligini tiklaydi, ajinlar paydo boʻlishini sekinlashtiradi va boʻgʻim togʻaylarini oziqlantiradi.",
       ru: "Легкоусвояемые пептиды коллагена I и III типа для плотности дермы, эластичности связок и укрепления суставов.",
     },
     inProducts: ["swiss-energy-nature-collagen"],
@@ -94,7 +94,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Biotin (Vitamin B7 / H)", ru: "Биотин (Витамин B7 / H)" },
     role: { uz: "Soch mustahkamligi · tirnoqlar", ru: "Крепость волос · ногти" },
     description: {
-      uz: "Keratin oqsilining asosiy sintezlovchisi. Soch to'kilishini kamaytiradi, uning qalinligini oshiradi va tirnoqlarni mustahkamlaydi.",
+      uz: "Keratin oqsilining asosiy sintezlovchisi. Soch toʻkilishini kamaytiradi, uning qalinligini oshiradi va tirnoqlarni mustahkamlaydi.",
       ru: "Кофермент в синтезе кератина; останавливает ломкость волос, укрепляет ногтевую пластину и улучшает текстуру кожи.",
     },
     inProducts: ["swiss-energy-hair-nail-skin-30", "dr-frei-multivitamins-biotin-20", "dr-frei-kids-multivitamins-20", "swiss-energy-neuroforce-30"],
@@ -104,7 +104,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Vitamin B12 (Metilkobalamin)", ru: "Витамин B12 (Метилкобаламин)" },
     role: { uz: "Gemoglobin · miya · tetiklik", ru: "Гемоглобин · мозг · энергия" },
     description: {
-      uz: "Eritrotsitlar hosil bo'lishi, asab tolalari qobig'i (miyelizatsiya) va aqliy tetiklik uchun almashtirib bo'lmaydigan vitamin.",
+      uz: "Eritrotsitlar hosil boʻlishi, asab tolalari qobigʻi (miyelizatsiya) va aqliy tetiklik uchun almashtirib boʻlmaydigan vitamin.",
       ru: "Необходим для кроветворения, синтеза ДНК, поддержки нервных волокон и преодоления хронической усталости.",
     },
     inProducts: ["swiss-energy-neuroforce-30", "dr-frei-multivitamins-biotin-20", "swiss-energy-prenatal-forte-60"],
@@ -114,7 +114,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Temir (Bisglisinat xelati)", ru: "Железо (Бисглицинат хелат)" },
     role: { uz: "Gemoglobin · kislorod · quvvat", ru: "Гемоглобин · кислород · энергия" },
     description: {
-      uz: "Oshqozonni bezovta qilmaydigan yuqori bio-mavjudlikdagi temir shakli. To'qimalarga kislorod yetkazish va charchoqni yengish uchun.",
+      uz: "Oshqozonni bezovta qilmaydigan yuqori bio-mavjudlikdagi temir shakli. Toʻqimalarga kislorod yetkazish va charchoqni yengish uchun.",
       ru: "Хелатная форма железа без побочных эффектов со стороны ЖКТ; восстанавливает уровень ферритина и гемоглобина.",
     },
     inProducts: ["swiss-energy-prenatal-forte-60"],
@@ -134,7 +134,7 @@ const raw: RawIngredient[] = [
     name: { uz: "Probiotiklar va Prebiotiklar kompleksi", ru: "Комплекс пробиотиков и пребиотиков" },
     role: { uz: "Ichak mikrobiotasi · hazm · immunitet", ru: "Микробиота кишечника · пищеварение" },
     description: {
-      uz: "Foydali jonli laktobakteriyalar va bifidobakteriyalar. Oziq moddalar so'rilishini yaxshilaydi va immun tizimini 70% ichak orqali kuchaytiradi.",
+      uz: "Foydali jonli laktobakteriyalar va bifidobakteriyalar. Oziq moddalar soʻrilishini yaxshilaydi va immun tizimini 70% ichak orqali kuchaytiradi.",
       ru: "Штаммы полезных бактерий для нормализации кишечной микрофлоры, комфортного пищеварения и иммунитета.",
     },
     inProducts: [],
@@ -153,13 +153,13 @@ const synergy: SynergyPair[] = [
     type: "boost",
     a: { uz: "Temir", ru: "Железо" },
     b: { uz: "Vitamin C", ru: "Витамин C" },
-    note: { uz: "Vitamin C temirning ichakda so'rilishini 3 baravargacha oshiradi.", ru: "Витамин C усиливает биодоступность и усвоение железа до 3 раз." },
+    note: { uz: "Vitamin C temirning ichakda soʻrilishini 3 baravargacha oshiradi.", ru: "Витамин C усиливает биодоступность и усвоение железа до 3 раз." },
   },
   {
     type: "boost",
     a: { uz: "Vitamin D3", ru: "Витамин D3" },
     b: { uz: "Vitamin K2", ru: "Витамин K2" },
-    note: { uz: "K2 kalsiyni qon tomirlaridan to'g'ri suyak to'qimasiga yo'naltiradi.", ru: "K2 активирует белок остеокальцин, направляя кальций в кости." },
+    note: { uz: "K2 kalsiyni qon tomirlaridan toʻgʻri suyak toʻqimasiga yoʻnaltiradi.", ru: "K2 активирует белок остеокальцин, направляя кальций в кости." },
   },
   {
     type: "boost",
@@ -171,7 +171,7 @@ const synergy: SynergyPair[] = [
     type: "boost",
     a: { uz: "Kollagen", ru: "Коллаген" },
     b: { uz: "Vitamin C", ru: "Витамин C" },
-    note: { uz: "Organizmda yangi kollagen tolalari hosil bo'lishi uchun C vitamini kofaktor hisoblanadi.", ru: "Витамин C необходим для сборки собственных молекул коллагена." },
+    note: { uz: "Organizmda yangi kollagen tolalari hosil boʻlishi uchun C vitamini kofaktor hisoblanadi.", ru: "Витамин C необходим для сборки собственных молекул коллагена." },
   },
   {
     type: "block",
@@ -183,13 +183,13 @@ const synergy: SynergyPair[] = [
     type: "block",
     a: { uz: "Kalsiy", ru: "Кальций" },
     b: { uz: "Temir", ru: "Железо" },
-    note: { uz: "Kalsiy temirning so'rilishini sezilarli darajada susaytiradi.", ru: "Кальций подавляет абсорбцию железа в кишечнике." },
+    note: { uz: "Kalsiy temirning soʻrilishini sezilarli darajada susaytiradi.", ru: "Кальций подавляет абсорбцию железа в кишечнике." },
   },
   {
     type: "block",
     a: { uz: "Kofe / Choy (Taninlar)", ru: "Кофе / Чай (Танины)" },
     b: { uz: "Temir va Magniy", ru: "Железо и Магний" },
-    note: { uz: "Kofein va taninlar minerallarni bog'lab, chiqib ketishini tezlashtiradi.", ru: "Танины связывают минералы, снижая их биологическую ценность." },
+    note: { uz: "Kofein va taninlar minerallarni bogʻlab, chiqib ketishini tezlashtiradi.", ru: "Танины связывают минералы, снижая их биологическую ценность." },
   },
 ];
 

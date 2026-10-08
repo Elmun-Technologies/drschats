@@ -173,7 +173,7 @@ function UpsellOffer({ step, label }: { step: UpsellStep; label: string }) {
         {image && <Image src={image} alt="" fill sizes="60px" className="object-contain p-1.5" />}
       </span>
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <span className="truncate text-sm">{step.product.name}</span>
+        <span title={step.product.name} className="line-clamp-2 text-sm leading-[18px]">{step.product.name}</span>
         <span className="flex flex-wrap items-center gap-x-1.5 gap-y-0.5">
           <span className="whitespace-nowrap text-[15px] font-bold lg:text-base">{free ? tc("upsellFree") : formatMoney(step.discountedPrice, locale)}</span>
           {!free && <DiscountBadge percent={step.discountPercent} />}

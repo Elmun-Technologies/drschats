@@ -21,3 +21,11 @@ describe("product facts", () => {
     expect(cutoutOf({ slug, cutout: "/a.png" })).toBe("/a.png");
   });
 });
+
+describe("search folding", async () => {
+  const { fold } = await import("@/lib/search/fold");
+  it("treats every Uzbek apostrophe form the same", () => {
+    expect(fold("Goʻzallik")).toBe(fold("Go'zallik"));
+    expect(fold("BOʻGʻIMLAR")).toBe("bo'g'imlar");
+  });
+});

@@ -4,6 +4,8 @@ import type { Locale } from "@/lib/i18n/routing";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { PAYMENT_PROVIDERS } from "@/lib/config/payments";
+import { CARD_BRANDS, PAYMENT_BRANDS } from "@/lib/config/payment-brands";
+import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
@@ -25,12 +27,13 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
   // until then it says "soon" — the page never promises a route checkout lacks.
   const methods = [
     ...PAYMENT_PROVIDERS.map((p) => ({
+      id: p.id,
       title: p.label,
       badge: p.configured ? t("online") : t("soon"),
       text: p.configured ? t("payment.providerText", { name: p.label }) : t("payment.providerSoon", { name: p.label }),
       muted: !p.configured,
     })),
-    { title: t("payment.codTitle"), badge: t("onDelivery"), text: t("payment.codText"), muted: false },
+    { id: null, title: t("payment.codTitle"), badge: t("onDelivery"), text: t("payment.codText"), muted: false },
   ];
 
   return (
@@ -43,7 +46,13 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
         {methods.map((m) => (
           <div key={m.title} className="flex min-h-[150px] flex-col justify-between gap-6 rounded-[20px] bg-tile p-5 lg:min-h-[180px] lg:p-7">
             <div className="flex items-start justify-between gap-3">
-              <h2 className="text-2xl font-bold lg:text-[30px] lg:leading-9">{m.title}</h2>
+              {m.id && PAYMENT_BRANDS[m.id].src ? (
+                <h2>
+                  <PaymentMark id={m.id} className="h-12 bg-transparent px-0" />
+                </h2>
+              ) : (
+                <h2 className="text-2xl font-bold lg:text-[30px] lg:leading-9">{m.title}</h2>
+              )}
               <span className={cn("inline-flex h-7 items-center rounded-pill bg-bg px-2.5 text-[13px] font-semibold", m.muted && "text-ink-2")}>
                 {m.badge}
               </span>
@@ -52,6 +61,14 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
           </div>
         ))}
       </div>
+
+      <section aria-labelledby="cards-title" className="flex flex-col gap-4 rounded-[20px] border border-line p-5 lg:flex-row lg:items-center lg:justify-between lg:px-8 lg:py-7">
+        <div className="flex flex-col gap-1">
+          <h2 id="cards-title" className="text-lg font-bold lg:text-xl">{t("payment.cardsTitle")}</h2>
+          <p className="text-[15px] leading-[22px] text-ink-2 lg:text-base lg:leading-6">{t("payment.cardsText")}</p>
+        </div>
+        <PaymentMarks ids={CARD_BRANDS} label={t("payment.cardsTitle")} chipClassName="bg-tile" className="shrink-0" />
+      </section>
 
       <div className="flex items-start gap-4 rounded-[20px] border border-line p-5 lg:items-center lg:gap-5 lg:px-8 lg:py-7">
         <span aria-hidden className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-tile lg:h-14 lg:w-14">
