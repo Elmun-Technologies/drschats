@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useToast } from "@/lib/ui/toast";
 
-export function ShareButton({ name }: { name: string }) {
+export function ShareButton({ name, showLabel = false, className = "" }: { name: string; showLabel?: boolean; className?: string }) {
   const t = useTranslations("common");
   const notify = useToast((s) => s.notify);
 
@@ -19,17 +19,15 @@ export function ShareButton({ name }: { name: string }) {
 
   return (
     <button
+      type="button"
       onClick={handleShare}
-      aria-label={t("share")}
-      className="flex h-10 items-center gap-2 rounded-full border border-legacy-line px-4 text-sm text-legacy-muted transition-colors hover:border-legacy-line-strong hover:text-fg"
+      aria-label={showLabel ? undefined : t("share")}
+      className={`flex items-center justify-center gap-1.5 text-ink transition-colors hover:text-ink-2 ${className}`}
     >
-      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
-        <circle cx="18" cy="5" r="3" />
-        <circle cx="6" cy="12" r="3" />
-        <circle cx="18" cy="19" r="3" />
-        <path d="M8.59 13.51l6.83 3.98M15.41 6.51L8.59 10.49" strokeLinecap="round" />
+      <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 15V4M8 8l4-4 4 4M5 13v6a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-6" />
       </svg>
-      {t("share")}
+      {showLabel && <span className="text-ink-2">{t("share")}</span>}
     </button>
   );
 }

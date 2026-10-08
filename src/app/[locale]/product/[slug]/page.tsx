@@ -9,9 +9,9 @@ import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
 import { topicsForProduct } from "@/lib/shop/product-topics";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
-import { getBespokeComponent } from "@/components/bespoke/registry";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
 import { SimilarProducts } from "@/components/personalization/SimilarProducts";
+import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -67,7 +67,6 @@ export default async function ProductPage({
 
   const topics = topicsForProduct(product, allTopics);
 
-  const Bespoke = getBespokeComponent(slug);
   const [reviewerResult, authorResult] = await Promise.all([
     reviewerForKey(product.id, locale),
     reviewerForKey(product.slug, locale),
@@ -91,12 +90,16 @@ export default async function ProductPage({
         ])}
       />
       <ViewTracker slug={product.slug} categorySlug={product.categorySlug ?? ""} price={product.price} />
-      {Bespoke ? (
-        <Bespoke product={product} upsells={upsells} locale={locale} />
-      ) : (
-        <ProductTemplate product={product} upsells={upsells} locale={locale} reviewer={reviewer} topics={topics} />
-      )}
+      <ProductTemplate
+        product={product}
+        category={category}
+        upsells={upsells}
+        locale={locale}
+        reviewer={reviewer}
+        topics={topics}
+      />
       <SimilarProducts currentProduct={product} allProducts={allProducts.items} />
+      <RecentlyViewed allProducts={allProducts.items} excludeSlug={product.slug} />
     </>
   );
 }

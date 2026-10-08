@@ -416,6 +416,22 @@
 }
 
 /*
+  `--bottom-stack` is everything fixed at the bottom: the tab bar, plus the
+  product page's buy bar while that page is open. Toasts, the consent bar, the
+  scroll button and the footer's padding offset by it, so nothing lands on the
+  buy bar. The tab bar itself keeps sizing from `--bottom-nav`.
+*/
+:root {
+  --buy-bar: 4.5rem;
+  --bottom-stack: var(--bottom-nav);
+}
+@media (max-width: 1023.98px) {
+  :root:has([data-buy-bar]) {
+    --bottom-stack: calc(var(--bottom-nav) + var(--buy-bar));
+  }
+}
+
+/*
   Scroll-reveal without a JS animation library.
 
   A listing page mounts dozens of revealed elements (24 product cards, article

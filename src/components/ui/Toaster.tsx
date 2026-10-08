@@ -12,7 +12,7 @@ export function Toaster() {
 
   return (
     /* Stacks above the scroll-to-top button, which shares this corner. */
-    <div className="pointer-events-none fixed right-4 bottom-[calc(var(--bottom-nav)+4.75rem)] z-[60] flex flex-col items-end gap-2">
+    <div className="pointer-events-none fixed right-4 bottom-[calc(var(--bottom-stack)+4.75rem)] z-[60] flex flex-col items-end gap-2">
       <AnimatePresence>
         {toasts.map((toast) => (
           <motion.div

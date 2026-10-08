@@ -18,7 +18,7 @@ export function CookieConsent() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-x-3 bottom-[calc(var(--bottom-nav)+0.75rem)] z-50 mx-auto max-w-3xl rounded-2xl border border-legacy-line bg-legacy-ink p-4 shadow-[var(--shadow-legacy-pop)] sm:flex sm:items-center sm:gap-4">
+    <div className="fixed inset-x-3 bottom-[calc(var(--bottom-stack)+0.75rem)] z-50 mx-auto max-w-3xl rounded-2xl border border-legacy-line bg-legacy-ink p-4 shadow-[var(--shadow-legacy-pop)] sm:flex sm:items-center sm:gap-4">
       <p className="text-sm text-legacy-muted">
         {t("text")}{" "}
         <Link href="/privacy" className="text-fg underline">

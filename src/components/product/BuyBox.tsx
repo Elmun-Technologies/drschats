@@ -1,53 +1,41 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
-import { formatMoney } from "@/lib/utils";
-import { DiscountBadge, Price } from "@/components/ui/Price";
-import { StarRating } from "@/components/ui/StarRating";
+import { cn, formatMoney, formatNumber } from "@/lib/utils";
+import { DiscountBadge, discountPercent } from "@/components/ui/Price";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { RadioCard } from "@/components/ui/Choice";
 import { useCart } from "@/lib/cart/store";
 import { useToast } from "@/lib/ui/toast";
 import { track, trackAddToCart, trackViewProduct } from "@/lib/analytics/events";
-import { SubscribeToSave, type PurchaseMode } from "@/components/product/SubscribeToSave";
-import { DEFAULT_INTERVAL, type IntervalDays } from "@/lib/subscription/plans";
-import { ONLINE_PROVIDERS } from "@/lib/config/payments";
-import { reviewerForKey } from "@/lib/content/experts";
-import type { Expert } from "@/lib/content/experts";
-import { ReviewedBy } from "@/components/product/ReviewedBy";
-import { Disclaimer } from "@/components/legal/Disclaimer";
+import { DEFAULT_INTERVAL, SUBSCRIPTION_INTERVALS, subscriptionPricing, type IntervalDays } from "@/lib/subscription/plans";
+import { unitPrice } from "@/lib/content/product-units";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
-import { WishlistButton } from "@/components/product/WishlistButton";
-import { ShareButton } from "@/components/product/ShareButton";
 
 const MAX_QTY = 20;
 
+type PurchaseMode = "one-time" | "subscription";
+
 /*
-  Trust marks, in the health colour.
+  The buy card (design: ProductV3 aside). Price with the struck reference and
+  "−N%", the per-unit price, the two ways to buy, quantity, "Savatga
+  qoʻshish" and "Hozir buyurtma berish".
 
-  These icons were champagne gold on a gold-tinted tile, which put the money
-  colour on delivery, returns and secure payment — three things a shopper is
-  not buying. They now use `signal`, the colour this site reserves for the
-  things it can actually prove.
+  Subscribe & Save is a choice between two priced options rather than a
+  checkbox: it is a different purchase with a commitment attached, and the
+  recurring price is stated next to today's one, never only on the second
+  delivery. "Eng foydali" is a neutral pill — yellow is reserved for "Xit" and
+  the price guarantee.
 */
-function TrustItem({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <div className="flex flex-col items-center gap-2 rounded-xl p-2 text-center">
-      <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-signal-soft text-signal">
-        {children}
-      </span>
-      <p className="text-[11px] font-bold leading-tight text-fg">{label}</p>
-    </div>
-  );
-}
-
-export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; reviewer?: Expert | null }) {
+export function BuyBox({ product }: { product: Product }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const tp = useTranslations("product.buyBox");
+  const v3 = useTranslations("product.v3");
   const ts = useTranslations("subscription");
   const add = useCart((s) => s.add);
   const openCart = useCart((s) => s.open);
@@ -55,21 +43,17 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
   const [qty, setQty] = useState(1);
   const [mode, setMode] = useState<PurchaseMode>("one-time");
   const [intervalDays, setIntervalDays] = useState<IntervalDays>(DEFAULT_INTERVAL);
-  // Null when no verified expert is on file — the badge below is hidden then.
-  const reviewer = reviewerProp ?? reviewerForKey(product.id, locale);
-  // Configured online providers only — see lib/config/payments.
-  const onlineProviderNames = ONLINE_PROVIDERS.map((p) => p.label);
 
-  const discountPercent = product.oldPrice
-    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
-    : 0;
+  const discount = discountPercent(product.price, product.oldPrice);
+  const perUnit = unitPrice(product.slug, product.price);
+  const pricing = subscriptionPricing(product.price);
+  const subscribing = mode === "subscription";
 
   useEffect(() => {
     trackViewProduct(product.slug, product.price);
   }, [product.slug, product.price]);
 
   function addToCart() {
-    const subscribing = mode === "subscription";
     add(
       {
         productId: product.id,
@@ -88,215 +72,137 @@ export function BuyBox({ product, reviewer: reviewerProp }: { product: Product; 
     }
   }
 
-  function handleAdd() {
-    addToCart();
-    notify();
-  }
-
-  function handleBuyNow() {
-    addToCart();
-    openCart();
-  }
+  const saving = product.oldPrice && product.oldPrice > product.price ? product.oldPrice - product.price : 0;
+  const subLine = [
+    perUnit && t("perUnit", { price: formatMoney(perUnit.amount, locale), unit: t(perUnit.unit === "tablet" ? "unitTablet" : "unitCapsule") }),
+    saving > 0 && tp("youSave", { amount: formatMoney(saving, locale) }),
+  ].filter(Boolean);
 
   return (
-    <div className="flex flex-col gap-5">
-      {product.badges.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {product.badges.map((b) => (
-            <Badge key={b} tone="accent">
-              {b}
-            </Badge>
-          ))}
-        </div>
-      )}
-
-      <div>
-        <h1 className="font-display text-2xl font-bold tracking-tight sm:text-3xl">
-          {product.name}
-        </h1>
-        <p className="mt-2 text-base text-legacy-muted">{product.tagline}</p>
-      </div>
-
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <StarRating rating={product.rating} />
-        {product.reviewCount > 0 && (
-          <a href="#reviews" className="text-sm text-legacy-muted underline decoration-legacy-line-strong underline-offset-4 hover:text-fg">
-            {t("reviews", { count: product.reviewCount })}
-          </a>
-        )}
-        {/* Availability — the catalogue exposes `inStock` as a boolean and no
-            quantity, so a "only N left" counter would be invented. State is
-            enough; scarcity is withheld until the backend returns real stock. */}
-        <div className="flex items-center gap-2">
-          <span
-            className={`inline-flex items-center gap-1.5 text-sm font-medium ${
-              product.inStock ? "text-signal" : "text-danger"
-            }`}
-          >
-            <span
-              aria-hidden
-              className={`h-2.5 w-2.5 rounded-full ${product.inStock ? "bg-signal" : "bg-danger"}`}
-            />
-            {product.inStock ? t("inStock") : t("outOfStock")}
+    <div className="flex flex-col gap-4 lg:rounded-[20px] lg:border lg:border-line lg:bg-bg lg:p-6 lg:shadow-buybox">
+      <div className="flex flex-col gap-1">
+        <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+          <span className="whitespace-nowrap text-[28px] font-bold leading-9 lg:text-price-l">
+            {formatMoney(product.price, locale)}
           </span>
-        </div>
-      </div>
-
-      {reviewer && <ReviewedBy expert={reviewer} />}
-
-      {/* Price */}
-      <div className="rounded-2xl border border-legacy-line bg-surface p-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="lg" />
-          {/* One discount badge across the whole site, and it is neutral: a red
-              pill beside a price reads as a warning, and a gold one competes
-              with the button the shopper is meant to press. */}
-          <DiscountBadge percent={discountPercent} />
-        </div>
-        {product.oldPrice && (
-          <p className="mt-1 text-xs font-medium text-danger">
-            {tp("youSave", { amount: formatMoney(product.oldPrice - product.price, locale) })}
-          </p>
-        )}
-      </div>
-
-      {(product.origin || product.servings) && (
-        <div className="flex flex-wrap gap-4 text-sm text-legacy-muted">
-          {product.origin && (
-            <span>
-              {t("origin")}: <span className="font-medium text-fg">{product.origin}</span>
+          {saving > 0 && (
+            <span className="whitespace-nowrap text-lg text-muted line-through">
+              {formatNumber(product.oldPrice as number)}
             </span>
           )}
-          {product.servings && (
-            <span>
-              {t("servings")}: <span className="font-medium text-fg">{product.servings}</span>
-            </span>
-          )}
+          <DiscountBadge percent={discount} className="hidden lg:inline-flex" />
         </div>
-      )}
-
-      {product.certifications && product.certifications.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {product.certifications.map((c) => (
-            <span key={c} className="rounded-full border border-legacy-line bg-surface px-3 py-1 text-xs font-semibold text-legacy-muted">
-              {c}
-            </span>
-          ))}
-        </div>
-      )}
+        {subLine.length > 0 && <span className="text-sm text-ink-2">{subLine.join(" · ")}</span>}
+      </div>
 
       {product.inStock && (
-        <SubscribeToSave
-          product={product}
-          mode={mode}
-          intervalDays={intervalDays}
-          onModeChange={setMode}
-          onIntervalChange={setIntervalDays}
-        />
+        <div role="radiogroup" aria-label={ts("chooseMode")} className="flex flex-col gap-2">
+          <RadioCard name={`mode-${product.id}`} checked={!subscribing} onChange={() => setMode("one-time")}>
+            <span className="flex flex-col gap-0.5">
+              <span className="text-base font-semibold">{ts("oneTime")}</span>
+              <span className="text-sm text-muted">{formatMoney(product.price, locale)}</span>
+            </span>
+          </RadioCard>
+          <RadioCard name={`mode-${product.id}`} checked={subscribing} onChange={() => setMode("subscription")}>
+            <span className="flex flex-col gap-0.5">
+              <span className="flex flex-wrap items-center gap-2">
+                <span className="text-base font-semibold">{ts("subscribe")}</span>
+                <Badge className="h-[22px] text-xs">{ts("bestValue")}</Badge>
+              </span>
+              <span className="text-sm text-muted">
+                {v3("subscribeNote", {
+                  first: formatMoney(pricing.firstPrice, locale),
+                  firstPercent: pricing.firstPercent,
+                  recurringPercent: pricing.recurringPercent,
+                })}
+              </span>
+            </span>
+          </RadioCard>
+          {subscribing && (
+            <div role="radiogroup" aria-label={v3("interval")} className="flex flex-wrap gap-2 pt-1">
+              {SUBSCRIPTION_INTERVALS.map((days) => (
+                <button
+                  key={days}
+                  type="button"
+                  role="radio"
+                  aria-checked={intervalDays === days}
+                  onClick={() => setIntervalDays(days)}
+                  className={cn(
+                    "inline-flex h-11 items-center rounded-sm px-4 text-[15px] font-medium transition-colors",
+                    intervalDays === days ? "bg-ink text-white" : "bg-tile text-ink hover:bg-tile-hover",
+                  )}
+                >
+                  {v3("intervalDays", { days })}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       )}
 
-      {/* Qty + CTAs */}
-      <div id="buybox-cta" className="flex flex-col gap-3 scroll-mt-28">
-        <div className="flex items-stretch gap-3">
-          <div className="flex items-center rounded-full border border-legacy-line" role="group" aria-label={t("quantity")}>
-            <button
-              type="button"
-              onClick={() => setQty((q) => Math.max(1, q - 1))}
-              disabled={qty <= 1}
-              aria-label={tp("decrease")}
-              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:bg-surface-2 disabled:opacity-40"
+      {product.inStock ? (
+        <>
+          <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-2">
+            <div role="group" aria-label={t("quantity")} className="flex h-14 items-center justify-between rounded-[14px] bg-tile">
+              <button
+                type="button"
+                onClick={() => setQty((q) => Math.max(1, q - 1))}
+                disabled={qty <= 1}
+                aria-label={tp("decrease")}
+                className="flex h-14 w-11 items-center justify-center text-[22px] font-medium disabled:opacity-40"
+              >
+                −
+              </button>
+              <span aria-live="polite" className="text-[17px] font-bold">{qty}</span>
+              <button
+                type="button"
+                onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
+                disabled={qty >= MAX_QTY}
+                aria-label={tp("increase")}
+                className="flex h-14 w-11 items-center justify-center text-[22px] font-medium disabled:opacity-40"
+              >
+                +
+              </button>
+            </div>
+            <Button
+              onClick={() => {
+                addToCart();
+                notify();
+              }}
+              className="h-14 rounded-[14px] text-[17px]"
             >
-              −
-            </button>
-            <span aria-live="polite" className="w-8 text-center font-medium tabular-nums">
-              {qty}
-            </span>
-            <button
-              type="button"
-              onClick={() => setQty((q) => Math.min(MAX_QTY, q + 1))}
-              disabled={qty >= MAX_QTY}
-              aria-label={tp("increase")}
-              className="flex h-12 w-12 items-center justify-center rounded-full text-lg text-fg transition-colors hover:bg-surface-2 disabled:opacity-40"
-            >
-              +
-            </button>
-          </div>
-          <Button onClick={handleAdd} size="lg" className="flex-1" disabled={!product.inStock}>
-            {!product.inStock
-              ? t("outOfStock")
-              : mode === "subscription"
-                ? ts("addSubscription")
-                : t("addToCart")}
-          </Button>
-        </div>
-
-        {product.inStock && (
-          <>
-            <Button onClick={handleBuyNow} variant="secondary" size="lg" className="w-full">
-              {t("buyNow")}
+              {subscribing ? ts("addSubscription") : t("addToCart")}
             </Button>
-            {qty > 1 && (
-              <p className="text-sm text-legacy-muted">
-                {tp("total")}:{" "}
-                <span className="font-semibold text-fg">{formatMoney(product.price * qty, locale)}</span>
-              </p>
-            )}
-          </>
-        )}
-      </div>
-
-      {!product.inStock && (
-        <OutOfStockNotify productId={product.id} productName={product.name} />
+          </div>
+          <Button
+            variant="secondary"
+            size="lg"
+            className="w-full"
+            onClick={() => {
+              addToCart();
+              openCart();
+            }}
+          >
+            {t("buyNow")}
+          </Button>
+          {qty > 1 && (
+            <p className="text-sm text-ink-2">
+              {tp("total")}: <span className="font-semibold text-ink">{formatMoney(product.price * qty, locale)}</span>
+            </p>
+          )}
+          <p className="flex items-center gap-2 text-[15px] font-medium">
+            <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5 shrink-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M5 12l5 5 9-10" />
+            </svg>
+            {v3("inStockWhere")}
+          </p>
+        </>
+      ) : (
+        <>
+          <Button disabled size="lg" className="w-full">{t("outOfStock")}</Button>
+          <OutOfStockNotify productId={product.id} productName={product.name} />
+        </>
       )}
-
-      {/* Trust signals */}
-      <div className="grid grid-cols-3 gap-2 rounded-2xl border border-legacy-line bg-surface p-4">
-        <TrustItem label={tp("delivery")}>
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M5 12h14M12 5l7 7-7 7" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </TrustItem>
-        <TrustItem label={tp("guarantee")}>
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </TrustItem>
-        <TrustItem label={tp("secure")}>
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8">
-            <rect x="1" y="4" width="22" height="16" rx="2" />
-            <path d="M1 10h22" strokeLinecap="round" />
-          </svg>
-        </TrustItem>
-      </div>
-
-      {/*
-        Only the routes the checkout can actually take. This was five provider
-        pills — Payme, Click, Uzum, Visa, Mastercard — painted on every product
-        page, including the ones with no merchant account behind them.
-      */}
-      <div>
-        <p className="mb-2 text-xs text-legacy-muted">{tp("payWith")}</p>
-        <div className="flex flex-wrap gap-1.5">
-          {onlineProviderNames.map((name) => (
-            <span
-              key={name}
-              className="inline-flex items-center rounded-lg border border-legacy-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-legacy-muted"
-            >
-              {name}
-            </span>
-          ))}
-          <span className="inline-flex items-center rounded-lg border border-legacy-line bg-surface-2 px-3 py-1.5 text-[11px] font-bold tracking-wide text-legacy-muted">
-            {tp("payCod")}
-          </span>
-        </div>
-      </div>
-
-      <div className="flex items-center gap-3 border-t border-legacy-line pt-4">
-        <WishlistButton productId={product.id} className="h-10 w-10 rounded-full border border-legacy-line hover:border-danger" />
-        <ShareButton name={product.name} />
-      </div>
-
-      <Disclaimer variant="product" />
     </div>
   );
 }

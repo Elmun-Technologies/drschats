@@ -82,7 +82,7 @@ export function Footer({
   const payments = [...ONLINE_PROVIDERS.map((p) => p.label), t("cash")];
 
   return (
-    <footer className="bg-tile pb-[var(--bottom-nav)] text-ink">
+    <footer className="bg-tile pb-[var(--bottom-stack)] text-ink">
       {/* pb-16 clears the back-to-top button (0.75rem + 36px above the tab bar),
           which floats over the right edge where the legal links wrap to. */}
       <div className="wrap flex flex-col gap-6 pb-16 pt-7 md:gap-10 md:pt-12">

@@ -56,7 +56,7 @@ export function LivePurchaseToast() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed left-4 bottom-[calc(var(--bottom-nav)+1rem)] z-30 max-w-[260px] rounded-2xl border border-legacy-line bg-surface px-4 py-3 shadow-[var(--shadow-card)]"
+          className="fixed left-4 bottom-[calc(var(--bottom-stack)+1rem)] z-30 max-w-[260px] rounded-2xl border border-legacy-line bg-surface px-4 py-3 shadow-[var(--shadow-card)]"
         >
           <div className="flex items-center gap-3">
             <span className="text-xl">🛒</span>
