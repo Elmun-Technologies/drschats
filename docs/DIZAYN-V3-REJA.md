@@ -106,6 +106,33 @@ ScienceSection) va `CountdownTimer` — dizayn qoidasi taymerni taqiqlaydi va u
 faqat DealOfDay'da ishlatilgan edi. `FaqAccordion` V3 ga moslandi
 (`defaultOpen` prop) — FAQ ishlatiladigan hamma sahifada ko'rinadi.
 
+## 4-bosqich — katalog va filtrlar (bajarildi)
+
+CatalogV3 / CatalogMobileV3 / FiltersMobileV3: breadcrumb, sarlavha + soni,
+kategoriya plitkalari, chapda filtrlar (narx, sotuvda bor, chegirmadagilar,
+sogʻliq maqsadlari, brend, shakli, mamlakat — har birida jonli son), saralash,
+faol filtr chiplari, setkada test va obuna bannerlari, "N tadan M tasi
+koʻrsatildi" + "Yana N ta koʻrsatish", kategoriya SEO matni. Telefonda sticky
+"Filtrlar / Ommabop" va pastdan chiqadigan sheet (jonli "N ta mahsulotni
+koʻrsatish"). Filtrlar URL'da (`stock`, `sale`, `brand`, `form`, `origin`,
+`goal`, `min`, `max`, `sort`, `page`), eski `origin`/`goal` havolalari ishlaydi.
+Audit: 0 (filtr sheet ochilgan holat ham auditga qoʻshildi).
+
+| Joy | Dizayn | Kodda | Sabab |
+|---|---|---|---|
+| Subkategoriya plitkalari | kategoriya ichidagi boʻlimlar | barcha kategoriyalar (joriysi qora) | katalogda subkategoriya yoʻq |
+| "Kim uchun" filtri | Kattalar / Bolalar / Homiladorlar | **Sogʻliq maqsadlari** (mavjud mavzular) | "kim uchun" maʼlumoti yoʻq; maqsadlar real va sogʻliq yoʻli saqlanadi |
+| "Obuna bilan arzonroq" | filtr | yoʻq | obuna sotuvdagi har bir mahsulotga ochiq — "Sotuvda bor" bilan bir xil |
+| Shakli | kapsula / shipuchi / kukun | kapsula / shipuchi tabletka | shakl faqat 12 mahsulotda maʼlum (`product-units.ts`) |
+| Narx slayderi | ikki tutqichli | faqat ikki maydon | maydonlar aniqroq; slayder keyin qoʻshilishi mumkin |
+| Plitka / roʻyxat tugmalari | bor | yoʻq | roʻyxat kartasi dizaynda yoʻq |
+| "Shu boʻlimda koʻp qidiriladi" | teglar | yoʻq | qidiruv statistikasi yoʻq — oʻylab topilgan teglar boʻlardi |
+| "Ommabop" tartibi | — | kesma rasmli qoʻshimchalar oldinda | sotuv tarixi yoʻq; bosh sahifa bilan bir xil qoida |
+| "Aksiyalar" havolasi | `/sale` | `/products?sale=1&sort=deals` | endi haqiqatan faqat chegirmadagilar chiqadi; `/sale` 8-bosqichda |
+
+Filtrlash Shopflow'dan olingan 100 talik pool ustida bajariladi (kategoriya va
+qidiruv serverda). Katalog 100 dan oshsa, filtrlarni backend'ga oʻtkazish kerak.
+
 ## Route'lar: dizayn ↔ loyiha
 
 | Dizayn | Taklif URL | Loyihada | Qaror |
@@ -158,7 +185,7 @@ offseti, `next/image` `fill` + `sizes`, `loading.tsx` yoʻq.
 | 1 | Layout ✅ | yuqorida | — |
 | 2 | ProductCard + UI ✅ | yuqorida | — |
 | 3 | Bosh sahifa ✅ | yuqorida | — |
-| 4 | Katalog | filtrlar (brend, shakl, kim uchun, mamlakat — soni bilan), mobil sheet | "shakl", "kim uchun" maydonlari maʼlumotda bor-yoʻqligini tekshirish |
+| 4 | Katalog ✅ | yuqorida | — |
 | 5 | Mahsulot | galereya, xarid bloki, sticky tablar, mobil fixed panel | tibbiy vaʼdalarni matndan olib tashlash — kontent oʻzgarishi |
 | 6 | Savat | progress, upsell, 3 qadam, sticky xulosa | savol 2; checkout server action va Zod sxemasi oʻzgarmaydi |
 | 7 | Qidiruv | `/search` route + header takliflari | — |

@@ -138,7 +138,7 @@ chaqirilgandan **keyin** chizing.
 | `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
 | `cart/` | CartDrawer (Framer Motion slide-in) |
 | `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate, BuyBox, ProductGallery, WishlistButton, ShareButton, OutOfStockNotify |
-| `shop/` | ShopView (server), FilterBar, Pagination |
+| `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
 | `checkout/` | CheckoutForm (react-hook-form + Zod) |
 | `upsell/` | UpsellLadderModal (step-by-step, free gift), UpsellSavingsBar |
 | `personalization/` | ViewTracker, PurchaseTracker, PersonalizedRail, RecentlyViewed, SimilarProducts |
@@ -201,7 +201,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 991 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1022 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
@@ -528,6 +528,7 @@ Tab bar va PDP/savatdagi xarid paneli — **`position: fixed`**. Hech qachon `po
 - Rasm: `next/image` bilan, `fill` + `sizes` prop majburiy
 - Cart, wishlist, upsell — Zustand persist (localStorage)
 - Server actions — `"use server"` + Zod validation + try/catch
+- **Server komponentga kerak bo'lgan konstanta/funksiya `"use client"` faylda turmasin.** U serverga qiymat emas, client reference bo'lib keladi va `.map is not a function` kabi xato faqat runtime'da chiqadi (V3 da ikki marta: `nav-links.ts`, `catalog-sort.ts`). Oddiy modulga chiqaring
 - Komment yozmaslik (obvious bo'lmasa) — kod o'zi gapirsin
 - Build tekshirish: `npm run build` — 0 xatolik
 
