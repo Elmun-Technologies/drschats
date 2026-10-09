@@ -14,7 +14,7 @@ katalog o'sha yo'lning oxirida turadi.
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
 - **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
-- **Deploy**: Vercel
+- **Deploy**: Fly.io (Docker, `fly.toml`) — sayt, Managed Postgres va Tigris bitta tashkilotda; baza internetga ochilmaydi. To'liq: **[`docs/DEPLOY-FLY.md`](docs/DEPLOY-FLY.md)**. Vercel konfiguratsiyasi (`vercel.json`) domen ko'chirilguncha qoladi
 
 ## Hozirgi bo'shliqlar
 
@@ -625,7 +625,9 @@ Tab bar va PDP/savatdagi xarid paneli — **`position: fixed`**. Hech qachon `po
 - Server actions — `"use server"` + Zod validation + try/catch
 - **Server komponentga kerak bo'lgan konstanta/funksiya `"use client"` faylda turmasin.** U serverga qiymat emas, client reference bo'lib keladi va `.map is not a function` kabi xato faqat runtime'da chiqadi (V3 da ikki marta: `nav-links.ts`, `catalog-sort.ts`). Oddiy modulga chiqaring
 - Komment yozmaslik (obvious bo'lmasa) — kod o'zi gapirsin
-- Build tekshirish: `npm run build` — 0 xatolik (avval `db:migrate`, `DATABASE_URL` bo'lmasa o'tkazib yuboriladi)
+- Build tekshirish: `npm run build` — 0 xatolik (avval `db:migrate`, `DATABASE_URL` bo'lmasa o'tkazib yuboriladi). Fly'da migratsiya `release_command`, build'da baza yo'q
+- **Baza ulanishi `prepare: false`** (`db/client.ts`, `migrate.mjs`): Fly Managed Postgres PgBouncer orqali ulanadi; migratsiya bitta tranzaksiyada `pg_advisory_xact_lock` bilan — sessiya lock'i pooler ortida xavfli
+- **`NEXT_PUBLIC_*` Fly'da `fly.toml [build.args]` da** (secret emas — bundle'ga yoziladi), maxfiylari `fly secrets set`
 - **Client komponent server modulni import qilmasin.** `shopflow/index.ts` endi `postgres` ni tortadi; client fayl `lib/quiz/recommend` kabi loader'dan sof funksiya olsa, build `Can't resolve 'net'` bilan yiqiladi. Sof qismni alohida modulga chiqaring (`quiz/answers-codec.ts`)
 - **Mahsulot rasmi/brendi/birligi** — `cutoutOf(p)`, `brandOf(p)`, `unitOf(p)` (`lib/catalog/product-facts.ts`); `productCutout(p.slug)` to'g'ridan-to'g'ri chaqirilmaydi, aks holda admin'da qo'shilgan mahsulotda rasm chiqmaydi
 - **Bazaga yangi ustun** — `db/migrations/000N_*.sql` (yangi fayl, eskisini o'zgartirmang) + `src/lib/db/schema.ts`
