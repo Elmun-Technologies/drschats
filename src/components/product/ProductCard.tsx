@@ -15,7 +15,6 @@ import { cartLineId } from "@/lib/cart/pricing";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { cutoutOf, unitPriceOf } from "@/lib/catalog/product-facts";
 import { SaleCountdownChip } from "@/components/marketing/SaleCountdown";
-import { livePrice } from "@/lib/shop/sale";
 import { useLiveProduct } from "@/lib/shop/useLiveProduct";
 
 /*
@@ -65,7 +64,9 @@ export function ProductCard({
       slug: product.slug,
       name: product.name,
       image: product.images[0]?.url ?? "",
-      ...livePrice(product),
+      price: product.price,
+        oldPrice: product.oldPrice,
+        saleEndsAt: product.saleEndsAt,
     });
   }
 

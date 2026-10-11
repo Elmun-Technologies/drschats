@@ -137,7 +137,7 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
                       className="w-full"
                       disabled={!p.inStock}
                       onClick={() => {
-                        add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice });
+                        add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt });
                       }}
                     >
                       {p.inStock ? common("addToCartShort") : common("outOfStock")}

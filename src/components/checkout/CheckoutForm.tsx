@@ -10,6 +10,7 @@ import { Link, useRouter } from "@/lib/i18n/navigation";
 import type { Locale } from "@/lib/i18n/routing";
 import type { OrderRequest, Product } from "@/lib/shopflow/types";
 import { useCart } from "@/lib/cart/store";
+import { useSaleClock } from "@/lib/cart/useSaleClock";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals } from "@/lib/cart/pricing";
 import { COMMERCE } from "@/lib/config/commerce";
@@ -64,6 +65,7 @@ export function CheckoutForm({
   const tp = useTranslations("product.v3");
   const router = useRouter();
   const lines = useCart((s) => s.lines);
+  useSaleClock();
   const clear = useCart((s) => s.clear);
   const removeLine = useCart((s) => s.remove);
   const promotions = usePromotions();

@@ -56,7 +56,7 @@ export function WishlistView({ allProducts, recommended }: { allProducts: Produc
   function addAll() {
     for (const p of inStock) {
       // Silent: one confirmation for the whole batch, not one per product.
-      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice }, 1, { silent: true });
+      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt }, 1, { silent: true });
     }
     notify();
   }

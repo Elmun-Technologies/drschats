@@ -206,6 +206,7 @@ function UpsellOffer({ step, label }: { step: UpsellStep; label: string }) {
             image: step.product.images[0]?.url ?? "",
             price: step.product.price,
             oldPrice: step.product.oldPrice,
+            saleEndsAt: step.product.saleEndsAt,
             upsellDiscountPercent: step.discountPercent,
           })
         }

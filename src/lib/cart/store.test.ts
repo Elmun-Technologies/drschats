@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from "vitest";
+import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useCart } from "./store";
 import type { CartLine } from "./pricing";
 
@@ -138,5 +138,23 @@ describe("offer lines", () => {
     expect(useCart.getState().lines[0].soldOut).toBe(true);
     useCart.getState().syncPrices({ p1: { price: 100000, inStock: true } });
     expect(useCart.getState().lines[0].soldOut).toBeUndefined();
+  });
+});
+
+describe("sale expiry in the cart", () => {
+  it("adds an ended sale at the old price and reprices lines at the deadline", () => {
+    vi.useFakeTimers({ now: Date.parse("2026-10-12T09:00:00Z") });
+    useCart.setState({ lines: [] });
+    const sale = { productId: "s1", slug: "s1", name: "S", image: "", price: 79_000, oldPrice: 89_000, saleEndsAt: "2026-10-12T10:00:00Z" };
+    useCart.getState().add(sale, 1, { silent: true });
+    useCart.getState().add({ ...sale, productId: "s2", slug: "s2", saleEndsAt: "2026-10-12T08:00:00Z" }, 1, { silent: true });
+    expect(useCart.getState().lines.map((l) => l.price)).toEqual([79_000, 89_000]);
+    vi.setSystemTime(Date.parse("2026-10-12T10:00:01Z"));
+    useCart.getState().expireSales();
+    expect(useCart.getState().lines.map((l) => [l.price, l.oldPrice, l.saleEndsAt])).toEqual([
+      [89_000, undefined, undefined],
+      [89_000, undefined, undefined],
+    ]);
+    vi.useRealTimers();
   });
 });

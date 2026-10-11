@@ -75,7 +75,7 @@ function Detail({ orderId, catalogue }: { orderId: string; catalogue: Product[] 
   function repeat() {
     for (const line of repeatable) {
       const p = bySlug.get(line.slug)!;
-      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice }, line.quantity, { silent: true });
+      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt }, line.quantity, { silent: true });
     }
     openCart();
   }

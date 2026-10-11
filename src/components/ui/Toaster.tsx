@@ -120,7 +120,7 @@ export function Toaster() {
                               type="button"
                               aria-label={tp("addFor", { name: p.name })}
                               onClick={() =>
-                                add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice })
+                                add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt })
                               }
                               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-tile text-lg font-medium hover:bg-ink hover:text-white"
                             >
