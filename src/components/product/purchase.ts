@@ -4,6 +4,7 @@ import type { Product } from "@/lib/shopflow/types";
 import { useCart } from "@/lib/cart/store";
 import { track } from "@/lib/analytics/events";
 import { DEFAULT_INTERVAL, type IntervalDays } from "@/lib/subscription/plans";
+import { livePrice } from "@/lib/shop/sale";
 
 export type PurchaseMode = "one-time" | "subscription";
 
@@ -49,8 +50,7 @@ export function useAddToCart(product: Product) {
         slug: product.slug,
         name: product.name,
         image: product.images[0]?.url ?? "",
-        price: product.price,
-        oldPrice: product.oldPrice,
+        ...livePrice(product),
         subscription: subscribing ? { intervalDays } : undefined,
       },
       qty,

@@ -16,6 +16,7 @@ import type {
 import type { RawCategory, RawProduct, RawPromotion } from "@/lib/shopflow/mock";
 import { fold } from "@/lib/search/fold";
 import { audienceOf } from "@/lib/quiz/audience-fit";
+import { livePrice, saleOver } from "@/lib/shop/sale";
 
 /*
   The catalogue's read logic, independent of where the rows come from: the
@@ -72,10 +73,8 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     old price again and no countdown is shown. The order action prices from
     this same function, so an expired sale cannot be bought at the sale price.
   */
-  const saleOver = Boolean(p.saleEndsAt && p.oldPrice && Date.parse(p.saleEndsAt) <= Date.now());
-  const price = saleOver ? (p.oldPrice as number) : p.price;
-  const oldPrice = saleOver ? undefined : p.oldPrice;
-  const saleEndsAt = !saleOver && p.oldPrice && p.saleEndsAt ? p.saleEndsAt : undefined;
+  const { price, oldPrice } = livePrice(p);
+  const saleEndsAt = !saleOver(p) && p.oldPrice && p.saleEndsAt ? p.saleEndsAt : undefined;
   const brand =
     p.brandSlug === undefined ? undefined : p.brandSlug ? (data.brands?.find((b) => b.slug === p.brandSlug) ?? null) : null;
   return {

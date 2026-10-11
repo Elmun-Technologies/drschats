@@ -19,6 +19,8 @@ primary_region = "fra"
   # NEXT_PUBLIC_CLICK_MERCHANT_ID = ""
   # NEXT_PUBLIC_UZUM_MERCHANT_ID = ""
   # STORAGE_PUBLIC_URL = ""
+  # Same-day cut-off in Tashkent time; unset = no delivery timer.
+  # NEXT_PUBLIC_DELIVERY_CUTOFF = "16:00"
 
 # Schema changes are applied once per deploy, before new machines take traffic.
 # A failed migration stops the deploy; the running version keeps serving.

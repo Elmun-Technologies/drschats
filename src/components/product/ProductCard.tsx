@@ -15,6 +15,8 @@ import { cartLineId } from "@/lib/cart/pricing";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { cutoutOf, unitPriceOf } from "@/lib/catalog/product-facts";
 import { SaleCountdownChip } from "@/components/marketing/SaleCountdown";
+import { livePrice } from "@/lib/shop/sale";
+import { useLiveProduct } from "@/lib/shop/useLiveProduct";
 
 /*
   The catalogue card (design: ProductCardV3).
@@ -31,7 +33,7 @@ import { SaleCountdownChip } from "@/components/marketing/SaleCountdown";
 const HIT_BADGES = new Set(["Bestseller", "Хит продаж", "Xit", "Хит"]);
 
 export function ProductCard({
-  product,
+  product: listed,
   index = 0,
   onCard = false,
 }: {
@@ -42,6 +44,7 @@ export function ProductCard({
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
+  const product = useLiveProduct(listed);
   const add = useCart((s) => s.add);
   const setQuantity = useCart((s) => s.setQuantity);
   const lineId = cartLineId(product.id);
@@ -62,8 +65,7 @@ export function ProductCard({
       slug: product.slug,
       name: product.name,
       image: product.images[0]?.url ?? "",
-      price: product.price,
-      oldPrice: product.oldPrice,
+      ...livePrice(product),
     });
   }
 

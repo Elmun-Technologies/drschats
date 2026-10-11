@@ -4,6 +4,7 @@ import { cartLineId, freeGiftAllowed, lineQtyCap, type CartLine } from "./pricin
 import { useToast } from "@/lib/ui/toast";
 import { STORAGE_KEYS } from "@/lib/storage-keys";
 import { itemOf, trackAddToCart, trackRemoveFromCart } from "@/lib/analytics/events";
+import { livePrice } from "@/lib/shop/sale";
 
 const CART_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -36,7 +37,7 @@ interface CartState {
    * its prices can be stale. Prices and sold-out flags change; only an
    * invalid free gift is removed (see `settle`).
    */
-  syncPrices: (current: Record<string, { price: number; oldPrice?: number; inStock: boolean }>) => void;
+  syncPrices: (current: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>) => void;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -96,7 +97,9 @@ export const useCart = create<CartState>()(
           // catalogue read (a failed request) must never empty someone's cart.
           // The server refuses lines it does not sell, with a message.
           const lines = state.lines.map((l) => {
-            const now = current[l.productId];
+            const entry = current[l.productId];
+            // A sale that ended after this page was rendered is over in the cart too.
+            const now = entry && { ...entry, ...livePrice(entry) };
             const soldOut = now ? !now.inStock : l.soldOut;
             if (!now || (now.price === l.price && now.oldPrice === l.oldPrice && soldOut === l.soldOut)) return l;
             changed = true;

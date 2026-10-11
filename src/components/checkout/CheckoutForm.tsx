@@ -52,7 +52,7 @@ export function CheckoutForm({
   prices,
 }: {
   recommended: Product[];
-  prices: Record<string, { price: number; oldPrice?: number; inStock: boolean }>;
+  prices: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>;
 }) {
   const tv = useTranslations("cart.v3");
   const locale = useLocale() as Locale;
