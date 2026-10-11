@@ -166,7 +166,7 @@ export function CartDrawer() {
                       return (
                         <div className="mt-2 rounded-xl border border-line/25 bg-tile p-2.5 text-center">
                           <p className="text-xs font-semibold text-ink">
-                            {tc("savings", { amount: formatMoney(totalSavings, locale) })}
+                            {t("savings", { amount: formatMoney(totalSavings, locale) })}
                           </p>
                         </div>
                       );
