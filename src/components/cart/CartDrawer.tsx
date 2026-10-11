@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import type { Locale } from "@/lib/i18n/routing";
 import { useCart } from "@/lib/cart/store";
+import { useSaleClock } from "@/lib/cart/useSaleClock";
 import { useDialog } from "@/lib/ui/useDialog";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals, lineQtyCap, lineListTotal, lineTotal } from "@/lib/cart/pricing";
@@ -21,6 +22,7 @@ export function CartDrawer() {
   const ts = useTranslations("subscription");
   const tco = useTranslations("checkout");
   const { lines, isOpen, close, setQuantity, remove } = useCart();
+  useSaleClock();
   const promotions = usePromotions();
   const totals = computeTotals(lines, promotions);
   const dialogRef = useDialog<HTMLElement>(isOpen, close);
@@ -164,7 +166,7 @@ export function CartDrawer() {
                       return (
                         <div className="mt-2 rounded-xl border border-line/25 bg-tile p-2.5 text-center">
                           <p className="text-xs font-semibold text-ink">
-                            {tc("savings", { amount: formatMoney(totalSavings, locale) })}
+                            {t("savings", { amount: formatMoney(totalSavings, locale) })}
                           </p>
                         </div>
                       );

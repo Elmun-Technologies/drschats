@@ -4,6 +4,7 @@ import { cartLineId, freeGiftAllowed, lineQtyCap, type CartLine } from "./pricin
 import { useToast } from "@/lib/ui/toast";
 import { STORAGE_KEYS } from "@/lib/storage-keys";
 import { itemOf, trackAddToCart, trackRemoveFromCart } from "@/lib/analytics/events";
+import { saleOver } from "@/lib/shop/sale";
 
 const CART_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
 
@@ -11,6 +12,11 @@ const CART_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 days
   Offer lines keep the shape the server accepts: the free gift stays one
   unit and leaves the cart once the steps that paid for it are gone.
 */
+/** A line whose sale has ended carries the old price again. */
+function priced<T extends { price: number; oldPrice?: number; saleEndsAt?: string }>(l: T): T {
+  return saleOver(l) ? { ...l, price: l.oldPrice as number, oldPrice: undefined, saleEndsAt: undefined } : l;
+}
+
 function settle(lines: CartLine[]): CartLine[] {
   const clamped = lines.map((l) => (l.quantity > lineQtyCap(l) ? { ...l, quantity: lineQtyCap(l) } : l));
   return freeGiftAllowed(clamped) ? clamped : clamped.filter((l) => l.upsellDiscountPercent !== 100);
@@ -36,7 +42,9 @@ interface CartState {
    * its prices can be stale. Prices and sold-out flags change; only an
    * invalid free gift is removed (see `settle`).
    */
-  syncPrices: (current: Record<string, { price: number; oldPrice?: number; inStock: boolean }>) => void;
+  /** Reprice lines whose sale has ended (called at the deadline). */
+  expireSales: () => void;
+  syncPrices: (current: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>) => void;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -49,7 +57,10 @@ export const useCart = create<CartState>()(
       lines: [],
       isOpen: false,
       _savedAt: 0,
-      add: (line, quantity = 1, options) => {
+      add: (added, quantity = 1, options) => {
+        // Every add path goes through here, so a sale that ended after the
+        // page rendered can never re-enter the cart at its sale price.
+        const line = priced(added);
         // The purchase mode is part of the key, so adding the same product
         // one-off and on subscription produces two lines rather than one line
         // whose mode depends on which of them was added first.
@@ -96,13 +107,24 @@ export const useCart = create<CartState>()(
           // catalogue read (a failed request) must never empty someone's cart.
           // The server refuses lines it does not sell, with a message.
           const lines = state.lines.map((l) => {
-            const now = current[l.productId];
+            const entry = current[l.productId];
+            // A sale that ended after this page was rendered is over in the cart too.
+            const now = entry && priced(entry);
             const soldOut = now ? !now.inStock : l.soldOut;
-            if (!now || (now.price === l.price && now.oldPrice === l.oldPrice && soldOut === l.soldOut)) return l;
+            if (
+              !now ||
+              (now.price === l.price && now.oldPrice === l.oldPrice && now.saleEndsAt === l.saleEndsAt && soldOut === l.soldOut)
+            )
+              return l;
             changed = true;
-            return { ...l, price: now.price, oldPrice: now.oldPrice, soldOut: soldOut || undefined };
+            return { ...l, price: now.price, oldPrice: now.oldPrice, saleEndsAt: now.saleEndsAt, soldOut: soldOut || undefined };
           });
           return changed ? { lines: settle(lines) } : state;
+        }),
+      expireSales: () =>
+        set((state) => {
+          const lines = state.lines.map(priced);
+          return lines.some((l, i) => l !== state.lines[i]) ? { lines: settle(lines) } : state;
         }),
       clear: () => set({ lines: [] }),
       open: () => set({ isOpen: true }),
@@ -120,10 +142,12 @@ export const useCart = create<CartState>()(
         // Carts saved before lines carried their own key still hold live
         // baskets, so they are given one on read rather than emptied.
         const lines = settle(
-          (p.lines ?? []).map((l) => ({
-            ...l,
-            lineId: cartLineId(l.productId, l.subscription, l.upsellDiscountPercent),
-          })),
+          (p.lines ?? []).map((l) =>
+            priced({
+              ...l,
+              lineId: cartLineId(l.productId, l.subscription, l.upsellDiscountPercent),
+            }),
+          ),
         );
         return { ...current, ...p, lines };
       },

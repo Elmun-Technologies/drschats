@@ -94,6 +94,12 @@
       "secondaryCta": "Mahsulotlar haqida",
       "slideControls": "Slaydlar"
     },
+    "cta": {
+      "title": "Sogʻligʻingiz uchun toʻgʻri vitaminlar",
+      "subtitle": "Bir necha daqiqada buyurtma bering — operatorimiz tasdiqlash uchun qoʻngʻiroq qiladi.",
+      "button": "Doʻkonga oʻtish"
+    },
+    "marquee": "Rasmiy import · Sertifikatlar soʻrov boʻyicha · Chegirma faqat real pasayishda · Yetkazilganda naqd toʻlov",
     "slides": [
       {
         "eyebrow": "Swiss Energy ImmunoVit · 30 kapsula",

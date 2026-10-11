@@ -23,7 +23,12 @@ export function QuizNudge() {
   const close = usePopups((s) => s.close);
 
   useEffect(() => {
-    if (isQuietPath(pathname) || loadQuiz()) return;
+    // Navigating to the order pages takes an open card away with it.
+    if (isQuietPath(pathname)) {
+      if (usePopups.getState().active === "quiz") usePopups.getState().close();
+      return;
+    }
+    if (loadQuiz()) return;
     let views = 0;
     try {
       views = Number(sessionStorage.getItem(VIEWS_KEY) ?? 0) + 1;

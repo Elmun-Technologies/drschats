@@ -38,7 +38,7 @@ export default async function CartPage({
   ]);
   // Today's prices, so a cart kept for weeks shows what the order will cost.
   const prices = Object.fromEntries(
-    catalogue.items.map((p) => [p.id, { price: p.price, oldPrice: p.oldPrice, inStock: p.inStock }]),
+    catalogue.items.map((p) => [p.id, { price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt, inStock: p.inStock }]),
   );
 
   return (

@@ -51,6 +51,7 @@ export function useAddToCart(product: Product) {
         image: product.images[0]?.url ?? "",
         price: product.price,
         oldPrice: product.oldPrice,
+        saleEndsAt: product.saleEndsAt,
         subscription: subscribing ? { intervalDays } : undefined,
       },
       qty,

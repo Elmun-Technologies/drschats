@@ -18,13 +18,15 @@ import { MAX_QTY, useAddToCart, usePurchase } from "@/components/product/purchas
 import { unitPriceOf } from "@/lib/catalog/product-facts";
 import { SaleCountdown } from "@/components/marketing/SaleCountdown";
 import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
+import { useLiveProduct } from "@/lib/shop/useLiveProduct";
 
 /*
   Design: ProductV3 buy card. Price, the two ways to buy, quantity and the two
   actions. On a phone the card keeps the price and the choice; the actions move
   to the fixed bar above the tab bar (MobileBuyBar), which adds the same thing.
 */
-export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Expert | null }) {
+export function BuyBox({ product: listed, reviewer }: { product: Product; reviewer?: Expert | null }) {
+  const product = useLiveProduct(listed);
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const tv = useTranslations("product.v3");
@@ -148,7 +150,8 @@ export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Exp
   is what makes `--bottom-nav` grow by the bar's height (globals.css), so the
   footer, toasts and the back-to-top button clear it.
 */
-function MobileBuyBar({ product }: { product: Product }) {
+function MobileBuyBar({ product: listed }: { product: Product }) {
+  const product = useLiveProduct(listed);
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const addToCart = useAddToCart(product);
@@ -179,7 +182,8 @@ function MobileBuyBar({ product }: { product: Product }) {
 }
 
 /** Desktop: the small card that stays beside the long sections. */
-export function MiniBuyCard({ product, image }: { product: Product; image?: string }) {
+export function MiniBuyCard({ product: listed, image }: { product: Product; image?: string }) {
+  const product = useLiveProduct(listed);
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
   const addToCart = useAddToCart(product);

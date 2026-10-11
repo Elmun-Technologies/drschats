@@ -41,6 +41,7 @@ export function FreeShippingFillers({ products }: { products: Product[] }) {
                     image: p.images[0]?.url ?? "",
                     price: p.price,
                     oldPrice: p.oldPrice,
+                    saleEndsAt: p.saleEndsAt,
                   })
                 }
                 className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-ink text-xl font-medium text-white transition-colors hover:bg-black"

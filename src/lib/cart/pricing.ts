@@ -37,6 +37,8 @@ export interface CartLine {
   image: string;
   price: number;
   oldPrice?: number;
+  /** End of the sale behind `price`; the line reprices itself then. */
+  saleEndsAt?: string;
   quantity: number;
   /** Set when the line was added via an upsell offer (extra discount). */
   upsellDiscountPercent?: number;

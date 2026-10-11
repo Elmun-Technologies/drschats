@@ -21,16 +21,17 @@ import { formatMoney } from "@/lib/utils";
   rules the product page uses). Not a modal: it sits in the corner, closes by
   itself after a few seconds, and stays while the pointer or focus is on it.
 */
-let pool: Promise<Product[]> | null = null;
+// One request per locale: names come back in the language they were asked for.
+const pools = new Map<Locale, Promise<Product[]>>();
 
 function useSuggestions(item: AddedItem | undefined, locale: Locale) {
   const lines = useCart((s) => s.lines);
   const [all, setAll] = useState<Product[]>([]);
   useEffect(() => {
     if (!item) return;
-    pool ??= getUpsellProducts(locale).catch(() => []);
+    if (!pools.has(locale)) pools.set(locale, getUpsellProducts(locale).catch(() => []));
     let alive = true;
-    pool.then((p) => alive && setAll(p));
+    pools.get(locale)!.then((p) => alive && setAll(p));
     return () => {
       alive = false;
     };
@@ -119,7 +120,7 @@ export function Toaster() {
                               type="button"
                               aria-label={tp("addFor", { name: p.name })}
                               onClick={() =>
-                                add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice })
+                                add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt })
                               }
                               className="flex h-11 w-11 shrink-0 items-center justify-center rounded-sm bg-tile text-lg font-medium hover:bg-ink hover:text-white"
                             >

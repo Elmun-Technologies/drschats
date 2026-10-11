@@ -222,8 +222,12 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1474 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1512 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
+
+Kodda o'qiladigan har bir kalit ikkala faylda borligini
+`src/messages/keys-used.test.ts` tekshiradi: yo'q kalit next-intl'da xato emas,
+sahifada kalit nomining o'zi (`common.savings`) chiqadi.
 
 **Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
 
