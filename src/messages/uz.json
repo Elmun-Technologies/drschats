@@ -333,7 +333,9 @@
         "cta": "Brendga oʻtish",
         "short": "Brend",
         "next": "Keyingi mahsulotlar",
-        "prev": "Oldingi mahsulotlar"
+        "prev": "Oldingi mahsulotlar",
+        "pause": "Aylantirishni toʻxtatish",
+        "play": "Aylantirishni davom ettirish"
       },
       "popular": {
         "all": "Barchasi",
