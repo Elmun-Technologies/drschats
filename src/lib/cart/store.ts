@@ -63,7 +63,9 @@ export const useCart = create<CartState>()(
         });
         trackAddToCart(itemOf(line, quantity, line.upsellDiscountPercent));
         // Premium, non-intrusive feedback instead of force-opening the drawer.
-        if (!options?.silent) useToast.getState().notify();
+        if (!options?.silent) {
+          useToast.getState().notify({ productId: line.productId, slug: line.slug, name: line.name, image: line.image });
+        }
       },
       remove: (lineId) =>
         set((state) => {

@@ -1,124 +1,107 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useEffect } from "react";
+import { useLocale, useTranslations } from "next-intl";
 import { BRAND } from "@/lib/brand";
-import { usePathname } from "@/lib/i18n/navigation";
-import { useDialog } from "@/lib/ui/useDialog";
+import type { Locale } from "@/lib/i18n/routing";
+import { Link, usePathname } from "@/lib/i18n/navigation";
+import { useCart } from "@/lib/cart/store";
+import { usePromotions } from "@/lib/cart/promotions-context";
+import { computeTotals } from "@/lib/cart/pricing";
+import { isQuietPath, usePopups } from "@/lib/ui/popups";
+import { formatMoney } from "@/lib/utils";
+import { buttonVariants } from "@/components/ui/Button";
+import { PopupShell } from "@/components/marketing/PopupShell";
 
 /*
-  The leaving-visitor card.
+  The leaving-visitor card, on desktop (the pointer heading for the tab bar).
 
-  It used to promise "50,000 so'm voucher + free doctor consultation", gate it
-  behind a phone number, and then do nothing with the number except hand it to
-  the analytics tracker. A shop that never sends the voucher and never calls
-  has taught the visitor that its other promises are worth the same.
-
-  What is left is the one thing we can actually deliver at the moment somebody
-  is about to close the tab: the Telegram channel, where order status, intake
-  reminders and club offers already live. No phone field, no countdown, no
-  "only today".
+  With something in the cart it is a reminder of that cart — the products and
+  the total, one click from the order form. With an empty cart it offers the
+  one channel the shop can actually deliver on: Telegram (order status,
+  intake reminders, club offers). No invented voucher, no countdown, no phone
+  field. Never on the order pages themselves; one marketing popup per visit
+  (lib/ui/popups.ts).
 */
 export function ExitIntentPopup() {
   const t = useTranslations("exit");
-  const [isOpen, setIsOpen] = useState(false);
+  const locale = useLocale() as Locale;
   const pathname = usePathname();
-  // Never in the middle of an order: a full-screen card over the order form
-  // costs more orders than the channel link wins.
-  const checkingOut = pathname.startsWith("/cart") || pathname.startsWith("/checkout");
-  const dialogRef = useDialog<HTMLDivElement>(isOpen, () => setIsOpen(false));
+  const lines = useCart((s) => s.lines);
+  const promotions = usePromotions();
+  const open = usePopups((s) => s.active === "exit");
+  const close = usePopups((s) => s.close);
 
   useEffect(() => {
-    if (checkingOut || sessionStorage.getItem("exit-shown")) return;
-
-    let triggered = false;
-
-    function handleMouseLeave(e: MouseEvent) {
-      if (triggered || e.clientY > 10) return;
-      triggered = true;
-      sessionStorage.setItem("exit-shown", "1");
-      setTimeout(() => setIsOpen(true), 100);
-    }
-
-    // Only the explicit "cursor aimed at the close button / top edge" gesture.
-    // A tab switch (visibilitychange) is a background event, not an intent to
-    // leave — firing a full-screen offer on it reads as telepathic nagging.
-    const timer = setTimeout(() => {
-      document.addEventListener("mouseleave", handleMouseLeave);
-    }, 4000);
-
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener("mouseleave", handleMouseLeave);
+    if (isQuietPath(pathname)) return;
+    const onLeave = (e: MouseEvent) => {
+      if (e.clientY <= 10) usePopups.getState().request("exit");
     };
-  }, [checkingOut]);
+    // Not in the first seconds: a pointer passing the tab bar on arrival is not leaving.
+    const timer = window.setTimeout(() => document.addEventListener("mouseleave", onLeave), 4000);
+    return () => {
+      window.clearTimeout(timer);
+      document.removeEventListener("mouseleave", onLeave);
+    };
+  }, [pathname]);
+
+  const totals = computeTotals(lines, promotions);
+  const hasCart = lines.length > 0;
 
   return (
-    <AnimatePresence>
-      {isOpen && (
+    <PopupShell open={open} onClose={close} labelledBy="exit-title" closeLabel={t("dismiss")}>
+      {hasCart ? (
         <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setIsOpen(false)}
-            className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm"
-          />
-          <motion.div
-            ref={dialogRef}
-            tabIndex={-1}
-            initial={{ opacity: 0, scale: 0.96, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.96, y: 24 }}
-            transition={{ type: "spring", damping: 26, stiffness: 300 }}
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="exit-title"
-            className="fixed inset-x-4 top-1/2 z-[71] mx-auto max-w-md -translate-y-1/2 overflow-hidden rounded-3xl border border-line bg-bg p-7 shadow-pop sm:p-8"
+          <h2 id="exit-title" className="pr-8 text-[26px] font-bold leading-8">
+            {t("cartTitle", { count: totals.itemCount })}
+          </h2>
+          <p className="mt-2 text-base leading-6 text-ink-2">{t("cartBody")}</p>
+          <ul className="mt-4 flex flex-col divide-y divide-line rounded-[16px] bg-tile px-4">
+            {lines.slice(0, 3).map((l) => (
+              <li key={l.lineId} className="flex justify-between gap-3 py-2.5 text-[15px]">
+                <span className="line-clamp-1">{l.name}</span>
+                <span className="shrink-0 text-ink-2">× {l.quantity}</span>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3 flex justify-between text-base font-bold">
+            <span>{t("cartTotal")}</span>
+            <span>{formatMoney(totals.total, locale)}</span>
+          </p>
+          {totals.freeShippingRemaining > 0 && (
+            <p className="mt-1 text-sm text-ink-2">
+              {t("cartFreeShipping", { amount: formatMoney(totals.freeShippingRemaining, locale) })}
+            </p>
+          )}
+          <Link href="/cart" onClick={close} className={buttonVariants("primary", "lg") + " mt-5 w-full"}>
+            {t("cartCta")}
+          </Link>
+        </>
+      ) : (
+        <>
+          <p className="text-sm font-bold uppercase tracking-widest text-ink-2">{t("badge")}</p>
+          <h2 id="exit-title" className="mt-3 pr-8 text-[26px] font-bold leading-8">{t("title")}</h2>
+          <p className="mt-2 text-base leading-6 text-ink-2">{t("body")}</p>
+          <ul className="mt-4 flex flex-col gap-2 text-[15px] text-ink-2">
+            {[t("perk1"), t("perk2"), t("perk3")].map((perk) => (
+              <li key={perk} className="flex gap-2.5">
+                <span aria-hidden className="mt-0.5 font-bold text-ink">✓</span>
+                {perk}
+              </li>
+            ))}
+          </ul>
+          <a
+            href={BRAND.social.telegram}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={close}
+            className={buttonVariants("primary", "lg") + " mt-5 w-full"}
           >
-            <button
-              type="button"
-              onClick={() => setIsOpen(false)}
-              className="absolute right-4 top-4 rounded-full bg-tile p-2 text-ink-2 transition-colors hover:text-ink"
-              aria-label={t("dismiss")}
-            >
-              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-              </svg>
-            </button>
-
-            <p className="text-xs font-bold uppercase tracking-widest text-ink">{t("badge")}</p>
-
-            <h2 id="exit-title" className="mt-3 text-2xl font-extrabold leading-tight text-ink">{t("title")}
-            </h2>
-
-            <p className="mt-3 text-sm leading-relaxed text-ink-2">{t("body")}</p>
-
-            <ul className="mt-5 flex flex-col gap-2.5 rounded-2xl border border-line bg-bg p-4 text-sm text-ink">
-              {[t("perk1"), t("perk2"), t("perk3")].map((perk) => (
-                <li key={perk} className="flex items-start gap-2.5">
-                  <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-tile text-[10px] font-bold text-ink">
-                    ✓
-                  </span>
-                  <span className="leading-snug">{perk}</span>
-                </li>
-              ))}
-            </ul>
-
-            <a
-              href={BRAND.social.telegram}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 flex w-full items-center justify-center gap-2.5 rounded-2xl bg-ink px-6 py-3.5 text-xs font-extrabold uppercase tracking-widest text-white transition-colors hover:bg-ink/90"
-            >
-              {t("cta")}
-            </a>
-
-            <p className="mt-3 text-center text-[11px] leading-relaxed text-ink-2">{t("promise")}</p>
-          </motion.div>
+            {t("cta")}
+          </a>
+          <p className="mt-3 text-center text-[13px] text-muted">{t("promise")}</p>
         </>
       )}
-    </AnimatePresence>
+    </PopupShell>
   );
 }

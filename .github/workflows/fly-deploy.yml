@@ -1,0 +1,32 @@
+name: Deploy to Fly
+
+# Deploys main to Fly.io once the FLY_API_TOKEN repository secret exists
+# (fly tokens create deploy -x 999999h). Until then the job skips cleanly.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: fly-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+    steps:
+      - name: Check token
+        id: token
+        run: echo "present=$([ -n "$FLY_API_TOKEN" ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.token.outputs.present == 'yes'
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+        if: steps.token.outputs.present == 'yes'
+
+      - name: Deploy
+        if: steps.token.outputs.present == 'yes'
+        run: flyctl deploy --remote-only

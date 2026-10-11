@@ -56,6 +56,8 @@
   --color-dark-panel: #1c1f22;
   --color-on-dark-2: #c9cdd1;
   --color-red: #c8161d;
+  /* Swiss Energy brand panel only (owner's decision, 2026-10) — not a sale colour. */
+  --color-swiss: #d52b1e;
   --color-yellow: #ffd43b;
   --color-yellow-banner: #ffe58a;
   --color-forest: #0f2d24;

@@ -20,6 +20,9 @@ export function getDb(): Db {
   if (!holder.__govitaDb) {
     const sql = postgres(url, {
       max: Number(process.env.DATABASE_POOL_MAX ?? 5),
+      // Safe behind a transaction pooler (Fly Managed Postgres, PgBouncer), where
+      // a prepared statement does not outlive its transaction's server connection.
+      prepare: false,
       idle_timeout: 20,
       connect_timeout: 10,
       onnotice: () => {},

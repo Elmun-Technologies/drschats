@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { rawProducts } from "@/lib/shopflow/mock";
-import { contentToForm, formToContent, parseImages, productFieldsSchema } from "./product-form";
+import { contentToForm, formToContent, fromTashkentInput, parseImages, productFieldsSchema, toTashkentInput } from "./product-form";
 
 function content(p: (typeof rawProducts)[number]) {
   const { name, tagline, description, highlights, benefits, ingredients, howToUse, faq, badges, servings, origin, searchAliases } = p;
@@ -26,5 +26,15 @@ describe("product form codec", () => {
     expect(productFieldsSchema.safeParse({ ...base, oldPrice: "120" }).success).toBe(true);
     expect(productFieldsSchema.safeParse({ ...base, oldPrice: "" }).success).toBe(true);
     expect(productFieldsSchema.safeParse({ ...base, slug: "Bad Slug" }).success).toBe(false);
+  });
+});
+
+describe("sale end in Tashkent time", () => {
+  it("round-trips through the datetime-local input", () => {
+    const date = fromTashkentInput("2026-11-01T23:30");
+    expect(date?.toISOString()).toBe("2026-11-01T18:30:00.000Z");
+    expect(toTashkentInput(date)).toBe("2026-11-01T23:30");
+    expect(fromTashkentInput("")).toBeNull();
+    expect(fromTashkentInput("tomorrow")).toBeNull();
   });
 });

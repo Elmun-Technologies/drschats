@@ -19,6 +19,12 @@ if (process.env.VERCEL_ENV === "production" || process.env.GOVITA_PRODUCTION ===
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /*
+    The Docker image (Fly.io) runs the self-contained server Next traces into
+    .next/standalone. Only that build asks for it, so `npm run build` in CI and
+    elsewhere is unchanged.
+  */
+  ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
   // Harmless header, free information for anyone fingerprinting the stack.
   poweredByHeader: false,
   transpilePackages: ["sanity", "next-sanity", "@sanity/ui", "@sanity/vision"],

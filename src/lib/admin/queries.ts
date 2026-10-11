@@ -1,7 +1,7 @@
 import { asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, orders, products, type OrderStatus } from "@/lib/db/schema";
-import { contentToForm } from "./product-form";
+import { contentToForm, toTashkentInput } from "./product-form";
 import type { ProductFormValues } from "@/components/admin/ProductForm";
 
 export async function listCategories() {
@@ -53,6 +53,7 @@ export async function productFormValues(id: string): Promise<ProductFormValues |
     brandSlug: p.brandSlug ?? "",
     price: String(p.price),
     oldPrice: p.oldPrice != null ? String(p.oldPrice) : "",
+    saleEndsAt: toTashkentInput(p.saleEndsAt),
     inStock: p.inStock,
     kind: p.kind,
     sort: String(p.sort),
@@ -70,6 +71,7 @@ export const EMPTY_PRODUCT: ProductFormValues = {
   brandSlug: "",
   price: "",
   oldPrice: "",
+  saleEndsAt: "",
   inStock: true,
   kind: "core",
   sort: "0",

@@ -1,0 +1,16 @@
+# Only what `next build` and the migration step read go into the image.
+node_modules
+.next
+.git
+.github
+backend
+design
+docs
+govita-vip-bot
+govita-vip-bot.zip
+*.md
+!README.md
+.env
+.env*
+tsconfig.tsbuildinfo
+coverage
