@@ -92,15 +92,29 @@ export function BrandPanel({ products }: { products: Product[] }) {
 
   return (
     <section aria-labelledby="home-brand" className="wrap">
-      <div className="relative flex flex-col gap-3.5 rounded-3xl bg-dark-panel p-5 text-white lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-7 lg:rounded-[28px] lg:p-8">
+      <div className="relative isolate flex flex-col gap-3.5 overflow-hidden rounded-3xl bg-swiss p-5 text-white lg:grid lg:grid-cols-[300px_minmax(0,1fr)] lg:gap-7 lg:rounded-[28px] lg:p-8">
+        {/* The Swiss cross, large and faint, behind the heading — the panel only ever holds Swiss products. */}
+        <svg
+          viewBox="0 0 32 32"
+          aria-hidden
+          className="pointer-events-none absolute -left-10 -top-10 -z-10 h-56 w-56 text-white/10 lg:-left-12 lg:-top-12 lg:h-80 lg:w-80"
+          fill="currentColor"
+        >
+          <path d="M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z" />
+        </svg>
         <div className="flex items-end justify-between gap-3.5 lg:flex-col lg:items-start lg:justify-start lg:py-2 lg:pl-2">
           <span className="flex flex-col gap-0.5 lg:gap-3.5">
-            <span className="text-xs font-semibold uppercase tracking-[0.06em] text-on-dark-2 lg:text-[13px]">{t("eyebrow")}</span>
+            <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.06em] text-white lg:text-[13px]">
+              <svg viewBox="0 0 32 32" aria-hidden className="h-4 w-4 rounded-[3px] bg-white text-swiss" fill="currentColor">
+                <path d="M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z" />
+              </svg>
+              {t("eyebrow")}
+            </span>
             <h2 id="home-brand" className="text-[28px] font-bold leading-8 lg:text-[44px] lg:leading-[46px] lg:tracking-[-0.02em]">
               Swiss Energy
             </h2>
           </span>
-          <span className="hidden text-base leading-6 text-on-dark-2 lg:block">{t("text")}</span>
+          <span className="hidden text-base leading-6 text-white lg:block">{t("text")}</span>
           <span className="flex items-center gap-1 lg:hidden">
             {!reduced && <PauseButton paused={paused} onToggle={() => setPaused(!paused)} label={paused ? t("play") : t("pause")} />}
             <Link href="/brands" className="flex min-h-11 items-center text-[15px] font-semibold underline-offset-2 hover:underline">
@@ -150,7 +164,7 @@ function PauseButton({ paused, onToggle, label }: { paused: boolean; onToggle: (
       onClick={onToggle}
       aria-label={label}
       aria-pressed={paused}
-      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-on-dark-2 transition-colors hover:bg-white/10 hover:text-white"
+      className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-white transition-colors hover:bg-white/15"
     >
       {paused ? (
         <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor" aria-hidden>

@@ -593,7 +593,7 @@ Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa
 
 ### Qatʼiy qoidalar
 - **Yashil rang yoʻq.** Asosiy harakat — `ink` (#17191B) tugma, oq matn. Brend ranglari `forest` (#0F2D24) va `gold` (#B8954F) faqat logoda.
-- **Qizil (#C8161D)** faqat chegirma uchun (pill badge «−11%», «Aksiyalar» havolasi). **Sariq (#FFD43B)** faqat «Xit» / «Arzon narx kafolati».
+- **Qizil (#C8161D)** faqat chegirma uchun (pill badge «−11%», «Aksiyalar» havolasi). **Istisno:** Swiss Energy brend paneli — `swiss` (#D52B1E) fon + oq xoch (egasi qarori, 2026-10); chegirma qizili bilan aralashtirilmaydi. **Sariq (#FFD43B)** faqat «Xit» / «Arzon narx kafolati».
 - **Faqat real maʼlumot.** Taymer, toʻqima sharh/reyting, «N kishi sotib oldi», oʻylab topilgan eski narx — yoʻq. Sharh boʻlmasa: «Hali sharh yoʻq» + «Sharh yozish».
 - **AI-generatsiya rasm ishlatilmaydi.** Mahsulot — haqiqiy packshotning fonidan ajratilgan PNG (`c-*.png`), `tile` (#F1F3F0) fonida `object-fit: contain`. Lifestyle — litsenziyali stok foto.
 - **BAD ogohlantirishi** mahsulot, test va maqola sahifalarida: «Biologik faol qoʻshimcha. Dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing.»
