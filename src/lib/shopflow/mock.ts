@@ -156,6 +156,8 @@ export interface RawProduct {
   categorySlug: string;
   price: number;
   oldPrice?: number;
+  /** ISO time the sale ends; after it the product sells at `oldPrice` again. */
+  saleEndsAt?: string;
   rating: number;
   reviewCount: number;
   inStock: boolean;

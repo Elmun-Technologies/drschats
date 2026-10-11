@@ -17,8 +17,24 @@ import { requestEmailOptIn } from "@/app/actions/emailOptIn";
 import { formatMoney } from "@/lib/utils";
 import { upsellPool } from "@/lib/upsell/pool";
 import { describeAttribution } from "@/lib/analytics/attribution";
+import { ordersFromPhone } from "@/lib/catalog/db";
+import { COMMERCE } from "@/lib/config/commerce";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
+
+/*
+  The first-order discount (COMMERCE.discounts.firstOrderPercent) is applied
+  by the operator on confirmation; this line tells them whether it applies.
+  With the database the phone number is checked against earlier orders;
+  without it the operator checks by hand.
+*/
+async function firstOrderLine(phone: string): Promise<string> {
+  const percent = COMMERCE.discounts.firstOrderPercent;
+  const placed = await ordersFromPhone(phone);
+  if (placed === null) return `🎁 Birinchi buyurtma boʻlsa −${percent}% (tekshiring)`;
+  if (placed <= 1) return `🎁 Yangi mijoz — birinchi buyurtma −${percent}%`;
+  return `🔁 Qaytgan mijoz: avval ${placed - 1} ta buyurtma`;
+}
 
 async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Promise<boolean> {
   const items = order.items
@@ -37,6 +53,7 @@ async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Prom
     order.totals.discount > 0 ? `🏷 Chegirma: ${formatMoney(order.totals.discount, "uz")}` : "",
     `🚚 Yetkazish: ${formatMoney(order.totals.shipping, "uz")}`,
     `💰 Jami: ${formatMoney(order.totals.total, "uz")}`,
+    await firstOrderLine(order.customer.phone),
     describeAttribution(order.attribution) ? `📣 Manba: ${describeAttribution(order.attribution)}` : "",
   ]
     .filter(Boolean)

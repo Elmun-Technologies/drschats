@@ -14,6 +14,7 @@ import { useCart } from "@/lib/cart/store";
 import { cartLineId } from "@/lib/cart/pricing";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { cutoutOf, unitPriceOf } from "@/lib/catalog/product-facts";
+import { SaleCountdownChip } from "@/components/marketing/SaleCountdown";
 
 /*
   The catalogue card (design: ProductCardV3).
@@ -127,12 +128,19 @@ export function ProductCard({
       <Link href={href} className="line-clamp-2 min-h-10 px-0.5 text-card-title text-ink-2 hover:text-ink">
         {product.name}
       </Link>
-      <span className="flex items-center gap-1.5 px-0.5 text-caption text-muted">
-        <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
-        </svg>
-        {t("delivery24")}
-      </span>
+      {/* A sale with a real end date takes the delivery line's slot, so cards keep one height. */}
+      {product.saleEndsAt ? (
+        <span className="flex min-h-[17px] items-center px-0.5">
+          <SaleCountdownChip endsAt={product.saleEndsAt} />
+        </span>
+      ) : (
+        <span className="flex items-center gap-1.5 px-0.5 text-caption text-muted">
+          <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
+          </svg>
+          {t("delivery24")}
+        </span>
+      )}
 
       <div className="mt-auto pt-1.5">
         {inCart ? (

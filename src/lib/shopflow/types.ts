@@ -64,6 +64,8 @@ export interface Product {
   categorySlug?: string | null;
   price: Money;
   oldPrice?: Money;
+  /** ISO time a running sale ends (the countdown); absent when the sale has no end date. */
+  saleEndsAt?: string;
   currency: Currency;
   rating: number;
   reviewCount: number;

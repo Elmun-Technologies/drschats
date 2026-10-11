@@ -16,6 +16,8 @@ import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 import { SubscribeToSave } from "@/components/product/SubscribeToSave";
 import { MAX_QTY, useAddToCart, usePurchase } from "@/components/product/purchase";
 import { unitPriceOf } from "@/lib/catalog/product-facts";
+import { SaleCountdown } from "@/components/marketing/SaleCountdown";
+import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 
 /*
   Design: ProductV3 buy card. Price, the two ways to buy, quantity and the two
@@ -64,8 +66,10 @@ export function BuyBox({ product, reviewer }: { product: Product; reviewer?: Exp
               .join(" · ")}
           </span>
         )}
+        {product.saleEndsAt && <SaleCountdown endsAt={product.saleEndsAt} className="mt-1" />}
       </div>
 
+      {product.inStock && <DeliveryCutoff />}
       {product.inStock && <SubscribeToSave product={product} />}
 
       {product.inStock ? (

@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 /** Native share sheet where there is one, otherwise the link to the clipboard. */
 export function ShareButton({ name, iconOnly = false, className }: { name: string; iconOnly?: boolean; className?: string }) {
   const t = useTranslations("common");
-  const notify = useToast((s) => s.notify);
+  const copied = useToast((s) => s.copied);
 
   async function handleShare() {
     const url = window.location.href;
@@ -15,7 +15,7 @@ export function ShareButton({ name, iconOnly = false, className }: { name: strin
       await navigator.share({ title: name, url }).catch(() => {});
     } else {
       await navigator.clipboard.writeText(url).catch(() => {});
-      notify();
+      copied();
     }
   }
 

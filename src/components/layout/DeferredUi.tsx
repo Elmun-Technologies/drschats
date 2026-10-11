@@ -26,6 +26,14 @@ const ExitIntentPopup = dynamic(
   () => import("@/components/exit-intent/ExitIntentPopup").then((m) => m.ExitIntentPopup),
   { ssr: false },
 );
+const WelcomeOffer = dynamic(
+  () => import("@/components/marketing/WelcomeOffer").then((m) => m.WelcomeOffer),
+  { ssr: false },
+);
+const QuizNudge = dynamic(
+  () => import("@/components/marketing/QuizNudge").then((m) => m.QuizNudge),
+  { ssr: false },
+);
 const LivePurchaseToast = dynamic(
   () => import("@/components/social-proof/LivePurchaseToast").then((m) => m.LivePurchaseToast),
   { ssr: false },
@@ -55,6 +63,8 @@ export function DeferredUi() {
     <>
       <CartDrawer />
       <ExitIntentPopup />
+      <WelcomeOffer />
+      <QuizNudge />
       {/* The toast narrates purchases nobody made until the flag says a demo
           deployment wants to see it working. Kept out of the dynamic import
           above so its bundle is not even fetched when it will never render. */}

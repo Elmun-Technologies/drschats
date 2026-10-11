@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
-import { asc } from "drizzle-orm";
-import { getDb } from "@/lib/db/client";
+import { asc, count, sql } from "drizzle-orm";
+import { getDb, isDbConfigured } from "@/lib/db/client";
 import { brands, categories, orders, products } from "@/lib/db/schema";
 import { builtInCatalog, type RawProduct } from "@/lib/shopflow/mock";
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
@@ -36,6 +36,7 @@ async function readCatalog(): Promise<CatalogData> {
         categorySlug: p.categorySlug ?? "",
         price: p.price,
         oldPrice: p.oldPrice ?? undefined,
+        saleEndsAt: p.saleEndsAt ? p.saleEndsAt.toISOString() : undefined,
         rating: 0,
         reviewCount: 0,
         inStock: p.inStock,
@@ -96,5 +97,25 @@ export async function saveOrderToDb(payload: OrderRequest): Promise<OrderResult>
   } catch (err) {
     console.error("[orders] insert failed:", (err as Error).message);
     return { ok: false, message: "Order could not be saved." };
+  }
+}
+
+/**
+ * Orders already placed from this phone number (matched on its last 9 digits,
+ * so "+998 90 …" and "90 …" are one customer), including the one just saved.
+ * Null without a database — the operator then checks by hand.
+ */
+export async function ordersFromPhone(phone: string): Promise<number | null> {
+  const digits = phone.replace(/\D/g, "").slice(-9);
+  if (!isDbConfigured || digits.length < 9) return null;
+  try {
+    const [row] = await getDb()
+      .select({ n: count() })
+      .from(orders)
+      .where(sql`right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9) = ${digits}`);
+    return row?.n ?? 0;
+  } catch (err) {
+    console.error("[orders] phone lookup failed:", (err as Error).message);
+    return null;
   }
 }

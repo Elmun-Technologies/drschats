@@ -13,7 +13,7 @@ import { PRODUCT_PHOTOS } from "@/lib/content/product-photos";
 import { PRODUCT_CUTOUTS, categoryCutout } from "@/lib/content/product-cutouts";
 import { PRODUCT_UNITS } from "@/lib/content/product-units";
 import { ALL_BRANDS, productBrand } from "@/lib/content/product-brands";
-import { SLUG_RE, formToContent, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
+import { SLUG_RE, formToContent, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
 import { isStorageConfigured, uploadImage } from "@/lib/admin/storage";
 import { isAllowedImageUrl } from "@/lib/security/csp";
 
@@ -133,6 +133,8 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     brandSlug: d.brandSlug || null,
     price: d.price,
     oldPrice: d.oldPrice === "" || d.oldPrice == null ? null : Number(d.oldPrice),
+    // An end date only means something on a real sale (an old price to return to).
+    saleEndsAt: d.oldPrice === "" || d.oldPrice == null ? null : fromTashkentInput(d.saleEndsAt),
     inStock: d.inStock === "on",
     kind: d.kind,
     sort: d.sort,

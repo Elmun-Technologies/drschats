@@ -28,6 +28,7 @@ export const STORAGE_KEYS = {
   compare: `${PREFIX}compare`,
   profile: `${PREFIX}profile`,
   attribution: `${PREFIX}attribution`,
+  popups: `${PREFIX}popups`,
 } as const;
 
 let migrated = false;

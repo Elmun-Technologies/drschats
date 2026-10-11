@@ -67,6 +67,15 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     undefined = the source does not say (built-in rows → slug tables decide);
     null = the database says "none" (an admin cleared it) and must stay none.
   */
+  /*
+    A sale with an end date ends by itself: past it, the product sells at its
+    old price again and no countdown is shown. The order action prices from
+    this same function, so an expired sale cannot be bought at the sale price.
+  */
+  const saleOver = Boolean(p.saleEndsAt && p.oldPrice && Date.parse(p.saleEndsAt) <= Date.now());
+  const price = saleOver ? (p.oldPrice as number) : p.price;
+  const oldPrice = saleOver ? undefined : p.oldPrice;
+  const saleEndsAt = !saleOver && p.oldPrice && p.saleEndsAt ? p.saleEndsAt : undefined;
   const brand =
     p.brandSlug === undefined ? undefined : p.brandSlug ? (data.brands?.find((b) => b.slug === p.brandSlug) ?? null) : null;
   return {
@@ -77,8 +86,9 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     description: p.description[locale],
     categoryId: p.categoryId,
     categorySlug: p.categorySlug,
-    price: p.price,
-    oldPrice: p.oldPrice,
+    price,
+    oldPrice,
+    saleEndsAt,
     currency: "UZS",
     rating: SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
     reviewCount: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,

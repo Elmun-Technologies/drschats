@@ -39,6 +39,7 @@ export const products = pgTable("products", {
   brandSlug: text("brand_slug"),
   price: integer("price").notNull(),
   oldPrice: integer("old_price"),
+  saleEndsAt: timestamp("sale_ends_at", { withTimezone: true }),
   inStock: boolean("in_stock").notNull().default(true),
   kind: text("kind").$type<"core" | "addon" | "unlisted">().notNull().default("core"),
   sort: integer("sort").notNull().default(0),

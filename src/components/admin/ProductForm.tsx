@@ -13,6 +13,8 @@ export interface ProductFormValues {
   brandSlug: string;
   price: string;
   oldPrice: string;
+  /** Tashkent time, "YYYY-MM-DDTHH:mm"; empty = the sale has no end date. */
+  saleEndsAt: string;
   inStock: boolean;
   kind: "core" | "addon" | "unlisted";
   sort: string;
@@ -88,6 +90,9 @@ export function ProductForm({
         </Field>
         <Field label="Eski narx, soʻm" hint="Faqat haqiqiy chegirma boʻlsa">
           <input name="oldPrice" type="number" min={0} step={100} defaultValue={values.oldPrice} className={inputClass} />
+        </Field>
+        <Field label="Aksiya tugashi (Toshkent vaqti)" hint="Saytda taymer chiqadi; vaqt oʻtgach narx eski narxga qaytadi">
+          <input name="saleEndsAt" type="datetime-local" defaultValue={values.saleEndsAt} className={inputClass} />
         </Field>
         <label className="flex h-11 items-center gap-3 self-end text-[15px] font-semibold">
           <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-ink" />

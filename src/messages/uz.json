@@ -82,7 +82,8 @@
     "increase": "Koʻpaytirish",
     "inCartQty": "{count} dona",
     "notFoundLead": "Havola eskirgan yoki sahifa koʻchirilgan boʻlishi mumkin. Qidiruvdan foydalaning yoki katalogga oʻting.",
-    "notFoundPopular": "Mashhur kategoriyalar"
+    "notFoundPopular": "Mashhur kategoriyalar",
+    "linkCopied": "Havola nusxalandi"
   },
   "home": {
     "hero": {
@@ -692,7 +693,8 @@
       "step3": "Buyurtma manzilingizga yetkaziladi.",
       "telegram": "Telegramda yozish",
       "bonusNudge": "Yana 1 ta qoʻshing — 3-si sovgʻa",
-      "fillersTitle": "Bittasini qoʻshing — yetkazish bepul boʻladi:"
+      "fillersTitle": "Bittasini qoʻshing — yetkazish bepul boʻladi:",
+      "firstOrderNote": "Birinchi buyurtmangizmi? Operator tasdiqlashda −{percent}% chegirmani qoʻllaydi."
     }
   },
   "checkout": {
@@ -1798,7 +1800,10 @@
     "days": "kun",
     "hours": "soat",
     "minutes": "daqiqa",
-    "seconds": "soniya"
+    "seconds": "soniya",
+    "daysLeft": "Aksiya tugashiga {count} kun",
+    "hoursLeft": "Aksiya tugashiga {count} soat",
+    "cutoff": "Bugun soat {time} gacha buyurtma bering — ertaga yetkazamiz. Qoldi: <b>{hours} soat {minutes} daqiqa</b>"
   },
   "wishlist": {
     "add": "Sevimlilarga",
@@ -1819,7 +1824,12 @@
     "perk1": "Buyurtma holati va yetkazib berish kuzatuvi",
     "perk2": "Qabul eslatmalari",
     "perk3": "Klub takliflari va yangi mahsulotlar",
-    "promise": "Kanalga oʻtish bepul. Istalgan vaqtda chiqib ketishingiz mumkin."
+    "promise": "Kanalga oʻtish bepul. Istalgan vaqtda chiqib ketishingiz mumkin.",
+    "cartTitle": "Savatingizda {count} ta mahsulot qoldi",
+    "cartBody": "Buyurtmani hozir rasmiylashtiring — operator qoʻngʻiroq qilib tasdiqlaydi.",
+    "cartTotal": "Jami",
+    "cartFreeShipping": "Bepul yetkazib berishgacha yana {amount}",
+    "cartCta": "Buyurtmani rasmiylashtirish"
   },
   "outOfStock": {
     "notify": "Bu mahsulot hozirda sotuvda yoʻq. Telefon raqamingizni qoldiring — mahsulot kelganda xabar beramiz.",
@@ -2255,5 +2265,27 @@
     "minerals": "Minerallar",
     "skin": "Teri parvarishi",
     "herbal": "Oʻsimlik mahsulotlari"
+  },
+  "popups": {
+    "added": {
+      "withIt": "Bunga mos keladi",
+      "addFor": "{name} — savatga qoʻshish",
+      "continue": "Xaridni davom ettirish"
+    },
+    "welcome": {
+      "title": "Birinchi buyurtmangizga −{percent}%",
+      "body": "Go Vita'da birinchi marta buyurtma berayapsizmi? Chegirmani operator buyurtmani tasdiqlashda qoʻllaydi — kod kerak emas.",
+      "perk1": "Rasmiy import, ishlab chiqaruvchi hujjatlari bilan",
+      "perk2": "Toshkent boʻylab 24 soatda yetkazib berish",
+      "perk3": "Yetkazib berishda naqd pul bilan toʻlov",
+      "cta": "Katalogni koʻrish",
+      "quiz": "2 daqiqalik vitamin testi",
+      "note": "Har bir mijoz uchun bir marta."
+    },
+    "quiz": {
+      "title": "Qaysi vitamin sizga kerak?",
+      "body": "Bir necha savolga javob bering — maqsadingizga mos toʻplamni tavsiya qilamiz.",
+      "cta": "Testni boshlash"
+    }
   }
 }

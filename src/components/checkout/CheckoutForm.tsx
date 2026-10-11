@@ -27,6 +27,7 @@ import { trackPurchase } from "@/lib/personalization/tracker";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { gapFillers } from "@/lib/cart/gap";
 import { FreeShippingFillers } from "@/components/cart/FreeShippingFillers";
+import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
@@ -259,6 +260,7 @@ export function CheckoutForm({
               <div className="h-1.5 rounded-full bg-[#DCDFDB] lg:h-2">
                 <div className="h-full rounded-full bg-ink transition-[width] duration-500" style={{ width: `${progress}%` }} />
               </div>
+              {watch("method") !== "pickup" && <DeliveryCutoff />}
               {watch("method") !== "pickup" && (
                 <FreeShippingFillers products={gapFillers(recommended, lines, totals.freeShippingRemaining)} />
               )}
@@ -378,6 +380,7 @@ export function CheckoutForm({
               <span>{tc("total")}</span>
               <span>{formatMoney(totals.total, locale)}</span>
             </div>
+            <p className="text-sm text-ink-2">{tv("firstOrderNote", { percent: COMMERCE.discounts.firstOrderPercent })}</p>
             {totals.hasSubscription && (
               <p className="text-sm text-ink-2">
                 {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })} {ts("benefitControl")}

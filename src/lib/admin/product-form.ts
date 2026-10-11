@@ -106,6 +106,25 @@ export function formToContent(form: Record<string, string>): ProductContent {
   };
 }
 
+/*
+  The sale end is entered and shown in Tashkent time (UTC+5, no daylight
+  saving), whatever the admin's browser or the server's clock says.
+*/
+const TASHKENT_OFFSET_MS = 5 * 60 * 60 * 1000;
+
+/** Date → "YYYY-MM-DDTHH:mm" for a datetime-local input, in Tashkent time. */
+export function toTashkentInput(date: Date | null | undefined): string {
+  if (!date) return "";
+  return new Date(date.getTime() + TASHKENT_OFFSET_MS).toISOString().slice(0, 16);
+}
+
+/** "YYYY-MM-DDTHH:mm" in Tashkent time → Date; null when empty or malformed. */
+export function fromTashkentInput(value: string | undefined): Date | null {
+  if (!value || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value.trim())) return null;
+  const date = new Date(`${value.trim()}:00+05:00`);
+  return Number.isNaN(date.getTime()) ? null : date;
+}
+
 const money = z.coerce.number().int().min(0).max(100_000_000);
 
 export const productFieldsSchema = z
@@ -115,6 +134,7 @@ export const productFieldsSchema = z
     brandSlug: z.string().trim().optional(),
     price: money,
     oldPrice: z.union([z.literal(""), money]).optional(),
+    saleEndsAt: z.string().trim().optional(),
     inStock: z.string().optional(),
     kind: z.enum(["core", "addon", "unlisted"]),
     sort: z.coerce.number().int().min(-10000).max(10000).default(0),

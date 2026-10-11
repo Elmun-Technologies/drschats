@@ -410,6 +410,22 @@ Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
 - Savatda: 2+1 eslatmasi (2 dona bo'lsa), bepul yetkazishgacha ≤150 000 so'm
   qolsa uni yolg'iz yopadigan mahsulotlar (`lib/cart/gap.ts`).
 
+## Pop-up va taymerlar (marketing)
+
+- **Bitta navbat** (`lib/ui/popups.ts`): welcome, exit, quiz — bir vaqtda bitta,
+  sessiyada bittadan ko'p emas, har birining kutish muddati (30/3/7 kun), boshqa
+  dialog ochiq bo'lsa yoki `/cart`, `/checkout`, `/quiz`, `/account`, `/profile`
+  da chiqmaydi. `navigator.webdriver` (botlar, audit) — umuman chiqmaydi.
+- **Welcome** — `COMMERCE.discounts.firstOrderPercent` (−10%, operator qo'llaydi;
+  Telegram'da `🎁 Yangi mijoz` / `🔁 Qaytgan mijoz` — baza bo'lsa telefon bo'yicha
+  `ordersFromPhone`). **Exit** — savat bo'lsa savat + jami, bo'lmasa Telegram.
+  **Quiz** — 3-sahifadan keyin burchak kartasi, quiz o'tilgan bo'lsa yo'q.
+- **"Qo'shildi" kartasi** (`Toaster`) — mahsulot + 2 ta mos (`getSimilarProducts`)
+  + «Savatga o'tish»; upsell ladder ochiq bo'lsa yoki `/cart` da qisqa holatda.
+- **Taymerlar faqat real**: aksiya — admin'da «Aksiya tugashi» (`products.sale_ends_at`,
+  Toshkent vaqti); muddat o'tgach engine narxni eski narxga qaytaradi (server ham).
+  Yetkazish — `NEXT_PUBLIC_DELIVERY_CUTOFF=16:00` (bo'lmasa taymer yo'q).
+
 ## Personalizatsiya
 
 ```
@@ -511,6 +527,9 @@ ADMIN_SESSION_SECRET=...      # ≥ 32 belgi
 ADMIN_SETUP_TOKEN=...         # birinchi admin yaratilgach o'chiriladi
 # Rasm yuklash (Fly Tigris, `fly storage create` beradi)
 AWS_ENDPOINT_URL_S3=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... BUCKET_NAME=... AWS_REGION=auto
+
+# Yetkazish taymeri (Toshkent vaqti; bo'lmasa ko'rinmaydi)
+NEXT_PUBLIC_DELIVERY_CUTOFF=16:00
 
 # Sanity Studio (production'da default: yopiq)
 SANITY_STUDIO_ENABLED=on             # + haqiqiy NEXT_PUBLIC_SANITY_PROJECT_ID kerak
