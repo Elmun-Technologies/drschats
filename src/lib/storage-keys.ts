@@ -29,6 +29,8 @@ export const STORAGE_KEYS = {
   profile: `${PREFIX}profile`,
   attribution: `${PREFIX}attribution`,
   popups: `${PREFIX}popups`,
+  /** sessionStorage: Telegram Mini App initData for this tab (lib/telegram/mini-app.ts). */
+  telegram: `${PREFIX}telegram`,
 } as const;
 
 let migrated = false;

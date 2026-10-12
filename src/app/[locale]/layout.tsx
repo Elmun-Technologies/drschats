@@ -14,6 +14,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/layout/CookieConsent";
 import { DeferredUi } from "@/components/layout/DeferredUi";
+import { TelegramMiniApp } from "@/components/telegram/TelegramMiniApp";
 import { Toaster } from "@/components/ui/Toaster";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { BackToTop } from "@/components/ui/BackToTop";
@@ -110,6 +111,7 @@ export default async function LocaleLayout({
           <RouteAnalytics />
         </Suspense>
         <ServiceWorkerRegistration />
+        <TelegramMiniApp />
       </body>
     </html>
   );

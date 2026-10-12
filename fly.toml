@@ -21,6 +21,9 @@ primary_region = "fra"
   # STORAGE_PUBLIC_URL = ""
   # Same-day cut-off in Tashkent time; unset = no delivery timer.
   # NEXT_PUBLIC_DELIVERY_CUTOFF = "16:00"
+  # Club bot username: opens framing to web.telegram.org for the Mini App
+  # (docs/BOT-ADMIN.md). Set together with the TELEGRAM_CLUB_BOT_TOKEN secret.
+  # NEXT_PUBLIC_TELEGRAM_CLUB_BOT = "govita_club_bot"
 
 # Schema changes are applied once per deploy, before new machines take traffic.
 # A failed migration stops the deploy; the running version keeps serving.

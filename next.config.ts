@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import { REMOTE_IMAGE_HOSTS, cspHeaders, cspMode } from "./src/lib/security/csp";
+import { REMOTE_IMAGE_HOSTS, cspHeaders, cspMode, framingHeaders } from "./src/lib/security/csp";
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
@@ -43,7 +43,8 @@ const nextConfig: NextConfig = {
       {
         source: "/((?!studio).*)",
         headers: [
-          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+          // X-Frame-Options, or frame-ancestors when the Telegram Mini App is on.
+          ...framingHeaders(process.env),
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
           { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
