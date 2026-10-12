@@ -7,6 +7,7 @@ import { getDb } from "@/lib/db/client";
 import { ORDER_STATUSES, adminUsers, orders } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/admin/session";
 import { hashPassword, MIN_PASSWORD_LENGTH } from "@/lib/admin/password";
+import { announceOrderStatus } from "@/lib/bot/store";
 import type { FormState } from "./catalog";
 
 const statusSchema = z.object({
@@ -19,10 +20,15 @@ export async function updateOrder(_: FormState, form: FormData): Promise<FormSta
   await requireAdmin();
   const parsed = statusSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: "Holatni tanlang." };
-  await getDb()
+  const db = getDb();
+  const [before] = await db.select({ status: orders.status }).from(orders).where(eq(orders.number, parsed.data.number)).limit(1);
+  if (!before) return { error: "Buyurtma topilmadi." };
+  await db
     .update(orders)
     .set({ status: parsed.data.status, adminNote: parsed.data.adminNote?.trim() || null, updatedAt: new Date() })
     .where(eq(orders.number, parsed.data.number));
+  // The customer hears about a new status in Telegram, not about a note edit.
+  if (before.status !== parsed.data.status) await announceOrderStatus(parsed.data.number, parsed.data.status);
   revalidatePath("/admin/orders");
   return { ok: "Saqlandi." };
 }

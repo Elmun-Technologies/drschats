@@ -1,7 +1,9 @@
 "use server";
 
 import { headers } from "next/headers";
-import { SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
+import { ORDERS_IN_DB, SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
+import { verifyInitData } from "@/lib/bot/webapp";
+import { announceOrderStatus, attachOrderChat } from "@/lib/bot/store";
 import { isLiveDeployment } from "@/lib/config/live";
 import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
@@ -124,6 +126,23 @@ async function offerContext(order: OrderRequest, products: Product[]): Promise<O
   return { programs, rail, ladderPool };
 }
 
+/*
+  The club bot's "order received" message. An order placed inside the
+  Telegram Mini App carries signed initData: its chat id is kept on the order
+  so the customer is told about every status change there. Orders from the
+  website reach Telegram too when their phone is linked to the bot.
+*/
+async function clubBotReceipt(orderId: string, initData: string | undefined): Promise<void> {
+  if (!ORDERS_IN_DB) return;
+  try {
+    const user = verifyInitData(initData);
+    if (user) await attachOrderChat(orderId, user.id);
+    await announceOrderStatus(orderId, "new");
+  } catch (err) {
+    console.error("[checkout] club bot receipt failed:", (err as Error).message);
+  }
+}
+
 export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "failed";
 
 export async function submitOrder(
@@ -138,7 +157,7 @@ export async function submitOrder(
   if (!parsed.success) {
     return { ok: false, error: "invalid" };
   }
-  const request = parsed.data as OrderRequest;
+  const { telegram, ...request } = parsed.data as OrderRequest;
 
   // An online payment needs a provider the shop is actually connected to.
   if (request.payment?.method === "online" && !ONLINE_PROVIDERS.some((p) => p.id === request.payment?.provider)) {
@@ -192,6 +211,7 @@ export async function submitOrder(
         return { ok: false, error: "failed" };
       }
       await Promise.all([
+        clubBotReceipt(result.orderId, telegram),
         emailOrderConfirmation(order, result.orderId),
         order.customer.email && order.customer.marketingOptIn
           ? requestEmailOptIn({
