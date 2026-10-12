@@ -10,6 +10,7 @@ const ITEMS = [
   { href: "/admin/products", label: "Mahsulotlar" },
   { href: "/admin/categories", label: "Kategoriyalar" },
   { href: "/admin/brands", label: "Brendlar" },
+  { href: "/admin/bot", label: "Telegram klub" },
   { href: "/admin/users", label: "Administratorlar" },
 ];
 
