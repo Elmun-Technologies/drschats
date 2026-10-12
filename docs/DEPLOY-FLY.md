@@ -84,6 +84,13 @@ Metrika, Telegram bot nomi, Payme/Click/Uzum merchant ID, `CSP_MODE`,
 `GOVITA_PRODUCTION=1` build va runtime'da yoqilgan: demo bayroqlari bilan build
 yiqiladi, buyurtma Telegram'ga yetmasa rad etiladi (`lib/config/live.ts`).
 
+## Telegram klub boti (ikkinchi app)
+
+Bot — alohida Fly app (`govita-bot`, `govita-vip-bot/fly.toml`): bitta mashina,
+HTTP xizmati yoʻq, Telegram'ni long-polling qiladi va saytning `/api/bot` iga
+murojaat qiladi. Sayt tomoni: `BOT_API_KEY`, `TELEGRAM_CLUB_BOT_TOKEN` secret'lari va
+`NEXT_PUBLIC_TELEGRAM_CLUB_BOT` build arg. Toʻliq qadamlar: **[`BOT-ADMIN.md`](BOT-ADMIN.md)**.
+
 ## Nima o'zgarmadi
 
 - `npm run build` CI'da avvalgidek (standalone faqat `BUILD_STANDALONE=1` da).

@@ -12,6 +12,7 @@ katalog o'sha yo'lning oxirida turadi.
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
 - **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io). Mahsulot, kategoriya, brend, buyurtmalar, administratorlar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
+- **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
 - **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
 - **Deploy**: Fly.io (Docker, `fly.toml`) — sayt, Managed Postgres va Tigris bitta tashkilotda; baza internetga ochilmaydi. To'liq: **[`docs/DEPLOY-FLY.md`](docs/DEPLOY-FLY.md)**. Vercel konfiguratsiyasi (`vercel.json`) domen ko'chirilguncha qoladi
@@ -137,6 +138,8 @@ chaqirilgandan **keyin** chizing.
 | `subscription/` | Subscribe & Save shartlari — oraliqlar, chegirmalar |
 | `marketing/` | Backend'ning navbatiga server-to-server klient |
 | `notifications/` | Telegram — operator va mijoz kanallari |
+| `bot/` | Telegram klub: `api.ts` (bot kontrakti), `store.ts` (a'zolar, bog'lanish, tiketlar, outbox), `webapp.ts` (Mini App initData HMAC), `messages.ts` (uz/ru, HTML escape) |
+| `telegram/` | Mini App klient tomoni: initData'ni sessiyaga olish, `postEvent` (Telegram skriptisiz) |
 | `wishlist/` | Zustand persist store (`govita-wishlist`) |
 | `compare/` | Taqqoslash store'i (`govita-compare`, 4 tagacha — eng eskisi tushadi) |
 | `analytics/` | GTM dataLayer, Meta Pixel, Yandex Metrika events |
@@ -313,7 +316,7 @@ TELEGRAM_CHAT_ID=your_chat_id
 ## Security
 
 `next.config.ts` headers (barcha marshrutlarga, `/studio` bundan mustasno):
-- `X-Frame-Options: SAMEORIGIN`
+- `X-Frame-Options: SAMEORIGIN` — `NEXT_PUBLIC_TELEGRAM_CLUB_BOT` o'rnatilsa uning o'rniga **enforced** `Content-Security-Policy: frame-ancestors 'self' https://web.telegram.org` (Telegram Web Mini App'ni iframe'da ochadi; XFO boshqa origin'ni nomlay olmaydi). `framingHeaders()` — `csp.ts`
 - `X-Content-Type-Options: nosniff`
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `Permissions-Policy: camera=(), microphone=(), geolocation=()`
@@ -531,6 +534,11 @@ ADMIN_SESSION_SECRET=...      # ≥ 32 belgi
 ADMIN_SETUP_TOKEN=...         # birinchi admin yaratilgach o'chiriladi
 # Rasm yuklash (Fly Tigris, `fly storage create` beradi)
 AWS_ENDPOINT_URL_S3=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... BUCKET_NAME=... AWS_REGION=auto
+
+# Telegram klub boti (docs/BOT-ADMIN.md) — operator botidan alohida bot
+BOT_API_KEY=...                      # ≥ 32 belgi; bo'lmasa /api/bot yopiq (401)
+TELEGRAM_CLUB_BOT_TOKEN=...          # Mini App initData imzosini tekshirish
+NEXT_PUBLIC_TELEGRAM_CLUB_BOT=govita_club_bot   # build arg: web.telegram.org framing
 
 # Yetkazish taymeri (Toshkent vaqti; bo'lmasa ko'rinmaydi)
 NEXT_PUBLIC_DELIVERY_CUTOFF=16:00

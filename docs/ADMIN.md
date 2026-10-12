@@ -48,10 +48,11 @@ Maxfiy qiymatlarni chatga yoki kodga yozmang.
 | bo'lim | nima qiladi |
 |---|---|
 | Bosh sahifa | bugungi/ochiq/7 kunlik buyurtmalar, tushum, katalog soni, import |
-| Buyurtmalar | ro'yxat (holat bo'yicha filtr), tafsilot, holat va ichki izoh |
+| Buyurtmalar | ro'yxat (holat bo'yicha filtr), tafsilot, holat va ichki izoh. Holat o'zgarsa mijozga Telegram klub botida xabar boradi (raqami bog'langan yoki Mini App'dan buyurtma bergan bo'lsa) |
 | Mahsulotlar | qidiruv, yangi, tahrir (uz/ru), rasm yuklash, o'chirish |
 | Kategoriyalar | qo'shish, tahrir (slug o'zgarsa mahsulotlar ham ko'chadi), bo'shini o'chirish |
 | Brendlar | qo'shish, nomi, o'chirish (mahsulotlar brendsiz qoladi) |
+| Telegram klub | bot sozlamalari, klubga xabar, murojaatlarga javob, a'zolar, xabarlar navbati — [`BOT-ADMIN.md`](BOT-ADMIN.md) |
 | Administratorlar | qo'shish, o'chirish (o'zini emas) |
 
 **Mahsulotni yashirish** — o'chirmang, «Holat» → «Sotuvdan olingan»: sahifa

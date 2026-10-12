@@ -169,16 +169,21 @@ Domenga **SPF, DKIM, DMARC** yozuvlari kerak, aks holda xatlar spamga tushadi.
 Eslatmalar navbati uchun qo'shimcha: `CRON_SECRET`, `MARKETING_API_KEY` (backend
 bilan bir xil). To'liq yo'riqnoma: **[`docs/MARKETING.md`](MARKETING.md)**.
 
-### 1c-ter. Telegram bot — mijozlar uchun
+### 1c-ter. Telegram klub boti + Mini App doʻkon
+
+Kod tayyor (2026-10): bot, Mini App, `/admin/bot`. Ishga tushirish — yangi bot
+(@BotFather), ikkita secret, bitta build arg va bot uchun ikkinchi Fly app.
+Qadamlar: **[`BOT-ADMIN.md`](BOT-ADMIN.md) → «Sozlash»**.
 
 ```env
-NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=govita_bot
+BOT_API_KEY=...                  # sayt va bot uchun bir xil, ≥ 32 belgi
+TELEGRAM_CLUB_BOT_TOKEN=...      # sayt: Mini App imzosini tekshirish
+NEXT_PUBLIC_TELEGRAM_CLUB_BOT=…  # fly.toml [build.args]
 ```
 
-Bot allaqachon bor — saytga kirish o'sha bot yuboradigan kod orqali ishlaydi,
-ya'ni kirgan har bir mijozning `chat_id` si bazada turadi. Eslatmalar navbati
-shuni o'qiydi, qo'shimcha ish kerak emas. O'zgaruvchi qo'yilmasa kanal
-`/profile` da ko'rsatilmaydi.
+Avvalgi yozuv («kirgan mijozning `chat_id` si bazada turadi») FastAPI backend
+deploy qilinganda toʻgʻri boʻlardi — u deploy qilinmagan. Endi chat id klub
+botida raqamini ulashgan yoki Mini App'dan buyurtma bergan mijozda bor.
 
 ### 1d. Analitika
 
