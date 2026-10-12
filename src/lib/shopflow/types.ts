@@ -206,6 +206,11 @@ export interface OrderRequest {
   };
   locale: Locale;
   attribution?: OrderAttribution;
+  /**
+   * Telegram Mini App `initData`, verified on the server (lib/bot/webapp.ts)
+   * and never stored: only the chat id it proves is kept on the order.
+   */
+  telegram?: string;
 }
 
 export interface OrderResult {

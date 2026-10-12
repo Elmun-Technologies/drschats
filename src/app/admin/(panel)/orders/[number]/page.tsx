@@ -64,6 +64,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
               <Row label="Til" value={o.locale} />
               <Row label="Manba" value={describeAttribution(o.attribution ?? undefined) || null} />
               <Row label="Kirish sahifasi" value={o.attribution?.landing} />
+              <Row label="Telegram" value={o.telegramChatId ? "Mini App orqali — holat botda xabar qilinadi" : null} />
             </dl>
           </Card>
         </div>

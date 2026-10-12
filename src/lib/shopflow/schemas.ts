@@ -155,6 +155,7 @@ export const orderRequestSchema = z.object({
       firstSource: z.string().max(200).optional(),
     })
     .optional(),
+  telegram: z.string().max(4096).optional(),
 });
 
 export const orderResultSchema = z.object({

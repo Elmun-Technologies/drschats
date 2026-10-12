@@ -156,6 +156,32 @@ export function cspHeaderName(mode: CspMode): string {
   return mode === "enforce" ? "Content-Security-Policy" : "Content-Security-Policy-Report-Only";
 }
 
+/*
+  Telegram Web (web.telegram.org) shows a Mini App in an iframe; the mobile
+  and desktop apps use a native webview and need nothing. Framing is opened
+  to that one origin, and only once the club bot is configured.
+*/
+const TELEGRAM_WEB = "https://web.telegram.org";
+
+/** Who may frame the site: ourselves, plus Telegram Web when the Mini App is on. */
+export function frameAncestors(env: Record<string, string | undefined> = process.env): string[] {
+  return env.NEXT_PUBLIC_TELEGRAM_CLUB_BOT?.trim() ? ["'self'", TELEGRAM_WEB] : ["'self'"];
+}
+
+/**
+ * The anti-framing headers. Without the Mini App it is X-Frame-Options:
+ * SAMEORIGIN, as before. X-Frame-Options cannot name another origin, so with
+ * the Mini App an *enforced* frame-ancestors policy replaces it — even while
+ * the main policy is report-only, framing stays enforced. In enforce mode the
+ * main policy already carries frame-ancestors and nothing is added.
+ */
+export function framingHeaders(env: Record<string, string | undefined> = process.env): { key: string; value: string }[] {
+  const ancestors = frameAncestors(env);
+  if (ancestors.length === 1) return [{ key: "X-Frame-Options", value: "SAMEORIGIN" }];
+  if (cspMode(env.CSP_MODE) === "enforce") return [];
+  return [{ key: "Content-Security-Policy", value: `frame-ancestors ${ancestors.join(" ")}` }];
+}
+
 /** `**.uzum.uz` → `https://*.uzum.uz`; `cdn.sanity.io` → `https://cdn.sanity.io`. */
 function toCspSource(host: string): string {
   return `https://${host.replace(/^\*\*\./, "*.")}`;
@@ -247,7 +273,7 @@ export function buildContentSecurityPolicy(
 
     "frame-src": ["'self'", ...FRAME_HOSTS],
     // Supersedes X-Frame-Options, which stays for older clients.
-    "frame-ancestors": ["'self'"],
+    "frame-ancestors": frameAncestors(env),
     "object-src": ["'none'"],
     // A <base> tag would rewrite every relative URL on the page.
     "base-uri": ["'self'"],

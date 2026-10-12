@@ -1,0 +1,22 @@
+# GoVita club bot on Fly.io — a worker, not a web service: it long-polls
+# Telegram and talks to the site API. Setup: docs/BOT-ADMIN.md (site repo).
+#   fly apps create govita-bot
+#   fly secrets set -a govita-bot BOT_TOKEN=... GOVITA_API_KEY=...
+#   fly deploy            (from this folder)
+app = "govita-bot"
+primary_region = "fra"
+
+[build]
+  dockerfile = "Dockerfile"
+
+# The site's own Fly address: it works before and after the domain moves
+# off Vercel (where /api/bot has no database). Rename if the site app is not "govita".
+[env]
+  GOVITA_API_URL = "https://govita.fly.dev/api/bot"
+  PYTHONUNBUFFERED = "1"
+
+# Exactly one machine: Telegram hands updates to one poller per token, and a
+# second machine would fight it for them. No [http_service] — nothing to serve.
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"

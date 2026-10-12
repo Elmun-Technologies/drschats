@@ -8,6 +8,7 @@ import {
   cspHeaderName,
   cspHeaders,
   cspMode,
+  framingHeaders,
 } from "./csp";
 
 /** Parses a policy into directive → sources, the way a browser would. */
@@ -325,5 +326,15 @@ describe("next.config.ts shares the image host list", () => {
 
   it("wires the CSP header in", () => {
     expect(config).toContain("cspHeaders(");
+  });
+
+  it("opens framing to Telegram Web only for the Mini App, and keeps it enforced", () => {
+    expect(framingHeaders(EMPTY)).toEqual([{ key: "X-Frame-Options", value: "SAMEORIGIN" }]);
+    const bot = { NEXT_PUBLIC_TELEGRAM_CLUB_BOT: "govita_club_bot" };
+    expect(framingHeaders(bot)).toEqual([
+      { key: "Content-Security-Policy", value: "frame-ancestors 'self' https://web.telegram.org" },
+    ]);
+    expect(framingHeaders({ ...bot, CSP_MODE: "enforce" })).toEqual([]);
+    expect(parse(buildContentSecurityPolicy(bot))["frame-ancestors"]).toEqual(["'self'", "https://web.telegram.org"]);
   });
 });

@@ -30,3 +30,27 @@ jobs:
       - name: Deploy
         if: steps.token.outputs.present == 'yes'
         run: flyctl deploy --remote-only
+
+  # The Telegram club bot (govita-vip-bot/, app govita-bot). Its own deploy
+  # token (fly tokens create deploy -a govita-bot) in FLY_BOT_API_TOKEN;
+  # without it the job skips, like the site's.
+  deploy-bot:
+    runs-on: ubuntu-latest
+    needs: deploy
+    env:
+      FLY_API_TOKEN: ${{ secrets.FLY_BOT_API_TOKEN }}
+    steps:
+      - name: Check token
+        id: token
+        run: echo "present=$([ -n "$FLY_API_TOKEN" ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.token.outputs.present == 'yes'
+
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+        if: steps.token.outputs.present == 'yes'
+
+      - name: Deploy bot
+        if: steps.token.outputs.present == 'yes'
+        working-directory: govita-vip-bot
+        run: flyctl deploy --remote-only

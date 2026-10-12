@@ -32,6 +32,7 @@ import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
+import { telegramInitData } from "@/lib/telegram/mini-app";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -203,6 +204,7 @@ export function CheckoutForm({
       },
       locale,
       attribution: getAttribution(),
+      telegram: telegramInitData(),
     };
 
     const res = await submitOrder(payload);

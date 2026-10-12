@@ -51,3 +51,6 @@ export const shopflow = getShopflow();
  * The checkout then treats the operator's Telegram message as the only record.
  */
 export const SHOPFLOW_IS_MOCK = !USE_SHOPFLOW && !isDbConfigured;
+
+/** Orders are rows in our own database (and so can carry a Telegram chat). */
+export const ORDERS_IN_DB = !USE_SHOPFLOW && isDbConfigured;
