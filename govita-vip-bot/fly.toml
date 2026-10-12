@@ -9,8 +9,10 @@ primary_region = "fra"
 [build]
   dockerfile = "Dockerfile"
 
+# The site's own Fly address: it works before and after the domain moves
+# off Vercel (where /api/bot has no database). Rename if the site app is not "govita".
 [env]
-  GOVITA_API_URL = "https://www.govita.uz/api/bot"
+  GOVITA_API_URL = "https://govita.fly.dev/api/bot"
   PYTHONUNBUFFERED = "1"
 
 # Exactly one machine: Telegram hands updates to one poller per token, and a

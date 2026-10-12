@@ -80,7 +80,9 @@ Telegram ──polling──▶ govita-vip-bot (Python, aiogram, Fly: govita-bot
    fly deploy
    fly scale count 1 -a govita-bot            # har doim bitta mashina
    ```
-   `GOVITA_API_URL` `fly.toml` da (`https://www.govita.uz/api/bot`).
+   `GOVITA_API_URL` `fly.toml` da (`https://govita.fly.dev/api/bot` — domen
+   Vercel'dan ko'chishidan oldin ham ishlaydi). Avtomatik deploy uchun:
+   `fly tokens create deploy -a govita-bot -x 999999h` → GitHub secret `FLY_BOT_API_TOKEN`.
 5. Tekshirish: botda /start → kontakt → «Doʻkon» → buyurtma → `/admin/bot`
    da «Mini App buyurtmalari» 1, botga «qabul qilindi» xabari.
 
