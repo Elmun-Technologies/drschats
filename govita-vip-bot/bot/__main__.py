@@ -6,7 +6,7 @@ import secrets
 
 from aiogram import Bot, Dispatcher
 from aiogram.client.default import DefaultBotProperties
-from aiogram.types import BotCommand
+from aiogram.types import BotCommand, MenuButtonWebApp, WebAppInfo
 
 from .config import cfg
 from .db import DB
@@ -32,6 +32,10 @@ async def main():
             me = await bot.get_webhook_info()
             if me.url:
                 sys.exit('Webhook faol. Pollingga ko‘chirishni avval rejalashtiring.')
+            # The menu button beside the message field opens the shop inside Telegram.
+            await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
+                text="Doʻkon", web_app=WebAppInfo(url=f"{cfg.shop_url}/uz")))
+            await bot.set_my_commands([BotCommand(command="start", description="Bosh menyu")])
             dp = Dispatcher(api=api)
             dp.include_router(remote_router)
             worker = asyncio.create_task(outbox_loop(bot, api))
