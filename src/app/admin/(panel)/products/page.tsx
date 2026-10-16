@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { listCategories, listProducts } from "@/lib/admin/queries";
-import { Card, Notice, PageHeader, Pill, buttonClass, inputClass } from "@/components/admin/ui";
+import { Card, Notice, PageHeader, Pill, buttonClass, inputClass, secondaryButtonClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Mahsulotlar" };
@@ -20,8 +20,10 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
       />
       {deleted && <div className="mb-4"><Notice tone="ok">Mahsulot oʻchirildi.</Notice></div>}
       <Card>
-        <form className="mb-4 flex gap-2" role="search">
-          <input name="q" defaultValue={q} placeholder="Nomi yoki slug boʻyicha qidirish" aria-label="Qidirish" className={inputClass} />
+        <form action="/admin/products" className="mb-4 flex flex-wrap gap-2" role="search">
+          <input name="q" defaultValue={q} placeholder="Nomi yoki slug boʻyicha qidirish" aria-label="Qidirish" className={`${inputClass} max-w-[460px]`} />
+          <button type="submit" className={buttonClass}>Qidirish</button>
+          {q && <Link href="/admin/products" className={secondaryButtonClass}>Tozalash</Link>}
         </form>
         {rows.length === 0 ? (
           <p className="text-[15px] text-ink-2">Mahsulot yoʻq. Bosh sahifadagi «Katalogni import qilish» tugmasi bilan mavjud katalogni koʻchiring.</p>

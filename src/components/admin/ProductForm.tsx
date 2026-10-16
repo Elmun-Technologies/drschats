@@ -55,7 +55,7 @@ export function ProductForm({
       {state?.error && <Notice tone="error">{state.error}</Notice>}
       {state?.ok && <Notice tone="ok">{state.ok}</Notice>}
 
-      <section className="grid gap-4 rounded-[20px] bg-bg p-5 lg:grid-cols-3 lg:p-6">
+      <section className="grid gap-4 rounded-md border border-line bg-white p-5 lg:grid-cols-3 lg:p-6">
         <Field label="Slug (URL)" hint="Masalan: swiss-energy-omega-3-30" className="lg:col-span-2">
           <input name="slug" defaultValue={values.slug} required pattern="[a-z0-9]+(-[a-z0-9]+)*" className={inputClass} />
         </Field>
@@ -95,7 +95,7 @@ export function ProductForm({
           <input name="saleEndsAt" type="datetime-local" defaultValue={values.saleEndsAt} className={inputClass} />
         </Field>
         <label className="flex h-11 items-center gap-3 self-end text-[15px] font-semibold">
-          <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-ink" />
+          <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-forest" />
           Omborda bor
         </label>
         <Field label="Qadoqdagi soni" hint="Birlik narxi uchun (ixtiyoriy)">
@@ -110,8 +110,8 @@ export function ProductForm({
         </Field>
       </section>
 
-      <section className="flex flex-col gap-4 rounded-[20px] bg-bg p-5 lg:p-6">
-        <h2 className="text-lg font-bold">Rasmlar</h2>
+      <section className="flex flex-col gap-4 rounded-md border border-line bg-white p-5 lg:p-6">
+        <h2 className="text-[15px] font-semibold text-ink">Rasmlar</h2>
         <Field label="Rasm manzillari" hint="Har qatorda bitta URL (https://… yoki /products/…). Birinchisi — asosiy.">
           <textarea name="images" value={images} onChange={(e) => setImages(e.target.value)} rows={4} className={textareaClass} />
         </Field>
@@ -121,7 +121,7 @@ export function ProductForm({
         </Field>
       </section>
 
-      <section className="flex flex-col gap-4 rounded-[20px] bg-bg p-5 lg:p-6">
+      <section className="flex flex-col gap-4 rounded-md border border-line bg-white p-5 lg:p-6">
         <div role="tablist" aria-label="Til" className="flex gap-2">
           {LOCALES.map((l) => (
             <button

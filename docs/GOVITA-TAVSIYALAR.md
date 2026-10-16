@@ -294,7 +294,7 @@ Qoidalar:
 | Bepul yetkazish chegarasi bitta | ✅ | `commerce.ts` → 300 000 |
 | Yetkazish muddati bitta | ✅ | Toshkent 24 soat, viloyatlar 1–3 kun |
 | Chegirma tizimi bitta | ✅ | `commerce.ts` + `/loyalty` sahifasi (10% / 10%→15%) |
-| Onlayn to'lov (Payme/Click/Uzum) | ✅ | `src/lib/config/payments.ts` — merchant ID kiritilishi bilan yonadi; operator qo'ng'irog'i majburiy emas |
+| Onlayn to'lov (Payme/Click/Uzum) | 🔴 | End-to-end gateway handoff va tasdiqlangan callback yozilmagan; merchant ID checkout'ni yoqmaydi, hozir faqat yetkazishda naqd pul |
 | Bosh sahifa 14 → 8 blok | ✅ | `src/app/[locale]/page.tsx` — takrorlanmaydigan bitta mahsulot to'ri |
 | Delical uch marta ko'rinishi | ✅ | bitta aksiya bloki + bitta grid, takrorlanish yo'q |
 | "Kun mahsuloti" sarlavha/karta mosligi | ✅ | bitta mahsulot, countdown olib tashlandi |
@@ -393,7 +393,7 @@ to'rda "142 890" va "800 000" yonma-yon tushib, ikki narx bo'lib o'qilardi.
 | Bir martalik dekorativ "sahnalar" | 6 sahifa | Olti "bespoke" mahsulot sahifasida har xil rangli fon: pushti glow, apelsin radial, ko'k radial, kamalak konus, oltin quyosh, yashil radial + oy va 14 ta yulduz + aylanuvchi halqalar. Bittasi `.product-hero` umumiy foniga almashtirildi |
 | Ishlatilmagan CSS | 8 util | `.glass`, `.glass-panel`, `.hover-lift*`, `.text-gradient`, `.gradient-accent`, `.animate-glow`, `.soft-glow` — bittasi `MultivitaminDaily`da buzilgan holda qolgan edi, tuzatildi |
 | CSS bundle | 88 KB | `@source not "docs"` — audit hujjatlari matni CSS'ga util tushurib yuborardi (`.text-amber-500`, `.from-amber-500`) |
-| To'lov plashkalari | 5 → 2 | "Payme / Click / Uzum / Visa / Mastercard" har mahsulotda chizilardi; endi faqat `payments.ts`da sozlangan provayder + "yetkazib berishda to'lov" |
+| To'lov plashkalari | 5 → 2 | onlayn to'lov flow to'liq ishlamaguncha faqat yetkazishda naqd pul ko'rsatiladi; merchant ID o'zi logo yoki checkout'ni faollashtirmaydi |
 | Ishlatilmagan komponent | — | `Badge tone="gold"/"accent"` endi neytral (kategoriya, "Yangi", "Xit" — gold tugma bilan raqobat qilmaydi) |
 | Ru/uz matn | 0 raw kalit | `/uz`, `/ru`, `/uz/quiz`, `/ru/quiz`, `/uz/products`, `/uz/cart`, `/uz/checkout`, `/uz/about` va h.k. — 19 sahifa 200, kalit qolmagan |
 

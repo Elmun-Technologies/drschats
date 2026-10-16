@@ -25,6 +25,9 @@ const nextConfig: NextConfig = {
     elsewhere is unchanged.
   */
   ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
+  // Arena proxies development previews through per-session *.e2b.app origins.
+  // Permit those origins so Next's dev asset requests work without warnings.
+  allowedDevOrigins: ["*.e2b.app"],
   // Harmless header, free information for anyone fingerprinting the stack.
   poweredByHeader: false,
   transpilePackages: ["sanity", "next-sanity", "@sanity/ui", "@sanity/vision"],
@@ -41,7 +44,7 @@ const nextConfig: NextConfig = {
   async headers() {
     const routes = [
       {
-        source: "/((?!studio).*)",
+        source: "/((?!studio|admin/content/studio).*)",
         headers: [
           // X-Frame-Options, or frame-ancestors when the Telegram Mini App is on.
           ...framingHeaders(process.env),
@@ -64,14 +67,29 @@ const nextConfig: NextConfig = {
       CSP is appended rather than listed above because the header *name* depends
       on the mode: report-only and enforcing are two different headers, and
       emitting the wrong one is either a silent no-op or an outage.
-      src/lib/security/csp.ts builds the value from the same configuration that
-      switches each integration on, so an analytics origin appears only once its
-      ID is set. `/studio` is excluded along with the other headers — Sanity
-      Studio needs a policy of its own, and it is already gated off in
-      production.
+      src/lib/security/csp.ts builds the value from configuration. Analytics
+      origins follow build-time IDs by default; ADMIN_ANALYTICS_CSP=on opts in to
+      the supported vendor list for panel-managed runtime IDs. `/studio` and
+      `/admin/content/studio` are excluded from this CSP rule because Sanity
+      Studio needs its own policy. The admin route still receives baseline
+      security headers below and is protected by `requireAdmin()`.
     */
     const csp = cspHeaders(process.env);
     if (csp) routes[0].headers.push(csp);
+
+    // Sanity needs to own its CSP, but the admin-mounted Studio still gets the
+    // non-CSP baseline headers. X-Frame-Options permits same-origin embedding
+    // inside the authenticated admin shell, not a third-party site.
+    routes.push({
+      source: "/admin/content/studio/:path*",
+      headers: [
+        { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        { key: "X-Content-Type-Options", value: "nosniff" },
+        { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+        { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
+        { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains" },
+      ],
+    });
 
     // Self-hosted font files are versioned by folder (public/fonts/README.md),
     // so a file at a given URL never changes.
@@ -96,6 +114,7 @@ const nextConfig: NextConfig = {
   */
   env: {
     CSP_BUILD_MODE: cspMode(process.env.CSP_MODE),
+    ANALYTICS_CSP_BUILD_ENABLED: process.env.ADMIN_ANALYTICS_CSP === "on" ? "on" : "off",
   },
   images: {
     /*

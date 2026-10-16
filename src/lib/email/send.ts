@@ -1,11 +1,5 @@
 import type { Locale } from "@/lib/i18n/routing";
-import {
-  EMAIL_FROM,
-  EMAIL_PROVIDER_KEY,
-  EMAIL_REPLY_TO,
-  isEmailConfigured,
-  siteOrigin,
-} from "./config";
+import { getEmailConfig, siteOrigin } from "./config";
 import { buildCampaign, isTransactional, type Campaign } from "./campaigns";
 import { renderEmail } from "./render";
 import { signToken } from "./token";
@@ -48,6 +42,7 @@ export function preferencesUrl(email: string, locale: Locale): string {
 }
 
 export async function sendCampaign({ to, locale, campaign }: SendCampaignInput): Promise<SendResult> {
+  const emailConfig = await getEmailConfig();
   const { subject, blocks } = buildCampaign(campaign, locale);
   const transactional = isTransactional(campaign.type);
 
@@ -57,9 +52,9 @@ export async function sendCampaign({ to, locale, campaign }: SendCampaignInput):
     preferencesUrl: transactional ? undefined : preferencesUrl(to, locale),
   });
 
-  if (!isEmailConfigured()) {
+  if (!emailConfig.apiKey) {
     // Loud enough to notice in a dev log, quiet enough not to break anything.
-    console.info(`[email] skipped "${campaign.type}" to ${redactEmail(to)} — RESEND_API_KEY not set`);
+    console.info(`[email] skipped "${campaign.type}" to ${redactEmail(to)} — no Resend API key configured`);
     return { ok: false, reason: "not-configured" };
   }
 
@@ -75,13 +70,13 @@ export async function sendCampaign({ to, locale, campaign }: SendCampaignInput):
     const response = await fetch(PROVIDER_ENDPOINT, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${EMAIL_PROVIDER_KEY}`,
+        Authorization: `Bearer ${emailConfig.apiKey}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        from: EMAIL_FROM,
+        from: emailConfig.from,
         to: [to],
-        reply_to: EMAIL_REPLY_TO,
+        reply_to: emailConfig.replyTo,
         subject,
         html,
         text,

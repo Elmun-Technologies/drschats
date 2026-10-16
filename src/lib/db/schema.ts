@@ -81,6 +81,23 @@ export const adminUsers = pgTable("admin_users", {
   lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
 });
 
+/** Internal service notes; never store health or payment-card data here. */
+export const adminCustomerNotes = pgTable("admin_customer_notes", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  phone9: text("phone9").notNull(),
+  adminUserId: integer("admin_user_id").references(() => adminUsers.id, { onDelete: "set null" }),
+  note: text("note").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** Server-only integration overrides; ciphertext is AES-256-GCM encrypted. */
+export const integrationSettings = pgTable("integration_settings", {
+  key: text("key").primaryKey(),
+  ciphertext: text("ciphertext").notNull(),
+  updatedBy: integer("updated_by").references(() => adminUsers.id, { onDelete: "set null" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 /* Telegram club bot — db/migrations/0003_telegram_club.sql */
 
 export const botConfig = pgTable("bot_config", {

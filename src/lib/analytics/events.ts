@@ -14,9 +14,13 @@
   at, offer included.
 */
 
+import { analyticsIdsFromEnvironment, type AnalyticsIds } from "./config";
+
 export { getAttribution } from "./attribution";
 
 type Payload = Record<string, unknown>;
+
+const BUILD_ANALYTICS_IDS = analyticsIdsFromEnvironment();
 
 declare global {
   interface Window {
@@ -24,7 +28,12 @@ declare global {
     gtag?: (...args: unknown[]) => void;
     fbq?: (...args: unknown[]) => void;
     ym?: (...args: unknown[]) => void;
+    __GOVITA_ANALYTICS__?: AnalyticsIds;
   }
+}
+
+function analyticsIds(): AnalyticsIds {
+  return typeof window === "undefined" ? BUILD_ANALYTICS_IDS : window.__GOVITA_ANALYTICS__ ?? BUILD_ANALYTICS_IDS;
 }
 
 export interface AnalyticsItem {
@@ -39,7 +48,6 @@ export interface AnalyticsItem {
 }
 
 const CURRENCY = "UZS";
-const viaGtm = Boolean(process.env.NEXT_PUBLIC_GTM_ID);
 
 function send(event: string, params: Payload, ecommerce: boolean) {
   if (typeof window === "undefined") return;
@@ -50,7 +58,7 @@ function send(event: string, params: Payload, ecommerce: boolean) {
   } else {
     window.dataLayer.push({ event, ...params });
   }
-  if (!viaGtm) window.gtag?.("event", event, params);
+  if (!analyticsIds().gtm) window.gtag?.("event", event, params);
 }
 
 /** A custom (non-ecommerce) event. */
@@ -131,7 +139,7 @@ export function trackOrder(orderId: string, totals: { total: number; shipping: n
     { eventID: orderId },
   );
   window.fbq?.("track", "Lead", { value: totals.total, currency: CURRENCY }, { eventID: `lead-${orderId}` });
-  const ymId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
+  const ymId = analyticsIds().yandexMetrika;
   if (ymId) window.ym?.(Number(ymId), "reachGoal", "order_submitted", { order_price: totals.total, currency: CURRENCY });
 }
 
@@ -150,6 +158,6 @@ export function trackUpsellSkip(step: number, productId: string) {
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */
 export function trackPageView(url: string) {
   window.fbq?.("track", "PageView");
-  const ymId = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
+  const ymId = analyticsIds().yandexMetrika;
   if (ymId) window.ym?.(Number(ymId), "hit", url);
 }

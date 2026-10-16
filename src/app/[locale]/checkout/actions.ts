@@ -9,7 +9,7 @@ import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
 import { repriceOrder, type OfferContext } from "@/lib/cart/reprice";
 import { getPrograms } from "@/lib/content/programs";
-import { ONLINE_PROVIDERS } from "@/lib/config/payments";
+import { isOnlineProviderAvailable } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
 import { clientIp, withinRateLimit } from "@/lib/rate-limit";
 import { notifyOperator } from "@/lib/notifications/operator";
@@ -159,8 +159,8 @@ export async function submitOrder(
   }
   const { telegram, ...request } = parsed.data as OrderRequest;
 
-  // An online payment needs a provider the shop is actually connected to.
-  if (request.payment?.method === "online" && !ONLINE_PROVIDERS.some((p) => p.id === request.payment?.provider)) {
+  // Reject online payment unless the provider has a complete, verified flow.
+  if (request.payment?.method === "online" && !isOnlineProviderAvailable(request.payment.provider)) {
     return { ok: false, error: "payment_unavailable" };
   }
 
@@ -171,7 +171,7 @@ export async function submitOrder(
     order nobody will see.
   */
   const telegramIsTheRecord = SHOPFLOW_IS_MOCK && isLiveDeployment();
-  if (telegramIsTheRecord && !isOperatorChannelConfigured()) {
+  if (telegramIsTheRecord && !(await isOperatorChannelConfigured())) {
     console.error("[checkout] refused: no order backend and no operator channel configured");
     return { ok: false, error: "failed" };
   }

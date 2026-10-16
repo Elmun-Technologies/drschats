@@ -40,7 +40,7 @@ export default async function AdminBotPage() {
       )}
       <ul className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
         {tiles.map((t) => (
-          <li key={t.label} className="rounded-[20px] bg-bg p-4">
+          <li key={t.label} className="rounded-md bg-bg p-4">
             <p className="text-[13px] text-muted">{t.label}</p>
             <p className="mt-1 text-[26px] font-bold leading-8">{t.value}</p>
             {t.hint && <p className="mt-1 text-[13px] text-muted">{t.hint}</p>}
@@ -52,7 +52,7 @@ export default async function AdminBotPage() {
         <Card title="Sozlamalar">
           <ActionForm action={saveClub} className="grid gap-4">
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
-              <input type="checkbox" name="enabled" defaultChecked={club.enabled} className="h-5 w-5 accent-ink" />
+              <input type="checkbox" name="enabled" defaultChecked={club.enabled} className="h-5 w-5 accent-forest" />
               Buyurtma holati xabarlari yoqilgan
             </label>
             <Field label="Klub nomi">
@@ -79,7 +79,7 @@ export default async function AdminBotPage() {
               <textarea name="text" required maxLength={1000} className={textareaClass} />
             </Field>
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
-              <input type="checkbox" name="confirm" required className="h-5 w-5 accent-ink" />
+              <input type="checkbox" name="confirm" required className="h-5 w-5 accent-forest" />
               Hammaga yuborishni tasdiqlayman
             </label>
           </ActionForm>

@@ -1,8 +1,10 @@
 # Qolgan ishlar — sizdan nima kerak
 
-Bu fayl **faqat sizdan kelishi mumkin bo'lgan** ishlarni sanaydi. Kod tomondan
-o'lchanadigan nuqson qolmadi (holat: `CLAUDE.md` → "Sifat darajasi"). Sayt ishga
-tushmayotgan bo'lsa, sabab quyidagilarning birida.
+Bu fayl ishga tushirish uchun qolgan to'siqlarni sanaydi. Ko'piga deploy yoki
+vendor ma'lumotlari sizdan kerak; Payme/Click/Uzum onlayn to'lov integratsiyasi
+esa gateway handoff va tasdiqlangan callback uchun qo'shimcha server-side kod
+talab qiladi — merchant ID kiritish bilan yechilmaydi. Sayt ishga tushmayotgan
+bo'lsa, sabab quyidagilarning birida.
 
 Har bo'lim: **nima kerak → qayerga qo'yiladi → tayyor bo'lgani qanday bilinadi.**
 
@@ -12,16 +14,21 @@ Ustuvorlik: 🔴 ishga tushirishni to'sadi · 🟡 sifatga jiddiy ta'sir · 🟢
 
 ## ⚡ Ishga tushirish uchun minimal to'plam (2026-10-08)
 
-Kod tomoni tayyor. Mijozga ochishdan oldin **shu beshtasi** shart — qolganlari
-pastdagi bo'limlarda:
+Mijozga ochishdan oldin tashqi sozlamalar va haqiqiy ma'lumotlar kerak. To'lov
+bandi amaldagi cheklovni bildiradi: checkout hozir faqat yetkazishda naqd pulni
+qabul qiladi. Onlayn to'lovni taklif qilishdan oldin gateway handoff va
+tasdiqlangan callback bilan server-side integratsiya kerak; merchant ID yolg'iz
+o'zi yetmaydi. Qolgan talablar quyida:
 
 1. 🔴 **Telegram** — `TELEGRAM_BOT_TOKEN` + `TELEGRAM_CHAT_ID`. Real backend
    ulanmaguncha buyurtmaning **yagona yozuvi** shu xabar; live deploy'da kanal
    bo'lmasa sayt buyurtmani qabul qilmaydi (mijozga telefon aytiladi). 1c-bo'lim.
 2. 🔴 **Katalog** — `CATALOG_SOURCE=shopflow` + API hujjati/kaliti, yoki real narx va
    qoldiq ro'yxati. Hozirgi 30 ta mahsulotning narxlari mock. 1a-bo'lim.
-3. 🔴 **To'lov** — Payme/Click/Uzum merchant ID'lari (`NEXT_PUBLIC_*_MERCHANT_ID`).
-   Bo'lmasa sayt "Tez kunda" deydi va faqat yetkazishda to'lov ishlaydi.
+3. 🔴 **Onlayn to'lov hozircha mavjud emas.** Payme/Click/Uzum uchun
+   server-side gateway handoff va to'lovni tasdiqlovchi callback kerak. Merchant
+   ID’ning o‘zi checkout’ni yoqmaydi — integratsiya tugamaguncha ID qo‘ymang;
+   mijozlar faqat buyurtma yetkazilganda naqd pul bilan to‘laydi.
 4. 🟡 **Ommaviy oferta** — yuristdan matn. Hozir `/offer` buni ochiq aytadi.
 5. 🟡 **Litsenziya raqami** — `NEXT_PUBLIC_LICENCE_NUMBER`.
 

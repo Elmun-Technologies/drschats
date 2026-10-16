@@ -188,8 +188,8 @@ export interface OrderRequest {
     method: string;
   };
   /**
-   * How the customer intends to pay. `online` names the provider the payment
-   * page belongs to; `cod` is cash on delivery.
+   * The customer's requested payment method, not proof that payment was made
+   * or verified. `online` names a provider; `cod` is cash on delivery.
    */
   payment?: {
     method: "online" | "cod";

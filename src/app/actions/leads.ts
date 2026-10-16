@@ -51,7 +51,7 @@ async function deliver(scope: string, phoneNumber: string, lines: string[]): Pro
   const hdrs = await headers();
   if (!withinRateLimit(scope, clientIp(hdrs), RATE)) return { ok: false, error: "rate_limited" };
 
-  if (!isOperatorChannelConfigured()) {
+  if (!(await isOperatorChannelConfigured())) {
     console.warn(`[${scope}] dropped: no operator channel configured. phone=${redactPhone(phoneNumber)}`);
     return { ok: false, error: "unavailable" };
   }

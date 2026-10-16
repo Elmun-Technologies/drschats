@@ -49,7 +49,7 @@ shrifti Onest, fon oq, fokus halqasi qora. Audit: barcha qatorlar 0.
 | Aksiyalar havolasi | `/sale` | `/products?sort=deals` | `/sale` 8-bosqichda |
 | Savat (header va tab) | savat sahifasi | savat drawer'i | mavjud oqim saqlandi |
 | Kabinet tabi | kabinet | `/account` yoki (API yoʻq boʻlsa) `/profile` | `/account` API'siz 404 |
-| Footer toʻlov | Payme, Click, Uzum, Naqd | faqat merchant id bor provayderlar + Naqd/karta | hozir hech biri sozlanmagan |
+| Footer toʻlov | Payme, Click, Uzum, Naqd | onlayn flow toʻliq integratsiyalanmaguncha faqat yetkazishda naqd pul | merchant ID mavjudligi yetarli emas |
 | Footer "Xaridorlarga" | 6 havola | + Maqsadlar, Belgilar, Vitaminlar, Dasturlar | sogʻliq sahifalari yetim qolmasin |
 | Mobil header til | UZ | boshqa til (RU/UZ) | bosilganda nima boʻlishi koʻrinsin |
 | Narx valyutasi | soʻm (ʻ) | so’m | narx yordamchisi 2-bosqichda |
@@ -199,7 +199,7 @@ ga olib boradi), `PurchaseTracker`.
 |---|---|---|---|
 | «Hammasini tanlash» / tanlanganlarni oʻchirish | bor | yoʻq | tanlash buyurtma tarkibini oʻzgartirmaydi — bu yangi logika boʻlardi; har qatorda «Olib tashlash» bor |
 | «Aksiya chegirmasi», «Birinchi buyurtma −10%» | alohida qatorlar | bitta «Chegirma» qatori | `computeTotals` chegirmani yigʻindi qaytaradi; boʻlish — biznes-logika |
-| Payme / Click / Uzum | tanlanadi | merchant id yoʻq boʻlsa «tez orada», tanlanmaydi | ishlamaydigan toʻlov yoʻlini vaʼda qilmaslik |
+| Payme / Click / Uzum | tanlanadi | gateway handoff va tasdiqlangan callback yozilmaguncha doim tanlab boʻlmaydi; merchant ID oʻzi yetarli emas | ishlamaydigan toʻlov yoʻlini vaʼda qilmaslik |
 | Kabinetga biriktirish matni | bor | faqat «Hisobsiz ham buyurtma berishingiz mumkin» | backend deploy qilinmagan |
 | Boʻsh savat: «−10% avtomatik qoʻllanadi» | bor | yoʻq | −10% faqat obunaga tegishli — umumiy vaʼda notoʻgʻri |
 | Boʻsh savat: «Koʻp sotib olinadi» | sarlavha | «Sara mahsulotlar» | sotuv tarixi yoʻq |
@@ -344,7 +344,7 @@ Qarorlar:
 | MenuMobileV3 | 4-bosqichda qilingan katalog ekrani — oʻzgarmadi |
 
 Qarorlar (faqat real maʼlumot):
-- Toʻlov provayderi merchant ID boʻlmasa «Tez kunda»; «Biz haqimizda» raqamlari jonli katalogdan; rekvizitlar `BRAND` dan (dizayndagi «Go Vita Healthcare MCHJ» emas — reyestrdagi nom).
+- Toʻlov merchant ID borligi end-to-end integratsiya degani emas; checkout provider handoff va tasdiqlangan callback ishlamaguncha naqd pul bilan cheklanadi. «Biz haqimizda» raqamlari jonli katalogdan; rekvizitlar `BRAND` dan (dizayndagi «Go Vita Healthcare MCHJ» emas — reyestrdagi nom).
 - Dizayndagi «−10% savatchada avtomatik» yolgʻon boʻlardi: birinchi buyurtma chegirmasini operator qoʻllaydi — matn shunga moslandi.
 - Yetkazish FAQ «1–2 / 2–5 ish kuni» edi — `COMMERCE` (24 soat / 1–3 kun) bilan tenglashtirildi.
 - Oferta matni yoʻq: sahifa buni ochiq aytadi va amaldagi shartlar sahifalariga olib boradi.

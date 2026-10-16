@@ -4,13 +4,14 @@
  *
  * Two decisions drive the shape of this file.
  *
- * **Why the policy is computed, not constant.** Every third-party origin in it
- * is conditional on the integration that needs it: an analytics host appears
- * only when its ID is set, the API origin only when `NEXT_PUBLIC_API_URL` is.
- * A hardcoded policy either allows origins nothing uses (a wider attack surface
- * for no benefit) or breaks the day someone pastes in a GTM ID. Deriving it
- * means the policy is exactly as tight as the current configuration and widens
- * by itself, correctly, when the configuration does.
+ * **Why the policy is computed, not constant.** By default every third-party
+ * origin is conditional on the integration that needs it: an analytics host
+ * appears only when its environment ID is set, and the API origin only when
+ * `NEXT_PUBLIC_API_URL` is. Admin-managed analytics IDs are runtime values,
+ * though, and a build-time CSP cannot read Postgres. Deployments that want to
+ * change analytics IDs from `/admin/integrations` explicitly set
+ * `ADMIN_ANALYTICS_CSP=on`; that opt-in allows only the four supported vendor
+ * origin lists. Without it, the tighter environment-derived policy remains.
  *
  * **Why it ships report-only.** The storefront renders 1000+ inline `<script>`
  * tags per page (Next.js streams the RSC payload inline) and hundreds of inline
@@ -36,12 +37,13 @@
  * server with no environment at all still served the enforcing header and the
  * GTM origin.
  *
- * That coupling is right for the analytics origins, because `NEXT_PUBLIC_*`
- * values are inlined into the client bundle at build time too — the tag itself
- * only renders if its ID was present during the build. Policy and rendered tags
- * come from one snapshot and so cannot disagree. It is a trap only for
- * `CSP_MODE`, which looks like a runtime switch and is not one:
- * src/instrumentation.ts compares the two at boot and says so out loud.
+ * For environment-managed analytics IDs, the CSP and build-time fallback use
+ * the same `NEXT_PUBLIC_*` snapshot. In admin-managed mode, the allowlist is
+ * instead deliberately widened at build time by `ADMIN_ANALYTICS_CSP=on`; the
+ * browser fetches only the current public IDs from `/api/public/analytics` and
+ * never receives server secrets. `CSP_MODE` is still a build-time header choice,
+ * not a runtime switch: src/instrumentation.ts compares the two at boot and says
+ * so out loud.
  *
  * In this repository's actual deployment that trap is closed: the storefront
  * runs on Vercel, which rebuilds on every deploy, and docker-compose.yml
@@ -214,10 +216,15 @@ function unique(values: string[]): string[] {
 export function buildContentSecurityPolicy(
   env: Record<string, string | undefined> = process.env,
 ): string {
-  // Every analytics origin this deployment actually needs, and only those.
+  // Runtime admin IDs cannot be known while headers() is compiled, so this
+  // explicit opt-in allowlists only the vendor hosts we already support.
   const analytics: string[] = [];
-  for (const [variable, origins] of Object.entries(ANALYTICS_PROVIDERS)) {
-    if (env[variable]?.trim()) analytics.push(...origins);
+  if (env.ADMIN_ANALYTICS_CSP === "on") {
+    analytics.push(...Object.values(ANALYTICS_PROVIDERS).flat());
+  } else {
+    for (const [variable, origins] of Object.entries(ANALYTICS_PROVIDERS)) {
+      if (env[variable]?.trim()) analytics.push(...origins);
+    }
   }
 
   // The account API is called straight from the browser, so it needs

@@ -1,4 +1,4 @@
-import { asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, orders, products, type OrderStatus } from "@/lib/db/schema";
 import { contentToForm, toTashkentInput } from "./product-form";
@@ -82,11 +82,21 @@ export const EMPTY_PRODUCT: ProductFormValues = {
   content: {},
 };
 
-export async function listOrders({ status, limit = 100 }: { status?: OrderStatus; limit?: number } = {}) {
+export async function listOrders({ status, q, limit = 100 }: { status?: OrderStatus; q?: string; limit?: number } = {}) {
+  const term = q?.trim().slice(0, 100);
+  const filters = [status ? eq(orders.status, status) : undefined];
+  if (term) {
+    filters.push(or(
+      ilike(orders.number, `%${term}%`),
+      sql`${orders.customer}->>'name' ilike ${`%${term}%`}`,
+      sql`${orders.customer}->>'phone' ilike ${`%${term}%`}`,
+      sql`${orders.customer}->>'email' ilike ${`%${term}%`}`,
+    ));
+  }
   return getDb()
     .select()
     .from(orders)
-    .where(status ? eq(orders.status, status) : undefined)
+    .where(and(...filters))
     .orderBy(desc(orders.createdAt))
     .limit(limit);
 }

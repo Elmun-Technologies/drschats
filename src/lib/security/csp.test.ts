@@ -140,6 +140,16 @@ describe("buildContentSecurityPolicy", () => {
     expect(policy).not.toContain("google-analytics");
   });
 
+  it("adds the four supported analytics vendor lists only for admin-managed CSP builds", () => {
+    const d = parse(buildContentSecurityPolicy({ ADMIN_ANALYTICS_CSP: "on" }));
+    expect(d["script-src"]).toContain("https://www.googletagmanager.com");
+    expect(d["script-src"]).toContain("https://connect.facebook.net");
+    expect(d["script-src"]).toContain("https://mc.yandex.ru");
+    expect(d["connect-src"]).toContain("https://www.google-analytics.com");
+    expect(d["img-src"]).toContain("https://www.facebook.com");
+    expect(d["script-src"]).not.toContain("https://evil.example");
+  });
+
   it("adds each analytics provider only when its own ID is set", () => {
     const gtm = parse(buildContentSecurityPolicy({ NEXT_PUBLIC_GTM_ID: "GTM-ABC" }));
     expect(gtm["script-src"]).toContain("https://www.googletagmanager.com");
@@ -326,6 +336,17 @@ describe("next.config.ts shares the image host list", () => {
 
   it("wires the CSP header in", () => {
     expect(config).toContain("cspHeaders(");
+  });
+
+  it("keeps the authenticated embedded Sanity Studio out of the storefront CSP but applies baseline headers", () => {
+    expect(config).toContain("admin/content/studio");
+    expect(config).toContain('source: "/admin/content/studio/:path*"');
+    expect(config).toContain('value: "SAMEORIGIN"');
+  });
+
+  it("stamps whether runtime analytics origins were allowed by this build", () => {
+    expect(config).toContain("ANALYTICS_CSP_BUILD_ENABLED");
+    expect(config).toContain("ADMIN_ANALYTICS_CSP");
   });
 
   it("opens framing to Telegram Web only for the Mini App, and keeps it enforced", () => {
