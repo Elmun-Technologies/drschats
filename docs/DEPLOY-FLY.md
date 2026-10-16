@@ -104,14 +104,15 @@ Qadamlar: **[`BOT-ADMIN.md`](BOT-ADMIN.md) → «Sozlash»** (yangi bot,
 ### 9. Keyinroq (ixtiyoriy)
 Email (Resend + DNS yozuvlari), analytics ID'lari (`fly.toml [build.args]`),
 `CSP_MODE=enforce` — [`QOLGAN-ISHLAR.md`](QOLGAN-ISHLAR.md).
-**Payme/Click/Uzum merchant ID'larini qo'ymang** — onlayn to'lov integratsiyasi
-hali yozilmagan: ID qo'yilsa mijoz «to'ladim» deb o'ylaydi, pul olinmaydi.
+**Payme/Click/Uzum merchant ID'larini qo'ymang** — gateway handoff va server
+tomondan tasdiqlangan payment callback hali yozilmagan. ID mavjudligi checkout'ni
+yoqmaydi; hozir mijozlar uchun faqat yetkazishda naqd to'lov faol.
 
 ## Build vaqtidagi qiymatlar
 
 `NEXT_PUBLIC_*` brauzer bundle'iga build paytida yoziladi, shuning uchun ular
 **secret emas** — `fly.toml` dagi `[build.args]` da turadi (GTM, GA4, Pixel,
-Metrika, Telegram bot nomi, Payme/Click/Uzum merchant ID, `CSP_MODE`,
+Metrika, Telegram bot nomi, `CSP_MODE`,
 `STORAGE_PUBLIC_URL`). O'zgartirgandan keyin qayta deploy kerak.
 
 `GOVITA_PRODUCTION=1` build va runtime'da yoqilgan: demo bayroqlari bilan build

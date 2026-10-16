@@ -333,10 +333,9 @@ export function CheckoutForm({
           </Step>
 
           {/*
-            A real choice instead of a row of logos: a provider with no
-            merchant id configured is shown as "tez orada" and cannot be
-            picked, so the page never promises a payment route the shop
-            cannot complete.
+            A provider is selectable only when its end-to-end payment flow is
+            implemented. A merchant ID by itself is not enough to accept a
+            payment, so incomplete providers remain disabled.
           */}
           <Step n={3} title={t("paymentTitle")}>
             <div role="radiogroup" aria-label={t("paymentTitle")} className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-2.5">

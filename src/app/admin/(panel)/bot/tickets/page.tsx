@@ -25,7 +25,7 @@ export default async function BotTicketsPage({ searchParams }: { searchParams: P
           { href: "/admin/bot/tickets", label: "Ochiq", on: !all },
           { href: "/admin/bot/tickets?all=1", label: "Hammasi", on: all },
         ].map((f) => (
-          <Link key={f.href} href={f.href} aria-current={f.on ? "page" : undefined} className={cn("flex h-11 items-center rounded-sm px-4 text-[15px]", f.on ? "bg-ink font-semibold text-white" : "bg-bg text-ink-2")}>
+          <Link key={f.href} href={f.href} aria-current={f.on ? "page" : undefined} className={cn("flex h-11 items-center rounded-sm px-4 text-[15px]", f.on ? "bg-forest font-semibold text-white" : "bg-bg text-ink-2")}>
             {f.label}
           </Link>
         ))}

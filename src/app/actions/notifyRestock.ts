@@ -63,7 +63,7 @@ export async function notifyRestock(
     return { ok: false, error: "rate_limited" };
   }
 
-  if (!isOperatorChannelConfigured()) {
+  if (!(await isOperatorChannelConfigured())) {
     /*
       Logged without the number: the fact that requests are being dropped is
       what an operator needs to see, and the contact details of everyone who

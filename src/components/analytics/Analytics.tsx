@@ -1,14 +1,47 @@
-import Script from "next/script";
+"use client";
 
-/**
- * Loads context-ads / analytics tags only when their IDs are configured.
- * Conversion events are fired from lib/analytics/events.ts.
- */
+import Script from "next/script";
+import { useEffect, useState } from "react";
+import { analyticsIdsFromEnvironment, sanitizeAnalyticsIds, type AnalyticsIds } from "@/lib/analytics/config";
+
+/*
+  Analytics IDs may be set in the deployment environment or managed at runtime
+  in /admin/integrations. The endpoint returns public IDs only; the browser
+  validates their provider-specific shape before loading any vendor script.
+*/
+declare global {
+  interface Window {
+    __GOVITA_ANALYTICS__?: AnalyticsIds;
+  }
+}
+
+const BUILD_IDS = analyticsIdsFromEnvironment();
+
 export function Analytics() {
-  const gtm = process.env.NEXT_PUBLIC_GTM_ID;
-  const ga4 = process.env.NEXT_PUBLIC_GA4_ID;
-  const pixel = process.env.NEXT_PUBLIC_META_PIXEL_ID;
-  const ym = process.env.NEXT_PUBLIC_YANDEX_METRIKA_ID;
+  const [ids, setIds] = useState<AnalyticsIds>(BUILD_IDS);
+  const [resolved, setResolved] = useState(false);
+
+  useEffect(() => {
+    let active = true;
+    fetch("/api/public/analytics", { cache: "no-store", credentials: "same-origin" })
+      .then((response) => response.ok ? response.json() : null)
+      .then((value) => {
+        if (!active) return;
+        if (value && typeof value === "object") setIds(sanitizeAnalyticsIds(value as Partial<Record<keyof AnalyticsIds, unknown>>));
+        setResolved(true);
+      })
+      .catch(() => {
+        if (active) setResolved(true);
+      });
+    return () => { active = false; };
+  }, []);
+
+  useEffect(() => {
+    if (resolved) window.__GOVITA_ANALYTICS__ = ids;
+  }, [ids, resolved]);
+
+  if (!resolved) return null;
+  const { gtm, ga4, metaPixel: pixel, yandexMetrika: ym } = ids;
 
   return (
     <>
@@ -20,7 +53,7 @@ export function Analytics() {
 
       {ga4 && (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${ga4}`} strategy="afterInteractive" />
+          <Script src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4)}`} strategy="afterInteractive" />
           <Script id="ga4" strategy="afterInteractive">
             {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}');`}
           </Script>

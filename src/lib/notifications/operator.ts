@@ -7,17 +7,19 @@
   reason an order, a subscription or a sign-up fails.
 */
 
+import { getRuntimeIntegrationSettings } from "@/lib/integrations/settings";
+
 const API = "https://api.telegram.org";
 const TIMEOUT_MS = 5000;
 
-export function isOperatorChannelConfigured(): boolean {
-  return Boolean(process.env.TELEGRAM_BOT_TOKEN && process.env.TELEGRAM_CHAT_ID);
+export async function isOperatorChannelConfigured(): Promise<boolean> {
+  const { operatorBotToken, operatorChatId } = await getRuntimeIntegrationSettings();
+  return Boolean(operatorBotToken && operatorChatId);
 }
 
 /** Sends to the operator group. Resolves to whether Telegram accepted the message; never throws. */
 export async function notifyOperator(text: string, options?: { markdown?: boolean }): Promise<boolean> {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
+  const { operatorBotToken: token, operatorChatId: chatId } = await getRuntimeIntegrationSettings();
   if (!token || !chatId) return false;
 
   try {
@@ -45,7 +47,7 @@ export async function notifyOperator(text: string, options?: { markdown?: boolea
  * conversation with the bot (see src/lib/notifications/telegram-link.ts).
  */
 export async function notifyCustomer(chatId: string, text: string): Promise<boolean> {
-  const token = process.env.TELEGRAM_BOT_TOKEN;
+  const { operatorBotToken: token } = await getRuntimeIntegrationSettings();
   if (!token || !chatId) return false;
 
   try {

@@ -245,7 +245,7 @@
         },
         {
           "question": "Toʻlovni qanday amalga oshirish mumkin?",
-          "answer": "Yetkazib berishda naqd pul bilan. Payme, Click va Uzum orqali onlayn toʻlov (Uzcard, Humo, Visa, Mastercard kartalari) ulangan boʻlsa, uni savatning toʻlov qadamida tanlaysiz."
+          "answer": "Hozircha buyurtma yetkazilganda naqd pul bilan toʻlanadi. Onlayn toʻlov mavjud emas."
         },
         {
           "question": "Mahsulotlar original ekaniga qanday ishonch hosil qilaman?",
@@ -686,7 +686,7 @@
       "online": "Onlayn",
       "codTitle": "Naqd pul",
       "codSub": "Yetkazishda",
-      "gatewayNote": "Onlayn toʻlov Payme, Click va Uzum shlyuzlari orqali amalga oshiriladi; karta maʼlumotlari bizda saqlanmaydi.",
+      "gatewayNote": "Onlayn toʻlov provayder tomonidan tasdiqlanadi; karta maʼlumotlari Go Vita saytida saqlanmaydi.",
       "itemsRow": "Mahsulotlar, {count} ta",
       "consent": "Buyurtmani yuborish orqali <offer>ommaviy oferta</offer> va <privacy>maxfiylik siyosati</privacy> shartlariga rozilik bildirasiz.",
       "emptyTitle": "Savatchangiz boʻsh",
@@ -722,11 +722,11 @@
     "method": "Yetkazib berish usuli",
     "methodCourier": "Yetkazib berish",
     "methodPickup": "Oʻzi olib ketish",
-    "paymentNote": "Onlayn toʻlov: Payme, Click, Uzum. Yetkazib berishda naqd pul bilan ham mumkin.",
+    "paymentNote": "Toʻlovni buyurtma yetkazilganda naqd pul bilan amalga oshirasiz.",
     "summary": "Buyurtma tarkibi",
     "submit": "Buyurtmani yuborish",
     "submitting": "Yuborilmoqda…",
-    "operatorNote": "Buyurtma onlayn toʻlov bilan darhol tasdiqlanadi. Operator faqat aniqlashtirish kerak boʻlsa qoʻngʻiroq qiladi.",
+    "operatorNote": "Operator buyurtmani tasdiqlaydi va yetkazib berish tafsilotlarini aniqlashtiradi.",
     "upsellTitle": "Buyurtmangizga qoʻshing va tejang",
     "errorRequired": "Bu maydon majburiy",
     "errorPhone": "Toʻgʻri telefon raqamini kiriting",
@@ -737,7 +737,7 @@
       "home": "Bosh sahifaga",
       "whatsNext": "Keyingi qadam",
       "stepLabel": "{n}-qadam",
-      "step1": "Toʻlov tasdiqlandi — buyurtma operator navbatiga tushdi",
+      "step1": "Buyurtma qabul qilindi — operator tasdiqlashi kutilmoqda",
       "step2": "Buyurtma 24–48 soat ichida yigʻilib joʻnatishga tayyorlanadi",
       "step3": "Kuryer manzilingizga yetkazib beradi",
       "continueShopping": "Xarid qilishni davom ettirish",
@@ -776,9 +776,9 @@
     "paymentTitle": "Toʻlov usuli",
     "payOnline": "Onlayn toʻlov",
     "payCod": "Yetkazib berishda (naqd pul)",
-    "payUnavailable": "Onlayn toʻlov hozircha ulanmagan — buyurtma yetkazishda toʻlanadi.",
-    "payOnlineNote": "Buyurtma darhol tasdiqlanadi, qayta qoʻngʻiroq shart emas. Toʻlovni tanlangan tizim sahifasida tugatasiz.",
-    "paySoon": "tez orada",
+    "payUnavailable": "Onlayn toʻlov hozircha mavjud emas — buyurtmani yetkazganda naqd pul bilan toʻlang.",
+    "payOnlineNote": "Onlayn toʻlov hozircha mavjud emas. Toʻlovni buyurtma yetkazilganda naqd pul bilan amalga oshiring.",
+    "paySoon": "hozircha mavjud emas",
     "errors": {
       "rate_limited": "Juda koʻp urinish. Bir necha daqiqadan keyin qayta urinib koʻring.",
       "invalid": "Maʼlumotlarni tekshiring va qayta yuboring.",
@@ -948,8 +948,8 @@
         "description": "Toshkent boʻylab {hours} soatda, viloyatlarga {regions}da yetkazib berish. Narxi {fee} soʻm, {free} soʻmdan ortiq buyurtmalar bepul. Oʻzi olib ketish ham mumkin."
       },
       "payment": {
-        "title": "Toʻlov usullari — naqd pul va onlayn | Go Vita",
-        "description": "Go Vita buyurtmasini qanday toʻlash mumkin: yetkazib berishda naqd pul bilan, onlayn toʻlov ulanganda esa Payme, Click yoki Uzum orqali kartada. Narxlar soʻmda."
+        "title": "Toʻlov usullari — yetkazishda naqd pul | Go Vita",
+        "description": "Go Vita buyurtmasini yetkazib berishda naqd pul bilan toʻlang. Onlayn toʻlov hozircha mavjud emas. Narxlar soʻmda."
       },
       "guarantee": {
         "title": "Kafolat, qaytarish va almashtirish shartlari | Go Vita",
@@ -1071,12 +1071,12 @@
     "pickupFree": "Toshkent shahridagi omborimizdan.",
     "paymentTitle": "Toʻlov usullari",
     "payCod": "Naqd pul yetkazishda",
-    "note": "Buyurtma onlayn toʻlov bilan darhol tasdiqlanadi. Operator faqat aniqlashtirish uchun qoʻngʻiroq qiladi.",
+    "note": "Operator buyurtmani tasdiqlaydi. Toʻlov buyurtma yetkazilganda naqd pul bilan amalga oshiriladi.",
     "contactCta": "Bogʻlanish",
-    "payOnlineNote": "Onlayn toʻlov, operator qoʻngʻirogʻisiz.",
+    "payOnlineNote": "Onlayn toʻlov hozircha mavjud emas.",
     "payCodNote": "Yetkazib berishda naqd pul bilan.",
-    "paySoon": "Hozircha mavjud emas — ishga tushirilmoqda.",
-    "paySoonBadge": "Tez orada",
+    "paySoon": "Onlayn toʻlov hozircha mavjud emas.",
+    "paySoonBadge": "Mavjud emas",
     "noteOffline": "Buyurtma operator tasdiqlagach yoʻlga chiqadi. Toʻlovni yetkazib berishda amalga oshirasiz."
   },
   "loyalty": {
@@ -1087,7 +1087,7 @@
     "journeyRegisterTitle": "Mahsulotni tanlang",
     "journeyRegisterText": "Katalogdan kerakli mahsulotni yoki obunani tanlang.",
     "journeyBuyTitle": "Buyurtma bering",
-    "journeyBuyText": "Onlayn toʻlov bilan buyurtma darhol tasdiqlanadi.",
+    "journeyBuyText": "Operator buyurtmani tasdiqlaydi; chegirma savatda avtomatik koʻrinadi.",
     "journeyRewardsTitle": "Chegirma avtomatik qoʻllanadi",
     "journeyRewardsText": "Chegirma savatchada koʻrinadi — promokod kiritish shart emas.",
     "programsTitle": "Uchta dastur",
@@ -1290,7 +1290,7 @@
         },
         "delivery": {
           "title": "Yetkazib berish",
-          "body": "Buyurtma onlayn toʻlov bilan darhol tasdiqlanadi; Toshkent boʻylab 24 soatda yetkaziladi."
+          "body": "Buyurtma operator bilan tasdiqlanadi; Toshkent boʻylab 24 soatda yetkaziladi."
         },
         "importDocs": {
           "title": "Import hujjatlari",
@@ -1315,34 +1315,19 @@
       "eyebrow": "Qulay toʻlov",
       "title": "Toʻlov usullari",
       "subtitle": "Toʻlov usullari va shartlari.",
-      "secureTitle": "Xavfsiz toʻlov",
-      "secureNote": "Onlayn toʻlov Payme, Click va Uzum shlyuzlari orqali amalga oshiriladi; karta maʼlumotlari bizda saqlanmaydi.",
+      "secureTitle": "Naqd toʻlov",
+      "secureNote": "Hozircha onlayn toʻlov mavjud emas. Buyurtma yetkazilganda naqd pul bilan toʻlanadi.",
       "methods": [
         {
-          "title": "Payme",
-          "text": "Payme orqali onlayn toʻlov.",
-          "meta": "Onlayn"
-        },
-        {
-          "title": "Click",
-          "text": "Click orqali onlayn toʻlov.",
-          "meta": "Onlayn"
-        },
-        {
-          "title": "Uzum",
-          "text": "Uzum orqali onlayn toʻlov.",
-          "meta": "Yetkazishda"
-        },
-        {
           "title": "Naqd pul",
-          "text": "Yetkazib berishda naqd pul bilan.",
+          "text": "Buyurtma yetkazilganda naqd pul bilan toʻlang.",
           "meta": "Yetkazishda"
         }
       ],
       "faq": [
         {
-          "question": "Toʻlov xavfsizmi?",
-          "answer": "Ha, onlayn toʻlov Payme, Click va Uzum shlyuzlari orqali amalga oshiriladi."
+          "question": "Hozir qaysi toʻlov usuli mavjud?",
+          "answer": "Hozircha buyurtma yetkazilganda naqd pul bilan toʻlanadi. Onlayn toʻlov mavjud emas."
         },
         {
           "question": "Yetkazib berishda toʻlasam boʻladimi?",
@@ -1529,29 +1514,40 @@
         "rowCourier": "Yandex Dostavka, Toshkent",
         "rowPost": "BTS, viloyatlar",
         "rowPickup": "Oʻzi olib ketish",
-        "noteOnline": "Buyurtma onlayn toʻlov bilan darhol tasdiqlanadi. Operator faqat aniqlashtirish uchun qoʻngʻiroq qiladi.",
+        "noteOnline": "Onlayn toʻlov provayder tomonidan tasdiqlanadi; operator yetkazish tafsilotlarini aniqlashtiradi.",
         "noteCall": "Buyurtmadan keyin operator tasdiqlash uchun qoʻngʻiroq qiladi va aniq yetkazish vaqtini aytadi."
       },
       "payment": {
-        "lead": "Onlayn yoki buyurtmani qabul qilganda — qaysi biri qulay boʻlsa.",
-        "providerText": "{name} orqali onlayn toʻlov. Buyurtma darhol tasdiqlanadi.",
-        "providerSoon": "{name} orqali onlayn toʻlov tez orada ulanadi.",
+        "lead": "Hozircha buyurtma yetkazilganda naqd pul bilan toʻlanadi. Onlayn toʻlov mavjud emas.",
+        "leadOnline": "Onlayn toʻlov yoki buyurtma yetkazilganda toʻlash — qaysi biri qulay boʻlsa.",
+        "providerText": "Onlayn toʻlov {name} orqali amalga oshiriladi.",
+        "providerSoon": "{name} orqali onlayn toʻlov hozircha mavjud emas.",
         "codTitle": "Naqd pul",
         "codText": "Yetkazib berishda naqd pul bilan toʻlanadi.",
         "safeTitle": "Xavfsiz toʻlov",
-        "safeText": "Karta maʼlumotlari bizda saqlanmaydi: onlayn toʻlov Payme, Click yoki Uzum shlyuzida qayta ishlanadi. Yetkazib berishda toʻlov naqd pul bilan.",
+        "safeText": "Onlayn toʻlov provayder tomonidan qayta ishlanadi; Go Vita karta maʼlumotlarini saqlamaydi.",
         "faq": [
           {
-            "question": "Toʻlov xavfsizmi?",
-            "answer": "Ha. Karta maʼlumotlari bizda saqlanmaydi — ularni toʻlov tizimining oʻz shlyuzi qayta ishlaydi."
+            "question": "Hozir qaysi toʻlov usuli mavjud?",
+            "answer": "Hozircha buyurtma yetkazilganda naqd pul bilan toʻlanadi. Onlayn toʻlov mavjud emas."
           },
           {
             "question": "Yetkazib berishda toʻlasam boʻladimi?",
             "answer": "Ha — yetkazib berishda naqd pul bilan toʻlaysiz."
           }
         ],
-        "cardsTitle": "Onlayn toʻlovda qabul qilinadigan kartalar",
-        "cardsText": "Payme, Click va Uzum orqali onlayn toʻlovda Uzcard, Humo, Visa va Mastercard kartalari bilan toʻlash mumkin. Yetkazib berishda toʻlov faqat naqd pul bilan."
+        "faqOnline": [
+          {
+            "question": "Onlayn toʻlov xavfsizmi?",
+            "answer": "Toʻlov provayder orqali amalga oshiriladi va tasdigʻi olingach buyurtmada qayd qilinadi."
+          },
+          {
+            "question": "Yetkazib berishda toʻlasam boʻladimi?",
+            "answer": "Ha — yetkazib berishda naqd pul bilan toʻlaysiz."
+          }
+        ],
+        "cardsTitle": "Onlayn toʻlov uchun kartalar",
+        "cardsText": "Qabul qilinadigan karta turlari tanlangan toʻlov provayderiga bogʻliq."
       },
       "guarantee": {
         "lead": "Sifat hujjatlari va qaytarish shartlari.",

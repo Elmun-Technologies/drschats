@@ -1,11 +1,12 @@
 /*
   Payment brand marks shown on the site (footer, cart, product page, /payment).
 
-  Card networks accepted with online payment (Payme, Click, Uzum): Uzcard,
-  Humo, Visa, Mastercard — delivery itself is cash only. The files in public/images/payments/ are the networks' own
+  Potential card-network marks for a future online-payment flow. Do not render
+  these as accepted methods until an enabled provider's actual card support has
+  been verified. For now, checkout is cash-on-delivery only and the online mark
+  list is empty. The files in public/images/payments/ are the networks' own
   marks. Payme, Click and Uzum have no official file in the repo yet, so they
-  render as a plain name chip; drop the provider's brand-kit SVG into
-  public/images/payments/ and set `src` here — every surface switches at once.
+  render as a plain name chip if a provider is enabled in the future.
 
   `h` is the mark's display height inside a 40px chip, tuned so the four
   marks read at the same optical weight.
