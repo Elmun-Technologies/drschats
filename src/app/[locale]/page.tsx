@@ -30,6 +30,8 @@ import {
 import { isStocked } from "@/lib/shop/categories";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
+import { DealOfDay } from "@/components/home/DealOfDay";
+import { getBanners, getDealOfDay } from "@/lib/merch/store";
 
 export const revalidate = 300;
 
@@ -69,13 +71,15 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [categories, listing, promotions, t, meta, nav] = await Promise.all([
+  const [categories, listing, promotions, t, meta, nav, heroBanners, dealOfDay] = await Promise.all([
     shopflow.getCategories(locale),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 50, assortment: "core" }),
     shopflow.getPromotions(locale).catch(() => []),
     getTranslations({ locale, namespace: "home" }),
     getTranslations({ locale, namespace: "meta" }),
     getTranslations({ locale, namespace: "nav" }),
+    getBanners("hero", locale),
+    getDealOfDay(locale),
   ]);
 
   // Products with a cutout pack shot lead every rail: they are the supplement
@@ -86,16 +90,39 @@ export default async function HomePage({
   const shelves = categories.filter(isStocked);
   const deals = byDeepestDiscount(catalogue).slice(0, 6);
   const dealIds = new Set(deals.map((p) => p.id));
-  const weeklyDeals = deals.map(toMenuDeal).filter((d): d is MenuDeal => d !== null);
+  // The deal of the day has its own block; the tile steps through the other discounts.
+  const weeklyDeals = deals
+    .filter((p) => p.slug !== dealOfDay?.product.slug)
+    .map(toMenuDeal)
+    .filter((d): d is MenuDeal => d !== null);
   const swissEnergy = catalogue
     .filter((p) => p.slug.startsWith("swiss-energy-") && cutoutOf(p))
     .slice(0, 8);
   const curated = catalogue.filter((p) => !dealIds.has(p.id)).slice(0, 12);
   const bundle = promotions.find((p) => p.type === "buy_x_get_y");
 
-  const slides: HeroSlide[] = (t.raw("slides") as Omit<HeroSlide, "image">[]).map((s) => ({
-    ...s,
+  // The built-in slides are the fallback: with no banner running, the hero is exactly what it always was.
+  const fallbackSlides: HeroSlide[] = (t.raw("slides") as Pick<HeroSlide, "eyebrow" | "title" | "cta" | "href">[]).map((s, i) => ({
+    key: `slide-${i}`,
+    eyebrow: s.eyebrow,
+    title: s.title,
+    cta: s.cta,
+    href: s.href,
     image: productCutout(s.href.replace(/^\/product\//, "")) ?? null,
+  }));
+  const bannerSlides: HeroSlide[] = heroBanners.map((b) => ({
+    key: `banner-${b.id}`,
+    bannerId: b.id,
+    eyebrow: "",
+    title: b.title,
+    subtitle: b.subtitle,
+    cta: b.cta,
+    href: b.href,
+    image: b.image,
+    imageMobile: b.imageMobile,
+    theme: b.theme,
+    countdownTo: b.countdownTo,
+    endsAt: b.endsAt,
   }));
 
   return (
@@ -108,7 +135,7 @@ export default async function HomePage({
         <QuickChips categories={shelves} saleLabel={nav("topDeals")} label={nav("shopByCategories")} />
 
         <section className="wrap -mt-3 grid gap-5 lg:mt-0 lg:grid-cols-[minmax(0,2.55fr)_minmax(300px,1fr)]">
-          <HeroSlider slides={slides} />
+          <HeroSlider slides={bannerSlides} fallback={fallbackSlides} />
           {weeklyDeals.length > 0 && (
             <div className="hidden lg:block">
               <WeeklyDeal deals={weeklyDeals} variant="desktop" />
@@ -117,6 +144,8 @@ export default async function HomePage({
         </section>
 
         <HomeCategories categories={shelves} />
+
+        {dealOfDay && <DealOfDay product={dealOfDay.product} endsAt={dealOfDay.endsAt} />}
 
         {weeklyDeals[0] && (
           <section className="wrap lg:hidden">

@@ -18,6 +18,7 @@ import { fold } from "@/lib/search/fold";
 import { audienceOf } from "@/lib/quiz/audience-fit";
 import { livePrice, saleOver } from "@/lib/shop/sale";
 import { DEFAULT_LOW_STOCK_AT } from "./stock-rules";
+import { dealPrice, type RawDeal } from "./deals";
 
 /*
   The catalogue's read logic, independent of where the rows come from: the
@@ -31,6 +32,8 @@ export interface CatalogData {
   promotions: RawPromotion[];
   /** Brand names for products that carry a `brandSlug`. */
   brands?: { slug: string; name: string }[];
+  /** Scheduled deals of the day (catalog/deals.ts); only the database has them. */
+  deals?: RawDeal[];
 }
 
 export type OrderSink = (payload: OrderRequest) => Promise<OrderResult>;
@@ -71,11 +74,12 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
   */
   /*
     A sale with an end date ends by itself: past it, the product sells at its
-    old price again and no countdown is shown. The order action prices from
-    this same function, so an expired sale cannot be bought at the sale price.
+    old price again and no countdown is shown. A scheduled deal of the day
+    applies only inside its window, computed here with the clock of this
+    read. The order action prices from this same function, so neither an
+    expired sale nor a deal outside its window can be bought at that price.
   */
-  const { price, oldPrice } = livePrice(p);
-  const saleEndsAt = !saleOver(p) && p.oldPrice && p.saleEndsAt ? p.saleEndsAt : undefined;
+  const { price, oldPrice, saleEndsAt } = dealPrice(p, data.deals);
   const brand =
     p.brandSlug === undefined ? undefined : p.brandSlug ? (data.brands?.find((b) => b.slug === p.brandSlug) ?? null) : null;
   return {

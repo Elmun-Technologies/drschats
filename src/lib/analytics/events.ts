@@ -181,6 +181,23 @@ export function trackUpsellSkip(step: number, productId: string) {
   track("upsell_skip", { step, product_id: productId });
 }
 
+/*
+  A click on an admin-managed banner (admin → Vitrina): GA4's own
+  `select_promotion`, and one beacon to /api/b/:id, which bumps the banner's
+  click counter in the panel. Automated browsers are not counted; the
+  endpoint also drops bot user agents and repeats from the same address.
+*/
+export function trackPromotionClick(banner: { id: number; title: string }, slot: "hero" | "strip" | "category") {
+  if (typeof window === "undefined") return;
+  send("select_promotion", { promotion_id: `banner-${banner.id}`, promotion_name: banner.title, creative_slot: slot }, true);
+  if (navigator.webdriver) return;
+  try {
+    navigator.sendBeacon?.(`/api/b/${banner.id}`);
+  } catch {
+    /* a lost click count never blocks the navigation */
+  }
+}
+
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */
 export function trackPageView(url: string) {
   journeyPage(url);

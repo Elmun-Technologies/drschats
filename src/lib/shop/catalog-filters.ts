@@ -1,6 +1,6 @@
 import { type DoseUnit } from "@/lib/content/product-units";
 import type { HealthTopic } from "@/lib/content/health-topics";
-import type { Product } from "@/lib/shopflow/types";
+import type { Product, Promotion } from "@/lib/shopflow/types";
 import { productMatchesTopic } from "./goal-facets";
 import { unitOf, brandOf } from "@/lib/catalog/product-facts";
 import { firstParam, type SearchParamValue } from "@/lib/search-params";
@@ -21,7 +21,10 @@ export interface ProductFacts {
   id: string;
   price: number;
   inStock: boolean;
+  /** "Aksiyada": a real old price, or named by a running promotion. */
   sale: boolean;
+  /** "Tez tugaydi": the sale price has a real end within 72 hours. */
+  ending: boolean;
   brand: string | null;
   origin: string | null;
   form: DoseUnit | null;
@@ -31,6 +34,7 @@ export interface ProductFacts {
 export interface CatalogFilters {
   stock: boolean;
   sale: boolean;
+  ending: boolean;
   brands: string[];
   forms: DoseUnit[];
   origins: string[];
@@ -42,6 +46,7 @@ export interface CatalogFilters {
 export const EMPTY_FILTERS: CatalogFilters = {
   stock: false,
   sale: false,
+  ending: false,
   brands: [],
   forms: [],
   origins: [],
@@ -50,12 +55,50 @@ export const EMPTY_FILTERS: CatalogFilters = {
   max: null,
 };
 
-export function toFacts(product: Product, topics: HealthTopic[]): ProductFacts {
+/** How close a sale's end must be for "Tez tugaydi". */
+export const ENDING_WINDOW_MS = 72 * 3_600_000;
+
+/** A real end date (admin → sale end, or the deal of the day) within the next 72 hours. */
+export function endingSoon(product: Pick<Product, "price" | "oldPrice" | "saleEndsAt">, now = Date.now()): boolean {
+  if (!product.saleEndsAt || !product.oldPrice || product.oldPrice <= product.price) return false;
+  const left = Date.parse(product.saleEndsAt) - now;
+  return left > 0 && left <= ENDING_WINDOW_MS;
+}
+
+/*
+  Products a running promotion names (2+1, a percent off). A promotion that
+  names no products covers the whole cart, so it marks nothing here — every
+  product "on sale" would make the filter mean nothing.
+*/
+export function promotedSlugs(promotions: Pick<Promotion, "type" | "productSlugs">[]): Set<string> {
+  return new Set(
+    promotions
+      .filter((p) => p.type === "percent_off" || p.type === "buy_x_get_y")
+      .flatMap((p) => p.productSlugs ?? []),
+  );
+}
+
+/** "Tez tugaydi" as a sort: the soonest real end first, products without one after, each group in the given order. */
+export function sortByEnding<T extends Pick<Product, "price" | "oldPrice" | "saleEndsAt">>(items: T[], now = Date.now()): T[] {
+  const end = (p: T) =>
+    p.saleEndsAt && p.oldPrice && p.oldPrice > p.price && Date.parse(p.saleEndsAt) > now ? Date.parse(p.saleEndsAt) : Infinity;
+  return items
+    .map((p, i) => ({ p, i, at: end(p) }))
+    .sort((a, b) => (a.at === b.at ? a.i - b.i : a.at - b.at))
+    .map((x) => x.p);
+}
+
+export function toFacts(
+  product: Product,
+  topics: HealthTopic[],
+  { promoted, now = Date.now() }: { promoted?: ReadonlySet<string>; now?: number } = {},
+): ProductFacts {
   return {
     id: product.id,
     price: product.price,
     inStock: product.inStock,
-    sale: Boolean(product.oldPrice && product.oldPrice > product.price),
+    sale: Boolean(product.oldPrice && product.oldPrice > product.price) || Boolean(promoted?.has(product.slug)),
+    ending: endingSoon(product, now),
     brand: brandOf(product)?.slug ?? null,
     origin: product.origin ?? null,
     form: unitOf(product)?.unit ?? null,
@@ -68,6 +111,7 @@ type Group = keyof CatalogFilters;
 function matches(f: ProductFacts, filters: CatalogFilters, skip?: Group): boolean {
   if (skip !== "stock" && filters.stock && !f.inStock) return false;
   if (skip !== "sale" && filters.sale && !f.sale) return false;
+  if (skip !== "ending" && filters.ending && !f.ending) return false;
   if (skip !== "brands" && filters.brands.length && !(f.brand && filters.brands.includes(f.brand))) return false;
   if (skip !== "forms" && filters.forms.length && !(f.form && filters.forms.includes(f.form))) return false;
   if (skip !== "origins" && filters.origins.length && !(f.origin && filters.origins.includes(f.origin))) return false;
@@ -89,6 +133,7 @@ export interface FacetOption {
 export interface FacetCounts {
   stock: number;
   sale: number;
+  ending: number;
   brands: FacetOption[];
   forms: FacetOption[];
   origins: FacetOption[];
@@ -111,6 +156,7 @@ export function facetCounts(facts: ProductFacts[], filters: CatalogFilters): Fac
   return {
     stock: without("stock").filter((f) => f.inStock).length,
     sale: without("sale").filter((f) => f.sale).length,
+    ending: without("ending").filter((f) => f.ending).length,
     brands: count("brands", (f) => [f.brand]),
     forms: count("forms", (f) => [f.form]),
     origins: count("origins", (f) => [f.origin]),
@@ -122,6 +168,7 @@ export function activeFilterCount(filters: CatalogFilters): number {
   return (
     Number(filters.stock) +
     Number(filters.sale) +
+    Number(filters.ending) +
     filters.brands.length +
     filters.forms.length +
     filters.origins.length +
@@ -141,12 +188,13 @@ const num = (raw: SearchParamValue) => {
 };
 const DOSE_UNITS: DoseUnit[] = ["capsule", "tablet"];
 
-export type FilterParams = Partial<Record<"stock" | "sale" | "brand" | "form" | "origin" | "goal" | "min" | "max", string | string[]>>;
+export type FilterParams = Partial<Record<"stock" | "sale" | "ending" | "brand" | "form" | "origin" | "goal" | "min" | "max", string | string[]>>;
 
 export function parseFilters(params: FilterParams): CatalogFilters {
   return {
     stock: firstParam(params.stock) === "1",
     sale: firstParam(params.sale) === "1",
+    ending: firstParam(params.ending) === "1",
     brands: list(params.brand),
     forms: list(params.form).filter((f): f is DoseUnit => DOSE_UNITS.includes(f as DoseUnit)),
     origins: list(params.origin),
@@ -161,6 +209,7 @@ export function filtersToQuery(filters: CatalogFilters): Record<string, string> 
   const q: Record<string, string> = {};
   if (filters.stock) q.stock = "1";
   if (filters.sale) q.sale = "1";
+  if (filters.ending) q.ending = "1";
   if (filters.brands.length) q.brand = filters.brands.join(",");
   if (filters.forms.length) q.form = filters.forms.join(",");
   if (filters.origins.length) q.origin = filters.origins.join(",");

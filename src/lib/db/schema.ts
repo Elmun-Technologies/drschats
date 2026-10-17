@@ -293,6 +293,43 @@ export const campaigns = pgTable("campaigns", {
   sentAt: timestamp("sent_at", { withTimezone: true }),
 });
 
+/* Storefront merchandising — db/migrations/0008_storefront_merchandising.sql */
+
+export const BANNER_PLACEMENTS = ["hero", "strip", "category"] as const;
+export type BannerPlacement = (typeof BANNER_PLACEMENTS)[number];
+
+export const banners = pgTable("banners", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  placement: text("placement").$type<BannerPlacement>().notNull(),
+  title: jsonb("title").$type<L>().notNull(),
+  subtitle: jsonb("subtitle").$type<L>().notNull(),
+  cta: jsonb("cta").$type<L>().notNull(),
+  href: text("href").notNull(),
+  image: text("image"),
+  imageMobile: text("image_mobile"),
+  theme: text("theme").$type<"light" | "dark">().notNull().default("light"),
+  startsAt: timestamp("starts_at", { withTimezone: true }),
+  endsAt: timestamp("ends_at", { withTimezone: true }),
+  showCountdown: boolean("show_countdown").notNull().default(false),
+  sort: integer("sort").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  clicks: integer("clicks").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const deals = pgTable("deals", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productSlug: text("product_slug").notNull(),
+  percent: integer("percent"),
+  price: integer("price"),
+  startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+  endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+  createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
 export const siteSettings = pgTable("site_settings", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),

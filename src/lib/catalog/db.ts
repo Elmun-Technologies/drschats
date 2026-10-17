@@ -1,12 +1,13 @@
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
-import { asc, count, sql } from "drizzle-orm";
+import { asc, count, gt, sql } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db/client";
-import { brands, categories, orders, products, promotions } from "@/lib/db/schema";
+import { brands, categories, deals, orders, products, promotions } from "@/lib/db/schema";
 import { builtInCatalog, type RawProduct, type RawPromotion } from "@/lib/shopflow/mock";
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
 import type { CatalogData } from "./engine";
 import { createCircuit } from "./circuit";
 import { StockShortage, readLowStockDefault, takeStock } from "./stock";
+import type { RawDeal } from "./deals";
 
 export const CATALOG_TAG = "catalog";
 
@@ -40,14 +41,37 @@ async function readPromotions(): Promise<RawPromotion[]> {
     }));
 }
 
+/*
+  Deals that have not ended yet, current and upcoming. Which one applies is
+  decided per read with the clock of that read (catalog/deals.ts), so a deal
+  cached here before its start still begins on time.
+*/
+async function readDeals(): Promise<RawDeal[]> {
+  try {
+    const rows = await getDb().select().from(deals).where(gt(deals.endsAt, sql`now()`)).orderBy(asc(deals.startsAt));
+    return rows.map((d) => ({
+      id: d.id,
+      productSlug: d.productSlug,
+      percent: d.percent,
+      price: d.price,
+      startsAt: d.startsAt.toISOString(),
+      endsAt: d.endsAt.toISOString(),
+    }));
+  } catch (err) {
+    console.error("[catalog] deals read failed — no deal of the day:", (err as Error).message);
+    return [];
+  }
+}
+
 async function readCatalog(): Promise<CatalogData> {
   const db = getDb();
-  const [cats, brandRows, rows, promos, lowStockDefault] = await Promise.all([
+  const [cats, brandRows, rows, promos, lowStockDefault, dealRows] = await Promise.all([
     db.select().from(categories).orderBy(asc(categories.sort), asc(categories.slug)),
     db.select().from(brands).orderBy(asc(brands.sort), asc(brands.name)),
     db.select().from(products).orderBy(asc(products.sort), asc(products.createdAt)),
     readPromotions(),
     readLowStockDefault(db),
+    readDeals(),
   ]);
   const categoryId = new Map(cats.map((c) => [c.slug, c.id]));
   return {
@@ -85,10 +109,11 @@ async function readCatalog(): Promise<CatalogData> {
       }),
     ),
     promotions: promos,
+    deals: dealRows,
   };
 }
 
-const cachedCatalog = unstable_cache(readCatalog, ["catalog-v2"], { tags: [CATALOG_TAG], revalidate: 60 });
+const cachedCatalog = unstable_cache(readCatalog, ["catalog-v3"], { tags: [CATALOG_TAG], revalidate: 60 });
 
 /*
   Never an empty shop. If the database cannot be read, or holds no products
@@ -117,6 +142,11 @@ export async function loadDbCatalog(): Promise<CatalogData> {
     console.error("[catalog] database read failed — serving the built-in catalogue:", (err as Error).message);
     return builtInCatalog;
   }
+}
+
+/** Current and upcoming deals of the day, from the same cached read the prices come from. */
+export async function loadDeals(): Promise<RawDeal[]> {
+  return (await loadDbCatalog()).deals ?? [];
 }
 
 /** The row an order is stored as; shared with the promo-code transaction (lib/promo/server.ts). */

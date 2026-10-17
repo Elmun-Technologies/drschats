@@ -12,6 +12,7 @@ katalog o'sha yo'lning oxirida turadi.
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
 - **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io), sayt V3 uslubida. Analitika, mijozlar yo'li (birinchi tomon kuzatuv), voronka, segmentlar va retarget (CSV/Meta/Google eksport, Telegram kampaniya), aksiyalar (bazada), integratsiyalar markazi, katalog, buyurtmalar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi. Birinchi ishga tushishda o'rnatilgan katalog bazaga o'zi ko'chadi (`lib/admin/seed.ts`)
 - **Saytning o'z kuzatuvi**: `lib/journey/` + `POST /api/t` (`gv_vid` cookie, `visitors`/`visitor_events`). `lib/analytics/events.ts` dagi har bir hodisa u yerga ham yoziladi — **yangi hodisani faqat `events.ts` orqali qo'shing**. Buyurtma `linkOrderToVisitor` bilan tashrif buyuruvchiga bog'lanadi
+- **Vitrina** (`/admin/storefront`, 0008): bannerlar (`banners`: hero / header ostidagi `strip` / `category`), eʼlon qatori (`site_settings` → `storefront.announcements`), bugungi taklif (`deals`). Saytda `lib/merch/store.ts` (kesh tag `merch`). Faol hero banner bo'lmasa — `home.slides` aynan avvalgidek (**hech qachon bo'sh hero emas**); taymer faqat haqiqiy `ends_at` bilan. **Bugungi taklif mahsulot qatorini o'zgartirmaydi**: narx har o'qishda `lib/catalog/deals.ts` (`dealPrice`, engine ichida) bilan oyna bo'yicha hisoblanadi — cron yo'q, checkout ham shu engine'dan narxlaydi. Batafsil: `docs/ADMIN.md` → Vitrina
 - **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
@@ -161,7 +162,7 @@ chaqirilgandan **keyin** chizing.
 | `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
 | `cart/` | CartDrawer (Framer Motion slide-in; tugmasi `/cart` ga), CartLines (V3 qatorlar + upsell ladder takliflari) |
 | `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate (PDP V3, server; bitta DOM, telefonda `order-*`), BuyBox (+ `MobileBuyBar`, `MiniBuyCard`), `purchase.ts` (uchala «qo'shish» tugmasining umumiy holati — rejim, oraliq, miqdor), SubscribeToSave, ProductGallery, ProductSections (`SectionNav` scrollspy, `Collapsible` — desktopda ochiq, telefonda akkordeon), WishlistButton, ShareButton, OutOfStockNotify |
-| `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
+| `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli; «Aksiyada» = haqiqiy eski narx yoki mahsulotni nomlagan aksiya, «Tez tugaydi» = haqiqiy tugash ≤ 72 soat, filtr ham saralash ham), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
 | `account/` | AccountShell (AccountNavV3: desktopda yon menyu, telefonda sahifa oxirida ro'yxat), AccountView (kirish yoki bosh sahifa), AuthForm (OTP, 6 katak — bitta input), OrderHistory (+ `useMyOrders`, `StatusBadge`), OrderDetail, MySubscriptions (+ `SubscriptionsView`). Holatlar — `lib/account/orders.ts` |
 | `quiz/` | QuizFlow (V3: savol = `h1`, segmentli progress, «Kim uchun» foto kartalari — `lib/content/audience.ts`; telefonda fixed «Keyingi» paneli), QuizPlanView (natija: qora toʻplam paneli, «Nega»/«Izoh» qatorlari, shifokor ogohlantirishi), QuizPlanActions (+ `QuizAddOne`). Logika — `lib/quiz/` |
 | `info/` | InfoShell (InfoNavV3: desktopda chap menyu + yordam kartasi, telefonda chip qatori; `InfoHeader`, `InfoFaq`), LeadForms (`PartnerForm`, `ContactForm` → `app/actions/leads.ts` → operator Telegram'i) |
@@ -228,7 +229,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1550 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1557 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini
@@ -245,7 +246,7 @@ To'liq holat, qoidalar va off-page reja: **[`docs/SEO.md`](docs/SEO.md)**.
   `meta.pages`, uz + ru). Qo'lda `${x} — Go Vita` yozilmaydi. Title ≤ 70, so'rov so'zi
   oldinda ("… narxi, Toshkentda sotib olish" / "… купить в Ташкенте, цена");
   description 70–160, haqiqiy narx/son/muddat bilan (`page-meta.test.ts`)
-- **Query-param variantlari** (`?sort`, filtrlar, `?page`) — `noindex, follow`
+- **Query-param variantlari** (`?sort`, filtrlar — `sale`, `ending` ham, `?page`) — `noindex, follow`
 - **Bo'sh javon** (0 mahsulot) — 404 va sitemap'da yo'q; `productCount` javon
   ko'rsatgandek (`categorySlug`, sotuvdagilar) sanaladi
 - **JSON-LD** (`src/lib/seo/jsonld.tsx`): WebSite + Store — faqat bosh sahifada (Store

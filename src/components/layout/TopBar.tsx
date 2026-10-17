@@ -6,9 +6,16 @@ import type { Locale } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { ICONS } from "./header-item";
+import type { StoreAnnouncement } from "@/lib/merch/model";
+import { AnnouncementBar } from "@/components/marketing/AnnouncementBar";
 
-/* Utility row above the desktop header (design: HeaderV3, first row). */
-export function TopBar() {
+/*
+  Utility row above the desktop header (design: HeaderV3, first row). When
+  the team runs announcements (admin → Vitrina → Eʼlon qatori) they take the
+  middle of the row instead of the info links; city, Telegram, phone and the
+  language switch stay.
+*/
+export function TopBar({ announcements = [] }: { announcements?: StoreAnnouncement[] }) {
   const t = useTranslations("header");
   const nav = useTranslations("nav");
   const links = [
@@ -26,12 +33,18 @@ export function TopBar() {
         </svg>
         {t("city")}
       </Link>
-      {links.map((l, i) => (
-        <Link key={l.href} href={l.href} className={cn("hover:text-ink", i >= 3 && "max-xl:hidden")}>
-          {l.label}
-        </Link>
-      ))}
-      <span className="flex-1" />
+      {announcements.length > 0 ? (
+        <AnnouncementBar items={announcements} variant="desktop" />
+      ) : (
+        <>
+          {links.map((l, i) => (
+            <Link key={l.href} href={l.href} className={cn("hover:text-ink", i >= 3 && "max-xl:hidden")}>
+              {l.label}
+            </Link>
+          ))}
+          <span className="flex-1" />
+        </>
+      )}
       <a href={BRAND.social.telegram} target="_blank" rel="noopener noreferrer" className="hover:text-ink">
         Telegram
       </a>

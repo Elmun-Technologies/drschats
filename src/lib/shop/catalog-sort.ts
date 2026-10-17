@@ -3,15 +3,17 @@
   the server listing and the client filter sheet read it — a value exported
   from a "use client" file reaches a server component as a reference only.
 */
-export type CatalogSort = "popular" | "price_asc" | "price_desc" | "deals" | "new";
+export type CatalogSort = "popular" | "price_asc" | "price_desc" | "deals" | "ending" | "new";
 
-export const SORT_ORDER: CatalogSort[] = ["popular", "price_asc", "price_desc", "deals", "new"];
+export const SORT_ORDER: CatalogSort[] = ["popular", "price_asc", "price_desc", "deals", "ending", "new"];
 
 const SORT_KEYS: Record<CatalogSort, string> = {
   popular: "sortPopular",
   price_asc: "v3.sortPriceAsc",
   price_desc: "v3.sortPriceDesc",
   deals: "v3.sortDeals",
+  // Sorted in the listing (catalog-filters sortByEnding): the catalogue source has no such order.
+  ending: "v3.sortEnding",
   new: "sortNew",
 };
 

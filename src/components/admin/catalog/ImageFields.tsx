@@ -186,7 +186,7 @@ export function SingleImageField({
   );
 }
 
-function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded: (url: string) => void }) {
+export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded: (url: string) => void }) {
   const [state, setState] = useState<FormState & { url?: string }>();
   const [pending, setPending] = useState(false);
   const input = useRef<HTMLInputElement>(null);
