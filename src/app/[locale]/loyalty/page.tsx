@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { buttonVariants } from "@/components/ui/Button";
 import { COMMERCE, thousands } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
@@ -36,9 +37,9 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("pages.v3");
-  const { discounts } = COMMERCE;
-  const firstOrder = await firstOrderOffer();
-  const amount = thousands(COMMERCE.freeShippingOver);
+  const [firstOrder, commerce] = await Promise.all([firstOrderOffer(), getCommerceSettings()]);
+  const { firstPercent, recurringPercent } = commerce.subscription;
+  const amount = thousands(commerce.delivery.freeShippingOver);
   const hours = COMMERCE.delivery.tashkent.hours;
 
   const programs = [
@@ -54,9 +55,9 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
           },
         ]),
     {
-      value: `−${discounts.subscriptionFirstPercent}% → −${discounts.subscriptionRecurringPercent}%`,
+      value: `−${firstPercent}% → −${recurringPercent}%`,
       title: t("loyalty.subTitle"),
-      text: t("loyalty.subText", { first: discounts.subscriptionFirstPercent, next: discounts.subscriptionRecurringPercent }),
+      text: t("loyalty.subText", { first: firstPercent, next: recurringPercent }),
       note: t("loyalty.subNote"),
       dark: false,
     },

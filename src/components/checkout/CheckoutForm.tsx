@@ -14,6 +14,7 @@ import { useSaleClock } from "@/lib/cart/useSaleClock";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals } from "@/lib/cart/pricing";
 import { COMMERCE } from "@/lib/config/commerce";
+import { useCommerce, usePricingRules } from "@/lib/commerce/context";
 import { BRAND } from "@/lib/brand";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -80,6 +81,8 @@ export function CheckoutForm({
   const clear = useCart((s) => s.clear);
   const removeLine = useCart((s) => s.remove);
   const promotions = usePromotions();
+  const commerce = useCommerce();
+  const pricing = usePricingRules();
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -159,7 +162,7 @@ export function CheckoutForm({
   // Each ladder percent once: after an accept the ladder is rebuilt, and
   // without this it would offer a fresh product at the same discount forever.
   const takenPercents = new Set(lines.map((l) => l.upsellDiscountPercent).filter(Boolean));
-  const ladderSteps = buildUpsellLadder(lines, recommended).filter(
+  const ladderSteps = buildUpsellLadder(lines, recommended, commerce.ladder).filter(
     (s) => s.stepType !== "free_gift" && !takenPercents.has(s.discountPercent),
   );
   const payChoice = payment === "online" ? provider : "cod";
@@ -172,7 +175,7 @@ export function CheckoutForm({
       setValue("provider", value as "payme" | "click" | "uzum", { shouldValidate: Boolean(errors.provider) });
     }
   };
-  const totals = computeTotals(lines, promotions, { pickup: watch("method") === "pickup" });
+  const totals = computeTotals(lines, promotions, { pickup: watch("method") === "pickup", rules: pricing });
   /*
     The order-level discount (a promo code or the first-order one) as the
     server priced it. Shipping is measured before it, as on the server.
@@ -313,7 +316,7 @@ export function CheckoutForm({
               </div>
               {watch("method") !== "pickup" && <DeliveryCutoff />}
               {watch("method") !== "pickup" && (
-                <FreeShippingFillers products={gapFillers(recommended, lines, totals.freeShippingRemaining)} />
+                <FreeShippingFillers products={gapFillers(recommended, lines, totals.freeShippingRemaining, { window: commerce.cart.gapWindow })} />
               )}
             </div>
           )}
@@ -347,7 +350,7 @@ export function CheckoutForm({
               <RadioCard value="courier" {...register("method")}>
                 <OptionText
                   title={t("methodCourier")}
-                  note={tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, fee: formatMoney(COMMERCE.shippingFee, locale) })}
+                  note={tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, fee: formatMoney(pricing.shippingFee, locale) })}
                 />
               </RadioCard>
               <RadioCard value="pickup" {...register("method")}>

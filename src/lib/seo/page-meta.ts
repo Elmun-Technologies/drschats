@@ -4,6 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
 import type { HealthTopicKind } from "@/lib/content/health-topics";
 import { COMMERCE } from "@/lib/config/commerce";
+import { localizedOr } from "@/lib/commerce/settings";
 import { formatMoney, formatNumber } from "@/lib/utils";
 import { buildPageMetadata } from "./metadata";
 
@@ -33,17 +34,24 @@ function sentence(text: string) {
   return text.trim().replace(/[.!…]+$/, "");
 }
 
-function delivery() {
+/* The admin's commerce rules; imported on use so the pure helpers above stay testable without a server. */
+async function commerceRules() {
+  const { getCommerceSettings } = await import("@/lib/commerce/server");
+  return getCommerceSettings();
+}
+
+async function delivery() {
+  const commerce = await commerceRules();
   return {
     hours: String(COMMERCE.delivery.tashkent.hours),
-    free: formatNumber(COMMERCE.freeShippingOver),
-    fee: formatNumber(COMMERCE.shippingFee),
+    free: formatNumber(commerce.delivery.freeShippingOver),
+    fee: formatNumber(commerce.delivery.courierFee),
   };
 }
 
 async function regionsLabel(locale: Locale) {
-  const t = await getTranslations({ locale, namespace: "meta.seo" });
-  return t("regions");
+  const [t, commerce] = await Promise.all([getTranslations({ locale, namespace: "meta.seo" }), commerceRules()]);
+  return localizedOr(commerce.delivery.regionsNote, locale, t("regions"));
 }
 
 export type StaticPageKey =
@@ -53,7 +61,7 @@ export type StaticPageKey =
 
 export async function staticPageMetadata(locale: Locale, key: StaticPageKey, path: string): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta.pages" });
-  const values = { ...delivery(), regions: await regionsLabel(locale) };
+  const values = { ...(await delivery()), regions: await regionsLabel(locale) };
   return buildPageMetadata({
     locale,
     path,
@@ -74,7 +82,7 @@ export async function productMetadata(product: Product, locale: Locale): Promise
         tagline: sentence(product.tagline),
         price: formatMoney(product.price, locale),
         regions: await regionsLabel(locale),
-        ...delivery(),
+        ...(await delivery()),
       }),
     ),
     image: product.images[0]?.url,
@@ -110,7 +118,7 @@ export async function listingMetadata({
   const t = await getTranslations({ locale, namespace: "meta.seo" });
   const description =
     products.length > 0
-      ? t(`${kind}Description`, { name, ...listingFacts(products, locale), ...delivery() })
+      ? t(`${kind}Description`, { name, ...listingFacts(products, locale), ...(await delivery()) })
       : fallbackDescription;
   return buildPageMetadata({
     locale,

@@ -9,6 +9,7 @@ import { useCart } from "@/lib/cart/store";
 import { useDialog } from "@/lib/ui/useDialog";
 import { useUpsell } from "@/lib/upsell/store";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
+import { useCommerce } from "@/lib/commerce/context";
 import { getUpsellProducts } from "@/app/actions/getUpsellProducts";
 import { formatMoney } from "@/lib/utils";
 import { trackUpsellView, trackUpsellAccept, trackUpsellSkip } from "@/lib/analytics/events";
@@ -19,6 +20,7 @@ export function UpsellLadderModal() {
   const tc = useTranslations("common");
   const { lines, add } = useCart();
   const { steps, currentStep, isOpen, cumulativeSavings, shown, openLadder, nextStep, skipStep, closeLadder } = useUpsell();
+  const ladderRules = useCommerce().ladder;
   const prevLength = useRef(lines.length);
   const dialogRef = useDialog<HTMLDivElement>(isOpen, closeLadder);
 
@@ -32,10 +34,10 @@ export function UpsellLadderModal() {
   // Watch for new items added to cart → trigger ladder once per session
   useEffect(() => {
     const current = lines.length;
-    if (current > prevLength.current && !shown && current === 1) {
+    if (ladderRules.enabled && current > prevLength.current && !shown && current === 1) {
       // First item added — fetch products and build ladder
       getUpsellProducts(locale).then((products) => {
-        const ladder = buildUpsellLadder(lines, products);
+        const ladder = buildUpsellLadder(lines, products, ladderRules);
         if (ladder.length >= 2) {
           // Small delay so cart toast settles first
           setTimeout(() => openLadder(ladder), 600);

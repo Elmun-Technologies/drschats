@@ -1,11 +1,10 @@
 import type { Promotion } from "@/lib/shopflow/types";
-import {
-  FIRST_ORDER_PERCENT,
-  RECURRING_PERCENT,
-  SUBSCRIPTION_FREE_SHIPPING_OVER,
-} from "@/lib/subscription/plans";
+import { DEFAULT_PRICING, type PricingRules } from "@/lib/commerce/settings";
 
-export const DEFAULT_SHIPPING = 30000;
+export type { PricingRules } from "@/lib/commerce/settings";
+
+/** The default courier fee (lib/config/commerce.ts); the effective one comes from the admin's commerce rules. */
+export const DEFAULT_SHIPPING = DEFAULT_PRICING.shippingFee;
 
 /** The order schema caps a line at 99 units (shopflow/schemas.ts). */
 export const MAX_LINE_QTY = 99;
@@ -141,12 +140,18 @@ export function freeGiftAllowed(lines: OfferLine[]): boolean {
  * Pure, testable pricing engine. Mirrors Shopflow's sales logic so the cart
  * preview matches the operator's confirmed total: upsell discounts +
  * promotions (percent off, buy-2-get-1, free shipping over a threshold).
+ *
+ * `rules` are the admin's commerce rules (free-shipping threshold, courier
+ * fee, subscription percents). The cart passes the ones the layout read, the
+ * checkout action the ones it read itself — from the same cached setting — so
+ * the preview and the order are priced by the same numbers.
  */
 export function computeTotals(
   lines: CartLine[],
   promotions: Promotion[] = [],
-  options: { pickup?: boolean } = {},
+  options: { pickup?: boolean; rules?: PricingRules } = {},
 ): CartTotals {
+  const rules = options.rules ?? DEFAULT_PRICING;
   const subtotal = lines.reduce((sum, l) => sum + l.price * l.quantity, 0);
   const itemCount = lines.reduce((sum, l) => sum + l.quantity, 0);
 
@@ -173,14 +178,18 @@ export function computeTotals(
   let recurringTotal = 0;
   for (const l of subscriptionLines) {
     const lineTotal = l.price * l.quantity;
-    recurringTotal += Math.round((lineTotal * (100 - RECURRING_PERCENT)) / 100);
+    recurringTotal += Math.round((lineTotal * (100 - rules.subscriptionRecurringPercent)) / 100);
     if (!l.upsellDiscountPercent) {
-      discount += Math.round((lineTotal * FIRST_ORDER_PERCENT) / 100);
+      discount += Math.round((lineTotal * rules.subscriptionFirstPercent) / 100);
     }
   }
 
-  // Promotions
-  let freeShippingThreshold = subscriptionLines.length > 0 ? SUBSCRIPTION_FREE_SHIPPING_OVER : Infinity;
+  /*
+    One free-shipping threshold for the whole site (the admin's commerce
+    rules), for one-off and repeating carts alike. A "free shipping over"
+    promotion can only lower it, for a campaign.
+  */
+  let freeShippingThreshold = rules.freeShippingOver;
   for (const promo of promotions) {
     if (promo.type === "percent_off" && promo.percent) {
       const base = lines.filter((l) => promotionApplies(promo, l)).reduce((sum, l) => sum + l.price * l.quantity, 0);
@@ -210,7 +219,7 @@ export function computeTotals(
   const afterDiscount = Math.max(0, subtotal - discount);
 
   // Collecting from the warehouse costs nothing — the delivery page says so.
-  let shipping = itemCount > 0 && !options.pickup ? DEFAULT_SHIPPING : 0;
+  let shipping = itemCount > 0 && !options.pickup ? rules.shippingFee : 0;
   let freeShippingRemaining = 0;
   if (Number.isFinite(freeShippingThreshold) && !options.pickup) {
     if (afterDiscount >= freeShippingThreshold) {

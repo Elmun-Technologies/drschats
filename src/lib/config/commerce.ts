@@ -10,8 +10,15 @@
   The rule from here on: if a number appears in copy, it appears as a
   translation placeholder fed from this file. The remaining literals are the
   ones inside translated strings that quote a value — those are re-generated
-  from here by hand whenever a value changes, and `npm run audit:consistency`
-  fails the build if a stale copy is left behind.
+  from here by hand whenever a value changes.
+
+  The threshold, the courier fee and the subscription percents are now the
+  admin's (/admin/commerce, lib/commerce/settings.ts): the values below are
+  only their DEFAULTS, used until an admin saves a change. Code that prices or
+  quotes them reads the effective setting (server: getCommerceSettings,
+  client: useCommerce), never these constants. Translations quote them through
+  placeholders; `src/lib/commerce/copy-literals.test.ts` fails if a hard-coded
+  copy of a default sneaks back into the messages.
 */
 
 export const COMMERCE = {

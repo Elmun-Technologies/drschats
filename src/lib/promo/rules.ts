@@ -1,5 +1,5 @@
 import type { OrderAdjustment, Promotion } from "@/lib/shopflow/types";
-import { computeTotals, promotionApplies, type CartLine } from "@/lib/cart/pricing";
+import { computeTotals, promotionApplies, type CartLine, type PricingRules } from "@/lib/cart/pricing";
 
 /*
   Promo codes and the first-order discount — the rules, with no I/O.
@@ -95,11 +95,11 @@ export function eligibleSubtotal(lines: PromoLine[], promotions: Promotion[], pr
 }
 
 /** The basket after every line offer and promotion, before shipping — what `min_subtotal` is measured against. */
-export function subtotalAfterOffers(lines: PromoLine[], promotions: Promotion[]): number {
+export function subtotalAfterOffers(lines: PromoLine[], promotions: Promotion[], pricing?: PricingRules): number {
   const t = computeTotals(
     lines.map((l, i) => ({ ...l, lineId: String(i), productId: String(i), name: "", image: "" })),
     promotions,
-    { pickup: true },
+    { pickup: true, rules: pricing },
   );
   return Math.max(0, t.subtotal - t.discount);
 }
@@ -107,6 +107,8 @@ export function subtotalAfterOffers(lines: PromoLine[], promotions: Promotion[])
 export interface PromoContext {
   lines: PromoLine[];
   promotions: Promotion[];
+  /** The commerce rules the order is priced by (subscription percents count toward `min_subtotal`). */
+  pricing?: PricingRules;
   /** The ordering phone's last nine digits; checks that need it are skipped until it is known. */
   phone9?: string | null;
   /** Redemptions of this code by `phone9` so far. */
@@ -127,7 +129,7 @@ export function evaluatePromo(def: PromoDefinition | null, ctx: PromoContext): P
     if ((ctx.phoneUses ?? 0) >= def.perPhoneLimit) return { ok: false, reason: "already_used" };
   }
   if (def.minSubtotal) {
-    const basket = subtotalAfterOffers(ctx.lines, ctx.promotions);
+    const basket = subtotalAfterOffers(ctx.lines, ctx.promotions, ctx.pricing);
     if (basket < def.minSubtotal) {
       return { ok: false, reason: "min_subtotal", minSubtotal: def.minSubtotal, remaining: def.minSubtotal - basket };
     }

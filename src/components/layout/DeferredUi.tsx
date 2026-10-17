@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart/store";
 import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
+import { useCommerce } from "@/lib/commerce/context";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
 
 /*
@@ -44,6 +45,8 @@ const LivePurchaseToast = dynamic(
 export function DeferredUi({ firstOrder }: { firstOrder: FirstOrderOffer }) {
   const [ready, setReady] = useState(false);
   const cartOpen = useCart((s) => s.isOpen);
+  // A popup switched off in /admin/commerce is not even loaded.
+  const { popups } = useCommerce();
 
   useEffect(() => {
     const schedule =
@@ -64,9 +67,9 @@ export function DeferredUi({ firstOrder }: { firstOrder: FirstOrderOffer }) {
   return (
     <>
       <CartDrawer />
-      <ExitIntentPopup />
-      {firstOrder.mode !== "off" && <WelcomeOffer offer={firstOrder} />}
-      <QuizNudge />
+      {popups.exit.enabled && <ExitIntentPopup />}
+      {popups.welcome.enabled && firstOrder.mode !== "off" && <WelcomeOffer offer={firstOrder} />}
+      {popups.quiz.enabled && <QuizNudge />}
       {/* The toast narrates purchases nobody made until the flag says a demo
           deployment wants to see it working. Kept out of the dynamic import
           above so its bundle is not even fetched when it will never render. */}

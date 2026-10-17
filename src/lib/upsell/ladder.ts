@@ -1,5 +1,6 @@
 import type { Product } from "@/lib/shopflow/types";
 import type { CartLine } from "@/lib/cart/pricing";
+import { DEFAULT_LADDER, type LadderRules } from "@/lib/commerce/settings";
 
 export interface UpsellStep {
   product: Product;
@@ -18,17 +19,21 @@ export interface UpsellStep {
 /**
  * Build a 3-step upsell ladder calibrated to the current cart.
  *
- * Step 1 — 10% off, price ∈ [30%–90% of cart subtotal]
- * Step 2 — 15% off, different category from step 1
- * Step 3 — FREE if price ≤ saved₁+saved₂, otherwise 20% off cheapest product
+ * Step 1 — p₁ off (default 10%), price ∈ [30%–90% of cart subtotal]
+ * Step 2 — p₂ off (15%), different category from step 1
+ * Step 3 — FREE if allowed and price ≤ saved₁+saved₂, otherwise p₃ (20%) off the cheapest product
  *
- * Returns [] if fewer than 2 eligible products are available.
+ * The percents and the switches are the admin's commerce rules; the checkout
+ * action accepts exactly the percents built here (`ladderPercentsAccepted`).
+ * Returns [] if the ladder is switched off or fewer than 2 eligible products are available.
  */
 export function buildUpsellLadder(
   cartLines: CartLine[],
   allProducts: Product[],
+  rules: LadderRules = DEFAULT_LADDER,
 ): UpsellStep[] {
-  if (cartLines.length === 0) return [];
+  if (!rules.enabled || cartLines.length === 0) return [];
+  const [p1, p2, p3] = rules.percents;
 
   const cartSubtotal = cartLines.reduce((s, l) => s + l.price * l.quantity, 0);
   const cartIds = new Set(cartLines.map((l) => l.productId));
@@ -40,7 +45,7 @@ export function buildUpsellLadder(
   let cumulativeSavings = 0;
   const usedIds = new Set<string>();
 
-  // ── Step 1: 10% off, price in [cartTotal×0.3, cartTotal×0.9] ──
+  // ── Step 1: p₁ off, price in [cartTotal×0.3, cartTotal×0.9] ──
   const step1Range = eligible.filter(
     (p) =>
       p.price >= cartSubtotal * 0.3 &&
@@ -53,7 +58,7 @@ export function buildUpsellLadder(
 
   if (!step1Product) return [];
 
-  const step1Discount = 10;
+  const step1Discount = p1;
   const step1Price = Math.round(step1Product.price * (1 - step1Discount / 100));
   const step1Saved = step1Product.price - step1Price;
   cumulativeSavings += step1Saved;
@@ -68,7 +73,7 @@ export function buildUpsellLadder(
     stepType: "standard",
   });
 
-  // ── Step 2: 15% off, different category ──
+  // ── Step 2: p₂ off, different category ──
   const step2Pool = eligible
     .filter(
       (p) => !usedIds.has(p.id) && p.categorySlug !== step1Product.categorySlug,
@@ -81,7 +86,7 @@ export function buildUpsellLadder(
 
   if (!step2Product) return steps;
 
-  const step2Discount = 15;
+  const step2Discount = p2;
   const step2Price = Math.round(step2Product.price * (1 - step2Discount / 100));
   const step2Saved = step2Product.price - step2Price;
   cumulativeSavings += step2Saved;
@@ -96,13 +101,13 @@ export function buildUpsellLadder(
     stepType: "standard",
   });
 
-  // ── Step 3: FREE gift if price ≤ cumulativeSavings, else 20% off cheapest ──
+  // ── Step 3: FREE gift if price ≤ cumulativeSavings, else p₃ off cheapest ──
   const remaining = eligible.filter((p) => !usedIds.has(p.id));
   if (remaining.length === 0) return steps;
 
-  const freeCandidate = remaining
-    .filter((p) => p.price <= cumulativeSavings)
-    .sort((a, b) => b.price - a.price)[0]; // pick the most expensive that's still "free"
+  const freeCandidate = rules.freeGift
+    ? remaining.filter((p) => p.price <= cumulativeSavings).sort((a, b) => b.price - a.price)[0] // the dearest that is still "free"
+    : undefined;
 
   if (freeCandidate) {
     steps.push({
@@ -114,9 +119,9 @@ export function buildUpsellLadder(
       stepType: "free_gift",
     });
   } else {
-    // No product is truly free — pick cheapest with 20% off, frame as "nearly free"
+    // No product is truly free (or gifts are off) — pick cheapest at p₃ off, frame as "nearly free"
     const cheapest = remaining.sort((a, b) => a.price - b.price)[0];
-    const step3Discount = 20;
+    const step3Discount = p3;
     const step3Price = Math.round(cheapest.price * (1 - step3Discount / 100));
     const step3Saved = cheapest.price - step3Price;
     steps.push({

@@ -7,6 +7,7 @@ import type { Product } from "@/lib/shopflow/types";
 import { cn, formatMoney } from "@/lib/utils";
 import { Badge } from "@/components/ui/Badge";
 import { SUBSCRIPTION_INTERVALS, subscriptionPricing } from "@/lib/subscription/plans";
+import { useCommerce } from "@/lib/commerce/context";
 import { usePurchase } from "@/components/product/purchase";
 
 /*
@@ -28,7 +29,7 @@ export function SubscribeToSave({ product }: { product: Product }) {
   const intervalDays = usePurchase((s) => s.intervalDays);
   const setMode = usePurchase((s) => s.setMode);
   const setIntervalDays = usePurchase((s) => s.setIntervalDays);
-  const pricing = subscriptionPricing(product.price);
+  const pricing = subscriptionPricing(product.price, useCommerce().subscription);
   const isSub = mode === "subscription";
 
   return (

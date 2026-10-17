@@ -10,6 +10,7 @@ import { useSaleClock } from "@/lib/cart/useSaleClock";
 import { useDialog } from "@/lib/ui/useDialog";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals, lineQtyCap, lineListTotal, lineTotal } from "@/lib/cart/pricing";
+import { usePricingRules } from "@/lib/commerce/context";
 import { formatMoney } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
 import { UpsellLadderModal } from "@/components/upsell/UpsellLadderModal";
@@ -24,7 +25,8 @@ export function CartDrawer() {
   const { lines, isOpen, close, setQuantity, remove } = useCart();
   useSaleClock();
   const promotions = usePromotions();
-  const totals = computeTotals(lines, promotions);
+  const pricing = usePricingRules();
+  const totals = computeTotals(lines, promotions, { rules: pricing });
   const dialogRef = useDialog<HTMLElement>(isOpen, close);
 
   return (

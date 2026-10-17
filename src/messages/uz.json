@@ -1482,7 +1482,7 @@
       },
       {
         "question": "Yetkazib berish bepulmi?",
-        "answer": "Toshkentda ham, viloyatlarda ham 300 000 soʻmdan ortiq xaridga bepul."
+        "answer": "Toshkentda ham, viloyatlarda ham {amount} soʻmdan ortiq xaridga bepul."
       },
       {
         "question": "Yetkazib berishda toʻlasam boʻladimi?",

@@ -82,6 +82,7 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Kategoriyalar | kartalar setkasi (rasm, uz/ru nom, mahsulot soni), `categories/new`, `categories/[slug]` tahrir; slug bo'sh bo'lsa uz nomdan; mahsuloti bor kategoriya o'chirilmaydi |
 | Brendlar | qo'shish (slug nomdan), tahrir, o'chirish, mahsulot soni |
 | Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
+| Savdo qoidalari | `/admin/commerce` — yetkazish (bepul yetkazish chegarasi, kuryer narxi, viloyatlar muddati uz/ru, bugun yetkazish chegarasi SS:DD), upsell zinapoyasi (yoqish, 3 qadam foizi xavfsiz to'plamdan, bepul sovg'a), obuna (birinchi / keyingi %), savat takliflari (bepul yetkazishgacha qancha qolsa), pop-up'lar (welcome / exit / quiz: yoqish, kechikish, qayta ko'rsatish kuni, sarlavha/matn uz/ru). Har kartada «Mijoz ko'radi» qatori, «Standartga qaytarish», «Oxirgi o'zgartirgan». Pastda [Savdo qoidalari](#savdo-qoidalari) |
 | Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend; saytning o'z kuzatuvi holati |
 | Administratorlar | qo'shish, o'chirish (o'zini va oxirgisini emas), parol almashtirish, barcha qurilmalardan chiqish |
 
@@ -231,6 +232,43 @@ const code = await issuePromoCode({
   keyingi bosqich shu `Notifier` ga ulanadi), qolganlar operatorga qo'ng'iroq
   ro'yxati bo'lib boradi. Hech bir kanal qabul qilmasa qator yana «kutmoqda».
 
+## Savdo qoidalari
+
+`site_settings` `commerce.rules` — bitta JSON: `{ settings: {delivery, ladder,
+subscription, cart, popups}, meta: {<bo'lim>: {by, at}} }`. Faqat saqlangan
+bo'limlar yoziladi; «Standartga qaytarish» bo'limni o'chiradi va u yana
+standartga ergashadi. **Standartlar = eski kod konstantalari**
+(`lib/config/commerce.ts`, zinapoya 10/15/20 + sovg'a, pop-up 30/3/7 kun,
+savat taklifi 150 000, cut-off — `NEXT_PUBLIC_DELIVERY_CUTOFF`), ya'ni qator
+bo'lmasa yoki buzilgan bo'lsa sayt avvalgidek ishlaydi: har bir maydon o'z
+standartiga alohida qaytadi (`coerceCommerceSettings`).
+
+- **O'qish**: server — `getCommerceSettings()` (`lib/commerce/server.ts`,
+  `unstable_cache`, teg `SITE_SETTINGS_TAG`); klient — `[locale]/layout.tsx`
+  `CommerceProvider` orqali `useCommerce()` / `usePricingRules()`. Klient fayl
+  server modulni import qilmaydi. Saqlash `revalidateTag` + `revalidatePath("/", "layout")`.
+  ISR sahifa saqlangandan keyingi birinchi so'rovda eski nusxani berib, fonda
+  yangilanadi (Next.js stale-while-revalidate) — keyingisi yangi; buyurtma narxi
+  esa har doim yangi qiymat bilan hisoblanadi.
+- **Narx**: `computeTotals(lines, promotions, { pickup, rules })` sof; savat
+  (`CheckoutForm`, `CartDrawer`, exit popup) va server (`repriceOrder(..., { pricing,
+  ladder })` checkout action'da, `promo/server.ts` `min_subtotal`) bitta
+  qiymatdan. Bepul yetkazish chegarasi endi **hamma** buyurtmaga (bir martalik ham);
+  `free_shipping_over` aksiyasi uni faqat pasaytira oladi — panel shunday aksiya
+  faol bo'lsa ogohlantiradi.
+- **Zinapoya**: foizlar `LADDER_PERCENT_CHOICES` (5, 10, 12, 15, 20, 25, 30)
+  dan, o'suvchi. Server qabul qiladigan to'plam `ladderPercentsAccepted(ladder)` —
+  savat qurgan to'plamning o'zi; o'chirilgan zinapoya — hech qanday foiz. Foiz
+  o'zgarganda eski taklif qatori bor savat `invalid_offer` + `slug` oladi va
+  qatorni olib tashlaydi (mavjud mexanizm).
+- **Pop-up'lar**: o'chirilgani `DeferredUi` da yuklanmaydi ham; `usePopups.request(id, rule)`
+  va `popupAllowed(id, rule)` o'chirilganini rad etadi, cool-down — sozlamadan.
+- **Matnlar**: tarjimalar raqamni placeholder bilan oladi; `copy-literals.test.ts`
+  standart chegarani/narxni qo'lda yozilgan tarjimani topsa yiqiladi.
+- Testlar: `lib/commerce/settings.test.ts` (parse, fallback, forma),
+  `pricing-agreement.test.ts` (generatsiya qilingan savatlar × 5 qoida to'plami —
+  klient = server; zinapoya quriladi = qabul qilinadi), `lib/ui/popups.test.ts`.
+
 ## Integratsiya sozlamalari
 
 - Ommaviy qiymatlar (analytics ID, Vebvizor, tasdiqlash kodlari) —
@@ -277,4 +315,5 @@ const code = await issuePromoCode({
 | `db/migrations/0008_storefront_merchandising.sql` | `banners`, `deals` (Vitrina) |
 | `src/lib/merch/` | Vitrina: `model.ts` (sof, testli), `store.ts` (saytdagi o'qish, kesh `merch`) |
 | `src/lib/catalog/deals.ts` | bugungi taklif narxi (sof, testli) |
+| `src/lib/commerce/` | savdo qoidalari: model, standartlar, parse (`settings.ts`), admin forma (`form.ts`), o'qish/yozish (`server.ts`), klient context (`context.tsx`) |
 | `src/lib/journey/` | kuzatuv: brauzer klienti, server yig'uvchi, sof qoidalar (`model.ts`, testli) |
