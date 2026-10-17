@@ -53,7 +53,7 @@ export async function InfoShell({
         </ol>
       </nav>
 
-      <nav aria-label={t("nav.sections")} className="no-scrollbar -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 lg:hidden">
+      <nav aria-label={t("nav.sections")} className="no-scrollbar -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:flex-wrap lg:px-0 xl:hidden">
         {all.map((key) => (
           <Link
             key={key}
@@ -69,8 +69,8 @@ export async function InfoShell({
         ))}
       </nav>
 
-      <div className="grid items-start gap-12 lg:grid-cols-[280px_minmax(0,1fr)]">
-        <aside className="hidden flex-col gap-6 lg:flex">
+      <div className="grid items-start gap-12 xl:grid-cols-[280px_minmax(0,1fr)]">
+        <aside className="hidden flex-col gap-6 xl:flex">
           <nav aria-label={t("nav.sections")} className="flex flex-col gap-5">
             {GROUPS.map((group) => (
               <div key={group.key} className="flex flex-col gap-1">
