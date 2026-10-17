@@ -1,5 +1,6 @@
 import type { OrderRequest, Product, Promotion } from "@/lib/shopflow/types";
 import { MAX_OFFER_QTY, cartLineId, computeTotals, freeGiftAllowed, type CartLine } from "./pricing";
+import { isIntervalDays } from "@/lib/subscription/plans";
 
 /*
   The order the server is willing to accept.
@@ -44,14 +45,23 @@ export function repriceOrder(
 ): RepriceResult {
   const byId = new Map(products.map((p) => [p.id, p]));
   const lines: CartLine[] = [];
+  const lineIds = new Set<string>();
 
   for (const item of order.items) {
     const product = byId.get(item.productId);
     if (!product || product.slug !== item.slug) return { ok: false, error: "unknown_product", slug: item.slug };
-    if (!product.inStock) return { ok: false, error: "out_of_stock", slug: item.slug };
+    // A withdrawn product keeps its page for old links, but is no longer sold.
+    if (!product.inStock || product.assortment === "unlisted") return { ok: false, error: "out_of_stock", slug: item.slug };
+    if (item.subscription && !isIntervalDays(item.subscription.intervalDays)) {
+      return { ok: false, error: "invalid_offer", slug: item.slug };
+    }
     const percent = item.upsellDiscountPercent;
+    const lineId = cartLineId(product.id, item.subscription, percent);
+    // The cart merges equal lines, so a repeated line id was not made by it.
+    if (lineIds.has(lineId)) return { ok: false, error: "invalid_offer", slug: item.slug };
+    lineIds.add(lineId);
     lines.push({
-      lineId: cartLineId(product.id, item.subscription, percent),
+      lineId,
       productId: product.id,
       slug: product.slug,
       name: product.name,
@@ -74,10 +84,19 @@ export function repriceOrder(
   */
   const base = lines.filter((l) => !l.upsellDiscountPercent);
   const ladderPercents = new Set<number>();
+  const offerQty = new Map<string, number>();
   for (const l of lines) {
     const percent = l.upsellDiscountPercent;
     if (!percent) continue;
-    if (percent < 100 && l.quantity > MAX_OFFER_QTY) return { ok: false, error: "invalid_offer", slug: l.slug };
+    /*
+      The cap is per product and offer, across lines: a subscription and a
+      one-off line at the same percent are different line ids, and splitting
+      an offer over them must not lift the limit.
+    */
+    const key = `${l.productId}:${percent}`;
+    const qty = (offerQty.get(key) ?? 0) + l.quantity;
+    offerQty.set(key, qty);
+    if (percent < 100 && qty > MAX_OFFER_QTY) return { ok: false, error: "invalid_offer", slug: l.slug };
     if (offers.programs.get(l.slug)?.has(percent)) continue;
     if (offers.rail.get(l.slug)?.has(percent)) continue;
     /*
