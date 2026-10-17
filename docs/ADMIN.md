@@ -232,9 +232,12 @@ const code = await issuePromoCode({
   qilish) yoki narxi saqlangan narxdan tushsa `afterProductChange` →
   `notifyWaitlist` (`lib/notify/waitlist.ts`): qatorlar band qilinadi, kanallar
   ketma-ket — Telegram (`bot_jobs`, dedupe `restock:<id>`, havola
-  `utm_source=telegram&utm_medium=restock`), SMS (hozircha `not_configured`,
-  keyingi bosqich shu `Notifier` ga ulanadi), qolganlar operatorga qo'ng'iroq
+  `utm_source=telegram&utm_medium=restock`), SMS (marketing outbox orqali,
+  dedupe `waitlist:<id>`, emojisiz matn va qisqa `/r/` havola; SMS'ni rad etgan
+  raqam SMS olmaydi — operatorga o'tadi), qolganlar operatorga qo'ng'iroq
   ro'yxati bo'lib boradi. Hech bir kanal qabul qilmasa qator yana «kutmoqda».
+  Matndagi narx — sotuvdagi narx (bugungi taklif va tugagan aksiya hisobga
+  olingan), «narxi tushdi» ham shu narx bilan solishtiriladi.
 
 ## Savdo qoidalari
 

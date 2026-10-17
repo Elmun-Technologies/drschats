@@ -22,7 +22,13 @@ export const TRIGGER_INFO: Record<FlowTrigger, { title: string; anchor: string; 
   first_order_delivered: { title: "Birinchi buyurtma yetkazildi", anchor: "yetkazilgan kundan", ready: true },
   course_ending: { title: "Kurs tugayapti", anchor: "oxirgi buyurtmadan", ready: true },
   lapsed: { title: "Uzoq vaqt xarid yoʻq", anchor: "oxirgi buyurtmadan", ready: true },
-  restock: { title: "Mahsulot omborga keldi", anchor: "mahsulot kelgan vaqtdan", ready: true },
+  /*
+    Not wired: "back in stock" messages are sent by the waitlist
+    (lib/notify/waitlist.ts — Telegram, then SMS through the outbox, then the
+    operator's call list), which never calls enqueueRestockMessage(). An
+    active restock flow enrolled nobody, so it cannot be switched on.
+  */
+  restock: { title: "Mahsulot omborga keldi", anchor: "mahsulot kelgan vaqtdan", ready: false },
   birthday: { title: "Tugʻilgan kun", anchor: "tugʻilgan kundan N kun oldin (Sodiqlik sozlamasi)", ready: true },
 };
 

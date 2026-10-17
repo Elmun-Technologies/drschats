@@ -69,7 +69,7 @@ export default async function AdminFlowsPage() {
                       <Link href={`/admin/flows/${flow.id}`} className="hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 rounded-[4px]">{flow.name}</Link>
                     </h2>
                     <Pill tone={flow.active ? "dark" : "outline"}>{flow.active ? "Yoqilgan" : "Oʻchiq"}</Pill>
-                    {info && !info.ready && <Pill tone="muted">3-bosqich</Pill>}
+                    {info && !info.ready && <Pill tone="muted">Ulanmagan</Pill>}
                   </div>
                   <p className="mt-1 text-[14px] text-ink-2">
                     {info?.title ?? flow.trigger} · {steps.length} ta qadam: {steps.map((st) => `${formatDelay(st.delayMinutes)}${st.promo ? ` (${st.promo.kind === "percent" ? `−${st.promo.value}%` : "kod"})` : ""}`).join(" → ")}

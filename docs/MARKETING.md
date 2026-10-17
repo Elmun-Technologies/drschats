@@ -265,7 +265,7 @@ anonim savat — faqat retarget eksporti.
 | Birinchi xariddan keyin | `first_order_delivered` | yetkazilgan kuni maslahat · +7 kun test · +21 kun −10% (7 kun) |
 | Kurs tugayapti | `course_ending` (`COURSE_DAYS`/`REORDER_LEAD_DAYS`) | −5 kun · tugash kuni |
 | Qaytarish | `lapsed` | 60 kun · 75 kun −15% (72 soat) |
-| Omborga keldi | `restock` | darhol (`enqueueRestockMessage()` — `lib/flows/restock.ts`) |
+| Omborga keldi | `restock` | **ulanmagan, yoqib bo'lmaydi** — «omborga keldi» xabarini kutish ro'yxati yuboradi (`lib/notify/waitlist.ts`: Telegram → SMS outbox → operator). `enqueueRestockMessage()` (`lib/flows/restock.ts`) hech qayerdan chaqirilmaydi |
 
 `checkout_dropped` triggeri bor (oqim ekilmagan), `birthday` — 3-bosqich.
 Kanal: `telegram_then_sms` (ulangan bo'lsa Telegram, aks holda SMS), `telegram`, `sms`.
