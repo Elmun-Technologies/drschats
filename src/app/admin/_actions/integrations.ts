@@ -254,3 +254,73 @@ export async function sendResendTestEmail(_: FormState, form: FormData): Promise
     return { error: "Resend API bilan bogʻlanib boʻlmadi. Keyinroq qayta urinib koʻring." };
   }
 }
+
+const smsSchema = z.object({
+  email: z.string().trim().max(254).refine((value) => !value || z.string().email().safeParse(value).success, "Eskiz hisobi emailini kiriting."),
+  password: z.string().max(256),
+  sender: z.string().trim().max(11).regex(/^$|^[A-Za-z0-9 ._-]{3,11}$/, "Yuboruvchi nomi 3–11 lotin harf yoki raqam (masalan 4546 yoki GoVita)."),
+  clearEmail: z.boolean(),
+  clearPassword: z.boolean(),
+  clearSender: z.boolean(),
+});
+
+export async function saveSmsIntegration(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const password = form.get("password");
+  const parsed = smsSchema.safeParse({
+    email: formString(form, "email"),
+    password: typeof password === "string" ? password : "",
+    sender: formString(form, "sender"),
+    clearEmail: form.get("clearEmail") === "on",
+    clearPassword: form.get("clearPassword") === "on",
+    clearSender: form.get("clearSender") === "on",
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "SMS sozlamalarini tekshiring." };
+
+  const updates: IntegrationSettingUpdates = {};
+  if (parsed.data.clearEmail) updates["sms.email"] = null;
+  else if (parsed.data.email) updates["sms.email"] = parsed.data.email;
+  if (parsed.data.clearPassword) updates["sms.password"] = null;
+  else if (parsed.data.password) updates["sms.password"] = parsed.data.password;
+  if (parsed.data.clearSender) updates["sms.sender"] = null;
+  else if (parsed.data.sender) updates["sms.sender"] = parsed.data.sender;
+
+  if (Object.keys(updates).length > 0) {
+    const unavailable = integrationSettingsError();
+    if (unavailable) return unavailable;
+    try {
+      await saveIntegrationSettings(updates, admin.id);
+    } catch (error) {
+      return { error: saveErrorMessage(error) };
+    }
+  }
+  try {
+    await savePublicSettings({ "sms.transliterate": form.get("transliterate") === "on" ? "on" : null }, admin.id);
+  } catch {
+    return { error: "Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring." };
+  }
+  revalidatePath("/admin/integrations");
+  return { ok: "SMS sozlamalari saqlandi. Ulanishni «Test SMS yuborish» bilan tekshiring." };
+}
+
+const testPhone = z
+  .string()
+  .trim()
+  .transform((value) => value.replace(/\D/g, ""))
+  .refine((digits) => /^(998)?\d{9}$/.test(digits), "Oʻzbekiston raqamini kiriting: +998 90 123 45 67");
+
+/** One plain test SMS to a number the admin typed; not stored in the outbox and not marketing. */
+export async function sendTestSms(_: FormState, form: FormData): Promise<FormState> {
+  await requireAdmin();
+  const parsed = testPhone.safeParse(formString(form, "testPhone"));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Raqamni tekshiring." };
+  const { resolveSmsProvider } = await import("@/lib/sms");
+  const { provider } = await resolveSmsProvider();
+  if (!provider) return { error: "SMS sozlanmagan. Avval Eskiz email va parolini saqlang." };
+  // Until Eskiz approves the account's templates it accepts only its own test text.
+  const text = formString(form, "testText") || "Bu Eskiz dan test";
+  const result = await provider.send(`+998${parsed.data.slice(-9)}`, text.slice(0, 300));
+  if (result.ok) return { ok: `${provider.name === "fake" ? "Sinov rejimi (SMS_FAKE): " : ""}SMS qabul qilindi${result.id ? ` (id ${result.id})` : ""}. Telefoningizni tekshiring.` };
+  if (result.error === "eskiz_login_rejected") return { error: "Eskiz email yoki parolni qabul qilmadi." };
+  return { error: `SMS yuborilmadi: ${result.error}` };
+}

@@ -16,6 +16,7 @@ katalog o'sha yo'lning oxirida turadi.
 - **Savdo qoidalari panelda** (`/admin/commerce`, `site_settings` `commerce.rules`, `lib/commerce/`): bepul yetkazish chegarasi, kuryer narxi, viloyatlar muddati, bugun yetkazish chegarasi (env `NEXT_PUBLIC_DELIVERY_CUTOFF` endi faqat standart, runtime'da o'qiladi), upsell zinapoyasi foizlari/sovg'a, obuna %, savat takliflari chegarasi, pop-up'lar (yoqish, kechikish, cool-down, matn uz/ru). `lib/config/commerce.ts` dagi konstantalar — **faqat standart**: narxlaydigan yoki iqtibos keltiradigan kod samarali qiymatni o'qiydi (server `getCommerceSettings()`, klient `useCommerce()`/`usePricingRules()` — layout'dagi `CommerceProvider`), sof funksiyalarga qiymat argument bilan beriladi (`computeTotals(..., { rules })`, `repriceOrder(..., { pricing, ladder })`, `buildUpsellLadder(..., ladder)`, `gapFillers(..., { window })`, `subscriptionPricing(price, percents)`). Server qabul qiladigan zinapoya foizlari shu sozlamadan (`ladderPercentsAccepted`). To'liq: `docs/ADMIN.md` §Savdo qoidalari
 - **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
+- **SMS va avtomatlashtirish** (0010): har marketing xabari `outbound_messages` navbatidan o'tadi (`lib/messaging/`) — Telegram `bot_jobs` ga beriladi, SMS Eskiz orqali (`lib/sms/`, sozlash `/admin/integrations`). Ishchi sayt jarayonida (`instrumentation.ts`, har 60 s; `/api/cron/messages`). **Qoidalar kodda**: 21:00–09:00 Toshkent yuborilmaydi (09:00 ga suriladi), `marketing_optouts` har yuborishdan oldin, har SMS oxirida STOP havolasi (`/s/<token>`), promokod yuborish paytida, havolalar `/r/<id>` (bosish + `utm_campaign=flow-…|campaign-…`). Oqimlar `/admin/flows` (sukut: o'chiq), jurnal `/admin/messages`. Yangi marketing xabarini **faqat `queueMessage` orqali** yuboring. To'liq: **[`docs/MARKETING.md`](docs/MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages)**
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
 - **Ombor soni va kutayotganlar** (`0009_stock_waitlist.sql`): `products.stock_qty` — `null` = kuzatilmaydi (avvalgidek, faqat `in_stock`). Kuzatilsa buyurtma sonni **buyurtma bilan bitta tranzaksiyada** shartli `UPDATE … WHERE stock_qty >= n` bilan kamaytiradi (yetmasa butun buyurtma rad, «Faqat N ta qoldi»), 0 da `in_stock=false`; bekor qilish **bir marta** qaytaradi (buyurtmaning `stock_movements` netosi). Saytda «Omborda N ta qoldi» faqat haqiqiy son ≤ chegara (`low_stock_at`, standart `site_settings.stock.lowStockAt`=5) va > 0 bo'lsa. Qoidalar sof: `lib/catalog/stock-rules.ts`; baza: `stock.ts`. «Xabar ber» / «Narxi tushsa xabar bering» — `restock_requests`; qaytganda/arzonlashganda `lib/notify/` (`Notifier`: telegram → `bot_jobs` `restock:<id>`, sms — keyingi bosqich uchun stub, qolgani operatorga qo'ng'iroq ro'yxati). Admin: `/admin/waitlist`. Narx yoki ombor holatini o'zgartiradigan yangi yo'l `afterProductChange()` ni chaqirsin
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
@@ -230,7 +231,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1557 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1567 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini
@@ -564,6 +565,12 @@ ADMIN_SESSION_SECRET=...      # ≥ 32 belgi
 ADMIN_SETUP_TOKEN=...         # birinchi admin yaratilgach o'chiriladi
 # Rasm yuklash (Fly Tigris, `fly storage create` beradi)
 AWS_ENDPOINT_URL_S3=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... BUCKET_NAME=... AWS_REGION=auto
+
+# SMS (Eskiz) — yoki /admin/integrations (shifrlangan); xabar havolalari kaliti
+ESKIZ_EMAIL=... ESKIZ_PASSWORD=... ESKIZ_SENDER=4546
+MESSAGE_LINK_SECRET=...              # bir marta qo'ying, o'zgartirmang (STOP va /r/ havolalari)
+SMS_FAKE=1                           # faqat lokal: live deploy'da e'tiborga olinmaydi
+MESSAGE_WORKER=off                   # ixtiyoriy: jarayon ichidagi ishchini o'chirish
 
 # Telegram klub boti (docs/BOT-ADMIN.md) — operator botidan alohida bot
 BOT_API_KEY=...                      # ≥ 32 belgi; bo'lmasa /api/bot yopiq (401)

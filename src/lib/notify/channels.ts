@@ -4,6 +4,8 @@ import { telegramLinks } from "@/lib/db/schema";
 import { enqueue, getClubConfig } from "@/lib/bot/store";
 import { escapeHtml } from "@/lib/bot/messages";
 import { notifyOperator } from "@/lib/notifications/operator";
+import { queueMessage } from "@/lib/messaging/outbox";
+import { resolveSmsProvider } from "@/lib/sms";
 import { OPEN_PRODUCT, operatorCallList, waitlistText } from "./messages";
 import type { FallbackNotifier, Notifier, Outcome, WaitMessage } from "./types";
 
@@ -43,15 +45,31 @@ export const telegramNotifier: Notifier = {
 };
 
 /*
-  SMS — the next phase. The provider (Eskiz / Play Mobile) plugs in here:
-  read its credentials, send `waitlistText(m)` with an `utm_source=sms` link
-  to `m.phone`, answer { ok: true } when the provider accepts. Until then it
-  declines, and the request falls through to the operator.
+  SMS: through the marketing outbox (lib/messaging), so quiet hours, opt-out
+  and the STOP line apply as to every other SMS. Declines when no gateway is
+  configured, and the request falls through to the operator. The request id
+  is the dedupe key, so a second dispatch never sends a second SMS.
 */
 export const smsNotifier: Notifier = {
   channel: "sms",
-  async send(): Promise<Outcome> {
-    return { ok: false, reason: "not_configured" };
+  async send(m: WaitMessage): Promise<Outcome> {
+    try {
+      const { provider } = await resolveSmsProvider();
+      if (!provider) return { ok: false, reason: "not_configured" };
+      if (m.phone9.length !== 9) return { ok: false, reason: "no_recipient" };
+      const url = m.url.replace(/utm_source=[^&]+/, "utm_source=sms");
+      await queueMessage(getDb(), {
+        channel: "sms",
+        phone9: m.phone9,
+        locale: m.locale,
+        text: waitlistText({ ...m, url }),
+        dedupeKey: `waitlist:${m.requestId}`,
+      });
+      return { ok: true };
+    } catch (err) {
+      console.error("[waitlist] sms queue failed:", (err as Error).message);
+      return { ok: false, reason: "failed" };
+    }
   },
 };
 

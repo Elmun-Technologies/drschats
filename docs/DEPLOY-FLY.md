@@ -151,6 +151,27 @@ HTTP xizmati yoʻq, Telegram'ni long-polling qiladi va saytning `/api/bot` iga
 murojaat qiladi. Sayt tomoni: `BOT_API_KEY`, `TELEGRAM_CLUB_BOT_TOKEN` secret'lari va
 `NEXT_PUBLIC_TELEGRAM_CLUB_BOT` build arg. Toʻliq qadamlar: **[`BOT-ADMIN.md`](BOT-ADMIN.md)**.
 
+## Xabarlar ishchisi (SMS, avtomatlashtirish)
+
+Ishchi **sayt jarayonining ichida** yuradi (`instrumentation.ts` →
+`lib/messaging/worker.ts`): har 60 soniyada navbatdagi SMS/Telegram xabarlarini
+yuboradi, har 5 daqiqada avtomatlashtirish oqimlarini tekshiradi. Shuning uchun
+`fly.toml` dagi `auto_stop_machines = "off"` va `min_machines_running = 1`
+**kerak** — mashina uxlasa, xabarlar ham to'xtaydi (yo'qolmaydi, uyg'ongach ketadi).
+Ikkinchi mashina qo'shilsa ham xavfsiz: bazadagi advisory lock va `SKIP LOCKED`
+bitta xabarni ikki marta yubormaydi.
+
+Ixtiyoriy tashqi cron (masalan, Fly scheduled machine yoki uptime-servis):
+`curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://www.govita.uz/api/cron/messages`.
+O'chirish: `MESSAGE_WORKER=off` (cron endpoint ishlayveradi).
+
+Secret'lar: `MESSAGE_LINK_SECRET` (ixtiyoriy, lekin tavsiya — `openssl rand -base64 32`;
+bo'lmasa `EMAIL_TOKEN_SECRET`, keyin `ADMIN_SESSION_SECRET` ishlatiladi. **Bir marta
+qo'yib, o'zgartirmang**: SMS dagi STOP va qisqa havolalar shu kalit bilan imzolangan).
+Eskiz login/parol — `/admin/integrations` (shifrlangan) yoki `ESKIZ_EMAIL`,
+`ESKIZ_PASSWORD`, `ESKIZ_SENDER` secret'lari. `SMS_FAKE=1` live deploy'da
+(`GOVITA_PRODUCTION=1`) e'tiborga olinmaydi.
+
 ## Nima o'zgarmadi
 
 - `npm run build` CI'da avvalgidek (standalone faqat `BUILD_STANDALONE=1` da).

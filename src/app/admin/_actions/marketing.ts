@@ -3,31 +3,54 @@
 import { randomBytes } from "node:crypto";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { and, eq, inArray, isNull, sql } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
-import { botMembers, campaigns, promotions } from "@/lib/db/schema";
+import { campaigns, promotions, type MessagePromo } from "@/lib/db/schema";
 import { CATALOG_TAG } from "@/lib/catalog/db";
 import { rawPromotions } from "@/lib/shopflow/mock";
 import { SLUG_RE, fromTashkentInput } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
 import { segmentById, segmentMembers } from "@/lib/admin/segments";
-import { enqueue } from "@/lib/bot/store";
-import { escapeHtml } from "@/lib/bot/messages";
+import { queueMessage, reachContext, resolveReach, type Reach } from "@/lib/messaging/outbox";
+import { firstName, renderTemplate } from "@/lib/messaging/template";
+import { isQuietHours } from "@/lib/messaging/quiet-hours";
+import { campaignMessageKey } from "@/lib/messaging/keys";
 import type { FormState } from "./catalog";
 
-const campaignSchema = z.object({
-  segment: z.string().min(1).max(40),
-  name: z.string().trim().min(2, "Kampaniya nomini yozing.").max(120),
-  message: z.string().trim().min(5, "Xabar matnini yozing.").max(1000, "Xabar 1000 belgidan oshmasin."),
-  confirm: z.literal("on", { errorMap: () => ({ message: "Yuborishni tasdiqlang." }) }),
-});
+const campaignSchema = z
+  .object({
+    segment: z.string().min(1).max(40),
+    name: z.string().trim().min(2, "Kampaniya nomini yozing.").max(120),
+    message: z.string().trim().min(5, "Xabar matnini yozing.").max(1000, "Xabar 1000 belgidan oshmasin."),
+    channel: z.enum(["telegram", "sms", "telegram_then_sms"]).default("telegram"),
+    link: z.string().trim().max(200).regex(/^$|^\/[A-Za-z0-9\-_/?=&.%]*$/, "Havola / bilan boshlansin (masalan /sale).").default(""),
+    promoKind: z.enum(["none", "percent", "fixed"]).default("none"),
+    promoValue: z.coerce.number().int().default(0),
+    promoTtl: z.coerce.number().int().default(72),
+    promoMin: z.string().trim().default(""),
+    confirm: z.literal("on", { errorMap: () => ({ message: "Yuborishni tasdiqlang." }) }),
+  })
+  .superRefine((d, ctx) => {
+    if (d.promoKind !== "none") {
+      if (d.promoValue < 1 || (d.promoKind === "percent" && d.promoValue > 90)) ctx.addIssue({ code: "custom", message: "Chegirma: foiz 1–90, summa 1 soʻmdan.", path: ["promoValue"] });
+      if (d.promoTtl < 1 || d.promoTtl > 24 * 90) ctx.addIssue({ code: "custom", message: "Kod muddati 1 soatdan 90 kungacha.", path: ["promoTtl"] });
+      if (!d.message.includes("{kod}")) ctx.addIssue({ code: "custom", message: "Shaxsiy kod tanlangan — matnga {kod} qoʻshing.", path: ["message"] });
+    }
+    if (d.link && !d.message.includes("{havola}")) ctx.addIssue({ code: "custom", message: "Havola berilgan — matnga {havola} qoʻshing.", path: ["message"] });
+    if (d.message.includes("{havola}") && !d.link) ctx.addIssue({ code: "custom", message: "Matnda {havola} bor — havola sahifasini yozing (masalan /sale).", path: ["link"] });
+  });
 
 /*
-  A Telegram message to the members of a segment who linked the club bot and
-  have not blocked it. Linking the bot (and pressing /start) is their consent
-  to hear from the shop; nobody else is messaged. {ism} becomes the
-  customer's first name.
+  A message to the members of a segment, through the same outbox as the
+  automations: quiet hours (21:00–09:00 Tashkent → 09:00), opt-out, a STOP
+  link on every SMS and an «oʻchirish» button on Telegram, an optional
+  personal promo code per recipient (issued when the message leaves) and the
+  short click link that ties orders back to the campaign.
+
+  Telegram goes only to members who linked the club bot and have not blocked
+  it (pressing /start is their consent); SMS only to customers whose number
+  we have from an order. {ism} becomes the customer's first name.
 */
 export async function sendSegmentCampaign(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin();
@@ -35,35 +58,60 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const segment = segmentById(parsed.data.segment);
   if (!segment) return { error: "Segment topilmadi." };
+  const d = parsed.data;
+  const promo: MessagePromo | null =
+    d.promoKind === "none" ? null : { kind: d.promoKind, value: d.promoValue, ttlHours: d.promoTtl, minSubtotal: d.promoMin ? Math.max(0, Math.round(Number(d.promoMin))) || null : null };
 
   const members = await segmentMembers(segment, 5000);
-  const chatIds = [...new Set(members.map((m) => m.telegramChatId).filter((id): id is number => id !== null))];
   const db = getDb();
-  const active = chatIds.length
-    ? new Set((await db.select({ chatId: botMembers.chatId }).from(botMembers).where(and(inArray(botMembers.chatId, chatIds), isNull(botMembers.blockedAt)))).map((r) => r.chatId))
-    : new Set<number>();
-  const recipients = members.filter((m) => m.telegramChatId !== null && active.has(m.telegramChatId));
-  if (recipients.length === 0) {
-    return { error: "Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi." };
+  const ctx = await reachContext();
+  if (d.channel === "sms" && !ctx.smsAvailable) return { error: "SMS ulanmagan. Integratsiyalar → SMS (Eskiz) boʻlimida sozlang." };
+
+  const targets: { phone9: string; name: string | null; reach: Exclude<Reach, { channel: null }> }[] = [];
+  const seen = new Set<string>();
+  let unreachable = 0;
+  for (const member of members) {
+    const phone9 = member.phone?.replace(/\D/g, "").slice(-9) ?? "";
+    if (phone9.length !== 9 || seen.has(phone9)) continue;
+    seen.add(phone9);
+    const reach = await resolveReach(db, phone9, d.channel, ctx);
+    if (reach.channel === null) unreachable += 1;
+    else targets.push({ phone9, name: member.name, reach });
+  }
+  if (targets.length === 0) {
+    return {
+      error:
+        d.channel === "telegram"
+          ? "Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi."
+          : "Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq yoki obunadan chiqqan).",
+    };
   }
 
   const [campaign] = await db
     .insert(campaigns)
-    .values({ name: parsed.data.name, channel: "telegram", segment: segment.id, message: parsed.data.message, audience: members.length, createdBy: admin.id })
+    .values({ name: d.name, channel: d.channel, segment: segment.id, message: d.message, audience: members.length, createdBy: admin.id, promo, link: d.link || null })
     .returning({ id: campaigns.id });
-  const seen = new Set<number>();
-  for (const member of recipients) {
-    const chatId = member.telegramChatId!;
-    if (seen.has(chatId)) continue;
-    seen.add(chatId);
-    const firstName = member.name?.trim().split(/\s+/)[0] ?? "";
-    const text = escapeHtml(parsed.data.message.replaceAll("{ism}", firstName || "doʻstim"));
-    await enqueue(chatId, { text }, { kind: "campaign", dedupeKey: `campaign:${campaign.id}:${chatId}` });
+  let queued = 0;
+  for (const t of targets) {
+    const id = await queueMessage(db, {
+      channel: t.reach.channel,
+      phone9: t.phone9,
+      chatId: t.reach.channel === "telegram" ? t.reach.chatId : null,
+      locale: "uz",
+      text: renderTemplate(d.message, { ism: firstName(t.name, "uz") }),
+      link: d.link || null,
+      promo,
+      campaignId: campaign.id,
+      dedupeKey: campaignMessageKey(campaign.id, t.phone9),
+    });
+    if (id) queued += 1;
   }
-  await db.update(campaigns).set({ status: "sent", queued: seen.size, sentAt: new Date() }).where(eq(campaigns.id, campaign.id));
+  await db.update(campaigns).set({ status: "sent", queued, sentAt: new Date() }).where(eq(campaigns.id, campaign.id));
   revalidatePath("/admin/campaigns");
+  revalidatePath("/admin/messages");
   revalidatePath(`/admin/segments/${segment.id}`);
-  return { ok: `${seen.size} ta mijozga navbatga qoʻyildi. Bot daqiqasiga ~60 ta xabar yuboradi.` };
+  const night = isQuietHours(new Date()) ? " Hozir tungi vaqt — xabarlar ertalab 09:00 da ketadi." : "";
+  return { ok: `${queued} ta mijozga navbatga qoʻyildi${unreachable ? ` (${unreachable} tasiga kanal yoʻq yoki obunadan chiqqan)` : ""}. Ishchi har daqiqada yuboradi.${night}` };
 }
 
 /* ─── Promotions ─────────────────────────────────────────────────────────── */

@@ -58,7 +58,7 @@ export const BIRTHDAY_LEAD_DAYS = 7;
  * runs out is a reminder; nudging after it has is an apology.
  */
 export const COURSE_DAYS = 30;
-const REORDER_LEAD_DAYS = 5;
+export const REORDER_LEAD_DAYS = 5;
 /** Stop chasing a purchase nobody came back for. */
 const REORDER_WINDOW_DAYS = 120;
 

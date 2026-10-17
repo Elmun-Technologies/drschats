@@ -74,7 +74,9 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Vitrina | bannerlar (bosh sahifa slayderi, header ostidagi qator, katalog sahifalari — muddat, taymer, bosishlar soni), eʼlon qatori (TopBar), bugungi taklif (hozirgi + navbat). Pastda batafsil |
 | Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
 | Promokodlar | kodlar ro'yxati (holat: faol / tugagan / shaxsiy; manba bo'yicha), ishlatildi / limit, kod keltirgan buyurtma va tushum, 30 kunlik ko'rsatkichlar; yaratish (kod qo'lda yoki avtomatik `GV-7K3P9Q`), tahrir, o'chirish (faqat ishlatilmagan — ishlatilgani faqat faolsizlantiriladi), N ta bir martalik kod toʻplami → CSV (SMS/Telegram uchun); «Birinchi buyurtma chegirmasi» kartasi (yoqish, foiz). Buyurtma sahifasida promokod / birinchi buyurtma qatori. Pastda [Promokodlar](#promokodlar) |
-| Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
+| Kampaniyalar | yuborilgan xabarlar (Telegram / SMS / Telegram→SMS, shaxsiy promokod): auditoriya, yuborildi, yetkazildi, bosildi, buyurtma, tushum, konversiya |
+| Avtomatlashtirish | `/admin/flows`: 5 ta oqim (savat, birinchi xarid, kurs, qaytarish, omborga keldi) — yoqish/oʻchirish, hozir oqimda, 30 kunlik yuborildi / bosildi / qaytdi / tushum; muharrir: qadamlar (muddat, kanal, havola, promokod), uz/ru matn, oʻzgaruvchi chiplari, jonli koʻrinish va SMS qismlari; «Bir marta ishga tushirish». [MARKETING.md](MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages) |
+| Xabarlar | `/admin/messages`: har bir SMS/Telegram xabari — kanal, holat, manba (oqim/kampaniya) filtrlari, yashirilgan telefon, sabab, bosishlar; obunadan chiqqanlar soni |
 | UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
 | Mahsulotlar | Mahsulotlar / Kategoriyalar / Brendlar — bitta tab qatori. Holat chiplari (sotuvda / tugagan / chegirmada / rasmsiz / sotuvdan olingan), kategoriya va brend filtri, saralash (tartib, nom, narx, yangi), o'rnatilgan katalogdan import, yangi, tahrir (uz/ru). Rasmlar: saytdagi rasmlardan tanlash oynasi (`public/products`, `public/images/products/c-*.png`, `public/images/stock` — so'rov paytida o'qiladi, `lib/admin/repo-images.server.ts`), tartib strelkalari, Tigris bo'lsa yuklash. Kategoriya selekti yonida «+ Yangi kategoriya». Saqlash saytni darhol yangilaydi |
 | Ombor | mahsulot formasida «Ombordagi soni» (bo'sh — kuzatilmaydi) va «Kam qoldi chegarasi»; ro'yxatda ombor tugmasi («12 ta», «kam: 3», «tugagan», «kuzatilmaydi») → ± / aniq son / kuzatmaslik oynasi (izoh bilan), «Kam qolganlar» chipi, standart chegara kartasi; tahrir sahifasida «Ombor tarixi» |
@@ -83,7 +85,7 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Brendlar | qo'shish (slug nomdan), tahrir, o'chirish, mahsulot soni |
 | Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
 | Savdo qoidalari | `/admin/commerce` — yetkazish (bepul yetkazish chegarasi, kuryer narxi, viloyatlar muddati uz/ru, bugun yetkazish chegarasi SS:DD), upsell zinapoyasi (yoqish, 3 qadam foizi xavfsiz to'plamdan, bepul sovg'a), obuna (birinchi / keyingi %), savat takliflari (bepul yetkazishgacha qancha qolsa), pop-up'lar (welcome / exit / quiz: yoqish, kechikish, qayta ko'rsatish kuni, sarlavha/matn uz/ru). Har kartada «Mijoz ko'radi» qatori, «Standartga qaytarish», «Oxirgi o'zgartirgan». Pastda [Savdo qoidalari](#savdo-qoidalari) |
-| Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend; saytning o'z kuzatuvi holati |
+| Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend, SMS — Eskiz (+ test SMS, ʻ→' sozlamasi); saytning o'z kuzatuvi holati |
 | Administratorlar | qo'shish, o'chirish (o'zini va oxirgisini emas), parol almashtirish, barcha qurilmalardan chiqish |
 
 ## Vitrina — `/admin/storefront`
@@ -308,6 +310,8 @@ standartiga alohida qaytadi (`coerceCommerceSettings`).
 | `db/migrations/0005_admin_integration_settings.sql` | panel sozlamalari uchun shifrlangan integration ciphertext jadvali |
 | `db/migrations/0006_crm_marketing.sql` | `visitors`, `visitor_events`, `orders.visitor_id`, `promotions`, `campaigns`, `site_settings`, `admin_users.session_epoch` |
 | `db/migrations/0007_promo_codes.sql` | `promo_codes`, `promo_redemptions`, `orders.promo_code` |
+| `db/migrations/0010_sms_flows.sql` | `marketing_optouts`, `flows`, `flow_enrollments`, `outbound_messages`, `campaigns.promo/link`, kanal `sms`/`telegram_then_sms` |
+| `src/lib/sms/`, `src/lib/messaging/`, `src/lib/flows/` | SMS (Eskiz), xabarlar navbati va ishchisi, oqimlar — [MARKETING.md](MARKETING.md) |
 | `src/lib/promo/` | promokod qoidalari (`rules.ts`, testli), tranzaksiya va `issuePromoCode` (`server.ts`), birinchi buyurtma sozlamasi (`settings.ts`, `offer.ts`), savat store'i (`store.ts`, `govita-promo`) |
 | `db/migrations/0009_stock_waitlist.sql` | `products.stock_qty`, `products.low_stock_at`, `stock_movements`, `restock_requests` |
 | `src/lib/catalog/stock-rules.ts`, `stock.ts`, `order-stock.ts` | ombor qoidalari (sof, testli), bazadagi o'zgarishlar, buyurtma holati → ombor |

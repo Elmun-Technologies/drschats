@@ -279,10 +279,15 @@ export const promotions = pgTable("promotions", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export type CampaignChannel = "telegram" | "sms" | "telegram_then_sms";
+
+/** A personal code issued to each recipient at send time (lib/promo/server.ts → issuePromoCode). */
+export type MessagePromo = { kind: "percent" | "fixed"; value: number; ttlHours: number; minSubtotal?: number | null };
+
 export const campaigns = pgTable("campaigns", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
   name: text("name").notNull(),
-  channel: text("channel").$type<"telegram">().notNull(),
+  channel: text("channel").$type<CampaignChannel>().notNull(),
   segment: text("segment").notNull(),
   message: text("message").notNull(),
   status: text("status").$type<"draft" | "sent">().notNull().default("draft"),
@@ -291,6 +296,8 @@ export const campaigns = pgTable("campaigns", {
   createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   sentAt: timestamp("sent_at", { withTimezone: true }),
+  promo: jsonb("promo").$type<MessagePromo | null>(),
+  link: text("link"),
 });
 
 /* Storefront merchandising — db/migrations/0008_storefront_merchandising.sql */
@@ -367,5 +374,78 @@ export const promoRedemptions = pgTable("promo_redemptions", {
   orderId: bigint("order_id", { mode: "number" }).notNull(),
   phone9: text("phone9").notNull(),
   discount: integer("discount").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* SMS, flows and the message outbox — db/migrations/0010_sms_flows.sql */
+
+export type OptOutChannel = "sms" | "telegram" | "all";
+
+export const marketingOptouts = pgTable("marketing_optouts", {
+  phone9: text("phone9").notNull(),
+  channel: text("channel").$type<OptOutChannel>().notNull(),
+  source: text("source"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const flows = pgTable("flows", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  trigger: text("trigger").notNull(),
+  active: boolean("active").notNull().default(false),
+  steps: jsonb("steps").$type<unknown>().notNull().default([]),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const ENROLLMENT_STATUSES = ["active", "converted", "exited", "done"] as const;
+export type EnrollmentStatus = (typeof ENROLLMENT_STATUSES)[number];
+
+export const flowEnrollments = pgTable("flow_enrollments", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  flowId: text("flow_id").notNull(),
+  subject: text("subject").notNull(),
+  cycle: text("cycle").notNull(),
+  context: jsonb("context").$type<Record<string, unknown>>().notNull().default({}),
+  anchorAt: timestamp("anchor_at", { withTimezone: true }).notNull(),
+  step: integer("step").notNull().default(0),
+  nextAt: timestamp("next_at", { withTimezone: true }),
+  status: text("status").$type<EnrollmentStatus>().notNull().default("active"),
+  exitReason: text("exit_reason"),
+  convertedOrderId: bigint("converted_order_id", { mode: "number" }),
+  enrolledAt: timestamp("enrolled_at", { withTimezone: true }).notNull().defaultNow(),
+  finishedAt: timestamp("finished_at", { withTimezone: true }),
+});
+
+export const MESSAGE_CHANNELS = ["sms", "telegram"] as const;
+export type MessageChannel = (typeof MESSAGE_CHANNELS)[number];
+export const MESSAGE_STATUSES = ["pending", "sending", "sent", "failed", "skipped"] as const;
+export type MessageStatus = (typeof MESSAGE_STATUSES)[number];
+
+export const outboundMessages = pgTable("outbound_messages", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  channel: text("channel").$type<MessageChannel>().notNull(),
+  phone9: text("phone9"),
+  chatId: bigint("chat_id", { mode: "number" }),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  text: text("text").notNull(),
+  link: text("link"),
+  promo: jsonb("promo").$type<MessagePromo | null>(),
+  promoCode: text("promo_code"),
+  flowId: text("flow_id"),
+  flowStep: integer("flow_step"),
+  enrollmentId: bigint("enrollment_id", { mode: "number" }),
+  campaignId: bigint("campaign_id", { mode: "number" }),
+  dedupeKey: text("dedupe_key").notNull().unique(),
+  status: text("status").$type<MessageStatus>().notNull().default("pending"),
+  attempts: integer("attempts").notNull().default(0),
+  error: text("error"),
+  providerRef: text("provider_ref"),
+  botJobId: bigint("bot_job_id", { mode: "number" }),
+  scheduledAt: timestamp("scheduled_at", { withTimezone: true }).notNull().defaultNow(),
+  claimedAt: timestamp("claimed_at", { withTimezone: true }),
+  sentAt: timestamp("sent_at", { withTimezone: true }),
+  clickedAt: timestamp("clicked_at", { withTimezone: true }),
+  clicks: integer("clicks").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
