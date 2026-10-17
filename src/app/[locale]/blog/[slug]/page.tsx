@@ -117,7 +117,7 @@ export default async function ArticlePage({
             </header>
 
             <div className="relative aspect-[16/9] overflow-hidden rounded-[20px] bg-tile">
-              <Image src={article.image} alt="" fill priority sizes="(max-width: 1024px) 100vw, 760px" className="object-cover" />
+              <Image src={article.image} alt="" fill priority sizes="(max-width: 1023px) 100vw, 760px" className="object-cover" />
             </div>
 
             {article.sections.map((section, i) => (
@@ -163,7 +163,7 @@ export default async function ArticlePage({
           <section aria-labelledby="article-more" className="flex flex-col gap-4 lg:gap-5">
             <div className="flex items-center justify-between gap-4">
               <h2 id="article-more" className="text-[22px] font-bold leading-7 lg:text-[26px]">{t("v3.more")}</h2>
-              <Link href="/blog" className="inline-flex min-h-11 items-center gap-1.5 text-[15px] font-semibold hover:underline">
+              <Link href="/blog" className="inline-flex min-h-11 shrink-0 items-center gap-1.5 whitespace-nowrap text-[15px] font-semibold hover:underline">
                 {t("backToBlog")}
                 <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M5 12h14M13 6l6 6-6 6" />

@@ -65,7 +65,7 @@ export default async function AboutPage({ params }: { params: Promise<{ locale: 
           </p>
         </div>
         <div className="relative aspect-[4/3] overflow-hidden rounded-[20px] lg:aspect-auto lg:h-[314px]">
-          <Image src="/images/stock/st-pharmacist-shelf.webp" alt="" fill sizes="(max-width: 1024px) 100vw, 420px" className="object-cover" />
+          <Image src="/images/stock/st-pharmacist-shelf.webp" alt="" fill sizes="(max-width: 1023px) 100vw, 420px" className="object-cover" />
         </div>
       </div>
 
