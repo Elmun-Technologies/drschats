@@ -158,6 +158,10 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
 function PriceDropNotify({ product }: { product: Product }) {
   const t = useTranslations("outOfStock");
   const [open, setOpen] = useState(false);
+  // The button that had focus is gone once the form opens; focus goes to the field it opened.
+  useEffect(() => {
+    if (open) document.getElementById(`notify-${product.id}`)?.focus();
+  }, [open, product.id]);
   if (!open) {
     return (
       <button

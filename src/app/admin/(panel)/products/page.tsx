@@ -182,6 +182,7 @@ export default async function AdminProductsPage({
                     <span className="hidden shrink-0 sm:block">
                       <StockButton id={p.id} name={p.name || p.slug} qty={p.stockQty} lowAt={p.lowAt} />
                     </span>
+                    {(p.kind === "unlisted" || p.stockQty != null) && <span aria-hidden="true" className="hidden w-[136px] shrink-0 sm:block" />}
                     {p.kind !== "unlisted" && p.stockQty == null && (
                       <form action={toggleProductStock} className="hidden shrink-0 sm:block">
                         <input type="hidden" name="id" value={p.id} />

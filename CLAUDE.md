@@ -15,6 +15,7 @@ katalog o'sha yo'lning oxirida turadi.
 - **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
+- **Ombor soni va kutayotganlar** (`0009_stock_waitlist.sql`): `products.stock_qty` — `null` = kuzatilmaydi (avvalgidek, faqat `in_stock`). Kuzatilsa buyurtma sonni **buyurtma bilan bitta tranzaksiyada** shartli `UPDATE … WHERE stock_qty >= n` bilan kamaytiradi (yetmasa butun buyurtma rad, «Faqat N ta qoldi»), 0 da `in_stock=false`; bekor qilish **bir marta** qaytaradi (buyurtmaning `stock_movements` netosi). Saytda «Omborda N ta qoldi» faqat haqiqiy son ≤ chegara (`low_stock_at`, standart `site_settings.stock.lowStockAt`=5) va > 0 bo'lsa. Qoidalar sof: `lib/catalog/stock-rules.ts`; baza: `stock.ts`. «Xabar ber» / «Narxi tushsa xabar bering» — `restock_requests`; qaytganda/arzonlashganda `lib/notify/` (`Notifier`: telegram → `bot_jobs` `restock:<id>`, sms — keyingi bosqich uchun stub, qolgani operatorga qo'ng'iroq ro'yxati). Admin: `/admin/waitlist`. Narx yoki ombor holatini o'zgartiradigan yangi yo'l `afterProductChange()` ni chaqirsin
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
 - **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
 - **Deploy**: Fly.io (Docker, `fly.toml`) — sayt, Managed Postgres va Tigris bitta tashkilotda; baza internetga ochilmaydi. To'liq: **[`docs/DEPLOY-FLY.md`](docs/DEPLOY-FLY.md)**. Vercel konfiguratsiyasi (`vercel.json`) domen ko'chirilguncha qoladi
@@ -227,7 +228,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1514 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1520 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini

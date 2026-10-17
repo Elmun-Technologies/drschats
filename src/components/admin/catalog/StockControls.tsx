@@ -30,7 +30,7 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
         title="Ombordagi sonini oʻzgartirish"
         aria-label={`${name}: ombor — ${label.label}. Oʻzgartirish`}
         className={cn(
-          "inline-flex h-11 min-w-[112px] items-center justify-center gap-1.5 rounded-[12px] px-3 text-[14px] font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
+          "inline-flex h-11 w-[132px] items-center justify-center gap-1.5 rounded-[12px] px-3 text-[14px] font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
           label.tone === "dark" && "bg-ink text-white hover:bg-black",
           label.tone === "outline" && "border border-line-strong bg-white text-ink hover:bg-tile",
           label.tone === "neutral" && "bg-tile text-ink hover:bg-tile-hover",

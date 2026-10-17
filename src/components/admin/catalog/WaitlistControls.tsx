@@ -35,7 +35,7 @@ export function NotifyNowButton({ productId, disabled }: { productId: string; di
   return (
     <form action={action} className="flex flex-col items-end gap-1">
       <input type="hidden" name="productId" value={productId} />
-      <button type="submit" disabled={pending || disabled} className={cn(smallButtonClass, "bg-ink text-white hover:bg-black disabled:opacity-50")}>
+      <button type="submit" disabled={pending || disabled} className={cn(smallButtonClass, "bg-ink text-white hover:bg-black disabled:cursor-not-allowed disabled:bg-tile disabled:text-muted")}>
         {pending ? "Yuborilmoqda…" : "Hozir xabar yuborish"}
       </button>
       {(state?.ok || state?.error) && (

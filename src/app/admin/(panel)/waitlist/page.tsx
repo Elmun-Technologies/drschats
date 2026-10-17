@@ -73,7 +73,7 @@ export default async function WaitlistPage({ searchParams }: { searchParams: Pro
                   <th className={`${thClass} text-right`}>Omborni kutmoqda</th>
                   <th className={`${thClass} text-right`}>Narxni kutmoqda</th>
                   <th className={thClass}>Oxirgi soʻrov</th>
-                  <th className={`${thClass} text-right`}><span className="sr-only">Amal</span></th>
+                  <th className={`${thClass} text-right`} aria-label="Amal" />
                 </tr>
               </thead>
               <tbody>
@@ -141,7 +141,7 @@ export default async function WaitlistPage({ searchParams }: { searchParams: Pro
                   <th className={thClass}>Turi</th>
                   <th className={thClass}>Telefon</th>
                   <th className={thClass}>Holat</th>
-                  <th className={`${thClass} text-right`}><span className="sr-only">Amal</span></th>
+                  <th className={`${thClass} text-right`} aria-label="Amal" />
                 </tr>
               </thead>
               <tbody>
