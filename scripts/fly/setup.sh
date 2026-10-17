@@ -71,6 +71,8 @@ has_secret ADMIN_SESSION_SECRET       || to_set+=("ADMIN_SESSION_SECRET=$(rand_b
 has_secret EMAIL_TOKEN_SECRET         || to_set+=("EMAIL_TOKEN_SECRET=$(rand_b64 32)")
 has_secret INTEGRATION_ENCRYPTION_KEY || to_set+=("INTEGRATION_ENCRYPTION_KEY=$(rand_hex 32)")
 has_secret CRON_SECRET                || to_set+=("CRON_SECRET=$(rand_hex 24)")
+has_secret MESSAGE_LINK_SECRET        || to_set+=("MESSAGE_LINK_SECRET=$(rand_b64 32)")
+has_secret LOYALTY_SECRET             || to_set+=("LOYALTY_SECRET=$(rand_b64 32)")
 if ! has_secret ADMIN_SETUP_TOKEN; then
   setup_token="$(rand_hex 16)"
   to_set+=("ADMIN_SETUP_TOKEN=$setup_token")

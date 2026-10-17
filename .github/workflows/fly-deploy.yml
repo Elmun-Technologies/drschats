@@ -1,10 +1,17 @@
 name: Deploy to Fly
 
-# Deploys main to Fly.io once the FLY_API_TOKEN repository secret exists
-# (fly tokens create deploy -x 999999h). Until then the job skips cleanly.
+# Every merge to main goes live on its own: after CI passes for that commit,
+# this job prepares Fly (scripts/fly/ci-prepare.sh — creates the app if
+# needed, attaches the database, generates internal keys once, copies the
+# secrets kept in GitHub) and deploys exactly that commit. Database
+# migrations run in fly.toml's release_command.
 #
-# Runs after CI, not alongside it: a push to main deploys only once every CI
-# job for that commit has passed, and it deploys exactly that commit.
+# One-time setup, all in the browser (docs/DEPLOY-FLY.md, "Avtomatik deploy"):
+#   FLY_API_TOKEN       Fly → Account → Access Tokens → org token
+#   FLY_MPG_CLUSTER_ID  Fly → Managed Postgres → your cluster's ID
+# Optional secrets (copied to Fly when set here): ADMIN_SETUP_TOKEN,
+# TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, ESKIZ_EMAIL, ESKIZ_PASSWORD, …
+# Without FLY_API_TOKEN the job skips with a warning.
 on:
   workflow_run:
     workflows: [CI]
@@ -34,7 +41,7 @@ jobs:
             echo "present=yes" >> "$GITHUB_OUTPUT"
           else
             echo "present=no" >> "$GITHUB_OUTPUT"
-            echo "::warning title=Fly deploy skipped::FLY_API_TOKEN secret yoʻq — sayt yangilanmadi. bash scripts/fly/setup.sh yoki docs/DEPLOY-FLY.md (4-qadam)"
+            echo "::warning title=Fly deploy skipped::FLY_API_TOKEN secret yoʻq — sayt yangilanmadi. GitHub → Settings → Secrets and variables → Actions ga qoʻshing (docs/DEPLOY-FLY.md, «Avtomatik deploy»)"
           fi
 
       - uses: actions/checkout@v4
@@ -45,9 +52,45 @@ jobs:
       - uses: superfly/flyctl-actions/setup-flyctl@1.6
         if: steps.token.outputs.present == 'yes'
 
+      - name: Prepare Fly (app, database, keys, secrets)
+        if: steps.token.outputs.present == 'yes'
+        env:
+          FLY_ORG: ${{ vars.FLY_ORG || 'personal' }}
+          FLY_MPG_CLUSTER_ID: ${{ secrets.FLY_MPG_CLUSTER_ID }}
+          SYNC_ADMIN_SETUP_TOKEN: ${{ secrets.ADMIN_SETUP_TOKEN }}
+          SYNC_TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          SYNC_TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          SYNC_BOT_API_KEY: ${{ secrets.BOT_API_KEY }}
+          SYNC_TELEGRAM_CLUB_BOT_TOKEN: ${{ secrets.TELEGRAM_CLUB_BOT_TOKEN }}
+          SYNC_ESKIZ_EMAIL: ${{ secrets.ESKIZ_EMAIL }}
+          SYNC_ESKIZ_PASSWORD: ${{ secrets.ESKIZ_PASSWORD }}
+          SYNC_ESKIZ_SENDER: ${{ secrets.ESKIZ_SENDER }}
+          SYNC_RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          SYNC_EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+          SYNC_EMAIL_REPLY_TO: ${{ secrets.EMAIL_REPLY_TO }}
+          SYNC_AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          SYNC_AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          SYNC_AWS_ENDPOINT_URL_S3: ${{ secrets.AWS_ENDPOINT_URL_S3 }}
+          SYNC_AWS_REGION: ${{ secrets.AWS_REGION }}
+          SYNC_BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+          SYNC_GOOGLE_SITE_VERIFICATION: ${{ secrets.GOOGLE_SITE_VERIFICATION }}
+          SYNC_YANDEX_VERIFICATION: ${{ secrets.YANDEX_VERIFICATION }}
+        run: bash scripts/fly/ci-prepare.sh
+
       - name: Deploy
         if: steps.token.outputs.present == 'yes'
         run: flyctl deploy --remote-only
+
+      - name: Summary
+        if: success() && steps.token.outputs.present == 'yes'
+        run: |
+          app="$(sed -n 's/^app = "\(.*\)"/\1/p' fly.toml)"
+          {
+            echo "### Sayt yangilandi"
+            echo ""
+            echo "- Sayt: https://${app}.fly.dev/uz"
+            echo "- Admin: https://${app}.fly.dev/admin (birinchi marta: /admin/setup, kod — GitHub'dagi ADMIN_SETUP_TOKEN)"
+          } >> "$GITHUB_STEP_SUMMARY"
 
   # The Telegram club bot (govita-vip-bot/, app govita-bot). Its own deploy
   # token (fly tokens create deploy -a govita-bot) in FLY_BOT_API_TOKEN;
