@@ -7,8 +7,10 @@ import { getAllProducts } from "@/lib/shop/all-products";
 import { upsellPool } from "@/lib/upsell/pool";
 import { PROMO_CODES_ENABLED, firstOrderOffer } from "@/lib/promo/offer";
 
-// Prices on this page feed the order total; keep them close to the catalogue.
-export const revalidate = 300;
+// Rendered per request: the promo field and the first-order offer depend on the
+// database, which the build (Fly builds without one) cannot see. A prerendered
+// cart hid the promo field for the first minutes after every deploy.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
