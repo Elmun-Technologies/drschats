@@ -231,3 +231,38 @@ export async function topProducts(days: Range, limit = 6): Promise<TopProduct[]>
     };
   });
 }
+
+export interface CustomerStats {
+  customers: number;
+  repeat: number;
+  averageValue: number;
+  averageGapDays: number | null;
+  lapsed: number;
+}
+
+/** Whole-base numbers for the customers page, independent of its list limit. */
+export async function customerStats(): Promise<CustomerStats> {
+  const [row] = await query(sql`
+    with o as (
+      select right(regexp_replace(customer->>'phone', '[^0-9]', '', 'g'), 9) as phone9, total, created_at
+      from orders
+      where status <> 'cancelled' and length(regexp_replace(customer->>'phone', '[^0-9]', '', 'g')) >= 9
+    ),
+    c as (
+      select phone9, count(*) as n, sum(total) as value, min(created_at) as first_at, max(created_at) as last_at
+      from o group by phone9
+    )
+    select count(*) as customers,
+           count(*) filter (where n >= 2) as repeat,
+           coalesce(avg(value), 0) as average_value,
+           avg(extract(epoch from (last_at - first_at)) / 86400 / (n - 1)) filter (where n >= 2) as gap,
+           count(*) filter (where last_at < now() - interval '60 days') as lapsed
+    from c`);
+  return {
+    customers: num(row?.customers),
+    repeat: num(row?.repeat),
+    averageValue: Math.round(num(row?.average_value)),
+    averageGapDays: row?.gap == null ? null : Math.round(num(row.gap)),
+    lapsed: num(row?.lapsed),
+  };
+}

@@ -3,8 +3,8 @@ import { ORDER_PERIODS, listOrders, orderStatusCounts, periodStart, type OrderPe
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/db/schema";
 import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
 import { describeAttribution } from "@/lib/analytics/attribution";
-import { Card, ChipNav, EmptyState, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, smallButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
-import { formatNumber } from "@/lib/utils";
+import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
+import { cn, formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Buyurtmalar" };
 
@@ -35,6 +35,9 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
     return `/admin/orders${text ? `?${text}` : ""}`;
   };
 
+  const live = counts.all - counts.cancelled;
+  const average = live > 0 ? Math.round(revenue / live) : 0;
+
   return (
     <>
       <PageHeader
@@ -42,16 +45,30 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
         lead={<>{formatNumber(counts.all)} ta buyurtma · {som(revenue)} (bekor qilinganlarsiz)</>}
         actions={<a href={`/admin/orders/export?${query({})}`} className={secondaryButtonClass}>Excelʼga yuklash (CSV)</a>}
       />
-      <nav aria-label="Davr" className="mb-3 flex flex-wrap gap-1.5">
+      <nav aria-label="Davr" className="mb-4 flex w-fit max-w-full gap-1 overflow-x-auto rounded-[14px] bg-tile p-1">
         {(Object.keys(ORDER_PERIODS) as OrderPeriod[]).map((p) => {
           const text = query({ period: p });
           return (
-            <Link key={p} href={`/admin/orders${text ? `?${text}` : ""}`} aria-current={p === period ? "page" : undefined} className={p === period ? `${smallButtonClass} bg-ink text-white hover:bg-black` : smallButtonClass}>
+            <Link
+              key={p}
+              href={`/admin/orders${text ? `?${text}` : ""}`}
+              aria-current={p === period ? "page" : undefined}
+              className={cn(
+                "inline-flex h-11 shrink-0 items-center rounded-[12px] px-3.5 text-[14px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
+                p === period ? "bg-ink text-white" : "text-ink-2 hover:bg-white hover:text-ink",
+              )}
+            >
               {ORDER_PERIODS[p]}
             </Link>
           );
         })}
       </nav>
+      <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Metric label="Buyurtmalar" value={formatNumber(counts.all)} hint={`${formatNumber(counts.new)} ta yangi`} />
+        <Metric label="Savdo summasi" value={somShort(revenue)} hint="bekor qilinganlarsiz" />
+        <Metric label="Oʻrtacha chek" value={som(average)} />
+        <Metric label="Bekor qilingan" value={`${counts.all ? Math.round((counts.cancelled / counts.all) * 100) : 0}%`} hint={`${formatNumber(counts.cancelled)} ta buyurtma`} />
+      </div>
       <form role="search" action="/admin/orders" className="mb-4 flex flex-wrap gap-2">
         {active && <input type="hidden" name="status" value={active} />}
         {period !== "all" && <input type="hidden" name="period" value={period} />}

@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { customerLifecycle, listCustomers, type CustomerLifecycle } from "@/lib/admin/customers";
 import { daysSince } from "@/lib/journey/model";
-import { Card, ChipNav, EmptyState, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
+import { customerStats } from "@/lib/admin/dashboard";
+import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Mijozlar" };
@@ -29,7 +30,8 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
   const q = first(params.q)?.trim() ?? "";
   const stageParam = first(params.stage);
   const stage = stageParam && stageParam in LIFECYCLE ? (stageParam as CustomerLifecycle) : null;
-  const all = (await listCustomers(q)).map((c) => ({ ...c, lifecycle: customerLifecycle(c) }));
+  const [list, stats] = await Promise.all([listCustomers(q), customerStats()]);
+  const all = list.map((c) => ({ ...c, lifecycle: customerLifecycle(c) }));
   const rows = stage ? all.filter((c) => c.lifecycle === stage) : all;
   const counts = Object.fromEntries((Object.keys(LIFECYCLE) as CustomerLifecycle[]).map((key) => [key, all.filter((c) => c.lifecycle === key).length]));
   const href = (next: CustomerLifecycle | null) => {
@@ -47,6 +49,12 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
         lead="Buyurtma bergan har bir mijoz, telefon raqami boʻyicha birlashtirilgan: qancha xarid qildi, oxirgi marta qachon va hozir qaysi bosqichda."
         actions={<><a href={EXPORT_HREF} download className={secondaryButtonClass}>Excelʼga yuklash (CSV)</a><Link href="/admin/segments" className={secondaryButtonClass}>Segmentlar va retarget</Link></>}
       />
+      <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <Metric label="Xaridorlar" value={formatNumber(stats.customers)} hint="kamida bitta buyurtma" />
+        <Metric label="Qayta xarid qilganlar" value={`${stats.customers ? Math.round((stats.repeat / stats.customers) * 100) : 0}%`} hint={`${formatNumber(stats.repeat)} ta mijoz`} href="/admin/customers?stage=repeat" />
+        <Metric label="Mijozning oʻrtacha qiymati" value={som(stats.averageValue)} hint={stats.averageGapDays !== null ? `har ${stats.averageGapDays} kunda qayta xarid` : "hali qayta xarid yoʻq"} />
+        <Metric label="60 kundan beri xarid qilmagan" value={formatNumber(stats.lapsed)} hint="qaytarish uchun segment" href="/admin/segments/lapsed-60" />
+      </div>
       <form role="search" action="/admin/customers" className="mb-4 flex flex-wrap gap-2">
         {stage && <input type="hidden" name="stage" value={stage} />}
         <input name="q" defaultValue={q} placeholder="Ism, telefon yoki email" aria-label="Mijozni qidirish" className={`${inputClass} max-w-[420px]`} />

@@ -193,7 +193,7 @@ export function BarList({ rows, format = formatNumber, empty = "Maʼlumot yoʻq"
 
 export const tableClass = "w-full min-w-[640px] border-separate border-spacing-0 text-left text-[14px]";
 export const thClass = "border-b border-line px-3 pb-3 text-[13px] font-semibold text-muted first:pl-0 last:pr-0";
-export const tdClass = "border-b border-line px-3 py-3.5 align-middle text-ink first:pl-0 last:pr-0";
+export const tdClass = "border-b border-line px-3 py-3.5 align-middle first:pl-0 last:pr-0";
 
 export function TableWrap({ children }: { children: ReactNode }) {
   return <div className="-mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6">{children}</div>;
