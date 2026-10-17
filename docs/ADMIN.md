@@ -74,6 +74,7 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Vitrina | bannerlar (bosh sahifa slayderi, header ostidagi qator, katalog sahifalari — muddat, taymer, bosishlar soni), eʼlon qatori (TopBar), bugungi taklif (hozirgi + navbat). Pastda batafsil |
 | Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
 | Promokodlar | kodlar ro'yxati (holat: faol / tugagan / shaxsiy; manba bo'yicha), ishlatildi / limit, kod keltirgan buyurtma va tushum, 30 kunlik ko'rsatkichlar; yaratish (kod qo'lda yoki avtomatik `GV-7K3P9Q`), tahrir, o'chirish (faqat ishlatilmagan — ishlatilgani faqat faolsizlantiriladi), N ta bir martalik kod toʻplami → CSV (SMS/Telegram uchun); «Birinchi buyurtma chegirmasi» kartasi (yoqish, foiz). Buyurtma sahifasida promokod / birinchi buyurtma qatori. Pastda [Promokodlar](#promokodlar) |
+| Sodiqlik | `/admin/loyalty`: keshbek (yoqish, %, minimal buyurtma, ball bilan toʻlash ulushi, muddat), doʻstni taklif qilish (doʻst chegirmasi, mukofot — ball yoki promokod, oylik limit), tugʻilgan kun (profil formasi, necha kun oldin, oqim holati); majburiyat / berilgan / ishlatilgan / muddati tugagan, eng faol taklif qiluvchilar. Mijoz sahifasida balans, ball tarixi, tavsiya kodi, tugʻilgan kun roziligi va «Balansni tuzatish» (izoh majburiy). [MARKETING.md](MARKETING.md#5f-sodiqlik-keshbek-tavsiya-tugʻilgan-kun-bannerlar-ab-adminloyalty) |
 | Kampaniyalar | yuborilgan xabarlar (Telegram / SMS / Telegram→SMS, shaxsiy promokod): auditoriya, yuborildi, yetkazildi, bosildi, buyurtma, tushum, konversiya |
 | Avtomatlashtirish | `/admin/flows`: 5 ta oqim (savat, birinchi xarid, kurs, qaytarish, omborga keldi) — yoqish/oʻchirish, hozir oqimda, 30 kunlik yuborildi / bosildi / qaytdi / tushum; muharrir: qadamlar (muddat, kanal, havola, promokod), uz/ru matn, oʻzgaruvchi chiplari, jonli koʻrinish va SMS qismlari; «Bir marta ishga tushirish». [MARKETING.md](MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages) |
 | Xabarlar | `/admin/messages`: har bir SMS/Telegram xabari — kanal, holat, manba (oqim/kampaniya) filtrlari, yashirilgan telefon, sabab, bosishlar; obunadan chiqqanlar soni |
@@ -103,7 +104,8 @@ ko'rinish), sof qism `src/lib/merch/model.ts` (testli).
   telefon uchun alohida rasm ixtiyoriy; fon ochiq/qora; muddat (Toshkent vaqti).
   **Taymer faqat tugash sanasi bilan** — baza `check` bilan ham ushlaydi.
   Banner muddatidan oldin ko'rinmaydi, tugash daqiqasida ochiq sahifadan ham
-  yo'qoladi (`useUnexpired`). **Faol slayder banneri bo'lmasa — `home.slides`
+  yo'qoladi (`useUnexpired`). **A/B test**: ikki banner bitta kalit bilan A/B
+  variant — tafsilot [MARKETING.md](MARKETING.md#bannerlar-ab-testi). **Faol slayder banneri bo'lmasa — `home.slides`
   dagi o'rnatilgan slaydlar aynan avvalgidek**; oxirgi banner sahifada tugasa
   ham o'rnatilgan slaydlar qaytadi: hero hech qachon bo'sh emas.
   Bosishlar: `trackPromotionClick` (`lib/analytics/events.ts`, GA4
@@ -313,6 +315,9 @@ standartiga alohida qaytadi (`coerceCommerceSettings`).
 | `db/migrations/0010_sms_flows.sql` | `marketing_optouts`, `flows`, `flow_enrollments`, `outbound_messages`, `campaigns.promo/link`, kanal `sms`/`telegram_then_sms` |
 | `src/lib/sms/`, `src/lib/messaging/`, `src/lib/flows/` | SMS (Eskiz), xabarlar navbati va ishchisi, oqimlar — [MARKETING.md](MARKETING.md) |
 | `src/lib/promo/` | promokod qoidalari (`rules.ts`, testli), tranzaksiya va `issuePromoCode` (`server.ts`), birinchi buyurtma sozlamasi (`settings.ts`, `offer.ts`), savat store'i (`store.ts`, `govita-promo`) |
+| `db/migrations/0011_loyalty_referral_ab.sql` | `loyalty_ledger`, `loyalty_otps`, `referral_codes`, `referrals`, `customer_birthdays`, `banners.experiment/variant`, `banner_exposures` |
+| `src/lib/loyalty/`, `src/lib/referral/`, `src/lib/birthday/` | keshbek (ledger — sof, testli; OTP; buyurtma holati → ball), tavsiya kodlari, tugʻilgan kun roziligi — [MARKETING.md](MARKETING.md) |
+| `src/lib/merch/ab.ts`, `ab-stats.ts` | bannerlar A/B: taqsimot, `<head>` skripti, z-test (sof, testli); admin natijalari |
 | `db/migrations/0009_stock_waitlist.sql` | `products.stock_qty`, `products.low_stock_at`, `stock_movements`, `restock_requests` |
 | `src/lib/catalog/stock-rules.ts`, `stock.ts`, `order-stock.ts` | ombor qoidalari (sof, testli), bazadagi o'zgarishlar, buyurtma holati → ombor |
 | `src/lib/notify/` | kutayotganlar: `Notifier` interfeysi, kanallar, xabar matnlari (uz/ru), dispatch |

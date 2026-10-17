@@ -3,7 +3,7 @@
 import { randomBytes } from "node:crypto";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, ne, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { banners, deals, products, siteSettings } from "@/lib/db/schema";
@@ -14,6 +14,7 @@ import { discounted } from "@/lib/catalog/deals";
 import { livePrice } from "@/lib/shop/sale";
 import { fromTashkentInput } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
+import { EXPERIMENT_RE } from "@/lib/merch/ab";
 import type { FormState } from "./catalog";
 
 /*
@@ -54,6 +55,15 @@ const bannerSchema = z.object({
   startsAt: z.string().optional(),
   endsAt: z.string().optional(),
   sort: z.coerce.number().int().min(-999).max(999).default(0),
+  // A/B test (lib/merch/ab.ts): both empty, or a key and a variant.
+  experiment: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(40)
+    .refine((v) => v === "" || EXPERIMENT_RE.test(v), "Tajriba kaliti: lotin harflari, raqam va «-» (masalan: hero-oktabr).")
+    .default(""),
+  variant: z.enum(["", "A", "B"]).default(""),
 });
 
 export async function saveBanner(_: FormState, form: FormData): Promise<FormState> {
@@ -70,6 +80,17 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
   if (d.startsAt && !startsAt) return { error: "Boshlanish sanasini toʻliq kiriting." };
   if (d.endsAt && !endsAt) return { error: "Tugash sanasini toʻliq kiriting." };
   if (startsAt && endsAt && endsAt <= startsAt) return { error: "Tugash sanasi boshlanishdan keyin boʻlsin." };
+  if (Boolean(d.experiment) !== Boolean(d.variant)) return { error: "A/B test uchun tajriba kalitini ham, variantni ham tanlang (yoki ikkalasini boʻsh qoldiring)." };
+  const experiment = d.experiment || null;
+  const variant = d.variant || null;
+  if (experiment && variant) {
+    const others = await getDb()
+      .select({ id: banners.id, variant: banners.variant, placement: banners.placement })
+      .from(banners)
+      .where(and(eq(banners.experiment, experiment), ne(banners.id, Number(data.id) || 0)));
+    if (others.some((o) => o.variant === variant)) return { error: `«${experiment}» tajribasida ${variant} varianti allaqachon bor.` };
+    if (others.some((o) => o.placement !== d.placement)) return { error: "Tajribaning ikkala varianti bir joyda (bitta joylashuvda) boʻlsin." };
+  }
   const showCountdown = form.get("showCountdown") === "on";
   // A countdown is only ever a real end date.
   if (showCountdown && !endsAt) return { error: "Taymer faqat tugash sanasi bor bannerda koʻrsatiladi." };
@@ -88,6 +109,8 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
     showCountdown,
     sort: d.sort,
     active: form.get("active") === "on",
+    experiment,
+    variant,
     updatedAt: new Date(),
   };
   const db = getDb();
@@ -97,6 +120,14 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
     if (updated.length === 0) return { error: "Banner topilmadi." };
   } else {
     await db.insert(banners).values(row);
+    // «+ B variant»: the banner it was started from becomes the other arm, if it is not in a test yet.
+    const pairWith = Number(data.pairWith);
+    if (experiment && variant && Number.isSafeInteger(pairWith) && pairWith > 0) {
+      await db
+        .update(banners)
+        .set({ experiment, variant: variant === "A" ? "B" : "A", updatedAt: new Date() })
+        .where(and(eq(banners.id, pairWith), sql`${banners.experiment} is null`, eq(banners.placement, d.placement)));
+    }
   }
   refreshStorefront();
   if (!id) redirect("/admin/storefront?saved=1");

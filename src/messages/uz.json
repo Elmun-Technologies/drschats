@@ -738,7 +738,36 @@
           "not_applicable": "Promokod savatdagi mahsulotlarga amal qilmaydi.",
           "min_subtotal": "Promokod {min} dan boshlab amal qiladi — yana {amount} qoʻshing.",
           "rate_limited": "Juda koʻp urinish. Birozdan keyin qayta urinib koʻring.",
-          "failed": "Promokodni tekshirib boʻlmadi. Qayta urinib koʻring."
+          "failed": "Promokodni tekshirib boʻlmadi. Qayta urinib koʻring.",
+          "referral_self": "Bu sizning shaxsiy taklif kodingiz — uni doʻstlaringizga ulashing.",
+          "referral_not_first": "Doʻst kodi faqat birinchi buyurtmaga amal qiladi."
+        }
+      },
+      "referralRow": "Doʻst kodi {code} (−{percent}%)",
+      "points": {
+        "have": "Sizda {balance} ball bor",
+        "use": "Ishlatish",
+        "why": "Ballarni ishlatish uchun shu raqamga SMS kod yuboramiz — raqam sizniki ekanini tasdiqlash uchun.",
+        "codeLabel": "SMS kod",
+        "confirm": "Tasdiqlash",
+        "resend": "Kodni qayta yuborish",
+        "sending": "Yuborilmoqda…",
+        "checking": "Tekshirilmoqda…",
+        "sent": "Kod SMS orqali yuborildi. 5 daqiqa amal qiladi.",
+        "applied": "{amount} ball ishlatiladi (balans: {balance})",
+        "cap": "Ball bilan buyurtmaning {percent}% gacha qismini toʻlash mumkin.",
+        "stop": "Ishlatmaslik",
+        "resume": "Ballarni ishlatish",
+        "row": "Ballar bilan toʻlov",
+        "earn": "Yetkazilgach hisobingizga +{points} ball tushadi",
+        "errors": {
+          "wrong": "Kod notoʻgʻri. Yana {left} ta urinish qoldi.",
+          "locked": "Urinishlar tugadi. Yangi kod soʻrang.",
+          "expired": "Kod muddati tugadi. Yangi kod soʻrang.",
+          "no_code": "Avval kod soʻrang.",
+          "phone_limit": "Bu raqamga bir soatda 3 tadan ortiq kod yuborilmaydi. Keyinroq urinib koʻring.",
+          "rate_limited": "Juda koʻp urinish. Birozdan keyin qayta urinib koʻring.",
+          "failed": "Kod yuborilmadi. Birozdan keyin qayta urinib koʻring."
         }
       }
     }
@@ -780,7 +809,20 @@
       "step3": "Kuryer manzilingizga yetkazib beradi",
       "continueShopping": "Xarid qilishni davom ettirish",
       "trackBot": "Telegram orqali buyurtmani kuzatish",
-      "trackBotDesc": "@drschatsstorebot orqali buyurtma holatini real vaqtda bilib turing"
+      "trackBotDesc": "@drschatsstorebot orqali buyurtma holatini real vaqtda bilib turing",
+      "loyalty": {
+        "pointsTitle": "Keshbek ballari",
+        "earn": "Buyurtma yetkazilgach hisobingizga {points} ball tushadi.",
+        "spent": "Bu buyurtmada {points} ball ishlatildi.",
+        "shareTitle": "Doʻstingizga ulashing",
+        "shareText": "Doʻstingiz {code} kodi bilan birinchi buyurtmasiga −{percent}% chegirma oladi.",
+        "rewardPoints": "Uning buyurtmasi yetkazilgach, sizga {points} ball beramiz.",
+        "rewardPromo": "Uning buyurtmasi yetkazilgach, sizga −{percent}% shaxsiy promokod yuboramiz.",
+        "copy": "Kodni nusxalash",
+        "copied": "Nusxalandi",
+        "share": "Havolani ulashish",
+        "shareMessage": "Go Vitaʼda birinchi buyurtmangizga −{percent}% chegirma: {code} kodi bilan — {link}"
+      }
     },
     "upsellAdd": "Qoʻshish",
     "upsellFree": "BEPUL 🎁",
@@ -829,7 +871,8 @@
       "lineRemoved": "«{name}» hozir sotuvda yoʻq — u savatdan olib tashlandi. Buyurtmani qayta yuboring.",
       "promoRemoved": "Promokod endi amal qilmaydi va olib tashlandi: {reason} Yangi jamini tekshirib, buyurtmani qayta yuboring.",
       "insufficient_stock": "Savatdagi mahsulotlardan biri omborda yetarli emas. Sonini kamaytirib, qayta urinib koʻring.",
-      "onlyLeft": "«{name}»: omborda faqat {count} ta qoldi — savatdagi soni shunga tushirildi. Buyurtmani qayta yuboring."
+      "onlyLeft": "«{name}»: omborda faqat {count} ta qoldi — savatdagi soni shunga tushirildi. Buyurtmani qayta yuboring.",
+      "points_invalid": "Ballar tasdigʻi eskirdi yoki balans oʻzgardi — ballar olib tashlandi. Kodni qayta tasdiqlang yoki ballarsiz yuboring."
     }
   },
   "footer": {
@@ -1658,7 +1701,22 @@
         "b2bText": "Ulgurji narx, hudud va toʻlov muddati alohida shartnomada kelishiladi. Bu sahifadagi chakana chegirmalar bilan aralashmaydi.",
         "b2bCta": "Hamkorlik boʻyicha yozish",
         "firstNoteAuto": "Promokod kerak emas — chegirma savatda telefon raqamingiz boʻyicha avtomatik qoʻllanadi.",
-        "howAutoText": "Obuna va birinchi buyurtma chegirmasi savatchada avtomatik koʻrinadi. Promokodingiz boʻlsa, savatda kiriting — kattaroq chegirma qoʻllanadi."
+        "howAutoText": "Obuna va birinchi buyurtma chegirmasi savatchada avtomatik koʻrinadi. Promokodingiz boʻlsa, savatda kiriting — kattaroq chegirma qoʻllanadi.",
+        "leadPoints": "Saytda amalda ishlaydigan chegirmalar va ballar — yashirin daraja yoʻq, raqamlar savatdagi bilan bir xil.",
+        "pointsTitle": "Keshbek ballari",
+        "pointsText": "Har bir yetkazilgan buyurtmadan {percent}% ball qaytadi. 1 ball = 1 soʻm.",
+        "pointsMin": "Ball {amount} soʻmdan boshlab toʻlangan buyurtmalarga beriladi.",
+        "pointsNote": "Ball bilan buyurtmaning {share}% gacha qismini toʻlash mumkin; ishlatish uchun telefoningizga SMS kod keladi.",
+        "pointsExpiry": "Ballar {days} kun amal qiladi.",
+        "pointsNoExpiry": "Ballarning muddati yoʻq.",
+        "referralTitle": "Doʻstni taklif qiling",
+        "referralText": "Doʻstingiz kodingiz bilan birinchi buyurtmasiga −{percent}% oladi.",
+        "referralPoints": "Uning buyurtmasi yetkazilgach, sizga {points} ball beriladi.",
+        "referralPromo": "Uning buyurtmasi yetkazilgach, sizga −{percent}% shaxsiy promokod yuboriladi.",
+        "referralNote": "Shaxsiy kod birinchi buyurtmangiz yetkazilgach beriladi va Telegram xabarida keladi.",
+        "birthdayTitle": "Tugʻilgan kun sovgʻasi",
+        "birthdayText": "Profilda tugʻilgan kuningizni qoldiring va rozilik bering — bayramdan oldin shaxsiy promokod yuboramiz.",
+        "birthdayCta": "Profilga oʻtish"
       },
       "about": {
         "lead": "Vitaminlar va biologik faol qoʻshimchalarni Oʻzbekistonga rasmiy import qiluvchi va yetkazib beruvchi.",
@@ -1898,7 +1956,7 @@
     "sections": [
       {
         "heading": "1. Qanday maʼlumotlarni toʻplaymiz",
-        "body": "Telegram-bot (@drschatsstorebot) orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi."
+        "body": "Telegram-bot (@drschatsstorebot) orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi.\n\nAgar /profile sahifasida «Tugʻilgan kunimda sovgʻa olishni xohlayman» belgisini qoʻysangiz — ism, tugʻilgan kun (kun va oy, yil ixtiyoriy) va telefon raqami serverga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi; rozilikni oʻsha sahifada bekor qilsangiz, maʼlumot oʻchiriladi. Keshbek ballari va doʻst kodlari telefon raqamingizga bogʻlanadi; ballarni ishlatish uchun shu raqamga bir martalik SMS kod yuboriladi (serverda kodning oʻzi emas, faqat shifrlangan izi 1 kun saqlanadi)."
       },
       {
         "heading": "2. Maʼlumotlardan qanday foydalanamiz",
@@ -1918,7 +1976,7 @@
       },
       {
         "heading": "6. Cookies va tahlil",
-        "body": "Sayt toʻgʻri ishlashi va tahlil uchun cookiesʼdan foydalanadi (Google Tag Manager, Yandex.Metrika). Shuningdek, saytning oʻz tahlil tizimi anonim identifikator (gv_vid cookie) orqali qaysi sahifa va mahsulotlar koʻrilgani hamda savatdagi mahsulotlarni qayd etadi; buyurtma berganingizda bu maʼlumot buyurtmangizga bogʻlanadi. Bu yozuvlar 13 oydan keyin oʻchiriladi va uchinchi tomonga berilmaydi. Brauzer sozlamalarida cookiesʼni oʻchirib qoʻyishingiz mumkin, lekin saytning baʼzi funksiyalari ishlamay qolishi mumkin."
+        "body": "Sayt toʻgʻri ishlashi va tahlil uchun cookiesʼdan foydalanadi (Google Tag Manager, Yandex.Metrika). Shuningdek, saytning oʻz tahlil tizimi anonim identifikator (gv_vid cookie) orqali qaysi sahifa va mahsulotlar koʻrilgani hamda savatdagi mahsulotlarni qayd etadi; buyurtma berganingizda bu maʼlumot buyurtmangizga bogʻlanadi. Bu yozuvlar 13 oydan keyin oʻchiriladi va uchinchi tomonga berilmaydi. Brauzer sozlamalarida cookiesʼni oʻchirib qoʻyishingiz mumkin, lekin saytning baʼzi funksiyalari ishlamay qolishi mumkin. Bannerlarning qaysi variantini koʻrsatishni tanlash uchun tasodifiy identifikator (gv_ab cookie) saqlanadi — u shaxsni aniqlamaydi."
       },
       {
         "heading": "7. Siyosat oʻzgarishlari",
@@ -2236,6 +2294,22 @@
       "confirm": "Hammasi oʻchiriladi. Davom etamizmi?",
       "confirmYes": "Ha, oʻchirilsin",
       "cancel": "Bekor qilish"
+    },
+    "birthdayGift": {
+      "title": "Tugʻilgan kun sovgʻasi",
+      "description": "Tugʻilgan kuningizdan oldin shaxsiy promokod yuboramiz (SMS yoki Telegram).",
+      "phone": "Telefon raqami",
+      "consent": "Tugʻilgan kunimda sovgʻa olishni xohlayman",
+      "explain": "Ism, tugʻilgan kun (kun va oy) va telefon raqamingiz serverimizga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi. Rozilikni shu yerda istalgan vaqtda bekor qilishingiz mumkin — maʼlumot oʻchiriladi.",
+      "save": "Saqlash",
+      "saving": "Saqlanmoqda…",
+      "saved": "Saqlandi. Tugʻilgan kuningizdan oldin tabrik yuboramiz.",
+      "remove": "Rozilikni bekor qilish",
+      "removed": "Rozilik bekor qilindi, maʼlumot oʻchirildi.",
+      "needDate": "Avval yuqorida tugʻilgan kuningizni kiriting.",
+      "needPhone": "Telefon raqamini toʻliq kiriting.",
+      "needConsent": "Saqlash uchun rozilik belgisini qoʻying.",
+      "failed": "Saqlab boʻlmadi. Birozdan keyin qayta urinib koʻring."
     }
   },
   "emailPreferences": {

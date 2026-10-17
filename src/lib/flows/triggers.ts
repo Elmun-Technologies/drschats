@@ -30,7 +30,12 @@ const CUSTOMER_ORDERS = sql`
   from (select o.*, ${ORDER_PHONE} as phone9 from orders o where o.status <> 'cancelled') o
   where length(phone9) = 9`;
 
-export function candidateQuery(trigger: FlowTrigger, window: TriggerWindow): SQL | null {
+export interface TriggerOptions {
+  /** birthday: how many days before the date the flow starts (loyalty.rules → birthday.daysBefore). */
+  birthdayDaysBefore?: number;
+}
+
+export function candidateQuery(trigger: FlowTrigger, window: TriggerWindow, options: TriggerOptions = {}): SQL | null {
   const { from, to } = window;
   switch (trigger) {
     case "cart_abandoned":
@@ -80,10 +85,33 @@ export function candidateQuery(trigger: FlowTrigger, window: TriggerWindow): SQL
                                   'cartItems', l.items) as context
         from latest l
         where l.created_at between ${iso(from)} and ${iso(to)}`;
+    case "birthday": {
+      /*
+        Opt-ins from /profile (customer_birthdays). The anchor is midnight
+        Tashkent `daysBefore` days before this year's (or next year's)
+        birthday — 29 February falls on the 28th in other years — and the
+        cycle is that year, so a customer is greeted once a year. Only phones
+        that ordered before: the opt-in carries no proof of the number, and a
+        greeting must not become a way to text strangers.
+      */
+      const before = Math.max(0, Math.min(30, Math.round(options.birthdayDaysBefore ?? 3)));
+      return sql`
+        select b.phone9 as subject, y.year::text as cycle, a.anchor,
+               jsonb_build_object('name', b.name, 'locale', b.locale) as context
+        from customer_birthdays b
+        cross join (select generate_series(
+          extract(year from ${iso(to)} at time zone 'Asia/Tashkent')::int - 1,
+          extract(year from ${iso(to)} at time zone 'Asia/Tashkent')::int + 1) as year) y
+        cross join lateral (
+          select (make_date(y.year, b.month,
+                    case when b.month = 2 and b.day = 29 and not ((y.year % 4 = 0 and y.year % 100 <> 0) or y.year % 400 = 0) then 28 else b.day end
+                  )::timestamp at time zone 'Asia/Tashkent') - make_interval(days => ${before}) as anchor
+        ) a
+        where a.anchor between ${iso(from)} and ${iso(to)}
+          and exists (select 1 from orders o where o.status <> 'cancelled' and ${ORDER_PHONE} = b.phone9)`;
+    }
     case "restock":
-    case "birthday":
       // restock: enrolled by enqueueRestockMessage() (lib/flows/restock.ts).
-      // birthday: phase 3 — the date lives in the customer's /profile, not here yet.
       return null;
   }
 }

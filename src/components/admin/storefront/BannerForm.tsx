@@ -29,6 +29,11 @@ export interface BannerFormValues {
   showCountdown: boolean;
   sort: number;
   active: boolean;
+  /** A/B test key and variant (lib/merch/ab.ts); empty — a plain banner. */
+  experiment: string;
+  variant: "" | "A" | "B";
+  /** Started from this banner with «+ B variant»: it joins the test as the other variant on save. */
+  pairWith?: number;
 }
 
 function Panel({ title, lead, children }: { title: string; lead?: string; children: React.ReactNode }) {
@@ -55,6 +60,7 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
   return (
     <form action={action} className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_420px]">
       {v.id && <input type="hidden" name="id" value={v.id} />}
+      {v.pairWith && <input type="hidden" name="pairWith" value={v.pairWith} />}
       {(state?.error || state?.ok) && (
         <div className="xl:col-span-2">{state?.error ? <Notice tone="error">{state.error}</Notice> : <Notice tone="ok">{state?.ok}</Notice>}</div>
       )}
@@ -138,6 +144,23 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
               <input type="checkbox" name="active" checked={v.active} onChange={(e) => set("active")(e.target.checked)} className="h-5 w-5 accent-ink" />
               Faol
             </label>
+          </div>
+        </Panel>
+        <Panel
+          title="A/B test (ixtiyoriy)"
+          lead="Bir joydagi ikkita banner bitta kalit bilan A va B variant boʻladi: har bir tashrif buyuruvchi doim bittasini koʻradi (50/50). Natija — «Bannerlar» roʻyxati tepasidagi «A/B testlar» kartasida."
+        >
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Field label="Tajriba kaliti" hint="Masalan: hero-oktabr. Ikkala variantda bir xil.">
+              <input name="experiment" value={v.experiment} onChange={(e) => set("experiment")(e.target.value)} maxLength={40} className={inputClass} />
+            </Field>
+            <Field label="Variant">
+              <select name="variant" value={v.variant} onChange={(e) => set("variant")(e.target.value as BannerFormValues["variant"])} className={inputClass}>
+                <option value="">Test yoʻq</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
+              </select>
+            </Field>
           </div>
         </Panel>
         <div><SubmitButton>{v.id ? "Saqlash" : "Bannerni yaratish"}</SubmitButton></div>

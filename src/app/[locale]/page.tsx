@@ -110,7 +110,7 @@ export default async function HomePage({
     href: s.href,
     image: productCutout(s.href.replace(/^\/product\//, "")) ?? null,
   }));
-  const bannerSlides: HeroSlide[] = heroBanners.map((b) => ({
+  const toSlide = (b: (typeof heroBanners)[number]): HeroSlide => ({
     key: `banner-${b.id}`,
     bannerId: b.id,
     eyebrow: "",
@@ -123,6 +123,11 @@ export default async function HomePage({
     theme: b.theme,
     countdownTo: b.countdownTo,
     endsAt: b.endsAt,
+  });
+  // An A/B test is one slide carrying both variants; the visitor's cookie picks one before paint (lib/merch/ab.ts).
+  const bannerSlides: HeroSlide[] = heroBanners.map((b) => ({
+    ...toSlide(b),
+    ...(b.experiment && b.variantB ? { experiment: b.experiment, variantB: toSlide(b.variantB) } : {}),
   }));
 
   return (

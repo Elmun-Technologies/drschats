@@ -290,6 +290,110 @@ Segment sahifasidagi forma: kanal (Telegram / Telegram, boʻlmasa SMS / SMS),
 `{havola}` sahifasi, har bir mijozga shaxsiy promokod. Hammasi o'sha navbatdan —
 tungi vaqt, rad etish, STOP havolasi bir xil.
 
+## 5f. Sodiqlik: keshbek, tavsiya, tugʻilgan kun, bannerlar A/B (`/admin/loyalty`)
+
+Migratsiya `0011_loyalty_referral_ab.sql`. Sozlamalar — `site_settings`
+`loyalty.rules` (bitta JSON, `lib/loyalty/model.ts` → `coerceLoyaltyRules`,
+har maydon alohida standartga qaytadi). **Hammasi sukut boʻyicha oʻchiq.**
+Baza boʻlmasa (`ORDERS_IN_DB` yoʻq) — dastur oʻchiq, nima boʻlishidan qatʼi nazar.
+
+### Keshbek ballari
+
+- **1 ball = 1 soʻm.** Balans saqlanmaydi: `loyalty_ledger` qatorlari yigʻindisi,
+  muddat **dangasa** baholanadi (`lib/loyalty/ledger.ts` → `evaluateLedger`, sof,
+  testli). Musbat qator — «lot» (oʻz tugash sanasi bilan), manfiy qator birinchi
+  tugaydigan lotdan oladi; tugash sanasida lotda qolgani yoʻqoladi; ortiqcha
+  sarf — qarz, keyingi lot avval uni yopadi. `expire` qatorlari faqat buxgalteriya:
+  ishchi soatiga bir marta (`messaging/worker.ts` → `expirePoints`) yozadi, shunda
+  oddiy SQL yigʻindisi ham, «majburiyat» ham toʻgʻri.
+- **Berish**: admin holatni «Yetkazildi» qilganda (forma ham, tez tugmalar ham —
+  `app/admin/_actions/orders.ts` → `afterOrderStatus`) toʻlangan mahsulot summasidan
+  (chegirma va balldan keyin, yetkazishsiz) `earnPercent`%; `minOrder` dan past —
+  yoʻq. Bitta buyurtma bir marta (`unique (order_id) where kind='earn'`).
+- **Bekor qilish**: buyurtmaga bogʻlangan har musbat qator (keshbek, tavsiya
+  mukofoti) qaytarib olinadi (muddati oʻtgan qismi ikki marta olinmaydi —
+  `reversibleAmount`), ishlatilgan ball yangi lot boʻlib qaytariladi. Har qator
+  bir marta (`unique (ref_id) where kind in ('reverse','expire')`). Qayta ochilgan
+  buyurtma ballarni qayta hisoblamaydi (atayin — qoʻlda tuzatish bor).
+- **Ishlatish faqat SMS kod bilan** (har kim boshqa raqam yozishi mumkin):
+  savatda toʻliq telefon kiritilgach balans soʻraladi; >0 boʻlsa «Sizda N ball
+  bor — Ishlatish» → 6 xonali kod (`lib/loyalty/otp-server.ts`). Tranzaksion: tungi
+  vaqt va rad etish taʼsir qilmaydi, outbox emas — toʻgʻridan-toʻgʻri shlyuzga.
+  Limit: 3 kod / telefon / soat (jadvalda, bir nechta mashinada ham), 10 / IP / soat,
+  tekshirish 30 / IP / 10 daq. Jadvalda faqat HMAC (`LOYALTY_SECRET`, boʻlmasa
+  `ADMIN_SESSION_SECRET` dan alohida yorliq bilan), telefonga bogʻlangan, 5 daqiqa,
+  5 urinish (5-urinish ham tekshiriladi, keyin «tugadi»). Toʻgʻri kod →
+  30 daqiqalik imzolangan token (telefon + balans chegarasi), savat holatida
+  (xotirada). SMS sozlanmagan boʻlsa — ishlatish yashirin, berish davom etadi.
+- **Buyurtmada** (`promo/server.ts` → `placeOrder`, oʻsha telefon qulfi ostida):
+  token qayta tekshiriladi, balans qayta oʻqiladi, summa = min(balans, chegirmalardan
+  keyingi mahsulot × `maxSharePercent`%, token chegarasi) — `maxRedeemable`;
+  `redeem` qatori va `adjustments` oxiriga `{kind:"points",amount}`. **Ball —
+  toʻlov, chegirma emas**: promokod/birinchi buyurtma bilan qoʻshiladi (ulardan
+  keyin), `totals.total` ni kamaytiradi, `totals.discount` ni emas. Token eskirgan
+  yoki balans 0 — `points_invalid`, savat ballarni olib tashlab aytadi.
+- **Mijoz koʻradi**: savatda «Yetkazilgach +N ball»; muvaffaqiyat sahifasida
+  (buyurtma action'i imzolagan `?k=` kvitansiya — `lib/loyalty/receipt.ts`;
+  raqamlar ketma-ket, shuning uchun sahifa mijozni raqam boʻyicha qidirmaydi);
+  klub botida «qabul qilindi» xabarida «Hisobingizga N ball tushadi (yetkazilgach)»,
+  «yetkazildi» da «N ball tushdi. Balans: M». `/loyalty` — faqat yoqilgan qoidalar,
+  sozlamadagi raqamlar bilan.
+
+### Tavsiya (doʻstni taklif qilish)
+
+- Kod: `GV` + 6 belgi (chiziqsiz — promokod `GV-XXXXXX`), `referral_codes`, mijozda
+  **yetkazilgan buyurtma boʻlgandan keyin** birinchi soʻralganda yaratiladi.
+  Mijoz kodini muvaffaqiyat sahifasida (nusxalash / ulashish, havola `?ref=KOD` —
+  `ReferralCapture` savatdagi promokod maydoniga yozadi) va «yetkazildi» Telegram
+  xabarida oladi.
+- Doʻst kodni promokod maydoniga yozadi: `isReferralCode` + mavjud boʻlsa tavsiya
+  yoʻli (`lib/referral/`), aks holda oddiy promokod. Shartlar (`evaluateReferral`):
+  dastur yoqilgan, oʻz kodi emas (bir xil telefon), telefonning bekor qilinmagan
+  oldingi buyurtmasi yoʻq, shu telefonga tirik tavsiya yoʻq. Chegirma `friendPercent`%
+  — promokod kabi birinchi buyurtma chegirmasi bilan raqobatlashadi (kattasi;
+  teng — birinchi buyurtma), `adjustments` da `{kind:"referral",code,percent,amount}`.
+  Tavsiya qatori (`referrals`) chegirma yutmasa ham yoziladi — doʻst kod bilan keldi.
+- Doʻst buyurtmasi **yetkazilganda** taklif qilganga mukofot (`rewardReferral`):
+  keshbek yoqilgan va «Ball» tanlangan boʻlsa — ball (`adjust`, buyurtmaga bogʻlangan,
+  bekor qilinsa qaytariladi), aks holda shaxsiy promokod (`issuePromoCode`, source
+  `referral`, 60 kun). Xabar outbox orqali (Telegram, boʻlmasa SMS). Oylik limitdan
+  oshsa — `capped`, mukofot yoʻq. Doʻst buyurtmasi yetkazilmay bekor qilinsa —
+  `cancelled`, telefon yana tavsiya qilinishi mumkin.
+
+### Tugʻilgan kun
+
+- `/profile` da (yoqilgan boʻlsa) aniq rozilik: ism, kun/oy (yil ixtiyoriy),
+  telefon → `customer_birthdays`. «Rozilikni bekor qilish» qatorni oʻchiradi.
+  Maxfiylik siyosatida (1- va 6-boʻlim) yozilgan.
+- Trigger `birthday` (`lib/flows/triggers.ts`): langar — tugʻilgan kundan
+  `daysBefore` kun oldingi Toshkent yarim tuni, `cycle` = yil (yiliga bir marta),
+  29-fevral boshqa yillarda 28-fevral. **Faqat avval buyurtma bergan raqamlar** —
+  rozilik raqam egaligini isbotlamaydi, tabrik begonaga SMS yoʻli boʻlmasin.
+  Oqim «Tugʻilgan kun» (−15%, 10 kun) **oʻchiq** holda yaratiladi.
+
+### Bannerlar A/B testi
+
+- Bir joydagi ikki banner bitta `experiment` kaliti bilan `A` va `B`
+  (`banners.experiment/variant`, unikal). Ikkalasi faol boʻlsa sayt ularni bitta
+  slot qiladi; bittasi qolsa — oddiy banner.
+- **ISR va nol CLS**: `middleware.ts` har brauzerga tasodifiy `gv_ab` cookie
+  beradi; sahifa HTML'ida **ikkala** variant bor (hamma uchun bir xil, kesh
+  buzilmaydi), CSS sukut boʻyicha B ni yashiradi; `<head>` dagi kichik inline
+  skript (`abHeadScript`, layout faol kalitlar bilan chizadi) cookie'dan
+  variantni hisoblab `<html data-ab="kalit:B">` qoʻyadi — **birinchi chizishdan
+  oldin**, shuning uchun hech narsa siljimaydi va React aynan server yuborgan
+  HTML'ni gidratlaydi (`<html suppressHydrationWarning>`). Taqsimot —
+  FNV-1a + aralashtirish, `ab.test.ts` skript va server funksiyasi bir xilligini tekshiradi.
+- Koʻrish: slot mount boʻlgach `trackExperimentView` — GA4 `view_promotion` va
+  `POST /api/b/:id?kind=view`, sessiyada bir marta; serverda kishi (`gv_ab`) ×
+  banner × kun boʻyicha bitta qator (`banner_exposures`), `gv_vid` boʻlsa yoziladi.
+  Bosish — odatdagi beacon, oʻsha qatorga `clicked_at`.
+- Admin (`/admin/storefront` → «A/B testlar»): koʻrish, kishilar, bosish, CTR,
+  koʻrgan brauzerlarning keyingi buyurtmalari va tushumi (`orders.visitor_id`),
+  ikki ulushli z-test (95%); har variant ≥ 200 koʻrish va ≥ 10 bosishgacha
+  «Hali yetarli maʼlumot yoʻq». «Gʻolibni qoldirish» ikkinchisini oʻchiradi.
+  Ro'yxatda «A/B test» tugmasi bannerdan B variantni boshlaydi.
+
 ## 6. Tekshirish ro'yxati
 
 Deploy qilgandan keyin:

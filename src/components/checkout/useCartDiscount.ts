@@ -115,7 +115,7 @@ export function useCartDiscount({ enabled, lines, phone, locale }: { enabled: bo
   );
 
   const promoOk = quote?.promo?.ok ? quote.promo : null;
-  const applied = enabled && quote?.applied && !(quote.applied.kind === "promo" && quote.applied.code !== code) ? quote.applied : null;
+  const applied = enabled && quote?.applied && !((quote.applied.kind === "promo" || quote.applied.kind === "referral") && quote.applied.code !== code) ? quote.applied : null;
   return {
     code,
     quote,

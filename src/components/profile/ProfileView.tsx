@@ -13,6 +13,7 @@ import { ConsentPanel } from "./ConsentPanel";
 import { ProfileOffers } from "./ProfileOffers";
 import { ProfileSync } from "./ProfileSync";
 import { VerifyEmail } from "./VerifyEmail";
+import { BirthdayGift } from "./BirthdayGift";
 import type { ReactNode } from "react";
 import { useSession } from "@/lib/auth/store";
 import { isApiConfigured } from "@/lib/api/client";
@@ -30,7 +31,7 @@ import { cn } from "@/lib/utils";
   configured the profile is additionally synced to it; when it is not, nothing
   here stops working.
 */
-export function ProfileView() {
+export function ProfileView({ birthdayGift = false }: { birthdayGift?: boolean }) {
   const t = useTranslations("profile");
   const profile = useProfile((s) => s.profile);
   const update = useProfile((s) => s.update);
@@ -114,6 +115,7 @@ export function ProfileView() {
         </section>
       </Card>
 
+      {birthdayGift && <Card><BirthdayGift /></Card>}
       <Card><GoalPicker /></Card>
       <Card><HouseholdEditor /></Card>
       <Card><ReminderPanel /></Card>

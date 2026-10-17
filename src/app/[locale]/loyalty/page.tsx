@@ -9,6 +9,9 @@ import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
 import { firstOrderOffer } from "@/lib/promo/offer";
+import { getLoyaltyRules } from "@/lib/loyalty/settings";
+import { referralRewardKind } from "@/lib/loyalty/model";
+import { birthdayOffer } from "@/lib/birthday/server";
 
 export const revalidate = 3600;
 
@@ -37,7 +40,9 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("pages.v3");
-  const [firstOrder, commerce] = await Promise.all([firstOrderOffer(), getCommerceSettings()]);
+  const [firstOrder, commerce, loyalty] = await Promise.all([firstOrderOffer(), getCommerceSettings(), getLoyaltyRules()]);
+  // The birthday card names the gift the seeded flow actually sends, and only while that flow is on.
+  const birthday = loyalty.birthday.enabled ? await birthdayOffer() : null;
   const { firstPercent, recurringPercent } = commerce.subscription;
   const amount = thousands(commerce.delivery.freeShippingOver);
   const hours = COMMERCE.delivery.tashkent.hours;
@@ -54,6 +59,56 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
             dark: true,
           },
         ]),
+    /*
+      Cashback, referral and birthday appear only while switched on in
+      /admin/loyalty, with the numbers from there — the same values the cart
+      and the order transaction use.
+    */
+    ...(loyalty.enabled
+      ? [
+          {
+            value: `${loyalty.earnPercent}%`,
+            title: t("loyalty.pointsTitle"),
+            text: [
+              t("loyalty.pointsText", { percent: loyalty.earnPercent }),
+              loyalty.minOrder > 0 ? t("loyalty.pointsMin", { amount: thousands(loyalty.minOrder) }) : "",
+            ].filter(Boolean).join(" "),
+            note: [
+              t("loyalty.pointsNote", { share: loyalty.maxSharePercent }),
+              loyalty.expiryDays > 0 ? t("loyalty.pointsExpiry", { days: loyalty.expiryDays }) : t("loyalty.pointsNoExpiry"),
+            ].join(" "),
+            dark: firstOrder.mode === "off",
+          },
+        ]
+      : []),
+    ...(loyalty.referral.enabled
+      ? [
+          {
+            value: `−${loyalty.referral.friendPercent}%`,
+            title: t("loyalty.referralTitle"),
+            text: [
+              t("loyalty.referralText", { percent: loyalty.referral.friendPercent }),
+              referralRewardKind(loyalty) === "points"
+                ? t("loyalty.referralPoints", { points: thousands(loyalty.referral.rewardPoints) })
+                : t("loyalty.referralPromo", { percent: loyalty.referral.rewardPercent }),
+            ].join(" "),
+            note: t("loyalty.referralNote"),
+            dark: false,
+          },
+        ]
+      : []),
+    ...(birthday
+      ? [
+          {
+            value: birthday.percent ? `−${birthday.percent}%` : t("free"),
+            title: t("loyalty.birthdayTitle"),
+            text: t("loyalty.birthdayText"),
+            note: "",
+            href: "/profile",
+            dark: false,
+          },
+        ]
+      : []),
     {
       value: `−${firstPercent}% → −${recurringPercent}%`,
       title: t("loyalty.subTitle"),
@@ -78,7 +133,10 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
 
   return (
     <InfoShell active="loyalty" crumb={t("nav.loyaltyShort")}>
-      <InfoHeader title={t("nav.loyaltyShort")} lead={t("loyalty.lead")} />
+      <InfoHeader
+        title={t("nav.loyaltyShort")}
+        lead={loyalty.enabled || loyalty.referral.enabled || birthday ? t("loyalty.leadPoints") : t("loyalty.lead")}
+      />
 
       <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">
         {programs.map((p) => (
@@ -92,7 +150,12 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
             <span className="text-[34px] font-bold leading-10 lg:text-[40px] lg:leading-[44px]">{p.value}</span>
             <h2 className="text-xl font-bold leading-7">{p.title}</h2>
             <p className={cn("text-[15px] leading-[22px]", p.dark ? "text-on-dark-2" : "text-ink-2")}>{p.text}</p>
-            <p className={cn("mt-auto pt-3 text-sm leading-5", p.dark ? "text-on-dark-2" : "text-ink-2")}>{p.note}</p>
+            {p.note && <p className={cn("mt-auto pt-3 text-sm leading-5", p.dark ? "text-on-dark-2" : "text-ink-2")}>{p.note}</p>}
+            {"href" in p && p.href && (
+              <Link href={p.href} className={cn(buttonVariants("secondary"), "mt-auto self-start bg-transparent")}>
+                {t("loyalty.birthdayCta")}
+              </Link>
+            )}
           </div>
         ))}
       </div>

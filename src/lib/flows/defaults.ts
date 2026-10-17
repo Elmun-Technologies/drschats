@@ -2,7 +2,7 @@ import { COURSE_DAYS, REORDER_LEAD_DAYS } from "@/lib/profile/reminders";
 import type { FlowStep, FlowTrigger } from "./types";
 
 /*
-  The five playbook flows, seeded once and **inactive**: nothing is sent until
+  The playbook flows, seeded once and **inactive**: nothing is sent until
   the team reads the texts and switches a flow on in /admin/flows. Texts carry
   no health claims (Reklama toʻgʻrisidagi qonun, 35-modda) — only the cart,
   the course, the date and the code. The opt-out line is appended by the
@@ -144,6 +144,23 @@ export const DEFAULT_FLOWS: DefaultFlow[] = [
         text: {
           uz: "{ism}, sizni sogʻindik! Shaxsiy −15% kod: {kod}, {muddat} gacha: {havola}",
           ru: "{ism}, мы скучали! Персональный код −15%: {kod}, до {muddat}: {havola}",
+        },
+      },
+    ],
+  },
+  {
+    id: "birthday",
+    name: "Tugʻilgan kun",
+    trigger: "birthday",
+    steps: [
+      {
+        delayMinutes: 10 * H,
+        channel: "telegram_then_sms",
+        link: "/products",
+        promo: { kind: "percent", value: 15, ttlHours: 10 * 24, minSubtotal: null },
+        text: {
+          uz: "{ism}, tugʻilgan kuningiz bilan oldindan tabriklaymiz! Sizga sovgʻa — shaxsiy −15% kod: {kod}. {muddat} gacha amal qiladi: {havola}",
+          ru: "{ism}, заранее поздравляем с днём рождения! Подарок — персональный код −15%: {kod}. Действует до {muddat}: {havola}",
         },
       },
     ],

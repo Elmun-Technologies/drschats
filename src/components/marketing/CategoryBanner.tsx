@@ -3,6 +3,7 @@
 import Image from "next/image";
 import type { StoreBanner } from "@/lib/merch/model";
 import { cn } from "@/lib/utils";
+import { AbSlot } from "./AbSlot";
 import { BannerLink, useUnexpired } from "./BannerLink";
 import { SaleCountdown } from "./SaleCountdown";
 
@@ -13,6 +14,20 @@ export function CategoryBanner({ banners }: { banners: StoreBanner[] }) {
   const live = useUnexpired(banners);
   const b = live[0];
   if (!b) return null;
+  if (b.experiment && b.variantB) {
+    return (
+      <AbSlot
+        experiment={b.experiment}
+        slot="category"
+        a={{ id: b.id, title: b.title, node: <CategoryCard b={b} /> }}
+        b={{ id: b.variantB.id, title: b.variantB.title, node: <CategoryCard b={b.variantB} /> }}
+      />
+    );
+  }
+  return <CategoryCard b={b} />;
+}
+
+function CategoryCard({ b }: { b: StoreBanner }) {
   const dark = b.theme === "dark";
   const image = b.image;
   return (

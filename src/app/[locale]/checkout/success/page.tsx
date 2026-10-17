@@ -3,9 +3,15 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { BRAND } from "@/lib/brand";
-import { cn } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
 import { firstParam } from "@/lib/search-params";
+import { SITE_URL } from "@/lib/config/site";
+import { readReceipt } from "@/lib/loyalty/receipt";
+import { getLoyaltyRules } from "@/lib/loyalty/settings";
+import { referralRewardKind } from "@/lib/loyalty/model";
+import { referralLink } from "@/lib/referral/rules";
+import { ShareCode } from "@/components/checkout/ShareCode";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -23,10 +29,15 @@ export default async function SuccessPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ order?: string | string[] }>;
+  searchParams: Promise<{ order?: string | string[]; k?: string | string[] }>;
 }) {
   const { locale } = await params;
-  const order = firstParam((await searchParams).order);
+  const query = await searchParams;
+  const order = firstParam(query.order);
+  // Points and the referral code come only from a receipt the order action signed (lib/loyalty/receipt.ts).
+  const receipt = readReceipt(firstParam(query.k), order ?? null);
+  const rules = receipt ? await getLoyaltyRules() : null;
+  const tl = await getTranslations("checkout.success.loyalty");
   setRequestLocale(locale);
   const t = await getTranslations("checkout.success");
   const tv = await getTranslations("cart.v3");
@@ -57,6 +68,33 @@ export default async function SuccessPage({
           )}
         </div>
   
+        {receipt && rules && (receipt.e > 0 || receipt.s > 0) && (
+          <section aria-labelledby="order-points" className="flex flex-col gap-1.5 rounded-[20px] bg-tile p-5 lg:p-7">
+            <h2 id="order-points" className="text-[19px] font-bold lg:text-2xl">{tl("pointsTitle")}</h2>
+            {receipt.s > 0 && <p className="text-base leading-6 text-ink-2">{tl("spent", { points: formatNumber(receipt.s) })}</p>}
+            {receipt.e > 0 && <p className="text-base font-semibold leading-6">{tl("earn", { points: formatNumber(receipt.e) })}</p>}
+          </section>
+        )}
+
+        {receipt?.r && rules?.referral.enabled && (
+          <section aria-labelledby="order-share" className="flex flex-col gap-3 rounded-[20px] border border-line p-5 lg:gap-4 lg:p-8">
+            <div className="flex flex-col gap-1.5">
+              <h2 id="order-share" className="text-[19px] font-bold lg:text-2xl">{tl("shareTitle")}</h2>
+              <p className="text-base leading-6 text-ink-2">
+                {tl("shareText", { code: receipt.r, percent: rules.referral.friendPercent })}{" "}
+                {referralRewardKind(rules) === "points"
+                  ? tl("rewardPoints", { points: formatNumber(rules.referral.rewardPoints) })
+                  : tl("rewardPromo", { percent: rules.referral.rewardPercent })}
+              </p>
+            </div>
+            <ShareCode
+              code={receipt.r}
+              link={referralLink(SITE_URL, locale, receipt.r)}
+              message={tl("shareMessage", { percent: rules.referral.friendPercent, code: receipt.r, link: referralLink(SITE_URL, locale, receipt.r) })}
+            />
+          </section>
+        )}
+
         <section aria-labelledby="next-steps" className="flex flex-col gap-4 rounded-[20px] border border-line p-5 lg:gap-5 lg:p-8">
           <h2 id="next-steps" className="text-[19px] font-bold lg:text-2xl">{tv("nextSteps")}</h2>
           <ol className="flex flex-col gap-4 lg:gap-5">

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import type { StoreAnnouncement, StoreBanner } from "@/lib/merch/model";
 import { cn } from "@/lib/utils";
+import { AbSlot } from "./AbSlot";
 import { BannerLink, useUnexpired } from "./BannerLink";
 import { splitLeft, useRemaining } from "./SaleCountdown";
 
@@ -99,6 +100,20 @@ export function PromoStrip({ banners }: { banners: StoreBanner[] }) {
   const live = useUnexpired(banners);
   const b = live[0];
   if (!b) return null;
+  if (b.experiment && b.variantB) {
+    return (
+      <AbSlot
+        experiment={b.experiment}
+        slot="strip"
+        a={{ id: b.id, title: b.title, node: <StripLink b={b} /> }}
+        b={{ id: b.variantB.id, title: b.variantB.title, node: <StripLink b={b.variantB} /> }}
+      />
+    );
+  }
+  return <StripLink b={b} />;
+}
+
+function StripLink({ b }: { b: StoreBanner }) {
   const dark = b.theme === "dark";
   return (
     <BannerLink

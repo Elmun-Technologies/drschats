@@ -9,6 +9,7 @@ import { daysSince, STAGE_LABEL } from "@/lib/journey/model";
 import { addCustomerNote } from "@/app/admin/_actions/crm";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Timeline } from "@/components/admin/Timeline";
+import { CustomerLoyalty } from "@/components/admin/loyalty/CustomerLoyalty";
 import { Card, Field, Metric, PageHeader, Pill, buttonClass, linkClass, secondaryButtonClass, som, textareaClass, timeAgo } from "@/components/admin/ui";
 import { STATUS_LABEL, STATUS_TONE, formatDate, formatDateTime } from "@/lib/admin/order-labels";
 import { DEVICE_LABEL } from "@/lib/admin/event-labels";
@@ -90,6 +91,7 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
         </div>
 
         <div className="flex min-w-0 flex-col gap-4">
+          <CustomerLoyalty phone9={phone9} />
           <Card title="Mijoz haqida">
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2.5 text-[14px]">
               <dt className="text-muted">Birinchi buyurtma</dt><dd className="font-semibold">{formatDate(customer.firstOrderAt)}</dd>

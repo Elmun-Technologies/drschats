@@ -272,7 +272,12 @@ export async function receipt(id: number, leaseToken: string, r: Receipt): Promi
  * they can be reached there: the order came from the Mini App, or its phone
  * is linked to a chat. Never throws — the order change itself has happened.
  */
-export async function announceOrderStatus(orderNumber: string, status: OrderStatus): Promise<void> {
+export async function announceOrderStatus(
+  orderNumber: string,
+  status: OrderStatus,
+  /** Lines appended to the status text (HTML, already escaped) — points, the referral code. */
+  extra?: { uz: string; ru: string } | null,
+): Promise<void> {
   try {
     const db = getDb();
     const [o] = await db.select().from(orders).where(eq(orders.number, orderNumber)).limit(1);
@@ -290,7 +295,9 @@ export async function announceOrderStatus(orderNumber: string, status: OrderStat
     if (!chatId || !(await getClubConfig()).enabled) return;
 
     const locale = (await memberLocale(chatId)) ?? (o.locale === "ru" ? "ru" : "uz");
-    await enqueue(chatId, orderStatusMessage(status, { number: orderNumber, total: o.total }, locale), {
+    const message = orderStatusMessage(status, { number: orderNumber, total: o.total }, locale);
+    if (extra?.[locale]) message.text = `${message.text}\n\n${extra[locale]}`;
+    await enqueue(chatId, message, {
       kind: "order_status",
       dedupeKey: `order:${o.id}:${status}`,
     });

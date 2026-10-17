@@ -7,6 +7,8 @@ import { deleteBanner, toggleBanner } from "@/app/admin/_actions/storefront";
 import { PLACEMENT_LABEL, SCHEDULE_LABEL, scheduleStatus, type ScheduleStatus } from "@/lib/merch/model";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { StorefrontTabs } from "@/components/admin/storefront/StorefrontTabs";
+import { ExperimentsCard } from "@/components/admin/storefront/ExperimentsCard";
+import { experimentResults } from "@/lib/merch/ab-stats";
 import { Card, EmptyState, Notice, PageHeader, Pill, TableWrap, buttonClass, linkClass, smallButtonClass, tableClass, tdClass, thClass, type PillTone } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 
@@ -17,7 +19,10 @@ const isLocal = (src: string) => src.startsWith("/") && !src.startsWith("//");
 
 export default async function StorefrontBannersPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string }> }) {
   const params = await searchParams;
-  const rows = await getDb().select().from(banners).orderBy(asc(banners.placement), asc(banners.sort), asc(banners.id));
+  const [rows, experiments] = await Promise.all([
+    getDb().select().from(banners).orderBy(asc(banners.placement), asc(banners.sort), asc(banners.id)),
+    experimentResults().catch(() => []),
+  ]);
   const now = Date.now();
   const liveHero = rows.some((b) => b.placement === "hero" && scheduleStatus(b, now) === "live");
 
@@ -37,6 +42,7 @@ export default async function StorefrontBannersPage({ searchParams }: { searchPa
         </div>
       )}
 
+      <ExperimentsCard experiments={experiments} />
       <Card>
         {rows.length === 0 ? (
           <EmptyState title="Hali banner yoʻq" action={<Link href="/admin/storefront/banners/new" className={buttonClass}>Birinchi bannerni yaratish</Link>}>
@@ -72,6 +78,7 @@ export default async function StorefrontBannersPage({ searchParams }: { searchPa
                           <span className="min-w-0">
                             <Link href={`/admin/storefront/banners/${b.id}`} className={linkClass}>{b.title.uz}</Link>
                             <span className="block truncate text-[13px] text-muted">{b.href}</span>
+                            {b.experiment && <span className="mt-1 inline-flex"><Pill tone="outline">A/B: {b.experiment} · {b.variant}</Pill></span>}
                           </span>
                         </div>
                       </td>
@@ -85,6 +92,11 @@ export default async function StorefrontBannersPage({ searchParams }: { searchPa
                       <td className={tdClass}>
                         <div className="flex justify-end gap-2">
                           <Link href={`/admin/storefront/banners/${b.id}`} className={smallButtonClass}>Tahrirlash</Link>
+                          {!b.experiment && (
+                            <Link href={`/admin/storefront/banners/new?from=${b.id}`} className={smallButtonClass} aria-label={`«${b.title.uz}» uchun A/B test boshlash`}>
+                              A/B test
+                            </Link>
+                          )}
                           <form action={toggleBanner}>
                             <input type="hidden" name="id" value={b.id} />
                             <button type="submit" className={smallButtonClass}>{b.active ? "Oʻchirish" : "Yoqish"}</button>
