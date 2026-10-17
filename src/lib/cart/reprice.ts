@@ -1,6 +1,7 @@
 import type { OrderRequest, Product, Promotion } from "@/lib/shopflow/types";
 import { MAX_OFFER_QTY, cartLineId, computeTotals, freeGiftAllowed, type CartLine } from "./pricing";
 import { isIntervalDays } from "@/lib/subscription/plans";
+import { DEFAULT_LADDER, DEFAULT_PRICING, ladderPercentsAccepted, type LadderRules, type PricingRules } from "@/lib/commerce/settings";
 
 /*
   The order the server is willing to accept.
@@ -14,8 +15,18 @@ import { isIntervalDays } from "@/lib/subscription/plans";
   products.
 */
 
-/** The upsell ladder's steps: −10%, −15%, −20%, or free (lib/upsell/ladder.ts). */
-const LADDER_PERCENTS = new Set([10, 15, 20, 100]);
+/**
+ * The commerce rules this order is priced by: the admin's settings, read by
+ * the checkout action from the same cached value the cart was rendered with.
+ * The ladder percents the server accepts are derived from them
+ * (`ladderPercentsAccepted`) — never a second list that could drift.
+ */
+export interface RepriceRules {
+  pricing: PricingRules;
+  ladder: LadderRules;
+}
+
+export const DEFAULT_REPRICE_RULES: RepriceRules = { pricing: DEFAULT_PRICING, ladder: DEFAULT_LADDER };
 
 /**
  * The offers the shop actually made, gathered by the caller:
@@ -42,7 +53,9 @@ export function repriceOrder(
   products: Product[],
   promotions: Promotion[],
   offers: OfferContext = NO_OFFERS,
+  rules: RepriceRules = DEFAULT_REPRICE_RULES,
 ): RepriceResult {
+  const acceptedLadder = ladderPercentsAccepted(rules.ladder);
   const byId = new Map(products.map((p) => [p.id, p]));
   const lines: CartLine[] = [];
   const lineIds = new Set<string>();
@@ -105,7 +118,7 @@ export function repriceOrder(
       line at the same ladder percent is not an offer the shop made.
     */
     if (
-      !LADDER_PERCENTS.has(percent) ||
+      !acceptedLadder.has(percent) ||
       base.length === 0 ||
       !offers.ladderPool.has(l.slug) ||
       ladderPercents.has(percent)
@@ -119,7 +132,7 @@ export function repriceOrder(
     return { ok: false, error: "invalid_offer", slug: lines.find((l) => l.upsellDiscountPercent === 100)?.slug };
   }
 
-  const totals = computeTotals(lines, promotions, { pickup: order.delivery.method === "pickup" });
+  const totals = computeTotals(lines, promotions, { pickup: order.delivery.method === "pickup", rules: rules.pricing });
 
   return {
     ok: true,

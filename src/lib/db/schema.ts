@@ -41,6 +41,10 @@ export const products = pgTable("products", {
   oldPrice: integer("old_price"),
   saleEndsAt: timestamp("sale_ends_at", { withTimezone: true }),
   inStock: boolean("in_stock").notNull().default(true),
+  /** null = not tracked (0009); when tracked, in_stock follows it. */
+  stockQty: integer("stock_qty"),
+  /** Per-product "kam qoldi" threshold; null = the site default. */
+  lowStockAt: integer("low_stock_at"),
   kind: text("kind").$type<"core" | "addon" | "unlisted">().notNull().default("core"),
   sort: integer("sort").notNull().default(0),
   images: jsonb("images").$type<string[]>().notNull().default([]),
@@ -69,8 +73,44 @@ export const orders = pgTable("orders", {
   adminNote: text("admin_note"),
   telegramChatId: bigint("telegram_chat_id", { mode: "number" }),
   visitorId: uuid("visitor_id"),
+  promoCode: text("promo_code"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const STOCK_REASONS = ["order", "cancel", "manual", "import"] as const;
+export type StockReason = (typeof STOCK_REASONS)[number];
+
+export const stockMovements = pgTable("stock_movements", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productId: text("product_id").notNull(),
+  delta: integer("delta").notNull(),
+  reason: text("reason").$type<StockReason>().notNull(),
+  orderId: bigint("order_id", { mode: "number" }),
+  adminNote: text("admin_note"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const WAIT_KINDS = ["restock", "price_drop"] as const;
+export type WaitKind = (typeof WAIT_KINDS)[number];
+export const WAIT_STATUSES = ["waiting", "notified", "cancelled"] as const;
+export type WaitStatus = (typeof WAIT_STATUSES)[number];
+export type WaitChannel = "telegram" | "sms" | "operator" | "manual";
+
+export const restockRequests = pgTable("restock_requests", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productId: text("product_id").notNull(),
+  productSlug: text("product_slug").notNull(),
+  phone9: text("phone9").notNull(),
+  phone: text("phone").notNull(),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  kind: text("kind").$type<WaitKind>().notNull().default("restock"),
+  targetPrice: integer("target_price"),
+  telegramChatId: bigint("telegram_chat_id", { mode: "number" }),
+  status: text("status").$type<WaitStatus>().notNull().default("waiting"),
+  notifiedVia: text("notified_via").$type<WaitChannel>(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  notifiedAt: timestamp("notified_at", { withTimezone: true }),
 });
 
 export const adminUsers = pgTable("admin_users", {
@@ -239,10 +279,15 @@ export const promotions = pgTable("promotions", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+export type CampaignChannel = "telegram" | "sms" | "telegram_then_sms";
+
+/** A personal code issued to each recipient at send time (lib/promo/server.ts → issuePromoCode). */
+export type MessagePromo = { kind: "percent" | "fixed"; value: number; ttlHours: number; minSubtotal?: number | null };
+
 export const campaigns = pgTable("campaigns", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
   name: text("name").notNull(),
-  channel: text("channel").$type<"telegram">().notNull(),
+  channel: text("channel").$type<CampaignChannel>().notNull(),
   segment: text("segment").notNull(),
   message: text("message").notNull(),
   status: text("status").$type<"draft" | "sent">().notNull().default("draft"),
@@ -251,6 +296,48 @@ export const campaigns = pgTable("campaigns", {
   createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   sentAt: timestamp("sent_at", { withTimezone: true }),
+  promo: jsonb("promo").$type<MessagePromo | null>(),
+  link: text("link"),
+});
+
+/* Storefront merchandising — db/migrations/0008_storefront_merchandising.sql */
+
+export const BANNER_PLACEMENTS = ["hero", "strip", "category"] as const;
+export type BannerPlacement = (typeof BANNER_PLACEMENTS)[number];
+
+export const banners = pgTable("banners", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  placement: text("placement").$type<BannerPlacement>().notNull(),
+  title: jsonb("title").$type<L>().notNull(),
+  subtitle: jsonb("subtitle").$type<L>().notNull(),
+  cta: jsonb("cta").$type<L>().notNull(),
+  href: text("href").notNull(),
+  image: text("image"),
+  imageMobile: text("image_mobile"),
+  theme: text("theme").$type<"light" | "dark">().notNull().default("light"),
+  startsAt: timestamp("starts_at", { withTimezone: true }),
+  endsAt: timestamp("ends_at", { withTimezone: true }),
+  showCountdown: boolean("show_countdown").notNull().default(false),
+  sort: integer("sort").notNull().default(0),
+  active: boolean("active").notNull().default(true),
+  clicks: integer("clicks").notNull().default(0),
+  /** A/B test (0011): banners sharing a key are variants A and B of one slot. */
+  experiment: text("experiment"),
+  variant: text("variant").$type<"A" | "B">(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const deals = pgTable("deals", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productSlug: text("product_slug").notNull(),
+  percent: integer("percent"),
+  price: integer("price"),
+  startsAt: timestamp("starts_at", { withTimezone: true }).notNull(),
+  endsAt: timestamp("ends_at", { withTimezone: true }).notNull(),
+  createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const siteSettings = pgTable("site_settings", {
@@ -258,4 +345,181 @@ export const siteSettings = pgTable("site_settings", {
   value: text("value").notNull(),
   updatedBy: integer("updated_by").references(() => adminUsers.id, { onDelete: "set null" }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Promo codes — db/migrations/0007_promo_codes.sql */
+
+export const PROMO_SOURCES = ["manual", "campaign", "flow", "referral", "birthday", "first-order"] as const;
+export type PromoSource = (typeof PROMO_SOURCES)[number];
+
+export const promoCodes = pgTable("promo_codes", {
+  code: text("code").primaryKey(),
+  kind: text("kind").$type<"percent" | "fixed">().notNull(),
+  value: integer("value").notNull(),
+  minSubtotal: integer("min_subtotal"),
+  maxUses: integer("max_uses"),
+  uses: integer("uses").notNull().default(0),
+  perPhoneLimit: integer("per_phone_limit").notNull().default(1),
+  phone9: text("phone9"),
+  productSlugs: jsonb("product_slugs").$type<string[] | null>(),
+  startsAt: timestamp("starts_at", { withTimezone: true }),
+  endsAt: timestamp("ends_at", { withTimezone: true }),
+  active: boolean("active").notNull().default(true),
+  source: text("source").$type<PromoSource>().notNull().default("manual"),
+  campaignId: text("campaign_id"),
+  note: text("note"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const promoRedemptions = pgTable("promo_redemptions", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  code: text("code").notNull(),
+  orderId: bigint("order_id", { mode: "number" }).notNull(),
+  phone9: text("phone9").notNull(),
+  discount: integer("discount").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* SMS, flows and the message outbox — db/migrations/0010_sms_flows.sql */
+
+export type OptOutChannel = "sms" | "telegram" | "all";
+
+export const marketingOptouts = pgTable("marketing_optouts", {
+  phone9: text("phone9").notNull(),
+  channel: text("channel").$type<OptOutChannel>().notNull(),
+  source: text("source"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const flows = pgTable("flows", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  trigger: text("trigger").notNull(),
+  active: boolean("active").notNull().default(false),
+  steps: jsonb("steps").$type<unknown>().notNull().default([]),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const ENROLLMENT_STATUSES = ["active", "converted", "exited", "done"] as const;
+export type EnrollmentStatus = (typeof ENROLLMENT_STATUSES)[number];
+
+export const flowEnrollments = pgTable("flow_enrollments", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  flowId: text("flow_id").notNull(),
+  subject: text("subject").notNull(),
+  cycle: text("cycle").notNull(),
+  context: jsonb("context").$type<Record<string, unknown>>().notNull().default({}),
+  anchorAt: timestamp("anchor_at", { withTimezone: true }).notNull(),
+  step: integer("step").notNull().default(0),
+  nextAt: timestamp("next_at", { withTimezone: true }),
+  status: text("status").$type<EnrollmentStatus>().notNull().default("active"),
+  exitReason: text("exit_reason"),
+  convertedOrderId: bigint("converted_order_id", { mode: "number" }),
+  enrolledAt: timestamp("enrolled_at", { withTimezone: true }).notNull().defaultNow(),
+  finishedAt: timestamp("finished_at", { withTimezone: true }),
+});
+
+export const MESSAGE_CHANNELS = ["sms", "telegram"] as const;
+export type MessageChannel = (typeof MESSAGE_CHANNELS)[number];
+export const MESSAGE_STATUSES = ["pending", "sending", "sent", "failed", "skipped"] as const;
+export type MessageStatus = (typeof MESSAGE_STATUSES)[number];
+
+export const outboundMessages = pgTable("outbound_messages", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  channel: text("channel").$type<MessageChannel>().notNull(),
+  phone9: text("phone9"),
+  chatId: bigint("chat_id", { mode: "number" }),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  text: text("text").notNull(),
+  link: text("link"),
+  promo: jsonb("promo").$type<MessagePromo | null>(),
+  promoCode: text("promo_code"),
+  flowId: text("flow_id"),
+  flowStep: integer("flow_step"),
+  enrollmentId: bigint("enrollment_id", { mode: "number" }),
+  campaignId: bigint("campaign_id", { mode: "number" }),
+  dedupeKey: text("dedupe_key").notNull().unique(),
+  status: text("status").$type<MessageStatus>().notNull().default("pending"),
+  attempts: integer("attempts").notNull().default(0),
+  error: text("error"),
+  providerRef: text("provider_ref"),
+  botJobId: bigint("bot_job_id", { mode: "number" }),
+  scheduledAt: timestamp("scheduled_at", { withTimezone: true }).notNull().defaultNow(),
+  claimedAt: timestamp("claimed_at", { withTimezone: true }),
+  sentAt: timestamp("sent_at", { withTimezone: true }),
+  clickedAt: timestamp("clicked_at", { withTimezone: true }),
+  clicks: integer("clicks").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Loyalty, referral, birthdays, banner A/B — db/migrations/0011_loyalty_referral_ab.sql */
+
+export const LEDGER_KINDS = ["earn", "redeem", "expire", "adjust", "reverse"] as const;
+export type LedgerKind = (typeof LEDGER_KINDS)[number];
+
+export const loyaltyLedger = pgTable("loyalty_ledger", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  phone9: text("phone9").notNull(),
+  delta: integer("delta").notNull(),
+  kind: text("kind").$type<LedgerKind>().notNull(),
+  orderId: bigint("order_id", { mode: "number" }),
+  refId: bigint("ref_id", { mode: "number" }),
+  note: text("note"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const loyaltyOtps = pgTable("loyalty_otps", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  phone9: text("phone9").notNull(),
+  codeHash: text("code_hash").notNull(),
+  attempts: integer("attempts").notNull().default(0),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  consumedAt: timestamp("consumed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const referralCodes = pgTable("referral_codes", {
+  phone9: text("phone9").primaryKey(),
+  code: text("code").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const REFERRAL_STATUSES = ["pending", "rewarded", "capped", "cancelled"] as const;
+export type ReferralStatus = (typeof REFERRAL_STATUSES)[number];
+export type ReferralReward = { kind: "points"; amount: number } | { kind: "promo"; code: string; percent: number };
+
+export const referrals = pgTable("referrals", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  code: text("code").notNull(),
+  referrerPhone9: text("referrer_phone9").notNull(),
+  referredPhone9: text("referred_phone9").notNull(),
+  orderId: bigint("order_id", { mode: "number" }),
+  discount: integer("discount").notNull().default(0),
+  status: text("status").$type<ReferralStatus>().notNull().default("pending"),
+  reward: jsonb("reward").$type<ReferralReward | null>(),
+  rewardedAt: timestamp("rewarded_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const customerBirthdays = pgTable("customer_birthdays", {
+  phone9: text("phone9").primaryKey(),
+  name: text("name"),
+  day: integer("day").notNull(),
+  month: integer("month").notNull(),
+  year: integer("year"),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  consentAt: timestamp("consent_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const bannerExposures = pgTable("banner_exposures", {
+  bannerId: bigint("banner_id", { mode: "number" }).notNull(),
+  abId: text("ab_id").notNull(),
+  day: text("day").notNull(),
+  visitorId: uuid("visitor_id"),
+  clickedAt: timestamp("clicked_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

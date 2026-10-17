@@ -12,9 +12,14 @@ katalog o'sha yo'lning oxirida turadi.
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
 - **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io), sayt V3 uslubida. Analitika, mijozlar yo'li (birinchi tomon kuzatuv), voronka, segmentlar va retarget (CSV/Meta/Google eksport, Telegram kampaniya), aksiyalar (bazada), integratsiyalar markazi, katalog, buyurtmalar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi. Birinchi ishga tushishda o'rnatilgan katalog bazaga o'zi ko'chadi (`lib/admin/seed.ts`)
 - **Saytning o'z kuzatuvi**: `lib/journey/` + `POST /api/t` (`gv_vid` cookie, `visitors`/`visitor_events`). `lib/analytics/events.ts` dagi har bir hodisa u yerga ham yoziladi — **yangi hodisani faqat `events.ts` orqali qo'shing**. Buyurtma `linkOrderToVisitor` bilan tashrif buyuruvchiga bog'lanadi
+- **Vitrina** (`/admin/storefront`, 0008): bannerlar (`banners`: hero / header ostidagi `strip` / `category`), eʼlon qatori (`site_settings` → `storefront.announcements`), bugungi taklif (`deals`). Saytda `lib/merch/store.ts` (kesh tag `merch`). Faol hero banner bo'lmasa — `home.slides` aynan avvalgidek (**hech qachon bo'sh hero emas**); taymer faqat haqiqiy `ends_at` bilan. **Bugungi taklif mahsulot qatorini o'zgartirmaydi**: narx har o'qishda `lib/catalog/deals.ts` (`dealPrice`, engine ichida) bilan oyna bo'yicha hisoblanadi — cron yo'q, checkout ham shu engine'dan narxlaydi. Batafsil: `docs/ADMIN.md` → Vitrina
+- **Savdo qoidalari panelda** (`/admin/commerce`, `site_settings` `commerce.rules`, `lib/commerce/`): bepul yetkazish chegarasi, kuryer narxi, viloyatlar muddati, bugun yetkazish chegarasi (env `NEXT_PUBLIC_DELIVERY_CUTOFF` endi faqat standart, runtime'da o'qiladi), upsell zinapoyasi foizlari/sovg'a, obuna %, savat takliflari chegarasi, pop-up'lar (yoqish, kechikish, cool-down, matn uz/ru). `lib/config/commerce.ts` dagi konstantalar — **faqat standart**: narxlaydigan yoki iqtibos keltiradigan kod samarali qiymatni o'qiydi (server `getCommerceSettings()`, klient `useCommerce()`/`usePricingRules()` — layout'dagi `CommerceProvider`), sof funksiyalarga qiymat argument bilan beriladi (`computeTotals(..., { rules })`, `repriceOrder(..., { pricing, ladder })`, `buildUpsellLadder(..., ladder)`, `gapFillers(..., { window })`, `subscriptionPricing(price, percents)`). Server qabul qiladigan zinapoya foizlari shu sozlamadan (`ladderPercentsAccepted`). To'liq: `docs/ADMIN.md` §Savdo qoidalari
 - **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
+- **SMS va avtomatlashtirish** (0010): har marketing xabari `outbound_messages` navbatidan o'tadi (`lib/messaging/`) — Telegram `bot_jobs` ga beriladi, SMS Eskiz orqali (`lib/sms/`, sozlash `/admin/integrations`). Ishchi sayt jarayonida (`instrumentation.ts`, har 60 s; `/api/cron/messages`). **Qoidalar kodda**: 21:00–09:00 Toshkent yuborilmaydi (09:00 ga suriladi), `marketing_optouts` har yuborishdan oldin, har SMS oxirida STOP havolasi (`/s/<token>`), promokod yuborish paytida, havolalar `/r/<id>` (bosish + `utm_campaign=flow-…|campaign-…`). Oqimlar `/admin/flows` (sukut: o'chiq), jurnal `/admin/messages`. Yangi marketing xabarini **faqat `queueMessage` orqali** yuboring. To'liq: **[`docs/MARKETING.md`](docs/MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages)**
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
+- **Ombor soni va kutayotganlar** (`0009_stock_waitlist.sql`): `products.stock_qty` — `null` = kuzatilmaydi (avvalgidek, faqat `in_stock`). Kuzatilsa buyurtma sonni **buyurtma bilan bitta tranzaksiyada** shartli `UPDATE … WHERE stock_qty >= n` bilan kamaytiradi (yetmasa butun buyurtma rad, «Faqat N ta qoldi»), 0 da `in_stock=false`; bekor qilish **bir marta** qaytaradi (buyurtmaning `stock_movements` netosi). Saytda «Omborda N ta qoldi» faqat haqiqiy son ≤ chegara (`low_stock_at`, standart `site_settings.stock.lowStockAt`=5) va > 0 bo'lsa. Qoidalar sof: `lib/catalog/stock-rules.ts`; baza: `stock.ts`. «Xabar ber» / «Narxi tushsa xabar bering» — `restock_requests`; qaytganda/arzonlashganda `lib/notify/` (`Notifier`: telegram → `bot_jobs` `restock:<id>`, sms — keyingi bosqich uchun stub, qolgani operatorga qo'ng'iroq ro'yxati). Admin: `/admin/waitlist`. Narx yoki ombor holatini o'zgartiradigan yangi yo'l `afterProductChange()` ni chaqirsin
+- **Sodiqlik** (`/admin/loyalty`, `0011`, hammasi sukut boʻyicha **oʻchiq**): keshbek ballari (`lib/loyalty/` — balans saqlanmaydi, `loyalty_ledger` yigʻindisi, muddat dangasa; «Yetkazildi» da beriladi, bekor qilinsa qaytadi; **ishlatish faqat SMS kod bilan**, ball — toʻlov, `adjustments` oxirida `points`), tavsiya kodlari `GV` + 6 belgi (`lib/referral/`, promokod maydonida, faqat birinchi buyurtma), tugʻilgan kun roziligi (`/profile` → `customer_birthdays`, `birthday` oqimi), bannerlar A/B (`lib/merch/ab.ts`: `gv_ab` cookie + `<head>` skripti, ISR va nol CLS). Holat oʻzgarishi — `afterOrderStatus` (ikkala admin yoʻli). To'liq: [`docs/MARKETING.md`](docs/MARKETING.md#5f-sodiqlik-keshbek-tavsiya-tugʻilgan-kun-bannerlar-ab-adminloyalty)
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
 - **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
 - **Deploy**: Fly.io (Docker, `fly.toml`) — sayt, Managed Postgres va Tigris bitta tashkilotda; baza internetga ochilmaydi. To'liq: **[`docs/DEPLOY-FLY.md`](docs/DEPLOY-FLY.md)**. Vercel konfiguratsiyasi (`vercel.json`) domen ko'chirilguncha qoladi
@@ -160,7 +165,7 @@ chaqirilgandan **keyin** chizing.
 | `home/` | Bosh sahifa (V3): `HomeHero` (slayder + "Haftaning taklifi"), `BrandPanel`, `HomeBlocks` (kategoriyalar, ishonch, rail/grid, 2+1, auditoriya, xizmatlar, kelib chiqish, yangiliklar, FAQ+yordam, SEO). `TrustRibbon`/`BestSellers` faqat `/lp/[campaign]` uchun qolgan |
 | `cart/` | CartDrawer (Framer Motion slide-in; tugmasi `/cart` ga), CartLines (V3 qatorlar + upsell ladder takliflari) |
 | `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate (PDP V3, server; bitta DOM, telefonda `order-*`), BuyBox (+ `MobileBuyBar`, `MiniBuyCard`), `purchase.ts` (uchala «qo'shish» tugmasining umumiy holati — rejim, oraliq, miqdor), SubscribeToSave, ProductGallery, ProductSections (`SectionNav` scrollspy, `Collapsible` — desktopda ochiq, telefonda akkordeon), WishlistButton, ShareButton, OutOfStockNotify |
-| `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
+| `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli; «Aksiyada» = haqiqiy eski narx yoki mahsulotni nomlagan aksiya, «Tez tugaydi» = haqiqiy tugash ≤ 72 soat, filtr ham saralash ham), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
 | `account/` | AccountShell (AccountNavV3: desktopda yon menyu, telefonda sahifa oxirida ro'yxat), AccountView (kirish yoki bosh sahifa), AuthForm (OTP, 6 katak — bitta input), OrderHistory (+ `useMyOrders`, `StatusBadge`), OrderDetail, MySubscriptions (+ `SubscriptionsView`). Holatlar — `lib/account/orders.ts` |
 | `quiz/` | QuizFlow (V3: savol = `h1`, segmentli progress, «Kim uchun» foto kartalari — `lib/content/audience.ts`; telefonda fixed «Keyingi» paneli), QuizPlanView (natija: qora toʻplam paneli, «Nega»/«Izoh» qatorlari, shifokor ogohlantirishi), QuizPlanActions (+ `QuizAddOne`). Logika — `lib/quiz/` |
 | `info/` | InfoShell (InfoNavV3: desktopda chap menyu + yordam kartasi, telefonda chip qatori; `InfoHeader`, `InfoFaq`), LeadForms (`PartnerForm`, `ContactForm` → `app/actions/leads.ts` → operator Telegram'i) |
@@ -227,7 +232,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1514 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1633 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini
@@ -244,7 +249,7 @@ To'liq holat, qoidalar va off-page reja: **[`docs/SEO.md`](docs/SEO.md)**.
   `meta.pages`, uz + ru). Qo'lda `${x} — Go Vita` yozilmaydi. Title ≤ 70, so'rov so'zi
   oldinda ("… narxi, Toshkentda sotib olish" / "… купить в Ташкенте, цена");
   description 70–160, haqiqiy narx/son/muddat bilan (`page-meta.test.ts`)
-- **Query-param variantlari** (`?sort`, filtrlar, `?page`) — `noindex, follow`
+- **Query-param variantlari** (`?sort`, filtrlar — `sale`, `ending` ham, `?page`) — `noindex, follow`
 - **Bo'sh javon** (0 mahsulot) — 404 va sitemap'da yo'q; `productCount` javon
   ko'rsatgandek (`categorySlug`, sotuvdagilar) sanaladi
 - **JSON-LD** (`src/lib/seo/jsonld.tsx`): WebSite + Store — faqat bosh sahifada (Store
@@ -398,9 +403,11 @@ src/lib/upsell/ladder.ts — buildUpsellLadder(cartLines, allProducts)
 ```
 
 **Algoritm:**
-1. Step 1 — cart subtotal × 30–90% narxdagi mahsulot, **−10%**
-2. Step 2 — boshqa kategoriyadan, **−15%**
-3. Step 3 — narx ≤ saved₁+saved₂ bo'lsa → **BEPUL 🎁**, aks holda eng arzon mahsulot **−20%**
+1. Step 1 — cart subtotal × 30–90% narxdagi mahsulot, **−p₁** (standart 10%)
+2. Step 2 — boshqa kategoriyadan, **−p₂** (15%)
+3. Step 3 — sovg'a yoqilgan va narx ≤ saved₁+saved₂ bo'lsa → **BEPUL 🎁**, aks holda eng arzon mahsulot **−p₃** (20%)
+
+Foizlar va yoqish/sovg'a — `/admin/commerce` (`LADDER_PERCENT_CHOICES` dan, o'suvchi).
 
 Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
 
@@ -417,7 +424,27 @@ Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
 - Aksiyalar (2+1, percent_off) o'z taklifi/obunasi bor qatorga **qo'shilmaydi**
   (`promotionApplies`); `productSlugs` bo'lsa faqat o'shalarga.
 - Savatda: 2+1 eslatmasi (2 dona bo'lsa), bepul yetkazishgacha ≤150 000 so'm
-  qolsa uni yolg'iz yopadigan mahsulotlar (`lib/cart/gap.ts`).
+  (panelda o'zgaradi, 0 — o'chiq) qolsa uni yolg'iz yopadigan mahsulotlar (`lib/cart/gap.ts`).
+- Bepul yetkazish chegarasi bitta va **hamma** buyurtmaga (panel); `free_shipping_over`
+  aksiyasi uni faqat pasaytiradi.
+
+## Promokodlar
+
+To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md#promokodlar)**. Faqat baza bo'lsa
+(`ORDERS_IN_DB`) — kod va redemption bazada sanaladi; bo'lmasa savatda maydon yo'q.
+
+- Qoidalar `lib/promo/rules.ts` (sof): kod taklif/obuna qatoriga qo'shilmaydi,
+  buyurtmaga bitta kod, birinchi buyurtma chegirmasi bilan **qo'shilmaydi —
+  kattasi** (teng — birinchi buyurtma), bepul yetkazish chegirmadan oldin o'lchanadi
+- Buyurtma `lib/promo/server.ts` `placeOrder` orqali: telefon lock + kod `for update`,
+  qayta tekshiruv, redemption, `uses + 1` — bitta tranzaksiya. Kod yaroqsiz bo'lib
+  qolsa `promo_invalid` — savat kodni olib tashlaydi, mijoz qayta yuboradi
+- Chegirma `orders.totals.adjustments` da (+ `orders.promo_code`); Telegram'da
+  `🏷 Promokod` / `🎁 Birinchi buyurtma` qatori; `trackOrder` `coupon` yuboradi
+- Birinchi buyurtma: `site_settings` `discount.firstOrder` (admin `/admin/promocodes`),
+  baza bo'lsa avtomatik, bo'lmasa operator. Matnlar `FirstOrderOffer` rejimiga qarab
+- Avtomatik kod kerak bo'lsa (SMS, referal, tug'ilgan kun) — `issuePromoCode()` /
+  `issuePromoCodeBatch()`; kodni o'zingiz yasamang
 
 ## Pop-up va taymerlar (marketing)
 
@@ -425,7 +452,9 @@ Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
   sessiyada bittadan ko'p emas, har birining kutish muddati (30/3/7 kun), boshqa
   dialog ochiq bo'lsa yoki `/cart`, `/checkout`, `/quiz`, `/account`, `/profile`
   da chiqmaydi. `navigator.webdriver` (botlar, audit) — umuman chiqmaydi.
-- **Welcome** — `COMMERCE.discounts.firstOrderPercent` (−10%, operator qo'llaydi;
+- Har pop-up'ning yoqilishi, kechikishi, cool-down'i va matni — `/admin/commerce`
+  (standart 30/3/7 kun); o'chirilgani yuklanmaydi ham (`DeferredUi`).
+- **Welcome** — birinchi buyurtma chegirmasi (`FirstOrderOffer`: baza bo'lsa avtomatik, bo'lmasa operator qo'llaydi, o'chirilsa karta yo'q;
   Telegram'da `🎁 Yangi mijoz` / `🔁 Qaytgan mijoz` — baza bo'lsa telefon bo'yicha
   `ordersFromPhone`). **Exit** — savat bo'lsa savat + jami, bo'lmasa Telegram.
   **Quiz** — 3-sahifadan keyin burchak kartasi, quiz o'tilgan bo'lsa yo'q.
@@ -433,7 +462,8 @@ Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
   + «Savatga o'tish»; upsell ladder ochiq bo'lsa yoki `/cart` da qisqa holatda.
 - **Taymerlar faqat real**: aksiya — admin'da «Aksiya tugashi» (`products.sale_ends_at`,
   Toshkent vaqti); muddat o'tgach engine narxni eski narxga qaytaradi (server ham).
-  Yetkazish — `NEXT_PUBLIC_DELIVERY_CUTOFF=16:00` (bo'lmasa taymer yo'q).
+  Yetkazish — `/admin/commerce` → «Bugun yetkazish chegarasi» (standart
+  `NEXT_PUBLIC_DELIVERY_CUTOFF`; bo'sh — taymer yo'q), qayta build'siz.
 
 ## Personalizatsiya
 
@@ -480,7 +510,7 @@ To'liq hujjat: **[`docs/MARKETING.md`](docs/MARKETING.md)**.
 src/lib/subscription/plans.ts — oraliqlar, chegirmalar, bepul yetkazish chegarasi
 ```
 
-Birinchi buyurtmada −10%, keyingi yetkazishlarda −15%. Takrorlanadigan narx
+Birinchi buyurtmada −10%, keyingi yetkazishlarda −15% (standart; `/admin/commerce` → Obuna). Takrorlanadigan narx
 mahsulot sahifasidayoq ko'rsatiladi. `CartLine.subscription` → checkout →
 backend'da `subscriptions` jadvali. Boshqaruv `/account` da: to'xtatish,
 o'tkazib yuborish, oraliqni o'zgartirish, bekor qilish.
@@ -537,12 +567,22 @@ ADMIN_SETUP_TOKEN=...         # birinchi admin yaratilgach o'chiriladi
 # Rasm yuklash (Fly Tigris, `fly storage create` beradi)
 AWS_ENDPOINT_URL_S3=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... BUCKET_NAME=... AWS_REGION=auto
 
+# SMS (Eskiz) — yoki /admin/integrations (shifrlangan); xabar havolalari kaliti
+ESKIZ_EMAIL=... ESKIZ_PASSWORD=... ESKIZ_SENDER=4546
+MESSAGE_LINK_SECRET=...              # bir marta qo'ying, o'zgartirmang (STOP va /r/ havolalari)
+SMS_FAKE=1                           # faqat lokal: live deploy'da e'tiborga olinmaydi
+MESSAGE_WORKER=off                   # ixtiyoriy: jarayon ichidagi ishchini o'chirish
+SMS_FAKE_LOG=/tmp/sms.jsonl          # faqat lokal (SMS_FAKE bilan): matnlar faylga — E2E kodni o'qiydi
+
+# Sodiqlik: SMS kod HMAC va kvitansiya imzosi (bo'lmasa ADMIN_SESSION_SECRET dan alohida yorliq bilan)
+LOYALTY_SECRET=...                   # ixtiyoriy; o'zgartirilsa faqat ochiq kodlar/tokenlar bekor bo'ladi
+
 # Telegram klub boti (docs/BOT-ADMIN.md) — operator botidan alohida bot
 BOT_API_KEY=...                      # ≥ 32 belgi; bo'lmasa /api/bot yopiq (401)
 TELEGRAM_CLUB_BOT_TOKEN=...          # Mini App initData imzosini tekshirish
 NEXT_PUBLIC_TELEGRAM_CLUB_BOT=govita_club_bot   # build arg: web.telegram.org framing
 
-# Yetkazish taymeri (Toshkent vaqti; bo'lmasa ko'rinmaydi)
+# Yetkazish taymeri standarti (Toshkent vaqti) — /admin/commerce uni runtime'da almashtiradi
 NEXT_PUBLIC_DELIVERY_CUTOFF=16:00
 
 # Sanity Studio (production'da default: yopiq)

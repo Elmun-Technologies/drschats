@@ -20,6 +20,10 @@ export interface ProductFormValues {
   /** Tashkent time, "YYYY-MM-DDTHH:mm"; empty = the sale has no end date. */
   saleEndsAt: string;
   inStock: boolean;
+  /** Empty = not tracked. */
+  stockQty: string;
+  /** Empty = the site default. */
+  lowStockAt: string;
   kind: "core" | "addon" | "unlisted";
   sort: string;
   images: string;
@@ -52,7 +56,9 @@ export function ProductForm({
   brands,
   storageReady,
   repoImages,
+  lowStockDefault = 5,
 }: {
+  lowStockDefault?: number;
   values: ProductFormValues;
   categories: { slug: string; name: string }[];
   brands: { slug: string; name: string }[];
@@ -70,12 +76,15 @@ export function ProductForm({
   const [categoryList, setCategoryList] = useState(categories);
   const [categorySlug, setCategorySlug] = useState(values.categorySlug);
   const [newCategoryOpen, setNewCategoryOpen] = useState(false);
+  const [stockQty, setStockQty] = useState(values.stockQty);
+  const tracked = stockQty.trim() !== "";
   const c = (k: string) => values.content[k] ?? "";
   const discount = Number(oldPrice) > Number(price) && Number(price) > 0 ? Math.round((1 - Number(price) / Number(oldPrice)) * 100) : 0;
 
   return (
     <form action={action} className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
       {values.id && <input type="hidden" name="id" value={values.id} />}
+      {values.id && <input type="hidden" name="stockQtyBefore" value={values.stockQty} />}
       {(state?.error || state?.ok) && (
         <div className="xl:col-span-2">{state?.error ? <Notice tone="error">{state.error}</Notice> : <Notice tone="ok">{state?.ok}</Notice>}</div>
       )}
@@ -167,18 +176,30 @@ export function ProductForm({
               <option value="unlisted">Sotuvdan olingan (koʻrinmaydi)</option>
             </select>
           </Field>
-          <label className="flex min-h-11 items-center gap-3 text-[15px] font-semibold">
-            <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-ink" />
-            Omborda bor
-          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <Field label="Ombordagi soni" hint="Boʻsh — kuzatilmaydi">
+              <input name="stockQty" type="number" min={0} max={1000000} step={1} inputMode="numeric" value={stockQty} onChange={(e) => setStockQty(e.target.value)} className={inputClass} />
+            </Field>
+            <Field label="Kam qoldi chegarasi" hint={`Boʻsh — standart (${lowStockDefault})`}>
+              <input name="lowStockAt" type="number" min={1} max={1000} step={1} inputMode="numeric" defaultValue={values.lowStockAt} placeholder={String(lowStockDefault)} className={inputClass} />
+            </Field>
+          </div>
+          {tracked ? (
+            <p className="text-[13px] leading-[17px] text-muted">Soni kiritilgan: «Omborda bor» sondan aniqlanadi (0 — tugagan). Buyurtma sonni kamaytiradi, bekor qilish qaytaradi. Saytda soni chegaradan kam boʻlganda «Omborda N ta qoldi» chiqadi.</p>
+          ) : (
+            <label className="flex min-h-11 items-center gap-3 text-[15px] font-semibold">
+              <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-ink" />
+              Omborda bor
+            </label>
+          )}
         </Panel>
         <Panel title="Narx">
           <div className="grid grid-cols-2 gap-3">
             <Field label="Narx, soʻm">
-              <input name="price" type="number" min={0} step={100} value={price} onChange={(e) => setPrice(e.target.value)} required className={inputClass} />
+              <input name="price" type="number" min={0} step={1} value={price} onChange={(e) => setPrice(e.target.value)} required className={inputClass} />
             </Field>
             <Field label="Eski narx">
-              <input name="oldPrice" type="number" min={0} step={100} value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} className={inputClass} />
+              <input name="oldPrice" type="number" min={0} step={1} value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} className={inputClass} />
             </Field>
           </div>
           {discount > 0 && <p className="text-[14px] text-ink-2">Saytda chegirma: <span className="rounded-full bg-red px-2 py-0.5 text-[13px] font-semibold text-white">−{discount}%</span></p>}

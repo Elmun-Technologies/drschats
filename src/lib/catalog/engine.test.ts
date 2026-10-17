@@ -26,3 +26,24 @@ describe("sale end date", () => {
     expect(p?.saleEndsAt).toBeUndefined();
   });
 });
+
+describe("deal of the day", () => {
+  const plain = builtInCatalog.products.find((p) => !p.oldPrice && p.price >= 10_000)!;
+  const engine = (startsAt: number, endsAt: number) =>
+    new CatalogEngine(async () => ({
+      ...builtInCatalog,
+      deals: [{ id: 1, productSlug: plain.slug, percent: 20, price: null, startsAt: new Date(startsAt).toISOString(), endsAt: new Date(endsAt).toISOString() }],
+    }));
+
+  it("prices the product (page, listing and the order action alike) only inside the window", async () => {
+    const running = engine(Date.now() - 60_000, Date.now() + 3_600_000);
+    const p = await running.getProduct(plain.slug, "uz");
+    expect(p?.oldPrice).toBe(plain.price);
+    expect(p?.price).toBe(Math.round((plain.price * 0.8) / 100) * 100);
+    const listed = (await running.getProducts({ locale: "uz", pageSize: 200, assortment: "all" })).items.find((x) => x.slug === plain.slug);
+    expect(listed?.price).toBe(p?.price);
+
+    const upcoming = await engine(Date.now() + 60_000, Date.now() + 3_600_000).getProduct(plain.slug, "uz");
+    expect(upcoming).toMatchObject({ price: plain.price, oldPrice: undefined });
+  });
+});

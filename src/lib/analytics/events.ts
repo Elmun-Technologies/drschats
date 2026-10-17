@@ -143,10 +143,18 @@ export function trackSearch(term: string) {
  * both are sent: `purchase` with the order id (GA4 dedupes on it) and the
  * lead conversion the existing campaigns are set up on.
  */
-export function trackOrder(orderId: string, totals: { total: number; shipping: number }, items: AnalyticsItem[]) {
+/** `coupon` — the promo code the server redeemed with the order (GA4's purchase `coupon` field). */
+export function trackOrder(orderId: string, totals: { total: number; shipping: number; coupon?: string }, items: AnalyticsItem[]) {
   send(
     "purchase",
-    { transaction_id: orderId, currency: CURRENCY, value: totals.total, shipping: totals.shipping, items },
+    {
+      transaction_id: orderId,
+      currency: CURRENCY,
+      value: totals.total,
+      shipping: totals.shipping,
+      ...(totals.coupon ? { coupon: totals.coupon } : {}),
+      items,
+    },
     true,
   );
   send("generate_lead", { currency: CURRENCY, value: totals.total, transaction_id: orderId }, false);
@@ -171,6 +179,46 @@ export function trackUpsellAccept(step: number, productId: string, savedAmount: 
 
 export function trackUpsellSkip(step: number, productId: string) {
   track("upsell_skip", { step, product_id: productId });
+}
+
+/*
+  A click on an admin-managed banner (admin → Vitrina): GA4's own
+  `select_promotion`, and one beacon to /api/b/:id, which bumps the banner's
+  click counter in the panel. Automated browsers are not counted; the
+  endpoint also drops bot user agents and repeats from the same address.
+*/
+export function trackPromotionClick(banner: { id: number; title: string }, slot: "hero" | "strip" | "category") {
+  if (typeof window === "undefined") return;
+  send("select_promotion", { promotion_id: `banner-${banner.id}`, promotion_name: banner.title, creative_slot: slot }, true);
+  if (navigator.webdriver) return;
+  try {
+    navigator.sendBeacon?.(`/api/b/${banner.id}`);
+  } catch {
+    /* a lost click count never blocks the navigation */
+  }
+}
+
+/**
+ * A banner in an A/B test was shown (lib/merch/ab.ts): GA4 `view_promotion`
+ * with the variant, and the exposure beacon — once per banner per browser
+ * session; the server keeps one row per visitor and day anyway.
+ */
+export function trackExperimentView(banner: { id: number; title: string }, experiment: string, variant: "A" | "B", slot: "hero" | "strip" | "category") {
+  if (typeof window === "undefined") return;
+  const key = `govita-ab-seen:${banner.id}`;
+  try {
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+  } catch {
+    /* storage off: the server's per-day row still counts the visitor once */
+  }
+  send("view_promotion", { promotion_id: `banner-${banner.id}`, promotion_name: banner.title, creative_slot: slot, creative_name: `${experiment}:${variant}` }, true);
+  if (navigator.webdriver) return;
+  try {
+    navigator.sendBeacon?.(`/api/b/${banner.id}?kind=view`);
+  } catch {
+    /* a lost exposure never blocks the page */
+  }
 }
 
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */

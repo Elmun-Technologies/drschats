@@ -13,6 +13,8 @@ import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
 import { getSimilarProducts } from "@/lib/personalization/engine";
 import { cutoutOf } from "@/lib/catalog/product-facts";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { pricingRulesOf } from "@/lib/commerce/settings";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -68,9 +70,10 @@ export default async function ProductPage({
     .sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
     .slice(0, 6);
 
-  const [reviewerResult, authorResult] = await Promise.all([
+  const [reviewerResult, authorResult, commerce] = await Promise.all([
     reviewerForKey(product.id, locale),
     reviewerForKey(product.slug, locale),
+    getCommerceSettings(),
   ]);
   // Null while no real expert is on file: the page must not print an empty
   // name or attribute its medical claims to somebody who never saw it.
@@ -79,7 +82,7 @@ export default async function ProductPage({
 
   return (
     <>
-      <JsonLd data={productGraph({ product, locale, reviewer, author })} />
+      <JsonLd data={productGraph({ product, locale, reviewer, author, pricing: pricingRulesOf(commerce) })} />
       {product.faq.length > 0 && <JsonLd data={faqLd(product.faq)} />}
       <JsonLd
         data={breadcrumbLd([

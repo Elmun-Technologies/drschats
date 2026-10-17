@@ -34,6 +34,12 @@ export interface RateLimit {
   windowMs: number;
 }
 
+/** Whether this window's budget is already spent, without counting an attempt. */
+export function rateLimitSpent(name: string, key: string, { limit }: RateLimit): boolean {
+  const bucket = buckets.get(name)?.get(key);
+  return Boolean(bucket && Date.now() <= bucket.resetAt && bucket.count >= limit);
+}
+
 /**
  * Count one attempt. Returns false once the limit for this window is spent.
  *

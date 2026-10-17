@@ -19,7 +19,7 @@
     that is hard to leave is a chargeback and a lost customer, in that order.
 */
 
-import { COMMERCE, thousands } from "@/lib/config/commerce";
+import { COMMERCE } from "@/lib/config/commerce";
 
 export const SUBSCRIPTION_INTERVALS = [30, 45, 60, 90] as const;
 export type IntervalDays = (typeof SUBSCRIPTION_INTERVALS)[number];
@@ -27,20 +27,16 @@ export type IntervalDays = (typeof SUBSCRIPTION_INTERVALS)[number];
 /** Most packs are a 30-day course, so that is the default and the popular one. */
 export const DEFAULT_INTERVAL: IntervalDays = 30;
 
-/** Off the first order, placed today — the same 10% as the first-order offer. */
+/*
+  The percents are the admin's commerce rules (/admin/commerce); these two are
+  their defaults. Pages read the effective ones (server: getCommerceSettings,
+  client: useCommerce) and pass them in; the free-shipping threshold is the
+  site's one threshold, applied by computeTotals.
+*/
+/** Default off the first order, placed today. */
 export const FIRST_ORDER_PERCENT = COMMERCE.discounts.subscriptionFirstPercent;
-/** Off every delivery after the first, for as long as the subscription runs. */
+/** Default off every delivery after the first, for as long as the subscription runs. */
 export const RECURRING_PERCENT = COMMERCE.discounts.subscriptionRecurringPercent;
-
-/**
- * Subscription orders ship free above this; one-off orders use the same
- * threshold from the same file. Two numbers for one rule is how a site ends up
- * advertising 300 000 in the cart and 500 000 in a banner.
- */
-export const SUBSCRIPTION_FREE_SHIPPING_OVER = COMMERCE.freeShippingOver;
-
-/** "300 000" — for the copy that has to quote the threshold in a sentence. */
-export const FREE_SHIPPING_LABEL = thousands(COMMERCE.freeShippingOver);
 
 export function isIntervalDays(value: unknown): value is IntervalDays {
   return (SUBSCRIPTION_INTERVALS as readonly number[]).includes(value as number);
@@ -55,12 +51,16 @@ export interface SubscriptionPricing {
   recurringPercent: number;
 }
 
-export function subscriptionPricing(price: number): SubscriptionPricing {
+export function subscriptionPricing(
+  price: number,
+  percents: { firstPercent: number; recurringPercent: number } = { firstPercent: FIRST_ORDER_PERCENT, recurringPercent: RECURRING_PERCENT },
+): SubscriptionPricing {
+  const { firstPercent, recurringPercent } = percents;
   return {
-    firstPrice: Math.round(price * (1 - FIRST_ORDER_PERCENT / 100)),
-    recurringPrice: Math.round(price * (1 - RECURRING_PERCENT / 100)),
-    firstPercent: FIRST_ORDER_PERCENT,
-    recurringPercent: RECURRING_PERCENT,
+    firstPrice: Math.round(price * (1 - firstPercent / 100)),
+    recurringPrice: Math.round(price * (1 - recurringPercent / 100)),
+    firstPercent,
+    recurringPercent,
   };
 }
 

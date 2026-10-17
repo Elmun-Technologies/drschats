@@ -71,15 +71,80 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Mijozlar yo'li | saytga kirgan har bir odam: manba, bosqich (kirdi → mahsulot ko'rdi → savat → rasmiylashtirish → sotib oldi), savatdagi mahsulotlar, tashriflar bo'yicha harakatlar tarixi |
 | Voronka | sayt voronkasi va har bosqichdagi yo'qotish (retarget segmentiga havola) + buyurtma bajarilishi va holatlar kanbani |
 | Segmentlar va retarget | avtomatik auditoriyalar: kursi tugayapti (25–40 kun), bir marta sotib olgan, 60+ kun, yo'qotilgan (180+), VIP, yangi (7 kun), savatni tashlab ketgan, rasmiylashtirishda to'xtagan, ko'rib ketgan. CSV (jamoa), Meta Custom Audience va Google Customer Match (SHA-256) eksporti, Telegram orqali shaxsiy xabar (`{ism}`) |
+| Vitrina | bannerlar (bosh sahifa slayderi, header ostidagi qator, katalog sahifalari — muddat, taymer, bosishlar soni), eʼlon qatori (TopBar), bugungi taklif (hozirgi + navbat). Pastda batafsil |
 | Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
-| Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
+| Promokodlar | kodlar ro'yxati (holat: faol / tugagan / shaxsiy; manba bo'yicha), ishlatildi / limit, kod keltirgan buyurtma va tushum, 30 kunlik ko'rsatkichlar; yaratish (kod qo'lda yoki avtomatik `GV-7K3P9Q`), tahrir, o'chirish (faqat ishlatilmagan — ishlatilgani faqat faolsizlantiriladi), N ta bir martalik kod toʻplami → CSV (SMS/Telegram uchun); «Birinchi buyurtma chegirmasi» kartasi (yoqish, foiz). Buyurtma sahifasida promokod / birinchi buyurtma qatori. Pastda [Promokodlar](#promokodlar) |
+| Sodiqlik | `/admin/loyalty`: keshbek (yoqish, %, minimal buyurtma, ball bilan toʻlash ulushi, muddat), doʻstni taklif qilish (doʻst chegirmasi, mukofot — ball yoki promokod, oylik limit), tugʻilgan kun (profil formasi, necha kun oldin, oqim holati); majburiyat / berilgan / ishlatilgan / muddati tugagan, eng faol taklif qiluvchilar. Mijoz sahifasida balans, ball tarixi, tavsiya kodi, tugʻilgan kun roziligi va «Balansni tuzatish» (izoh majburiy). [MARKETING.md](MARKETING.md#5f-sodiqlik-keshbek-tavsiya-tugʻilgan-kun-bannerlar-ab-adminloyalty) |
+| Kampaniyalar | yuborilgan xabarlar (Telegram / SMS / Telegram→SMS, shaxsiy promokod): auditoriya, yuborildi, yetkazildi, bosildi, buyurtma, tushum, konversiya |
+| Avtomatlashtirish | `/admin/flows`: 5 ta oqim (savat, birinchi xarid, kurs, qaytarish, omborga keldi) — yoqish/oʻchirish, hozir oqimda, 30 kunlik yuborildi / bosildi / qaytdi / tushum; muharrir: qadamlar (muddat, kanal, havola, promokod), uz/ru matn, oʻzgaruvchi chiplari, jonli koʻrinish va SMS qismlari; «Bir marta ishga tushirish». [MARKETING.md](MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages) |
+| Xabarlar | `/admin/messages`: har bir SMS/Telegram xabari — kanal, holat, manba (oqim/kampaniya) filtrlari, yashirilgan telefon, sabab, bosishlar; obunadan chiqqanlar soni |
 | UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
 | Mahsulotlar | Mahsulotlar / Kategoriyalar / Brendlar — bitta tab qatori. Holat chiplari (sotuvda / tugagan / chegirmada / rasmsiz / sotuvdan olingan), kategoriya va brend filtri, saralash (tartib, nom, narx, yangi), o'rnatilgan katalogdan import, yangi, tahrir (uz/ru). Rasmlar: saytdagi rasmlardan tanlash oynasi (`public/products`, `public/images/products/c-*.png`, `public/images/stock` — so'rov paytida o'qiladi, `lib/admin/repo-images.server.ts`), tartib strelkalari, Tigris bo'lsa yuklash. Kategoriya selekti yonida «+ Yangi kategoriya». Saqlash saytni darhol yangilaydi |
+| Ombor | mahsulot formasida «Ombordagi soni» (bo'sh — kuzatilmaydi) va «Kam qoldi chegarasi»; ro'yxatda ombor tugmasi («12 ta», «kam: 3», «tugagan», «kuzatilmaydi») → ± / aniq son / kuzatmaslik oynasi (izoh bilan), «Kam qolganlar» chipi, standart chegara kartasi; tahrir sahifasida «Ombor tarixi» |
+| Kutayotganlar | `/admin/waitlist`: mahsulot × omborni / narxni kutayotganlar soni, «Hozir xabar yuborish», so'rovlar (telefon yashirin, bosilganda to'liq), holat va tur chiplari, bekor qilish, CSV |
 | Kategoriyalar | kartalar setkasi (rasm, uz/ru nom, mahsulot soni), `categories/new`, `categories/[slug]` tahrir; slug bo'sh bo'lsa uz nomdan; mahsuloti bor kategoriya o'chirilmaydi |
 | Brendlar | qo'shish (slug nomdan), tahrir, o'chirish, mahsulot soni |
 | Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
-| Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend; saytning o'z kuzatuvi holati |
+| Savdo qoidalari | `/admin/commerce` — yetkazish (bepul yetkazish chegarasi, kuryer narxi, viloyatlar muddati uz/ru, bugun yetkazish chegarasi SS:DD), upsell zinapoyasi (yoqish, 3 qadam foizi xavfsiz to'plamdan, bepul sovg'a), obuna (birinchi / keyingi %), savat takliflari (bepul yetkazishgacha qancha qolsa), pop-up'lar (welcome / exit / quiz: yoqish, kechikish, qayta ko'rsatish kuni, sarlavha/matn uz/ru). Har kartada «Mijoz ko'radi» qatori, «Standartga qaytarish», «Oxirgi o'zgartirgan». Pastda [Savdo qoidalari](#savdo-qoidalari) |
+| Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend, SMS — Eskiz (+ test SMS, ʻ→' sozlamasi); saytning o'z kuzatuvi holati |
 | Administratorlar | qo'shish, o'chirish (o'zini va oxirgisini emas), parol almashtirish, barcha qurilmalardan chiqish |
+
+## Vitrina — `/admin/storefront`
+
+Uchta tab, hammasi saqlash bilan saytni darhol yangilaydi (`revalidateTag("merch")`,
+taklifda `catalog` ham, + `revalidatePath("/", "layout")`). Saytdagi o'qish
+`src/lib/merch/store.ts` (kesh, tag `merch`, xato bo'lsa jim — o'rnatilgan
+ko'rinish), sof qism `src/lib/merch/model.ts` (testli).
+
+- **Bannerlar** (`banners`, 0008). Joyi: `hero` (bosh sahifa slayderi),
+  `strip` (header ostidagi ingichka qator, har sahifada), `category` (katalog
+  va kategoriya sahifasida setka ustida; qidiruvda yo'q). uz/ru sarlavha,
+  qo'shimcha matn, tugma; havola — saytdagi yo'l yoki `https://` (`safeHref`,
+  boshqasi rad etiladi); rasm — saytdagi rasmlar oynasi yoki Tigris yuklash,
+  telefon uchun alohida rasm ixtiyoriy; fon ochiq/qora; muddat (Toshkent vaqti).
+  **Taymer faqat tugash sanasi bilan** — baza `check` bilan ham ushlaydi.
+  Banner muddatidan oldin ko'rinmaydi, tugash daqiqasida ochiq sahifadan ham
+  yo'qoladi (`useUnexpired`). **A/B test**: ikki banner bitta kalit bilan A/B
+  variant — tafsilot [MARKETING.md](MARKETING.md#bannerlar-ab-testi). **Faol slayder banneri bo'lmasa — `home.slides`
+  dagi o'rnatilgan slaydlar aynan avvalgidek**; oxirgi banner sahifada tugasa
+  ham o'rnatilgan slaydlar qaytadi: hero hech qachon bo'sh emas.
+  Bosishlar: `trackPromotionClick` (`lib/analytics/events.ts`, GA4
+  `select_promotion`) + `POST /api/b/:id` beacon — bot UA, boshqa sayt
+  so'rovi va bitta manzildan 30 daqiqada takror bosish sanalmaydi.
+- **Eʼlon qatori** — `site_settings` → `storefront.announcements` (JSON,
+  ≤ 5 qator: uz/ru matn, havola, tugash vaqti, taymer, yoqilgan). Kompyuterda
+  TopBar o'rtasida (havolalar o'rnida), telefonda header ustida; bir nechta
+  bo'lsa 6 soniyada almashadi (hover/fokusda to'xtaydi, pauza tugmasi,
+  reduced-motion'da aylanmaydi). Yoqilgan qator bo'lmasa — odatiy TopBar.
+- **Bugungi taklif** (`deals`, 0008) — mahsulot + foiz yoki yangi narx +
+  boshlanish/tugash (sukut: hozir → bugun 23:59 Toshkent). Navbatga keyingi
+  kunlar uchun ham qo'yiladi; ikki taklif vaqti **ustma-ust tushmaydi**
+  (`exclude using gist`).
+
+### Bugungi taklif narxi qanday ishlaydi (qaror)
+
+Mahsulot qatori (`price`/`old_price`/`sale_ends_at`) **o'zgartirilmaydi**.
+Taklif — jadvaldagi yozuv; narx har o'qishda o'sha paytdagi soat bilan
+hisoblanadi (`lib/catalog/deals.ts` → `dealPrice`, `CatalogEngine.resolveProduct`
+ichida). Sabablar:
+
+- Taklif boshlanishi/tugashi paytida hech qanday jarayon uyg'oq turishi shart
+  emas (cron yo'q) — keshdagi ro'yxatda kelgusi taklif bor, oyna o'qishda tekshiriladi.
+- Qatorni o'zgartirish varianti taklif tugagach eski narxni «tiklash»ni talab
+  qilardi; admin shu orada narxni o'zgartirsa, tiklash uni bosib ketardi.
+- Buyurtma action'i narxni o'sha engine'dan oladi (`shopflow.getProduct` →
+  `repriceOrder`), shuning uchun checkout aynan sahifadagi narxni oladi va
+  oynadan tashqarida taklif narxida sotib bo'lmaydi.
+
+Taklif davomida: `oldPrice` = taklifdan oldingi **haqiqiy** narx (mahsulotning
+o'z chegirmasi bo'lsa, o'sha chegirma narxi — o'ylab topilgan «eski narx»
+yo'q), `price` = foiz (yuzlikkacha yaxlitlanadi) yoki yangi narx, `saleEndsAt`
+= taklif tugashi — PDP'dagi haqiqiy taymer va brauzerdagi `livePrice` narxni
+aynan o'sha soniyada qaytaradi. Yangi narx hozirgidan past bo'lmasa taklif
+hech narsa qilmaydi. Bosh sahifadagi «Bugungi taklif» bloki faqat taklif
+amalda bo'lganda (va mahsulot sotuvda bo'lsa) chiziladi. Kesh: katalog 60 s,
+sahifalar ISR 300 s — boshlanish bosh sahifada 5 daqiqagacha kechikishi
+mumkin, lekin **narx serverda har doim to'g'ri**.
 
 ## Saytning o'z kuzatuvi (mijozlar yo'li)
 
@@ -96,6 +161,120 @@ yashil yo'q (`src/components/admin/ui.tsx`).
   qurilmasi telefon bo'yicha birlashadi.
 - O'qish: `src/lib/admin/crm.ts` (voronka, kanallar, mahsulot qiziqishi),
   `segments.ts` (auditoriyalar), `segment-export.ts` (CSV, xesh).
+
+## Promokodlar
+
+Migratsiya `0007_promo_codes.sql`: `promo_codes` (kod — katta harf, PK),
+`promo_redemptions` (kod × buyurtma unikal, `(code, phone9)` indeks),
+`orders.promo_code`. Chegirma qatori `orders.totals.adjustments` da
+(`{kind:"promo",code,amount}` yoki `{kind:"first_order",percent,amount}`), u
+`totals.discount` va `total` ga allaqachon kiritilgan.
+
+**Qoidalar** (`src/lib/promo/rules.ts`, sof, testli):
+
+- Promokod taklif (upsell, dastur, sovg'a) yoki obuna narxidagi qatorga
+  **qo'shilmaydi** — `promotionApplies` tamoyili. Sayt aksiyasi (foiz, 2+1)
+  qatorga avval qo'llanadi, kod qolgan narxdan hisoblanadi.
+- Foiz — mos qatorlar summasidan; qat'iy summa — mos qatorlar summasidan oshmaydi.
+- `min_subtotal` — taklif va aksiyalardan keyingi savat summasi (yetkazishsiz).
+- Buyurtmaga **bitta** kod. Birinchi buyurtma chegirmasi va kod **qo'shilmaydi** —
+  kattasi qo'llanadi; teng bo'lsa birinchi buyurtma (shaxsiy kod behuda sarflanmaydi).
+- Bepul yetkazish chegarasi bu chegirmadan **oldin** o'lchanadi.
+- Bekor qilingan buyurtma kodni qaytarmaydi (`uses` kamaymaydi).
+
+**Atomiklik** (`src/lib/promo/server.ts` → `placeOrder`): bitta tranzaksiyada
+telefon bo'yicha `pg_advisory_xact_lock`, kod qatori `for update`, limitlar
+qayta tekshiriladi, buyurtma yoziladi, `promo_redemptions` qatori, `uses + 1`.
+`max_uses = 1` kodni ikki parallel buyurtma ololmaydi — ikkinchisi
+`promo_invalid` (`exhausted`) oladi, savat kodni olib tashlab sababini aytadi,
+mijoz qayta yuboradi. Savatdagi tekshiruv (`app/actions/promo.ts`) faqat
+maslahat: narxlar katalogdan, rate limit — kodli 15 / telefonli 40 ta / 10 daq / IP.
+
+**Birinchi buyurtma chegirmasi** — `site_settings` `discount.firstOrder`
+(`{"enabled":true,"percent":10}`, default `COMMERCE.discounts.firstOrderPercent`).
+Baza bo'lsa (`ORDERS_IN_DB`): telefonning bekor qilinmagan oldingi buyurtmasi
+bo'lmasa avtomatik qo'llanadi, savat telefon kiritilgach ko'rsatadi. Baza
+bo'lmasa — avvalgidek: faqat eslatma, operator qo'llaydi. Welcome kartasi,
+`/loyalty` va savat matni rejimga qarab (`lib/promo/offer.ts` → `FirstOrderOffer`:
+`auto` / `operator` / `off`); o'chirilgan bo'lsa hech narsa va'da qilinmaydi.
+
+**Keyingi bosqichlar uchun API:**
+
+```ts
+import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/server";
+const code = await issuePromoCode({
+  kind: "percent", value: 10,          // yoki "fixed", soʻmda
+  phone: "+998 90 123 45 67",          // ixtiyoriy — shaxsiy kod
+  ttlHours: 72, source: "birthday",    // manual|campaign|flow|referral|birthday|first-order
+  campaignId: "bd-2026-10", minSubtotal: 200_000, // ixtiyoriy
+}); // → "GV-7K3P9Q" (default: bir martalik, 1 telefon — 1 marta)
+```
+
+## Ombor va kutayotganlar (0009)
+
+- `products.stock_qty` `null` — son kuzatilmaydi, mahsulot avvalgidek faqat
+  `in_stock` bilan ishlaydi. Son kiritilsa `in_stock` undan aniqlanadi (0 → tugagan).
+- **Buyurtma**: `saveOrderToDb` bitta tranzaksiyada buyurtmani yozadi va har
+  mahsulotdan `update … set stock_qty = stock_qty - n where stock_qty >= n`
+  bilan oladi (mahsulotlar id bo'yicha tartibda — deadlock yo'q). Yetmasa
+  tranzaksiya qaytadi va savat «Faqat N ta qoldi» deb qator sonini tushiradi.
+  Keyin `catalog` tegi va mahsulot sahifalari yangilanadi.
+- **Bekor qilish** (admin holat → «Bekor qilindi»): buyurtma qatori qulflanadi,
+  uning `stock_movements` netosi qaytariladi — ikki marta bosilsa ham bir marta.
+  Bekor qilingan buyurtma qayta ochilsa son yana olinadi (0 dan pastga emas).
+- Har bir o'zgarish `stock_movements` da: `order`, `cancel`, `manual` (izoh bilan), `import`.
+- Forma sonni faqat admin maydonni o'zgartirganda yozadi (`stockQtyBefore`) —
+  forma ochiq turganda tushgan buyurtma qaytarib yozilmaydi.
+- **So'rovlar**: «Xabar ber» (tugagan) va «Narxi tushsa xabar bering» (sotuvda,
+  ko'rgan narxi saqlanadi) — `restock_requests`, telefon + mahsulot + tur bo'yicha
+  bitta kutayotgan qator. Telefon klub botiga bog'langan bo'lsa chat id yoziladi.
+- **Xabar**: mahsulot sotuvga qaytsa (forma, «Omborga keldi», ± oynasi, bekor
+  qilish) yoki narxi saqlangan narxdan tushsa `afterProductChange` →
+  `notifyWaitlist` (`lib/notify/waitlist.ts`): qatorlar band qilinadi, kanallar
+  ketma-ket — Telegram (`bot_jobs`, dedupe `restock:<id>`, havola
+  `utm_source=telegram&utm_medium=restock`), SMS (marketing outbox orqali,
+  dedupe `waitlist:<id>`, emojisiz matn va qisqa `/r/` havola; SMS'ni rad etgan
+  raqam SMS olmaydi — operatorga o'tadi), qolganlar operatorga qo'ng'iroq
+  ro'yxati bo'lib boradi. Hech bir kanal qabul qilmasa qator yana «kutmoqda».
+  Matndagi narx — sotuvdagi narx (bugungi taklif va tugagan aksiya hisobga
+  olingan), «narxi tushdi» ham shu narx bilan solishtiriladi.
+
+## Savdo qoidalari
+
+`site_settings` `commerce.rules` — bitta JSON: `{ settings: {delivery, ladder,
+subscription, cart, popups}, meta: {<bo'lim>: {by, at}} }`. Faqat saqlangan
+bo'limlar yoziladi; «Standartga qaytarish» bo'limni o'chiradi va u yana
+standartga ergashadi. **Standartlar = eski kod konstantalari**
+(`lib/config/commerce.ts`, zinapoya 10/15/20 + sovg'a, pop-up 30/3/7 kun,
+savat taklifi 150 000, cut-off — `NEXT_PUBLIC_DELIVERY_CUTOFF`), ya'ni qator
+bo'lmasa yoki buzilgan bo'lsa sayt avvalgidek ishlaydi: har bir maydon o'z
+standartiga alohida qaytadi (`coerceCommerceSettings`).
+
+- **O'qish**: server — `getCommerceSettings()` (`lib/commerce/server.ts`,
+  `unstable_cache`, teg `SITE_SETTINGS_TAG`); klient — `[locale]/layout.tsx`
+  `CommerceProvider` orqali `useCommerce()` / `usePricingRules()`. Klient fayl
+  server modulni import qilmaydi. Saqlash `revalidateTag` + `revalidatePath("/", "layout")`.
+  ISR sahifa saqlangandan keyingi birinchi so'rovda eski nusxani berib, fonda
+  yangilanadi (Next.js stale-while-revalidate) — keyingisi yangi; buyurtma narxi
+  esa har doim yangi qiymat bilan hisoblanadi.
+- **Narx**: `computeTotals(lines, promotions, { pickup, rules })` sof; savat
+  (`CheckoutForm`, `CartDrawer`, exit popup) va server (`repriceOrder(..., { pricing,
+  ladder })` checkout action'da, `promo/server.ts` `min_subtotal`) bitta
+  qiymatdan. Bepul yetkazish chegarasi endi **hamma** buyurtmaga (bir martalik ham);
+  `free_shipping_over` aksiyasi uni faqat pasaytira oladi — panel shunday aksiya
+  faol bo'lsa ogohlantiradi.
+- **Zinapoya**: foizlar `LADDER_PERCENT_CHOICES` (5, 10, 12, 15, 20, 25, 30)
+  dan, o'suvchi. Server qabul qiladigan to'plam `ladderPercentsAccepted(ladder)` —
+  savat qurgan to'plamning o'zi; o'chirilgan zinapoya — hech qanday foiz. Foiz
+  o'zgarganda eski taklif qatori bor savat `invalid_offer` + `slug` oladi va
+  qatorni olib tashlaydi (mavjud mexanizm).
+- **Pop-up'lar**: o'chirilgani `DeferredUi` da yuklanmaydi ham; `usePopups.request(id, rule)`
+  va `popupAllowed(id, rule)` o'chirilganini rad etadi, cool-down — sozlamadan.
+- **Matnlar**: tarjimalar raqamni placeholder bilan oladi; `copy-literals.test.ts`
+  standart chegarani/narxni qo'lda yozilgan tarjimani topsa yiqiladi.
+- Testlar: `lib/commerce/settings.test.ts` (parse, fallback, forma),
+  `pricing-agreement.test.ts` (generatsiya qilingan savatlar × 5 qoida to'plami —
+  klient = server; zinapoya quriladi = qabul qilinadi), `lib/ui/popups.test.ts`.
 
 ## Integratsiya sozlamalari
 
@@ -135,4 +314,18 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | `db/migrations/0004_admin_customer_notes.sql` | mijozga biriktirilgan ichki xizmat izohlari |
 | `db/migrations/0005_admin_integration_settings.sql` | panel sozlamalari uchun shifrlangan integration ciphertext jadvali |
 | `db/migrations/0006_crm_marketing.sql` | `visitors`, `visitor_events`, `orders.visitor_id`, `promotions`, `campaigns`, `site_settings`, `admin_users.session_epoch` |
+| `db/migrations/0007_promo_codes.sql` | `promo_codes`, `promo_redemptions`, `orders.promo_code` |
+| `db/migrations/0010_sms_flows.sql` | `marketing_optouts`, `flows`, `flow_enrollments`, `outbound_messages`, `campaigns.promo/link`, kanal `sms`/`telegram_then_sms` |
+| `src/lib/sms/`, `src/lib/messaging/`, `src/lib/flows/` | SMS (Eskiz), xabarlar navbati va ishchisi, oqimlar — [MARKETING.md](MARKETING.md) |
+| `src/lib/promo/` | promokod qoidalari (`rules.ts`, testli), tranzaksiya va `issuePromoCode` (`server.ts`), birinchi buyurtma sozlamasi (`settings.ts`, `offer.ts`), savat store'i (`store.ts`, `govita-promo`) |
+| `db/migrations/0011_loyalty_referral_ab.sql` | `loyalty_ledger`, `loyalty_otps`, `referral_codes`, `referrals`, `customer_birthdays`, `banners.experiment/variant`, `banner_exposures` |
+| `src/lib/loyalty/`, `src/lib/referral/`, `src/lib/birthday/` | keshbek (ledger — sof, testli; OTP; buyurtma holati → ball), tavsiya kodlari, tugʻilgan kun roziligi — [MARKETING.md](MARKETING.md) |
+| `src/lib/merch/ab.ts`, `ab-stats.ts` | bannerlar A/B: taqsimot, `<head>` skripti, z-test (sof, testli); admin natijalari |
+| `db/migrations/0009_stock_waitlist.sql` | `products.stock_qty`, `products.low_stock_at`, `stock_movements`, `restock_requests` |
+| `src/lib/catalog/stock-rules.ts`, `stock.ts`, `order-stock.ts` | ombor qoidalari (sof, testli), bazadagi o'zgarishlar, buyurtma holati → ombor |
+| `src/lib/notify/` | kutayotganlar: `Notifier` interfeysi, kanallar, xabar matnlari (uz/ru), dispatch |
+| `db/migrations/0008_storefront_merchandising.sql` | `banners`, `deals` (Vitrina) |
+| `src/lib/merch/` | Vitrina: `model.ts` (sof, testli), `store.ts` (saytdagi o'qish, kesh `merch`) |
+| `src/lib/catalog/deals.ts` | bugungi taklif narxi (sof, testli) |
+| `src/lib/commerce/` | savdo qoidalari: model, standartlar, parse (`settings.ts`), admin forma (`form.ts`), o'qish/yozish (`server.ts`), klient context (`context.tsx`) |
 | `src/lib/journey/` | kuzatuv: brauzer klienti, server yig'uvchi, sof qoidalar (`model.ts`, testli) |

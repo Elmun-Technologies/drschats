@@ -10,8 +10,9 @@ async function navBadges(): Promise<Record<string, number>> {
   try {
     const [row] = (await getDb().execute(sql`
       select (select count(*) from orders where status = 'new') as orders,
-             (select count(*) from bot_tickets where status = 'open') as tickets`)) as unknown as { orders: string; tickets: string }[];
-    return { "/admin/orders": Number(row?.orders ?? 0), "/admin/bot": Number(row?.tickets ?? 0) };
+             (select count(*) from bot_tickets where status = 'open') as tickets,
+             (select count(*) from restock_requests where status = 'waiting') as waitlist`)) as unknown as { orders: string; tickets: string; waitlist: string }[];
+    return { "/admin/orders": Number(row?.orders ?? 0), "/admin/bot": Number(row?.tickets ?? 0), "/admin/waitlist": Number(row?.waitlist ?? 0) };
   } catch {
     return {};
   }

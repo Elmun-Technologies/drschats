@@ -8,6 +8,8 @@ import { Link, usePathname } from "@/lib/i18n/navigation";
 import { useCart } from "@/lib/cart/store";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals } from "@/lib/cart/pricing";
+import { useCommerce, usePricingRules } from "@/lib/commerce/context";
+import { localizedOr } from "@/lib/commerce/settings";
 import { isQuietPath, usePopups } from "@/lib/ui/popups";
 import { formatMoney } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
@@ -29,23 +31,25 @@ export function ExitIntentPopup() {
   const pathname = usePathname();
   const lines = useCart((s) => s.lines);
   const promotions = usePromotions();
+  const rule = useCommerce().popups.exit;
+  const pricing = usePricingRules();
   const open = usePopups((s) => s.active === "exit");
   const close = usePopups((s) => s.close);
 
   useEffect(() => {
-    if (isQuietPath(pathname)) return;
+    if (!rule.enabled || isQuietPath(pathname)) return;
     const onLeave = (e: MouseEvent) => {
-      if (e.clientY <= 10) usePopups.getState().request("exit");
+      if (e.clientY <= 10) usePopups.getState().request("exit", rule);
     };
     // Not in the first seconds: a pointer passing the tab bar on arrival is not leaving.
-    const timer = window.setTimeout(() => document.addEventListener("mouseleave", onLeave), 4000);
+    const timer = window.setTimeout(() => document.addEventListener("mouseleave", onLeave), rule.delaySeconds * 1000);
     return () => {
       window.clearTimeout(timer);
       document.removeEventListener("mouseleave", onLeave);
     };
-  }, [pathname]);
+  }, [pathname, rule]);
 
-  const totals = computeTotals(lines, promotions);
+  const totals = computeTotals(lines, promotions, { rules: pricing });
   const hasCart = lines.length > 0;
 
   return (
@@ -80,8 +84,8 @@ export function ExitIntentPopup() {
       ) : (
         <>
           <p className="text-sm font-bold uppercase tracking-widest text-ink-2">{t("badge")}</p>
-          <h2 id="exit-title" className="mt-3 pr-8 text-[26px] font-bold leading-8">{t("title")}</h2>
-          <p className="mt-2 text-base leading-6 text-ink-2">{t("body")}</p>
+          <h2 id="exit-title" className="mt-3 pr-8 text-[26px] font-bold leading-8">{localizedOr(rule.title, locale, t("title"))}</h2>
+          <p className="mt-2 text-base leading-6 text-ink-2">{localizedOr(rule.body, locale, t("body"))}</p>
           <ul className="mt-4 flex flex-col gap-2 text-[15px] text-ink-2">
             {[t("perk1"), t("perk2"), t("perk3")].map((perk) => (
               <li key={perk} className="flex gap-2.5">

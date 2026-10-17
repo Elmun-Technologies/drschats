@@ -12,6 +12,7 @@ import { CopyButton } from "@/components/admin/CopyButton";
 import { Card, Field, PageHeader, Pill, buttonClass, inputClass, secondaryButtonClass, smallButtonClass, som, textareaClass, timeAgo } from "@/components/admin/ui";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { lineTotal } from "@/lib/cart/pricing";
+import { discountAdjustment, pointsSpent } from "@/lib/promo/rules";
 
 export const metadata = { title: "Buyurtma" };
 
@@ -42,6 +43,10 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
   const changes = history.filter((event) => event.status !== "new").reverse();
   const address = [o.delivery.region, o.delivery.address].filter(Boolean).join(", ");
   const units = o.items.reduce((sum, item) => sum + item.quantity, 0);
+  // The order-level discount (promo code or first order) is part of totals.discount; shown as its own line.
+  const adjustment = discountAdjustment(o.totals.adjustments);
+  const points = pointsSpent(o.totals.adjustments);
+  const adjusted = adjustment?.amount ?? 0;
 
   return (
     <>
@@ -100,7 +105,22 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
             </ul>
             <dl className="mt-3 flex flex-col gap-1.5 border-t border-line pt-4 text-[15px]">
               <div className="flex justify-between"><dt className="text-ink-2">Mahsulotlar</dt><dd className="tabular-nums">{som(o.totals.subtotal)}</dd></div>
-              {o.totals.discount > 0 && <div className="flex justify-between"><dt className="text-ink-2">Chegirma</dt><dd className="tabular-nums">−{som(o.totals.discount)}</dd></div>}
+              {o.totals.discount - adjusted > 0 && <div className="flex justify-between"><dt className="text-ink-2">{adjustment ? "Taklif va aksiyalar" : "Chegirma"}</dt><dd className="tabular-nums">−{som(o.totals.discount - adjusted)}</dd></div>}
+              {adjustment && (
+                <div className="flex justify-between gap-3">
+                  <dt className="text-ink-2">
+                    {adjustment.kind === "promo" ? (
+                      <>Promokod <Link href={`/admin/promocodes/${encodeURIComponent(adjustment.code)}`} className="font-semibold text-ink underline-offset-4 hover:underline">{adjustment.code}</Link></>
+                    ) : adjustment.kind === "referral" ? (
+                      <>Doʻst kodi <Link href="/admin/loyalty#referral" className="font-semibold text-ink underline-offset-4 hover:underline">{adjustment.code}</Link> −{adjustment.percent}%</>
+                    ) : (
+                      `Birinchi buyurtma −${adjustment.percent}%`
+                    )}
+                  </dt>
+                  <dd className="tabular-nums">−{som(adjustment.amount)}</dd>
+                </div>
+              )}
+              {points > 0 && <div className="flex justify-between"><dt className="text-ink-2">Ball bilan toʻlandi</dt><dd className="tabular-nums">−{som(points)}</dd></div>}
               <div className="flex justify-between"><dt className="text-ink-2">Yetkazish</dt><dd className="tabular-nums">{o.totals.shipping ? som(o.totals.shipping) : "bepul"}</dd></div>
               <div className="mt-1 flex justify-between text-[18px] font-bold"><dt>Jami</dt><dd className="tabular-nums">{som(o.total)}</dd></div>
             </dl>

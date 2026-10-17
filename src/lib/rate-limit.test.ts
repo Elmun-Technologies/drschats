@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SWEEP_THRESHOLD, bucketCount, clientIp, withinRateLimit } from "./rate-limit";
+import { SWEEP_THRESHOLD, bucketCount, clientIp, rateLimitSpent, withinRateLimit } from "./rate-limit";
 
 describe("clientIp", () => {
   it("prefers fly-client-ip over everything", () => {
@@ -42,5 +42,22 @@ describe("withinRateLimit", () => {
     vi.advanceTimersByTime(1001);
     withinRateLimit("t-sweep", "fresh", rule);
     expect(bucketCount("t-sweep")).toBe(1);
+  });
+});
+
+describe("rateLimitSpent", () => {
+  afterEach(() => vi.useRealTimers());
+
+  it("reports a spent budget without counting an attempt", () => {
+    vi.useFakeTimers();
+    const rule = { limit: 2, windowMs: 1000 };
+    expect(rateLimitSpent("t-spent", "a", rule)).toBe(false);
+    withinRateLimit("t-spent", "a", rule);
+    expect(rateLimitSpent("t-spent", "a", rule)).toBe(false);
+    expect(rateLimitSpent("t-spent", "a", rule)).toBe(false);
+    withinRateLimit("t-spent", "a", rule);
+    expect(rateLimitSpent("t-spent", "a", rule)).toBe(true);
+    vi.advanceTimersByTime(1001);
+    expect(rateLimitSpent("t-spent", "a", rule)).toBe(false);
   });
 });

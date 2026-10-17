@@ -14,6 +14,7 @@ import { useSaleClock } from "@/lib/cart/useSaleClock";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals } from "@/lib/cart/pricing";
 import { COMMERCE } from "@/lib/config/commerce";
+import { useCommerce, usePricingRules } from "@/lib/commerce/context";
 import { BRAND } from "@/lib/brand";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -33,6 +34,12 @@ import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 import { telegramInitData } from "@/lib/telegram/mini-app";
+import type { FirstOrderOffer } from "@/lib/promo/rules";
+import { PromoCodeField } from "./PromoCodeField";
+import { useCartDiscount } from "./useCartDiscount";
+import { PointsField } from "./PointsField";
+import { usePoints } from "@/lib/loyalty/store";
+import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -52,9 +59,18 @@ import { telegramInitData } from "@/lib/telegram/mini-app";
 export function CheckoutForm({
   recommended,
   prices,
+  promoCodes = false,
+  firstOrder = { mode: "operator", percent: COMMERCE.discounts.firstOrderPercent },
+  loyalty = LOYALTY_OFF,
 }: {
   recommended: Product[];
   prices: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>;
+  /** Promo codes are counted in our database; without it the field is not offered. */
+  promoCodes?: boolean;
+  /** How the first-order discount works on this deployment (lib/promo/offer.ts). */
+  firstOrder?: FirstOrderOffer;
+  /** Cashback rules the cart may show (lib/loyalty/settings.ts → publicLoyalty). */
+  loyalty?: PublicLoyalty;
 }) {
   const tv = useTranslations("cart.v3");
   const locale = useLocale() as Locale;
@@ -64,12 +80,15 @@ export function CheckoutForm({
   const tc = useTranslations("cart");
   const ts = useTranslations("subscription");
   const tp = useTranslations("product.v3");
+  const tpe = useTranslations("cart.v3.promo.errors");
   const router = useRouter();
   const lines = useCart((s) => s.lines);
   useSaleClock();
   const clear = useCart((s) => s.clear);
   const removeLine = useCart((s) => s.remove);
   const promotions = usePromotions();
+  const commerce = useCommerce();
+  const pricing = usePricingRules();
   const [submitting, setSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -130,6 +149,18 @@ export function CheckoutForm({
   });
 
 
+  const discount = useCartDiscount({
+    enabled: promoCodes || firstOrder.mode === "auto",
+    lines,
+    phone: watch("phone") ?? "",
+    locale,
+  });
+
+  const pointsToken = usePoints((s) => s.token);
+  const pointsPhone = usePoints((s) => s.phone9);
+  const pointsUse = usePoints((s) => s.use);
+  const pointsBalance = usePoints((s) => s.balance);
+
   const emailEntered = Boolean(watch("email"));
   const provider = watch("provider");
   const payment = watch("payment");
@@ -142,7 +173,7 @@ export function CheckoutForm({
   // Each ladder percent once: after an accept the ladder is rebuilt, and
   // without this it would offer a fresh product at the same discount forever.
   const takenPercents = new Set(lines.map((l) => l.upsellDiscountPercent).filter(Boolean));
-  const ladderSteps = buildUpsellLadder(lines, recommended).filter(
+  const ladderSteps = buildUpsellLadder(lines, recommended, commerce.ladder).filter(
     (s) => s.stepType !== "free_gift" && !takenPercents.has(s.discountPercent),
   );
   const payChoice = payment === "online" ? provider : "cod";
@@ -155,9 +186,28 @@ export function CheckoutForm({
       setValue("provider", value as "payme" | "click" | "uzum", { shouldValidate: Boolean(errors.provider) });
     }
   };
-  const totals = computeTotals(lines, promotions, { pickup: watch("method") === "pickup" });
+  const totals = computeTotals(lines, promotions, { pickup: watch("method") === "pickup", rules: pricing });
+  /*
+    The order-level discount (a promo code or the first-order one) as the
+    server priced it. Shipping is measured before it, as on the server.
+  */
+  const applied = discount.applied;
+  const extra = applied ? Math.min(applied.amount, Math.max(0, totals.total - totals.shipping)) : 0;
+  /*
+    Points come after the discount and pay for goods only, up to the share
+    cap — the same function the order transaction runs (lib/loyalty/model.ts).
+  */
+  const phoneDigits = (watch("phone") ?? "").replace(/\D/g, "");
+  const phone9 = phoneDigits.length >= 9 ? phoneDigits.slice(-9) : "";
+  const pointsActive = loyalty.redeemable && Boolean(pointsToken) && pointsUse && pointsPhone === phone9;
+  const pointsApplied = pointsActive
+    ? maxRedeemable({ balance: pointsBalance, goods: Math.max(0, totals.total - extra - totals.shipping), maxSharePercent: loyalty.maxSharePercent })
+    : 0;
+  const grandTotal = totals.total - extra - pointsApplied;
+  const pointsEarn = earnFor({ total: grandTotal, shipping: totals.shipping }, loyalty);
+  const firstOrderState = discount.quote?.firstOrder.state;
   const savings =
-    lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
+    lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount + extra;
   const progress = totals.freeShippingThreshold
     ? Math.min(100, Math.round(((totals.subtotal - totals.discount) / totals.freeShippingThreshold) * 100))
     : 0;
@@ -198,10 +248,12 @@ export function CheckoutForm({
       appliedPromotions: totals.appliedPromotions,
       totals: {
         subtotal: totals.subtotal,
-        discount: totals.discount,
+        discount: totals.discount + extra,
         shipping: totals.shipping,
-        total: totals.total,
+        total: grandTotal,
       },
+      promoCode: discount.orderCode,
+      pointsToken: pointsApplied > 0 && pointsToken ? pointsToken : undefined,
       locale,
       attribution: getAttribution(),
       telegram: telegramInitData(),
@@ -217,11 +269,19 @@ export function CheckoutForm({
       return;
     }
     if (res.ok && res.orderId) {
-      trackOrder(res.orderId, { total: res.total ?? totals.total, shipping: totals.shipping }, analyticsItems());
+      trackOrder(res.orderId, { total: res.total ?? grandTotal, shipping: totals.shipping, coupon: res.coupon }, analyticsItems());
+      if (res.coupon) discount.remove();
       // Before clear(): the reorder reminders and the "already bought" signal read this history.
       trackPurchase(lines.map((l) => ({ slug: l.slug, name: l.name })));
       clear();
-      router.push(`/checkout/success?order=${res.orderId}`);
+      usePoints.getState().clear();
+      router.push(`/checkout/success?order=${res.orderId}${res.receipt ? `&k=${encodeURIComponent(res.receipt)}` : ""}`);
+      return;
+    }
+    if (res.error === "points_invalid") {
+      usePoints.getState().clear();
+      setServerError(te("points_invalid"));
+      setSubmitting(false);
       return;
     }
     /*
@@ -229,8 +289,20 @@ export function CheckoutForm({
       taken out of the cart and named, so pressing the button again works —
       "refresh the cart" left the same line in place and the order stuck.
     */
+    if (res.error === "promo_invalid") {
+      const reason = res.promoReason ?? "failed";
+      discount.reject(reason);
+      setServerError(te("promoRemoved", { reason: tpe(reason as "failed") }));
+      setSubmitting(false);
+      return;
+    }
     const culprit = res.slug ? lines.find((l) => l.slug === res.slug && (res.error !== "invalid_offer" || l.upsellDiscountPercent)) : undefined;
-    if (culprit && (res.error === "out_of_stock" || res.error === "invalid_offer" || res.error === "unknown_product")) {
+    const left = res.shortage?.available ?? 0;
+    if (culprit && res.error === "insufficient_stock" && left > 0) {
+      // Fewer left than asked: the line drops to what is there, and the customer is told the real number.
+      useCart.getState().setQuantity(culprit.lineId, Math.min(culprit.quantity, left));
+      setServerError(te("onlyLeft", { name: culprit.name, count: left }));
+    } else if (culprit && (res.error === "out_of_stock" || res.error === "insufficient_stock" || res.error === "invalid_offer" || res.error === "unknown_product")) {
       removeLine(culprit.lineId);
       setServerError(te(res.error === "invalid_offer" ? "offerRemoved" : "lineRemoved", { name: culprit.name }));
     } else {
@@ -274,7 +346,7 @@ export function CheckoutForm({
               </div>
               {watch("method") !== "pickup" && <DeliveryCutoff />}
               {watch("method") !== "pickup" && (
-                <FreeShippingFillers products={gapFillers(recommended, lines, totals.freeShippingRemaining)} />
+                <FreeShippingFillers products={gapFillers(recommended, lines, totals.freeShippingRemaining, { window: commerce.cart.gapWindow })} />
               )}
             </div>
           )}
@@ -308,7 +380,7 @@ export function CheckoutForm({
               <RadioCard value="courier" {...register("method")}>
                 <OptionText
                   title={t("methodCourier")}
-                  note={tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, fee: formatMoney(COMMERCE.shippingFee, locale) })}
+                  note={tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, fee: formatMoney(pricing.shippingFee, locale) })}
                 />
               </RadioCard>
               <RadioCard value="pickup" {...register("method")}>
@@ -379,19 +451,52 @@ export function CheckoutForm({
         <aside className="flex flex-col gap-3 lg:sticky lg:top-[calc(var(--header-sticky)+16px)]">
           <div className="flex flex-col gap-3.5 rounded-[20px] bg-tile p-5 lg:border lg:border-line lg:bg-bg lg:p-7 lg:shadow-buybox">
             <h2 className="hidden text-[22px] font-bold lg:block">{t("summary")}</h2>
+            {promoCodes && (
+              <PromoCodeField
+                code={discount.code}
+                amount={applied?.kind === "promo" || applied?.kind === "referral" ? extra : null}
+                failure={discount.failure}
+                pending={discount.pending}
+                onApply={discount.apply}
+                onRemove={discount.remove}
+              />
+            )}
             <SummaryRow label={tv("itemsRow", { count: totals.itemCount })} value={formatMoney(totals.subtotal, locale)} />
             {totals.discount > 0 && (
               <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} sale />
             )}
+            {loyalty.redeemable && <PointsField phone={watch("phone") ?? ""} applied={pointsApplied} maxSharePercent={loyalty.maxSharePercent} />}
+            {applied && extra > 0 && (
+              <SummaryRow
+                label={
+                  applied.kind === "promo"
+                    ? tv("promo.row", { code: applied.code })
+                    : applied.kind === "referral"
+                      ? tv("referralRow", { code: applied.code, percent: applied.percent })
+                      : applied.kind === "first_order"
+                        ? tv("firstOrderRow", { percent: applied.percent })
+                        : ""
+                }
+                value={`−${formatMoney(extra, locale)}`}
+                sale
+              />
+            )}
+            {pointsApplied > 0 && <SummaryRow label={tv("points.row")} value={`−${formatMoney(pointsApplied, locale)}`} />}
             <SummaryRow
               label={tc("shipping")}
               value={totals.shipping === 0 ? tc("free") : formatMoney(totals.shipping, locale)}
             />
             <div className="flex items-baseline justify-between gap-3 border-t border-[#DCDFDB] pt-3.5 text-[22px] font-bold lg:border-line lg:text-[26px]">
               <span>{tc("total")}</span>
-              <span>{formatMoney(totals.total, locale)}</span>
+              <span>{formatMoney(grandTotal, locale)}</span>
             </div>
-            <p className="text-sm text-ink-2">{tv("firstOrderNote", { percent: COMMERCE.discounts.firstOrderPercent })}</p>
+            {pointsEarn > 0 && <p className="text-sm font-medium text-ink">{tv("points.earn", { points: formatNumber(pointsEarn) })}</p>}
+            <FirstOrderNote
+              offer={firstOrder}
+              state={firstOrderState}
+              applied={applied?.kind ?? null}
+              promoEntered={Boolean(discount.code)}
+            />
             {totals.hasSubscription && (
               <p className="text-sm text-ink-2">
                 {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })} {ts("benefitControl")}
@@ -438,13 +543,46 @@ export function CheckoutForm({
       >
         <div className="flex shrink-0 flex-col">
           <span className="text-[13px] text-ink-2">{tc("total")}</span>
-          <span className="text-[19px] font-bold leading-[23px]">{formatMoney(totals.total, locale)}</span>
+          <span className="text-[19px] font-bold leading-[23px]">{formatMoney(grandTotal, locale)}</span>
         </div>
         <Button type="submit" size="lg" className="min-w-0 flex-1 rounded-[14px]" disabled={submitting}>
           {submitting ? t("submitting") : t("submit")}
         </Button>
       </div>
     </form>
+  );
+}
+
+/*
+  What the summary says about the first-order discount. Each line is true for
+  this deployment: "applied automatically" only where the server applies it,
+  "the operator applies it" only where nobody else can, nothing when it is off.
+*/
+function FirstOrderNote({
+  offer,
+  state,
+  applied,
+  promoEntered,
+}: {
+  offer: FirstOrderOffer;
+  state: "applies" | "returning" | "needs_phone" | "off" | undefined;
+  applied: "promo" | "first_order" | "referral" | "points" | null;
+  promoEntered: boolean;
+}) {
+  const tv = useTranslations("cart.v3");
+  const percent = offer.percent;
+  let text: string | null = null;
+  if (offer.mode === "operator") text = tv("firstOrderNote", { percent });
+  else if (offer.mode === "auto") {
+    if (applied === "first_order") text = promoEntered ? tv("firstOrderWins") : tv("firstOrderApplied", { percent });
+    else if ((applied === "promo" || applied === "referral") && state === "applies") text = tv("promoWins");
+    else if (!state || state === "needs_phone") text = tv("firstOrderAuto", { percent });
+  }
+  if (!text) return null;
+  return (
+    <p aria-live="polite" className={cn("text-sm", applied === "first_order" && !promoEntered ? "font-semibold text-ink" : "text-ink-2")}>
+      {text}
+    </p>
   );
 }
 
