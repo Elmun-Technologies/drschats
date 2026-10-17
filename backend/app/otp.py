@@ -14,7 +14,7 @@ import hmac
 import secrets
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.config import get_settings
@@ -96,6 +96,19 @@ class OtpError(Exception):
         self.retry_after = retry_after
 
 
+async def lock_phone(session: AsyncSession, phone: str) -> None:
+    """
+    Serialise code requests for one phone until the transaction ends.
+
+    Two parallel requests would otherwise both read "under the cap", and both
+    insert. Row locks cannot help — the row being raced for does not exist
+    yet — so Postgres takes a transaction-scoped advisory lock on the phone.
+    SQLite (tests, local runs) already serialises writers.
+    """
+    if session.bind.dialect.name == "postgresql":
+        await session.execute(select(func.pg_advisory_xact_lock(func.hashtext(f"otp:{phone}"))))
+
+
 async def recent_codes(session: AsyncSession, phone: str, since: datetime) -> list[OtpCode]:
     result = await session.scalars(
         select(OtpCode).where(OtpCode.phone == phone, OtpCode.created_at >= since)
@@ -113,6 +126,7 @@ async def issue_code(session: AsyncSession, phone: str, channel: str) -> str:
     settings = get_settings()
     now = datetime.now(timezone.utc)
 
+    await lock_phone(session, phone)
     window_start = now - timedelta(hours=1)
     recent = await recent_codes(session, phone, window_start)
 
@@ -157,11 +171,14 @@ async def consume_code(session: AsyncSession, phone: str, code: str) -> None:
     settings = get_settings()
     now = datetime.now(timezone.utc)
 
+    # FOR UPDATE: parallel guesses at one code queue behind each other, so
+    # each sees the attempts the previous one counted.
     record = await session.scalar(
         select(OtpCode)
         .where(OtpCode.phone == phone, OtpCode.consumed_at.is_(None))
         .order_by(OtpCode.created_at.desc())
         .limit(1)
+        .with_for_update()
     )
 
     if record is None:
@@ -177,14 +194,35 @@ async def consume_code(session: AsyncSession, phone: str, code: str) -> None:
         await session.flush()
         raise OtpError("invalid_code")
 
+    # An attempt is reserved in SQL before the code is checked: the increment
+    # and the budget test are one statement, so however many guesses arrive
+    # together, no more than the budget are ever compared.
+    attempts = await session.scalar(
+        update(OtpCode)
+        .where(
+            OtpCode.id == record.id,
+            OtpCode.consumed_at.is_(None),
+            OtpCode.attempts < settings.otp_max_attempts,
+        )
+        .values(attempts=OtpCode.attempts + 1)
+        .returning(OtpCode.attempts)
+    )
+    if attempts is None:
+        raise OtpError("invalid_code")
+
     if not verify_code_hash(phone, code, record.code_hash):
-        record.attempts += 1
         # Burn the code on the last allowed miss rather than leaving one guess
         # on the table for the next request.
-        if record.attempts >= settings.otp_max_attempts:
-            record.consumed_at = now
+        if attempts >= settings.otp_max_attempts:
+            await session.execute(update(OtpCode).where(OtpCode.id == record.id).values(consumed_at=now))
         await session.flush()
         raise OtpError("invalid_code")
 
-    record.consumed_at = now
+    # Burned only if still live: of two requests racing with the right code,
+    # exactly one wins.
+    burned = await session.execute(
+        update(OtpCode).where(OtpCode.id == record.id, OtpCode.consumed_at.is_(None)).values(consumed_at=now)
+    )
+    if burned.rowcount != 1:
+        raise OtpError("invalid_code")
     await session.flush()

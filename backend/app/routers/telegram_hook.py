@@ -7,6 +7,7 @@ Three updates matter and everything else is ignored:
   anything else     — a short explanation of what this bot is for
 """
 
+import hmac
 import logging
 
 from fastapi import APIRouter, Header, HTTPException, Request, status
@@ -55,7 +56,9 @@ async def webhook(
     # chat and receive other people's codes. Refuse rather than run unguarded.
     if not settings.telegram_webhook_secret:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, "webhook_not_configured")
-    if x_telegram_bot_api_secret_token != settings.telegram_webhook_secret:
+    if not hmac.compare_digest(
+        (x_telegram_bot_api_secret_token or "").encode(), settings.telegram_webhook_secret.encode()
+    ):
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, "bad_secret")
 
     update = await request.json()
