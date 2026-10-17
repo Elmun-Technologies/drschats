@@ -8,6 +8,7 @@ import { isLiveDeployment } from "@/lib/config/live";
 import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
 import { repriceOrder, type OfferContext } from "@/lib/cart/reprice";
+import { lineTotal } from "@/lib/cart/pricing";
 import { getPrograms } from "@/lib/content/programs";
 import { isOnlineProviderAvailable } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
@@ -87,7 +88,7 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
       items: order.items.map((item) => ({
         name: `${item.name} × ${item.quantity}`,
         url: `${siteOrigin()}/${order.locale}/product/${item.slug}`,
-        price: formatMoney(item.unitPrice * item.quantity, order.locale),
+        price: formatMoney(lineTotal({ price: item.unitPrice, quantity: item.quantity, upsellDiscountPercent: item.upsellDiscountPercent }), order.locale),
       })),
       total: formatMoney(order.totals.total, order.locale),
       orderUrl: `${siteOrigin()}/${order.locale}/checkout/success?order=${encodeURIComponent(orderId)}`,
