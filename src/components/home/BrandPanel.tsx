@@ -140,7 +140,7 @@ export function BrandPanel({ products }: { products: Product[] }) {
           className="no-scrollbar flex snap-x snap-mandatory gap-2 overflow-x-auto lg:gap-3"
         >
           {products.map((p, i) => (
-            <div key={p.id} className="h-full w-40 shrink-0 snap-start lg:w-[calc((100%-36px)/4)]">
+            <div key={p.id} className="h-full w-40 shrink-0 snap-start lg:w-[calc((100%-24px)/3)] xl:w-[calc((100%-36px)/4)]">
               <ProductCard product={p} index={i} onCard />
             </div>
           ))}

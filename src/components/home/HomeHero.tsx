@@ -45,7 +45,7 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
         <Link
           key={active}
           href={slide.href}
-          className="hero-slide-in relative flex min-h-[360px] flex-col overflow-hidden rounded-3xl bg-tile px-5 pt-5 transition-colors hover:bg-tile-hover lg:grid lg:h-[420px] lg:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] lg:items-center lg:gap-6 lg:rounded-[28px] lg:px-[88px] lg:pt-0"
+          className="hero-slide-in relative flex min-h-[360px] flex-col overflow-hidden rounded-3xl bg-tile px-5 pt-5 transition-colors hover:bg-tile-hover md:grid md:min-h-[320px] md:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] md:items-center md:gap-6 md:px-10 md:py-8 lg:h-[420px] lg:rounded-[28px] lg:px-[88px] lg:py-0"
         >
           <span className="relative z-10 flex flex-col items-start gap-3 lg:gap-4">
             <span className="inline-flex h-6 items-center rounded-pill bg-bg px-2.5 text-xs font-semibold lg:h-[26px] lg:text-[13px]">
@@ -57,13 +57,13 @@ export function HeroSlider({ slides }: { slides: HeroSlide[] }) {
             </span>
           </span>
           {slide.image && (
-            <span className="absolute bottom-1.5 right-1.5 h-44 w-44 lg:relative lg:bottom-auto lg:right-auto lg:aspect-square lg:h-auto lg:w-full lg:max-w-[330px] lg:justify-self-center">
+            <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]">
               <Image
                 src={slide.image}
                 alt=""
                 fill
                 priority={active === 0}
-                sizes="(max-width: 1024px) 176px, 330px"
+                sizes="(max-width: 767px) 176px, 330px"
                 className="object-contain"
               />
             </span>
@@ -150,7 +150,7 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
         {deal.name}
       </Link>
       {deal.image && (
-        <span className="absolute bottom-3 right-3 h-[180px] w-[180px]">
+        <span className="absolute bottom-3 right-3 h-[180px] w-[clamp(100px,calc(100%-172px),180px)]">
           <Image src={deal.image} alt="" fill sizes="180px" className="object-contain" />
         </span>
       )}
