@@ -2,6 +2,7 @@ import { and, asc, count, desc, eq, gte, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, orders, products, type OrderStatus } from "@/lib/db/schema";
 import { contentToForm, toTashkentInput } from "./product-form";
+import { readLowStockDefault } from "@/lib/catalog/stock";
 import type { ProductFormValues } from "@/components/admin/ProductForm";
 
 export async function listCategories() {
@@ -43,6 +44,8 @@ export async function listProducts(q?: string) {
       price: products.price,
       oldPrice: products.oldPrice,
       inStock: products.inStock,
+      stockQty: products.stockQty,
+      lowStockAt: products.lowStockAt,
       kind: products.kind,
       images: products.images,
       cutout: products.cutout,
@@ -75,6 +78,8 @@ export async function productFormValues(id: string): Promise<ProductFormValues |
     oldPrice: p.oldPrice != null ? String(p.oldPrice) : "",
     saleEndsAt: toTashkentInput(p.saleEndsAt),
     inStock: p.inStock,
+    stockQty: p.stockQty != null ? String(p.stockQty) : "",
+    lowStockAt: p.lowStockAt != null ? String(p.lowStockAt) : "",
     kind: p.kind,
     sort: String(p.sort),
     images: p.images.join("\n"),
@@ -93,6 +98,8 @@ export const EMPTY_PRODUCT: ProductFormValues = {
   oldPrice: "",
   saleEndsAt: "",
   inStock: true,
+  stockQty: "",
+  lowStockAt: "",
   kind: "core",
   sort: "0",
   images: "",
@@ -101,6 +108,20 @@ export const EMPTY_PRODUCT: ProductFormValues = {
   unitKind: "",
   content: {},
 };
+
+/**
+ * Listed products whose tracked count is at or under its threshold (sold out
+ * included) — for the dashboard and the "Kam qolganlar" chip. Untracked
+ * products never count.
+ */
+export async function lowStockCount(): Promise<number> {
+  const fallback = await readLowStockDefault();
+  const [row] = await getDb()
+    .select({ n: count() })
+    .from(products)
+    .where(sql`${products.kind} <> 'unlisted' and ${products.stockQty} is not null and ${products.stockQty} <= coalesce(${products.lowStockAt}, ${fallback})`);
+  return row?.n ?? 0;
+}
 
 export const ORDER_PERIODS = { today: "Bugun", "7": "7 kun", "30": "30 kun", "90": "90 kun", all: "Hammasi" } as const;
 export type OrderPeriod = keyof typeof ORDER_PERIODS;

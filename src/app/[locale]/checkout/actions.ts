@@ -145,7 +145,7 @@ async function clubBotReceipt(orderId: string, initData: string | undefined): Pr
   }
 }
 
-export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "failed";
+export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "insufficient_stock" | "invalid_offer" | "payment_unavailable" | "failed";
 
 export async function submitOrder(
   payload: OrderRequest,
@@ -235,7 +235,7 @@ export async function submitOrder(
       ]);
       return { ...result, total: order.totals.total };
     }
-    return { ...result, error: result.ok ? undefined : "failed" };
+    return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };
   } catch (err) {
     console.error("[checkout] createOrder failed", err instanceof Error ? err.message : "unknown error");
     return { ok: false, error: "failed" };

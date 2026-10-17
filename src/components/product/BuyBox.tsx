@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
@@ -19,6 +19,7 @@ import { unitPriceOf } from "@/lib/catalog/product-facts";
 import { SaleCountdown } from "@/components/marketing/SaleCountdown";
 import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { useLiveProduct } from "@/lib/shop/useLiveProduct";
+import { lowStockLeft, stockCap } from "@/lib/catalog/stock-rules";
 
 /*
   Design: ProductV3 buy card. Price, the two ways to buy, quantity and the two
@@ -41,6 +42,9 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
 
   const discount = discountPercent(product.price, product.oldPrice);
   const perUnit = unitPriceOf(product);
+  // A real, tracked count only (lib/catalog/stock-rules); untracked products never show a number.
+  const left = product.inStock ? lowStockLeft(product.stock) : null;
+  const maxQty = stockCap(MAX_QTY, product.stock?.qty);
 
   useEffect(() => reset(product.id), [reset, product.id]);
 
@@ -92,8 +96,8 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
               </span>
               <button
                 type="button"
-                onClick={() => setQty(qty + 1)}
-                disabled={qty >= MAX_QTY}
+                onClick={() => setQty(Math.min(maxQty, qty + 1))}
+                disabled={qty >= maxQty}
                 aria-label={tb("increase")}
                 className="flex h-14 w-11 items-center justify-center text-[22px] font-medium disabled:opacity-40"
               >
@@ -131,17 +135,53 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
         <OutOfStockNotify productId={product.id} productName={product.name} />
       )}
 
-      <span className={cn("flex items-center gap-2 text-[15px] font-medium", !product.inStock && "text-red")}>
+      <span className={cn("flex items-center gap-2 text-[15px] font-medium", !product.inStock && "text-red", left && "font-semibold")}>
         <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-          <path d={product.inStock ? "M5 12l5 5 9-10" : "M6 6l12 12M18 6L6 18"} />
+          <path d={left ? "m12 3 8 4.5v9L12 21l-8-4.5v-9zM4.5 7.7 12 12l7.5-4.3M12 12v9" : product.inStock ? "M5 12l5 5 9-10" : "M6 6l12 12M18 6L6 18"} />
         </svg>
-        {product.inStock ? t("inStock") : t("outOfStock")}
+        {left ? t("stockLeft", { count: left }) : product.inStock ? t("inStock") : t("outOfStock")}
       </span>
+
+      {product.inStock && <PriceDropNotify product={product} />}
 
       {reviewer && <ReviewedBy expert={reviewer} />}
 
       <MobileBuyBar product={product} />
     </div>
+  );
+}
+
+/*
+  "Narxi tushsa xabar bering": a phone number and the price the customer saw.
+  The form is drawn only once opened — no hidden fields in the page.
+*/
+function PriceDropNotify({ product }: { product: Product }) {
+  const t = useTranslations("outOfStock");
+  const [open, setOpen] = useState(false);
+  if (!open) {
+    return (
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        aria-expanded={false}
+        className="-my-1 flex min-h-11 items-center gap-2 self-start text-[15px] font-semibold text-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 rounded-[8px]"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15zM10 20a2 2 0 0 0 4 0" />
+        </svg>
+        {t("priceDrop")}
+      </button>
+    );
+  }
+  return (
+    <OutOfStockNotify
+      productId={product.id}
+      productName={product.name}
+      kind="price_drop"
+      event="price_drop_notify"
+      label={t("priceDropNote")}
+      successLabel={t("priceDropSuccess")}
+    />
   );
 }
 

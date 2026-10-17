@@ -83,7 +83,8 @@
     "inCartQty": "{count} dona",
     "notFoundLead": "Havola eskirgan yoki sahifa koʻchirilgan boʻlishi mumkin. Qidiruvdan foydalaning yoki katalogga oʻting.",
     "notFoundPopular": "Mashhur kategoriyalar",
-    "linkCopied": "Havola nusxalandi"
+    "linkCopied": "Havola nusxalandi",
+    "stockLeft": "Omborda {count} ta qoldi"
   },
   "home": {
     "hero": {
@@ -788,7 +789,9 @@
       "payment_unavailable": "Bu toʻlov usuli hozir mavjud emas. Yetkazishda toʻlovni tanlang.",
       "failed": "Buyurtma yuborilmadi. Qayta urinib koʻring yoki {phone} raqamiga qoʻngʻiroq qiling.",
       "offerRemoved": "«{name}» uchun taklif chegirmasi endi amal qilmaydi — u savatdan olib tashlandi. Buyurtmani qayta yuboring.",
-      "lineRemoved": "«{name}» hozir sotuvda yoʻq — u savatdan olib tashlandi. Buyurtmani qayta yuboring."
+      "lineRemoved": "«{name}» hozir sotuvda yoʻq — u savatdan olib tashlandi. Buyurtmani qayta yuboring.",
+      "insufficient_stock": "Savatdagi mahsulotlardan biri omborda yetarli emas. Sonini kamaytirib, qayta urinib koʻring.",
+      "onlyLeft": "«{name}»: omborda faqat {count} ta qoldi — savatdagi soni shunga tushirildi. Buyurtmani qayta yuboring."
     }
   },
   "footer": {
@@ -1841,7 +1844,10 @@
     "submit": "Xabar ber",
     "success": "Rahmat! Mahsulot kelganda sizga xabar beramiz.",
     "submitting": "Yuborilmoqda…",
-    "error": "Uzr, soʻrovni qabul qila olmadik. Iltimos, qayta urinib koʻring yoki biz bilan bogʻlaning."
+    "error": "Uzr, soʻrovni qabul qila olmadik. Iltimos, qayta urinib koʻring yoki biz bilan bogʻlaning.",
+    "priceDrop": "Narxi tushsa xabar bering",
+    "priceDropNote": "Telefon raqamingizni qoldiring — narxi tushsa, xabar beramiz.",
+    "priceDropSuccess": "Rahmat! Narxi tushsa, sizga xabar beramiz."
   },
   "privacy": {
     "title": "Maxfiylik siyosati",

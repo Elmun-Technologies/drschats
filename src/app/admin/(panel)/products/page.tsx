@@ -7,6 +7,9 @@ import { Card, ChipNav, EmptyState, Notice, PageHeader, Pill, buttonClass, input
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { CatalogTabs } from "@/components/admin/catalog/CatalogTabs";
 import { BuiltInSyncCard } from "@/components/admin/catalog/BuiltInSyncCard";
+import { LowStockDefaultForm, StockButton } from "@/components/admin/catalog/StockControls";
+import { readLowStockDefault } from "@/lib/catalog/stock";
+import { isLowStock, stockLabel } from "@/lib/catalog/stock-rules";
 
 export const metadata = { title: "Mahsulotlar" };
 
@@ -14,12 +17,13 @@ const FILTERS = {
   all: { label: "Hammasi", test: () => true },
   live: { label: "Sotuvda", test: (p: Row) => p.kind !== "unlisted" && p.inStock },
   out: { label: "Tugagan", test: (p: Row) => p.kind !== "unlisted" && !p.inStock },
+  low: { label: "Kam qolganlar", test: (p: Row) => p.kind !== "unlisted" && isLowStock(p.stockQty, p.lowAt) },
   sale: { label: "Chegirmada", test: (p: Row) => Boolean(p.oldPrice) },
   noimage: { label: "Rasmsiz", test: (p: Row) => !p.cutout && p.images.length === 0 },
   hidden: { label: "Sotuvdan olingan", test: (p: Row) => p.kind === "unlisted" },
 } as const;
 type Filter = keyof typeof FILTERS;
-type Row = Awaited<ReturnType<typeof listProducts>>[number];
+type Row = Awaited<ReturnType<typeof listProducts>>[number] & { lowAt: number };
 
 const SORTS = {
   order: { label: "Saytdagi tartib", compare: (a: Row, b: Row) => a.sort - b.sort || a.createdAt.getTime() - b.createdAt.getTime() },
@@ -68,7 +72,9 @@ export default async function AdminProductsPage({
   const sort: Sort = sortParam in SORTS ? (sortParam as Sort) : "order";
   const category = first(params.category) ?? "";
   const brand = first(params.brand) ?? "";
-  const [all, cats, status] = await Promise.all([listProducts(q), listCategories(), builtInCatalogStatus()]);
+  const [rawRows, cats, status, lowStockDefault] = await Promise.all([listProducts(q), listCategories(), builtInCatalogStatus(), readLowStockDefault()]);
+  const all: Row[] = rawRows.map((p) => ({ ...p, lowAt: p.lowStockAt ?? lowStockDefault }));
+  const anyTracked = all.some((p) => p.stockQty != null);
   const catName = new Map(cats.map((c) => [c.slug, c.name.uz]));
   const inCategory = category === "none" ? all.filter((p) => !p.categorySlug || !catName.has(p.categorySlug)) : category ? all.filter((p) => p.categorySlug === category) : all;
   const rows = inCategory.filter((p) => !brand || p.brandSlug === brand).filter(FILTERS[filter].test).sort(SORTS[sort].compare);
@@ -121,6 +127,7 @@ export default async function AdminProductsPage({
         className="mb-4"
         items={(Object.keys(FILTERS) as Filter[])
           .filter((key) => key !== "noimage" || inCategory.some(FILTERS.noimage.test))
+          .filter((key) => key !== "low" || anyTracked)
           .map((key) => ({ href: href({ filter: key }), label: FILTERS[key].label, active: key === filter, count: inCategory.filter(FILTERS[key].test).length }))}
       />
       <Card>
@@ -162,7 +169,8 @@ export default async function AdminProductsPage({
                         <span className="flex flex-wrap items-center gap-1.5">
                           <Pill tone={cat ? "neutral" : "outline"}>{cat ?? "kategoriyasiz"}</Pill>
                           {p.kind === "unlisted" && <Pill tone="muted">sotuvdan olingan</Pill>}
-                          {p.kind !== "unlisted" && !p.inStock && <Pill tone="outline">tugagan</Pill>}
+                          {p.kind !== "unlisted" && !p.inStock && p.stockQty == null && <Pill tone="outline">tugagan</Pill>}
+                          {p.stockQty != null && <Pill tone={stockLabel(p.stockQty, p.lowAt).tone} className="sm:hidden">{stockLabel(p.stockQty, p.lowAt).label}</Pill>}
                           {p.kind === "addon" && <Pill tone="muted">qoʻshimcha</Pill>}
                         </span>
                       </span>
@@ -171,7 +179,10 @@ export default async function AdminProductsPage({
                         {p.oldPrice && <span className="block text-[13px] font-normal text-muted line-through">{som(p.oldPrice)}</span>}
                       </span>
                     </Link>
-                    {p.kind !== "unlisted" && (
+                    <span className="hidden shrink-0 sm:block">
+                      <StockButton id={p.id} name={p.name || p.slug} qty={p.stockQty} lowAt={p.lowAt} />
+                    </span>
+                    {p.kind !== "unlisted" && p.stockQty == null && (
                       <form action={toggleProductStock} className="hidden shrink-0 sm:block">
                         <input type="hidden" name="id" value={p.id} />
                         <button type="submit" className="h-11 w-[136px] rounded-[12px] bg-tile text-[14px] font-semibold text-ink hover:bg-tile-hover" title={p.inStock ? "Tugadi deb belgilash" : "Omborda bor deb belgilash"}>
@@ -185,6 +196,9 @@ export default async function AdminProductsPage({
             </ul>
           </>
         )}
+      </Card>
+      <Card title="Ombor" lead="«Ombordagi soni» kiritilgan mahsulotlarda buyurtma sonni kamaytiradi, bekor qilish qaytaradi; 0 boʻlsa mahsulot «tugagan» boʻladi. Soni kiritilmagan mahsulot avvalgidek ishlaydi." className="mt-5">
+        <LowStockDefaultForm value={lowStockDefault} />
       </Card>
     </>
   );

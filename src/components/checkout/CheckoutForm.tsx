@@ -230,7 +230,12 @@ export function CheckoutForm({
       "refresh the cart" left the same line in place and the order stuck.
     */
     const culprit = res.slug ? lines.find((l) => l.slug === res.slug && (res.error !== "invalid_offer" || l.upsellDiscountPercent)) : undefined;
-    if (culprit && (res.error === "out_of_stock" || res.error === "invalid_offer" || res.error === "unknown_product")) {
+    const left = res.shortage?.available ?? 0;
+    if (culprit && res.error === "insufficient_stock" && left > 0) {
+      // Fewer left than asked: the line drops to what is there, and the customer is told the real number.
+      useCart.getState().setQuantity(culprit.lineId, Math.min(culprit.quantity, left));
+      setServerError(te("onlyLeft", { name: culprit.name, count: left }));
+    } else if (culprit && (res.error === "out_of_stock" || res.error === "insufficient_stock" || res.error === "invalid_offer" || res.error === "unknown_product")) {
       removeLine(culprit.lineId);
       setServerError(te(res.error === "invalid_offer" ? "offerRemoved" : "lineRemoved", { name: culprit.name }));
     } else {
