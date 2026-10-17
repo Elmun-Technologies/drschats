@@ -82,7 +82,8 @@ export async function recordBatch(visitorId: string, batch: JourneyBatch, contex
         locale: batch.locale ? batch.locale : sql`${visitors.locale}`,
         device: deviceOf(context.userAgent),
         firstTouch: sql`coalesce(${visitors.firstTouch}, excluded.first_touch)`,
-        lastTouch: touch ? sql`excluded.last_touch` : sql`${visitors.lastTouch}`,
+        // A new session with a source moves the last touch; repeats of the same session's entry do not.
+        lastTouch: touch ? sql`case when ${visitors.lastSession} is distinct from ${batch.sid} or ${visitors.lastTouch} is null then excluded.last_touch else ${visitors.lastTouch} end` : sql`${visitors.lastTouch}`,
         stage: sql`case when array_position(${stageArray}, excluded.stage) > array_position(${stageArray}, ${visitors.stage}) then excluded.stage else ${visitors.stage} end`,
         ...(batch.cart
           ? { cartValue: batch.cart.value, cartItems: cartItems ?? [], cartAt: now }

@@ -52,7 +52,7 @@ export default async function AdminBotPage() {
         <Card title="Sozlamalar">
           <ActionForm action={saveClub} className="grid gap-4">
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
-              <input type="checkbox" name="enabled" defaultChecked={club.enabled} className="h-5 w-5 accent-forest" />
+              <input type="checkbox" name="enabled" defaultChecked={club.enabled} className="h-5 w-5 accent-ink" />
               Buyurtma holati xabarlari yoqilgan
             </label>
             <Field label="Klub nomi">
@@ -79,7 +79,7 @@ export default async function AdminBotPage() {
               <textarea name="text" required maxLength={1000} className={textareaClass} />
             </Field>
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
-              <input type="checkbox" name="confirm" required className="h-5 w-5 accent-forest" />
+              <input type="checkbox" name="confirm" required className="h-5 w-5 accent-ink" />
               Hammaga yuborishni tasdiqlayman
             </label>
           </ActionForm>

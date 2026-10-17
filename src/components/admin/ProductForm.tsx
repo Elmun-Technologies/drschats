@@ -95,7 +95,7 @@ export function ProductForm({
           <input name="saleEndsAt" type="datetime-local" defaultValue={values.saleEndsAt} className={inputClass} />
         </Field>
         <label className="flex h-11 items-center gap-3 self-end text-[15px] font-semibold">
-          <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-forest" />
+          <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-ink" />
           Omborda bor
         </label>
         <Field label="Qadoqdagi soni" hint="Birlik narxi uchun (ixtiyoriy)">

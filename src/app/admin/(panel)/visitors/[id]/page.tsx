@@ -34,7 +34,7 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
         {STAGE_ORDER.map((stage) => {
           const reached = stageRank(stage) <= stageRank(v.stage);
           return (
-            <li key={stage} className={cn("rounded-[12px] px-2 py-2.5 text-center text-[13px] font-semibold leading-4", reached ? "bg-ink text-white" : "bg-tile text-muted")}>
+            <li key={stage} className={cn("rounded-[12px] px-1.5 py-2.5 text-center text-[12px] font-semibold leading-4 [overflow-wrap:anywhere] sm:px-2 sm:text-[13px]", reached ? "bg-ink text-white" : "bg-tile text-muted")}>
               {STAGE_LABEL[stage]}
             </li>
           );

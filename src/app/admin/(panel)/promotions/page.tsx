@@ -19,7 +19,7 @@ function status(p: typeof promotions.$inferSelect, now: number): { label: string
   return { label: "Faol", tone: "dark" };
 }
 
-export default async function AdminPromotionsPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string }> }) {
+export default async function AdminPromotionsPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string; imported?: string }> }) {
   const params = await searchParams;
   const db = getDb();
   const [rows, sales] = await Promise.all([
@@ -37,6 +37,7 @@ export default async function AdminPromotionsPage({ searchParams }: { searchPara
       />
       {params.saved && <div className="mb-4"><Notice tone="ok">Aksiya saqlandi.</Notice></div>}
       {params.deleted && <div className="mb-4"><Notice tone="ok">Aksiya oʻchirildi.</Notice></div>}
+      {params.imported && <div className="mb-4"><Notice tone="ok">{Number(params.imported) || 0} ta aksiya panelga olindi. Endi ularni tahrirlash yoki oʻchirish mumkin.</Notice></div>}
 
       {rows.length === 0 ? (
         <Card title="Hozir saytda ishlayotgan aksiyalar" lead="Panelda aksiya yaratilmaguncha sayt quyidagi oʻrnatilgan aksiyalarni qoʻllaydi. Ularni panelga olib, tahrirlash yoki oʻchirish mumkin.">

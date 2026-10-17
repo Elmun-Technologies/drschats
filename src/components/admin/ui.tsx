@@ -136,7 +136,7 @@ export function Metric({ label, value, hint, delta, href }: { label: string; val
   const body = (
     <>
       <p className="text-[14px] font-medium leading-5 text-ink-2">{label}</p>
-      <p className="mt-2 text-[26px] font-bold leading-8 tabular-nums text-ink lg:text-[30px] lg:leading-9">{value}</p>
+      <p className="mt-2 text-[22px] font-bold leading-7 tabular-nums text-ink lg:text-[26px] lg:leading-8">{value}</p>
       <p className="mt-1.5 flex min-h-5 flex-wrap items-center gap-x-2 text-[13px] text-muted">
         {change !== null && (
           <span className={cn("font-semibold tabular-nums", change >= 0 ? "text-ink" : "text-ink-2")}>

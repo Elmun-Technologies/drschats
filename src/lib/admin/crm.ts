@@ -19,6 +19,8 @@ async function query<T = Row>(statement: SQL): Promise<T[]> {
 }
 
 const num = (value: unknown) => Number(value ?? 0);
+// postgres-js without prepared statements cannot infer a Date parameter's type.
+const ts = (d: Date) => sql`${d.toISOString()}::timestamptz`;
 const date = (value: unknown) => (value ? new Date(value as string) : null);
 
 export const RANGES = [1, 7, 30, 90] as const;
@@ -64,7 +66,7 @@ async function funnelBetween(from: Date, to: Date): Promise<FunnelCounts> {
       count(distinct visitor_id) filter (where type in ('begin_checkout', 'purchase')) as checkout,
       count(distinct visitor_id) filter (where type = 'purchase') as purchased
     from visitor_events
-    where created_at >= ${from} and created_at < ${to}`);
+    where created_at >= ${ts(from)} and created_at < ${ts(to)}`);
   return {
     visitors: num(row?.visitors),
     sessions: num(row?.sessions),
@@ -81,7 +83,7 @@ export async function siteFunnel(days: Range) {
   const [current, previous, newVisitors] = await Promise.all([
     funnelBetween(from, to),
     funnelBetween(previousFrom, from),
-    query(sql`select count(*) as n from visitors where first_seen_at >= ${from}`),
+    query(sql`select count(*) as n from visitors where first_seen_at >= ${ts(from)}`),
   ]);
   return { current, previous, newVisitors: num(newVisitors[0]?.n) };
 }
@@ -115,13 +117,13 @@ export async function dailyTraffic(days: Range): Promise<DailyTraffic[]> {
       select to_char(created_at at time zone 'Asia/Tashkent', 'YYYY-MM-DD') as d,
              count(distinct visitor_id) filter (where session_id <> 'server') as visitors,
              count(distinct visitor_id) filter (where type = 'purchase') as buyers
-      from visitor_events where created_at >= ${from} and created_at < ${to}
+      from visitor_events where created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by 1`),
     query(sql`
       select to_char(created_at at time zone 'Asia/Tashkent', 'YYYY-MM-DD') as d,
              count(*) as orders,
              coalesce(sum(total) filter (where status <> 'cancelled'), 0) as revenue
-      from orders where created_at >= ${from} and created_at < ${to}
+      from orders where created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by 1`),
   ]);
   const byDay = new Map<string, DailyTraffic>();
@@ -155,13 +157,13 @@ export async function channels(days: Range): Promise<ChannelRow[]> {
       select visitor_id,
              bool_or(type = 'purchase') as bought
       from visitor_events
-      where created_at >= ${from} and created_at < ${to}
+      where created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by visitor_id
     ),
     revenue as (
       select visitor_id, sum(total) as revenue
       from orders
-      where visitor_id is not null and status <> 'cancelled' and created_at >= ${from} and created_at < ${to}
+      where visitor_id is not null and status <> 'cancelled' and created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by visitor_id
     )
     select jsonb_strip_nulls(jsonb_build_object(
@@ -195,7 +197,7 @@ export async function devices(days: Range) {
   const rows = await query(sql`
     select coalesce(v.device, 'desktop') as device, count(distinct v.id) as visitors
     from visitors v
-    where exists (select 1 from visitor_events e where e.visitor_id = v.id and e.created_at >= ${from} and e.created_at < ${to})
+    where exists (select 1 from visitor_events e where e.visitor_id = v.id and e.created_at >= ${ts(from)} and e.created_at < ${ts(to)})
     group by 1 order by 2 desc`);
   const label: Record<string, string> = { mobile: "Telefon", tablet: "Planshet", desktop: "Kompyuter" };
   return rows.map((row) => ({ device: label[row.device as string] ?? String(row.device), visitors: num(row.visitors) }));
@@ -218,13 +220,13 @@ export async function productInterest(days: Range, limit = 10): Promise<ProductI
              count(distinct visitor_id) filter (where type = 'view_item') as views,
              count(distinct visitor_id) filter (where type = 'add_to_cart') as carts
       from visitor_events
-      where product_slug is not null and created_at >= ${from} and created_at < ${to}
+      where product_slug is not null and created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by 1
     ),
     sold as (
       select item->>'slug' as slug, sum((item->>'quantity')::int) as orders
       from orders, jsonb_array_elements(items) as item
-      where status <> 'cancelled' and created_at >= ${from} and created_at < ${to}
+      where status <> 'cancelled' and created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by 1
     )
     select coalesce(ev.slug, sold.slug) as slug,
@@ -242,7 +244,7 @@ export async function topPages(days: Range, limit = 10) {
   const rows = await query(sql`
     select split_part(path, '?', 1) as path, count(*) as views, count(distinct visitor_id) as visitors
     from visitor_events
-    where type = 'page_view' and path is not null and created_at >= ${from} and created_at < ${to}
+    where type = 'page_view' and path is not null and created_at >= ${ts(from)} and created_at < ${ts(to)}
     group by 1 order by 2 desc limit ${limit}`);
   return rows.map((row) => ({ path: String(row.path), views: num(row.views), visitors: num(row.visitors) }));
 }
@@ -252,7 +254,7 @@ export async function topSearches(days: Range, limit = 10) {
   const rows = await query(sql`
     select lower(trim(meta->>'term')) as term, count(*) as n
     from visitor_events
-    where type = 'search' and meta->>'term' is not null and created_at >= ${from} and created_at < ${to}
+    where type = 'search' and meta->>'term' is not null and created_at >= ${ts(from)} and created_at < ${ts(to)}
     group by 1 order by 2 desc limit ${limit}`);
   return rows.map((row) => ({ term: String(row.term), count: num(row.n) }));
 }
@@ -454,12 +456,12 @@ export async function utmCampaigns(days: Range) {
   const rows = await query(sql`
     with active as (
       select visitor_id, bool_or(type = 'purchase') as bought
-      from visitor_events where created_at >= ${from} and created_at < ${to}
+      from visitor_events where created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by visitor_id
     ),
     revenue as (
       select visitor_id, sum(total) as revenue from orders
-      where visitor_id is not null and status <> 'cancelled' and created_at >= ${from} and created_at < ${to}
+      where visitor_id is not null and status <> 'cancelled' and created_at >= ${ts(from)} and created_at < ${ts(to)}
       group by visitor_id
     )
     select coalesce(v.last_touch->>'campaign', v.first_touch->>'campaign') as campaign,

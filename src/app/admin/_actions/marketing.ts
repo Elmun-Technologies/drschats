@@ -171,6 +171,5 @@ export async function importBuiltInPromotions(_: FormState, _form: FormData): Pr
     .onConflictDoNothing()
     .returning({ id: promotions.id });
   refreshCatalog();
-  revalidatePath("/admin/promotions");
-  return { ok: `${rows.length} ta aksiya panelga olindi. Endi ularni tahrirlash yoki oʻchirish mumkin.` };
+  redirect(`/admin/promotions?imported=${rows.length}`);
 }

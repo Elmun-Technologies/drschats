@@ -32,7 +32,7 @@ export function Timeline({ events }: { events: VisitorEvent[] }) {
               {session.events.map((e) => (
                 <li key={e.id} className="relative">
                   <span className={cn("absolute -left-[25px] top-1.5 h-2.5 w-2.5 rounded-full ring-4 ring-white", KEY_EVENTS.has(e.type) ? "bg-ink" : "bg-line-strong")} />
-                  <p className={cn("text-[14px] leading-5", KEY_EVENTS.has(e.type) ? "font-semibold text-ink" : "text-ink-2")}>
+                  <p className={cn("text-[14px] leading-5 [overflow-wrap:anywhere]", KEY_EVENTS.has(e.type) ? "font-semibold text-ink" : "text-ink-2")}>
                     {EVENT_LABEL[e.type]}
                     {eventDetail(e) && <span className="font-normal text-muted"> — {eventDetail(e)}</span>}
                   </p>

@@ -45,32 +45,62 @@ vendor hostlarini ochadi. Maxfiy qiymatlarni chatga yoki kodga yozmang.
 
 1. `https://www.govita.uz/admin/setup` — sozlash kaliti (`ADMIN_SETUP_TOKEN`),
    ism, email, parol (≥ 12 belgi). Sahifa birinchi admin yaratilgach yopiladi.
-2. Bosh sahifada **«Import qilish»** — mavjud katalog (30 mahsulot, 15 kategoriya,
-   7 brend) bazaga ko'chadi. Takror bosish xavfsiz.
+2. Katalog **o'zi** bazaga ko'chadi: server birinchi marta baza bilan ishga
+   tushganda, `products` bo'sh bo'lsa, o'rnatilgan katalog (30 mahsulot,
+   15 kategoriya, brendlar) yoziladi va `site_settings.catalog.seededAt` belgisi
+   qo'yiladi (`src/lib/admin/seed.ts`, `instrumentation.ts`). Belgi bor ekan bu
+   qayta ishlamaydi — admin o'chirgan mahsulot qaytib kelmaydi. Yetishmaganini
+   qo'lda olib kelish: bosh sahifadagi import (takror bosish xavfsiz).
 3. `fly secrets unset ADMIN_SETUP_TOKEN -a govita`.
 
 ## Bo'limlar
 
+Dizayn — saytning V3 uslubi: oq fon, `tile` kartalar, qora (`ink`) tugmalar,
+yashil yo'q (`src/components/admin/ui.tsx`).
+
 | bo'lim | nima qiladi |
 |---|---|
-| Bosh sahifa | 7 / 30 / 90 kunlik bekor qilinmagan buyurtma summasi, buyurtmalar, o'rtacha chek, statuslar, katalog va manbalar |
-| Analitika | buyurtma summasi, UTM / click ID manbalari, mahsulot kesimi va buyurtma statuslari. Tashrif / sessiya metrikasi GA4 yoki Yandex Metrikada qoladi |
-| Savdo voronkasi | yangi → tasdiqlangan → yo'lda → yetkazilgan va bekor qilinganlar. Yangi buyurtma avtomatik kiradi; statusni operator o'zgartiradi. BTS / Yandex kuryer statusi hozircha avtomatik ulanmagan |
-| Buyurtmalar | raqam, ism, telefon yoki email bo'yicha qidiruv; holat filtri, tafsilot, status tarixi va ichki izoh. Holat o'zgarsa Telegram klub botida xabar boradi (raqami bog'langan yoki Mini App'dan buyurtma bergan bo'lsa) |
-| Mijozlar | buyurtma telefonining oxirgi 9 raqami bo'yicha birlashtirilgan profil, xaridlar tarixi, manba va jamoa izohlari. Izohga sog'liq yoki karta ma'lumotini yozmang |
-| Mahsulotlar | qidiruv, yangi, tahrir (uz/ru), rasm yuklash, o'chirish |
-| Kategoriyalar | qo'shish, tahrir (slug o'zgarsa mahsulotlar ham ko'chadi), bo'shini o'chirish |
-| Brendlar | qo'shish, nomi, o'chirish (mahsulotlar brendsiz qoladi) |
-| Marketing | UTM havola yaratish, buyurtma manbalarini ko'rish, email / Telegram / SMS konfiguratsiya holati |
-| Blog va kontent | maqolalar ro'yxati va himoyalangan Go Vita admin ichida Sanity Studio. CMS ulanmagan bo'lsa statik maqolalar faqat ko'rish uchun |
-| Integratsiyalar | GA4, GTM, Yandex Metrika, Meta Pixel, to'lov merchant ID holati, Telegram, email va Sanity. Analytics ID’lari, operator Telegram va Resend email qiymatlari panelda boshqariladi; Telegram chatni ko'rish testi va admin kiritgan manzilga bitta test emaili mavjud. Payme/Click/Uzum merchant ID’si checkout’ni yoqmaydi: toʻliq gateway handoff va tasdiqlangan callback hali mavjud emas |
-| Telegram klub | bot sozlamalari, klubga xabar, murojaatlarga javob, a'zolar, xabarlar navbati — [`BOT-ADMIN.md`](BOT-ADMIN.md) |
-| Administratorlar | qo'shish, o'chirish (o'zini emas) |
+| Bosh sahifa | hozir saytdagilar, tashrif / konversiya / buyurtma / savdo / o'rtacha chek (oldingi davr bilan), «E'tibor talab qiladi» (yangi buyurtmalar, tashlab ketilgan savatlar, kursi tugayotganlar, ochiq murojaatlar), kunlik grafiklar, sayt voronkasi, kanallar |
+| Analitika | tashrif, sessiya, sahifa ko'rish, konversiya; kanallar jadvali (tashrif → xaridor → savdo), mahsulot qiziqishi (ko'rdi / savatga / sotildi), qurilmalar, sahifalar, saytdagi qidiruvlar |
+| Buyurtmalar | holat chiplari (sonlari bilan), qidiruv, manba; tafsilotda mijoz profili va «Saytdagi yo'li» havolasi |
+| Mijozlar | telefon bo'yicha birlashtirilgan mijozlar: bosqich (yangi / qayta / VIP / faolligi pasaygan), jami xarid, oxirgi xariddan beri kunlar; profilda buyurtmalar, xarid oralig'i, saytdagi harakatlari (barcha qurilmalar), izohlar |
+| Mijozlar yo'li | saytga kirgan har bir odam: manba, bosqich (kirdi → mahsulot ko'rdi → savat → rasmiylashtirish → sotib oldi), savatdagi mahsulotlar, tashriflar bo'yicha harakatlar tarixi |
+| Voronka | sayt voronkasi va har bosqichdagi yo'qotish (retarget segmentiga havola) + buyurtma bajarilishi va holatlar kanbani |
+| Segmentlar va retarget | avtomatik auditoriyalar: kursi tugayapti (25–40 kun), bir marta sotib olgan, 60+ kun, yo'qotilgan (180+), VIP, yangi (7 kun), savatni tashlab ketgan, rasmiylashtirishda to'xtagan, ko'rib ketgan. CSV (jamoa), Meta Custom Audience va Google Customer Match (SHA-256) eksporti, Telegram orqali shaxsiy xabar (`{ism}`) |
+| Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
+| Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
+| UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
+| Mahsulotlar | holat chiplari (sotuvda / tugagan / chegirmada / sotuvdan olingan), kategoriya filtri, yangi, tahrir (uz/ru), rasm yuklash. Saqlash saytni darhol yangilaydi |
+| Kategoriyalar, Brendlar | qo'shish, tahrir, o'chirish |
+| Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
+| Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend; saytning o'z kuzatuvi holati |
+| Administratorlar | qo'shish, o'chirish (o'zini va oxirgisini emas), parol almashtirish, barcha qurilmalardan chiqish |
 
-**Toʻlov cheklovi:** Payme, Click va Uzum faqat merchant ID kiritilganidan emas, server-side gateway handoff va tasdiqlangan callback oqimi toʻliq ishlagandan keyingina checkout’da yoqiladi. Hozir ular reja holatida; mijoz checkout’i yetkazishda naqd pul bilan ishlaydi.
+## Saytning o'z kuzatuvi (mijozlar yo'li)
 
-**Mahsulotni yashirish** — o'chirmang, «Holat» → «Sotuvdan olingan»: sahifa
-havolalari ishlashda davom etadi, ro'yxatlarda ko'rinmaydi.
+- Brauzer: `src/lib/journey/client.ts`. `lib/analytics/events.ts` dagi har bir
+  GA4 hodisasi (`view_item`, `add_to_cart`, `begin_checkout`, `search`…) va har
+  bir sahifa ko'rish shu yerga ham yoziladi; savat holati `CartJourney` orqali.
+  Sessiya — `sessionStorage` (30 daqiqa jimlik), kirish manbasi (landing +
+  referrer) har paket bilan yuboriladi. Bot va `navigator.webdriver` sanalmaydi.
+- Server: `POST /api/t` (`src/lib/journey/collect.ts`) — `gv_vid` httpOnly
+  cookie (1 yil), `visitors` + `visitor_events` (0006 migratsiya). Bosqich faqat
+  oldinga siljiydi. 400 kundan eski hodisalar o'chiriladi.
+- Buyurtma: checkout `linkOrderToVisitor` — telefon, ism, `orders.visitor_id`,
+  server tomonidagi `purchase` hodisasi. Shu tufayli bitta mijozning bir nechta
+  qurilmasi telefon bo'yicha birlashadi.
+- O'qish: `src/lib/admin/crm.ts` (voronka, kanallar, mahsulot qiziqishi),
+  `segments.ts` (auditoriyalar), `segment-export.ts` (CSV, xesh).
+
+## Integratsiya sozlamalari
+
+- Ommaviy qiymatlar (analytics ID, Vebvizor, tasdiqlash kodlari) —
+  `site_settings` jadvali, **shifrlash kalitisiz** (`src/lib/integrations/site-settings.ts`).
+  Saqlash bilan `/api/public/analytics` va `<head>` meta-teglari yangilanadi.
+- Maxfiylari (bot tokeni, Resend kaliti) — `integration_settings`, AES-256-GCM,
+  `INTEGRATION_ENCRYPTION_KEY` kerak.
+- CSP: `ADMIN_ANALYTICS_CSP=on` Dockerfile va `fly.toml` da yoqilgan — to'rtta
+  vendorning hostlari va Vebvizor uchun `frame-ancestors` (metrika.yandex.*, webvisor.com).
 
 ## Xavfsizlik
 
@@ -80,8 +110,10 @@ havolalari ishlashda davom etadi, ro'yxatlarda ko'rinmaydi.
 - Admin orqali saqlangan Telegram bot tokeni va Resend API key `INTEGRATION_ENCRYPTION_KEY`
   bilan AES-256-GCM formatida shifrlanadi; ciphertext va setting nomi
   autentifikatsiyalangan. Kalit hech qachon brauzerga yuborilmaydi.
-- Kirish: 5 urinish / 10 daqiqa (IP va email bo'yicha), noto'g'ri email va
-  parolga bir xil javob.
+- Kirish: email bo'yicha 5 ta **noto'g'ri** urinish / 10 daqiqa (muvaffaqiyatli
+  kirish sanalmaydi), IP bo'yicha 20; noto'g'ri email va parolga bir xil javob.
+- Sessiya `session_epoch` bilan: parol almashtirish yoki «barcha qurilmalardan
+  chiqish» oldingi barcha cookie'larni bekor qiladi.
 - `/admin` — `robots.txt` da disallow, `noindex`.
 
 ## Kod
@@ -97,3 +129,5 @@ havolalari ishlashda davom etadi, ro'yxatlarda ko'rinmaydi.
 | `src/app/admin/` | sahifalar va server action'lar |
 | `db/migrations/0004_admin_customer_notes.sql` | mijozga biriktirilgan ichki xizmat izohlari |
 | `db/migrations/0005_admin_integration_settings.sql` | panel sozlamalari uchun shifrlangan integration ciphertext jadvali |
+| `db/migrations/0006_crm_marketing.sql` | `visitors`, `visitor_events`, `orders.visitor_id`, `promotions`, `campaigns`, `site_settings`, `admin_users.session_epoch` |
+| `src/lib/journey/` | kuzatuv: brauzer klienti, server yig'uvchi, sof qoidalar (`model.ts`, testli) |
