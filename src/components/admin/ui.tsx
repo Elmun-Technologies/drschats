@@ -196,7 +196,7 @@ export const thClass = "border-b border-line px-3 pb-3 text-[13px] font-semibold
 export const tdClass = "border-b border-line px-3 py-3.5 align-middle first:pl-0 last:pr-0";
 
 export function TableWrap({ children }: { children: ReactNode }) {
-  return <div className="-mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6">{children}</div>;
+  return <div className="relative -mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6">{children}</div>;
 }
 
 export function som(value: number): string {

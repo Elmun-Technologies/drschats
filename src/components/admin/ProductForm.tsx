@@ -196,10 +196,10 @@ export function ProductForm({
         <Panel title="Narx">
           <div className="grid grid-cols-2 gap-3">
             <Field label="Narx, soʻm">
-              <input name="price" type="number" min={0} step={100} value={price} onChange={(e) => setPrice(e.target.value)} required className={inputClass} />
+              <input name="price" type="number" min={0} step={1} value={price} onChange={(e) => setPrice(e.target.value)} required className={inputClass} />
             </Field>
             <Field label="Eski narx">
-              <input name="oldPrice" type="number" min={0} step={100} value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} className={inputClass} />
+              <input name="oldPrice" type="number" min={0} step={1} value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} className={inputClass} />
             </Field>
           </div>
           {discount > 0 && <p className="text-[14px] text-ink-2">Saytda chegirma: <span className="rounded-full bg-red px-2 py-0.5 text-[13px] font-semibold text-white">−{discount}%</span></p>}
