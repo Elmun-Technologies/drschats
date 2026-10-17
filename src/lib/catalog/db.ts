@@ -211,6 +211,9 @@ export function refreshStockPages(slugs: string[]) {
 /**
  * Orders already placed from this phone number (matched on its last 9 digits,
  * so "+998 90 …" and "90 …" are one customer), including the one just saved.
+ * Cancelled orders do not count — the same rule as the first-order discount
+ * (lib/promo/server.ts → previousOrders), so the operator's message never says
+ * "returning customer" under a first-order discount the order just received.
  * Null without a database — the operator then checks by hand.
  */
 export async function ordersFromPhone(phone: string): Promise<number | null> {
@@ -220,7 +223,7 @@ export async function ordersFromPhone(phone: string): Promise<number | null> {
     const [row] = await getDb()
       .select({ n: count() })
       .from(orders)
-      .where(sql`right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9) = ${digits}`);
+      .where(sql`${orders.status} <> 'cancelled' and right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9) = ${digits}`);
     return row?.n ?? 0;
   } catch (err) {
     console.error("[orders] phone lookup failed:", (err as Error).message);
