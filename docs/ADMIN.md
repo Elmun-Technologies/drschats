@@ -72,6 +72,7 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Voronka | sayt voronkasi va har bosqichdagi yo'qotish (retarget segmentiga havola) + buyurtma bajarilishi va holatlar kanbani |
 | Segmentlar va retarget | avtomatik auditoriyalar: kursi tugayapti (25–40 kun), bir marta sotib olgan, 60+ kun, yo'qotilgan (180+), VIP, yangi (7 kun), savatni tashlab ketgan, rasmiylashtirishda to'xtagan, ko'rib ketgan. CSV (jamoa), Meta Custom Audience va Google Customer Match (SHA-256) eksporti, Telegram orqali shaxsiy xabar (`{ism}`) |
 | Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
+| Promokodlar | kodlar ro'yxati (holat: faol / tugagan / shaxsiy; manba bo'yicha), ishlatildi / limit, kod keltirgan buyurtma va tushum, 30 kunlik ko'rsatkichlar; yaratish (kod qo'lda yoki avtomatik `GV-7K3P9Q`), tahrir, o'chirish (faqat ishlatilmagan — ishlatilgani faqat faolsizlantiriladi), N ta bir martalik kod toʻplami → CSV (SMS/Telegram uchun); «Birinchi buyurtma chegirmasi» kartasi (yoqish, foiz). Buyurtma sahifasida promokod / birinchi buyurtma qatori. Pastda [Promokodlar](#promokodlar) |
 | Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
 | UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
 | Mahsulotlar | Mahsulotlar / Kategoriyalar / Brendlar — bitta tab qatori. Holat chiplari (sotuvda / tugagan / chegirmada / rasmsiz / sotuvdan olingan), kategoriya va brend filtri, saralash (tartib, nom, narx, yangi), o'rnatilgan katalogdan import, yangi, tahrir (uz/ru). Rasmlar: saytdagi rasmlardan tanlash oynasi (`public/products`, `public/images/products/c-*.png`, `public/images/stock` — so'rov paytida o'qiladi, `lib/admin/repo-images.server.ts`), tartib strelkalari, Tigris bo'lsa yuklash. Kategoriya selekti yonida «+ Yangi kategoriya». Saqlash saytni darhol yangilaydi |
@@ -96,6 +97,54 @@ yashil yo'q (`src/components/admin/ui.tsx`).
   qurilmasi telefon bo'yicha birlashadi.
 - O'qish: `src/lib/admin/crm.ts` (voronka, kanallar, mahsulot qiziqishi),
   `segments.ts` (auditoriyalar), `segment-export.ts` (CSV, xesh).
+
+## Promokodlar
+
+Migratsiya `0007_promo_codes.sql`: `promo_codes` (kod — katta harf, PK),
+`promo_redemptions` (kod × buyurtma unikal, `(code, phone9)` indeks),
+`orders.promo_code`. Chegirma qatori `orders.totals.adjustments` da
+(`{kind:"promo",code,amount}` yoki `{kind:"first_order",percent,amount}`), u
+`totals.discount` va `total` ga allaqachon kiritilgan.
+
+**Qoidalar** (`src/lib/promo/rules.ts`, sof, testli):
+
+- Promokod taklif (upsell, dastur, sovg'a) yoki obuna narxidagi qatorga
+  **qo'shilmaydi** — `promotionApplies` tamoyili. Sayt aksiyasi (foiz, 2+1)
+  qatorga avval qo'llanadi, kod qolgan narxdan hisoblanadi.
+- Foiz — mos qatorlar summasidan; qat'iy summa — mos qatorlar summasidan oshmaydi.
+- `min_subtotal` — taklif va aksiyalardan keyingi savat summasi (yetkazishsiz).
+- Buyurtmaga **bitta** kod. Birinchi buyurtma chegirmasi va kod **qo'shilmaydi** —
+  kattasi qo'llanadi; teng bo'lsa birinchi buyurtma (shaxsiy kod behuda sarflanmaydi).
+- Bepul yetkazish chegarasi bu chegirmadan **oldin** o'lchanadi.
+- Bekor qilingan buyurtma kodni qaytarmaydi (`uses` kamaymaydi).
+
+**Atomiklik** (`src/lib/promo/server.ts` → `placeOrder`): bitta tranzaksiyada
+telefon bo'yicha `pg_advisory_xact_lock`, kod qatori `for update`, limitlar
+qayta tekshiriladi, buyurtma yoziladi, `promo_redemptions` qatori, `uses + 1`.
+`max_uses = 1` kodni ikki parallel buyurtma ololmaydi — ikkinchisi
+`promo_invalid` (`exhausted`) oladi, savat kodni olib tashlab sababini aytadi,
+mijoz qayta yuboradi. Savatdagi tekshiruv (`app/actions/promo.ts`) faqat
+maslahat: narxlar katalogdan, rate limit — kodli 15 / telefonli 40 ta / 10 daq / IP.
+
+**Birinchi buyurtma chegirmasi** — `site_settings` `discount.firstOrder`
+(`{"enabled":true,"percent":10}`, default `COMMERCE.discounts.firstOrderPercent`).
+Baza bo'lsa (`ORDERS_IN_DB`): telefonning bekor qilinmagan oldingi buyurtmasi
+bo'lmasa avtomatik qo'llanadi, savat telefon kiritilgach ko'rsatadi. Baza
+bo'lmasa — avvalgidek: faqat eslatma, operator qo'llaydi. Welcome kartasi,
+`/loyalty` va savat matni rejimga qarab (`lib/promo/offer.ts` → `FirstOrderOffer`:
+`auto` / `operator` / `off`); o'chirilgan bo'lsa hech narsa va'da qilinmaydi.
+
+**Keyingi bosqichlar uchun API:**
+
+```ts
+import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/server";
+const code = await issuePromoCode({
+  kind: "percent", value: 10,          // yoki "fixed", soʻmda
+  phone: "+998 90 123 45 67",          // ixtiyoriy — shaxsiy kod
+  ttlHours: 72, source: "birthday",    // manual|campaign|flow|referral|birthday|first-order
+  campaignId: "bd-2026-10", minSubtotal: 200_000, // ixtiyoriy
+}); // → "GV-7K3P9Q" (default: bir martalik, 1 telefon — 1 marta)
+```
 
 ## Integratsiya sozlamalari
 
@@ -135,4 +184,6 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | `db/migrations/0004_admin_customer_notes.sql` | mijozga biriktirilgan ichki xizmat izohlari |
 | `db/migrations/0005_admin_integration_settings.sql` | panel sozlamalari uchun shifrlangan integration ciphertext jadvali |
 | `db/migrations/0006_crm_marketing.sql` | `visitors`, `visitor_events`, `orders.visitor_id`, `promotions`, `campaigns`, `site_settings`, `admin_users.session_epoch` |
+| `db/migrations/0007_promo_codes.sql` | `promo_codes`, `promo_redemptions`, `orders.promo_code` |
+| `src/lib/promo/` | promokod qoidalari (`rules.ts`, testli), tranzaksiya va `issuePromoCode` (`server.ts`), birinchi buyurtma sozlamasi (`settings.ts`, `offer.ts`), savat store'i (`store.ts`, `govita-promo`) |
 | `src/lib/journey/` | kuzatuv: brauzer klienti, server yig'uvchi, sof qoidalar (`model.ts`, testli) |

@@ -109,7 +109,7 @@ export function PromoCodeField({
           {t("toggle")}
         </button>
       )}
-      <p id={statusId} aria-live="polite" className={cn("text-sm", errorText ? "text-red" : "text-ink-2", !errorText && !code && "sr-only")}>
+      <p id={statusId} aria-live="polite" className={cn("text-sm", errorText ? "text-red" : "text-ink-2", !errorText && "sr-only")}>
         {errorText ?? (code && amount ? t("applied", { code, amount: formatMoney(amount, locale) }) : "")}
       </p>
       {(open || code) && <p className="text-[13px] leading-[18px] text-muted">{t("note")}</p>}
