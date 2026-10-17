@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gte, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, orders, products, type OrderStatus } from "@/lib/db/schema";
 import { contentToForm, toTashkentInput } from "./product-form";
@@ -82,21 +82,32 @@ export const EMPTY_PRODUCT: ProductFormValues = {
   content: {},
 };
 
-export async function listOrders({ status, q, limit = 100 }: { status?: OrderStatus; q?: string; limit?: number } = {}) {
+export const ORDER_PERIODS = { today: "Bugun", "7": "7 kun", "30": "30 kun", "90": "90 kun", all: "Hammasi" } as const;
+export type OrderPeriod = keyof typeof ORDER_PERIODS;
+
+export function periodStart(period: OrderPeriod, now = new Date()): Date | undefined {
+  if (period === "all") return undefined;
+  const key = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tashkent" }).format(now);
+  const today = new Date(`${key}T00:00:00+05:00`);
+  return period === "today" ? today : new Date(today.getTime() - (Number(period) - 1) * 86_400_000);
+}
+
+function orderSearch(q?: string) {
   const term = q?.trim().slice(0, 100);
-  const filters = [status ? eq(orders.status, status) : undefined];
-  if (term) {
-    filters.push(or(
-      ilike(orders.number, `%${term}%`),
-      sql`${orders.customer}->>'name' ilike ${`%${term}%`}`,
-      sql`${orders.customer}->>'phone' ilike ${`%${term}%`}`,
-      sql`${orders.customer}->>'email' ilike ${`%${term}%`}`,
-    ));
-  }
+  if (!term) return undefined;
+  return or(
+    ilike(orders.number, `%${term}%`),
+    sql`${orders.customer}->>'name' ilike ${`%${term}%`}`,
+    sql`${orders.customer}->>'phone' ilike ${`%${term}%`}`,
+    sql`${orders.customer}->>'email' ilike ${`%${term}%`}`,
+  );
+}
+
+export async function listOrders({ status, q, from, limit = 100 }: { status?: OrderStatus; q?: string; from?: Date; limit?: number } = {}) {
   return getDb()
     .select()
     .from(orders)
-    .where(and(...filters))
+    .where(and(status ? eq(orders.status, status) : undefined, orderSearch(q), from ? gte(orders.createdAt, from) : undefined))
     .orderBy(desc(orders.createdAt))
     .limit(limit);
 }
@@ -137,21 +148,18 @@ export async function catalogCounts() {
   return { products: p.n, categories: c.n, brands: b.n, hidden: hidden.n, outOfStock: outOfStock.n };
 }
 
-export async function orderStatusCounts(q?: string) {
-  const term = q?.trim().slice(0, 100);
-  const where = term
-    ? or(
-        ilike(orders.number, `%${term}%`),
-        sql`${orders.customer}->>'name' ilike ${`%${term}%`}`,
-        sql`${orders.customer}->>'phone' ilike ${`%${term}%`}`,
-        sql`${orders.customer}->>'email' ilike ${`%${term}%`}`,
-      )
-    : undefined;
-  const rows = await getDb().select({ status: orders.status, n: count() }).from(orders).where(where).groupBy(orders.status);
+export async function orderStatusCounts(q?: string, from?: Date) {
+  const rows = await getDb()
+    .select({ status: orders.status, n: count(), sum: sql<number>`coalesce(sum(${orders.total}), 0)` })
+    .from(orders)
+    .where(and(orderSearch(q), from ? gte(orders.createdAt, from) : undefined))
+    .groupBy(orders.status);
   const out: Record<OrderStatus | "all", number> = { all: 0, new: 0, confirmed: 0, shipped: 0, delivered: 0, cancelled: 0 };
+  let revenue = 0;
   for (const row of rows) {
     out[row.status] = row.n;
     out.all += row.n;
+    if (row.status !== "cancelled") revenue += Number(row.sum);
   }
-  return out;
+  return { counts: out, revenue };
 }

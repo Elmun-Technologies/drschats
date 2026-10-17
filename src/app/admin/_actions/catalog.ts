@@ -51,6 +51,8 @@ export async function importBuiltInCatalog(_state?: FormState, _form?: FormData)
 export async function saveProduct(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin();
   const data = formObject(form);
+  // Brand names rarely differ between languages; an empty Russian name takes the Uzbek one.
+  if (!data["ru.name"]?.trim() && data["uz.name"]?.trim()) data["ru.name"] = data["uz.name"];
   const parsed = productFieldsSchema.safeParse(data);
   if (!parsed.success) return { error: firstIssue(parsed.error) };
   const d = parsed.data;
@@ -111,6 +113,38 @@ export async function deleteProduct(form: FormData) {
   if (id) await getDb().delete(products).where(eq(products.id, id));
   refresh();
   redirect("/admin/products?deleted=1");
+}
+
+/* A copy to start a similar product from; hidden until the team edits and publishes it. */
+export async function duplicateProduct(form: FormData) {
+  await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  const db = getDb();
+  const [source] = await db.select().from(products).where(eq(products.id, id)).limit(1);
+  if (!source) redirect("/admin/products");
+  const suffix = randomBytes(2).toString("hex");
+  const slug = `${source.slug}-nusxa-${suffix}`.slice(0, 120);
+  const newId = `p-${slug}`;
+  await db.insert(products).values({
+    ...source,
+    id: newId,
+    slug,
+    kind: "unlisted",
+    content: { ...source.content, name: { uz: `${source.content.name.uz} (nusxa)`, ru: `${source.content.name.ru} (копия)` } },
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  });
+  refresh();
+  redirect(`/admin/products/${encodeURIComponent(newId)}?copied=1`);
+}
+
+export async function toggleProductStock(form: FormData) {
+  await requireAdmin();
+  const id = String(form.get("id") ?? "");
+  const db = getDb();
+  const [row] = await db.select({ inStock: products.inStock }).from(products).where(eq(products.id, id)).limit(1);
+  if (row) await db.update(products).set({ inStock: !row.inStock, updatedAt: new Date() }).where(eq(products.id, id));
+  refresh();
 }
 
 export async function uploadProductImage(_: FormState, form: FormData): Promise<FormState & { url?: string }> {

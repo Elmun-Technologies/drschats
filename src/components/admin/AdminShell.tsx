@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { AdminNav, NAV_GROUPS, isActive } from "@/components/admin/AdminNav";
+import { AdminNav, NAV_GROUPS, isActive, type NavBadges } from "@/components/admin/AdminNav";
 import { Logo } from "@/components/layout/Logo";
 import { useDialog } from "@/lib/ui/useDialog";
 import { cn } from "@/lib/utils";
@@ -21,14 +21,27 @@ function sectionTitle(path: string): string {
   return "Boshqaruv";
 }
 
-function Sidebar({ admin, logout, onNavigate }: { admin: { name: string; email: string }; logout: ReactNode; onNavigate?: () => void }) {
+function SearchBox({ onNavigate }: { onNavigate?: () => void }) {
+  return (
+    <form action="/admin/search" role="search" className="mb-5 px-1" onSubmit={onNavigate}>
+      <label className="relative block">
+        <span className="sr-only">Panel boʻyicha qidirish</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true" className="pointer-events-none absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-muted"><circle cx="11" cy="11" r="6.5" /><path d="m20 20-4-4" /></svg>
+        <input name="q" type="search" placeholder="Buyurtma, mijoz, mahsulot…" className="h-11 w-full rounded-[12px] bg-tile pl-10 pr-3 text-[15px] text-ink outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-ink/30" />
+      </label>
+    </form>
+  );
+}
+
+function Sidebar({ admin, logout, onNavigate, badges }: { admin: { name: string; email: string }; logout: ReactNode; onNavigate?: () => void; badges: NavBadges }) {
   return (
     <>
       <Link href="/admin" aria-label="Go Vita boshqaruv paneli" onClick={onNavigate} className="mb-6 flex items-end gap-2.5 px-3">
         <Logo className="text-[30px]" />
         <span className="mb-1 rounded-full bg-tile px-2 py-0.5 text-[13px] font-semibold text-ink-2">admin</span>
       </Link>
-      <AdminNav onNavigate={onNavigate} />
+      <SearchBox onNavigate={onNavigate} />
+      <AdminNav onNavigate={onNavigate} badges={badges} />
       <div className="mt-auto pt-6">
         <a href="/uz" target="_blank" rel="noopener noreferrer" className="mb-3 flex min-h-11 items-center gap-3 rounded-[12px] px-3 text-[15px] text-ink-2 transition-colors hover:bg-tile hover:text-ink">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="h-5 w-5 text-muted"><path d="M14 4h6v6M20 4l-9 9" /><path d="M18 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h5" /></svg>
@@ -47,7 +60,7 @@ function Sidebar({ admin, logout, onNavigate }: { admin: { name: string; email: 
   );
 }
 
-export function AdminShell({ admin, logout, children }: { admin: { name: string; email: string }; logout: ReactNode; children: ReactNode }) {
+export function AdminShell({ admin, logout, badges = {}, children }: { admin: { name: string; email: string }; logout: ReactNode; badges?: NavBadges; children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const pathname = usePathname();
   const drawerRef = useDialog<HTMLDivElement>(open, () => setOpen(false));
@@ -57,7 +70,7 @@ export function AdminShell({ admin, logout, children }: { admin: { name: string;
   return (
     <div className="min-h-screen bg-bg text-ink lg:flex">
       <aside className="sticky top-0 hidden h-screen w-[280px] shrink-0 flex-col overflow-y-auto border-r border-line bg-bg px-3 pb-5 pt-6 lg:flex">
-        <Sidebar admin={admin} logout={logout} />
+        <Sidebar admin={admin} logout={logout} badges={badges} />
       </aside>
 
       {open && (
@@ -69,7 +82,7 @@ export function AdminShell({ admin, logout, children }: { admin: { name: string;
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" className="h-5 w-5"><path d="M6 6l12 12M18 6 6 18" /></svg>
               </button>
             </div>
-            <Sidebar admin={admin} logout={logout} onNavigate={() => setOpen(false)} />
+            <Sidebar admin={admin} logout={logout} badges={badges} onNavigate={() => setOpen(false)} />
           </div>
         </div>
       )}

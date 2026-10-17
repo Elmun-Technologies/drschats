@@ -6,6 +6,8 @@ import { formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Mijozlar" };
 
+const EXPORT_HREF = "/admin/customers/export";
+
 const LIFECYCLE: Record<CustomerLifecycle, { label: string; tone: "neutral" | "outline" | "dark" | "muted" }> = {
   new: { label: "Yangi", tone: "neutral" },
   repeat: { label: "Qayta xarid", tone: "outline" },
@@ -43,7 +45,7 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
       <PageHeader
         title="Mijozlar"
         lead="Buyurtma bergan har bir mijoz, telefon raqami boʻyicha birlashtirilgan: qancha xarid qildi, oxirgi marta qachon va hozir qaysi bosqichda."
-        actions={<Link href="/admin/segments" className={secondaryButtonClass}>Segmentlar va retarget</Link>}
+        actions={<><a href={EXPORT_HREF} download className={secondaryButtonClass}>Excelʼga yuklash (CSV)</a><Link href="/admin/segments" className={secondaryButtonClass}>Segmentlar va retarget</Link></>}
       />
       <form role="search" action="/admin/customers" className="mb-4 flex flex-wrap gap-2">
         {stage && <input type="hidden" name="stage" value={stage} />}

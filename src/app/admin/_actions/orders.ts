@@ -34,6 +34,22 @@ export async function updateOrder(_: FormState, form: FormData): Promise<FormSta
   return { ok: "Saqlandi." };
 }
 
+const quickSchema = z.object({ number: z.string().min(1).max(20), status: z.enum(ORDER_STATUSES) });
+
+/* One-click status change from the order page; the customer hears about it in Telegram. */
+export async function setOrderStatus(form: FormData) {
+  await requireAdmin();
+  const parsed = quickSchema.safeParse({ number: form.get("number"), status: form.get("status") });
+  if (!parsed.success) return;
+  const db = getDb();
+  const [before] = await db.select({ status: orders.status }).from(orders).where(eq(orders.number, parsed.data.number)).limit(1);
+  if (!before || before.status === parsed.data.status) return;
+  await db.update(orders).set({ status: parsed.data.status, updatedAt: new Date() }).where(eq(orders.number, parsed.data.number));
+  await announceOrderStatus(parsed.data.number, parsed.data.status);
+  revalidatePath(`/admin/orders/${parsed.data.number}`);
+  revalidatePath("/admin/orders");
+}
+
 const adminSchema = z.object({
   name: z.string().trim().min(2).max(80),
   email: z.string().trim().toLowerCase().email().max(160),

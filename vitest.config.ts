@@ -1,5 +1,5 @@
 import { fileURLToPath } from "node:url";
-import { defineConfig } from "vitest/config";
+import { configDefaults, defineConfig } from "vitest/config";
 
 /*
   Vitest needs the same `@/…` alias the app is written against.
@@ -22,5 +22,7 @@ export default defineConfig({
       storage during module initialisation. See vitest.setup.ts.
     */
     setupFiles: [fileURLToPath(new URL("./vitest.setup.ts", import.meta.url))],
+    // Agent worktrees are full checkouts of the repo; their tests are not ours to run.
+    exclude: [...configDefaults.exclude, ".claude/**"],
   },
 });

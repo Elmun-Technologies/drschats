@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { listCategories, listProducts } from "@/lib/admin/queries";
+import { toggleProductStock } from "@/app/admin/_actions/catalog";
 import { Card, ChipNav, EmptyState, Notice, PageHeader, Pill, buttonClass, inputClass, secondaryButtonClass, som } from "@/components/admin/ui";
 
 export const metadata = { title: "Mahsulotlar" };
@@ -71,8 +72,8 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
             {rows.map((p) => {
               const image = p.cutout ?? p.images[0];
               return (
-                <li key={p.id}>
-                  <Link href={`/admin/products/${encodeURIComponent(p.id)}`} className="-mx-2 flex items-center gap-4 rounded-[12px] px-2 py-3 hover:bg-tile">
+                <li key={p.id} className="flex items-center gap-2">
+                  <Link href={`/admin/products/${encodeURIComponent(p.id)}`} className="-mx-2 flex min-w-0 flex-1 items-center gap-4 rounded-[12px] px-2 py-3 hover:bg-tile">
                     <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-[12px] bg-tile">
                       {image && <Image src={image} alt="" fill sizes="64px" className="object-contain p-1.5" />}
                     </span>
@@ -90,6 +91,14 @@ export default async function AdminProductsPage({ searchParams }: { searchParams
                       {p.oldPrice && <span className="block text-[13px] font-normal text-muted line-through">{som(p.oldPrice)}</span>}
                     </span>
                   </Link>
+                  {p.kind !== "unlisted" && (
+                    <form action={toggleProductStock} className="hidden shrink-0 sm:block">
+                      <input type="hidden" name="id" value={p.id} />
+                      <button type="submit" className="h-11 w-[136px] rounded-[12px] bg-tile text-[14px] font-semibold text-ink hover:bg-tile-hover" title={p.inStock ? "Tugadi deb belgilash" : "Omborda bor deb belgilash"}>
+                        {p.inStock ? "Tugadi" : "Omborga keldi"}
+                      </button>
+                    </form>
+                  )}
                 </li>
               );
             })}

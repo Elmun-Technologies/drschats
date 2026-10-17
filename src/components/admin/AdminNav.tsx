@@ -86,7 +86,9 @@ export function isActive(path: string, href: string, exact?: boolean) {
   return exact ? path === href : path === href || path.startsWith(`${href}/`);
 }
 
-export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
+export type NavBadges = Partial<Record<string, number>>;
+
+export function AdminNav({ onNavigate, badges = {} }: { onNavigate?: () => void; badges?: NavBadges }) {
   const path = usePathname();
   return (
     <nav aria-label="Boshqaruv menyusi" className="flex flex-col gap-5">
@@ -109,6 +111,11 @@ export function AdminNav({ onNavigate }: { onNavigate?: () => void }) {
                   >
                     <NavIcon name={item.icon} className={active ? "text-ink" : "text-muted"} />
                     <span>{item.label}</span>
+                    {(badges[item.href] ?? 0) > 0 && (
+                      <span className="ml-auto grid h-6 min-w-6 place-items-center rounded-full bg-ink px-1.5 text-[12px] font-bold tabular-nums text-white" aria-label={`${badges[item.href]} ta yangi`}>
+                        {badges[item.href]! > 99 ? "99+" : badges[item.href]}
+                      </span>
+                    )}
                   </Link>
                 </li>
               );
