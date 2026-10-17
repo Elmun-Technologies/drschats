@@ -26,6 +26,13 @@ import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistr
 import { RouteAnalytics } from "@/components/analytics/RouteAnalytics";
 import { CartJourney } from "@/components/analytics/CartJourney";
 import { getPublicSettings } from "@/lib/integrations/site-settings";
+import { firstOrderOffer } from "@/lib/promo/offer";
+import { getAnnouncements, getBanners, liveExperiments } from "@/lib/merch/store";
+import { abHeadScript } from "@/lib/merch/ab";
+import { ReferralCapture } from "@/components/checkout/ReferralCapture";
+import { PromoStrip } from "@/components/marketing/AnnouncementBar";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { CommerceProvider } from "@/lib/commerce/context";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -64,7 +71,7 @@ export default async function LocaleLayout({
 
   // Categories are layout data now that the header's catalogue menu lists
   // them; the read is cached and revalidated like the promotions beside it.
-  const [messages, promotions, categories, topicPaths, tc, deals] = await Promise.all([
+  const [messages, promotions, categories, topicPaths, tc, deals, firstOrder, announcements, strips, commerce, experiments] = await Promise.all([
     getMessages(),
     shopflow.getPromotions(locale as Locale).catch(() => []),
     shopflow.getCategories(locale as Locale).catch(() => []),
@@ -73,12 +80,20 @@ export default async function LocaleLayout({
     shopflow
       .getProducts({ locale: locale as Locale, assortment: "core", sort: "deals", pageSize: 1 })
       .catch(() => null),
+    firstOrderOffer(),
+    getAnnouncements(locale as Locale),
+    getBanners("strip", locale as Locale),
+    getCommerceSettings(),
+    liveExperiments(locale as Locale),
   ]);
   const weeklyDeal = toMenuDeal(deals?.items[0]);
 
   return (
-    <html lang={localeHtmlLang[locale as Locale]}>
+    // suppressHydrationWarning: the A/B script below sets data-ab on <html> before React hydrates (lib/merch/ab.ts).
+    <html lang={localeHtmlLang[locale as Locale]} suppressHydrationWarning={experiments.length > 0}>
       <head>
+        {/* Picks each running banner test's variant from the gv_ab cookie before the first paint — no layout shift, the page stays cached. */}
+        {experiments.length > 0 && <script dangerouslySetInnerHTML={{ __html: abHeadScript(experiments) }} />}
         <link rel="manifest" href="/manifest.json" />
         {/* Latin Onest and the wordmark face are on every first paint; the
             other subsets load only when a page needs their characters. */}
@@ -90,6 +105,7 @@ export default async function LocaleLayout({
       <body className="grain min-h-screen antialiased">
         <NextIntlClientProvider messages={messages}>
           <PromotionsProvider promotions={promotions}>
+          <CommerceProvider settings={commerce}>
             <a
               href="#main-content"
               className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
@@ -98,7 +114,8 @@ export default async function LocaleLayout({
             </a>
             <ScrollProgress />
             <SmoothScroll>
-              <Header categories={categories} topicPaths={topicPaths} deal={weeklyDeal} />
+              <Header categories={categories} topicPaths={topicPaths} deal={weeklyDeal} announcements={announcements} />
+              {strips.length > 0 && <PromoStrip banners={strips} />}
               {/* The tab bar is fixed, so its height is reserved twice: here, so
                   the seam between main and footer never rests under it, and
                   again at the end of the footer, which is what actually runs
@@ -109,8 +126,9 @@ export default async function LocaleLayout({
               <Toaster />
               <BackToTop />
               <MobileBottomNav categories={categories} topicPaths={topicPaths} />
-              <DeferredUi />
+              <DeferredUi firstOrder={firstOrder} />
             </SmoothScroll>
+          </CommerceProvider>
           </PromotionsProvider>
         </NextIntlClientProvider>
         <Analytics />
@@ -118,6 +136,7 @@ export default async function LocaleLayout({
         {/* useSearchParams: its own Suspense boundary so static pages stay static. */}
         <Suspense fallback={null}>
           <RouteAnalytics />
+          <ReferralCapture />
         </Suspense>
         <ServiceWorkerRegistration />
         <TelegramMiniApp />

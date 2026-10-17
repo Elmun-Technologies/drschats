@@ -136,6 +136,8 @@ export const productFieldsSchema = z
     oldPrice: z.union([z.literal(""), money]).optional(),
     saleEndsAt: z.string().trim().optional(),
     inStock: z.string().optional(),
+    stockQty: z.union([z.literal(""), z.coerce.number().int("Ombordagi soni butun son boʻlsin").min(0, "Ombordagi soni manfiy boʻlmaydi").max(1_000_000)]).optional(),
+    lowStockAt: z.union([z.literal(""), z.coerce.number().int().min(1, "Chegara kamida 1").max(1000)]).optional(),
     kind: z.enum(["core", "addon", "unlisted"]),
     sort: z.coerce.number().int().min(-10000).max(10000).default(0),
     images: z.string().optional(),

@@ -1,11 +1,13 @@
-import { unstable_cache } from "next/cache";
-import { asc, count, sql } from "drizzle-orm";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
+import { asc, count, gt, sql } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db/client";
-import { brands, categories, orders, products, promotions } from "@/lib/db/schema";
+import { brands, categories, deals, orders, products, promotions } from "@/lib/db/schema";
 import { builtInCatalog, type RawProduct, type RawPromotion } from "@/lib/shopflow/mock";
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
 import type { CatalogData } from "./engine";
 import { createCircuit } from "./circuit";
+import { StockShortage, readLowStockDefault, takeStock } from "./stock";
+import type { RawDeal } from "./deals";
 
 export const CATALOG_TAG = "catalog";
 
@@ -39,13 +41,37 @@ async function readPromotions(): Promise<RawPromotion[]> {
     }));
 }
 
+/*
+  Deals that have not ended yet, current and upcoming. Which one applies is
+  decided per read with the clock of that read (catalog/deals.ts), so a deal
+  cached here before its start still begins on time.
+*/
+async function readDeals(): Promise<RawDeal[]> {
+  try {
+    const rows = await getDb().select().from(deals).where(gt(deals.endsAt, sql`now()`)).orderBy(asc(deals.startsAt));
+    return rows.map((d) => ({
+      id: d.id,
+      productSlug: d.productSlug,
+      percent: d.percent,
+      price: d.price,
+      startsAt: d.startsAt.toISOString(),
+      endsAt: d.endsAt.toISOString(),
+    }));
+  } catch (err) {
+    console.error("[catalog] deals read failed — no deal of the day:", (err as Error).message);
+    return [];
+  }
+}
+
 async function readCatalog(): Promise<CatalogData> {
   const db = getDb();
-  const [cats, brandRows, rows, promos] = await Promise.all([
+  const [cats, brandRows, rows, promos, lowStockDefault, dealRows] = await Promise.all([
     db.select().from(categories).orderBy(asc(categories.sort), asc(categories.slug)),
     db.select().from(brands).orderBy(asc(brands.sort), asc(brands.name)),
     db.select().from(products).orderBy(asc(products.sort), asc(products.createdAt)),
     readPromotions(),
+    readLowStockDefault(db),
+    readDeals(),
   ]);
   const categoryId = new Map(cats.map((c) => [c.slug, c.id]));
   return {
@@ -78,13 +104,16 @@ async function readCatalog(): Promise<CatalogData> {
         cutout: p.cutout,
         unit: p.unit,
         brandSlug: p.brandSlug,
+        stockQty: p.stockQty,
+        lowStockAt: p.lowStockAt ?? lowStockDefault,
       }),
     ),
     promotions: promos,
+    deals: dealRows,
   };
 }
 
-const cachedCatalog = unstable_cache(readCatalog, ["catalog-v2"], { tags: [CATALOG_TAG], revalidate: 60 });
+const cachedCatalog = unstable_cache(readCatalog, ["catalog-v3"], { tags: [CATALOG_TAG], revalidate: 60 });
 
 /*
   Never an empty shop. If the database cannot be read, or holds no products
@@ -115,32 +144,76 @@ export async function loadDbCatalog(): Promise<CatalogData> {
   }
 }
 
-/** Every order lands in the database first; Telegram is the alert, not the record. */
+/** Current and upcoming deals of the day, from the same cached read the prices come from. */
+export async function loadDeals(): Promise<RawDeal[]> {
+  return (await loadDbCatalog()).deals ?? [];
+}
+
+/** The row an order is stored as; shared with the promo-code transaction (lib/promo/server.ts). */
+export function orderValues(payload: OrderRequest, promoCode: string | null = null): typeof orders.$inferInsert {
+  return {
+    total: payload.totals.total,
+    customer: payload.customer,
+    delivery: payload.delivery,
+    payment: payload.payment,
+    items: payload.items,
+    totals: payload.totals,
+    locale: payload.locale,
+    attribution: payload.attribution,
+    promoCode,
+  };
+}
+
+/**
+ * Every order lands in the database first; Telegram is the alert, not the record.
+ *
+ * Tracked stock is taken in the same transaction as the insert: a line the
+ * shelf cannot cover rolls the order back and is answered per line ("Faqat
+ * N ta qoldi"), so there is never an order the shop cannot fill nor a count
+ * that went down for an order that does not exist.
+ */
 export async function saveOrderToDb(payload: OrderRequest): Promise<OrderResult> {
   try {
-    const [row] = await getDb()
-      .insert(orders)
-      .values({
-        total: payload.totals.total,
-        customer: payload.customer,
-        delivery: payload.delivery,
-        payment: payload.payment,
-        items: payload.items,
-        totals: payload.totals,
-        locale: payload.locale,
-        attribution: payload.attribution,
-      })
-      .returning({ number: orders.number });
-    return { ok: true, orderId: row.number ?? undefined };
+    const { number, changed } = await getDb().transaction(async (tx) => {
+      const [row] = await tx.insert(orders).values(orderValues(payload)).returning({ id: orders.id, number: orders.number });
+      const changed = await takeStock(tx, row.id, payload.items);
+      return { number: row.number, changed };
+    });
+    if (changed.length > 0) refreshStockPages(payload.items.filter((i) => changed.includes(i.productId)).map((i) => i.slug));
+    return { ok: true, orderId: number ?? undefined };
   } catch (err) {
+    if (err instanceof StockShortage) {
+      const line = payload.items.find((i) => i.productId === err.productId);
+      return { ok: false, shortage: { slug: line?.slug, available: err.available }, message: "Insufficient stock." };
+    }
     console.error("[orders] insert failed:", (err as Error).message);
     return { ok: false, message: "Order could not be saved." };
+  }
+}
+
+/*
+  A count changed by an order: the catalogue cache and the product pages
+  holding the old number are dropped, so "3 ta qoldi" does not outlive the
+  sale that made it 1. Never throws — the order is already saved.
+*/
+export function refreshStockPages(slugs: string[]) {
+  try {
+    revalidateTag(CATALOG_TAG);
+    for (const slug of new Set(slugs)) {
+      revalidatePath(`/uz/product/${slug}`);
+      revalidatePath(`/ru/product/${slug}`);
+    }
+  } catch (err) {
+    console.error("[orders] stock revalidation failed:", (err as Error).message);
   }
 }
 
 /**
  * Orders already placed from this phone number (matched on its last 9 digits,
  * so "+998 90 …" and "90 …" are one customer), including the one just saved.
+ * Cancelled orders do not count — the same rule as the first-order discount
+ * (lib/promo/server.ts → previousOrders), so the operator's message never says
+ * "returning customer" under a first-order discount the order just received.
  * Null without a database — the operator then checks by hand.
  */
 export async function ordersFromPhone(phone: string): Promise<number | null> {
@@ -150,7 +223,7 @@ export async function ordersFromPhone(phone: string): Promise<number | null> {
     const [row] = await getDb()
       .select({ n: count() })
       .from(orders)
-      .where(sql`right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9) = ${digits}`);
+      .where(sql`${orders.status} <> 'cancelled' and right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9) = ${digits}`);
     return row?.n ?? 0;
   } catch (err) {
     console.error("[orders] phone lookup failed:", (err as Error).message);

@@ -22,22 +22,40 @@ import { upsellPool } from "@/lib/upsell/pool";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { ordersFromPhone } from "@/lib/catalog/db";
 import { COMMERCE } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { pricingRulesOf } from "@/lib/commerce/settings";
 import { linkOrderToVisitor, visitorIdFrom, VISITOR_COOKIE } from "@/lib/journey/collect";
+import { placeOrder } from "@/lib/promo/server";
+import { discountAdjustment, phone9Of, pointsSpent, type PromoReason } from "@/lib/promo/rules";
+import { readLoyaltyRules } from "@/lib/loyalty/settings";
+import { signReceipt } from "@/lib/loyalty/receipt";
+import { both, earnLaterLine, joinLines, spentLine } from "@/lib/loyalty/messages";
+import { ensureReferralCode } from "@/lib/referral/server";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
 /*
-  The first-order discount (COMMERCE.discounts.firstOrderPercent) is applied
-  by the operator on confirmation; this line tells them whether it applies.
-  With the database the phone number is checked against earlier orders;
-  without it the operator checks by hand.
+  With the database the order-level discount is already in the total
+  (lib/promo/server.ts) and the message says which one. Without it the
+  first-order discount (COMMERCE.discounts.firstOrderPercent) is still the
+  operator's to apply on confirmation, and the line tells them to check.
 */
-async function firstOrderLine(phone: string): Promise<string> {
-  const percent = COMMERCE.discounts.firstOrderPercent;
-  const placed = await ordersFromPhone(phone);
-  if (placed === null) return `🎁 Birinchi buyurtma boʻlsa −${percent}% (tekshiring)`;
-  if (placed <= 1) return `🎁 Yangi mijoz — birinchi buyurtma −${percent}%`;
-  return `🔁 Qaytgan mijoz: avval ${placed - 1} ta buyurtma`;
+async function discountLines(order: OrderRequest): Promise<string[]> {
+  const adjustment = discountAdjustment(order.totals.adjustments);
+  const lines: string[] = [];
+  if (adjustment?.kind === "promo") lines.push(`🏷 Promokod ${adjustment.code}: −${formatMoney(adjustment.amount, "uz")} (qoʻllandi)`);
+  if (adjustment?.kind === "referral") lines.push(`🤝 Doʻst kodi ${adjustment.code} −${adjustment.percent}%: −${formatMoney(adjustment.amount, "uz")} (qoʻllandi)`);
+  const points = pointsSpent(order.totals.adjustments);
+  if (points > 0) lines.push(`💎 Ball bilan toʻlandi: −${formatMoney(points, "uz")} (SMS kod bilan tasdiqlangan)`);
+  if (adjustment?.kind === "first_order") {
+    lines.push(`🎁 Birinchi buyurtma −${adjustment.percent}%: −${formatMoney(adjustment.amount, "uz")} (avtomatik qoʻllandi)`);
+  }
+  const placed = await ordersFromPhone(order.customer.phone);
+  if (placed === null) lines.push(`🎁 Birinchi buyurtma boʻlsa −${COMMERCE.discounts.firstOrderPercent}% (tekshiring)`);
+  else if (placed <= 1) {
+    if (adjustment?.kind !== "first_order") lines.push("🎁 Yangi mijoz");
+  } else lines.push(`🔁 Qaytgan mijoz: avval ${placed - 1} ta buyurtma`);
+  return lines;
 }
 
 async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Promise<boolean> {
@@ -57,7 +75,7 @@ async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Prom
     order.totals.discount > 0 ? `🏷 Chegirma: ${formatMoney(order.totals.discount, "uz")}` : "",
     `🚚 Yetkazish: ${formatMoney(order.totals.shipping, "uz")}`,
     `💰 Jami: ${formatMoney(order.totals.total, "uz")}`,
-    await firstOrderLine(order.customer.phone),
+    ...(await discountLines(order)),
     describeAttribution(order.attribution) ? `📣 Manba: ${describeAttribution(order.attribution)}` : "",
   ]
     .filter(Boolean)
@@ -134,22 +152,46 @@ async function offerContext(order: OrderRequest, products: Product[]): Promise<O
   so the customer is told about every status change there. Orders from the
   website reach Telegram too when their phone is linked to the bot.
 */
-async function clubBotReceipt(orderId: string, initData: string | undefined): Promise<void> {
+async function clubBotReceipt(orderId: string, initData: string | undefined, loyalty: { earn: number; spent: number }): Promise<void> {
   if (!ORDERS_IN_DB) return;
   try {
     const user = verifyInitData(initData);
     if (user) await attachOrderChat(orderId, user.id);
-    await announceOrderStatus(orderId, "new");
+    const extra = joinLines(
+      loyalty.spent > 0 ? both((l) => spentLine(loyalty.spent, l)) : null,
+      loyalty.earn > 0 ? both((l) => earnLaterLine(loyalty.earn, l)) : null,
+    );
+    await announceOrderStatus(orderId, "new", extra);
   } catch (err) {
     console.error("[checkout] club bot receipt failed:", (err as Error).message);
   }
 }
 
-export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "failed";
+/*
+  The success page's signed note about this order's points and the
+  customer's referral code (lib/loyalty/receipt.ts). A code exists only for a
+  phone with a delivered order — a first-time customer gets theirs after delivery.
+*/
+async function loyaltyReceipt(orderId: string, order: OrderRequest, earn: number): Promise<string | undefined> {
+  try {
+    const rules = await readLoyaltyRules();
+    const phone9 = phone9Of(order.customer.phone);
+    const code = rules.referral.enabled && phone9 ? await ensureReferralCode(phone9) : null;
+    const spent = pointsSpent(order.totals.adjustments);
+    if (!earn && !spent && !code) return undefined;
+    return signReceipt({ o: orderId, e: earn, s: spent, ...(code ? { r: code } : {}) });
+  } catch (err) {
+    console.error("[checkout] loyalty receipt skipped:", (err as Error).message);
+    return undefined;
+  }
+}
+
+export type OrderError =
+  | "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "insufficient_stock" | "invalid_offer" | "payment_unavailable" | "promo_invalid" | "points_invalid" | "failed";
 
 export async function submitOrder(
   payload: OrderRequest,
-): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string }> {
+): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string }> {
   const hdrs = await headers();
   if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
     return { ok: false, error: "rate_limited" };
@@ -185,16 +227,43 @@ export async function submitOrder(
       (lib/cart/reprice.ts). The request only says what to buy.
     */
     const slugs = [...new Set(request.items.map((i) => i.slug))];
-    const [products, promotions] = await Promise.all([
+    const [products, promotions, commerce] = await Promise.all([
       Promise.all(slugs.map((slug) => shopflow.getProduct(slug, request.locale))),
       shopflow.getPromotions(request.locale).catch(() => []),
+      getCommerceSettings(),
     ]);
     const found = products.filter((p): p is NonNullable<typeof p> => p !== null);
-    const priced = repriceOrder(request, found, promotions, await offerContext(request, found));
+    // The admin's commerce rules: the same cached value the cart was rendered with.
+    const priced = repriceOrder(request, found, promotions, await offerContext(request, found), {
+      pricing: pricingRulesOf(commerce),
+      ladder: commerce.ladder,
+    });
     if (!priced.ok) return { ok: false, error: priced.error, slug: priced.slug };
-    const order = priced.order;
+    let order = priced.order;
 
-    const result = await shopflow.createOrder(order);
+    /*
+      Orders kept in our own database go through the promo transaction: the
+      code is re-validated with its row locked and redeemed with the order,
+      and the first-order discount is decided there too. An external backend
+      or no backend at all takes the order as before, without codes.
+    */
+    let result: OrderResult;
+    let pointsEarn = 0;
+    if (ORDERS_IN_DB) {
+      const placed = await placeOrder(order, promotions);
+      if (!placed.ok) {
+        if (placed.error === "points_invalid") return { ok: false, error: "points_invalid" };
+        if (placed.error === "promo_invalid") return { ok: false, error: "promo_invalid", promoReason: placed.rejection.reason };
+        if (placed.error === "insufficient_stock") return { ok: false, error: "insufficient_stock", slug: placed.slug, shortage: { slug: placed.slug, available: placed.available } };
+        return { ok: false, error: "failed" };
+      }
+      order = placed.order;
+      pointsEarn = placed.pointsEarn;
+      result = { ok: true, orderId: placed.orderId };
+    } else {
+      order = { ...order, promoCode: undefined, pointsToken: undefined };
+      result = await shopflow.createOrder(order);
+    }
     if (result.ok && result.orderId) {
       /*
         Everything awaited, not fire-and-forget: a serverless function is frozen
@@ -222,7 +291,7 @@ export async function submitOrder(
               items: order.items,
             })
           : Promise.resolve(),
-        clubBotReceipt(result.orderId, telegram),
+        clubBotReceipt(result.orderId, telegram, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
         emailOrderConfirmation(order, result.orderId),
         order.customer.email && order.customer.marketingOptIn
           ? requestEmailOptIn({
@@ -233,9 +302,15 @@ export async function submitOrder(
             })
           : Promise.resolve(),
       ]);
-      return { ...result, total: order.totals.total };
+      const adjustment = discountAdjustment(order.totals.adjustments);
+      return {
+        ...result,
+        total: order.totals.total,
+        coupon: adjustment?.kind === "promo" || adjustment?.kind === "referral" ? adjustment.code : undefined,
+        receipt: ORDERS_IN_DB ? await loyaltyReceipt(result.orderId, order, pointsEarn) : undefined,
+      };
     }
-    return { ...result, error: result.ok ? undefined : "failed" };
+    return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };
   } catch (err) {
     console.error("[checkout] createOrder failed", err instanceof Error ? err.message : "unknown error");
     return { ok: false, error: "failed" };

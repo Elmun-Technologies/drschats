@@ -8,7 +8,8 @@ import { BRAND } from "@/lib/brand";
 import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney } from "@/lib/utils";
 import { byDeepestDiscount } from "@/lib/shop/discounts";
-import { FIRST_ORDER_PERCENT, RECURRING_PERCENT } from "@/lib/subscription/plans";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { localizedOr } from "@/lib/commerce/settings";
 import { ProductGrid } from "@/components/home/HomeBlocks";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
 import { cutoutOf } from "@/lib/catalog/product-facts";
@@ -31,22 +32,24 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [t, tp, td, listing, promotions] = await Promise.all([
+  const [t, tp, td, listing, promotions, commerce] = await Promise.all([
     getTranslations("shop.sale"),
     getTranslations("product"),
     getTranslations("delivery"),
     getAllProducts({ locale, sort: "popular", assortment: "core" }),
     shopflow.getPromotions(locale).catch(() => []),
+    getCommerceSettings(),
   ]);
+  const { firstPercent, recurringPercent } = commerce.subscription;
 
   const deals = byDeepestDiscount(
     [...listing.items].sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b))),
   );
   const bundle = promotions.find((p) => p.type === "buy_x_get_y");
-  const free = formatMoney(COMMERCE.freeShippingOver, locale);
+  const free = formatMoney(commerce.delivery.freeShippingOver, locale);
 
   const offers = [
-    { big: `−${RECURRING_PERCENT}%`, title: t("subTitle"), text: t("subText", { first: FIRST_ORDER_PERCENT, recurring: RECURRING_PERCENT }), href: "/products", tone: "bg-dark-panel text-white", sub: "text-on-dark-2" },
+    { big: `−${recurringPercent}%`, title: t("subTitle"), text: t("subText", { first: firstPercent, recurring: recurringPercent }), href: "/products", tone: "bg-dark-panel text-white", sub: "text-on-dark-2" },
     ...(bundle ? [{ big: "2+1", title: bundle.title, text: bundle.description, href: "/products", tone: "bg-yellow-banner", sub: "text-[#2E3236]" }] : []),
     { big: formatMoney(0, locale), title: t("freeTitle"), text: t("freeText", { amount: free }), href: "/delivery", tone: "bg-tile", sub: "text-[#2E3236]", small: true },
   ];
@@ -102,7 +105,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
           <h2 className="text-2xl font-bold">{t("rulesTitle")}</h2>
           {[
             t("rule1", { amount: free }),
-            t("rule2", { hours: COMMERCE.delivery.tashkent.hours, days: td("regionsTime") }),
+            t("rule2", { hours: COMMERCE.delivery.tashkent.hours, days: localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime")) }),
             t("rule3"),
           ].map((rule) => (
             <p key={rule} className="flex gap-3 text-base leading-[23px]">

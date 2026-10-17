@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
   EMPTY_FILTERS,
+  ENDING_WINDOW_MS,
   activeFilterCount,
   applyFilters,
+  endingSoon,
+  promotedSlugs,
+  sortByEnding,
   facetCounts,
   filtersToQuery,
   parseFilters,
@@ -15,6 +19,7 @@ const fact = (id: string, over: Partial<ProductFacts>): ProductFacts => ({
   price: 100_000,
   inStock: true,
   sale: false,
+  ending: false,
   brand: "swiss-energy",
   origin: "Shveytsariya",
   form: "capsule",
@@ -95,6 +100,53 @@ describe("URL round trip", () => {
 
   it("counts a price range as one active filter", () => {
     expect(activeFilterCount({ ...EMPTY_FILTERS, min: 1, max: 2, sale: true })).toBe(2);
+  });
+});
+
+describe("Aksiyada / Tez tugaydi", () => {
+  const now = Date.parse("2026-10-17T12:00:00Z");
+  const inHours = (h: number) => new Date(now + h * 3_600_000).toISOString();
+
+  it("marks a real sale ending within 72 hours, and nothing else", () => {
+    expect(endingSoon({ price: 80, oldPrice: 100, saleEndsAt: inHours(5) }, now)).toBe(true);
+    expect(endingSoon({ price: 80, oldPrice: 100, saleEndsAt: inHours(72) }, now)).toBe(true);
+    expect(endingSoon({ price: 80, oldPrice: 100, saleEndsAt: inHours(73) }, now)).toBe(false);
+    expect(endingSoon({ price: 80, oldPrice: 100, saleEndsAt: inHours(-1) }, now)).toBe(false);
+    // An end date without a real old price is not a sale.
+    expect(endingSoon({ price: 80, saleEndsAt: inHours(5) }, now)).toBe(false);
+    expect(endingSoon({ price: 80, oldPrice: 100 }, now)).toBe(false);
+    expect(ENDING_WINDOW_MS).toBe(72 * 3_600_000);
+  });
+
+  it("counts products named by a running 2+1 or percent promotion, not whole-cart ones", () => {
+    const slugs = promotedSlugs([
+      { type: "buy_x_get_y", productSlugs: ["a", "b"] },
+      { type: "percent_off", productSlugs: ["c"] },
+      { type: "percent_off" },
+      { type: "free_shipping_over", productSlugs: ["z"] },
+    ]);
+    expect([...slugs].sort()).toEqual(["a", "b", "c"]);
+  });
+
+  it("sorts the soonest real end first and keeps the rest in order", () => {
+    const items = [
+      { id: "plain", price: 10 },
+      { id: "late", price: 8, oldPrice: 10, saleEndsAt: inHours(48) },
+      { id: "expired", price: 8, oldPrice: 10, saleEndsAt: inHours(-2) },
+      { id: "soon", price: 8, oldPrice: 10, saleEndsAt: inHours(2) },
+      { id: "open", price: 8, oldPrice: 10 },
+    ];
+    expect(sortByEnding(items, now).map((p) => p.id)).toEqual(["soon", "late", "plain", "expired", "open"]);
+  });
+
+  it("filters, counts and round-trips the ending flag", () => {
+    const facts = [fact("x", { sale: true, ending: true }), fact("y", { sale: true }), fact("z", {})];
+    const f = { ...EMPTY_FILTERS, ending: true };
+    expect(applyFilters(facts, f).map((p) => p.id)).toEqual(["x"]);
+    expect(facetCounts(facts, EMPTY_FILTERS).ending).toBe(1);
+    expect(filtersToQuery(f)).toEqual({ ending: "1" });
+    expect(parseFilters({ ending: "1", sale: "1" })).toEqual({ ...EMPTY_FILTERS, ending: true, sale: true });
+    expect(activeFilterCount(f)).toBe(1);
   });
 });
 

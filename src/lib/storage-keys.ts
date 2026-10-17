@@ -29,6 +29,8 @@ export const STORAGE_KEYS = {
   profile: `${PREFIX}profile`,
   attribution: `${PREFIX}attribution`,
   popups: `${PREFIX}popups`,
+  /** The promo code applied in the cart (lib/promo/store.ts); the server re-checks it on every order. */
+  promo: `${PREFIX}promo`,
   /** sessionStorage: Telegram Mini App initData for this tab (lib/telegram/mini-app.ts). */
   telegram: `${PREFIX}telegram`,
   /** sessionStorage: first-party journey session id + last activity (lib/journey/client.ts). */

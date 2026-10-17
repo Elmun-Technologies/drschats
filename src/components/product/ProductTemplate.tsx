@@ -8,6 +8,8 @@ import type { Category, Product, UpsellOffer } from "@/lib/shopflow/types";
 import type { Expert } from "@/lib/content/experts";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import { COMMERCE } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { localizedOr } from "@/lib/commerce/settings";
 import { ONLINE_PAYMENT_MARKS, ONLINE_PROVIDERS } from "@/lib/config/payments";
 import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { discountPercent } from "@/components/ui/Price";
@@ -61,6 +63,7 @@ export async function ProductTemplate({
   const tc = await getTranslations("common");
   const legal = await getTranslations("legal");
   const td = await getTranslations("delivery");
+  const commerce = await getCommerceSettings();
 
   const brand = brandOf(product);
   const pack = unitOf(product);
@@ -81,11 +84,13 @@ export async function ProductTemplate({
   ].filter((s): s is { k: string; short?: string; v: string } => Boolean(s));
   const keySpecs = specs.slice(0, 4);
 
-  const free = formatMoney(COMMERCE.freeShippingOver, locale);
+  const free = formatMoney(commerce.delivery.freeShippingOver, locale);
+  const fee = formatMoney(commerce.delivery.courierFee, locale);
+  const regionsTime = localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime"));
   const delivery = [
-    { icon: ICON.truck, title: tv("courier"), price: formatMoney(COMMERCE.shippingFee, locale), note: tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, amount: free }) },
+    { icon: ICON.truck, title: tv("courier"), price: fee, note: tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, amount: free }) },
     { icon: ICON.home, title: tv("pickup"), price: tv("free"), note: tv("pickupNote") },
-    { icon: ICON.box, title: tv("regions"), price: formatMoney(COMMERCE.shippingFee, locale), note: tv("regionsNote", { days: td("regionsTime"), amount: free }) },
+    { icon: ICON.box, title: tv("regions"), price: fee, note: tv("regionsNote", { days: regionsTime, amount: free }) },
     {
       icon: ICON.card,
       title: tv("payment"),

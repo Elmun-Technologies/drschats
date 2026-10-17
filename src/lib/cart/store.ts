@@ -44,7 +44,7 @@ interface CartState {
    */
   /** Reprice lines whose sale has ended (called at the deadline). */
   expireSales: () => void;
-  syncPrices: (current: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>) => void;
+  syncPrices: (current: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean; stockQty?: number }>) => void;
   clear: () => void;
   open: () => void;
   close: () => void;
@@ -114,11 +114,15 @@ export const useCart = create<CartState>()(
             const soldOut = now ? !now.inStock : l.soldOut;
             if (
               !now ||
-              (now.price === l.price && now.oldPrice === l.oldPrice && now.saleEndsAt === l.saleEndsAt && soldOut === l.soldOut)
+              (now.price === l.price &&
+                now.oldPrice === l.oldPrice &&
+                now.saleEndsAt === l.saleEndsAt &&
+                soldOut === l.soldOut &&
+                now.stockQty === l.stockQty)
             )
               return l;
             changed = true;
-            return { ...l, price: now.price, oldPrice: now.oldPrice, saleEndsAt: now.saleEndsAt, soldOut: soldOut || undefined };
+            return { ...l, price: now.price, oldPrice: now.oldPrice, saleEndsAt: now.saleEndsAt, soldOut: soldOut || undefined, stockQty: now.stockQty };
           });
           // Opening the cart is activity: the thirty days count from here.
           const _savedAt = state.lines.length > 0 ? Date.now() : state._savedAt;

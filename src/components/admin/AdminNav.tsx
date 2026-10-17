@@ -26,8 +26,13 @@ export const NAV_GROUPS = [
     label: "Marketing",
     items: [
       { href: "/admin/segments", label: "Segmentlar va retarget", icon: "target" },
+      { href: "/admin/storefront", label: "Vitrina", icon: "layout" },
       { href: "/admin/promotions", label: "Aksiyalar", icon: "percent" },
+      { href: "/admin/promocodes", label: "Promokodlar", icon: "ticket" },
+      { href: "/admin/loyalty", label: "Sodiqlik", icon: "gift" },
       { href: "/admin/campaigns", label: "Kampaniyalar", icon: "megaphone" },
+      { href: "/admin/flows", label: "Avtomatlashtirish", icon: "flow" },
+      { href: "/admin/messages", label: "Xabarlar", icon: "inbox" },
       { href: "/admin/marketing", label: "UTM havolalar", icon: "link" },
     ],
   },
@@ -37,6 +42,7 @@ export const NAV_GROUPS = [
       { href: "/admin/products", label: "Mahsulotlar", icon: "box" },
       { href: "/admin/categories", label: "Kategoriyalar", icon: "grid" },
       { href: "/admin/brands", label: "Brendlar", icon: "tag" },
+      { href: "/admin/waitlist", label: "Kutayotganlar", icon: "bell" },
     ],
   },
   {
@@ -49,6 +55,7 @@ export const NAV_GROUPS = [
   {
     label: "Sozlamalar",
     items: [
+      { href: "/admin/commerce", label: "Savdo qoidalari", icon: "sliders" },
       { href: "/admin/integrations", label: "Integratsiyalar", icon: "plug" },
       { href: "/admin/users", label: "Administratorlar", icon: "settings" },
     ],
@@ -66,13 +73,20 @@ export function NavIcon({ name, className }: { name: string; className?: string 
     target: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="0.8" /></>,
     percent: <><path d="M19 5 5 19" /><circle cx="7" cy="7" r="2.2" /><circle cx="17" cy="17" r="2.2" /></>,
     megaphone: <><path d="M4 12v-2a2 2 0 0 1 2-2h3l8-4v14l-8-4H6a2 2 0 0 1-2-2z" /><path d="m9 14 1.5 5H14l-2-4.5" /></>,
+    layout: <><rect x="3.5" y="4" width="17" height="16" rx="2" /><path d="M3.5 9h17M9 9v11" /></>,
     link: <><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></>,
     box: <><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z" /><path d="m4.5 7.7 7.5 4.4 7.5-4.4M12 12v8.5" /></>,
     grid: <><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></>,
     tag: <><path d="M20 13 13 20 4 11V4h7z" /><circle cx="8" cy="8" r="1" /></>,
+    gift: <><rect x="4" y="9" width="16" height="11" rx="1.5" /><path d="M3 9h18v3H3zM12 9v11" /><path d="M12 9c-2.5 0-4-1-4-2.5S9.5 4 12 9zM12 9c2.5 0 4-1 4-2.5S14.5 4 12 9z" /></>,
+    ticket: <><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z" /><path d="M14 7v10" strokeDasharray="2 2" /></>,
+    bell: <><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z" /><path d="M10 20a2 2 0 0 0 4 0" /></>,
+    flow: <><circle cx="6" cy="6" r="2.2" /><circle cx="18" cy="12" r="2.2" /><circle cx="6" cy="18" r="2.2" /><path d="M8.2 6H12a3 3 0 0 1 3 3v.8M8.2 18H12a3 3 0 0 0 3-3v-.8" /></>,
+    inbox: <><path d="M4 13 6.5 5h11L20 13v6H4z" /><path d="M4 13h4.5l1 2h5l1-2H20" /></>,
     message: <><path d="M4 5h16v12H9l-5 4z" /><path d="M8 10h8M8 13h5" /></>,
     file: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v5h5M9 12h6M9 16h6" /></>,
     plug: <><path d="M8 4v5M16 4v5M6 9h12v2a6 6 0 0 1-6 6v4" /></>,
+    sliders: <><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></>,
     settings: <><circle cx="12" cy="12" r="3" /><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8" /></>,
   };
   return (

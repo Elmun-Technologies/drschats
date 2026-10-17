@@ -95,6 +95,12 @@ export interface Product {
   cutout?: string | null;
   unit?: { count: number; unit: "tablet" | "capsule" } | null;
   brand?: { slug: string; name: string } | null;
+  /**
+   * A tracked stock count (admin «Ombordagi soni») and its "kam qoldi"
+   * threshold. Absent when the count is not tracked — then nothing about
+   * quantity is ever shown. Read through lib/catalog/stock-rules.
+   */
+  stock?: { qty: number; lowAt: number };
 }
 
 export type PromotionType =
@@ -203,7 +209,18 @@ export interface OrderRequest {
     discount: Money;
     shipping: Money;
     total: Money;
+    /**
+     * Order-level discounts on top of the line offers and promotions, already
+     * included in `discount` and `total`. Set by the server only
+     * (lib/promo/server.ts): at most one — a promo code or the first-order
+     * discount, whichever is larger.
+     */
+    adjustments?: OrderAdjustment[];
   };
+  /** The promo code the customer entered; validated and redeemed on the server. */
+  promoCode?: string;
+  /** Proof (from the SMS code) that this phone may spend its points; verified and re-priced on the server. */
+  pointsToken?: string;
   locale: Locale;
   attribution?: OrderAttribution;
   /**
@@ -213,10 +230,23 @@ export interface OrderRequest {
   telegram?: string;
 }
 
+export type OrderAdjustment =
+  | { kind: "promo"; code: string; amount: Money }
+  | { kind: "first_order"; percent: number; amount: Money }
+  /** A friend's referral code on a first order (lib/referral). */
+  | { kind: "referral"; code: string; percent: number; amount: Money }
+  /**
+   * Cashback points spent on the order (lib/loyalty). A payment, not a
+   * discount: it lowers `total` but not `discount`, and always comes last.
+   */
+  | { kind: "points"; amount: Money };
+
 export interface OrderResult {
   ok: boolean;
   orderId?: string;
   message?: string;
+  /** A tracked count could not cover a line: `slug` names it, `available` is what is left. */
+  shortage?: { slug?: string; available: number };
 }
 
 /** The contract every Shopflow client (mock or real HTTP) implements. */

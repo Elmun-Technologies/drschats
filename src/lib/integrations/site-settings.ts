@@ -24,6 +24,7 @@ export const PUBLIC_SETTING_KEYS = [
   "verify.google",
   "verify.yandex",
   "verify.bing",
+  "sms.transliterate",
 ] as const;
 
 export type PublicSettingKey = (typeof PUBLIC_SETTING_KEYS)[number];

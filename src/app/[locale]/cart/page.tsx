@@ -5,9 +5,13 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { upsellPool } from "@/lib/upsell/pool";
+import { PROMO_CODES_ENABLED, firstOrderOffer } from "@/lib/promo/offer";
+import { publicLoyalty } from "@/lib/loyalty/settings";
 
-// Prices on this page feed the order total; keep them close to the catalogue.
-export const revalidate = 300;
+// Rendered per request: the promo field and the first-order offer depend on the
+// database, which the build (Fly builds without one) cannot see. A prerendered
+// cart hid the promo field for the first minutes after every deploy.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -32,18 +36,20 @@ export default async function CartPage({
   setRequestLocale(locale);
 
   // The pool the modal and the order action use, so every offer shown is one the server accepts.
-  const [recommended, catalogue] = await Promise.all([
+  const [recommended, catalogue, firstOrder, loyalty] = await Promise.all([
     upsellPool(locale),
     getAllProducts({ locale }),
+    firstOrderOffer(),
+    publicLoyalty(),
   ]);
   // Today's prices, so a cart kept for weeks shows what the order will cost.
   const prices = Object.fromEntries(
-    catalogue.items.map((p) => [p.id, { price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt, inStock: p.inStock }]),
+    catalogue.items.map((p) => [p.id, { price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt, inStock: p.inStock, stockQty: p.stock?.qty }]),
   );
 
   return (
     <div className="wrap pb-9 pt-1 lg:pb-[72px] lg:pt-5">
-      <CheckoutForm recommended={recommended} prices={prices} />
+      <CheckoutForm recommended={recommended} prices={prices} promoCodes={PROMO_CODES_ENABLED} firstOrder={firstOrder} loyalty={loyalty} />
     </div>
   );
 }

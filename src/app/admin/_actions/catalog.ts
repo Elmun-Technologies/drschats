@@ -15,6 +15,8 @@ import { slugify } from "@/lib/admin/slugify";
 import { SLUG_RE, formToContent, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
 import { isStorageConfigured, uploadImage } from "@/lib/admin/storage";
 import { isAllowedImageUrl } from "@/lib/security/csp";
+import { recordManualMovement } from "@/lib/catalog/stock";
+import { afterProductChange } from "@/lib/notify/waitlist";
 
 export type FormState = { error?: string; ok?: string } | undefined;
 
@@ -81,6 +83,20 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     return { error: `Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): ${rejected[0]}. Rasmni «Rasm yuklash» orqali yuklang.` };
   }
 
+  const db = getDb();
+  const [before] = editingId
+    ? await db.select({ inStock: products.inStock, price: products.price, stockQty: products.stockQty }).from(products).where(eq(products.id, editingId)).limit(1)
+    : [];
+  /*
+    The count is written only when the admin changed the field: an order can
+    take units while the form is open, and saving an untouched form must not
+    put them back.
+  */
+  const formQty = d.stockQty === "" || d.stockQty == null ? null : Number(d.stockQty);
+  const qtyTouched = !before || (data.stockQtyBefore ?? "") !== (data.stockQty ?? "").trim();
+  const stockQty = qtyTouched ? formQty : (before?.stockQty ?? null);
+  const inStock = stockQty != null ? stockQty > 0 : d.inStock === "on";
+
   const unit =
     d.unitCount && d.unitKind ? { count: Number(d.unitCount), unit: d.unitKind as "tablet" | "capsule" } : null;
   const row = {
@@ -91,7 +107,9 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     oldPrice: d.oldPrice === "" || d.oldPrice == null ? null : Number(d.oldPrice),
     // An end date only means something on a real sale (an old price to return to).
     saleEndsAt: d.oldPrice === "" || d.oldPrice == null ? null : fromTashkentInput(d.saleEndsAt),
-    inStock: d.inStock === "on",
+    inStock,
+    ...(qtyTouched ? { stockQty } : {}),
+    lowStockAt: d.lowStockAt === "" || d.lowStockAt == null ? null : Number(d.lowStockAt),
     kind: d.kind,
     sort: d.sort,
     images: parseImages(d.images),
@@ -101,15 +119,16 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     updatedAt: new Date(),
   };
 
-  const db = getDb();
   const [clash] = await db.select({ id: products.id }).from(products).where(eq(products.slug, d.slug)).limit(1);
   if (clash && clash.id !== editingId) return { error: `«${d.slug}» slug boshqa mahsulotda band.` };
 
   if (editingId) {
     const updated = await db.update(products).set(row).where(eq(products.id, editingId)).returning({ id: products.id });
     if (updated.length === 0) return { error: "Mahsulot topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin." };
+    if (qtyTouched) await recordManualMovement(editingId, before?.stockQty ?? null, stockQty, "Mahsulot formasi");
     refresh();
-    return { ok: "Saqlandi. Saytda darhol yangilanadi." };
+    const sent = before ? await afterProductChange(editingId, before, { inStock, price: d.price }) : null;
+    return { ok: `Saqlandi. Saytda darhol yangilanadi.${sent && sent.due > 0 ? ` Kutayotgan ${sent.due} kishiga xabar yuborildi.` : ""}` };
   }
 
   /*
@@ -120,6 +139,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
   const [taken] = await db.select({ id: products.id }).from(products).where(eq(products.id, `p-${d.slug}`)).limit(1);
   const id = taken ? `p-${d.slug}-${randomBytes(3).toString("hex")}` : `p-${d.slug}`;
   await db.insert(products).values({ id, ...row });
+  await recordManualMovement(id, null, stockQty, "Yangi mahsulot");
   refresh();
   redirect(`/admin/products/${encodeURIComponent(id)}?saved=1`);
 }
@@ -159,9 +179,12 @@ export async function toggleProductStock(form: FormData) {
   await requireAdmin();
   const id = String(form.get("id") ?? "");
   const db = getDb();
-  const [row] = await db.select({ inStock: products.inStock }).from(products).where(eq(products.id, id)).limit(1);
-  if (row) await db.update(products).set({ inStock: !row.inStock, updatedAt: new Date() }).where(eq(products.id, id));
+  const [row] = await db.select({ inStock: products.inStock, price: products.price, stockQty: products.stockQty }).from(products).where(eq(products.id, id)).limit(1);
+  // A tracked count decides in_stock; it is changed with the count (adjustStockAction), not this switch.
+  if (!row || row.stockQty != null) return;
+  await db.update(products).set({ inStock: !row.inStock, updatedAt: new Date() }).where(eq(products.id, id));
   refresh();
+  await afterProductChange(id, row, { inStock: !row.inStock, price: row.price });
 }
 
 export async function uploadProductImage(_: FormState, form: FormData): Promise<FormState & { url?: string }> {

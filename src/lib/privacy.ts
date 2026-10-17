@@ -33,3 +33,13 @@ export function redactEmail(email: string): string {
   const domain = value.slice(at + 1);
   return `${local[0]}${"•".repeat(Math.max(1, local.length - 1))}@${domain}`;
 }
+
+/**
+ * "901234567" -> "+998 90 ••• •• 67". For admin lists of messages: the
+ * operator and the last digits tell two customers apart, the rest is noise.
+ */
+export function maskPhone(phone: string | null | undefined): string {
+  const digits = (phone ?? "").replace(/\D/g, "").slice(-9);
+  if (digits.length !== 9) return "—";
+  return `+998 ${digits.slice(0, 2)} ••• •• ${digits.slice(7)}`;
+}

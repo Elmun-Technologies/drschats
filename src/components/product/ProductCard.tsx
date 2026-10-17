@@ -11,7 +11,8 @@ import { cn, formatMoney } from "@/lib/utils";
 import { DiscountBadge, Price, discountPercent } from "@/components/ui/Price";
 import { Badge } from "@/components/ui/Badge";
 import { useCart } from "@/lib/cart/store";
-import { cartLineId } from "@/lib/cart/pricing";
+import { cartLineId, lineQtyCap } from "@/lib/cart/pricing";
+import { lowStockLeft } from "@/lib/catalog/stock-rules";
 import { WishlistButton } from "@/components/product/WishlistButton";
 import { cutoutOf, unitPriceOf } from "@/lib/catalog/product-facts";
 import { SaleCountdownChip } from "@/components/marketing/SaleCountdown";
@@ -57,6 +58,8 @@ export function ProductCard({
   const hit = product.badges?.some((b) => HIT_BADGES.has(b));
   const perUnit = unitPriceOf(product);
   const inCart = mounted && qty > 0;
+  const left = product.inStock ? lowStockLeft(product.stock) : null;
+  const maxQty = lineQtyCap({ stockQty: product.stock?.qty });
 
   function handleAdd() {
     add({
@@ -65,8 +68,9 @@ export function ProductCard({
       name: product.name,
       image: product.images[0]?.url ?? "",
       price: product.price,
-        oldPrice: product.oldPrice,
-        saleEndsAt: product.saleEndsAt,
+      oldPrice: product.oldPrice,
+      saleEndsAt: product.saleEndsAt,
+      stockQty: product.stock?.qty,
     });
   }
 
@@ -136,6 +140,13 @@ export function ProductCard({
         <span className="flex min-h-[17px] items-center px-0.5">
           <SaleCountdownChip endsAt={product.saleEndsAt} />
         </span>
+      ) : left ? (
+        <span className="flex items-center gap-1.5 px-0.5 text-caption font-semibold text-ink">
+          <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m12 3 8 4.5v9L12 21l-8-4.5v-9zM4.5 7.7 12 12l7.5-4.3M12 12v9" />
+          </svg>
+          {t("stockLeft", { count: left })}
+        </span>
       ) : (
         <span className="flex items-center gap-1.5 px-0.5 text-caption text-muted">
           <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -162,8 +173,9 @@ export function ProductCard({
             <button
               type="button"
               onClick={() => setQuantity(lineId, qty + 1)}
+              disabled={qty >= maxQty}
               aria-label={t("increase")}
-              className="flex h-11 w-11 items-center justify-center text-xl"
+              className="flex h-11 w-11 items-center justify-center text-xl disabled:opacity-40"
             >
               +
             </button>

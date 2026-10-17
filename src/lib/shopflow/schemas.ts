@@ -142,6 +142,8 @@ export const orderRequestSchema = z.object({
     shipping: z.number(),
     total: z.number(),
   }),
+  promoCode: z.string().trim().max(40).optional(),
+  pointsToken: z.string().max(400).optional(),
   locale: z.enum(["ru", "uz"]),
   attribution: z
     .object({

@@ -7,6 +7,7 @@ import { getDb, isDbConfigured } from "@/lib/db/client";
 import { integrationSettings } from "@/lib/db/schema";
 import { decryptIntegrationValue, encryptIntegrationValue, isIntegrationEncryptionConfigured } from "./crypto";
 import { readPublicSettings, type PublicSettings } from "./site-settings";
+import { smsFakeEnabled } from "@/lib/sms/fake";
 
 export const INTEGRATION_SETTING_KEYS = [
   "operator.botToken",
@@ -18,6 +19,9 @@ export const INTEGRATION_SETTING_KEYS = [
   "analytics.yandexMetrikaId",
   "email.from",
   "email.replyTo",
+  "sms.email",
+  "sms.password",
+  "sms.sender",
 ] as const;
 
 export type IntegrationSettingKey = (typeof INTEGRATION_SETTING_KEYS)[number];
@@ -30,6 +34,8 @@ export interface RuntimeIntegrationSettings {
   resendApiKey: string;
   emailFrom: string;
   emailReplyTo: string;
+  /** Eskiz.uz account; empty email or password — SMS is not configured. */
+  sms: { email: string; password: string; sender: string; transliterate: boolean };
   analytics: AnalyticsIds;
   webvisor: boolean;
 }
@@ -55,6 +61,9 @@ const ENVIRONMENT: Record<IntegrationSettingKey, string> = {
   "analytics.yandexMetrikaId": ENV_ANALYTICS_IDS.yandexMetrika,
   "email.from": process.env.EMAIL_FROM?.trim() || DEFAULT_EMAIL_FROM,
   "email.replyTo": process.env.EMAIL_REPLY_TO?.trim() || DEFAULT_EMAIL_REPLY_TO,
+  "sms.email": process.env.ESKIZ_EMAIL?.trim() ?? "",
+  "sms.password": process.env.ESKIZ_PASSWORD?.trim() ?? "",
+  "sms.sender": process.env.ESKIZ_SENDER?.trim() ?? "",
 };
 
 function isSettingKey(value: string): value is IntegrationSettingKey {
@@ -113,6 +122,12 @@ async function loadEffectiveSettings(): Promise<LoadedSettings> {
       resendApiKey: value("email.apiKey"),
       emailFrom: value("email.from"),
       emailReplyTo: value("email.replyTo"),
+      sms: {
+        email: value("sms.email"),
+        password: value("sms.password"),
+        sender: value("sms.sender"),
+        transliterate: publicSettings["sms.transliterate"] === "on",
+      },
       analytics: sanitizeAnalyticsIds({
         gtm: analyticsValue("analytics.gtmId"),
         ga4: analyticsValue("analytics.ga4Id"),
@@ -152,6 +167,17 @@ export interface IntegrationAdminOverview {
     replyTo: string;
     replyToManagedInAdmin: boolean;
   };
+  sms: {
+    configured: boolean;
+    email: string;
+    emailManagedInAdmin: boolean;
+    passwordConfigured: boolean;
+    passwordManagedInAdmin: boolean;
+    sender: string;
+    senderManagedInAdmin: boolean;
+    transliterate: boolean;
+    fake: boolean;
+  };
   analytics: AnalyticsIds;
   analyticsManagedInAdmin: Record<keyof AnalyticsIds, boolean>;
   analyticsCspReady: boolean;
@@ -186,6 +212,17 @@ export async function getIntegrationAdminOverview(): Promise<IntegrationAdminOve
       fromManagedInAdmin: adminOverride("email.from"),
       replyTo: settings.emailReplyTo,
       replyToManagedInAdmin: adminOverride("email.replyTo"),
+    },
+    sms: {
+      configured: Boolean(settings.sms.email && settings.sms.password),
+      email: settings.sms.email,
+      emailManagedInAdmin: adminOverride("sms.email"),
+      passwordConfigured: Boolean(settings.sms.password),
+      passwordManagedInAdmin: adminOverride("sms.password"),
+      sender: settings.sms.sender,
+      senderManagedInAdmin: adminOverride("sms.sender"),
+      transliterate: settings.sms.transliterate,
+      fake: smsFakeEnabled(),
     },
     analytics: settings.analytics,
     analyticsManagedInAdmin: {

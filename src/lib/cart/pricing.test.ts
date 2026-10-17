@@ -4,7 +4,6 @@ import type { Promotion } from "@/lib/shopflow/types";
 import {
   FIRST_ORDER_PERCENT,
   RECURRING_PERCENT,
-  SUBSCRIPTION_FREE_SHIPPING_OVER,
 } from "@/lib/subscription/plans";
 
 const line = (over: Partial<CartLine> = {}): CartLine => {
@@ -101,9 +100,9 @@ describe("computeTotals — subscriptions", () => {
     expect(t.recurringTotal).toBe(100000 * (1 - RECURRING_PERCENT / 100));
   });
 
-  it("lowers the free-shipping bar for a cart that repeats", () => {
+  it("applies the site threshold to a cart that repeats", () => {
     const t = computeTotals([subscribed({ quantity: 3 })]);
-    expect(t.freeShippingThreshold).toBe(SUBSCRIPTION_FREE_SHIPPING_OVER);
+    expect(t.freeShippingThreshold).toBe(300_000);
     // 300 000 less the 10% first-order discount is still short of the bar.
     expect(t.shipping).toBe(DEFAULT_SHIPPING);
     expect(t.freeShippingRemaining).toBe(30000);

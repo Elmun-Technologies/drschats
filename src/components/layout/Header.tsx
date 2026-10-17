@@ -22,6 +22,8 @@ import { Logo } from "./Logo";
 import { ICONS } from "./header-item";
 import type { MenuDeal } from "./menu-deal";
 import { isStocked } from "@/lib/shop/categories";
+import type { StoreAnnouncement } from "@/lib/merch/model";
+import { AnnouncementBar } from "@/components/marketing/AnnouncementBar";
 
 /*
   Design: HeaderV3 (lg and up) and HeaderMobileV3 (below lg, where the fixed
@@ -36,11 +38,14 @@ export function Header({
   categories = [],
   topicPaths = [],
   deal = null,
+  announcements = [],
 }: {
   categories?: Category[];
   /** Health families that have at least one published page — see nav-sections. */
   topicPaths?: string[];
   deal?: MenuDeal | null;
+  /** Admin → Vitrina → Eʼlon qatori; empty = the usual utility row. */
+  announcements?: StoreAnnouncement[];
 }) {
   const t = useTranslations("header");
   const nav = useTranslations("nav");
@@ -70,7 +75,7 @@ export function Header({
           aria-hidden={scrolled}
           inert={scrolled}
         >
-          <TopBar />
+          <TopBar announcements={announcements} />
         </div>
 
         <div className="wrap flex h-[76px] items-center gap-5">
@@ -110,6 +115,11 @@ export function Header({
         </nav>
       </div>
 
+      {announcements.length > 0 && (
+        <div className="lg:hidden">
+          <AnnouncementBar items={announcements} variant="mobile" />
+        </div>
+      )}
       <MobileHeader categories={categories} />
     </header>
   );

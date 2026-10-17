@@ -9,6 +9,8 @@ import { requireAdmin, setSessionCookie } from "@/lib/admin/session";
 import { ADMIN_TABLE_LOCK } from "@/lib/admin/accounts";
 import { hashPassword, MIN_PASSWORD_LENGTH, verifyPassword } from "@/lib/admin/password";
 import { announceOrderStatus } from "@/lib/bot/store";
+import { syncOrderStock } from "@/lib/catalog/order-stock";
+import { afterOrderStatus } from "@/lib/loyalty/order-status";
 import type { FormState } from "./catalog";
 
 const statusSchema = z.object({
@@ -28,8 +30,10 @@ export async function updateOrder(_: FormState, form: FormData): Promise<FormSta
     .update(orders)
     .set({ status: parsed.data.status, adminNote: parsed.data.adminNote?.trim() || null, updatedAt: new Date() })
     .where(eq(orders.number, parsed.data.number));
+  await syncOrderStock(parsed.data.number, before.status, parsed.data.status);
+  const loyaltyLines = await afterOrderStatus(parsed.data.number, before.status, parsed.data.status);
   // The customer hears about a new status in Telegram, not about a note edit.
-  if (before.status !== parsed.data.status) await announceOrderStatus(parsed.data.number, parsed.data.status);
+  if (before.status !== parsed.data.status) await announceOrderStatus(parsed.data.number, parsed.data.status, loyaltyLines);
   revalidatePath("/admin/orders");
   return { ok: "Saqlandi." };
 }
@@ -45,7 +49,9 @@ export async function setOrderStatus(form: FormData) {
   const [before] = await db.select({ status: orders.status }).from(orders).where(eq(orders.number, parsed.data.number)).limit(1);
   if (!before || before.status === parsed.data.status) return;
   await db.update(orders).set({ status: parsed.data.status, updatedAt: new Date() }).where(eq(orders.number, parsed.data.number));
-  await announceOrderStatus(parsed.data.number, parsed.data.status);
+  await syncOrderStock(parsed.data.number, before.status, parsed.data.status);
+  const loyaltyLines = await afterOrderStatus(parsed.data.number, before.status, parsed.data.status);
+  await announceOrderStatus(parsed.data.number, parsed.data.status, loyaltyLines);
   revalidatePath(`/admin/orders/${parsed.data.number}`);
   revalidatePath("/admin/orders");
 }

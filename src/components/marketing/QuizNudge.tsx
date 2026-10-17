@@ -2,7 +2,9 @@
 
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useCommerce } from "@/lib/commerce/context";
+import { localizedOr } from "@/lib/commerce/settings";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { loadQuiz } from "@/lib/quiz/engine";
 import { isQuietPath, usePopups } from "@/lib/ui/popups";
@@ -18,7 +20,9 @@ const VIEWS_KEY = "govita-pageviews";
 export function QuizNudge() {
   const t = useTranslations("popups.quiz");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const pathname = usePathname();
+  const rule = useCommerce().popups.quiz;
   const open = usePopups((s) => s.active === "quiz");
   const close = usePopups((s) => s.close);
 
@@ -28,7 +32,7 @@ export function QuizNudge() {
       if (usePopups.getState().active === "quiz") usePopups.getState().close();
       return;
     }
-    if (loadQuiz()) return;
+    if (!rule.enabled || loadQuiz()) return;
     let views = 0;
     try {
       views = Number(sessionStorage.getItem(VIEWS_KEY) ?? 0) + 1;
@@ -37,9 +41,9 @@ export function QuizNudge() {
       return;
     }
     if (views < PAGES_BEFORE_NUDGE) return;
-    const timer = window.setTimeout(() => usePopups.getState().request("quiz"), 4000);
+    const timer = window.setTimeout(() => usePopups.getState().request("quiz", rule), rule.delaySeconds * 1000);
     return () => window.clearTimeout(timer);
-  }, [pathname]);
+  }, [pathname, rule]);
 
   return (
     <AnimatePresence>
@@ -62,8 +66,8 @@ export function QuizNudge() {
               <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
             </svg>
           </button>
-          <p id="quiz-nudge-title" className="pr-10 text-lg font-bold leading-6">{t("title")}</p>
-          <p className="mt-1.5 text-sm leading-5 text-on-dark-2">{t("body")}</p>
+          <p id="quiz-nudge-title" className="pr-10 text-lg font-bold leading-6">{localizedOr(rule.title, locale, t("title"))}</p>
+          <p className="mt-1.5 text-sm leading-5 text-on-dark-2">{localizedOr(rule.body, locale, t("body"))}</p>
           <Link
             href="/quiz"
             onClick={close}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { notifyRestock } from "@/app/actions/notifyRestock";
 import { track } from "@/lib/analytics/events";
 import { ErrorNote } from "@/components/ui/ErrorNote";
@@ -21,7 +21,12 @@ export function OutOfStockNotify({
   submitLabel,
   event = "restock_notify",
   bare = false,
+  kind = "restock",
+  successLabel,
 }: {
+  /** "price_drop": tell me when it is cheaper (the product is in stock). */
+  kind?: "restock" | "price_drop";
+  successLabel?: string;
   productId: string;
   productName: string;
   /** Text above the field; the out-of-stock sentence by default. */
@@ -32,6 +37,7 @@ export function OutOfStockNotify({
   bare?: boolean;
 }) {
   const t = useTranslations("outOfStock");
+  const locale = useLocale();
   const [phone, setPhone] = useState("");
   const [state, setState] = useState<"idle" | "loading" | "sent" | "failed">("idle");
 
@@ -42,7 +48,7 @@ export function OutOfStockNotify({
 
     let result;
     try {
-      result = await notifyRestock(productId, productName, phone);
+      result = await notifyRestock(productId, productName, phone, kind, locale === "ru" ? "ru" : "uz");
     } catch {
       // A server action can throw on a network drop. Treat it like any other
       // failure: say so, and let the person try again rather than leaving the
@@ -67,7 +73,7 @@ export function OutOfStockNotify({
   if (state === "sent") {
     return (
       <p role="status" className={cn("text-[15px] font-semibold", !bare && "rounded-[20px] bg-tile px-5 py-4")}>
-        {t("success")}
+        {successLabel ?? t("success")}
       </p>
     );
   }

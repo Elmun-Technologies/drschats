@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { saveAnalyticsIntegration, saveEmailIntegration, saveOperatorIntegration, saveVerificationCodes, sendResendTestEmail, testOperatorTelegramConnection } from "@/app/admin/_actions/integrations";
+import { saveAnalyticsIntegration, saveEmailIntegration, saveOperatorIntegration, saveSmsIntegration, saveVerificationCodes, sendResendTestEmail, sendTestSms, testOperatorTelegramConnection } from "@/app/admin/_actions/integrations";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, Field, Notice, Pill, inputClass } from "@/components/admin/ui";
 import type { IntegrationAdminOverview } from "@/lib/integrations/settings";
@@ -135,5 +135,50 @@ export function MessagingForms({ overview }: { overview: IntegrationAdminOvervie
         </div>
       </Card>
     </div>
+  );
+}
+
+export function SmsForm({ overview }: { overview: IntegrationAdminOverview }) {
+  const sms = overview.sms;
+  const passwordHint = sms.passwordConfigured
+    ? sms.passwordManagedInAdmin ? "Shifrlangan holda saqlangan va qayta koʻrsatilmaydi." : "Deploy sozlamasidan (ESKIZ_PASSWORD) olinmoqda."
+    : "Parol sozlanmagan.";
+  return (
+    <Card
+      title="SMS — Eskiz"
+      lead="Avtomatlashtirish va kampaniyalar Telegram ulanmagan mijozga SMS yuboradi. Har bir SMS oxirida «STOP» havolasi, 21:00–09:00 (Toshkent) yuborilmaydi."
+      actions={<Status on={sms.configured || sms.fake} label={sms.fake ? "Sinov rejimi" : undefined} />}
+    >
+      {sms.fake && <div className="mb-4"><Notice>SMS_FAKE=1: SMS haqiqatda yuborilmaydi, faqat «Xabarlar» jurnaliga yoziladi. Live deployʼda bu bayroq eʼtiborga olinmaydi.</Notice></div>}
+      {!overview.encryptionConfigured && <div className="mb-4"><Notice>Parolni panelda saqlash uchun deployʼda INTEGRATION_ENCRYPTION_KEY kerak (openssl rand -hex 32).</Notice></div>}
+      <ActionForm action={saveSmsIntegration} submitLabel="Saqlash" className="flex flex-col gap-4">
+        <Field label="Eskiz hisobi (email)" hint="notify.eskiz.uz kabinetiga kiradigan email.">
+          <input name="email" type="email" defaultValue={sms.email} autoComplete="off" placeholder="info@govita.uz" className={inputClass} />
+        </Field>
+        <Field label="Parol" hint={passwordHint}>
+          <input name="password" type="password" autoComplete="new-password" spellCheck={false} className={inputClass} />
+        </Field>
+        <Field label="Yuboruvchi nomi (Nickname)" hint="Boʻsh boʻlsa 4546 — Eskizning umumiy raqami. «GoVita» nomi Eskiz va operatorlar tasdiqlagandan keyin ishlaydi.">
+          <input name="sender" defaultValue={sms.sender} maxLength={11} autoComplete="off" placeholder="4546" className={inputClass} />
+        </Field>
+        <label className="flex min-h-11 items-start gap-3 text-[14px] leading-5 text-ink">
+          <input type="checkbox" name="transliterate" defaultChecked={sms.transliterate} className="mt-0.5 h-5 w-5 shrink-0 accent-ink" />
+          <span>Oʻzbekcha ʻ va ʼ belgilarini oddiy apostrofga almashtirish — lotin matni GSM-7 da qoladi: bitta SMS 70 emas, 160 belgi.</span>
+        </label>
+        {sms.emailManagedInAdmin && <ClearOverride name="clearEmail" label="Paneldagi emailni oʻchirish" />}
+        {sms.passwordManagedInAdmin && <ClearOverride name="clearPassword" label="Paneldagi parolni oʻchirish" />}
+        {sms.senderManagedInAdmin && <ClearOverride name="clearSender" label="Paneldagi yuboruvchi nomini oʻchirish" />}
+      </ActionForm>
+      <div className="mt-4 border-t border-line pt-4">
+        <ActionForm action={sendTestSms} submitLabel="Test SMS yuborish" className="flex flex-col gap-3">
+          <Field label="Kimga" hint="Bitta SMS, marketing emas, jurnalga yozilmaydi.">
+            <input name="testPhone" type="tel" inputMode="tel" autoComplete="tel" required placeholder="+998 90 123 45 67" className={inputClass} />
+          </Field>
+          <Field label="Matn" hint="Shablonlar tasdiqlanmaguncha Eskiz faqat «Bu Eskiz dan test» matnini qabul qiladi.">
+            <input name="testText" defaultValue="Bu Eskiz dan test" maxLength={300} className={inputClass} />
+          </Field>
+        </ActionForm>
+      </div>
+    </Card>
   );
 }

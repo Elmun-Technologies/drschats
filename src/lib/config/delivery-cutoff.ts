@@ -1,10 +1,10 @@
 /*
-  Same-day order cut-off for Tashkent, e.g. NEXT_PUBLIC_DELIVERY_CUTOFF=16:00
-  (Tashkent time). Unset — no cut-off timer anywhere: the promise it makes
-  ("order before … and it arrives tomorrow") is the operator's to give, not
-  the code's to invent.
+  Same-day order cut-off for Tashkent ("16:00", Tashkent time). The value is
+  the admin's (/admin/commerce → Yetkazish, read at request time); the deploy
+  env NEXT_PUBLIC_DELIVERY_CUTOFF is only its default (lib/commerce/settings.ts).
+  Empty — no cut-off timer anywhere: the promise it makes ("order before …
+  and it arrives tomorrow") is the operator's to give, not the code's to invent.
 */
-const RAW = (process.env.NEXT_PUBLIC_DELIVERY_CUTOFF ?? "").trim();
 const TASHKENT_OFFSET_MIN = 5 * 60;
 
 export function parseCutoff(raw: string): { hour: number; minute: number } | null {
@@ -14,8 +14,6 @@ export function parseCutoff(raw: string): { hour: number; minute: number } | nul
   const minute = Number(m[2]);
   return hour < 24 && minute < 60 ? { hour, minute } : null;
 }
-
-export const DELIVERY_CUTOFF = parseCutoff(RAW);
 
 /** Milliseconds left before today's cut-off in Tashkent, or null once it has passed. */
 export function msUntilCutoff(cutoff: { hour: number; minute: number }, now: Date): number | null {

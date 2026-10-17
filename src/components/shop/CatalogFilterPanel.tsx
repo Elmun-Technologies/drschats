@@ -217,6 +217,11 @@ function FilterGroups({
         <Check checked={draft.sale} count={counts.sale} onChange={() => onChange({ ...draft, sale: !draft.sale })} strong>
           {t("onSale")}
         </Check>
+        {(counts.ending > 0 || draft.ending) && (
+          <Check checked={draft.ending} count={counts.ending} onChange={() => onChange({ ...draft, ending: !draft.ending })} strong>
+            {t("endingSoon")}
+          </Check>
+        )}
       </Group>
       {counts.goals.length > 0 && (
         <Group title={health("goal.plural")} sheet={sheet}>
