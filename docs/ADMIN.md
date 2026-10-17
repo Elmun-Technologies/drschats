@@ -76,6 +76,8 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
 | UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
 | Mahsulotlar | Mahsulotlar / Kategoriyalar / Brendlar — bitta tab qatori. Holat chiplari (sotuvda / tugagan / chegirmada / rasmsiz / sotuvdan olingan), kategoriya va brend filtri, saralash (tartib, nom, narx, yangi), o'rnatilgan katalogdan import, yangi, tahrir (uz/ru). Rasmlar: saytdagi rasmlardan tanlash oynasi (`public/products`, `public/images/products/c-*.png`, `public/images/stock` — so'rov paytida o'qiladi, `lib/admin/repo-images.server.ts`), tartib strelkalari, Tigris bo'lsa yuklash. Kategoriya selekti yonida «+ Yangi kategoriya». Saqlash saytni darhol yangilaydi |
+| Ombor | mahsulot formasida «Ombordagi soni» (bo'sh — kuzatilmaydi) va «Kam qoldi chegarasi»; ro'yxatda ombor tugmasi («12 ta», «kam: 3», «tugagan», «kuzatilmaydi») → ± / aniq son / kuzatmaslik oynasi (izoh bilan), «Kam qolganlar» chipi, standart chegara kartasi; tahrir sahifasida «Ombor tarixi» |
+| Kutayotganlar | `/admin/waitlist`: mahsulot × omborni / narxni kutayotganlar soni, «Hozir xabar yuborish», so'rovlar (telefon yashirin, bosilganda to'liq), holat va tur chiplari, bekor qilish, CSV |
 | Kategoriyalar | kartalar setkasi (rasm, uz/ru nom, mahsulot soni), `categories/new`, `categories/[slug]` tahrir; slug bo'sh bo'lsa uz nomdan; mahsuloti bor kategoriya o'chirilmaydi |
 | Brendlar | qo'shish (slug nomdan), tahrir, o'chirish, mahsulot soni |
 | Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
@@ -146,6 +148,32 @@ const code = await issuePromoCode({
 }); // → "GV-7K3P9Q" (default: bir martalik, 1 telefon — 1 marta)
 ```
 
+## Ombor va kutayotganlar (0009)
+
+- `products.stock_qty` `null` — son kuzatilmaydi, mahsulot avvalgidek faqat
+  `in_stock` bilan ishlaydi. Son kiritilsa `in_stock` undan aniqlanadi (0 → tugagan).
+- **Buyurtma**: `saveOrderToDb` bitta tranzaksiyada buyurtmani yozadi va har
+  mahsulotdan `update … set stock_qty = stock_qty - n where stock_qty >= n`
+  bilan oladi (mahsulotlar id bo'yicha tartibda — deadlock yo'q). Yetmasa
+  tranzaksiya qaytadi va savat «Faqat N ta qoldi» deb qator sonini tushiradi.
+  Keyin `catalog` tegi va mahsulot sahifalari yangilanadi.
+- **Bekor qilish** (admin holat → «Bekor qilindi»): buyurtma qatori qulflanadi,
+  uning `stock_movements` netosi qaytariladi — ikki marta bosilsa ham bir marta.
+  Bekor qilingan buyurtma qayta ochilsa son yana olinadi (0 dan pastga emas).
+- Har bir o'zgarish `stock_movements` da: `order`, `cancel`, `manual` (izoh bilan), `import`.
+- Forma sonni faqat admin maydonni o'zgartirganda yozadi (`stockQtyBefore`) —
+  forma ochiq turganda tushgan buyurtma qaytarib yozilmaydi.
+- **So'rovlar**: «Xabar ber» (tugagan) va «Narxi tushsa xabar bering» (sotuvda,
+  ko'rgan narxi saqlanadi) — `restock_requests`, telefon + mahsulot + tur bo'yicha
+  bitta kutayotgan qator. Telefon klub botiga bog'langan bo'lsa chat id yoziladi.
+- **Xabar**: mahsulot sotuvga qaytsa (forma, «Omborga keldi», ± oynasi, bekor
+  qilish) yoki narxi saqlangan narxdan tushsa `afterProductChange` →
+  `notifyWaitlist` (`lib/notify/waitlist.ts`): qatorlar band qilinadi, kanallar
+  ketma-ket — Telegram (`bot_jobs`, dedupe `restock:<id>`, havola
+  `utm_source=telegram&utm_medium=restock`), SMS (hozircha `not_configured`,
+  keyingi bosqich shu `Notifier` ga ulanadi), qolganlar operatorga qo'ng'iroq
+  ro'yxati bo'lib boradi. Hech bir kanal qabul qilmasa qator yana «kutmoqda».
+
 ## Integratsiya sozlamalari
 
 - Ommaviy qiymatlar (analytics ID, Vebvizor, tasdiqlash kodlari) —
@@ -186,4 +214,7 @@ const code = await issuePromoCode({
 | `db/migrations/0006_crm_marketing.sql` | `visitors`, `visitor_events`, `orders.visitor_id`, `promotions`, `campaigns`, `site_settings`, `admin_users.session_epoch` |
 | `db/migrations/0007_promo_codes.sql` | `promo_codes`, `promo_redemptions`, `orders.promo_code` |
 | `src/lib/promo/` | promokod qoidalari (`rules.ts`, testli), tranzaksiya va `issuePromoCode` (`server.ts`), birinchi buyurtma sozlamasi (`settings.ts`, `offer.ts`), savat store'i (`store.ts`, `govita-promo`) |
+| `db/migrations/0009_stock_waitlist.sql` | `products.stock_qty`, `products.low_stock_at`, `stock_movements`, `restock_requests` |
+| `src/lib/catalog/stock-rules.ts`, `stock.ts`, `order-stock.ts` | ombor qoidalari (sof, testli), bazadagi o'zgarishlar, buyurtma holati → ombor |
+| `src/lib/notify/` | kutayotganlar: `Notifier` interfeysi, kanallar, xabar matnlari (uz/ru), dispatch |
 | `src/lib/journey/` | kuzatuv: brauzer klienti, server yig'uvchi, sof qoidalar (`model.ts`, testli) |

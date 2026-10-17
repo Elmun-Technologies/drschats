@@ -14,9 +14,11 @@ export const MAX_LINE_QTY = 99;
 export const MAX_OFFER_QTY = 3;
 
 /** The most units a line may hold: one free gift, a few at an offer price, otherwise the schema cap. */
-export function lineQtyCap(l: Pick<CartLine, "upsellDiscountPercent">): number {
+export function lineQtyCap(l: Pick<CartLine, "upsellDiscountPercent"> & { stockQty?: number }): number {
   if (l.upsellDiscountPercent === 100) return 1;
-  return l.upsellDiscountPercent ? MAX_OFFER_QTY : MAX_LINE_QTY;
+  const cap = l.upsellDiscountPercent ? MAX_OFFER_QTY : MAX_LINE_QTY;
+  // A tracked count is a hint here (the order write is authoritative); never below 1, so a line is not emptied.
+  return l.stockQty != null ? Math.max(1, Math.min(cap, l.stockQty)) : cap;
 }
 
 export interface CartLine {
@@ -46,6 +48,8 @@ export interface CartLine {
   subscription?: { intervalDays: number };
   /** Set by `syncPrices` when the catalogue says the product is sold out. */
   soldOut?: boolean;
+  /** Tracked stock when the line was added / last synced; caps the stepper. */
+  stockQty?: number;
 }
 
 export interface CartTotals {

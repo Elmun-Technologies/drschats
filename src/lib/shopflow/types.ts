@@ -95,6 +95,12 @@ export interface Product {
   cutout?: string | null;
   unit?: { count: number; unit: "tablet" | "capsule" } | null;
   brand?: { slug: string; name: string } | null;
+  /**
+   * A tracked stock count (admin «Ombordagi soni») and its "kam qoldi"
+   * threshold. Absent when the count is not tracked — then nothing about
+   * quantity is ever shown. Read through lib/catalog/stock-rules.
+   */
+  stock?: { qty: number; lowAt: number };
 }
 
 export type PromotionType =
@@ -230,6 +236,8 @@ export interface OrderResult {
   ok: boolean;
   orderId?: string;
   message?: string;
+  /** A tracked count could not cover a line: `slug` names it, `available` is what is left. */
+  shortage?: { slug?: string; available: number };
 }
 
 /** The contract every Shopflow client (mock or real HTTP) implements. */

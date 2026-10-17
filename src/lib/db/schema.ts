@@ -41,6 +41,10 @@ export const products = pgTable("products", {
   oldPrice: integer("old_price"),
   saleEndsAt: timestamp("sale_ends_at", { withTimezone: true }),
   inStock: boolean("in_stock").notNull().default(true),
+  /** null = not tracked (0009); when tracked, in_stock follows it. */
+  stockQty: integer("stock_qty"),
+  /** Per-product "kam qoldi" threshold; null = the site default. */
+  lowStockAt: integer("low_stock_at"),
   kind: text("kind").$type<"core" | "addon" | "unlisted">().notNull().default("core"),
   sort: integer("sort").notNull().default(0),
   images: jsonb("images").$type<string[]>().notNull().default([]),
@@ -72,6 +76,41 @@ export const orders = pgTable("orders", {
   promoCode: text("promo_code"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const STOCK_REASONS = ["order", "cancel", "manual", "import"] as const;
+export type StockReason = (typeof STOCK_REASONS)[number];
+
+export const stockMovements = pgTable("stock_movements", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productId: text("product_id").notNull(),
+  delta: integer("delta").notNull(),
+  reason: text("reason").$type<StockReason>().notNull(),
+  orderId: bigint("order_id", { mode: "number" }),
+  adminNote: text("admin_note"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const WAIT_KINDS = ["restock", "price_drop"] as const;
+export type WaitKind = (typeof WAIT_KINDS)[number];
+export const WAIT_STATUSES = ["waiting", "notified", "cancelled"] as const;
+export type WaitStatus = (typeof WAIT_STATUSES)[number];
+export type WaitChannel = "telegram" | "sms" | "operator" | "manual";
+
+export const restockRequests = pgTable("restock_requests", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productId: text("product_id").notNull(),
+  productSlug: text("product_slug").notNull(),
+  phone9: text("phone9").notNull(),
+  phone: text("phone").notNull(),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  kind: text("kind").$type<WaitKind>().notNull().default("restock"),
+  targetPrice: integer("target_price"),
+  telegramChatId: bigint("telegram_chat_id", { mode: "number" }),
+  status: text("status").$type<WaitStatus>().notNull().default("waiting"),
+  notifiedVia: text("notified_via").$type<WaitChannel>(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  notifiedAt: timestamp("notified_at", { withTimezone: true }),
 });
 
 export const adminUsers = pgTable("admin_users", {

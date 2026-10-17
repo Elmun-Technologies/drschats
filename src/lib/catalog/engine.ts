@@ -17,6 +17,7 @@ import type { RawCategory, RawProduct, RawPromotion } from "@/lib/shopflow/mock"
 import { fold } from "@/lib/search/fold";
 import { audienceOf } from "@/lib/quiz/audience-fit";
 import { livePrice, saleOver } from "@/lib/shop/sale";
+import { DEFAULT_LOW_STOCK_AT } from "./stock-rules";
 
 /*
   The catalogue's read logic, independent of where the rows come from: the
@@ -112,6 +113,7 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     cutout: p.cutout,
     unit: p.unit,
     brand,
+    ...(p.stockQty != null ? { stock: { qty: p.stockQty, lowAt: p.lowStockAt ?? DEFAULT_LOW_STOCK_AT } } : {}),
   };
 }
 

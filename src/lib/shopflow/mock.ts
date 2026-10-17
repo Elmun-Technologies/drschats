@@ -191,6 +191,10 @@ export interface RawProduct {
   cutout?: string | null;
   unit?: { count: number; unit: "tablet" | "capsule" } | null;
   brandSlug?: string | null;
+  /** Tracked stock (database only); null/absent = not tracked. */
+  stockQty?: number | null;
+  /** The resolved "kam qoldi" threshold for a tracked count. */
+  lowStockAt?: number;
 }
 
 export const rawProducts: RawProduct[] = [

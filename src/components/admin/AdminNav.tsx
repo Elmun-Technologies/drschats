@@ -38,6 +38,7 @@ export const NAV_GROUPS = [
       { href: "/admin/products", label: "Mahsulotlar", icon: "box" },
       { href: "/admin/categories", label: "Kategoriyalar", icon: "grid" },
       { href: "/admin/brands", label: "Brendlar", icon: "tag" },
+      { href: "/admin/waitlist", label: "Kutayotganlar", icon: "bell" },
     ],
   },
   {
@@ -72,6 +73,7 @@ export function NavIcon({ name, className }: { name: string; className?: string 
     grid: <><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></>,
     tag: <><path d="M20 13 13 20 4 11V4h7z" /><circle cx="8" cy="8" r="1" /></>,
     ticket: <><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z" /><path d="M14 7v10" strokeDasharray="2 2" /></>,
+    bell: <><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2h-15z" /><path d="M10 20a2 2 0 0 0 4 0" /></>,
     message: <><path d="M4 5h16v12H9l-5 4z" /><path d="M8 10h8M8 13h5" /></>,
     file: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v5h5M9 12h6M9 16h6" /></>,
     plug: <><path d="M8 4v5M16 4v5M6 9h12v2a6 6 0 0 1-6 6v4" /></>,

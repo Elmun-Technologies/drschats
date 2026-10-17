@@ -52,6 +52,7 @@ export function useAddToCart(product: Product) {
         price: product.price,
         oldPrice: product.oldPrice,
         saleEndsAt: product.saleEndsAt,
+        stockQty: product.stock?.qty,
         subscription: subscribing ? { intervalDays } : undefined,
       },
       qty,

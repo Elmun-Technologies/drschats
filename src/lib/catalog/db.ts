@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { asc, count, sql } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db/client";
 import { brands, categories, orders, products, promotions } from "@/lib/db/schema";
@@ -6,6 +6,7 @@ import { builtInCatalog, type RawProduct, type RawPromotion } from "@/lib/shopfl
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
 import type { CatalogData } from "./engine";
 import { createCircuit } from "./circuit";
+import { StockShortage, readLowStockDefault, takeStock } from "./stock";
 
 export const CATALOG_TAG = "catalog";
 
@@ -41,11 +42,12 @@ async function readPromotions(): Promise<RawPromotion[]> {
 
 async function readCatalog(): Promise<CatalogData> {
   const db = getDb();
-  const [cats, brandRows, rows, promos] = await Promise.all([
+  const [cats, brandRows, rows, promos, lowStockDefault] = await Promise.all([
     db.select().from(categories).orderBy(asc(categories.sort), asc(categories.slug)),
     db.select().from(brands).orderBy(asc(brands.sort), asc(brands.name)),
     db.select().from(products).orderBy(asc(products.sort), asc(products.createdAt)),
     readPromotions(),
+    readLowStockDefault(db),
   ]);
   const categoryId = new Map(cats.map((c) => [c.slug, c.id]));
   return {
@@ -78,6 +80,8 @@ async function readCatalog(): Promise<CatalogData> {
         cutout: p.cutout,
         unit: p.unit,
         brandSlug: p.brandSlug,
+        stockQty: p.stockQty,
+        lowStockAt: p.lowStockAt ?? lowStockDefault,
       }),
     ),
     promotions: promos,
@@ -130,17 +134,47 @@ export function orderValues(payload: OrderRequest, promoCode: string | null = nu
   };
 }
 
-/** Every order lands in the database first; Telegram is the alert, not the record. */
+/**
+ * Every order lands in the database first; Telegram is the alert, not the record.
+ *
+ * Tracked stock is taken in the same transaction as the insert: a line the
+ * shelf cannot cover rolls the order back and is answered per line ("Faqat
+ * N ta qoldi"), so there is never an order the shop cannot fill nor a count
+ * that went down for an order that does not exist.
+ */
 export async function saveOrderToDb(payload: OrderRequest): Promise<OrderResult> {
   try {
-    const [row] = await getDb()
-      .insert(orders)
-      .values(orderValues(payload))
-      .returning({ number: orders.number });
-    return { ok: true, orderId: row.number ?? undefined };
+    const { number, changed } = await getDb().transaction(async (tx) => {
+      const [row] = await tx.insert(orders).values(orderValues(payload)).returning({ id: orders.id, number: orders.number });
+      const changed = await takeStock(tx, row.id, payload.items);
+      return { number: row.number, changed };
+    });
+    if (changed.length > 0) refreshStockPages(payload.items.filter((i) => changed.includes(i.productId)).map((i) => i.slug));
+    return { ok: true, orderId: number ?? undefined };
   } catch (err) {
+    if (err instanceof StockShortage) {
+      const line = payload.items.find((i) => i.productId === err.productId);
+      return { ok: false, shortage: { slug: line?.slug, available: err.available }, message: "Insufficient stock." };
+    }
     console.error("[orders] insert failed:", (err as Error).message);
     return { ok: false, message: "Order could not be saved." };
+  }
+}
+
+/*
+  A count changed by an order: the catalogue cache and the product pages
+  holding the old number are dropped, so "3 ta qoldi" does not outlive the
+  sale that made it 1. Never throws — the order is already saved.
+*/
+export function refreshStockPages(slugs: string[]) {
+  try {
+    revalidateTag(CATALOG_TAG);
+    for (const slug of new Set(slugs)) {
+      revalidatePath(`/uz/product/${slug}`);
+      revalidatePath(`/ru/product/${slug}`);
+    }
+  } catch (err) {
+    console.error("[orders] stock revalidation failed:", (err as Error).message);
   }
 }
 

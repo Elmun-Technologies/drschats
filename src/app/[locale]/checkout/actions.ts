@@ -155,7 +155,7 @@ async function clubBotReceipt(orderId: string, initData: string | undefined): Pr
 }
 
 export type OrderError =
-  | "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "promo_invalid" | "failed";
+  | "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "insufficient_stock" | "invalid_offer" | "payment_unavailable" | "promo_invalid" | "failed";
 
 export async function submitOrder(
   payload: OrderRequest,
@@ -215,6 +215,7 @@ export async function submitOrder(
       const placed = await placeOrder(order, promotions);
       if (!placed.ok) {
         if (placed.error === "promo_invalid") return { ok: false, error: "promo_invalid", promoReason: placed.rejection.reason };
+        if (placed.error === "insufficient_stock") return { ok: false, error: "insufficient_stock", slug: placed.slug, shortage: { slug: placed.slug, available: placed.available } };
         return { ok: false, error: "failed" };
       }
       order = placed.order;
@@ -264,7 +265,7 @@ export async function submitOrder(
       const adjustment = order.totals.adjustments?.[0];
       return { ...result, total: order.totals.total, coupon: adjustment?.kind === "promo" ? adjustment.code : undefined };
     }
-    return { ...result, error: result.ok ? undefined : "failed" };
+    return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };
   } catch (err) {
     console.error("[checkout] createOrder failed", err instanceof Error ? err.message : "unknown error");
     return { ok: false, error: "failed" };

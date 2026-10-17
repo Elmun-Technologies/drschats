@@ -4,7 +4,8 @@ import { randomInt } from "node:crypto";
 import { and, count, eq, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { orders, promoCodes, promoRedemptions, type PromoSource } from "@/lib/db/schema";
-import { orderValues } from "@/lib/catalog/db";
+import { orderValues, refreshStockPages } from "@/lib/catalog/db";
+import { StockShortage, takeStock } from "@/lib/catalog/stock";
 import type { OrderAdjustment, OrderRequest, Promotion } from "@/lib/shopflow/types";
 import {
   applyAdjustment,
@@ -134,6 +135,7 @@ export async function quoteDiscounts({
 export type PlaceOrderResult =
   | { ok: true; orderId: string; order: OrderRequest }
   | { ok: false; error: "promo_invalid"; code: string; rejection: PromoRejection }
+  | { ok: false; error: "insufficient_stock"; slug?: string; available: number }
   | { ok: false; error: "failed" };
 
 class PromoRejected extends Error {
@@ -160,8 +162,9 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
   const lines = promoLinesOf(order.items);
   const setting = await readFirstOrderSetting();
 
+  let stockChanged: string[] = [];
   try {
-    return await getDb().transaction(async (tx) => {
+    const placed = await getDb().transaction(async (tx) => {
       if (phone9) await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${`gv-order-phone:${phone9}`}))`);
 
       let promo: { code: string; discount: number } | null = null;
@@ -187,14 +190,22 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
       const usedCode = adjustment?.kind === "promo" ? adjustment.code : null;
 
       const [saved] = await tx.insert(orders).values(orderValues(final, usedCode)).returning({ id: orders.id, number: orders.number });
+      // Tracked stock goes down in the same transaction: a short shelf rolls back the order and the redemption.
+      stockChanged = await takeStock(tx, saved.id, final.items);
       if (adjustment?.kind === "promo" && phone9) {
         await tx.insert(promoRedemptions).values({ code: adjustment.code, orderId: saved.id, phone9, discount: adjustment.amount });
         await tx.update(promoCodes).set({ uses: sql`${promoCodes.uses} + 1` }).where(eq(promoCodes.code, adjustment.code));
       }
       return { ok: true as const, orderId: saved.number ?? String(saved.id), order: final };
     });
+    if (stockChanged.length > 0) refreshStockPages(order.items.filter((i) => stockChanged.includes(i.productId)).map((i) => i.slug));
+    return placed;
   } catch (err) {
     if (err instanceof PromoRejected) return { ok: false, error: "promo_invalid", code: err.code, rejection: err.rejection };
+    if (err instanceof StockShortage) {
+      const line = order.items.find((i) => i.productId === err.productId);
+      return { ok: false, error: "insufficient_stock", slug: line?.slug, available: err.available };
+    }
     console.error("[orders] insert failed:", (err as Error).message);
     return { ok: false, error: "failed" };
   }
