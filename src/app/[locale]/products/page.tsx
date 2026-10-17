@@ -5,6 +5,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { ShopView } from "@/components/shop/ShopView";
 import { isCatalogSort } from "@/lib/shop/catalog-sort";
 import { parseFilters, type FilterParams } from "@/lib/shop/catalog-filters";
+import { firstParam } from "@/lib/search-params";
 
 export const revalidate = 300;
 
@@ -33,18 +34,19 @@ export default async function ProductsPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<FilterParams & { sort?: string; q?: string; page?: string }>;
+  searchParams: Promise<FilterParams & { sort?: string | string[]; q?: string | string[]; page?: string | string[] }>;
 }) {
   const { locale } = await params;
   const { sort, q, page, ...rest } = await searchParams;
   setRequestLocale(locale);
-  const activeSort = isCatalogSort(sort) ? sort : "popular";
-  const activePage = Math.max(1, Number(page) || 1);
+  const sortValue = firstParam(sort);
+  const activeSort = isCatalogSort(sortValue) ? sortValue : "popular";
+  const activePage = Math.max(1, Number(firstParam(page)) || 1);
   return (
     <ShopView
       locale={locale}
       sort={activeSort}
-      search={q?.trim() || undefined}
+      search={firstParam(q)?.trim() || undefined}
       filters={parseFilters(rest)}
       page={activePage}
     />

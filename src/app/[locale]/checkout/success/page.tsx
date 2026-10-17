@@ -5,6 +5,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
+import { firstParam } from "@/lib/search-params";
 
 export const metadata: Metadata = { robots: { index: false } };
 
@@ -22,10 +23,10 @@ export default async function SuccessPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ order?: string }>;
+  searchParams: Promise<{ order?: string | string[] }>;
 }) {
   const { locale } = await params;
-  const { order } = await searchParams;
+  const order = firstParam((await searchParams).order);
   setRequestLocale(locale);
   const t = await getTranslations("checkout.success");
   const tv = await getTranslations("cart.v3");

@@ -3,6 +3,7 @@ import type { HealthTopic } from "@/lib/content/health-topics";
 import type { Product } from "@/lib/shopflow/types";
 import { productMatchesTopic } from "./goal-facets";
 import { unitOf, brandOf } from "@/lib/catalog/product-facts";
+import { firstParam, type SearchParamValue } from "@/lib/search-params";
 
 /*
   The catalogue's filters (design: CatalogV3 sidebar, FiltersMobileV3 sheet).
@@ -129,23 +130,27 @@ export function activeFilterCount(filters: CatalogFilters): number {
   );
 }
 
-const list = (v?: string) => (v ? v.split(",").map((s) => s.trim()).filter(Boolean) : []);
-const num = (v?: string) => {
+const list = (raw: SearchParamValue) => {
+  const v = Array.isArray(raw) ? raw.join(",") : raw;
+  return v ? v.split(",").map((s) => s.trim()).filter(Boolean) : [];
+};
+const num = (raw: SearchParamValue) => {
+  const v = firstParam(raw);
   const n = Number(v);
   return v && Number.isFinite(n) && n >= 0 ? n : null;
 };
 const DOSE_UNITS: DoseUnit[] = ["capsule", "tablet"];
 
-export type FilterParams = Partial<Record<"stock" | "sale" | "brand" | "form" | "origin" | "goal" | "min" | "max", string>>;
+export type FilterParams = Partial<Record<"stock" | "sale" | "brand" | "form" | "origin" | "goal" | "min" | "max", string | string[]>>;
 
 export function parseFilters(params: FilterParams): CatalogFilters {
   return {
-    stock: params.stock === "1",
-    sale: params.sale === "1",
+    stock: firstParam(params.stock) === "1",
+    sale: firstParam(params.sale) === "1",
     brands: list(params.brand),
     forms: list(params.form).filter((f): f is DoseUnit => DOSE_UNITS.includes(f as DoseUnit)),
     origins: list(params.origin),
-    goal: params.goal?.trim() || null,
+    goal: firstParam(params.goal)?.trim() || null,
     min: num(params.min),
     max: num(params.max),
   };

@@ -10,6 +10,7 @@ import { isStocked } from "@/lib/shop/categories";
 import { ShopView } from "@/components/shop/ShopView";
 import { isCatalogSort } from "@/lib/shop/catalog-sort";
 import { parseFilters, type FilterParams } from "@/lib/shop/catalog-filters";
+import { firstParam } from "@/lib/search-params";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -54,7 +55,7 @@ export default async function CategoryPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale; category: string }>;
-  searchParams: Promise<FilterParams & { sort?: string; q?: string; page?: string }>;
+  searchParams: Promise<FilterParams & { sort?: string | string[]; q?: string | string[]; page?: string | string[] }>;
 }) {
   const { locale, category } = await params;
   const { sort, q, page, ...rest } = await searchParams;
@@ -65,14 +66,15 @@ export default async function CategoryPage({
   const shelf = categories.find((c) => c.slug === category);
   if (!shelf || !isStocked(shelf)) notFound();
 
-  const activeSort = isCatalogSort(sort) ? sort : "popular";
-  const activePage = Math.max(1, Number(page) || 1);
+  const sortValue = firstParam(sort);
+  const activeSort = isCatalogSort(sortValue) ? sortValue : "popular";
+  const activePage = Math.max(1, Number(firstParam(page)) || 1);
   return (
     <ShopView
       locale={locale}
       activeCategory={category}
       sort={activeSort}
-      search={q?.trim() || undefined}
+      search={firstParam(q)?.trim() || undefined}
       filters={parseFilters(rest)}
       page={activePage}
     />

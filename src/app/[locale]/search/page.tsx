@@ -14,9 +14,10 @@ import { ProductGrid } from "@/components/home/HomeBlocks";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 import { TrackSearch } from "@/components/analytics/TrackSearch";
+import { firstParam, type RawSearchParams } from "@/lib/search-params";
 
 type Params = Promise<{ locale: Locale }>;
-type Query = Promise<{ q?: string; category?: string }>;
+type Query = Promise<RawSearchParams>;
 
 /*
   Design: SearchV3 / SearchEmptyV3. Results come from the catalogue's own
@@ -37,9 +38,10 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
 
 export default async function SearchPage({ params, searchParams }: { params: Params; searchParams: Query }) {
   const { locale } = await params;
-  const { q: rawQ, category } = await searchParams;
+  const query = await searchParams;
+  const category = firstParam(query.category);
   setRequestLocale(locale);
-  const q = rawQ?.trim() ?? "";
+  const q = firstParam(query.q)?.trim() ?? "";
 
   const [t, tc, tp, common, home, categories, pool, found] = await Promise.all([
     getTranslations("shop.search"),
