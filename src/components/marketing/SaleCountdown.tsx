@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 */
 const pad = (n: number) => String(n).padStart(2, "0");
 
-function useRemaining(endsAt: string, tickMs: number) {
+export function useRemaining(endsAt: string, tickMs: number) {
   const end = Date.parse(endsAt);
   const [left, setLeft] = useState<number | null>(null);
   useEffect(() => {
@@ -24,22 +24,40 @@ function useRemaining(endsAt: string, tickMs: number) {
   return left;
 }
 
+/** Milliseconds left → whole days and an "hh:mm:ss" clock for the rest. */
+export function splitLeft(left: number): { days: number; clock: string } {
+  const s = Math.floor(left / 1000);
+  return {
+    days: Math.floor(s / 86400),
+    clock: `${pad(Math.floor((s % 86400) / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`,
+  };
+}
+
 /** Product page: "Aksiya tugashiga: 2 kun 05:12:33". */
-export function SaleCountdown({ endsAt, className }: { endsAt: string; className?: string }) {
+export function SaleCountdown({
+  endsAt,
+  className,
+  onDark = false,
+  as: Tag = "p",
+}: {
+  endsAt: string;
+  className?: string;
+  onDark?: boolean;
+  /** "span" inside a link or another inline box. */
+  as?: "p" | "span";
+}) {
   const t = useTranslations("countdown");
   const left = useRemaining(endsAt, 1000);
   if (left === null || left <= 0) return null;
-  const s = Math.floor(left / 1000);
-  const days = Math.floor(s / 86400);
-  const clock = `${pad(Math.floor((s % 86400) / 3600))}:${pad(Math.floor((s % 3600) / 60))}:${pad(s % 60)}`;
+  const { days, clock } = splitLeft(left);
   return (
-    <p className={cn("flex flex-wrap items-center gap-x-2 text-sm text-ink-2", className)}>
+    <Tag className={cn("flex flex-wrap items-center gap-x-2 text-sm", onDark ? "text-on-dark-2" : "text-ink-2", className)}>
       <span>{t("label")}</span>
-      <span className="font-bold tabular-nums text-ink">
+      <span className={cn("font-bold tabular-nums", onDark ? "text-white" : "text-ink")}>
         {days > 0 && `${days} ${t("days")} `}
         {clock}
       </span>
-    </p>
+    </Tag>
   );
 }
 

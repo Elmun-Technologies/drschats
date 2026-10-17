@@ -26,6 +26,8 @@ import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistr
 import { RouteAnalytics } from "@/components/analytics/RouteAnalytics";
 import { CartJourney } from "@/components/analytics/CartJourney";
 import { getPublicSettings } from "@/lib/integrations/site-settings";
+import { getAnnouncements, getBanners } from "@/lib/merch/store";
+import { PromoStrip } from "@/components/marketing/AnnouncementBar";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -64,7 +66,7 @@ export default async function LocaleLayout({
 
   // Categories are layout data now that the header's catalogue menu lists
   // them; the read is cached and revalidated like the promotions beside it.
-  const [messages, promotions, categories, topicPaths, tc, deals] = await Promise.all([
+  const [messages, promotions, categories, topicPaths, tc, deals, announcements, strips] = await Promise.all([
     getMessages(),
     shopflow.getPromotions(locale as Locale).catch(() => []),
     shopflow.getCategories(locale as Locale).catch(() => []),
@@ -73,6 +75,8 @@ export default async function LocaleLayout({
     shopflow
       .getProducts({ locale: locale as Locale, assortment: "core", sort: "deals", pageSize: 1 })
       .catch(() => null),
+    getAnnouncements(locale as Locale),
+    getBanners("strip", locale as Locale),
   ]);
   const weeklyDeal = toMenuDeal(deals?.items[0]);
 
@@ -98,7 +102,8 @@ export default async function LocaleLayout({
             </a>
             <ScrollProgress />
             <SmoothScroll>
-              <Header categories={categories} topicPaths={topicPaths} deal={weeklyDeal} />
+              <Header categories={categories} topicPaths={topicPaths} deal={weeklyDeal} announcements={announcements} />
+              {strips.length > 0 && <PromoStrip banners={strips} />}
               {/* The tab bar is fixed, so its height is reserved twice: here, so
                   the seam between main and footer never rests under it, and
                   again at the end of the footer, which is what actually runs

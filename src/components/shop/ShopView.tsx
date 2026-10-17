@@ -14,6 +14,8 @@ import {
   activeFilterCount,
   applyFilters,
   filtersToQuery,
+  promotedSlugs,
+  sortByEnding,
   toFacts,
   toggle,
   EMPTY_FILTERS,
@@ -27,6 +29,8 @@ import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, breadcrumbLd, collectionLd } from "@/lib/seo/jsonld";
 import { categorySeoCopy } from "@/lib/content/category-seo";
 import { cutoutOf, brandOf } from "@/lib/catalog/product-facts";
+import { getBanners } from "@/lib/merch/store";
+import { CategoryBanner } from "@/components/marketing/CategoryBanner";
 
 /** Shopflow filters by category and search; the rest runs over every matching product. */
 const PAGE_SIZE = 24;
@@ -53,24 +57,30 @@ export async function ShopView({
   filters?: CatalogFilters;
   page?: number;
 }) {
-  const [t, v3, nav, prod, header, categories, pool, topics] = await Promise.all([
+  // "Tez tugaydi" is ordered here; the source lists in its curated order for it.
+  const sourceSort = sort === "ending" ? "popular" : sort;
+  const [t, v3, nav, prod, header, categories, pool, topics, promotions, banners] = await Promise.all([
     getTranslations("shop"),
     getTranslations("shop.v3"),
     getTranslations("nav"),
     getTranslations("product"),
     getTranslations("header"),
     shopflow.getCategories(locale),
-    getAllProducts({ locale, category: activeCategory, search, sort }),
+    getAllProducts({ locale, category: activeCategory, search, sort: sourceSort }),
     getHealthTopics(locale, "goal"),
+    shopflow.getPromotions(locale).catch(() => []),
+    search ? Promise.resolve([]) : getBanners("category", locale),
   ]);
 
   // "Ommabop" has no sales history to rank by, so the supplement lines with a
   // cutout pack shot lead and coffee and devices follow — as on the home page.
-  const items =
-    sort === "popular"
+  const curated =
+    sourceSort === "popular"
       ? [...pool.items].sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
       : pool.items;
-  const facts = items.map((p) => toFacts(p, topics));
+  const items = sort === "ending" ? sortByEnding(curated) : curated;
+  const promoted = promotedSlugs(promotions);
+  const facts = items.map((p) => toFacts(p, topics, { promoted }));
   const matchIds = new Set(applyFilters(facts, filters).map((f) => f.id));
   const matched = items.filter((p) => matchIds.has(p.id));
   const visible = matched.slice(0, page * PAGE_SIZE);
@@ -108,6 +118,7 @@ export async function ShopView({
   const chips = [
     filters.stock && { key: "stock", label: v3("inStock"), next: { ...filters, stock: false } },
     filters.sale && { key: "sale", label: v3("onSale"), next: { ...filters, sale: false } },
+    filters.ending && { key: "ending", label: v3("endingSoon"), next: { ...filters, ending: false } },
     filters.goal && { key: "goal", label: goalNames[filters.goal] ?? filters.goal, next: { ...filters, goal: null } },
     ...filters.brands.map((b) => ({ key: `b-${b}`, label: brandNames[b] ?? b, next: { ...filters, brands: toggle(filters.brands, b) } })),
     ...filters.forms.map((f) => ({ key: `f-${f}`, label: formLabel[f], next: { ...filters, forms: toggle(filters.forms, f) } })),
@@ -234,6 +245,8 @@ export async function ShopView({
               )}
             </div>
           )}
+
+          {banners.length > 0 && <CategoryBanner banners={banners} />}
 
           {matched.length === 0 ? (
             <div className="flex flex-col items-center gap-4 py-20 text-center">

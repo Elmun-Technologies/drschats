@@ -392,6 +392,11 @@
       "seo": {
         "title": "Go Vita — vitaminlar va BAD onlayn doʻkoni",
         "text": "Go Vita — Oʻzbekistonga rasmiy import qilinadigan vitaminlar va biologik faol qoʻshimchalar. Katalogda Swiss Energy, Dr. Frei, Delical, Aminomorin va Peano mahsulotlari: vitamin va minerallar, shipuchi tabletkalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Toshkent boʻylab Yandex Dostavka {hours} soat ichida yetkazadi, viloyatlarga BTS orqali 1–3 kunda. {free} soʻmdan ortiq buyurtmalar bepul yetkaziladi."
+      },
+      "dealOfDay": {
+        "title": "Bugungi taklif",
+        "lead": "Bitta mahsulot — cheklangan vaqtga maxsus narx. Muddat tugagach narx odatiy holiga qaytadi.",
+        "save": "Tejaysiz: {amount}"
       }
     }
   },
@@ -539,7 +544,7 @@
       "sortDeals": "Chegirma",
       "price": "Narx, soʻm",
       "inStock": "Sotuvda bor",
-      "onSale": "Chegirmadagilar",
+      "onSale": "Aksiyada",
       "brand": "Brend",
       "form": "Shakli",
       "formCapsule": "Kapsula",
@@ -562,7 +567,9 @@
       "seoText": "Go Vita katalogida «{name}» boʻlimida {count} ta mahsulot. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan. Toshkent boʻylab Yandex Dostavka {hours} soat ichida, viloyatlarga BTS yetkazadi, {free} soʻmdan ortiq buyurtmalar bepul.",
       "categories": "Boʻlimlar",
       "priceMin": "Eng past narx",
-      "priceMax": "Eng yuqori narx"
+      "priceMax": "Eng yuqori narx",
+      "endingSoon": "Tez tugaydi",
+      "sortEnding": "Tez tugaydi"
     },
     "search": {
       "title": "Qidiruv",
@@ -1187,7 +1194,9 @@
     "closeCatalog": "Katalogni yopish",
     "homeLabel": "GoVita bosh sahifa",
     "allProductsPlain": "Barcha mahsulotlar",
-    "compare": "Taqqoslash"
+    "compare": "Taqqoslash",
+    "announcementPause": "Eʼlonlarni toʻxtatish",
+    "announcementPlay": "Eʼlonlarni davom ettirish"
   },
   "badges": {
     "hot": "YANGI",
