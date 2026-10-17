@@ -24,16 +24,17 @@ export function VerifyEmail() {
   const t = useTranslations("profile.details");
   const locale = useLocale() as Locale;
   const user = useSession((s) => s.user);
+  const token = useSession((s) => s.token);
   const email = useProfile((s) => s.profile.email);
   const name = useProfile((s) => s.profile.name);
   const [state, setState] = useState<State>("idle");
 
-  if (!user || !email) return null;
+  if (!user || !token || !email) return null;
 
   async function verify() {
-    if (!user || !email) return;
+    if (!token || !email) return;
     setState("sending");
-    const result = await sendAccountVerification({ userId: user.id, email, name, locale });
+    const result = await sendAccountVerification({ token, email, name, locale });
     setState(result.ok ? "sent" : "error");
   }
 
