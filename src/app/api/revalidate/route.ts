@@ -1,9 +1,10 @@
 import { revalidateTag } from "next/cache";
+import { matchesSecret } from "@/lib/security/safe-equal";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    if (body.secret !== process.env.SANITY_REVALIDATE_SECRET) {
+    if (!matchesSecret(body?.secret, process.env.SANITY_REVALIDATE_SECRET)) {
       return Response.json({ message: "Invalid secret" }, { status: 401 });
     }
     revalidateTag("sanity");
