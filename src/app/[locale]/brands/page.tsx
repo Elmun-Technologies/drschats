@@ -70,20 +70,20 @@ export default async function BrandsPage({
       <section className="grid gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-4">
         {shown.map((b) => {
           const shots = b.products.map((p) => cutoutOf(p)).filter((s): s is string => Boolean(s)).slice(0, 2);
+          const packs = shots.length > 0 && (
+            <span aria-hidden className="-mb-1.5 -mr-1 flex min-w-0 items-end">
+              {shots.map((src, i) => (
+                <span key={src} className={i > 0 ? "relative -ml-[26px] h-[104px] w-[104px] lg:h-[120px] lg:w-[120px]" : "relative h-[104px] w-[104px] lg:h-[120px] lg:w-[120px]"}>
+                  <Image src={src} alt="" fill sizes="120px" className="object-contain" />
+                </span>
+              ))}
+            </span>
+          );
           const body = (
             <>
-              {b.country && <span className="relative z-[1] text-sm font-semibold text-ink-2">{b.country}</span>}
-              <span className="relative z-[1] text-[28px] font-bold leading-[34px] tracking-[-0.02em] lg:text-[34px] lg:leading-[38px]">{b.name}</span>
-              {b.text && <span className="relative z-[1] max-w-[230px] text-[15px] leading-[22px] text-[#2E3236] lg:text-base lg:leading-[23px]">{b.text}</span>}
-              {shots.length > 0 && (
-                <span aria-hidden className="absolute bottom-[18px] right-5 flex items-end">
-                  {shots.map((src, i) => (
-                    <span key={src} className={i > 0 ? "relative -ml-[26px] h-[104px] w-[104px] lg:h-[120px] lg:w-[120px]" : "relative h-[104px] w-[104px] lg:h-[120px] lg:w-[120px]"}>
-                      <Image src={src} alt="" fill sizes="120px" className="object-contain" />
-                    </span>
-                  ))}
-                </span>
-              )}
+              {b.country && <span className="text-sm font-semibold text-ink-2">{b.country}</span>}
+              <span className="text-[28px] font-bold leading-[34px] tracking-[-0.02em] lg:text-[34px] lg:leading-[38px]">{b.name}</span>
+              {b.text && <span className="max-w-[230px] text-[15px] leading-[22px] text-[#2E3236] lg:text-base lg:leading-[23px]">{b.text}</span>}
             </>
           );
           return b.products.length > 0 ? (
@@ -93,15 +93,20 @@ export default async function BrandsPage({
               className="relative flex min-h-[240px] flex-col gap-2 overflow-hidden rounded-[28px] bg-tile p-6 transition-colors hover:bg-tile-hover lg:min-h-[300px] lg:p-7"
             >
               {body}
-              <span aria-hidden className="relative z-[1] mt-auto flex h-12 w-12 items-center justify-center rounded-full bg-bg">
-                <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M7 17L17 7M9 7h8v8" />
-                </svg>
+              {/* Pack shots share the bottom row with the arrow, so a long description pushes them down instead of under them. */}
+              <span className="mt-auto flex items-end justify-between gap-3 pt-2">
+                <span aria-hidden className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-bg">
+                  <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M7 17L17 7M9 7h8v8" />
+                  </svg>
+                </span>
+                {packs}
               </span>
             </Link>
           ) : (
             <div key={b.slug} className="relative flex min-h-[240px] flex-col gap-2 overflow-hidden rounded-[28px] bg-tile p-6 lg:min-h-[300px] lg:p-7">
               {body}
+              {packs && <span className="mt-auto flex justify-end pt-2">{packs}</span>}
             </div>
           );
         })}
