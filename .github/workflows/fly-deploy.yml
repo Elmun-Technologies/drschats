@@ -2,8 +2,13 @@ name: Deploy to Fly
 
 # Deploys main to Fly.io once the FLY_API_TOKEN repository secret exists
 # (fly tokens create deploy -x 999999h). Until then the job skips cleanly.
+#
+# Runs after CI, not alongside it: a push to main deploys only once every CI
+# job for that commit has passed, and it deploys exactly that commit.
 on:
-  push:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -13,6 +18,11 @@ concurrency:
 
 jobs:
   deploy:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
     runs-on: ubuntu-latest
     env:
       FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
@@ -23,8 +33,10 @@ jobs:
 
       - uses: actions/checkout@v4
         if: steps.token.outputs.present == 'yes'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions/setup-flyctl@1.6
         if: steps.token.outputs.present == 'yes'
 
       - name: Deploy
@@ -46,8 +58,10 @@ jobs:
 
       - uses: actions/checkout@v4
         if: steps.token.outputs.present == 'yes'
+        with:
+          ref: ${{ github.event.workflow_run.head_sha || github.sha }}
 
-      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - uses: superfly/flyctl-actions/setup-flyctl@1.6
         if: steps.token.outputs.present == 'yes'
 
       - name: Deploy bot
