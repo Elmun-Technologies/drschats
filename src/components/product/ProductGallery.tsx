@@ -128,7 +128,7 @@ export function ProductGallery({
                   fill
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
-                  sizes="(max-width: 1024px) 100vw, 40vw"
+                  sizes="(max-width: 1023px) 100vw, 40vw"
                   className={isCutout(i) ? "object-contain p-[9%] lg:p-[10%]" : "object-cover"}
                 />
               </div>

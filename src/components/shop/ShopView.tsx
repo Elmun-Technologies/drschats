@@ -163,7 +163,7 @@ export async function ShopView({
                 current ? "bg-ink text-white" : "bg-tile hover:bg-tile-hover",
               )}
             >
-              <span className="relative z-10 text-[13px] font-semibold leading-4 lg:text-base lg:leading-5">
+              <span className="relative z-10 hyphens-auto break-words text-[13px] font-semibold leading-4 lg:text-base lg:leading-5">
                 {c.name}
                 {c.productCount != null && (
                   <small className={cn("block text-[13px] font-normal", current ? "text-on-dark-2" : "text-muted")}>
@@ -172,7 +172,7 @@ export async function ShopView({
                 )}
               </span>
               {img && (
-                <span className="absolute bottom-0.5 right-0.5 h-16 w-16 lg:bottom-1 lg:right-1.5 lg:h-[78px] lg:w-[78px]">
+                <span className="relative -mr-2 mb-0.5 mt-auto max-h-16 min-h-0 w-16 flex-1 self-end lg:-mr-2.5 lg:mb-1 lg:max-h-[78px] lg:w-[78px]">
                   <Image src={img} alt="" fill sizes="78px" className="object-contain" />
                 </span>
               )}
@@ -317,19 +317,23 @@ export async function ShopView({
   function ListingSlot({ index, children }: { index: number; children: React.ReactNode }) {
     return (
       <>
-        {index === 4 && (
+        {/* Full-row tiles only start a row: after 4/8 cards in two or four columns, after 6/9 in three. */}
+        {(index === 4 || index === 6) && (
           <QuizTile
-            className="col-span-full bg-dark-panel text-white lg:hidden"
+            className={cn("col-span-full bg-dark-panel text-white lg:hidden", index === 4 ? "md:hidden" : "max-md:hidden")}
             title={v3("quizTitle")}
             text={v3("quizText")}
             cta={v3("quizCta")}
             onDark
           />
         )}
-        {index === 8 && (
+        {(index === 8 || index === 9) && (
           <Link
             href="/loyalty"
-            className="col-span-full flex flex-col gap-4 rounded-3xl bg-dark-panel p-5 text-white md:flex-row md:items-center md:gap-6 md:px-8 md:py-6"
+            className={cn(
+              "col-span-full flex flex-col gap-4 rounded-3xl bg-dark-panel p-5 text-white md:flex-row md:items-center md:gap-6 md:px-8 md:py-6",
+              index === 8 ? "md:max-xl:hidden" : "max-md:hidden xl:hidden",
+            )}
           >
             <span className="flex flex-1 flex-col gap-1.5">
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-on-dark-2 md:text-[13px]">{v3("subEyebrow")}</span>

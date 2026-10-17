@@ -53,7 +53,7 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
 
       <div className="flex flex-col overflow-hidden rounded-[20px] bg-dark-panel text-white lg:flex-row lg:items-center lg:gap-8 lg:rounded-[28px] lg:p-7 lg:pl-8">
         <div className="relative h-40 w-full lg:order-2 lg:h-[172px] lg:w-[260px] lg:shrink-0 lg:overflow-hidden lg:rounded-[16px]">
-          <Image src="/images/stock/st-delivery-door.webp" alt="" fill sizes="(max-width: 1024px) 100vw, 260px" className="object-cover" />
+          <Image src="/images/stock/st-delivery-door.webp" alt="" fill sizes="(max-width: 1023px) 100vw, 260px" className="object-cover" />
         </div>
         <div className="flex flex-col gap-2 p-5 lg:flex-1 lg:p-0">
           <p className="text-[22px] font-bold leading-7 lg:text-[32px] lg:leading-[38px]">
@@ -64,15 +64,15 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
         </div>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">
+      <div className="grid gap-3 lg:gap-4 xl:grid-cols-3">
         {options.map((o) => (
-          <div key={o.title} className="flex gap-4 rounded-[20px] bg-tile p-4 lg:flex-col lg:gap-0 lg:p-6">
+          <div key={o.title} className="flex gap-4 rounded-[20px] bg-tile p-4 lg:p-6 xl:flex-col xl:gap-0">
             <span aria-hidden className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-bg">
               <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                 <path d={o.icon} />
               </svg>
             </span>
-            <div className="flex flex-col gap-0.5 lg:mt-5 lg:gap-2">
+            <div className="flex flex-col gap-0.5 lg:gap-1 xl:mt-5 xl:gap-2">
               <h2 className="text-[15px] font-bold lg:text-lg">{o.title}</h2>
               <p className="text-lg font-bold lg:text-[26px] lg:leading-8">{o.value}</p>
               <p className="text-sm leading-5 text-ink-2">{o.text}</p>

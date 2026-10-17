@@ -111,7 +111,7 @@ export async function ProductTemplate({
 
   return (
     <div className="flex flex-col gap-10 pb-9 pt-3 lg:gap-14 lg:pb-[72px] lg:pt-5">
-      <div className="wrap grid gap-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_384px] lg:items-start lg:gap-x-9 lg:gap-y-0">
+      <div className="wrap grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-start lg:gap-x-9 lg:gap-y-0 xl:grid-cols-[minmax(0,1.2fr)_minmax(0,0.8fr)_384px]">
         <div className="-my-1 -mr-2 flex items-center justify-between lg:hidden">
           <Link href={backHref} className="inline-flex min-h-11 items-center gap-1 text-sm text-ink-2">
             <Icon d="M15 6l-6 6 6 6" className="h-4 w-4" />
@@ -124,7 +124,7 @@ export async function ProductTemplate({
           </div>
         </div>
 
-        <div className="order-2 flex flex-col gap-2 lg:order-none lg:col-span-3 lg:mb-9 lg:gap-3.5">
+        <div className="order-2 flex flex-col gap-2 lg:order-none lg:col-span-full lg:mb-9 lg:gap-3.5">
           <nav aria-label={t("breadcrumbHome")} className="hidden flex-wrap gap-2 text-sm text-muted lg:flex">
             <Link href="/" className="hover:text-ink">{t("breadcrumbHome")}</Link>
             {category && (
@@ -165,7 +165,7 @@ export async function ProductTemplate({
           </div>
         </div>
 
-        <div className="order-1 lg:order-none">
+        <div className="order-1 md:max-lg:mx-auto md:max-lg:w-full md:max-lg:max-w-[520px] lg:order-none lg:col-start-1 lg:row-start-2 xl:col-auto xl:row-auto">
           <ProductGallery
             images={images}
             cutout={Boolean(cutout)}
@@ -175,7 +175,7 @@ export async function ProductTemplate({
           />
         </div>
 
-        <div className="order-4 mt-4 flex flex-col gap-6 lg:order-none lg:mt-0">
+        <div className="order-4 mt-4 flex flex-col gap-6 lg:order-none lg:col-start-1 lg:row-start-3 lg:mt-8 xl:col-auto xl:row-auto xl:mt-0">
           {product.servings != null && (
             <div className="hidden flex-col gap-2.5 lg:flex">
               <span className="text-[17px] font-bold">{tv("packSize")}</span>
@@ -204,7 +204,7 @@ export async function ProductTemplate({
           )}
         </div>
 
-        <div className="order-3 flex flex-col gap-3 lg:order-none">
+        <div className="order-3 flex flex-col gap-3 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-2 xl:col-auto xl:row-auto">
           <BuyBox product={product} reviewer={reviewer} />
           <div className="rounded-[20px] bg-tile px-[18px] py-1 lg:px-[22px] lg:py-1.5">
             {delivery.map((d, i) => (
@@ -229,7 +229,7 @@ export async function ProductTemplate({
       <div className="wrap grid gap-8 lg:-mt-4 lg:grid-cols-[minmax(0,1fr)_384px] lg:items-start lg:gap-14">
         <div className="flex min-w-0 flex-col gap-8 lg:gap-12">
           <Collapsible id="tavsif" title={tv("description")} className="order-3 lg:order-none">
-            <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_260px]">
+            <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_260px]">
               <div className="flex flex-col gap-4">
                 <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{product.description}</p>
                 {product.highlights.length > 0 && (
@@ -244,7 +244,7 @@ export async function ProductTemplate({
                 <HealthContext topics={topics} />
               </div>
               {descriptionImage && (
-                <span className="relative hidden aspect-[3/4] overflow-hidden rounded-[20px] bg-tile lg:block">
+                <span className="relative hidden aspect-[3/4] overflow-hidden rounded-[20px] bg-tile xl:block">
                   <Image src={descriptionImage.url} alt={descriptionImage.alt} fill sizes="260px" className="object-cover" />
                 </span>
               )}

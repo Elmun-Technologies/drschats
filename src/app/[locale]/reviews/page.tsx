@@ -163,7 +163,7 @@ function StoryCard({ story, kindLabel }: { story: CustomerStory; kindLabel: stri
         <div className="grid grid-cols-2 gap-px bg-line">
           {[story.beforeImage, story.afterImage].map((src, i) => (
             <div key={src} className="relative aspect-square bg-tile">
-              <Image src={src} alt="" fill sizes="(max-width: 1024px) 50vw, 300px" className="object-cover" />
+              <Image src={src} alt="" fill sizes="(max-width: 1023px) 50vw, 300px" className="object-cover" />
               <span className="absolute left-2 top-2 rounded-full bg-bg/90 px-2.5 py-1 text-[11px] font-semibold text-ink">
                 {i === 0 ? "1" : "2"}
               </span>
