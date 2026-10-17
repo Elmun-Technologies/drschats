@@ -3,21 +3,22 @@ import { notFound } from "next/navigation";
 import { segmentById, segmentCounts, segmentMembers } from "@/lib/admin/segments";
 import { sendSegmentCampaign } from "@/app/admin/_actions/marketing";
 import { ActionForm } from "@/components/admin/ActionForm";
-import { Card, EmptyState, Field, Metric, PageHeader, Pill, TableWrap, inputClass, linkClass, secondaryButtonClass, smallButtonClass, som, tableClass, tdClass, textareaClass, thClass, timeAgo } from "@/components/admin/ui";
+import { CampaignFields } from "@/components/admin/CampaignFields";
+import { Card, EmptyState, Field, Metric, PageHeader, Pill, TableWrap, inputClass, linkClass, secondaryButtonClass, smallButtonClass, som, tableClass, tdClass, thClass, timeAgo } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Segment" };
 
-const TEMPLATES: Record<string, string> = {
-  "course-ending": "Assalomu alaykum, {ism}! Vitamin kursingiz tugash arafasida. Davom ettirish uchun buyurtmani shu yerda takrorlashingiz mumkin: govita.uz",
-  "one-time": "Assalomu alaykum, {ism}! Go Vitaʼdan birinchi xaridingiz uchun rahmat. Sizga mos yangi mahsulotlarni koʻring: govita.uz",
-  "lapsed-60": "{ism}, sizni sogʻindik! Go Vitaʼda yangi mahsulotlar va aksiyalar bor: govita.uz/uz/sale",
-  lost: "{ism}, Go Vita sizni yana kutmoqda. Yangi aksiyalar: govita.uz/uz/sale",
-  vip: "{ism}, siz Go Vitaʼning eng qadrli mijozlaridansiz. Siz uchun maxsus taklif: govita.uz",
-  "new-7d": "{ism}, Go Vitaʼni tanlaganingiz uchun rahmat! Savollar boʻlsa, shu yerga yozing.",
-  "abandoned-cart": "{ism}, savatingizda mahsulotlar qoldi. Buyurtmani yakunlash: govita.uz/uz/cart",
-  "checkout-dropped": "{ism}, buyurtmangiz yakunlanmay qoldi. Yordam kerak boʻlsa, shu yerga yozing: govita.uz/uz/cart",
-  browsers: "{ism}, siz koʻrgan mahsulotlar hali ham bor: govita.uz",
+const TEMPLATES: Record<string, { text: string; link: string }> = {
+  "course-ending": { text: "Assalomu alaykum, {ism}! Vitamin kursingiz tugash arafasida. Takroriy buyurtma: {havola}", link: "/products" },
+  "one-time": { text: "Assalomu alaykum, {ism}! Go Vitaʼdan birinchi xaridingiz uchun rahmat. Sizga mos yangi mahsulotlar: {havola}", link: "/products" },
+  "lapsed-60": { text: "{ism}, sizni sogʻindik! Go Vitaʼda yangi mahsulotlar va aksiyalar bor: {havola}", link: "/sale" },
+  lost: { text: "{ism}, Go Vita sizni yana kutmoqda. Yangi aksiyalar: {havola}", link: "/sale" },
+  vip: { text: "{ism}, siz Go Vitaʼning eng qadrli mijozlaridansiz. Siz uchun maxsus taklif: {havola}", link: "/sale" },
+  "new-7d": { text: "{ism}, Go Vitaʼni tanlaganingiz uchun rahmat! Savollar boʻlsa, javob beramiz: {havola}", link: "/contact" },
+  "abandoned-cart": { text: "{ism}, savatingizda mahsulotlar qoldi. Buyurtmani yakunlash: {havola}", link: "/cart" },
+  "checkout-dropped": { text: "{ism}, buyurtmangiz yakunlanmay qoldi. Davom etish: {havola}", link: "/cart" },
+  browsers: { text: "{ism}, siz koʻrgan mahsulotlar hali ham bor: {havola}", link: "/products" },
 };
 
 export default async function AdminSegmentPage({ params }: { params: Promise<{ id: string }> }) {
@@ -77,15 +78,17 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
         </Card>
 
         <div className="flex min-w-0 flex-col gap-4">
-          <Card title="Telegram orqali xabar" lead={`Faqat botga ulangan ${formatNumber(c.reachable)} kishiga boradi. {ism} — mijoz ismi bilan almashadi.`}>
+          <Card title="Xabar yuborish" lead="Telegram, SMS yoki ikkalasi. {ism} — mijoz ismi, {kod} — har biriga alohida promokod, {havola} — bosishlar va buyurtmalar shu kampaniyaga yoziladi. 21:00–09:00 yuborilmaydi.">
             <ActionForm action={sendSegmentCampaign} submitLabel="Xabarni yuborish" className="flex flex-col gap-4">
               <input type="hidden" name="segment" value={segment.id} />
               <Field label="Kampaniya nomi">
                 <input name="name" required maxLength={120} defaultValue={`${segment.title} — ${new Date().toLocaleDateString("ru-RU")}`} className={inputClass} />
               </Field>
-              <Field label="Xabar" hint="1000 belgigacha. Havola qoʻshsangiz, UTM bilan qoʻshing — natija Analitikada koʻrinadi.">
-                <textarea name="message" required rows={5} maxLength={1000} defaultValue={TEMPLATES[segment.id] ?? ""} className={textareaClass} />
-              </Field>
+              <CampaignFields
+                defaultMessage={TEMPLATES[segment.id]?.text ?? ""}
+                defaultLink={TEMPLATES[segment.id]?.link ?? ""}
+                reach={{ telegram: c.reachable, phones: isCustomers ? c.size : c.reachable }}
+              />
               <label className="flex min-h-11 items-center gap-3 text-[14px] text-ink">
                 <input type="checkbox" name="confirm" className="h-5 w-5 accent-ink" required />
                 Yuborishni tasdiqlayman

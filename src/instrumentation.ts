@@ -43,6 +43,13 @@ export async function register() {
         if (result?.seeded) console.log(`[catalog] built-in catalogue copied to the database: ${result.seeded} products`);
       })
       .catch((err: Error) => console.error("[catalog] auto-seed skipped:", err.message));
+    // SMS / Telegram outbox and marketing flows (lib/messaging/worker.ts). Never throws.
+    import("@/lib/messaging/worker")
+      .then(({ startMessageWorker }) => startMessageWorker())
+      .catch((err: Error) => console.error("[messages] worker not started:", err.message));
+  }
+  if (process.env.NEXT_RUNTIME === "nodejs" && process.env.SMS_FAKE === "1" && (process.env.GOVITA_PRODUCTION === "1" || process.env.VERCEL_ENV === "production")) {
+    console.warn("[sms] SMS_FAKE=1 is ignored on a live deployment — real SMS settings are used.");
   }
 
   const built = process.env.CSP_BUILD_MODE;

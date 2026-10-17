@@ -2247,6 +2247,18 @@
       "description": "Manzilni kiriting — tasdiqlash havolasini yuboramiz.",
       "submit": "Yuborish",
       "sent": "Tasdiqlash havolasi yuborildi."
+    },
+    "stop": {
+      "title": "Xabarlarni oʻchirish",
+      "lead": "{phone} raqamiga Go Vita {channel} orqali aksiya va eslatmalar yuboradi.",
+      "channelSms": "SMS",
+      "channelTelegram": "Telegram",
+      "button": "{channel} xabarlarini oʻchirish",
+      "buttonAll": "Barcha marketing xabarlarini oʻchirish",
+      "note": "Buyurtma holati haqidagi xabarlar bundan mustasno — ular buyurtmangizning bir qismi.",
+      "done": "Tayyor. {channel} orqali aksiya va eslatmalar endi yuborilmaydi.",
+      "doneAll": "Tayyor. Endi sizga hech qanday marketing xabari yuborilmaydi.",
+      "home": "Bosh sahifaga"
     }
   },
   "subscription": {

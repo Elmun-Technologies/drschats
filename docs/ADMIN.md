@@ -73,13 +73,15 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Segmentlar va retarget | avtomatik auditoriyalar: kursi tugayapti (25–40 kun), bir marta sotib olgan, 60+ kun, yo'qotilgan (180+), VIP, yangi (7 kun), savatni tashlab ketgan, rasmiylashtirishda to'xtagan, ko'rib ketgan. CSV (jamoa), Meta Custom Audience va Google Customer Match (SHA-256) eksporti, Telegram orqali shaxsiy xabar (`{ism}`) |
 | Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
 | Promokodlar | kodlar ro'yxati (holat: faol / tugagan / shaxsiy; manba bo'yicha), ishlatildi / limit, kod keltirgan buyurtma va tushum, 30 kunlik ko'rsatkichlar; yaratish (kod qo'lda yoki avtomatik `GV-7K3P9Q`), tahrir, o'chirish (faqat ishlatilmagan — ishlatilgani faqat faolsizlantiriladi), N ta bir martalik kod toʻplami → CSV (SMS/Telegram uchun); «Birinchi buyurtma chegirmasi» kartasi (yoqish, foiz). Buyurtma sahifasida promokod / birinchi buyurtma qatori. Pastda [Promokodlar](#promokodlar) |
-| Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
+| Kampaniyalar | yuborilgan xabarlar (Telegram / SMS / Telegram→SMS, shaxsiy promokod): auditoriya, yuborildi, yetkazildi, bosildi, buyurtma, tushum, konversiya |
+| Avtomatlashtirish | `/admin/flows`: 5 ta oqim (savat, birinchi xarid, kurs, qaytarish, omborga keldi) — yoqish/oʻchirish, hozir oqimda, 30 kunlik yuborildi / bosildi / qaytdi / tushum; muharrir: qadamlar (muddat, kanal, havola, promokod), uz/ru matn, oʻzgaruvchi chiplari, jonli koʻrinish va SMS qismlari; «Bir marta ishga tushirish». [MARKETING.md](MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages) |
+| Xabarlar | `/admin/messages`: har bir SMS/Telegram xabari — kanal, holat, manba (oqim/kampaniya) filtrlari, yashirilgan telefon, sabab, bosishlar; obunadan chiqqanlar soni |
 | UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
 | Mahsulotlar | Mahsulotlar / Kategoriyalar / Brendlar — bitta tab qatori. Holat chiplari (sotuvda / tugagan / chegirmada / rasmsiz / sotuvdan olingan), kategoriya va brend filtri, saralash (tartib, nom, narx, yangi), o'rnatilgan katalogdan import, yangi, tahrir (uz/ru). Rasmlar: saytdagi rasmlardan tanlash oynasi (`public/products`, `public/images/products/c-*.png`, `public/images/stock` — so'rov paytida o'qiladi, `lib/admin/repo-images.server.ts`), tartib strelkalari, Tigris bo'lsa yuklash. Kategoriya selekti yonida «+ Yangi kategoriya». Saqlash saytni darhol yangilaydi |
 | Kategoriyalar | kartalar setkasi (rasm, uz/ru nom, mahsulot soni), `categories/new`, `categories/[slug]` tahrir; slug bo'sh bo'lsa uz nomdan; mahsuloti bor kategoriya o'chirilmaydi |
 | Brendlar | qo'shish (slug nomdan), tahrir, o'chirish, mahsulot soni |
 | Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
-| Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend; saytning o'z kuzatuvi holati |
+| Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend, SMS — Eskiz (+ test SMS, ʻ→' sozlamasi); saytning o'z kuzatuvi holati |
 | Administratorlar | qo'shish, o'chirish (o'zini va oxirgisini emas), parol almashtirish, barcha qurilmalardan chiqish |
 
 ## Saytning o'z kuzatuvi (mijozlar yo'li)
@@ -185,5 +187,7 @@ const code = await issuePromoCode({
 | `db/migrations/0005_admin_integration_settings.sql` | panel sozlamalari uchun shifrlangan integration ciphertext jadvali |
 | `db/migrations/0006_crm_marketing.sql` | `visitors`, `visitor_events`, `orders.visitor_id`, `promotions`, `campaigns`, `site_settings`, `admin_users.session_epoch` |
 | `db/migrations/0007_promo_codes.sql` | `promo_codes`, `promo_redemptions`, `orders.promo_code` |
+| `db/migrations/0010_sms_flows.sql` | `marketing_optouts`, `flows`, `flow_enrollments`, `outbound_messages`, `campaigns.promo/link`, kanal `sms`/`telegram_then_sms` |
+| `src/lib/sms/`, `src/lib/messaging/`, `src/lib/flows/` | SMS (Eskiz), xabarlar navbati va ishchisi, oqimlar — [MARKETING.md](MARKETING.md) |
 | `src/lib/promo/` | promokod qoidalari (`rules.ts`, testli), tranzaksiya va `issuePromoCode` (`server.ts`), birinchi buyurtma sozlamasi (`settings.ts`, `offer.ts`), savat store'i (`store.ts`, `govita-promo`) |
 | `src/lib/journey/` | kuzatuv: brauzer klienti, server yig'uvchi, sof qoidalar (`model.ts`, testli) |

@@ -4,7 +4,7 @@ import { getDb } from "@/lib/db/client";
 import { PAYMENT_PROVIDERS } from "@/lib/config/payments";
 import { getIntegrationAdminOverview } from "@/lib/integrations/settings";
 import { SITE_URL } from "@/lib/config/site";
-import { AnalyticsForm, MessagingForms, Status, VerificationForm } from "@/components/admin/IntegrationSettingsForms";
+import { AnalyticsForm, MessagingForms, SmsForm, Status, VerificationForm } from "@/components/admin/IntegrationSettingsForms";
 import { Card, Notice, PageHeader, SectionTitle, linkClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 
@@ -37,7 +37,7 @@ export default async function AdminIntegrationsPage() {
   const a = overview.analytics;
   const telegramClub = Boolean(process.env.BOT_API_KEY && process.env.TELEGRAM_CLUB_BOT_TOKEN);
   const sanity = Boolean(process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder");
-  const items = [a.ga4, a.gtm, a.yandexMetrika, a.metaPixel, overview.verification.google, overview.verification.yandex, overview.operator.configured, overview.email.configured];
+  const items = [a.ga4, a.gtm, a.yandexMetrika, a.metaPixel, overview.verification.google, overview.verification.yandex, overview.operator.configured, overview.email.configured, overview.sms.configured];
   const connected = items.filter(Boolean).length;
 
   return (
@@ -57,6 +57,21 @@ export default async function AdminIntegrationsPage() {
 
       <SectionTitle>Xabar kanallari</SectionTitle>
       <MessagingForms overview={overview} />
+      <div className="mt-4 grid gap-4 xl:grid-cols-2">
+        <SmsForm overview={overview} />
+        <Card title="Xabar qoidalari" lead="Avtomatlashtirish va kampaniyalar uchun bir xil — kodda yozilgan, oʻchirib boʻlmaydi.">
+          <ul className="flex list-disc flex-col gap-2 pl-5 text-[14px] leading-5 text-ink-2">
+            <li>21:00–09:00 (Toshkent) hech qanday marketing xabari ketmaydi — navbat ertalab 09:00 ga suriladi.</li>
+            <li>Har bir SMS oxirida «STOP» havolasi, Telegram xabarida «oʻchirish» tugmasi. Obunadan chiqqanlarga boshqa yuborilmaydi.</li>
+            <li>Telegram ulangan mijozga — Telegram (bepul), boʻlmasa SMS. Telefoni nomaʼlum tashrif buyuruvchi faqat retarget auditoriyasida.</li>
+            <li>Shaxsiy promokod xabar ketayotgan paytda beriladi; havola bosilishi va kod orqali buyurtmalar natijalarda koʻrinadi.</li>
+          </ul>
+          <p className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-[14px]">
+            <Link href="/admin/flows" className={linkClass}>Avtomatlashtirish →</Link>
+            <Link href="/admin/messages" className={linkClass}>Xabarlar jurnali →</Link>
+          </p>
+        </Card>
+      </div>
 
       <SectionTitle>Boshqa ulanishlar</SectionTitle>
       <div className="grid gap-4 xl:grid-cols-2">

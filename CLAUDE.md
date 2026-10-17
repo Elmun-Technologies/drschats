@@ -14,6 +14,7 @@ katalog o'sha yo'lning oxirida turadi.
 - **Saytning o'z kuzatuvi**: `lib/journey/` + `POST /api/t` (`gv_vid` cookie, `visitors`/`visitor_events`). `lib/analytics/events.ts` dagi har bir hodisa u yerga ham yoziladi — **yangi hodisani faqat `events.ts` orqali qo'shing**. Buyurtma `linkOrderToVisitor` bilan tashrif buyuruvchiga bog'lanadi
 - **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
+- **SMS va avtomatlashtirish** (0010): har marketing xabari `outbound_messages` navbatidan o'tadi (`lib/messaging/`) — Telegram `bot_jobs` ga beriladi, SMS Eskiz orqali (`lib/sms/`, sozlash `/admin/integrations`). Ishchi sayt jarayonida (`instrumentation.ts`, har 60 s; `/api/cron/messages`). **Qoidalar kodda**: 21:00–09:00 Toshkent yuborilmaydi (09:00 ga suriladi), `marketing_optouts` har yuborishdan oldin, har SMS oxirida STOP havolasi (`/s/<token>`), promokod yuborish paytida, havolalar `/r/<id>` (bosish + `utm_campaign=flow-…|campaign-…`). Oqimlar `/admin/flows` (sukut: o'chiq), jurnal `/admin/messages`. Yangi marketing xabarini **faqat `queueMessage` orqali** yuboring. To'liq: **[`docs/MARKETING.md`](docs/MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages)**
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
 - **CMS**: Sanity — sxemalar `src/sanity/schemas/` da tayyor, ma'lumot kiritilmagan, shuning uchun sayt i18n fallback'idan o'qiydi. `/studio` production'da **yopiq** (`SANITY_STUDIO_ENABLED=on` + haqiqiy project id talab qilinadi; `src/app/studio/layout.tsx`)
@@ -554,6 +555,12 @@ ADMIN_SESSION_SECRET=...      # ≥ 32 belgi
 ADMIN_SETUP_TOKEN=...         # birinchi admin yaratilgach o'chiriladi
 # Rasm yuklash (Fly Tigris, `fly storage create` beradi)
 AWS_ENDPOINT_URL_S3=... AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... BUCKET_NAME=... AWS_REGION=auto
+
+# SMS (Eskiz) — yoki /admin/integrations (shifrlangan); xabar havolalari kaliti
+ESKIZ_EMAIL=... ESKIZ_PASSWORD=... ESKIZ_SENDER=4546
+MESSAGE_LINK_SECRET=...              # bir marta qo'ying, o'zgartirmang (STOP va /r/ havolalari)
+SMS_FAKE=1                           # faqat lokal: live deploy'da e'tiborga olinmaydi
+MESSAGE_WORKER=off                   # ixtiyoriy: jarayon ichidagi ishchini o'chirish
 
 # Telegram klub boti (docs/BOT-ADMIN.md) — operator botidan alohida bot
 BOT_API_KEY=...                      # ≥ 32 belgi; bo'lmasa /api/bot yopiq (401)
