@@ -9,6 +9,7 @@ import { chipClass } from "@/components/ui/Chip";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
 import { categoryCutout } from "@/lib/content/product-cutouts";
 import { COMMERCE } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
 import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
 import {
   activeFilterCount,
@@ -117,6 +118,7 @@ export async function ShopView({
 
   const activeCount = activeFilterCount(filters);
   const hours = String(COMMERCE.delivery.tashkent.hours);
+  const commerce = await getCommerceSettings();
 
   return (
     <div className="wrap flex flex-col gap-4 pb-9 pt-1 lg:gap-6 lg:pb-[72px] lg:pt-5">
@@ -283,7 +285,7 @@ export async function ShopView({
                   name: active.name,
                   count: active.productCount ?? matched.length,
                   hours,
-                  free: formatNumber(COMMERCE.freeShippingOver),
+                  free: formatNumber(commerce.delivery.freeShippingOver),
                 })}
               </p>
             </div>
@@ -339,8 +341,8 @@ export async function ShopView({
               <span className="text-xs font-semibold uppercase tracking-[0.06em] text-on-dark-2 md:text-[13px]">{v3("subEyebrow")}</span>
               <span className="text-xl font-bold md:text-[26px] md:leading-[31px]">
                 {v3("subTitle", {
-                  first: COMMERCE.discounts.subscriptionFirstPercent,
-                  recurring: COMMERCE.discounts.subscriptionRecurringPercent,
+                  first: commerce.subscription.firstPercent,
+                  recurring: commerce.subscription.recurringPercent,
                 })}
               </span>
               <span className="text-sm text-on-dark-2 md:text-[15px]">

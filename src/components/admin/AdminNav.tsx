@@ -50,6 +50,7 @@ export const NAV_GROUPS = [
   {
     label: "Sozlamalar",
     items: [
+      { href: "/admin/commerce", label: "Savdo qoidalari", icon: "sliders" },
       { href: "/admin/integrations", label: "Integratsiyalar", icon: "plug" },
       { href: "/admin/users", label: "Administratorlar", icon: "settings" },
     ],
@@ -75,6 +76,7 @@ export function NavIcon({ name, className }: { name: string; className?: string 
     message: <><path d="M4 5h16v12H9l-5 4z" /><path d="M8 10h8M8 13h5" /></>,
     file: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v5h5M9 12h6M9 16h6" /></>,
     plug: <><path d="M8 4v5M16 4v5M6 9h12v2a6 6 0 0 1-6 6v4" /></>,
+    sliders: <><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></>,
     settings: <><circle cx="12" cy="12" r="3" /><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8" /></>,
   };
   return (

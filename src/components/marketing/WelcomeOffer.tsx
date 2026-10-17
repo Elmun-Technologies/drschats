@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { useCommerce } from "@/lib/commerce/context";
+import { localizedOr } from "@/lib/commerce/settings";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { isQuietPath, usePopups } from "@/lib/ui/popups";
 import { buttonVariants } from "@/components/ui/Button";
@@ -13,26 +15,28 @@ import type { FirstOrderOffer } from "@/lib/promo/rules";
   deployment honours it (lib/promo/offer.ts): applied automatically at
   checkout when orders are in our database, by the operator otherwise — and
   is not shown at all when the discount is switched off in the admin panel. Shown once a visitor has engaged: 20 seconds on a page or
-  half of it scrolled, never on the order pages.
+  half of it scrolled, never on the order pages. The delay, the cool-down,
+  the switch and the optional title/body are the admin's (/admin/commerce).
 */
-const DELAY_MS = 20_000;
 
 export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
   const t = useTranslations("popups.welcome");
   const tc = useTranslations("common");
+  const locale = useLocale();
   const pathname = usePathname();
+  const rule = useCommerce().popups.welcome;
   const active = usePopups((s) => s.active === "welcome");
   const close = usePopups((s) => s.close);
 
   useEffect(() => {
-    if (isQuietPath(pathname)) return;
+    if (!rule.enabled || isQuietPath(pathname)) return;
     let done = false;
     const fire = () => {
       if (done) return;
       done = true;
-      usePopups.getState().request("welcome");
+      usePopups.getState().request("welcome", rule);
     };
-    const timer = window.setTimeout(fire, DELAY_MS);
+    const timer = window.setTimeout(fire, rule.delaySeconds * 1000);
     const onScroll = () => {
       const max = document.documentElement.scrollHeight - window.innerHeight;
       if (max > 0 && window.scrollY / max > 0.5) fire();
@@ -42,7 +46,7 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
       window.clearTimeout(timer);
       window.removeEventListener("scroll", onScroll);
     };
-  }, [pathname]);
+  }, [pathname, rule]);
 
   return (
     <PopupShell open={active} onClose={close} labelledBy="welcome-title" closeLabel={tc("close")}>
@@ -50,9 +54,11 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
         −{offer.percent}%
       </span>
       <h2 id="welcome-title" className="mt-4 pr-8 text-[26px] font-bold leading-8">
-        {t("title", { percent: offer.percent })}
+        {localizedOr(rule.title, locale, t("title", { percent: offer.percent })).replaceAll("{percent}", String(offer.percent))}
       </h2>
-      <p className="mt-2 text-base leading-6 text-ink-2">{offer.mode === "auto" ? t("bodyAuto") : t("body")}</p>
+      <p className="mt-2 text-base leading-6 text-ink-2">
+        {localizedOr(rule.body, locale, offer.mode === "auto" ? t("bodyAuto") : t("body")).replaceAll("{percent}", String(offer.percent))}
+      </p>
       <ul className="mt-4 flex flex-col gap-2 text-[15px] text-ink-2">
         {(["perk1", "perk2", "perk3"] as const).map((k) => (
           <li key={k} className="flex gap-2.5">

@@ -17,7 +17,8 @@ import { buttonVariants } from "@/components/ui/Button";
 import { AccountShell } from "./AccountShell";
 import { AccountView } from "./AccountView";
 import type { Locale } from "@/lib/i18n/routing";
-import { FIRST_ORDER_PERCENT, RECURRING_PERCENT, SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
+import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
+import { useCommerce } from "@/lib/commerce/context";
 import { track } from "@/lib/analytics/events";
 
 type State =
@@ -34,6 +35,7 @@ type State =
   promise the most expensive sentence on the site.
 */
 export function MySubscriptions() {
+  const { recurringPercent } = useCommerce().subscription;
   const t = useTranslations("subscription.manage");
   const tv = useTranslations("account.v3");
   const locale = useLocale() as Locale;
@@ -149,7 +151,7 @@ export function MySubscriptions() {
 
             <dl className="grid grid-cols-2 gap-4 rounded-[16px] bg-tile px-5 py-[18px] lg:grid-cols-3">
               <KeyValue label={t("perDelivery")} value={formatMoney(subscription.total, locale)} />
-              <KeyValue label={tv("discount")} value={`−${RECURRING_PERCENT}%`} />
+              <KeyValue label={tv("discount")} value={`−${recurringPercent}%`} />
               <KeyValue label={t("interval")} value={t("everyDays", { days: subscription.intervalDays })} />
             </dl>
 
@@ -214,6 +216,7 @@ export function SubscriptionsView() {
   const t = useTranslations("subscription.manage");
   const tv = useTranslations("account.v3");
   const token = useSession((s) => s.token);
+  const { firstPercent, recurringPercent } = useCommerce().subscription;
   const [hydrated, setHydrated] = useState(false);
   useEffect(() => setHydrated(true), []);
 
@@ -225,7 +228,7 @@ export function SubscriptionsView() {
       <div className="flex flex-col gap-3">
         <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
         <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">
-          {tv("subsLead", { first: FIRST_ORDER_PERCENT, recurring: RECURRING_PERCENT })}
+          {tv("subsLead", { first: firstPercent, recurring: recurringPercent })}
         </p>
       </div>
       <MySubscriptions />

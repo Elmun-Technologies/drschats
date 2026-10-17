@@ -5,6 +5,8 @@ import { JsonLd, faqLd } from "@/lib/seo/jsonld";
 import Image from "next/image";
 import { formatMoney } from "@/lib/utils";
 import { COMMERCE, thousands } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { localizedOr } from "@/lib/commerce/settings";
 import { onlinePaymentAvailable } from "@/lib/config/payments";
 import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
@@ -27,22 +29,28 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
   setRequestLocale(locale);
   const t = await getTranslations("pages.v3");
   const pg = await getTranslations("pages");
-  const faq = pg.raw("deliveryFaq") as { question: string; answer: string }[];
+  const commerce = await getCommerceSettings();
 
-  // One shipping rule, read from config/commerce.ts.
+  // One shipping rule: the admin's commerce rules (/admin/commerce).
   const vars = {
-    amount: thousands(COMMERCE.freeShippingOver),
-    fee: thousands(COMMERCE.shippingFee),
+    amount: thousands(commerce.delivery.freeShippingOver),
+    fee: thousands(commerce.delivery.courierFee),
     hours: COMMERCE.delivery.tashkent.hours,
   };
+  const regionsTime = localizedOr(commerce.delivery.regionsNote, locale, t("delivery.postTime"));
+  // Raw FAQ copy quotes the threshold as {amount}; filled here like the other strings.
+  const faq = (pg.raw("deliveryFaq") as { question: string; answer: string }[]).map((item) => ({
+    question: item.question,
+    answer: item.answer.replaceAll("{amount}", vars.amount),
+  }));
   const options = [
     { icon: ICONS.courier, title: t("delivery.courierTitle"), value: t("delivery.courierTime", vars), text: t("delivery.feeNote", vars) },
-    { icon: ICONS.post, title: t("delivery.postTitle"), value: t("delivery.postTime"), text: t("delivery.feeNote", vars) },
+    { icon: ICONS.post, title: t("delivery.postTitle"), value: regionsTime, text: t("delivery.feeNote", vars) },
     { icon: ICONS.pickup, title: t("delivery.pickupTitle"), value: t("free"), text: t("delivery.pickupText") },
   ];
   const rows = [
-    { label: t("delivery.rowCourier"), below: formatMoney(COMMERCE.shippingFee, locale) },
-    { label: t("delivery.rowPost"), below: formatMoney(COMMERCE.shippingFee, locale) },
+    { label: t("delivery.rowCourier"), below: formatMoney(commerce.delivery.courierFee, locale) },
+    { label: t("delivery.rowPost"), below: formatMoney(commerce.delivery.courierFee, locale) },
     { label: t("delivery.rowPickup"), below: t("free") },
   ];
 

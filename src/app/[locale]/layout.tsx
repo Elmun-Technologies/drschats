@@ -27,6 +27,8 @@ import { RouteAnalytics } from "@/components/analytics/RouteAnalytics";
 import { CartJourney } from "@/components/analytics/CartJourney";
 import { getPublicSettings } from "@/lib/integrations/site-settings";
 import { firstOrderOffer } from "@/lib/promo/offer";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { CommerceProvider } from "@/lib/commerce/context";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -65,7 +67,7 @@ export default async function LocaleLayout({
 
   // Categories are layout data now that the header's catalogue menu lists
   // them; the read is cached and revalidated like the promotions beside it.
-  const [messages, promotions, categories, topicPaths, tc, deals, firstOrder] = await Promise.all([
+  const [messages, promotions, categories, topicPaths, tc, deals, firstOrder, commerce] = await Promise.all([
     getMessages(),
     shopflow.getPromotions(locale as Locale).catch(() => []),
     shopflow.getCategories(locale as Locale).catch(() => []),
@@ -75,6 +77,7 @@ export default async function LocaleLayout({
       .getProducts({ locale: locale as Locale, assortment: "core", sort: "deals", pageSize: 1 })
       .catch(() => null),
     firstOrderOffer(),
+    getCommerceSettings(),
   ]);
   const weeklyDeal = toMenuDeal(deals?.items[0]);
 
@@ -92,6 +95,7 @@ export default async function LocaleLayout({
       <body className="grain min-h-screen antialiased">
         <NextIntlClientProvider messages={messages}>
           <PromotionsProvider promotions={promotions}>
+          <CommerceProvider settings={commerce}>
             <a
               href="#main-content"
               className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
@@ -113,6 +117,7 @@ export default async function LocaleLayout({
               <MobileBottomNav categories={categories} topicPaths={topicPaths} />
               <DeferredUi firstOrder={firstOrder} />
             </SmoothScroll>
+          </CommerceProvider>
           </PromotionsProvider>
         </NextIntlClientProvider>
         <Analytics />

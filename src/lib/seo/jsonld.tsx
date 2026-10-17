@@ -5,7 +5,7 @@ import { absoluteUrl } from "@/lib/config/site";
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
-import { COMMERCE } from "@/lib/config/commerce";
+import { DEFAULT_PRICING, type PricingRules } from "@/lib/commerce/settings";
 import { brandOf } from "@/lib/catalog/product-facts";
 
 /*
@@ -129,9 +129,12 @@ export function productGraph({
   author,
   datePublished,
   dateModified,
+  pricing = DEFAULT_PRICING,
 }: {
   product: Product;
   locale: Locale;
+  /** The admin's commerce rules (threshold, courier fee) — what one unit really costs to ship. */
+  pricing?: Pick<PricingRules, "freeShippingOver" | "shippingFee">;
   /** Null while the review board is empty — see content/experts.ts. */
   reviewer: Expert | null;
   author: Expert | null;
@@ -196,7 +199,7 @@ export function productGraph({
             shippingRate: {
               "@type": "MonetaryAmount",
               // What one unit actually costs to ship: free only above the threshold.
-              value: product.price >= COMMERCE.freeShippingOver ? 0 : COMMERCE.shippingFee,
+              value: product.price >= pricing.freeShippingOver ? 0 : pricing.shippingFee,
               currency: "UZS",
             },
             shippingDestination: {

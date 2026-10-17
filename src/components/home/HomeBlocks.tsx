@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
 import { cn, formatDate, formatNumber } from "@/lib/utils";
 import { COMMERCE } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
 import { BRAND } from "@/lib/brand";
 import { getQuizQuestions } from "@/lib/quiz/questions";
 import { AUDIENCE_PHOTOS, audienceSubtitleKey } from "@/lib/content/audience";
@@ -245,11 +246,12 @@ export async function HomeAudience({ locale }: { locale: Locale }) {
 export async function HomeServices() {
   const t = await getTranslations("home.v3");
   const copy = t.raw("services") as { title: string; text: string; short: string }[];
+  const commerce = await getCommerceSettings();
   const values: Record<string, string> = {
-    "{first}": String(COMMERCE.discounts.subscriptionFirstPercent),
-    "{recurring}": String(COMMERCE.discounts.subscriptionRecurringPercent),
+    "{first}": String(commerce.subscription.firstPercent),
+    "{recurring}": String(commerce.subscription.recurringPercent),
     "{hours}": String(COMMERCE.delivery.tashkent.hours),
-    "{free}": formatNumber(COMMERCE.freeShippingOver),
+    "{free}": formatNumber(commerce.delivery.freeShippingOver),
   };
   const fill = (s: string) => s.replace(/\{\w+\}/g, (k) => values[k] ?? k);
   const tiles = [
@@ -389,11 +391,12 @@ export async function HomeFaqHelp() {
 
 export async function HomeSeo() {
   const t = await getTranslations("home.v3.seo");
+  const commerce = await getCommerceSettings();
   const text = t
     .raw("text")
     .toString()
     .replace("{hours}", String(COMMERCE.delivery.tashkent.hours))
-    .replace("{free}", formatNumber(COMMERCE.freeShippingOver));
+    .replace("{free}", formatNumber(commerce.delivery.freeShippingOver));
   return (
     <section className="wrap">
       <div className="flex max-w-[1000px] flex-col gap-2.5">

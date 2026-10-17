@@ -22,6 +22,8 @@ import { upsellPool } from "@/lib/upsell/pool";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { ordersFromPhone } from "@/lib/catalog/db";
 import { COMMERCE } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { pricingRulesOf } from "@/lib/commerce/settings";
 import { linkOrderToVisitor, visitorIdFrom, VISITOR_COOKIE } from "@/lib/journey/collect";
 import { placeOrder } from "@/lib/promo/server";
 import type { PromoReason } from "@/lib/promo/rules";
@@ -195,12 +197,17 @@ export async function submitOrder(
       (lib/cart/reprice.ts). The request only says what to buy.
     */
     const slugs = [...new Set(request.items.map((i) => i.slug))];
-    const [products, promotions] = await Promise.all([
+    const [products, promotions, commerce] = await Promise.all([
       Promise.all(slugs.map((slug) => shopflow.getProduct(slug, request.locale))),
       shopflow.getPromotions(request.locale).catch(() => []),
+      getCommerceSettings(),
     ]);
     const found = products.filter((p): p is NonNullable<typeof p> => p !== null);
-    const priced = repriceOrder(request, found, promotions, await offerContext(request, found));
+    // The admin's commerce rules: the same cached value the cart was rendered with.
+    const priced = repriceOrder(request, found, promotions, await offerContext(request, found), {
+      pricing: pricingRulesOf(commerce),
+      ladder: commerce.ladder,
+    });
     if (!priced.ok) return { ok: false, error: priced.error, slug: priced.slug };
     let order = priced.order;
 

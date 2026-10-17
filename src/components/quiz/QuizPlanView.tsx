@@ -4,8 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import type { QuizPlan } from "@/lib/quiz/recommend";
 import type { Expert } from "@/lib/content/experts.sanity";
 import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
-import { COMMERCE } from "@/lib/config/commerce";
-import { FIRST_ORDER_PERCENT, RECURRING_PERCENT } from "@/lib/subscription/plans";
+import { getCommerceSettings } from "@/lib/commerce/server";
 import { Link } from "@/lib/i18n/navigation";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { buttonVariants } from "@/components/ui/Button";
@@ -40,6 +39,7 @@ export async function QuizPlanView({
   const t = await getTranslations("quiz");
   const tv = await getTranslations("quiz.v3");
   const tc = await getTranslations("common");
+  const commerce = await getCommerceSettings();
   const { result, topics, products } = plan;
 
   const empty = products.length === 0 && topics.length === 0;
@@ -101,9 +101,9 @@ export async function QuizPlanView({
             <span className="text-[30px] font-bold leading-9 lg:text-[34px] lg:leading-10">{formatMoney(total, locale)}</span>
             <p className="text-[15px] leading-[22px] text-on-dark-2">
               {tv("planNote", {
-                first: FIRST_ORDER_PERCENT,
-                next: RECURRING_PERCENT,
-                free: formatMoney(COMMERCE.freeShippingOver, locale),
+                first: commerce.subscription.firstPercent,
+                next: commerce.subscription.recurringPercent,
+                free: formatMoney(commerce.delivery.freeShippingOver, locale),
               })}
             </p>
             <QuizPlanActions products={products.map((p) => p.product)} className="mt-2 w-full" />

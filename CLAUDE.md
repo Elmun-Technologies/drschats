@@ -12,6 +12,7 @@ katalog o'sha yo'lning oxirida turadi.
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
 - **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io), sayt V3 uslubida. Analitika, mijozlar yo'li (birinchi tomon kuzatuv), voronka, segmentlar va retarget (CSV/Meta/Google eksport, Telegram kampaniya), aksiyalar (bazada), integratsiyalar markazi, katalog, buyurtmalar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi. Birinchi ishga tushishda o'rnatilgan katalog bazaga o'zi ko'chadi (`lib/admin/seed.ts`)
 - **Saytning o'z kuzatuvi**: `lib/journey/` + `POST /api/t` (`gv_vid` cookie, `visitors`/`visitor_events`). `lib/analytics/events.ts` dagi har bir hodisa u yerga ham yoziladi — **yangi hodisani faqat `events.ts` orqali qo'shing**. Buyurtma `linkOrderToVisitor` bilan tashrif buyuruvchiga bog'lanadi
+- **Savdo qoidalari panelda** (`/admin/commerce`, `site_settings` `commerce.rules`, `lib/commerce/`): bepul yetkazish chegarasi, kuryer narxi, viloyatlar muddati, bugun yetkazish chegarasi (env `NEXT_PUBLIC_DELIVERY_CUTOFF` endi faqat standart, runtime'da o'qiladi), upsell zinapoyasi foizlari/sovg'a, obuna %, savat takliflari chegarasi, pop-up'lar (yoqish, kechikish, cool-down, matn uz/ru). `lib/config/commerce.ts` dagi konstantalar — **faqat standart**: narxlaydigan yoki iqtibos keltiradigan kod samarali qiymatni o'qiydi (server `getCommerceSettings()`, klient `useCommerce()`/`usePricingRules()` — layout'dagi `CommerceProvider`), sof funksiyalarga qiymat argument bilan beriladi (`computeTotals(..., { rules })`, `repriceOrder(..., { pricing, ladder })`, `buildUpsellLadder(..., ladder)`, `gapFillers(..., { window })`, `subscriptionPricing(price, percents)`). Server qabul qiladigan zinapoya foizlari shu sozlamadan (`ladderPercentsAccepted`). To'liq: `docs/ADMIN.md` §Savdo qoidalari
 - **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
@@ -398,9 +399,11 @@ src/lib/upsell/ladder.ts — buildUpsellLadder(cartLines, allProducts)
 ```
 
 **Algoritm:**
-1. Step 1 — cart subtotal × 30–90% narxdagi mahsulot, **−10%**
-2. Step 2 — boshqa kategoriyadan, **−15%**
-3. Step 3 — narx ≤ saved₁+saved₂ bo'lsa → **BEPUL 🎁**, aks holda eng arzon mahsulot **−20%**
+1. Step 1 — cart subtotal × 30–90% narxdagi mahsulot, **−p₁** (standart 10%)
+2. Step 2 — boshqa kategoriyadan, **−p₂** (15%)
+3. Step 3 — sovg'a yoqilgan va narx ≤ saved₁+saved₂ bo'lsa → **BEPUL 🎁**, aks holda eng arzon mahsulot **−p₃** (20%)
+
+Foizlar va yoqish/sovg'a — `/admin/commerce` (`LADDER_PERCENT_CHOICES` dan, o'suvchi).
 
 Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
 
@@ -417,7 +420,9 @@ Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
 - Aksiyalar (2+1, percent_off) o'z taklifi/obunasi bor qatorga **qo'shilmaydi**
   (`promotionApplies`); `productSlugs` bo'lsa faqat o'shalarga.
 - Savatda: 2+1 eslatmasi (2 dona bo'lsa), bepul yetkazishgacha ≤150 000 so'm
-  qolsa uni yolg'iz yopadigan mahsulotlar (`lib/cart/gap.ts`).
+  (panelda o'zgaradi, 0 — o'chiq) qolsa uni yolg'iz yopadigan mahsulotlar (`lib/cart/gap.ts`).
+- Bepul yetkazish chegarasi bitta va **hamma** buyurtmaga (panel); `free_shipping_over`
+  aksiyasi uni faqat pasaytiradi.
 
 ## Promokodlar
 
@@ -443,6 +448,8 @@ To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md#promokodlar)**. Faqat baza bo'lsa
   sessiyada bittadan ko'p emas, har birining kutish muddati (30/3/7 kun), boshqa
   dialog ochiq bo'lsa yoki `/cart`, `/checkout`, `/quiz`, `/account`, `/profile`
   da chiqmaydi. `navigator.webdriver` (botlar, audit) — umuman chiqmaydi.
+- Har pop-up'ning yoqilishi, kechikishi, cool-down'i va matni — `/admin/commerce`
+  (standart 30/3/7 kun); o'chirilgani yuklanmaydi ham (`DeferredUi`).
 - **Welcome** — birinchi buyurtma chegirmasi (`FirstOrderOffer`: baza bo'lsa avtomatik, bo'lmasa operator qo'llaydi, o'chirilsa karta yo'q;
   Telegram'da `🎁 Yangi mijoz` / `🔁 Qaytgan mijoz` — baza bo'lsa telefon bo'yicha
   `ordersFromPhone`). **Exit** — savat bo'lsa savat + jami, bo'lmasa Telegram.
@@ -451,7 +458,8 @@ To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md#promokodlar)**. Faqat baza bo'lsa
   + «Savatga o'tish»; upsell ladder ochiq bo'lsa yoki `/cart` da qisqa holatda.
 - **Taymerlar faqat real**: aksiya — admin'da «Aksiya tugashi» (`products.sale_ends_at`,
   Toshkent vaqti); muddat o'tgach engine narxni eski narxga qaytaradi (server ham).
-  Yetkazish — `NEXT_PUBLIC_DELIVERY_CUTOFF=16:00` (bo'lmasa taymer yo'q).
+  Yetkazish — `/admin/commerce` → «Bugun yetkazish chegarasi» (standart
+  `NEXT_PUBLIC_DELIVERY_CUTOFF`; bo'sh — taymer yo'q), qayta build'siz.
 
 ## Personalizatsiya
 
@@ -498,7 +506,7 @@ To'liq hujjat: **[`docs/MARKETING.md`](docs/MARKETING.md)**.
 src/lib/subscription/plans.ts — oraliqlar, chegirmalar, bepul yetkazish chegarasi
 ```
 
-Birinchi buyurtmada −10%, keyingi yetkazishlarda −15%. Takrorlanadigan narx
+Birinchi buyurtmada −10%, keyingi yetkazishlarda −15% (standart; `/admin/commerce` → Obuna). Takrorlanadigan narx
 mahsulot sahifasidayoq ko'rsatiladi. `CartLine.subscription` → checkout →
 backend'da `subscriptions` jadvali. Boshqaruv `/account` da: to'xtatish,
 o'tkazib yuborish, oraliqni o'zgartirish, bekor qilish.
@@ -560,7 +568,7 @@ BOT_API_KEY=...                      # ≥ 32 belgi; bo'lmasa /api/bot yopiq (40
 TELEGRAM_CLUB_BOT_TOKEN=...          # Mini App initData imzosini tekshirish
 NEXT_PUBLIC_TELEGRAM_CLUB_BOT=govita_club_bot   # build arg: web.telegram.org framing
 
-# Yetkazish taymeri (Toshkent vaqti; bo'lmasa ko'rinmaydi)
+# Yetkazish taymeri standarti (Toshkent vaqti) — /admin/commerce uni runtime'da almashtiradi
 NEXT_PUBLIC_DELIVERY_CUTOFF=16:00
 
 # Sanity Studio (production'da default: yopiq)

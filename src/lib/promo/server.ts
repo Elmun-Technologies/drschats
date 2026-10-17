@@ -20,6 +20,8 @@ import {
   type PromoRejection,
 } from "./rules";
 import { readFirstOrderSetting } from "./settings";
+import { getCommerceSettings } from "@/lib/commerce/server";
+import { pricingRulesOf } from "@/lib/commerce/settings";
 
 /*
   Promo codes and the first-order discount against the database.
@@ -107,7 +109,8 @@ export async function quoteDiscounts({
 }): Promise<DiscountQuote> {
   const db = getDb();
   const phone9 = phone9Of(phone);
-  const setting = await readFirstOrderSetting();
+  const [setting, commerce] = await Promise.all([readFirstOrderSetting(), getCommerceSettings()]);
+  const pricing = pricingRulesOf(commerce);
 
   let promo: DiscountQuote["promo"] = null;
   if (rawCode) {
@@ -116,7 +119,7 @@ export async function quoteDiscounts({
     else {
       const [row] = await db.select().from(promoCodes).where(eq(promoCodes.code, code)).limit(1);
       const uses = row && phone9 ? await phoneUses(db, code, phone9) : 0;
-      promo = { ...evaluatePromo(row ? toDefinition(row) : null, { lines, promotions, phone9, phoneUses: uses }), code };
+      promo = { ...evaluatePromo(row ? toDefinition(row) : null, { lines, promotions, pricing, phone9, phoneUses: uses }), code };
     }
   }
 
@@ -158,7 +161,8 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
   const code = order.promoCode ? normalizePromoCode(order.promoCode) : null;
   if (order.promoCode && !code) return { ok: false, error: "promo_invalid", code: order.promoCode, rejection: { reason: "invalid_format" } };
   const lines = promoLinesOf(order.items);
-  const setting = await readFirstOrderSetting();
+  const [setting, commerce] = await Promise.all([readFirstOrderSetting(), getCommerceSettings()]);
+  const pricing = pricingRulesOf(commerce);
 
   try {
     return await getDb().transaction(async (tx) => {
@@ -170,7 +174,7 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
         // Redemptions are counted per phone, so a code needs one (the order form always sends it).
         if (!phone9) throw new PromoRejected(code, { reason: "wrong_phone" });
         const uses = row ? await phoneUses(tx, code, phone9) : 0;
-        const check = evaluatePromo(row ? toDefinition(row) : null, { lines, promotions, phone9, phoneUses: uses });
+        const check = evaluatePromo(row ? toDefinition(row) : null, { lines, promotions, pricing, phone9, phoneUses: uses });
         if (!check.ok) {
           const { ok: _ok, ...rejection } = check;
           throw new PromoRejected(code, rejection as PromoRejection);
