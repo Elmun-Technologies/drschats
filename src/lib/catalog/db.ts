@@ -5,6 +5,7 @@ import { brands, categories, orders, products } from "@/lib/db/schema";
 import { builtInCatalog, type RawProduct } from "@/lib/shopflow/mock";
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
 import type { CatalogData } from "./engine";
+import { createCircuit } from "./circuit";
 
 export const CATALOG_TAG = "catalog";
 
@@ -62,16 +63,25 @@ const cachedCatalog = unstable_cache(readCatalog, ["catalog-v1"], { tags: [CATAL
   yet (before the first import from the admin panel), the built-in catalogue
   is served and the failure is logged — the 2026-10 outage was exactly a
   catalogue source that answered "nothing" and a site that believed it.
+
+  After a failed read the database is left alone for 30 seconds: during an
+  outage every request would otherwise wait out the connection timeout again
+  before falling back.
 */
+const dbCircuit = createCircuit(30_000);
+
 export async function loadDbCatalog(): Promise<CatalogData> {
+  if (dbCircuit.isOpen()) return builtInCatalog;
   try {
     const data = await cachedCatalog();
+    dbCircuit.succeed();
     if (data.products.length === 0) {
       console.warn("[catalog] database has no products yet — serving the built-in catalogue");
       return builtInCatalog;
     }
     return data;
   } catch (err) {
+    dbCircuit.fail();
     console.error("[catalog] database read failed — serving the built-in catalogue:", (err as Error).message);
     return builtInCatalog;
   }
