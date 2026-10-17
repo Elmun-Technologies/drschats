@@ -12,6 +12,24 @@ export async function listBrands() {
   return getDb().select().from(brands).orderBy(asc(brands.sort), asc(brands.name));
 }
 
+/** Products per category slug ("" = no category): all of them, and those the site shows as buyable. */
+export async function productCountsByCategory() {
+  const rows = await getDb()
+    .select({
+      slug: products.categorySlug,
+      total: count(),
+      live: sql<number>`count(*) filter (where ${products.kind} <> 'unlisted' and ${products.inStock})`,
+    })
+    .from(products)
+    .groupBy(products.categorySlug);
+  return new Map(rows.map((r) => [r.slug ?? "", { total: r.total, live: Number(r.live) }]));
+}
+
+export async function getCategory(slug: string) {
+  const [row] = await getDb().select().from(categories).where(eq(categories.slug, slug)).limit(1);
+  return row ?? null;
+}
+
 export async function listProducts(q?: string) {
   const db = getDb();
   const term = q?.trim();
@@ -29,6 +47,8 @@ export async function listProducts(q?: string) {
       images: products.images,
       cutout: products.cutout,
       updatedAt: products.updatedAt,
+      createdAt: products.createdAt,
+      sort: products.sort,
     })
     .from(products)
     .where(

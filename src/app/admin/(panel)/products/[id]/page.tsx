@@ -5,12 +5,13 @@ import { ProductForm } from "@/components/admin/ProductForm";
 import { Notice, PageHeader, dangerButtonClass, secondaryButtonClass } from "@/components/admin/ui";
 import { deleteProduct, duplicateProduct } from "@/app/admin/_actions/catalog";
 import { isStorageConfigured } from "@/lib/admin/storage";
+import { listRepoImages } from "@/lib/admin/repo-images.server";
 
 export const metadata = { title: "Mahsulotni tahrirlash" };
 
 export default async function EditProductPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ saved?: string; copied?: string }> }) {
   const [{ id }, { saved, copied }] = await Promise.all([params, searchParams]);
-  const [values, cats, brandRows] = await Promise.all([productFormValues(decodeURIComponent(id)), listCategories(), listBrands()]);
+  const [values, cats, brandRows, repoImages] = await Promise.all([productFormValues(decodeURIComponent(id)), listCategories(), listBrands(), listRepoImages()]);
   if (!values) notFound();
 
   return (
@@ -34,6 +35,7 @@ export default async function EditProductPage({ params, searchParams }: { params
         categories={cats.map((c) => ({ slug: c.slug, name: c.name.uz }))}
         brands={brandRows}
         storageReady={isStorageConfigured}
+        repoImages={repoImages}
       />
       <section className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-[20px] border border-red/25 p-5">
         <div>

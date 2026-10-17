@@ -9,7 +9,9 @@ import { getDb } from "@/lib/db/client";
 import { brands, categories, products } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/admin/session";
 import { CATALOG_TAG } from "@/lib/catalog/db";
-import { insertBuiltInCatalog } from "@/lib/admin/seed";
+import { builtInCatalogStatus, dismissBuiltInImport, insertBuiltInCatalog } from "@/lib/admin/seed";
+import { dismissKeysOf } from "@/lib/admin/catalog-sync";
+import { slugify } from "@/lib/admin/slugify";
 import { SLUG_RE, formToContent, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
 import { isStorageConfigured, uploadImage } from "@/lib/admin/storage";
 import { isAllowedImageUrl } from "@/lib/security/csp";
@@ -38,12 +40,27 @@ function firstIssue(err: z.ZodError) {
 
 /* ─── Import ─────────────────────────────────────────────────────────────── */
 
-/* Brings over anything from the built-in catalogue the database lacks; never overwrites. */
-export async function importBuiltInCatalog(_state?: FormState, _form?: FormData): Promise<FormState> {
+/*
+  Brings over anything from the built-in catalogue the database lacks and
+  fills photos only where a matching product has none; never overwrites.
+  Answers with a redirect carrying the counts, because the prompt that holds
+  the button disappears once nothing is missing.
+*/
+export async function importBuiltInCatalog(_form?: FormData) {
   await requireAdmin();
-  const result = await getDb().transaction((tx) => insertBuiltInCatalog(tx));
+  const r = await getDb().transaction((tx) => insertBuiltInCatalog(tx));
   refresh();
-  return { ok: `Import qilindi: ${result.products} ta mahsulot, ${result.categories} ta kategoriya, ${result.brands} ta brend. Mavjudlari oʻzgartirilmadi.` };
+  const counts = [r.products, r.categories, r.brands, r.imagesFilled, r.categoryImagesFilled].join(".");
+  redirect(`/admin/products?imported=${counts}`);
+}
+
+/* "Kerak emas": what is missing now stops being offered (a product the team deleted on purpose). */
+export async function dismissBuiltInImportAction(_form?: FormData) {
+  await requireAdmin();
+  const { diff } = await builtInCatalogStatus();
+  await dismissBuiltInImport(dismissKeysOf(diff));
+  revalidatePath("/admin/products");
+  redirect("/admin/products");
 }
 
 /* ─── Products ───────────────────────────────────────────────────────────── */
@@ -168,41 +185,87 @@ export async function uploadProductImage(_: FormState, form: FormData): Promise<
 
 const categorySchema = z.object({
   slug: z.string().trim().regex(SLUG_RE, "slug: faqat kichik lotin harflari, raqam va «-»"),
-  "uz.name": z.string().trim().min(2, "Nomi (uz) majburiy"),
-  "ru.name": z.string().trim().min(2, "Nomi (ru) majburiy"),
+  "uz.name": z.string().trim().min(2, "Nomi (uz) majburiy").max(80),
+  "ru.name": z.string().trim().min(2, "Nomi (ru) majburiy").max(80),
   "uz.description": z.string().trim().max(400).default(""),
   "ru.description": z.string().trim().max(400).default(""),
   image: z.string().trim().optional(),
-  sort: z.coerce.number().int().default(0),
+  sort: z.coerce.number().int().min(-10000).max(10000).default(0),
 });
+
+type CategoryInput = z.infer<typeof categorySchema>;
+
+/* An empty slug comes from the Uzbek name, exactly as the form previews it. */
+function parseCategory(data: Record<string, string>): { error: string } | { data: CategoryInput } {
+  const parsed = categorySchema.safeParse({ ...data, slug: data.slug?.trim() || slugify(data["uz.name"] ?? "") });
+  if (!parsed.success) return { error: firstIssue(parsed.error) };
+  // /admin/categories/new is the creation page; a category called "new" could never be opened.
+  if (parsed.data.slug === "new") return { error: "«new» slug band — boshqa nom tanlang." };
+  const image = parsed.data.image;
+  if (image && !isAllowedImageUrl(image)) {
+    return { error: `Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): ${image}. Roʻyxatdan tanlang yoki yuklang.` };
+  }
+  return { data: parsed.data };
+}
+
+function categoryRow(d: CategoryInput) {
+  return {
+    slug: d.slug,
+    name: { uz: d["uz.name"], ru: d["ru.name"] },
+    description: { uz: d["uz.description"], ru: d["ru.description"] },
+    image: d.image || null,
+    sort: d.sort,
+    updatedAt: new Date(),
+  };
+}
+
+/* Inserts a new category; answers with the clash message when the slug is taken. */
+async function insertCategory(d: CategoryInput): Promise<string | null> {
+  const db = getDb();
+  const [exists] = await db.select({ slug: categories.slug }).from(categories).where(eq(categories.slug, d.slug)).limit(1);
+  if (exists) return `«${d.slug}» kategoriyasi allaqachon bor.`;
+  const [idTaken] = await db.select({ id: categories.id }).from(categories).where(eq(categories.id, `cat-${d.slug}`)).limit(1);
+  await db.insert(categories).values({ id: idTaken ? `cat-${d.slug}-${randomBytes(3).toString("hex")}` : `cat-${d.slug}`, ...categoryRow(d) });
+  return null;
+}
 
 export async function saveCategory(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin();
   const data = formObject(form);
-  const parsed = categorySchema.safeParse(data);
-  if (!parsed.success) return { error: firstIssue(parsed.error) };
+  const parsed = parseCategory(data);
+  if ("error" in parsed) return { error: parsed.error };
   const d = parsed.data;
   const original = data.original?.trim();
-  const row = {
-    slug: d.slug,
-    name: { uz: d["uz.name"], ru: d["ru.name"] },
-    description: { uz: d["uz.description"], ru: d["ru.description"] },
-    image: d.image && isAllowedImageUrl(d.image) ? d.image : null,
-    sort: d.sort,
-    updatedAt: new Date(),
-  };
-  const db = getDb();
-  const [exists] = await db.select({ slug: categories.slug }).from(categories).where(eq(categories.slug, d.slug)).limit(1);
-  if (exists && exists.slug !== original) return { error: `«${d.slug}» kategoriyasi allaqachon bor.` };
-  if (original) {
-    // slug changes cascade to products (on update cascade).
-    await db.update(categories).set(row).where(eq(categories.slug, original));
-  } else {
-    const [idTaken] = await db.select({ id: categories.id }).from(categories).where(eq(categories.id, `cat-${d.slug}`)).limit(1);
-    await db.insert(categories).values({ id: idTaken ? `cat-${d.slug}-${randomBytes(3).toString("hex")}` : `cat-${d.slug}`, ...row });
+
+  if (!original) {
+    const clash = await insertCategory(d);
+    if (clash) return { error: clash };
+    refresh();
+    redirect(`/admin/categories?created=${encodeURIComponent(d.slug)}`);
   }
+
+  const db = getDb();
+  if (d.slug !== original) {
+    const [exists] = await db.select({ slug: categories.slug }).from(categories).where(eq(categories.slug, d.slug)).limit(1);
+    if (exists) return { error: `«${d.slug}» kategoriyasi allaqachon bor.` };
+  }
+  // slug changes cascade to products (on update cascade).
+  const updated = await db.update(categories).set(categoryRow(d)).where(eq(categories.slug, original)).returning({ slug: categories.slug });
+  if (updated.length === 0) return { error: "Kategoriya topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin." };
   refresh();
-  return { ok: "Saqlandi." };
+  if (d.slug !== original) redirect(`/admin/categories/${encodeURIComponent(d.slug)}?saved=1`);
+  return { ok: "Saqlandi. Saytda darhol yangilanadi." };
+}
+
+/* The product form's "+ Yangi kategoriya": creates it and hands back the slug to select. */
+export async function quickCreateCategory(form: FormData): Promise<{ error?: string; slug?: string; name?: string }> {
+  await requireAdmin();
+  const parsed = parseCategory(formObject(form));
+  if ("error" in parsed) return { error: parsed.error };
+  const clash = await insertCategory(parsed.data);
+  if (clash) return { error: clash };
+  refresh();
+  return { slug: parsed.data.slug, name: parsed.data["uz.name"] };
 }
 
 export async function deleteCategory(form: FormData) {
@@ -212,7 +275,7 @@ export async function deleteCategory(form: FormData) {
   const [{ n }] = await db.select({ n: count() }).from(products).where(eq(products.categorySlug, slug));
   if (n === 0) await db.delete(categories).where(eq(categories.slug, slug));
   refresh();
-  redirect(n === 0 ? "/admin/categories?deleted=1" : "/admin/categories?blocked=1");
+  redirect(n === 0 ? "/admin/categories?deleted=1" : `/admin/categories/${encodeURIComponent(slug)}?blocked=1`);
 }
 
 /* ─── Brands ─────────────────────────────────────────────────────────────── */
@@ -225,7 +288,8 @@ const brandSchema = z.object({
 
 export async function saveBrand(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin();
-  const parsed = brandSchema.safeParse(formObject(form));
+  const data = formObject(form);
+  const parsed = brandSchema.safeParse({ ...data, slug: data.slug?.trim() || slugify(data.name ?? "") });
   if (!parsed.success) return { error: firstIssue(parsed.error) };
   await getDb()
     .insert(brands)
