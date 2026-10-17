@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { DEFAULT_LOYALTY_RULES, coerceLoyaltyRules, earnFor, lotExpiry, maxRedeemable, parseLoyaltyRules, paidGoods, referralRewardKind } from "./model";
 import { applyAdjustment, applyPoints, discountAdjustment, pointsSpent } from "@/lib/promo/rules";
+import type { OrderAdjustment } from "@/lib/shopflow/types";
 
 describe("loyalty rules", () => {
   it("is off by default and on a broken value", () => {
@@ -62,7 +63,7 @@ describe("maxRedeemable", () => {
 });
 
 describe("points in the totals", () => {
-  const base = { subtotal: 200_000, discount: 0, shipping: 25_000, total: 225_000 };
+  const base: { subtotal: number; discount: number; shipping: number; total: number; adjustments?: OrderAdjustment[] } = { subtotal: 200_000, discount: 0, shipping: 25_000, total: 225_000 };
   it("come after the discount, lower total but not discount, and never pay shipping", () => {
     const discounted = applyAdjustment(base, { kind: "promo", code: "GV-AAAAAA", amount: 20_000 });
     const goods = paidGoods(discounted);
