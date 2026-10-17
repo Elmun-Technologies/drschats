@@ -6,6 +6,7 @@ import { analyticsIdsFromEnvironment, sanitizeAnalyticsIds, type AnalyticsIds } 
 import { getDb, isDbConfigured } from "@/lib/db/client";
 import { integrationSettings } from "@/lib/db/schema";
 import { decryptIntegrationValue, encryptIntegrationValue, isIntegrationEncryptionConfigured } from "./crypto";
+import { readPublicSettings, type PublicSettings } from "./site-settings";
 
 export const INTEGRATION_SETTING_KEYS = [
   "operator.botToken",
@@ -30,12 +31,14 @@ export interface RuntimeIntegrationSettings {
   emailFrom: string;
   emailReplyTo: string;
   analytics: AnalyticsIds;
+  webvisor: boolean;
 }
 
 interface LoadedSettings {
   settings: RuntimeIntegrationSettings;
   storedKeys: Set<IntegrationSettingKey>;
   storeStatus: IntegrationStoreStatus;
+  publicSettings: PublicSettings;
 }
 
 const DEFAULT_EMAIL_FROM = `${BRAND.name} <no-reply@govita.uz>`;
@@ -97,10 +100,12 @@ function adminAnalyticsAllowed(): boolean {
 }
 
 async function loadEffectiveSettings(): Promise<LoadedSettings> {
-  const stored = await loadStoredSettings();
+  const [stored, publicSettings] = await Promise.all([loadStoredSettings(), readPublicSettings()]);
   const usableStoredValues = stored.status === "ready" ? stored.values : {};
   const value = (key: IntegrationSettingKey) => usableStoredValues[key] ?? ENVIRONMENT[key];
-  const analyticsValue = (key: IntegrationSettingKey) => adminAnalyticsAllowed() ? value(key) : ENVIRONMENT[key];
+  // Plain public settings first; older encrypted analytics overrides still count until replaced.
+  const analyticsValue = (key: IntegrationSettingKey) =>
+    adminAnalyticsAllowed() ? (publicSettings[key as keyof PublicSettings] ?? value(key)) : ENVIRONMENT[key];
   return {
     settings: {
       operatorBotToken: value("operator.botToken"),
@@ -114,9 +119,11 @@ async function loadEffectiveSettings(): Promise<LoadedSettings> {
         metaPixel: analyticsValue("analytics.metaPixelId"),
         yandexMetrika: analyticsValue("analytics.yandexMetrikaId"),
       }),
+      webvisor: publicSettings["analytics.webvisor"] !== "off",
     },
     storedKeys: stored.keys,
     storeStatus: stored.status,
+    publicSettings,
   };
 }
 
@@ -148,13 +155,18 @@ export interface IntegrationAdminOverview {
   analytics: AnalyticsIds;
   analyticsManagedInAdmin: Record<keyof AnalyticsIds, boolean>;
   analyticsCspReady: boolean;
+  webvisor: boolean;
+  verification: { google: string; yandex: string; bing: string };
 }
 
 /** Safe-to-render status only. Secret values are deliberately not returned. */
 export async function getIntegrationAdminOverview(): Promise<IntegrationAdminOverview> {
   const loaded = await loadEffectiveSettings();
   const settings = loaded.settings;
-  const adminOverride = (key: IntegrationSettingKey) => loaded.storeStatus === "ready" && loaded.storedKeys.has(key) && (!key.startsWith("analytics.") || adminAnalyticsAllowed());
+  const adminOverride = (key: IntegrationSettingKey) =>
+    key.startsWith("analytics.")
+      ? adminAnalyticsAllowed() && (Boolean(loaded.publicSettings[key as keyof PublicSettings]) || (loaded.storeStatus === "ready" && loaded.storedKeys.has(key)))
+      : loaded.storeStatus === "ready" && loaded.storedKeys.has(key);
   return {
     databaseConfigured: isDbConfigured,
     encryptionConfigured: isIntegrationEncryptionConfigured(),
@@ -185,6 +197,12 @@ export async function getIntegrationAdminOverview(): Promise<IntegrationAdminOve
     // CSP is baked at build time; analytics settings can be changed in-panel
     // only when this build explicitly allowed all supported vendor origins.
     analyticsCspReady: adminAnalyticsAllowed(),
+    webvisor: settings.webvisor,
+    verification: {
+      google: loaded.publicSettings["verify.google"] ?? process.env.GOOGLE_SITE_VERIFICATION ?? "",
+      yandex: loaded.publicSettings["verify.yandex"] ?? process.env.YANDEX_VERIFICATION ?? "",
+      bing: loaded.publicSettings["verify.bing"] ?? "",
+    },
   };
 }
 

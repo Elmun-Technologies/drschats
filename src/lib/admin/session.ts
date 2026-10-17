@@ -6,9 +6,10 @@ import { getDb, isDbConfigured } from "@/lib/db/client";
 import { adminUsers } from "@/lib/db/schema";
 
 /*
-  Stateless admin session: a signed cookie carrying the user id and expiry.
-  Every request still loads the user row, so deleting an admin ends their
-  session at once without a sessions table.
+  Stateless admin session: a signed cookie carrying the user id, the user's
+  session epoch and the expiry. Every request still loads the user row, so
+  deleting an admin ends their session at once, and bumping the epoch
+  (password change, "log out everywhere") ends every cookie issued before.
 
   The cookie is scoped to /admin, httpOnly, SameSite=Strict (an admin action
   is never the target of a cross-site link) and Secure outside development.
@@ -29,12 +30,12 @@ function sign(payload: string) {
   return createHmac("sha256", secret()).update(payload).digest("base64url");
 }
 
-export function createSessionToken(userId: number, now = Date.now()): string {
-  const payload = Buffer.from(JSON.stringify({ uid: userId, exp: now + SESSION_DAYS * 864e5 })).toString("base64url");
+export function createSessionToken(userId: number, epoch = 0, now = Date.now()): string {
+  const payload = Buffer.from(JSON.stringify({ uid: userId, ep: epoch, exp: now + SESSION_DAYS * 864e5 })).toString("base64url");
   return `${payload}.${sign(payload)}`;
 }
 
-export function readSessionToken(token: string | undefined, now = Date.now()): number | null {
+export function readSessionToken(token: string | undefined, now = Date.now()): { uid: number; epoch: number } | null {
   if (!token) return null;
   const [payload, mac] = token.split(".");
   if (!payload || !mac) return null;
@@ -42,15 +43,17 @@ export function readSessionToken(token: string | undefined, now = Date.now()): n
   const given = Buffer.from(mac);
   if (expected.length !== given.length || !timingSafeEqual(expected, given)) return null;
   try {
-    const { uid, exp } = JSON.parse(Buffer.from(payload, "base64url").toString()) as { uid: number; exp: number };
-    return Number.isInteger(uid) && exp > now ? uid : null;
+    const { uid, ep, exp } = JSON.parse(Buffer.from(payload, "base64url").toString()) as { uid: number; ep?: number; exp: number };
+    // Cookies issued before epochs existed carry none; they belong to epoch 0.
+    const epoch = ep ?? 0;
+    return Number.isInteger(uid) && Number.isInteger(epoch) && exp > now ? { uid, epoch } : null;
   } catch {
     return null;
   }
 }
 
-export async function setSessionCookie(userId: number) {
-  (await cookies()).set(SESSION_COOKIE, createSessionToken(userId), {
+export async function setSessionCookie(userId: number, epoch: number) {
+  (await cookies()).set(SESSION_COOKIE, createSessionToken(userId, epoch), {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
     sameSite: "strict",
@@ -71,14 +74,15 @@ export interface AdminUser {
 
 export async function currentAdmin(): Promise<AdminUser | null> {
   if (!isDbConfigured) return null;
-  const uid = readSessionToken((await cookies()).get(SESSION_COOKIE)?.value);
-  if (uid == null) return null;
+  const session = readSessionToken((await cookies()).get(SESSION_COOKIE)?.value);
+  if (!session) return null;
   const [user] = await getDb()
-    .select({ id: adminUsers.id, email: adminUsers.email, name: adminUsers.name })
+    .select({ id: adminUsers.id, email: adminUsers.email, name: adminUsers.name, epoch: adminUsers.sessionEpoch })
     .from(adminUsers)
-    .where(eq(adminUsers.id, uid))
+    .where(eq(adminUsers.id, session.uid))
     .limit(1);
-  return user ?? null;
+  if (!user || user.epoch !== session.epoch) return null;
+  return { id: user.id, email: user.email, name: user.name };
 }
 
 /** Every admin page and every admin server action starts here. */

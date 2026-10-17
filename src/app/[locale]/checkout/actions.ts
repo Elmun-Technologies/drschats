@@ -1,6 +1,6 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { ORDERS_IN_DB, SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
 import { verifyInitData } from "@/lib/bot/webapp";
 import { announceOrderStatus, attachOrderChat } from "@/lib/bot/store";
@@ -22,6 +22,7 @@ import { upsellPool } from "@/lib/upsell/pool";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { ordersFromPhone } from "@/lib/catalog/db";
 import { COMMERCE } from "@/lib/config/commerce";
+import { linkOrderToVisitor, visitorIdFrom, VISITOR_COOKIE } from "@/lib/journey/collect";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
@@ -212,6 +213,15 @@ export async function submitOrder(
         return { ok: false, error: "failed" };
       }
       await Promise.all([
+        ORDERS_IN_DB
+          ? linkOrderToVisitor(visitorIdFrom((await cookies()).get(VISITOR_COOKIE)?.value), {
+              number: result.orderId,
+              total: order.totals.total,
+              phone: order.customer.phone,
+              name: order.customer.name,
+              items: order.items,
+            })
+          : Promise.resolve(),
         clubBotReceipt(result.orderId, telegram),
         emailOrderConfirmation(order, result.orderId),
         order.customer.email && order.customer.marketingOptIn

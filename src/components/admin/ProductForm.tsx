@@ -55,7 +55,7 @@ export function ProductForm({
       {state?.error && <Notice tone="error">{state.error}</Notice>}
       {state?.ok && <Notice tone="ok">{state.ok}</Notice>}
 
-      <section className="grid gap-4 rounded-md border border-line bg-white p-5 lg:grid-cols-3 lg:p-6">
+      <section className="grid gap-4 rounded-[20px] border border-line bg-white p-5 lg:grid-cols-3 lg:p-6">
         <Field label="Slug (URL)" hint="Masalan: swiss-energy-omega-3-30" className="lg:col-span-2">
           <input name="slug" defaultValue={values.slug} required pattern="[a-z0-9]+(-[a-z0-9]+)*" className={inputClass} />
         </Field>
@@ -110,7 +110,7 @@ export function ProductForm({
         </Field>
       </section>
 
-      <section className="flex flex-col gap-4 rounded-md border border-line bg-white p-5 lg:p-6">
+      <section className="flex flex-col gap-4 rounded-[20px] border border-line bg-white p-5 lg:p-6">
         <h2 className="text-[15px] font-semibold text-ink">Rasmlar</h2>
         <Field label="Rasm manzillari" hint="Har qatorda bitta URL (https://… yoki /products/…). Birinchisi — asosiy.">
           <textarea name="images" value={images} onChange={(e) => setImages(e.target.value)} rows={4} className={textareaClass} />
@@ -121,7 +121,7 @@ export function ProductForm({
         </Field>
       </section>
 
-      <section className="flex flex-col gap-4 rounded-md border border-line bg-white p-5 lg:p-6">
+      <section className="flex flex-col gap-4 rounded-[20px] border border-line bg-white p-5 lg:p-6">
         <div role="tablist" aria-label="Til" className="flex gap-2">
           {LOCALES.map((l) => (
             <button
@@ -179,7 +179,7 @@ export function ProductForm({
         ))}
       </section>
 
-      <div className="sticky bottom-0 -mx-4 flex gap-3 bg-tile/95 px-4 py-3 backdrop-blur lg:static lg:mx-0 lg:bg-transparent lg:p-0">
+      <div className="sticky bottom-0 -mx-4 flex gap-3 border-t border-line bg-bg px-4 py-3 lg:static lg:mx-0 lg:border-0 lg:bg-transparent lg:p-0">
         <SubmitButton>Saqlash</SubmitButton>
       </div>
     </form>
@@ -198,14 +198,24 @@ function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded: (url: 
   async function onChange() {
     const file = input.current?.files?.[0];
     if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setState({ error: "Fayl 5 MB dan katta." });
+      if (input.current) input.current.value = "";
+      return;
+    }
     setPending(true);
     const fd = new FormData();
     fd.set("file", file);
-    const result = await uploadProductImage(undefined, fd);
-    setPending(false);
-    setState(result);
-    if (result?.url) onUploaded(result.url);
-    if (input.current) input.current.value = "";
+    try {
+      const result = await uploadProductImage(undefined, fd);
+      setState(result);
+      if (result?.url) onUploaded(result.url);
+    } catch {
+      setState({ error: "Yuklab boʻlmadi — internetni tekshirib qayta urinib koʻring." });
+    } finally {
+      setPending(false);
+      if (input.current) input.current.value = "";
+    }
   }
 
   return (
@@ -214,8 +224,8 @@ function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded: (url: 
         {pending ? "Yuklanmoqda…" : "Rasm yuklash"}
         <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={onChange} className="sr-only" />
       </label>
-      {state?.error && <span className="text-sm text-red">{state.error}</span>}
-      {state?.ok && <span className="text-sm text-ink-2">{state.ok}</span>}
+      {state?.error && <span className="text-[14px] text-red">{state.error}</span>}
+      {state?.ok && <span className="text-[14px] text-ink-2">{state.ok}</span>}
     </div>
   );
 }

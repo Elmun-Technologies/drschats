@@ -1,4 +1,4 @@
-import { bigint, bigserial, boolean, integer, jsonb, pgTable, serial, text, timestamp } from "drizzle-orm/pg-core";
+import { bigint, bigserial, boolean, integer, jsonb, pgTable, serial, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import type { L, RawProduct } from "@/lib/shopflow/mock";
 import type { OrderRequest } from "@/lib/shopflow/types";
 
@@ -68,6 +68,7 @@ export const orders = pgTable("orders", {
   attribution: jsonb("attribution").$type<OrderRequest["attribution"]>(),
   adminNote: text("admin_note"),
   telegramChatId: bigint("telegram_chat_id", { mode: "number" }),
+  visitorId: uuid("visitor_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -79,6 +80,7 @@ export const adminUsers = pgTable("admin_users", {
   passwordHash: text("password_hash").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
+  sessionEpoch: integer("session_epoch").notNull().default(0),
 });
 
 /** Internal service notes; never store health or payment-card data here. */
@@ -162,4 +164,98 @@ export const botOrderEvents = pgTable("bot_order_events", {
   orderId: bigint("order_id", { mode: "number" }).notNull(),
   status: text("status").$type<OrderStatus>().notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* CRM and marketing — db/migrations/0006_crm_marketing.sql */
+
+export const VISITOR_STAGES = ["visit", "product", "cart", "checkout", "customer"] as const;
+export type VisitorStage = (typeof VISITOR_STAGES)[number];
+
+export type Touch = {
+  source?: string;
+  medium?: string;
+  campaign?: string;
+  content?: string;
+  term?: string;
+  clickId?: string;
+  referrer?: string;
+  landing?: string;
+};
+
+export type CartSnapshotItem = { slug: string; name: string; quantity: number; price: number };
+
+export const visitors = pgTable("visitors", {
+  id: uuid("id").primaryKey(),
+  firstSeenAt: timestamp("first_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  lastSeenAt: timestamp("last_seen_at", { withTimezone: true }).notNull().defaultNow(),
+  sessions: integer("sessions").notNull().default(1),
+  lastSession: text("last_session"),
+  pageViews: integer("page_views").notNull().default(0),
+  locale: text("locale"),
+  device: text("device").$type<"mobile" | "tablet" | "desktop">(),
+  firstTouch: jsonb("first_touch").$type<Touch>(),
+  lastTouch: jsonb("last_touch").$type<Touch>(),
+  stage: text("stage").$type<VisitorStage>().notNull().default("visit"),
+  cartValue: integer("cart_value").notNull().default(0),
+  cartItems: jsonb("cart_items").$type<CartSnapshotItem[]>().notNull().default([]),
+  cartAt: timestamp("cart_at", { withTimezone: true }),
+  phone9: text("phone9"),
+  name: text("name"),
+  ordersCount: integer("orders_count").notNull().default(0),
+  lastOrderAt: timestamp("last_order_at", { withTimezone: true }),
+});
+
+export const VISITOR_EVENT_TYPES = [
+  "page_view", "view_item", "add_to_cart", "remove_from_cart", "view_cart",
+  "begin_checkout", "purchase", "search", "add_to_wishlist", "quiz_complete",
+] as const;
+export type VisitorEventType = (typeof VISITOR_EVENT_TYPES)[number];
+
+export const visitorEvents = pgTable("visitor_events", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  visitorId: uuid("visitor_id").notNull(),
+  sessionId: text("session_id").notNull(),
+  type: text("type").$type<VisitorEventType>().notNull(),
+  path: text("path"),
+  productSlug: text("product_slug"),
+  value: integer("value"),
+  meta: jsonb("meta").$type<Record<string, unknown>>(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const promotions = pgTable("promotions", {
+  id: text("id").primaryKey(),
+  type: text("type").$type<"percent_off" | "buy_x_get_y" | "free_shipping_over">().notNull(),
+  title: jsonb("title").$type<L>().notNull(),
+  description: jsonb("description").$type<L>().notNull(),
+  percent: integer("percent"),
+  threshold: integer("threshold"),
+  productSlugs: jsonb("product_slugs").$type<string[] | null>(),
+  active: boolean("active").notNull().default(true),
+  startsAt: timestamp("starts_at", { withTimezone: true }),
+  endsAt: timestamp("ends_at", { withTimezone: true }),
+  sort: integer("sort").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const campaigns = pgTable("campaigns", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  name: text("name").notNull(),
+  channel: text("channel").$type<"telegram">().notNull(),
+  segment: text("segment").notNull(),
+  message: text("message").notNull(),
+  status: text("status").$type<"draft" | "sent">().notNull().default("draft"),
+  audience: integer("audience").notNull().default(0),
+  queued: integer("queued").notNull().default(0),
+  createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  sentAt: timestamp("sent_at", { withTimezone: true }),
+});
+
+export const siteSettings = pgTable("site_settings", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  updatedBy: integer("updated_by").references(() => adminUsers.id, { onDelete: "set null" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

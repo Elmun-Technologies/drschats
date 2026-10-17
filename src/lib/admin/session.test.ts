@@ -4,7 +4,8 @@ import { hashPassword, verifyPassword } from "./password";
 
 describe("admin session token", () => {
   it("round-trips a user id", () => {
-    expect(readSessionToken(createSessionToken(42))).toBe(42);
+    expect(readSessionToken(createSessionToken(42))).toEqual({ uid: 42, epoch: 0 });
+    expect(readSessionToken(createSessionToken(42, 3))).toEqual({ uid: 42, epoch: 3 });
   });
 
   it("rejects a tampered payload", () => {
@@ -15,7 +16,7 @@ describe("admin session token", () => {
   });
 
   it("rejects an expired token", () => {
-    const old = createSessionToken(42, Date.now() - 8 * 864e5);
+    const old = createSessionToken(42, 0, Date.now() - 8 * 864e5);
     expect(readSessionToken(old)).toBeNull();
   });
 

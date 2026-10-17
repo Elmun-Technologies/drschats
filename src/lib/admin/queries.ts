@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ilike, or, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, orders, products, type OrderStatus } from "@/lib/db/schema";
 import { contentToForm, toTashkentInput } from "./product-form";
@@ -122,4 +122,36 @@ export async function orderStats() {
     weekRevenue: Number(row?.weekRevenue ?? 0),
     open: Number(row?.open ?? 0),
   };
+}
+
+/** Cheap counts for the dashboard. */
+export async function catalogCounts() {
+  const db = getDb();
+  const [[p], [c], [b], [hidden], [outOfStock]] = await Promise.all([
+    db.select({ n: count() }).from(products),
+    db.select({ n: count() }).from(categories),
+    db.select({ n: count() }).from(brands),
+    db.select({ n: count() }).from(products).where(sql`${products.kind} = 'unlisted'`),
+    db.select({ n: count() }).from(products).where(sql`${products.inStock} = false and ${products.kind} <> 'unlisted'`),
+  ]);
+  return { products: p.n, categories: c.n, brands: b.n, hidden: hidden.n, outOfStock: outOfStock.n };
+}
+
+export async function orderStatusCounts(q?: string) {
+  const term = q?.trim().slice(0, 100);
+  const where = term
+    ? or(
+        ilike(orders.number, `%${term}%`),
+        sql`${orders.customer}->>'name' ilike ${`%${term}%`}`,
+        sql`${orders.customer}->>'phone' ilike ${`%${term}%`}`,
+        sql`${orders.customer}->>'email' ilike ${`%${term}%`}`,
+      )
+    : undefined;
+  const rows = await getDb().select({ status: orders.status, n: count() }).from(orders).where(where).groupBy(orders.status);
+  const out: Record<OrderStatus | "all", number> = { all: 0, new: 0, confirmed: 0, shipped: 0, delivered: 0, cancelled: 0 };
+  for (const row of rows) {
+    out[row.status] = row.n;
+    out.all += row.n;
+  }
+  return out;
 }

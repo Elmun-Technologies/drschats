@@ -21,7 +21,7 @@ export default function AdminRootLayout({ children }: { children: ReactNode }) {
   if (!isDbConfigured) notFound();
   return (
     <html lang="uz">
-      <body className="min-h-screen bg-tile font-sans text-ink antialiased">{children}</body>
+      <body className="min-h-screen bg-bg font-sans text-ink antialiased">{children}</body>
     </html>
   );
 }

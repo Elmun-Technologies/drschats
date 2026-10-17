@@ -2,17 +2,14 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
-import { count, eq, sql } from "drizzle-orm";
+import { randomBytes } from "node:crypto";
+import { count, eq } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, products } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/admin/session";
 import { CATALOG_TAG } from "@/lib/catalog/db";
-import { rawCategories, rawProducts } from "@/lib/shopflow/mock";
-import { PRODUCT_PHOTOS } from "@/lib/content/product-photos";
-import { PRODUCT_CUTOUTS, categoryCutout } from "@/lib/content/product-cutouts";
-import { PRODUCT_UNITS } from "@/lib/content/product-units";
-import { ALL_BRANDS, productBrand } from "@/lib/content/product-brands";
+import { insertBuiltInCatalog } from "@/lib/admin/seed";
 import { SLUG_RE, formToContent, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
 import { isStorageConfigured, uploadImage } from "@/lib/admin/storage";
 import { isAllowedImageUrl } from "@/lib/security/csp";
@@ -41,70 +38,10 @@ function firstIssue(err: z.ZodError) {
 
 /* ─── Import ─────────────────────────────────────────────────────────────── */
 
-/*
-  Copies the built-in catalogue into the database. Insert-only: a row that is
-  already there (by slug) is left alone, so running it again never overwrites
-  what an admin has edited.
-*/
+/* Brings over anything from the built-in catalogue the database lacks; never overwrites. */
 export async function importBuiltInCatalog(_state?: FormState, _form?: FormData): Promise<FormState> {
   await requireAdmin();
-  const db = getDb();
-  const result = await db.transaction(async (tx) => {
-    const c = await tx
-      .insert(categories)
-      .values(
-        rawCategories.map((cat, i) => ({
-          id: cat.id,
-          slug: cat.slug,
-          name: cat.name,
-          description: cat.description,
-          image: categoryCutout(cat.slug) ?? cat.image,
-          sort: i,
-        })),
-      )
-      .onConflictDoNothing()
-      .returning({ slug: categories.slug });
-    const b = await tx
-      .insert(brands)
-      .values(ALL_BRANDS.map((brand, i) => ({ slug: brand.slug, name: brand.name, sort: i })))
-      .onConflictDoNothing()
-      .returning({ slug: brands.slug });
-    const p = await tx
-      .insert(products)
-      .values(
-        rawProducts.map((raw, i) => ({
-          id: raw.id,
-          slug: raw.slug,
-          categorySlug: raw.categorySlug,
-          brandSlug: productBrand(raw.slug)?.slug ?? null,
-          price: raw.price,
-          oldPrice: raw.oldPrice ?? null,
-          inStock: raw.inStock,
-          kind: raw.kind ?? "core",
-          sort: i,
-          images: PRODUCT_PHOTOS[raw.slug] ?? [],
-          cutout: PRODUCT_CUTOUTS[raw.slug] ?? null,
-          unit: PRODUCT_UNITS[raw.slug] ?? null,
-          content: {
-            name: raw.name,
-            tagline: raw.tagline,
-            description: raw.description,
-            highlights: raw.highlights,
-            benefits: raw.benefits,
-            ingredients: raw.ingredients,
-            howToUse: raw.howToUse,
-            faq: raw.faq,
-            badges: raw.badges,
-            servings: raw.servings,
-            origin: raw.origin,
-            ...(raw.searchAliases ? { searchAliases: raw.searchAliases } : {}),
-          },
-        })),
-      )
-      .onConflictDoNothing()
-      .returning({ slug: products.slug });
-    return { categories: c.length, brands: b.length, products: p.length };
-  });
+  const result = await getDb().transaction((tx) => insertBuiltInCatalog(tx));
   refresh();
   return { ok: `Import qilindi: ${result.products} ta mahsulot, ${result.categories} ta kategoriya, ${result.brands} ta brend. Mavjudlari oʻzgartirilmadi.` };
 }
@@ -117,7 +54,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
   const parsed = productFieldsSchema.safeParse(data);
   if (!parsed.success) return { error: firstIssue(parsed.error) };
   const d = parsed.data;
-  const id = data.id?.trim() || `p-${d.slug}`;
+  const editingId = data.id?.trim() || null;
   const rejected = [...(d.images ?? "").split(/\r?\n/), d.cutout ?? ""]
     .map((u) => u.trim())
     .filter((u) => u && !isAllowedImageUrl(u));
@@ -147,15 +84,25 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
 
   const db = getDb();
   const [clash] = await db.select({ id: products.id }).from(products).where(eq(products.slug, d.slug)).limit(1);
-  if (clash && clash.id !== id) return { error: `«${d.slug}» slug boshqa mahsulotda band.` };
+  if (clash && clash.id !== editingId) return { error: `«${d.slug}» slug boshqa mahsulotda band.` };
 
-  await db
-    .insert(products)
-    .values({ id, ...row })
-    .onConflictDoUpdate({ target: products.id, set: row });
+  if (editingId) {
+    const updated = await db.update(products).set(row).where(eq(products.id, editingId)).returning({ id: products.id });
+    if (updated.length === 0) return { error: "Mahsulot topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin." };
+    refresh();
+    return { ok: "Saqlandi. Saytda darhol yangilanadi." };
+  }
+
+  /*
+    A new product never takes over an existing row. Ids follow p-<slug>, and a
+    product whose slug was later renamed still holds its old id — an upsert
+    on that id silently replaced it.
+  */
+  const [taken] = await db.select({ id: products.id }).from(products).where(eq(products.id, `p-${d.slug}`)).limit(1);
+  const id = taken ? `p-${d.slug}-${randomBytes(3).toString("hex")}` : `p-${d.slug}`;
+  await db.insert(products).values({ id, ...row });
   refresh();
-  if (!data.id) redirect(`/admin/products/${encodeURIComponent(id)}?saved=1`);
-  return { ok: "Saqlandi. Saytda 1 daqiqa ichida yangilanadi." };
+  redirect(`/admin/products/${encodeURIComponent(id)}?saved=1`);
 }
 
 export async function deleteProduct(form: FormData) {
@@ -211,13 +158,14 @@ export async function saveCategory(_: FormState, form: FormData): Promise<FormSt
     updatedAt: new Date(),
   };
   const db = getDb();
+  const [exists] = await db.select({ slug: categories.slug }).from(categories).where(eq(categories.slug, d.slug)).limit(1);
+  if (exists && exists.slug !== original) return { error: `«${d.slug}» kategoriyasi allaqachon bor.` };
   if (original) {
     // slug changes cascade to products (on update cascade).
     await db.update(categories).set(row).where(eq(categories.slug, original));
   } else {
-    const [exists] = await db.select({ slug: categories.slug }).from(categories).where(eq(categories.slug, d.slug)).limit(1);
-    if (exists) return { error: `«${d.slug}» kategoriyasi allaqachon bor.` };
-    await db.insert(categories).values({ id: `cat-${d.slug}`, ...row });
+    const [idTaken] = await db.select({ id: categories.id }).from(categories).where(eq(categories.id, `cat-${d.slug}`)).limit(1);
+    await db.insert(categories).values({ id: idTaken ? `cat-${d.slug}-${randomBytes(3).toString("hex")}` : `cat-${d.slug}`, ...row });
   }
   refresh();
   return { ok: "Saqlandi." };
@@ -260,16 +208,4 @@ export async function deleteBrand(form: FormData) {
   await getDb().delete(brands).where(eq(brands.slug, slug));
   refresh();
   redirect("/admin/brands?deleted=1");
-}
-
-/** Cheap counts for the dashboard. */
-export async function catalogCounts() {
-  const db = getDb();
-  const [[p], [c], [b], [hidden]] = await Promise.all([
-    db.select({ n: count() }).from(products),
-    db.select({ n: count() }).from(categories),
-    db.select({ n: count() }).from(brands),
-    db.select({ n: count() }).from(products).where(sql`${products.kind} = 'unlisted' or ${products.inStock} = false`),
-  ]);
-  return { products: p.n, categories: c.n, brands: b.n, hidden: hidden.n };
 }

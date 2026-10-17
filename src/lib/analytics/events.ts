@@ -14,6 +14,7 @@
   at, offer included.
 */
 
+import { journey, journeyPage } from "@/lib/journey/client";
 import { analyticsIdsFromEnvironment, type AnalyticsIds } from "./config";
 
 export { getAttribution } from "./attribution";
@@ -49,8 +50,25 @@ export interface AnalyticsItem {
 
 const CURRENCY = "UZS";
 
+const JOURNEY_EVENTS = new Set(["view_item", "add_to_cart", "remove_from_cart", "view_cart", "begin_checkout", "search", "add_to_wishlist", "quiz_complete"]);
+
+/** The same event, recorded in the shop's own visitor journey (admin → Mijozlar yoʻli). */
+function toJourney(event: string, params: Payload) {
+  if (!JOURNEY_EVENTS.has(event) || typeof document === "undefined") return;
+  const items = Array.isArray(params.items) ? (params.items as AnalyticsItem[]) : [];
+  const value = typeof params.value === "number" ? Math.max(0, Math.round(params.value)) : undefined;
+  journey({
+    type: event as Parameters<typeof journey>[0]["type"],
+    path: location.pathname,
+    ...(items.length === 1 && /^[a-z0-9-]+$/.test(items[0].item_id) ? { slug: items[0].item_id } : {}),
+    ...(value !== undefined ? { value } : {}),
+    ...(typeof params.search_term === "string" ? { term: params.search_term.slice(0, 100) } : {}),
+  });
+}
+
 function send(event: string, params: Payload, ecommerce: boolean) {
   if (typeof window === "undefined") return;
+  toJourney(event, params);
   window.dataLayer = window.dataLayer || [];
   if (ecommerce) {
     window.dataLayer.push({ ecommerce: null });
@@ -157,6 +175,7 @@ export function trackUpsellSkip(step: number, productId: string) {
 
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */
 export function trackPageView(url: string) {
+  journeyPage(url);
   window.fbq?.("track", "PageView");
   const ymId = analyticsIds().yandexMetrika;
   if (ymId) window.ym?.(Number(ymId), "hit", url);

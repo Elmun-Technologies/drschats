@@ -16,7 +16,7 @@ export function BotTabs({ active }: { active: (typeof TABS)[number]["href"] }) {
           key={t.href}
           href={t.href}
           aria-current={t.href === active ? "page" : undefined}
-          className={cn("flex h-11 items-center rounded-sm px-4 text-[15px]", t.href === active ? "bg-forest font-semibold text-white" : "bg-bg text-ink-2")}
+          className={cn("flex h-11 items-center rounded-sm px-4 text-[15px]", t.href === active ? "bg-ink font-semibold text-white" : "bg-bg text-ink-2")}
         >
           {t.label}
         </Link>

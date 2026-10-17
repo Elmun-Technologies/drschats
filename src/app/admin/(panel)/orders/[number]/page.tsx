@@ -5,9 +5,10 @@ import { getDb } from "@/lib/db/client";
 import { getOrder } from "@/lib/admin/queries";
 import { botOrderEvents, ORDER_STATUSES } from "@/lib/db/schema";
 import { STATUS_LABEL, formatDateTime } from "@/lib/admin/order-labels";
+import { lineTotal } from "@/lib/cart/pricing";
 import { updateOrder } from "@/app/admin/_actions/orders";
 import { ActionForm } from "@/components/admin/ActionForm";
-import { Card, Field, PageHeader, inputClass, textareaClass } from "@/components/admin/ui";
+import { Card, Field, PageHeader, inputClass, secondaryButtonClass, textareaClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { describeAttribution } from "@/lib/analytics/attribution";
 
@@ -35,7 +36,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
       <PageHeader
         title={`Buyurtma ${o.number}`}
         lead={`${formatDateTime(o.createdAt)} · ${STATUS_LABEL[o.status]}`}
-        actions={phone9 ? <Link href={`/admin/customers/${phone9}`} className="inline-flex h-10 items-center rounded-sm border border-[#e4e6e8] bg-white px-4 text-[11px] font-semibold text-[#44494e] hover:bg-[#f1f3f0]">Mijoz profilini ochish ↗</Link> : undefined}
+        actions={<>{phone9 ? <Link href={`/admin/customers/${phone9}`} className={secondaryButtonClass}>Mijoz profili</Link> : null}{o.visitorId ? <Link href={`/admin/visitors/${o.visitorId}`} className={secondaryButtonClass}>Saytdagi yoʻli</Link> : null}<Link href="/admin/orders" className={secondaryButtonClass}>← Buyurtmalar</Link></>}
       />
       <div className="grid gap-4 lg:grid-cols-[1fr_360px]">
         <div className="flex flex-col gap-4">
@@ -49,7 +50,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
                     {it.subscription && <span className="text-muted"> · obuna har {it.subscription.intervalDays} kunda</span>}
                     {it.upsellDiscountPercent ? <span className="text-muted"> · taklif −{it.upsellDiscountPercent}%</span> : null}
                   </span>
-                  <span className="shrink-0 font-semibold">{formatNumber(it.unitPrice * it.quantity)} soʻm</span>
+                  <span className="shrink-0 font-semibold tabular-nums">{formatNumber(lineTotal({ price: it.unitPrice, quantity: it.quantity, upsellDiscountPercent: it.upsellDiscountPercent }))} soʻm</span>
                 </li>
               ))}
             </ul>
@@ -91,15 +92,15 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
               <textarea name="adminNote" defaultValue={o.adminNote ?? ""} rows={4} className={textareaClass} />
             </Field>
           </ActionForm>
-          <div className="mt-5 border-t border-[#e4e6e8] pt-4">
-            <h3 className="mb-3 text-[12px] font-bold text-[#44494e]">Status tarixi</h3>
-            <ol className="relative space-y-3 before:absolute before:bottom-2 before:left-[5px] before:top-2 before:w-px before:bg-[#e4e6e8]">
-              <li className="relative pl-5"><span className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full bg-[#0f2d24] ring-2 ring-white" /><p className="text-[10px] font-semibold text-[#44494e]">Buyurtma yaratildi</p><p className="mt-0.5 text-[9px] text-[#63686e]">{formatDateTime(o.createdAt)}</p></li>
+          <div className="mt-5 border-t border-line pt-4">
+            <h3 className="mb-3 text-[14px] font-bold text-ink-2">Status tarixi</h3>
+            <ol className="relative space-y-3 before:absolute before:bottom-2 before:left-[5px] before:top-2 before:w-px before:bg-line">
+              <li className="relative pl-5"><span className="absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full bg-ink ring-2 ring-white" /><p className="text-[12px] font-semibold text-ink-2">Buyurtma yaratildi</p><p className="mt-0.5 text-[12px] text-muted">{formatDateTime(o.createdAt)}</p></li>
               {[...history].reverse().map((event, index) => (
-                <li key={`${event.id}-${index}`} className="relative pl-5"><span className={`absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${event.status === "cancelled" ? "bg-[#c8161d]" : "bg-[#0f2d24]"}`} /><p className="text-[10px] font-semibold text-[#44494e]">{STATUS_LABEL[event.status]}</p><p className="mt-0.5 text-[9px] text-[#63686e]">{formatDateTime(event.createdAt)}</p></li>
+                <li key={`${event.id}-${index}`} className="relative pl-5"><span className={`absolute left-0 top-1.5 h-2.5 w-2.5 rounded-full ring-2 ring-white ${event.status === "cancelled" ? "bg-red" : "bg-ink"}`} /><p className="text-[12px] font-semibold text-ink-2">{STATUS_LABEL[event.status]}</p><p className="mt-0.5 text-[12px] text-muted">{formatDateTime(event.createdAt)}</p></li>
               ))}
             </ol>
-            {!history.length && <p className="mt-3 text-[9px] leading-4 text-[#63686e]">Holat oʻzgarishi saqlangandan keyin tarix shu yerda paydo boʻladi.</p>}
+            {!history.length && <p className="mt-3 text-[12px] leading-4 text-muted">Holat oʻzgarishi saqlangandan keyin tarix shu yerda paydo boʻladi.</p>}
           </div>
         </Card>
       </div>

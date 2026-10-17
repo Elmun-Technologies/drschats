@@ -1,12 +1,13 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { ORDER_STATUSES, adminUsers, orders } from "@/lib/db/schema";
-import { requireAdmin } from "@/lib/admin/session";
-import { hashPassword, MIN_PASSWORD_LENGTH } from "@/lib/admin/password";
+import { requireAdmin, setSessionCookie } from "@/lib/admin/session";
+import { ADMIN_TABLE_LOCK } from "@/lib/admin/accounts";
+import { hashPassword, MIN_PASSWORD_LENGTH, verifyPassword } from "@/lib/admin/password";
 import { announceOrderStatus } from "@/lib/bot/store";
 import type { FormState } from "./catalog";
 
@@ -54,7 +55,35 @@ export async function addAdmin(_: FormState, form: FormData): Promise<FormState>
 export async function removeAdmin(form: FormData) {
   const me = await requireAdmin();
   const id = Number(form.get("id"));
-  // Never yourself: the panel must always keep at least the person using it.
-  if (Number.isInteger(id) && id !== me.id) await getDb().delete(adminUsers).where(eq(adminUsers.id, id));
+  // Never yourself, and never the last one — two admins removing each other at once must not leave none.
+  if (Number.isInteger(id) && id !== me.id) {
+    await getDb().transaction(async (tx) => {
+      await tx.execute(sql`select pg_advisory_xact_lock(${ADMIN_TABLE_LOCK})`);
+      const [{ n }] = await tx.select({ n: sql<number>`count(*)::int` }).from(adminUsers);
+      if (n > 1) await tx.delete(adminUsers).where(eq(adminUsers.id, id));
+    });
+  }
   revalidatePath("/admin/users");
+}
+
+const passwordSchema = z.object({
+  current: z.string().min(1, "Joriy parolni kiriting.").max(200),
+  next: z.string().min(MIN_PASSWORD_LENGTH, `Yangi parol kamida ${MIN_PASSWORD_LENGTH} belgi boʻlsin.`).max(200),
+});
+
+/* Changing the password signs out every other session of this admin. */
+export async function changePassword(_: FormState, form: FormData): Promise<FormState> {
+  const me = await requireAdmin();
+  const parsed = passwordSchema.safeParse({ current: form.get("current"), next: form.get("next") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const db = getDb();
+  const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, me.id)).limit(1);
+  if (!user || !(await verifyPassword(parsed.data.current, user.passwordHash))) return { error: "Joriy parol notoʻgʻri." };
+  const [updated] = await db
+    .update(adminUsers)
+    .set({ passwordHash: await hashPassword(parsed.data.next), sessionEpoch: sql`${adminUsers.sessionEpoch} + 1` })
+    .where(eq(adminUsers.id, me.id))
+    .returning({ epoch: adminUsers.sessionEpoch });
+  await setSessionCookie(me.id, updated.epoch);
+  return { ok: "Parol almashtirildi. Boshqa qurilmalardagi sessiyalar yopildi." };
 }

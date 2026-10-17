@@ -34,6 +34,16 @@ export async function register() {
   // the environment it was started with.
   if (process.env.NEXT_RUNTIME !== "nodejs") return;
 
+  if (process.env.DATABASE_URL) {
+    // First boot with a database: the existing catalogue appears in the admin panel by itself.
+    import("@/lib/admin/seed")
+      .then(({ autoSeedCatalog }) => autoSeedCatalog())
+      .then((result) => {
+        if (result?.seeded) console.log(`[catalog] built-in catalogue copied to the database: ${result.seeded} products`);
+      })
+      .catch((err: Error) => console.error("[catalog] auto-seed skipped:", err.message));
+  }
+
   const built = process.env.CSP_BUILD_MODE;
   const runtime = cspMode(process.env.CSP_MODE);
 
