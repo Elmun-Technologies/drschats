@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { ProfileView } from "@/components/profile/ProfileView";
+import { getLoyaltyRules } from "@/lib/loyalty/settings";
 
 /*
   Per-visitor and noindex, like /account and /wishlist. Unlike /account this
@@ -35,5 +36,7 @@ export default async function ProfilePage({
 }) {
   const { locale } = await params;
   setRequestLocale(locale);
-  return <ProfileView />;
+  // The birthday opt-in exists only while switched on in /admin/loyalty (it sends data to the server).
+  const rules = await getLoyaltyRules();
+  return <ProfileView birthdayGift={rules.birthday.enabled} />;
 }

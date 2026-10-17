@@ -10,12 +10,24 @@ const render = (q: Parameters<PgDialect["sqlToQuery"]>[0]) => dialect.sqlToQuery
 const window = { from: new Date("2026-10-15T11:00:00Z"), to: new Date("2026-10-17T11:00:00Z") };
 
 describe("candidateQuery", () => {
-  it("has a query for every ready trigger and none for restock / birthday", () => {
+  it("has a query for every trigger but restock (enrolled from the waitlist)", () => {
     for (const trigger of FLOW_TRIGGERS) {
       const q = candidateQuery(trigger, window);
-      if (trigger === "restock" || trigger === "birthday") expect(q).toBeNull();
+      if (trigger === "restock") expect(q).toBeNull();
       else expect(q).not.toBeNull();
     }
+  });
+
+  it("enrolls birthdays once a year, N days early, Tashkent time, 29 Feb on the 28th, ordered phones only", () => {
+    const { sql, params } = render(candidateQuery("birthday", window, { birthdayDaysBefore: 5 })!);
+    expect(params).toEqual(expect.arrayContaining([window.from.toISOString(), window.to.toISOString(), 5]));
+    expect(sql).not.toContain("2026-10");
+    expect(sql).toMatch(/y\.year::text as cycle/);
+    expect(sql).toContain("at time zone 'Asia/Tashkent'");
+    expect(sql).toContain("b.month = 2 and b.day = 29");
+    expect(sql).toMatch(/exists \(select 1 from orders o where o\.status <> 'cancelled'/);
+    // The lead time is clamped to the settings range.
+    expect(render(candidateQuery("birthday", window, { birthdayDaysBefore: 99 })!).params).toContain(30);
   });
 
   it("binds the window bounds as parameters, never as SQL text", () => {

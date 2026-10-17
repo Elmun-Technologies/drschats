@@ -47,6 +47,8 @@ export default async function EditBannerPage({ params }: { params: Promise<{ id:
           showCountdown: b.showCountdown,
           sort: b.sort,
           active: b.active,
+          experiment: b.experiment ?? "",
+          variant: b.variant ?? "",
         }}
       />
     </>

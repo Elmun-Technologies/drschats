@@ -5,8 +5,9 @@ import { queueMessage, reachContext, resolveReach, type ReachContext } from "@/l
 import { cartSummary, firstName, formatSum, renderTemplate, type MessageLocale, type TemplateVars } from "@/lib/messaging/template";
 import { flowMessageKey } from "@/lib/messaging/keys";
 import { DEFAULT_FLOWS } from "./defaults";
+import { readLoyaltyRules } from "@/lib/loyalty/settings";
 import { enrollmentWindow, pickStep } from "./schedule";
-import { candidateQuery, conversionQuery } from "./triggers";
+import { candidateQuery, conversionQuery, type TriggerOptions } from "./triggers";
 import { isFlowTrigger, parseSteps, type FlowStep, type FlowTrigger } from "./types";
 
 /*
@@ -64,8 +65,8 @@ export function contextVars(context: Row, locale: MessageLocale): TemplateVars {
   return vars;
 }
 
-async function enroll(tx: Tx, flow: { id: string; trigger: FlowTrigger }, steps: FlowStep[], now: Date): Promise<number> {
-  const query = candidateQuery(flow.trigger, enrollmentWindow(flow.trigger, steps[0].delayMinutes, now));
+async function enroll(tx: Tx, flow: { id: string; trigger: FlowTrigger }, steps: FlowStep[], now: Date, options: TriggerOptions = {}): Promise<number> {
+  const query = candidateQuery(flow.trigger, enrollmentWindow(flow.trigger, steps[0].delayMinutes, now), options);
   if (!query) return 0;
   const rows = (await tx.execute(sql`
     insert into flow_enrollments (flow_id, subject, cycle, context, anchor_at, step, next_at)
@@ -131,7 +132,8 @@ async function advance(tx: Tx, e: Row, now: Date, reach: ReachContext, result: F
   const trigger = String(e.trigger);
 
   const visitorId = typeof context.visitorId === "string" ? context.visitorId : null;
-  const [order] = (await tx.execute(conversionQuery(subject, anchor, visitorId))) as unknown as { id: string | number }[];
+  const [order] =
+    trigger === "birthday" ? [] : ((await tx.execute(conversionQuery(subject, anchor, visitorId))) as unknown as { id: string | number }[]);
   if (order) {
     await close(tx, id, "converted", { orderId: Number(order.id) });
     result.converted += 1;
@@ -179,6 +181,7 @@ async function advance(tx: Tx, e: Row, now: Date, reach: ReachContext, result: F
 export async function runFlows(now = new Date()): Promise<FlowRunResult> {
   const result: FlowRunResult = { locked: false, enrolled: 0, queued: 0, converted: 0, exited: 0, done: 0 };
   const reach = await reachContext();
+  const options: TriggerOptions = { birthdayDaysBefore: (await readLoyaltyRules().catch(() => null))?.birthday.daysBefore };
   await getDb().transaction(async (tx) => {
     const lock = (await tx.execute(sql`select pg_try_advisory_xact_lock(${FLOWS_LOCK}) as ok`)) as unknown as { ok: boolean }[];
     if (!lock[0]?.ok) return;
@@ -189,7 +192,7 @@ export async function runFlows(now = new Date()): Promise<FlowRunResult> {
       const trigger = String(flow.trigger);
       const steps = parseSteps(flow.steps);
       if (!isFlowTrigger(trigger) || steps.length === 0) continue;
-      result.enrolled += await enroll(tx, { id: String(flow.id), trigger }, steps, now);
+      result.enrolled += await enroll(tx, { id: String(flow.id), trigger }, steps, now, options);
     }
 
     // Customers who came back are marked at once, not only when their next step falls due.
@@ -199,11 +202,13 @@ export async function runFlows(now = new Date()): Promise<FlowRunResult> {
         select a.id, (
           select o.id from orders o
           where o.created_at > a.anchor_at
-            and (right(regexp_replace(o.customer->>'phone', '\D', '', 'g'), 9) = a.subject
+            and (right(regexp_replace(o.customer->>'phone', '\\D', '', 'g'), 9) = a.subject
                  or (a.context ? 'visitorId' and o.visitor_id::text = a.context->>'visitorId'))
           order by o.created_at limit 1
         ) as order_id
-        from flow_enrollments a where a.status = 'active'
+        from flow_enrollments a
+        -- A birthday greeting is sent even if the customer ordered in the days before it.
+        where a.status = 'active' and not exists (select 1 from flows f where f.id = a.flow_id and f.trigger = 'birthday')
       ) c
       where c.id = e.id and c.order_id is not null
       returning e.id`)) as unknown as unknown[];

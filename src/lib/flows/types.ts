@@ -23,7 +23,7 @@ export const TRIGGER_INFO: Record<FlowTrigger, { title: string; anchor: string; 
   course_ending: { title: "Kurs tugayapti", anchor: "oxirgi buyurtmadan", ready: true },
   lapsed: { title: "Uzoq vaqt xarid yoʻq", anchor: "oxirgi buyurtmadan", ready: true },
   restock: { title: "Mahsulot omborga keldi", anchor: "mahsulot kelgan vaqtdan", ready: true },
-  birthday: { title: "Tugʻilgan kun", anchor: "tugʻilgan kundan", ready: false },
+  birthday: { title: "Tugʻilgan kun", anchor: "tugʻilgan kundan N kun oldin (Sodiqlik sozlamasi)", ready: true },
 };
 
 export const STEP_CHANNELS = ["telegram_then_sms", "telegram", "sms"] as const;

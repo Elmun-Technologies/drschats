@@ -28,6 +28,9 @@ export interface StoreBanner {
   countdownTo: string | null;
   /** ISO; the banner disappears from the page at this moment. */
   endsAt: string | null;
+  /** A/B test (lib/merch/ab.ts): this banner is variant A, `variantB` the other; the visitor's cookie picks one. */
+  experiment?: string;
+  variantB?: StoreBanner;
 }
 
 export interface ScheduleWindow {

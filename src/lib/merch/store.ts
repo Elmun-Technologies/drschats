@@ -18,6 +18,7 @@ import {
   type StoreAnnouncement,
   type StoreBanner,
 } from "./model";
+import { pairVariants } from "./ab";
 
 /*
   Storefront reads of what the team sets in admin → Vitrina. Every read is
@@ -57,30 +58,58 @@ const cachedBanners = unstable_cache(
       startsAt: b.startsAt?.toISOString() ?? null,
       endsAt: b.endsAt?.toISOString() ?? null,
     })),
-  ["merch-banners-v1"],
+  ["merch-banners-v2"],
   { tags: [MERCH_TAG], revalidate: 300 },
 );
 
+function toStoreBanner(b: CachedBanner, locale: Locale): StoreBanner | null {
+  const href = safeHref(b.href);
+  if (!href) return null;
+  return {
+    id: b.id,
+    title: b.title[locale].trim(),
+    subtitle: b.subtitle[locale]?.trim() ?? "",
+    cta: b.cta[locale]?.trim() ?? "",
+    href,
+    image: b.image || null,
+    imageMobile: b.imageMobile || null,
+    theme: b.theme,
+    countdownTo: b.showCountdown && b.endsAt ? b.endsAt : null,
+    endsAt: b.endsAt,
+  };
+}
+
+/** Live banners of a placement (any placement for null); `pairs` are experiments with both variants live. */
+function liveRows(rows: CachedBanner[], placement: BannerPlacement | null, locale: Locale, now: number) {
+  const live = rows.filter((b) => (placement === null || b.placement === placement) && inWindow(b, now) && b.title[locale]?.trim() && safeHref(b.href));
+  return { live, ...pairVariants(live) };
+}
+
+/**
+ * Banners of a placement in their order. An experiment with both variants
+ * live comes back as one entry (variant A, carrying `variantB`) at A's
+ * place; a lone variant — the other ended, or the winner was kept — is a
+ * plain banner.
+ */
 export async function getBanners(placement: BannerPlacement, locale: Locale, now = Date.now()): Promise<StoreBanner[]> {
   const rows = await cachedBanners().catch(() => [] as CachedBanner[]);
-  return rows
-    .filter((b) => b.placement === placement && inWindow(b, now) && b.title[locale]?.trim())
-    .flatMap((b) => {
-      const href = safeHref(b.href);
-      if (!href) return [];
-      return [{
-        id: b.id,
-        title: b.title[locale].trim(),
-        subtitle: b.subtitle[locale]?.trim() ?? "",
-        cta: b.cta[locale]?.trim() ?? "",
-        href,
-        image: b.image || null,
-        imageMobile: b.imageMobile || null,
-        theme: b.theme,
-        countdownTo: b.showCountdown && b.endsAt ? b.endsAt : null,
-        endsAt: b.endsAt,
-      }];
-    });
+  const { live, pairs } = liveRows(rows, placement, locale, now);
+  const pairOf = new Map(pairs.map((p) => [p.A.id, p]));
+  const hidden = new Set(pairs.map((p) => p.B.id));
+  return live.flatMap((row) => {
+    if (hidden.has(row.id)) return [];
+    const banner = toStoreBanner(row, locale);
+    if (!banner) return [];
+    const pair = pairOf.get(row.id);
+    const b = pair ? toStoreBanner(pair.B, locale) : null;
+    return [pair && b ? { ...banner, experiment: pair.key, variantB: b } : banner];
+  });
+}
+
+/** Experiment keys with both variants live on any placement — the <head> script assigns these. */
+export async function liveExperiments(locale: Locale, now = Date.now()): Promise<string[]> {
+  const rows = await cachedBanners().catch(() => [] as CachedBanner[]);
+  return liveRows(rows, null, locale, now).pairs.map((p) => p.key).sort();
 }
 
 const cachedAnnouncements = unstable_cache(

@@ -25,6 +25,12 @@ export class FakeSmsProvider implements SmsProvider {
     const { parts, encoding } = countSms(text);
     counter += 1;
     console.log(`[sms:fake] → ${redactPhone(phoneE164)} · ${parts} part(s) ${encoding}`);
+    // Local end-to-end runs only: SMS_FAKE_LOG=<file> keeps the texts (e.g. a points code) for the test to read.
+    const file = process.env.SMS_FAKE_LOG;
+    if (file) {
+      const { appendFile } = await import("node:fs/promises");
+      await appendFile(file, `${JSON.stringify({ to: phoneE164.slice(-9), text, at: new Date().toISOString() })}\n`).catch(() => {});
+    }
     return { ok: true, id: `fake-${Date.now()}-${counter}` };
   }
 }

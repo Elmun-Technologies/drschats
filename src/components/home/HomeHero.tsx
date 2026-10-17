@@ -9,6 +9,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { discountPercent, type MenuDeal } from "@/components/layout/menu-deal";
 import { BannerLink, useUnexpired } from "@/components/marketing/BannerLink";
 import { SaleCountdown } from "@/components/marketing/SaleCountdown";
+import { AbSlot } from "@/components/marketing/AbSlot";
 
 export interface HeroSlide {
   /** Stable key: "banner-12" for a panel banner, "slide-0" for a built-in one. */
@@ -29,6 +30,9 @@ export interface HeroSlide {
   endsAt?: string | null;
   /** Set for banners from admin → Vitrina: their clicks are counted. */
   bannerId?: number;
+  /** A/B test: this slide is variant A and `variantB` the other (lib/merch/ab.ts). */
+  experiment?: string;
+  variantB?: HeroSlide;
 }
 
 /*
@@ -57,68 +61,22 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
 
   const slide = slides[active] ?? slides[0];
   if (!slide) return null;
-  const dark = slide.theme === "dark";
   const index = slides.indexOf(slide);
 
   return (
     <div className="flex min-w-0 flex-col gap-3 lg:gap-3.5">
       <div className="relative">
-        <BannerLink
-          key={slide.key}
-          href={slide.href}
-          slot="hero"
-          banner={slide.bannerId ? { id: slide.bannerId, title: slide.title } : undefined}
-          className={cn(
-            "hero-slide-in relative flex min-h-[360px] flex-col overflow-hidden rounded-3xl px-5 pt-5 transition-colors md:grid md:min-h-[320px] md:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] md:items-center md:gap-6 md:px-10 md:py-8 lg:h-[420px] lg:rounded-[28px] lg:px-[88px] lg:py-0",
-            dark ? "bg-dark-panel text-white hover:bg-ink" : "bg-tile hover:bg-tile-hover",
-          )}
-        >
-          <span className="relative z-10 flex flex-col items-start gap-3 lg:gap-4">
-            {slide.eyebrow && (
-              <span className="inline-flex h-6 items-center rounded-pill bg-bg px-2.5 text-xs font-semibold text-ink lg:h-[26px] lg:text-[13px]">
-                {slide.eyebrow}
-              </span>
-            )}
-            <span className="text-[25px] font-bold leading-[30px] tracking-[-0.01em] lg:text-h-hero lg:leading-[46px] lg:tracking-[-0.02em]">{slide.title}</span>
-            {slide.subtitle && (
-              <span className={cn("max-w-[520px] text-[15px] leading-[21px] lg:text-[17px] lg:leading-6", dark ? "text-on-dark-2" : "text-ink-2")}>{slide.subtitle}</span>
-            )}
-            {slide.countdownTo && <SaleCountdown as="span" endsAt={slide.countdownTo} onDark={dark} className="lg:text-[15px]" />}
-            {slide.cta && (
-              <span
-                className={cn(
-                  "mt-0.5 inline-flex h-11 items-center rounded-sm px-[18px] text-[15px] font-semibold lg:mt-1.5 lg:h-14 lg:rounded-[14px] lg:px-8 lg:text-[17px]",
-                  dark ? "bg-bg text-ink" : "bg-ink text-white",
-                )}
-              >
-                {slide.cta}
-              </span>
-            )}
-          </span>
-          {slide.image && (
-            <span
-              className={cn(
-                "relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]",
-                slide.imageMobile && "max-md:hidden",
-              )}
-            >
-              <Image
-                src={slide.image}
-                alt=""
-                fill
-                priority={index === 0}
-                unoptimized={!isLocal(slide.image)}
-                sizes="(max-width: 767px) 176px, 330px"
-                className="object-contain"
-              />
-            </span>
-          )}
-          {slide.imageMobile && (
-            <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:hidden">
-              <Image src={slide.imageMobile} alt="" fill priority={index === 0} unoptimized={!isLocal(slide.imageMobile)} sizes="176px" className="object-contain" />
-            </span>
-          )}
-        </BannerLink>
+        {slide.experiment && slide.variantB && slide.bannerId && slide.variantB.bannerId ? (
+          <AbSlot
+            key={slide.key}
+            experiment={slide.experiment}
+            slot="hero"
+            a={{ id: slide.bannerId, title: slide.title, node: <SlideCard slide={slide} priority={index === 0} /> }}
+            b={{ id: slide.variantB.bannerId, title: slide.variantB.title, node: <SlideCard slide={slide.variantB} priority={index === 0} /> }}
+          />
+        ) : (
+          <SlideCard key={slide.key} slide={slide} priority={index === 0} />
+        )}
         {count > 1 && (
           <>
             <ArrowButton dir="prev" label={t("v3.prevSlide")} onClick={() => go(-1)} className="absolute left-4 top-[182px] hidden lg:flex" />
@@ -148,6 +106,68 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
         </div>
       )}
     </div>
+  );
+}
+
+/* One slide's card. A slide in an A/B test renders two of these inside an AbSlot. */
+function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean }) {
+  const dark = slide.theme === "dark";
+  return (
+    <BannerLink
+            href={slide.href}
+      slot="hero"
+      banner={slide.bannerId ? { id: slide.bannerId, title: slide.title } : undefined}
+      className={cn(
+        "hero-slide-in relative flex min-h-[360px] flex-col overflow-hidden rounded-3xl px-5 pt-5 transition-colors md:grid md:min-h-[320px] md:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] md:items-center md:gap-6 md:px-10 md:py-8 lg:h-[420px] lg:rounded-[28px] lg:px-[88px] lg:py-0",
+        dark ? "bg-dark-panel text-white hover:bg-ink" : "bg-tile hover:bg-tile-hover",
+      )}
+    >
+      <span className="relative z-10 flex flex-col items-start gap-3 lg:gap-4">
+        {slide.eyebrow && (
+          <span className="inline-flex h-6 items-center rounded-pill bg-bg px-2.5 text-xs font-semibold text-ink lg:h-[26px] lg:text-[13px]">
+            {slide.eyebrow}
+          </span>
+        )}
+        <span className="text-[25px] font-bold leading-[30px] tracking-[-0.01em] lg:text-h-hero lg:leading-[46px] lg:tracking-[-0.02em]">{slide.title}</span>
+        {slide.subtitle && (
+          <span className={cn("max-w-[520px] text-[15px] leading-[21px] lg:text-[17px] lg:leading-6", dark ? "text-on-dark-2" : "text-ink-2")}>{slide.subtitle}</span>
+        )}
+        {slide.countdownTo && <SaleCountdown as="span" endsAt={slide.countdownTo} onDark={dark} className="lg:text-[15px]" />}
+        {slide.cta && (
+          <span
+            className={cn(
+              "mt-0.5 inline-flex h-11 items-center rounded-sm px-[18px] text-[15px] font-semibold lg:mt-1.5 lg:h-14 lg:rounded-[14px] lg:px-8 lg:text-[17px]",
+              dark ? "bg-bg text-ink" : "bg-ink text-white",
+            )}
+          >
+            {slide.cta}
+          </span>
+        )}
+      </span>
+      {slide.image && (
+        <span
+          className={cn(
+            "relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]",
+            slide.imageMobile && "max-md:hidden",
+          )}
+        >
+          <Image
+            src={slide.image}
+            alt=""
+            fill
+            priority={priority}
+            unoptimized={!isLocal(slide.image)}
+            sizes="(max-width: 767px) 176px, 330px"
+            className="object-contain"
+          />
+        </span>
+      )}
+      {slide.imageMobile && (
+        <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:hidden">
+          <Image src={slide.imageMobile} alt="" fill priority={priority} unoptimized={!isLocal(slide.imageMobile)} sizes="176px" className="object-contain" />
+        </span>
+      )}
+    </BannerLink>
   );
 }
 

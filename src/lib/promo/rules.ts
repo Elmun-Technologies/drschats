@@ -43,6 +43,8 @@ export type PromoLine = Pick<CartLine, "slug" | "price" | "quantity" | "upsellDi
 
 export type PromoRejection =
   | { reason: "invalid_format" | "not_found" | "inactive" | "not_started" | "expired" | "exhausted" | "already_used" | "wrong_phone" | "not_applicable" }
+  /** Referral codes (lib/referral): your own code, or a phone that already ordered. */
+  | { reason: "referral_self" | "referral_not_first" }
   | { reason: "min_subtotal"; minSubtotal: number; remaining: number };
 
 export type PromoReason = PromoRejection["reason"];
@@ -164,12 +166,16 @@ export interface FirstOrderSetting {
  * earlier order (or null). The larger wins; a tie goes to the first order.
  */
 export function chooseAdjustment(
-  promo: { code: string; discount: number } | null,
+  promo: { code: string; discount: number; referralPercent?: number } | null,
   firstOrder: { percent: number; amount: number } | null,
 ): OrderAdjustment | null {
   const fo = firstOrder && firstOrder.amount > 0 ? firstOrder : null;
   const pc = promo && promo.discount > 0 ? promo : null;
-  if (pc && (!fo || pc.discount > fo.amount)) return { kind: "promo", code: pc.code, amount: pc.discount };
+  if (pc && (!fo || pc.discount > fo.amount)) {
+    // A referral code is entered in the same field and competes the same way.
+    if (pc.referralPercent) return { kind: "referral", code: pc.code, percent: pc.referralPercent, amount: pc.discount };
+    return { kind: "promo", code: pc.code, amount: pc.discount };
+  }
   if (fo) return { kind: "first_order", percent: fo.percent, amount: fo.amount };
   return null;
 }
@@ -189,6 +195,30 @@ export function applyAdjustment<T extends { subtotal: number; discount: number; 
     total: totals.total - amount,
     adjustments: [applied],
   };
+}
+
+/**
+ * Totals with spent points folded in. Points pay for goods only (never
+ * shipping), lower `total` but not `discount`, and are the last adjustment.
+ */
+export function applyPoints<T extends { subtotal: number; discount: number; shipping: number; total: number; adjustments?: OrderAdjustment[] }>(
+  totals: T,
+  points: number,
+): T {
+  const goods = Math.max(0, totals.total - totals.shipping);
+  const amount = Math.min(Math.max(0, Math.floor(points)), goods);
+  if (amount <= 0) return totals;
+  return { ...totals, total: totals.total - amount, adjustments: [...(totals.adjustments ?? []), { kind: "points", amount }] };
+}
+
+/** The order-level discount among the adjustments (never the points line). */
+export function discountAdjustment(adjustments: OrderAdjustment[] | undefined): Exclude<OrderAdjustment, { kind: "points" }> | null {
+  return (adjustments?.find((a) => a.kind !== "points") as Exclude<OrderAdjustment, { kind: "points" }> | undefined) ?? null;
+}
+
+/** Points spent on an order, 0 when none. */
+export function pointsSpent(adjustments: OrderAdjustment[] | undefined): number {
+  return adjustments?.find((a) => a.kind === "points")?.amount ?? 0;
 }
 
 /**

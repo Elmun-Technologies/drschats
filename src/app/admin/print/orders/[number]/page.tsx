@@ -63,7 +63,10 @@ export default async function PrintOrderPage({ params }: { params: Promise<{ num
       </table>
       <dl className="ml-auto mt-4 w-[300px] text-[14px]">
         <div className="flex justify-between py-0.5"><dt>Mahsulotlar</dt><dd className="tabular-nums">{som(o.totals.subtotal)}</dd></div>
-        {o.totals.discount > 0 && <div className="flex justify-between py-0.5"><dt>Chegirma{o.totals.adjustments?.[0]?.kind === "promo" ? ` (promokod ${o.totals.adjustments[0].code})` : o.totals.adjustments?.[0]?.kind === "first_order" ? " (birinchi buyurtma bilan)" : ""}</dt><dd className="tabular-nums">−{som(o.totals.discount)}</dd></div>}
+        {o.totals.discount > 0 && <div className="flex justify-between py-0.5"><dt>Chegirma{o.totals.adjustments?.[0]?.kind === "promo" ? ` (promokod ${o.totals.adjustments[0].code})` : o.totals.adjustments?.[0]?.kind === "referral" ? ` (doʻst kodi ${o.totals.adjustments[0].code})` : o.totals.adjustments?.[0]?.kind === "first_order" ? " (birinchi buyurtma bilan)" : ""}</dt><dd className="tabular-nums">−{som(o.totals.discount)}</dd></div>}
+        {(o.totals.adjustments?.find((a) => a.kind === "points")?.amount ?? 0) > 0 && (
+          <div className="flex justify-between py-0.5"><dt>Ball bilan toʻlangan</dt><dd className="tabular-nums">−{som(o.totals.adjustments!.find((a) => a.kind === "points")!.amount)}</dd></div>
+        )}
         <div className="flex justify-between py-0.5"><dt>Yetkazish</dt><dd className="tabular-nums">{o.totals.shipping ? som(o.totals.shipping) : "bepul"}</dd></div>
         <div className="mt-1 flex justify-between border-t-2 border-ink pt-2 text-[18px] font-bold"><dt>{cash ? "Olinadigan summa" : "Jami"}</dt><dd className="tabular-nums">{som(o.total)}</dd></div>
         <p className="mt-1 text-right text-[12px] text-ink-2">{o.payment ? PAYMENT_LABEL[o.payment.method] ?? o.payment.method : PAYMENT_LABEL.cod}</p>

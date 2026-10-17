@@ -1,5 +1,6 @@
 import { ensureDefaultFlows, runFlows, type FlowRunResult } from "@/lib/flows/engine";
 import { drainOutbox, type DrainResult } from "./outbox";
+import { expirePoints } from "@/lib/loyalty/server";
 
 /*
   The message worker. Runs inside the Next.js server process (started from
@@ -8,7 +9,7 @@ import { drainOutbox, type DrainResult } from "./outbox";
   POST /api/cron/messages runs the same tick for an external cron or by hand.
 
   Every minute: drain the outbox (due SMS, Telegram hand-offs to bot_jobs).
-  Every 5 minutes: flows — enroll and advance.
+  Every 5 minutes: flows — enroll and advance. Every hour: cashback expiry rows.
 
   It must never take the server down: every tick is wrapped, errors are
   logged (without phone numbers or texts) and the next tick tries again.
@@ -21,6 +22,8 @@ import { drainOutbox, type DrainResult } from "./outbox";
 
 const TICK_MS = 60_000;
 const FLOWS_EVERY_MS = 5 * 60_000;
+/* Cashback expiry is evaluated lazily on every read; this only writes the 'expire' rows. */
+const EXPIRE_EVERY_MS = 60 * 60_000;
 
 type Holder = { __govitaMessageWorker?: NodeJS.Timeout };
 const holder = globalThis as unknown as Holder;
@@ -33,6 +36,7 @@ export interface TickResult {
 
 let running = false;
 let lastFlows = 0;
+let lastExpire = 0;
 
 export async function runMessagingTick(options: { now?: Date; flows?: boolean } = {}): Promise<TickResult> {
   if (running) return { flows: null, outbox: null, busy: true };
@@ -43,6 +47,10 @@ export async function runMessagingTick(options: { now?: Date; flows?: boolean } 
     if (options.flows ?? Date.now() - lastFlows >= FLOWS_EVERY_MS) {
       lastFlows = Date.now();
       flows = await runFlows(now);
+    }
+    if (options.flows || Date.now() - lastExpire >= EXPIRE_EVERY_MS) {
+      lastExpire = Date.now();
+      await expirePoints(now).catch((err: Error) => console.error("[loyalty] expiry job failed:", err.message));
     }
     // Messages the flows just queued go out in the same tick.
     const outbox = await drainOutbox(options.now ?? new Date());

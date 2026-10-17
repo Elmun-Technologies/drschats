@@ -168,6 +168,9 @@ O'chirish: `MESSAGE_WORKER=off` (cron endpoint ishlayveradi).
 Secret'lar: `MESSAGE_LINK_SECRET` (ixtiyoriy, lekin tavsiya — `openssl rand -base64 32`;
 bo'lmasa `EMAIL_TOKEN_SECRET`, keyin `ADMIN_SESSION_SECRET` ishlatiladi. **Bir marta
 qo'yib, o'zgartirmang**: SMS dagi STOP va qisqa havolalar shu kalit bilan imzolangan).
+`LOYALTY_SECRET` (ixtiyoriy) — ballarni ishlatish SMS kodining HMAC'i va muvaffaqiyat
+sahifasi kvitansiyasi; bo'lmasa `ADMIN_SESSION_SECRET` dan keltiriladi. Almashtirilsa
+faqat 5 daqiqalik kodlar va 30 daqiqalik tokenlar bekor bo'ladi.
 Eskiz login/parol — `/admin/integrations` (shifrlangan) yoki `ESKIZ_EMAIL`,
 `ESKIZ_PASSWORD`, `ESKIZ_SENDER` secret'lari. `SMS_FAKE=1` live deploy'da
 (`GOVITA_PRODUCTION=1`) e'tiborga olinmaydi.

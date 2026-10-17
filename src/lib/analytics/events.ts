@@ -198,6 +198,29 @@ export function trackPromotionClick(banner: { id: number; title: string }, slot:
   }
 }
 
+/**
+ * A banner in an A/B test was shown (lib/merch/ab.ts): GA4 `view_promotion`
+ * with the variant, and the exposure beacon — once per banner per browser
+ * session; the server keeps one row per visitor and day anyway.
+ */
+export function trackExperimentView(banner: { id: number; title: string }, experiment: string, variant: "A" | "B", slot: "hero" | "strip" | "category") {
+  if (typeof window === "undefined") return;
+  const key = `govita-ab-seen:${banner.id}`;
+  try {
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, "1");
+  } catch {
+    /* storage off: the server's per-day row still counts the visitor once */
+  }
+  send("view_promotion", { promotion_id: `banner-${banner.id}`, promotion_name: banner.title, creative_slot: slot, creative_name: `${experiment}:${variant}` }, true);
+  if (navigator.webdriver) return;
+  try {
+    navigator.sendBeacon?.(`/api/b/${banner.id}?kind=view`);
+  } catch {
+    /* a lost exposure never blocks the page */
+  }
+}
+
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */
 export function trackPageView(url: string) {
   journeyPage(url);

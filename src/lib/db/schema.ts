@@ -321,6 +321,9 @@ export const banners = pgTable("banners", {
   sort: integer("sort").notNull().default(0),
   active: boolean("active").notNull().default(true),
   clicks: integer("clicks").notNull().default(0),
+  /** A/B test (0011): banners sharing a key are variants A and B of one slot. */
+  experiment: text("experiment"),
+  variant: text("variant").$type<"A" | "B">(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -447,5 +450,76 @@ export const outboundMessages = pgTable("outbound_messages", {
   sentAt: timestamp("sent_at", { withTimezone: true }),
   clickedAt: timestamp("clicked_at", { withTimezone: true }),
   clicks: integer("clicks").notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Loyalty, referral, birthdays, banner A/B — db/migrations/0011_loyalty_referral_ab.sql */
+
+export const LEDGER_KINDS = ["earn", "redeem", "expire", "adjust", "reverse"] as const;
+export type LedgerKind = (typeof LEDGER_KINDS)[number];
+
+export const loyaltyLedger = pgTable("loyalty_ledger", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  phone9: text("phone9").notNull(),
+  delta: integer("delta").notNull(),
+  kind: text("kind").$type<LedgerKind>().notNull(),
+  orderId: bigint("order_id", { mode: "number" }),
+  refId: bigint("ref_id", { mode: "number" }),
+  note: text("note"),
+  expiresAt: timestamp("expires_at", { withTimezone: true }),
+  createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const loyaltyOtps = pgTable("loyalty_otps", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  phone9: text("phone9").notNull(),
+  codeHash: text("code_hash").notNull(),
+  attempts: integer("attempts").notNull().default(0),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  consumedAt: timestamp("consumed_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const referralCodes = pgTable("referral_codes", {
+  phone9: text("phone9").primaryKey(),
+  code: text("code").notNull().unique(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const REFERRAL_STATUSES = ["pending", "rewarded", "capped", "cancelled"] as const;
+export type ReferralStatus = (typeof REFERRAL_STATUSES)[number];
+export type ReferralReward = { kind: "points"; amount: number } | { kind: "promo"; code: string; percent: number };
+
+export const referrals = pgTable("referrals", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  code: text("code").notNull(),
+  referrerPhone9: text("referrer_phone9").notNull(),
+  referredPhone9: text("referred_phone9").notNull(),
+  orderId: bigint("order_id", { mode: "number" }),
+  discount: integer("discount").notNull().default(0),
+  status: text("status").$type<ReferralStatus>().notNull().default("pending"),
+  reward: jsonb("reward").$type<ReferralReward | null>(),
+  rewardedAt: timestamp("rewarded_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const customerBirthdays = pgTable("customer_birthdays", {
+  phone9: text("phone9").primaryKey(),
+  name: text("name"),
+  day: integer("day").notNull(),
+  month: integer("month").notNull(),
+  year: integer("year"),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  consentAt: timestamp("consent_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const bannerExposures = pgTable("banner_exposures", {
+  bannerId: bigint("banner_id", { mode: "number" }).notNull(),
+  abId: text("ab_id").notNull(),
+  day: text("day").notNull(),
+  visitorId: uuid("visitor_id"),
+  clickedAt: timestamp("clicked_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

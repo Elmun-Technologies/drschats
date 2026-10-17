@@ -37,6 +37,9 @@ import { telegramInitData } from "@/lib/telegram/mini-app";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
 import { PromoCodeField } from "./PromoCodeField";
 import { useCartDiscount } from "./useCartDiscount";
+import { PointsField } from "./PointsField";
+import { usePoints } from "@/lib/loyalty/store";
+import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -58,6 +61,7 @@ export function CheckoutForm({
   prices,
   promoCodes = false,
   firstOrder = { mode: "operator", percent: COMMERCE.discounts.firstOrderPercent },
+  loyalty = LOYALTY_OFF,
 }: {
   recommended: Product[];
   prices: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>;
@@ -65,6 +69,8 @@ export function CheckoutForm({
   promoCodes?: boolean;
   /** How the first-order discount works on this deployment (lib/promo/offer.ts). */
   firstOrder?: FirstOrderOffer;
+  /** Cashback rules the cart may show (lib/loyalty/settings.ts → publicLoyalty). */
+  loyalty?: PublicLoyalty;
 }) {
   const tv = useTranslations("cart.v3");
   const locale = useLocale() as Locale;
@@ -150,6 +156,11 @@ export function CheckoutForm({
     locale,
   });
 
+  const pointsToken = usePoints((s) => s.token);
+  const pointsPhone = usePoints((s) => s.phone9);
+  const pointsUse = usePoints((s) => s.use);
+  const pointsBalance = usePoints((s) => s.balance);
+
   const emailEntered = Boolean(watch("email"));
   const provider = watch("provider");
   const payment = watch("payment");
@@ -182,7 +193,18 @@ export function CheckoutForm({
   */
   const applied = discount.applied;
   const extra = applied ? Math.min(applied.amount, Math.max(0, totals.total - totals.shipping)) : 0;
-  const grandTotal = totals.total - extra;
+  /*
+    Points come after the discount and pay for goods only, up to the share
+    cap — the same function the order transaction runs (lib/loyalty/model.ts).
+  */
+  const phoneDigits = (watch("phone") ?? "").replace(/\D/g, "");
+  const phone9 = phoneDigits.length >= 9 ? phoneDigits.slice(-9) : "";
+  const pointsActive = loyalty.redeemable && Boolean(pointsToken) && pointsUse && pointsPhone === phone9;
+  const pointsApplied = pointsActive
+    ? maxRedeemable({ balance: pointsBalance, goods: Math.max(0, totals.total - extra - totals.shipping), maxSharePercent: loyalty.maxSharePercent })
+    : 0;
+  const grandTotal = totals.total - extra - pointsApplied;
+  const pointsEarn = earnFor({ total: grandTotal, shipping: totals.shipping }, loyalty);
   const firstOrderState = discount.quote?.firstOrder.state;
   const savings =
     lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount + extra;
@@ -231,6 +253,7 @@ export function CheckoutForm({
         total: grandTotal,
       },
       promoCode: discount.orderCode,
+      pointsToken: pointsApplied > 0 && pointsToken ? pointsToken : undefined,
       locale,
       attribution: getAttribution(),
       telegram: telegramInitData(),
@@ -251,7 +274,14 @@ export function CheckoutForm({
       // Before clear(): the reorder reminders and the "already bought" signal read this history.
       trackPurchase(lines.map((l) => ({ slug: l.slug, name: l.name })));
       clear();
-      router.push(`/checkout/success?order=${res.orderId}`);
+      usePoints.getState().clear();
+      router.push(`/checkout/success?order=${res.orderId}${res.receipt ? `&k=${encodeURIComponent(res.receipt)}` : ""}`);
+      return;
+    }
+    if (res.error === "points_invalid") {
+      usePoints.getState().clear();
+      setServerError(te("points_invalid"));
+      setSubmitting(false);
       return;
     }
     /*
@@ -424,7 +454,7 @@ export function CheckoutForm({
             {promoCodes && (
               <PromoCodeField
                 code={discount.code}
-                amount={applied?.kind === "promo" ? extra : null}
+                amount={applied?.kind === "promo" || applied?.kind === "referral" ? extra : null}
                 failure={discount.failure}
                 pending={discount.pending}
                 onApply={discount.apply}
@@ -435,13 +465,23 @@ export function CheckoutForm({
             {totals.discount > 0 && (
               <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} sale />
             )}
+            {loyalty.redeemable && <PointsField phone={watch("phone") ?? ""} applied={pointsApplied} maxSharePercent={loyalty.maxSharePercent} />}
             {applied && extra > 0 && (
               <SummaryRow
-                label={applied.kind === "promo" ? tv("promo.row", { code: applied.code }) : tv("firstOrderRow", { percent: applied.percent })}
+                label={
+                  applied.kind === "promo"
+                    ? tv("promo.row", { code: applied.code })
+                    : applied.kind === "referral"
+                      ? tv("referralRow", { code: applied.code, percent: applied.percent })
+                      : applied.kind === "first_order"
+                        ? tv("firstOrderRow", { percent: applied.percent })
+                        : ""
+                }
                 value={`−${formatMoney(extra, locale)}`}
                 sale
               />
             )}
+            {pointsApplied > 0 && <SummaryRow label={tv("points.row")} value={`−${formatMoney(pointsApplied, locale)}`} />}
             <SummaryRow
               label={tc("shipping")}
               value={totals.shipping === 0 ? tc("free") : formatMoney(totals.shipping, locale)}
@@ -450,6 +490,7 @@ export function CheckoutForm({
               <span>{tc("total")}</span>
               <span>{formatMoney(grandTotal, locale)}</span>
             </div>
+            {pointsEarn > 0 && <p className="text-sm font-medium text-ink">{tv("points.earn", { points: formatNumber(pointsEarn) })}</p>}
             <FirstOrderNote
               offer={firstOrder}
               state={firstOrderState}
@@ -525,7 +566,7 @@ function FirstOrderNote({
 }: {
   offer: FirstOrderOffer;
   state: "applies" | "returning" | "needs_phone" | "off" | undefined;
-  applied: "promo" | "first_order" | null;
+  applied: "promo" | "first_order" | "referral" | "points" | null;
   promoEntered: boolean;
 }) {
   const tv = useTranslations("cart.v3");
@@ -534,7 +575,7 @@ function FirstOrderNote({
   if (offer.mode === "operator") text = tv("firstOrderNote", { percent });
   else if (offer.mode === "auto") {
     if (applied === "first_order") text = promoEntered ? tv("firstOrderWins") : tv("firstOrderApplied", { percent });
-    else if (applied === "promo" && state === "applies") text = tv("promoWins");
+    else if ((applied === "promo" || applied === "referral") && state === "applies") text = tv("promoWins");
     else if (!state || state === "needs_phone") text = tv("firstOrderAuto", { percent });
   }
   if (!text) return null;

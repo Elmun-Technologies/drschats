@@ -219,6 +219,8 @@ export interface OrderRequest {
   };
   /** The promo code the customer entered; validated and redeemed on the server. */
   promoCode?: string;
+  /** Proof (from the SMS code) that this phone may spend its points; verified and re-priced on the server. */
+  pointsToken?: string;
   locale: Locale;
   attribution?: OrderAttribution;
   /**
@@ -230,7 +232,14 @@ export interface OrderRequest {
 
 export type OrderAdjustment =
   | { kind: "promo"; code: string; amount: Money }
-  | { kind: "first_order"; percent: number; amount: Money };
+  | { kind: "first_order"; percent: number; amount: Money }
+  /** A friend's referral code on a first order (lib/referral). */
+  | { kind: "referral"; code: string; percent: number; amount: Money }
+  /**
+   * Cashback points spent on the order (lib/loyalty). A payment, not a
+   * discount: it lowers `total` but not `discount`, and always comes last.
+   */
+  | { kind: "points"; amount: Money };
 
 export interface OrderResult {
   ok: boolean;
