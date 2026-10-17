@@ -1,10 +1,13 @@
 "use client";
 
-import Image from "next/image";
-import { useActionState, useMemo, useRef, useState } from "react";
-import { saveProduct, uploadProductImage, type FormState } from "@/app/admin/_actions/catalog";
-import { Field, Notice, inputClass, secondaryButtonClass, smallButtonClass, textareaClass } from "./ui";
+import { useActionState, useState } from "react";
+import { saveProduct, type FormState } from "@/app/admin/_actions/catalog";
+import { slugify } from "@/lib/admin/slugify";
+import type { RepoImage } from "@/lib/admin/repo-images";
+import { Field, Notice, inputClass, textareaClass } from "./ui";
 import { SubmitButton } from "./SubmitButton";
+import { ImageListField, SingleImageField } from "./catalog/ImageFields";
+import { QuickCategoryDialog } from "./catalog/QuickCategoryDialog";
 import { cn } from "@/lib/utils";
 
 export interface ProductFormValues {
@@ -34,19 +37,6 @@ const LOCALES = [
 
 const LIST_HINT = "Har bir qator — bitta element";
 
-/** "Swiss Energy Omega-3 30" → "swiss-energy-omega-3-30"; Uzbek and Russian letters folded to Latin. */
-export function slugify(text: string): string {
-  const ru: Record<string, string> = { а: "a", б: "b", в: "v", г: "g", д: "d", е: "e", ё: "yo", ж: "j", з: "z", и: "i", й: "y", к: "k", л: "l", м: "m", н: "n", о: "o", п: "p", р: "r", с: "s", т: "t", у: "u", ф: "f", х: "x", ц: "ts", ч: "ch", ш: "sh", щ: "sh", ъ: "", ы: "i", ь: "", э: "e", ю: "yu", я: "ya", ў: "o", қ: "q", ғ: "g", ҳ: "h" };
-  return text
-    .toLowerCase()
-    .replace(/[\u02bb\u02bc\u2018\u2019'`]/g, "")
-    .replace(/[а-яёўқғҳ]/g, (ch) => ru[ch] ?? "")
-    .normalize("NFKD")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 80);
-}
-
 function Panel({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
   return (
     <section className={cn("flex flex-col gap-4 rounded-[20px] border border-line bg-white p-5", className)}>
@@ -61,23 +51,27 @@ export function ProductForm({
   categories,
   brands,
   storageReady,
+  repoImages,
 }: {
   values: ProductFormValues;
   categories: { slug: string; name: string }[];
   brands: { slug: string; name: string }[];
   storageReady: boolean;
+  repoImages: RepoImage[];
 }) {
   const [state, action] = useActionState<FormState, FormData>(saveProduct, undefined);
   const [tab, setTab] = useState<"uz" | "ru">("uz");
-  const [images, setImages] = useState(values.images);
+  const [images, setImages] = useState(() => [...new Set(values.images.split(/\r?\n/).map((u) => u.trim()).filter(Boolean))]);
+  const [cutout, setCutout] = useState(values.cutout);
   const [slug, setSlug] = useState(values.slug);
   const [slugTouched, setSlugTouched] = useState(Boolean(values.id));
   const [price, setPrice] = useState(values.price);
   const [oldPrice, setOldPrice] = useState(values.oldPrice);
+  const [categoryList, setCategoryList] = useState(categories);
+  const [categorySlug, setCategorySlug] = useState(values.categorySlug);
+  const [newCategoryOpen, setNewCategoryOpen] = useState(false);
   const c = (k: string) => values.content[k] ?? "";
-  const imageList = useMemo(() => images.split(/\r?\n/).map((u) => u.trim()).filter(Boolean), [images]);
   const discount = Number(oldPrice) > Number(price) && Number(price) > 0 ? Math.round((1 - Number(price) / Number(oldPrice)) * 100) : 0;
-  const setList = (list: string[]) => setImages(list.join("\n"));
 
   return (
     <form action={action} className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
@@ -88,31 +82,21 @@ export function ProductForm({
 
       <div className="flex min-w-0 flex-col gap-5">
         <Panel title="Rasmlar">
-          {imageList.length > 0 ? (
-            <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 2xl:grid-cols-4">
-              {imageList.map((url, i) => (
-                <li key={`${url}-${i}`} className="flex flex-col gap-2">
-                  <span className="relative block aspect-square overflow-hidden rounded-[16px] bg-tile">
-                    <Image src={url} alt="" fill unoptimized sizes="160px" className="object-contain p-2" />
-                    {i === 0 && <span className="absolute left-2 top-2 rounded-full bg-ink px-2 py-0.5 text-[12px] font-semibold text-white">Asosiy</span>}
-                  </span>
-                  <span className="flex gap-1">
-                    {i > 0 && <button type="button" onClick={() => setList([url, ...imageList.filter((_, j) => j !== i)])} className="h-9 whitespace-nowrap rounded-[10px] bg-tile px-2.5 text-[13px] font-semibold text-ink hover:bg-tile-hover">Asosiy</button>}
-                    <button type="button" onClick={() => setList(imageList.filter((_, j) => j !== i))} aria-label="Rasmni olib tashlash" className="h-9 whitespace-nowrap rounded-[10px] px-2.5 text-[13px] font-semibold text-red hover:bg-tile">Oʻchirish</button>
-                  </span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="rounded-[16px] bg-tile px-4 py-6 text-center text-[14px] text-muted">Hali rasm yoʻq — yuklang yoki manzilini kiriting</p>
-          )}
-          <ImageUpload ready={storageReady} onUploaded={(url) => setImages((v) => (v.trim() ? `${v.trim()}\n${url}` : url))} />
-          <Field label="Rasm manzillari" hint="Har qatorda bitta (https://… yoki /images/products/…). Birinchisi — asosiy.">
-            <textarea name="images" value={images} onChange={(e) => setImages(e.target.value)} rows={3} className={textareaClass} />
-          </Field>
-          <Field label="Kesma rasm (fonsiz PNG)" hint="Kartada shu chiziladi; boʻsh boʻlsa birinchi rasm">
-            <input name="cutout" defaultValue={values.cutout} className={inputClass} />
-          </Field>
+          <p className="-mt-2 text-[14px] leading-5 text-ink-2">Birinchi rasm — asosiy: mahsulot sahifasida birinchi chiqadi. Strelkalar bilan tartibini oʻzgartiring.</p>
+          <ImageListField name="images" value={images} onChange={setImages} repoImages={repoImages} slug={slug} storageReady={storageReady} />
+        </Panel>
+        <Panel title="Kesma rasm (fonsiz PNG)">
+          <SingleImageField
+            name="cutout"
+            label="Kesma rasm manzili"
+            hint="Katalog kartasida shu chiziladi; boʻsh boʻlsa birinchi rasm"
+            value={cutout}
+            onChange={setCutout}
+            repoImages={repoImages}
+            slug={slug}
+            initialKind="cutout"
+            emptyText="Kesma yoʻq"
+          />
         </Panel>
         <section className="flex flex-col gap-4 rounded-[20px] border border-line bg-white p-5 lg:p-6">
           <div role="tablist" aria-label="Til" className="flex gap-2">
@@ -215,12 +199,26 @@ export function ProductForm({
           </div>
         </Panel>
         <Panel title="Tashkil etish">
-          <Field label="Kategoriya">
-            <select name="categorySlug" defaultValue={values.categorySlug} required className={inputClass}>
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between gap-2">
+              <label htmlFor="product-category" className="text-[14px] font-semibold text-ink">Kategoriya</label>
+              <button type="button" onClick={() => setNewCategoryOpen(true)} className="-my-2 inline-flex h-11 items-center rounded-[12px] px-2 text-[14px] font-semibold text-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30">
+                + Yangi kategoriya
+              </button>
+            </div>
+            <select id="product-category" name="categorySlug" value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)} required className={inputClass}>
               <option value="">— tanlang —</option>
-              {categories.map((cat) => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
+              {categoryList.map((cat) => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
             </select>
-          </Field>
+          </div>
+          <QuickCategoryDialog
+            open={newCategoryOpen}
+            onClose={() => setNewCategoryOpen(false)}
+            onCreated={(cat) => {
+              setCategoryList((list) => [...list, cat]);
+              setCategorySlug(cat.slug);
+            }}
+          />
           <Field label="Brend">
             <select name="brandSlug" defaultValue={values.brandSlug} className={inputClass}>
               <option value="">— yoʻq —</option>
@@ -244,48 +242,4 @@ export function ProductForm({
   function onNameChange(name: string) {
     if (!slugTouched) setSlug(slugify(name));
   }
-}
-
-function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded: (url: string) => void }) {
-  const [state, setState] = useState<FormState & { url?: string }>();
-  const [pending, setPending] = useState(false);
-  const input = useRef<HTMLInputElement>(null);
-
-  if (!ready) {
-    return <p className="text-[13px] text-muted">Fayl yuklash uchun Tigris sozlanishi kerak (docs/ADMIN.md). Hozircha URL kiriting.</p>;
-  }
-
-  async function onChange() {
-    const file = input.current?.files?.[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      setState({ error: "Fayl 5 MB dan katta." });
-      if (input.current) input.current.value = "";
-      return;
-    }
-    setPending(true);
-    const fd = new FormData();
-    fd.set("file", file);
-    try {
-      const result = await uploadProductImage(undefined, fd);
-      setState(result);
-      if (result?.url) onUploaded(result.url);
-    } catch {
-      setState({ error: "Yuklab boʻlmadi — internetni tekshirib qayta urinib koʻring." });
-    } finally {
-      setPending(false);
-      if (input.current) input.current.value = "";
-    }
-  }
-
-  return (
-    <div className="flex flex-wrap items-center gap-3">
-      <label className={cn(secondaryButtonClass, "cursor-pointer")}>
-        {pending ? "Yuklanmoqda…" : "Rasm yuklash"}
-        <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={onChange} className="sr-only" />
-      </label>
-      {state?.error && <span className="text-[14px] text-red">{state.error}</span>}
-      {state?.ok && <span className="text-[14px] text-ink-2">{state.ok}</span>}
-    </div>
-  );
 }
