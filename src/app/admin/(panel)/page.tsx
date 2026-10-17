@@ -3,7 +3,8 @@ import Link from "next/link";
 import { sql } from "drizzle-orm";
 import { requireAdmin } from "@/lib/admin/session";
 import { getDb } from "@/lib/db/client";
-import { catalogCounts } from "@/lib/admin/queries";
+import { catalogCounts, lowStockCount } from "@/lib/admin/queries";
+import { waitingCount } from "@/lib/admin/waitlist";
 import { getOrderMetrics } from "@/lib/admin/metrics";
 import { FUNNEL_STEPS, channels, devices, liveNow, parseRange, percent, siteFunnel, type Range } from "@/lib/admin/crm";
 import { activityHeatmap, categorySales, customerMix, topProducts, trafficSeries } from "@/lib/admin/dashboard";
@@ -43,7 +44,7 @@ function Attention({ href, value, label, hint }: { href: string; value: number; 
 export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
   const range = parseRange((await searchParams).range, 7);
   const admin = await requireAdmin();
-  const [metrics, funnel, series, channelRows, deviceRows, mix, heat, cats, top, live, segments, counts, tickets] = await Promise.all([
+  const [metrics, funnel, series, channelRows, deviceRows, mix, heat, cats, top, live, segments, counts, tickets, lowStock, waiting] = await Promise.all([
     getOrderMetrics(range),
     siteFunnel(range),
     trafficSeries(range),
@@ -57,6 +58,8 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
     segmentCounts(),
     catalogCounts(),
     openTickets(),
+    lowStockCount(),
+    waitingCount(),
   ]);
   const current = metrics.current;
   const previous = metrics.previous;
@@ -111,6 +114,8 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
               <Attention href="/admin/visitors?filter=abandoned" value={segments["abandoned-cart"]?.size ?? 0} label="Tashlab ketilgan savatlar" hint={`${som(segments["abandoned-cart"]?.value ?? 0)} savatlarda qoldi`} />
               <Attention href="/admin/segments/course-ending" value={segments["course-ending"]?.size ?? 0} label="Kursi tugayotganlar" hint="Takroriy xarid vaqti keldi" />
               <Attention href="/admin/products?filter=out" value={counts.outOfStock} label="Tugagan mahsulotlar" hint="Saytda «tugagan» koʻrinmoqda" />
+              <Attention href="/admin/products?filter=low" value={lowStock} label="Kam qolganlar" hint="Omborda chegaradan kam — buyurtma bering" />
+              <Attention href="/admin/waitlist" value={waiting} label="Kelishini kutayotganlar" hint="«Omborga keldi» yoki «narx tushdi» xabarini kutmoqda" />
               <Attention href="/admin/bot/tickets" value={tickets} label="Ochiq murojaatlar" hint="Telegram klubdagi savollar" />
             </ul>
           </Card>
