@@ -7,6 +7,7 @@ import { clientIp, withinRateLimit } from "@/lib/rate-limit";
 import { verifyToken } from "@/lib/email/token";
 import { recordSubscriber } from "@/lib/marketing/api";
 import { notifyOperator } from "@/lib/notifications/operator";
+import { redactEmail } from "@/lib/privacy";
 
 /*
   The preference centre's write path.
@@ -53,7 +54,7 @@ export async function updateEmailPreference(input: {
   });
 
   await notifyOperator(
-    `${parsed.data.subscribed ? "✅" : "🚫"} Sozlamalar yangilandi: ${verified.email}`,
+    `${parsed.data.subscribed ? "✅" : "🚫"} Sozlamalar yangilandi: ${redactEmail(verified.email)}`,
   );
 
   return { ok: true, email: verified.email, subscribed: parsed.data.subscribed };

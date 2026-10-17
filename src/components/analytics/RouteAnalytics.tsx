@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { captureAttribution } from "@/lib/analytics/attribution";
 import { trackPageView } from "@/lib/analytics/events";
+import { redactUrl } from "@/lib/analytics/redact-url";
 
 /*
   Runs on every route: keeps the order's attribution (utm, click ids, outside
@@ -23,7 +24,7 @@ export function RouteAnalytics() {
       first.current = false;
       return;
     }
-    trackPageView(window.location.pathname + window.location.search);
+    trackPageView(redactUrl(window.location.pathname, window.location.search));
   }, [pathname, search]);
 
   return null;

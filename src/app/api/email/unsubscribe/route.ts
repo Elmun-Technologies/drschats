@@ -4,6 +4,7 @@ import { siteOrigin } from "@/lib/email/config";
 import { verifyToken } from "@/lib/email/token";
 import { recordSubscriber } from "@/lib/marketing/api";
 import { notifyOperator } from "@/lib/notifications/operator";
+import { redactEmail } from "@/lib/privacy";
 
 /*
   Unsubscribing, both ways it is asked for.
@@ -27,7 +28,7 @@ function localeFrom(request: NextRequest): Locale {
 
 async function unsubscribe(email: string, locale: Locale) {
   await recordSubscriber({ email, status: "unsubscribed", locale });
-  await notifyOperator(`🚫 Obunadan chiqdi: ${email}`);
+  await notifyOperator(`🚫 Obunadan chiqdi: ${redactEmail(email)}`);
 }
 
 export async function GET(request: NextRequest) {
@@ -38,9 +39,8 @@ export async function GET(request: NextRequest) {
   }
 
   await unsubscribe(verified.email, locale);
-  return NextResponse.redirect(
-    `${siteOrigin()}/${locale}/email/preferences?status=unsubscribed&email=${encodeURIComponent(verified.email)}`,
-  );
+  // No address in the URL: it would reach the analytics tags and the browser history.
+  return NextResponse.redirect(`${siteOrigin()}/${locale}/email/preferences?status=unsubscribed`);
 }
 
 export async function POST(request: NextRequest) {
