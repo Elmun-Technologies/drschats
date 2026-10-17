@@ -22,6 +22,29 @@ const TEXT: Record<Locale, Record<WaitKind, string>> = {
   },
 };
 
+/*
+  The SMS version: no emoji (one switches the whole text to UCS-2 and
+  doubles its price) and the outbox's short click link instead of the full
+  tagged URL — {havola} is filled in when the message is sent.
+*/
+const SMS_TEXT: Record<Locale, Record<WaitKind, string>> = {
+  uz: {
+    restock: "«{name}» yana sotuvda. Narxi: {price}. Buyurtma: {havola}",
+    price_drop: "«{name}» arzonladi: endi {price} (avval {before}). Buyurtma: {havola}",
+  },
+  ru: {
+    restock: "«{name}» снова в продаже. Цена: {price}. Заказать: {havola}",
+    price_drop: "«{name}» подешевел: теперь {price} (было {before}). Заказать: {havola}",
+  },
+};
+
+export function waitlistSmsText(m: Pick<WaitMessage, "kind" | "locale" | "productName" | "price" | "before">): string {
+  return SMS_TEXT[m.locale][m.kind]
+    .replace("{name}", m.productName)
+    .replace("{price}", formatMoney(m.price, m.locale))
+    .replace("{before}", formatMoney(m.before ?? m.price, m.locale));
+}
+
 export const OPEN_PRODUCT: Record<Locale, string> = { uz: "Mahsulotni ochish", ru: "Открыть товар" };
 
 export function waitlistText(m: Pick<WaitMessage, "kind" | "locale" | "productName" | "price" | "before" | "url">): string {

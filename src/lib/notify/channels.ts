@@ -5,8 +5,9 @@ import { enqueue, getClubConfig } from "@/lib/bot/store";
 import { escapeHtml } from "@/lib/bot/messages";
 import { notifyOperator } from "@/lib/notifications/operator";
 import { queueMessage } from "@/lib/messaging/outbox";
+import { isOptedOut } from "@/lib/messaging/optout";
 import { resolveSmsProvider } from "@/lib/sms";
-import { OPEN_PRODUCT, operatorCallList, waitlistText } from "./messages";
+import { OPEN_PRODUCT, operatorCallList, waitlistSmsText, waitlistText } from "./messages";
 import type { FallbackNotifier, Notifier, Outcome, WaitMessage } from "./types";
 
 /** The Telegram chat linked to this phone in the club bot, if any. */
@@ -47,8 +48,11 @@ export const telegramNotifier: Notifier = {
 /*
   SMS: through the marketing outbox (lib/messaging), so quiet hours, opt-out
   and the STOP line apply as to every other SMS. Declines when no gateway is
-  configured, and the request falls through to the operator. The request id
-  is the dedupe key, so a second dispatch never sends a second SMS.
+  configured, and the request falls through to the operator. It declines a
+  phone that turned SMS off too: the outbox would only skip that message,
+  the request would read "notified" and nobody would call — the operator's
+  call list gets the customer instead. The request id is the dedupe key, so
+  a second dispatch never sends a second SMS.
 */
 export const smsNotifier: Notifier = {
   channel: "sms",
@@ -57,12 +61,16 @@ export const smsNotifier: Notifier = {
       const { provider } = await resolveSmsProvider();
       if (!provider) return { ok: false, reason: "not_configured" };
       if (m.phone9.length !== 9) return { ok: false, reason: "no_recipient" };
-      const url = m.url.replace(/utm_source=[^&]+/, "utm_source=sms");
+      if (await isOptedOut(getDb(), m.phone9, "sms")) return { ok: false, reason: "no_recipient" };
+      // The short /r/ link sets utm_source itself; the path keeps medium and campaign.
+      const target = new URL(m.url);
+      target.searchParams.delete("utm_source");
       await queueMessage(getDb(), {
         channel: "sms",
         phone9: m.phone9,
         locale: m.locale,
-        text: waitlistText({ ...m, url }),
+        text: waitlistSmsText(m),
+        link: `${target.pathname}${target.search}`,
         dedupeKey: `waitlist:${m.requestId}`,
       });
       return { ok: true };

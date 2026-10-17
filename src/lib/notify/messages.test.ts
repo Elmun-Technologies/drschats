@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { operatorCallList, waitlistText, waitlistUrl } from "./messages";
+import { operatorCallList, waitlistSmsText, waitlistText, waitlistUrl } from "./messages";
 import type { WaitMessage } from "./types";
 
 const base: WaitMessage = {
@@ -48,5 +48,18 @@ describe("waitlist messages", () => {
     expect(text).toContain("+998901234567 (uz)");
     expect(text).toContain("+998911112233 (ru)");
     expect(text).toContain("utm_source=operator");
+  });
+
+  it("SMS: no emoji and no long URL — the short link placeholder the outbox fills", () => {
+    for (const kind of ["restock", "price_drop"] as const) {
+      for (const locale of ["uz", "ru"] as const) {
+        const text = waitlistSmsText({ ...base, kind, locale, before: 149_000 });
+        expect(text).not.toMatch(/\p{Extended_Pictographic}/u);
+        expect(text).not.toContain("http");
+        expect(text).toContain("{havola}");
+        expect(text).toContain("Omega-3");
+      }
+    }
+    expect(waitlistSmsText({ ...base, kind: "price_drop", before: 149_000 })).toContain("endi 129 000 soʻm (avval 149 000 soʻm)");
   });
 });

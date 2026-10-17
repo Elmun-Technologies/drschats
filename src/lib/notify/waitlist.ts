@@ -1,6 +1,7 @@
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, gt, inArray, lte, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { products, restockRequests, type WaitChannel, type WaitKind } from "@/lib/db/schema";
+import { deals, products, restockRequests, type WaitChannel, type WaitKind } from "@/lib/db/schema";
+import { dealPrice } from "@/lib/catalog/deals";
 import { normalizeUzPhone } from "@/lib/bot/phone";
 import { siteOrigin } from "@/lib/email/config";
 import { dueRequests, phone9Of } from "@/lib/catalog/stock-rules";
@@ -19,6 +20,27 @@ import type { WaitMessage } from "./types";
   no channel took goes back to waiting.
 */
 
+/*
+  The price the shop sells at right now — what the storefront shows and the
+  checkout charges: an expired sale is back at its old price and a running
+  deal of the day applies (lib/catalog/deals.ts). The bare column is only the
+  base price, so a "back in stock, 265 950 soʻm" text during a −20% deal
+  quoted a price nobody pays.
+*/
+async function sellingPrice(p: { slug: string; price: number; oldPrice: number | null; saleEndsAt: Date | null }): Promise<number> {
+  const now = new Date();
+  const running = await getDb()
+    .select()
+    .from(deals)
+    .where(and(eq(deals.productSlug, p.slug), lte(deals.startsAt, now), gt(deals.endsAt, now)))
+    .catch(() => []);
+  return dealPrice(
+    { slug: p.slug, price: p.price, oldPrice: p.oldPrice ?? undefined, saleEndsAt: p.saleEndsAt?.toISOString() },
+    running.map((d) => ({ id: d.id, productSlug: d.productSlug, percent: d.percent, price: d.price, startsAt: d.startsAt.toISOString(), endsAt: d.endsAt.toISOString() })),
+    now.getTime(),
+  ).price;
+}
+
 export interface NewWaitRequest {
   productId: string;
   phone: string;
@@ -32,14 +54,14 @@ export async function createWaitRequest(input: NewWaitRequest): Promise<{ id: nu
   if (!phone9) return null;
   const db = getDb();
   const [product] = await db
-    .select({ id: products.id, slug: products.slug, price: products.price })
+    .select({ id: products.id, slug: products.slug, price: products.price, oldPrice: products.oldPrice, saleEndsAt: products.saleEndsAt })
     .from(products)
     .where(eq(products.id, input.productId))
     .limit(1);
   if (!product) return null;
   const phone = normalizeUzPhone(input.phone) ?? input.phone.replace(/\D/g, "");
   const chatId = await linkedChat(phone9).catch(() => null);
-  const target = input.kind === "price_drop" ? product.price : null;
+  const target = input.kind === "price_drop" ? await sellingPrice(product) : null;
   const rows = (await db.execute(sql`
     insert into restock_requests (product_id, product_slug, phone9, phone, locale, kind, target_price, telegram_chat_id)
     values (${product.id}, ${product.slug}, ${phone9}, ${phone}, ${input.locale}, ${input.kind}, ${target}, ${chatId})
@@ -68,17 +90,27 @@ const EMPTY: DispatchResult = { due: 0, byChannel: {}, left: 0 };
 export async function notifyWaitlist(productId: string): Promise<DispatchResult> {
   const db = getDb();
   const [product] = await db
-    .select({ id: products.id, slug: products.slug, price: products.price, inStock: products.inStock, kind: products.kind, content: products.content })
+    .select({
+      id: products.id,
+      slug: products.slug,
+      price: products.price,
+      oldPrice: products.oldPrice,
+      saleEndsAt: products.saleEndsAt,
+      inStock: products.inStock,
+      kind: products.kind,
+      content: products.content,
+    })
     .from(products)
     .where(eq(products.id, productId))
     .limit(1);
   if (!product || product.kind === "unlisted") return EMPTY;
+  const price = await sellingPrice(product);
 
   const waiting = await db
     .select()
     .from(restockRequests)
     .where(and(eq(restockRequests.productId, productId), eq(restockRequests.status, "waiting")));
-  const due = dueRequests(waiting, product);
+  const due = dueRequests(waiting, { inStock: product.inStock, price });
   if (due.length === 0) return EMPTY;
 
   const claimed = await db
@@ -97,7 +129,7 @@ export async function notifyWaitlist(productId: string): Promise<DispatchResult>
     phone9: r.phone9,
     chatId: r.telegramChatId,
     productName: product.content.name[r.locale === "ru" ? "ru" : "uz"] || product.content.name.uz,
-    price: product.price,
+    price,
     before: r.targetPrice,
     url: waitlistUrl(origin, r.locale === "ru" ? "ru" : "uz", product.slug, r.kind, "telegram"),
   }));

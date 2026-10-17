@@ -44,8 +44,11 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const url = new URL(siteTarget(row.link || "/", locale));
     const key = attributionKey({ flowId: row.flow_id, campaignId: row.campaign_id == null ? null : Number(row.campaign_id) });
     url.searchParams.set("utm_source", row.channel);
-    url.searchParams.set("utm_medium", row.flow_id ? "flow" : "campaign");
-    if (key) url.searchParams.set("utm_campaign", key);
+    // A message from neither (the waitlist's SMS) keeps the medium and campaign its own link carries.
+    if (key) {
+      url.searchParams.set("utm_medium", row.flow_id ? "flow" : "campaign");
+      url.searchParams.set("utm_campaign", key);
+    }
     if (row.flow_step != null) url.searchParams.set("utm_content", `step-${Number(row.flow_step) + 1}`);
     return redirect(url.toString());
   } catch (err) {
