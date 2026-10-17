@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart/store";
 import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
+import type { FirstOrderOffer } from "@/lib/promo/rules";
 
 /*
   Three widgets sit in the layout but none of them can be seen on first paint:
@@ -39,7 +40,8 @@ const LivePurchaseToast = dynamic(
   { ssr: false },
 );
 
-export function DeferredUi() {
+/** `firstOrder` — what the welcome card may promise (lib/promo/offer.ts); off means no card. */
+export function DeferredUi({ firstOrder }: { firstOrder: FirstOrderOffer }) {
   const [ready, setReady] = useState(false);
   const cartOpen = useCart((s) => s.isOpen);
 
@@ -63,7 +65,7 @@ export function DeferredUi() {
     <>
       <CartDrawer />
       <ExitIntentPopup />
-      <WelcomeOffer />
+      {firstOrder.mode !== "off" && <WelcomeOffer offer={firstOrder} />}
       <QuizNudge />
       {/* The toast narrates purchases nobody made until the flag says a demo
           deployment wants to see it working. Kept out of the dynamic import

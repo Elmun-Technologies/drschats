@@ -26,6 +26,7 @@ import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistr
 import { RouteAnalytics } from "@/components/analytics/RouteAnalytics";
 import { CartJourney } from "@/components/analytics/CartJourney";
 import { getPublicSettings } from "@/lib/integrations/site-settings";
+import { firstOrderOffer } from "@/lib/promo/offer";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
@@ -64,7 +65,7 @@ export default async function LocaleLayout({
 
   // Categories are layout data now that the header's catalogue menu lists
   // them; the read is cached and revalidated like the promotions beside it.
-  const [messages, promotions, categories, topicPaths, tc, deals] = await Promise.all([
+  const [messages, promotions, categories, topicPaths, tc, deals, firstOrder] = await Promise.all([
     getMessages(),
     shopflow.getPromotions(locale as Locale).catch(() => []),
     shopflow.getCategories(locale as Locale).catch(() => []),
@@ -73,6 +74,7 @@ export default async function LocaleLayout({
     shopflow
       .getProducts({ locale: locale as Locale, assortment: "core", sort: "deals", pageSize: 1 })
       .catch(() => null),
+    firstOrderOffer(),
   ]);
   const weeklyDeal = toMenuDeal(deals?.items[0]);
 
@@ -109,7 +111,7 @@ export default async function LocaleLayout({
               <Toaster />
               <BackToTop />
               <MobileBottomNav categories={categories} topicPaths={topicPaths} />
-              <DeferredUi />
+              <DeferredUi firstOrder={firstOrder} />
             </SmoothScroll>
           </PromotionsProvider>
         </NextIntlClientProvider>

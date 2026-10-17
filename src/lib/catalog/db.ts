@@ -115,21 +115,27 @@ export async function loadDbCatalog(): Promise<CatalogData> {
   }
 }
 
+/** The row an order is stored as; shared with the promo-code transaction (lib/promo/server.ts). */
+export function orderValues(payload: OrderRequest, promoCode: string | null = null): typeof orders.$inferInsert {
+  return {
+    total: payload.totals.total,
+    customer: payload.customer,
+    delivery: payload.delivery,
+    payment: payload.payment,
+    items: payload.items,
+    totals: payload.totals,
+    locale: payload.locale,
+    attribution: payload.attribution,
+    promoCode,
+  };
+}
+
 /** Every order lands in the database first; Telegram is the alert, not the record. */
 export async function saveOrderToDb(payload: OrderRequest): Promise<OrderResult> {
   try {
     const [row] = await getDb()
       .insert(orders)
-      .values({
-        total: payload.totals.total,
-        customer: payload.customer,
-        delivery: payload.delivery,
-        payment: payload.payment,
-        items: payload.items,
-        totals: payload.totals,
-        locale: payload.locale,
-        attribution: payload.attribution,
-      })
+      .values(orderValues(payload))
       .returning({ number: orders.number });
     return { ok: true, orderId: row.number ?? undefined };
   } catch (err) {

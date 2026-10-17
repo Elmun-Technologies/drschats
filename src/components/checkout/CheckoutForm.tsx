@@ -33,6 +33,9 @@ import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
 import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 import { telegramInitData } from "@/lib/telegram/mini-app";
+import type { FirstOrderOffer } from "@/lib/promo/rules";
+import { PromoCodeField } from "./PromoCodeField";
+import { useCartDiscount } from "./useCartDiscount";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -52,9 +55,15 @@ import { telegramInitData } from "@/lib/telegram/mini-app";
 export function CheckoutForm({
   recommended,
   prices,
+  promoCodes = false,
+  firstOrder = { mode: "operator", percent: COMMERCE.discounts.firstOrderPercent },
 }: {
   recommended: Product[];
   prices: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>;
+  /** Promo codes are counted in our database; without it the field is not offered. */
+  promoCodes?: boolean;
+  /** How the first-order discount works on this deployment (lib/promo/offer.ts). */
+  firstOrder?: FirstOrderOffer;
 }) {
   const tv = useTranslations("cart.v3");
   const locale = useLocale() as Locale;
@@ -64,6 +73,7 @@ export function CheckoutForm({
   const tc = useTranslations("cart");
   const ts = useTranslations("subscription");
   const tp = useTranslations("product.v3");
+  const tpe = useTranslations("cart.v3.promo.errors");
   const router = useRouter();
   const lines = useCart((s) => s.lines);
   useSaleClock();
@@ -130,6 +140,13 @@ export function CheckoutForm({
   });
 
 
+  const discount = useCartDiscount({
+    enabled: promoCodes || firstOrder.mode === "auto",
+    lines,
+    phone: watch("phone") ?? "",
+    locale,
+  });
+
   const emailEntered = Boolean(watch("email"));
   const provider = watch("provider");
   const payment = watch("payment");
@@ -156,8 +173,16 @@ export function CheckoutForm({
     }
   };
   const totals = computeTotals(lines, promotions, { pickup: watch("method") === "pickup" });
+  /*
+    The order-level discount (a promo code or the first-order one) as the
+    server priced it. Shipping is measured before it, as on the server.
+  */
+  const applied = discount.applied;
+  const extra = applied ? Math.min(applied.amount, Math.max(0, totals.total - totals.shipping)) : 0;
+  const grandTotal = totals.total - extra;
+  const firstOrderState = discount.quote?.firstOrder.state;
   const savings =
-    lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount;
+    lines.reduce((acc, l) => acc + ((l.oldPrice ?? l.price) - l.price) * l.quantity, 0) + totals.discount + extra;
   const progress = totals.freeShippingThreshold
     ? Math.min(100, Math.round(((totals.subtotal - totals.discount) / totals.freeShippingThreshold) * 100))
     : 0;
@@ -198,10 +223,11 @@ export function CheckoutForm({
       appliedPromotions: totals.appliedPromotions,
       totals: {
         subtotal: totals.subtotal,
-        discount: totals.discount,
+        discount: totals.discount + extra,
         shipping: totals.shipping,
-        total: totals.total,
+        total: grandTotal,
       },
+      promoCode: discount.orderCode,
       locale,
       attribution: getAttribution(),
       telegram: telegramInitData(),
@@ -217,7 +243,8 @@ export function CheckoutForm({
       return;
     }
     if (res.ok && res.orderId) {
-      trackOrder(res.orderId, { total: res.total ?? totals.total, shipping: totals.shipping }, analyticsItems());
+      trackOrder(res.orderId, { total: res.total ?? grandTotal, shipping: totals.shipping, coupon: res.coupon }, analyticsItems());
+      if (res.coupon) discount.remove();
       // Before clear(): the reorder reminders and the "already bought" signal read this history.
       trackPurchase(lines.map((l) => ({ slug: l.slug, name: l.name })));
       clear();
@@ -229,6 +256,13 @@ export function CheckoutForm({
       taken out of the cart and named, so pressing the button again works —
       "refresh the cart" left the same line in place and the order stuck.
     */
+    if (res.error === "promo_invalid") {
+      const reason = res.promoReason ?? "failed";
+      discount.reject(reason);
+      setServerError(te("promoRemoved", { reason: tpe(reason as "failed") }));
+      setSubmitting(false);
+      return;
+    }
     const culprit = res.slug ? lines.find((l) => l.slug === res.slug && (res.error !== "invalid_offer" || l.upsellDiscountPercent)) : undefined;
     if (culprit && (res.error === "out_of_stock" || res.error === "invalid_offer" || res.error === "unknown_product")) {
       removeLine(culprit.lineId);
@@ -379,9 +413,26 @@ export function CheckoutForm({
         <aside className="flex flex-col gap-3 lg:sticky lg:top-[calc(var(--header-sticky)+16px)]">
           <div className="flex flex-col gap-3.5 rounded-[20px] bg-tile p-5 lg:border lg:border-line lg:bg-bg lg:p-7 lg:shadow-buybox">
             <h2 className="hidden text-[22px] font-bold lg:block">{t("summary")}</h2>
+            {promoCodes && (
+              <PromoCodeField
+                code={discount.code}
+                amount={applied?.kind === "promo" ? extra : null}
+                failure={discount.failure}
+                pending={discount.pending}
+                onApply={discount.apply}
+                onRemove={discount.remove}
+              />
+            )}
             <SummaryRow label={tv("itemsRow", { count: totals.itemCount })} value={formatMoney(totals.subtotal, locale)} />
             {totals.discount > 0 && (
               <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} sale />
+            )}
+            {applied && extra > 0 && (
+              <SummaryRow
+                label={applied.kind === "promo" ? tv("promo.row", { code: applied.code }) : tv("firstOrderRow", { percent: applied.percent })}
+                value={`−${formatMoney(extra, locale)}`}
+                sale
+              />
             )}
             <SummaryRow
               label={tc("shipping")}
@@ -389,9 +440,14 @@ export function CheckoutForm({
             />
             <div className="flex items-baseline justify-between gap-3 border-t border-[#DCDFDB] pt-3.5 text-[22px] font-bold lg:border-line lg:text-[26px]">
               <span>{tc("total")}</span>
-              <span>{formatMoney(totals.total, locale)}</span>
+              <span>{formatMoney(grandTotal, locale)}</span>
             </div>
-            <p className="text-sm text-ink-2">{tv("firstOrderNote", { percent: COMMERCE.discounts.firstOrderPercent })}</p>
+            <FirstOrderNote
+              offer={firstOrder}
+              state={firstOrderState}
+              applied={applied?.kind ?? null}
+              promoEntered={Boolean(discount.code)}
+            />
             {totals.hasSubscription && (
               <p className="text-sm text-ink-2">
                 {ts("recurringSummary", { amount: formatMoney(totals.recurringTotal, locale) })} {ts("benefitControl")}
@@ -438,13 +494,46 @@ export function CheckoutForm({
       >
         <div className="flex shrink-0 flex-col">
           <span className="text-[13px] text-ink-2">{tc("total")}</span>
-          <span className="text-[19px] font-bold leading-[23px]">{formatMoney(totals.total, locale)}</span>
+          <span className="text-[19px] font-bold leading-[23px]">{formatMoney(grandTotal, locale)}</span>
         </div>
         <Button type="submit" size="lg" className="min-w-0 flex-1 rounded-[14px]" disabled={submitting}>
           {submitting ? t("submitting") : t("submit")}
         </Button>
       </div>
     </form>
+  );
+}
+
+/*
+  What the summary says about the first-order discount. Each line is true for
+  this deployment: "applied automatically" only where the server applies it,
+  "the operator applies it" only where nobody else can, nothing when it is off.
+*/
+function FirstOrderNote({
+  offer,
+  state,
+  applied,
+  promoEntered,
+}: {
+  offer: FirstOrderOffer;
+  state: "applies" | "returning" | "needs_phone" | "off" | undefined;
+  applied: "promo" | "first_order" | null;
+  promoEntered: boolean;
+}) {
+  const tv = useTranslations("cart.v3");
+  const percent = offer.percent;
+  let text: string | null = null;
+  if (offer.mode === "operator") text = tv("firstOrderNote", { percent });
+  else if (offer.mode === "auto") {
+    if (applied === "first_order") text = promoEntered ? tv("firstOrderWins") : tv("firstOrderApplied", { percent });
+    else if (applied === "promo" && state === "applies") text = tv("promoWins");
+    else if (!state || state === "needs_phone") text = tv("firstOrderAuto", { percent });
+  }
+  if (!text) return null;
+  return (
+    <p aria-live="polite" className={cn("text-sm", applied === "first_order" && !promoEntered ? "font-semibold text-ink" : "text-ink-2")}>
+      {text}
+    </p>
   );
 }
 

@@ -143,10 +143,18 @@ export function trackSearch(term: string) {
  * both are sent: `purchase` with the order id (GA4 dedupes on it) and the
  * lead conversion the existing campaigns are set up on.
  */
-export function trackOrder(orderId: string, totals: { total: number; shipping: number }, items: AnalyticsItem[]) {
+/** `coupon` — the promo code the server redeemed with the order (GA4's purchase `coupon` field). */
+export function trackOrder(orderId: string, totals: { total: number; shipping: number; coupon?: string }, items: AnalyticsItem[]) {
   send(
     "purchase",
-    { transaction_id: orderId, currency: CURRENCY, value: totals.total, shipping: totals.shipping, items },
+    {
+      transaction_id: orderId,
+      currency: CURRENCY,
+      value: totals.total,
+      shipping: totals.shipping,
+      ...(totals.coupon ? { coupon: totals.coupon } : {}),
+      items,
+    },
     true,
   );
   send("generate_lead", { currency: CURRENCY, value: totals.total, transaction_id: orderId }, false);

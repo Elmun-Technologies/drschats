@@ -7,6 +7,7 @@ import { COMMERCE, thousands } from "@/lib/config/commerce";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { firstOrderOffer } from "@/lib/promo/offer";
 
 export const revalidate = 3600;
 
@@ -36,17 +37,22 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   const t = await getTranslations("pages.v3");
   const { discounts } = COMMERCE;
+  const firstOrder = await firstOrderOffer();
   const amount = thousands(COMMERCE.freeShippingOver);
   const hours = COMMERCE.delivery.tashkent.hours;
 
   const programs = [
-    {
-      value: `−${discounts.firstOrderPercent}%`,
-      title: t("loyalty.firstTitle"),
-      text: t("loyalty.firstText", { percent: discounts.firstOrderPercent }),
-      note: t("loyalty.firstNote"),
-      dark: true,
-    },
+    ...(firstOrder.mode === "off"
+      ? []
+      : [
+          {
+            value: `−${firstOrder.percent}%`,
+            title: t("loyalty.firstTitle"),
+            text: t("loyalty.firstText", { percent: firstOrder.percent }),
+            note: firstOrder.mode === "auto" ? t("loyalty.firstNoteAuto") : t("loyalty.firstNote"),
+            dark: true,
+          },
+        ]),
     {
       value: `−${discounts.subscriptionFirstPercent}% → −${discounts.subscriptionRecurringPercent}%`,
       title: t("loyalty.subTitle"),
@@ -62,7 +68,9 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
       dark: false,
     },
   ];
-  const how = t.raw("loyalty.how") as { title: string; text: string }[];
+  const how = (t.raw("loyalty.how") as { title: string; text: string }[]).map((step, i, all) =>
+    firstOrder.mode === "auto" && i === all.length - 1 ? { ...step, text: t("loyalty.howAutoText") } : step,
+  );
   const rules = (t.raw("loyalty.rules") as string[]).map((r) =>
     r.replace("{amount}", amount).replace("{hours}", String(hours)),
   );
