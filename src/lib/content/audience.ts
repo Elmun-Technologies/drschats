@@ -7,7 +7,7 @@ export const AUDIENCE_PHOTOS: Record<string, { src: string; position: string }> 
   "self-woman": { src: "/images/stock/st-aud-woman.webp", position: "center 30%" },
   "self-man": { src: "/images/stock/st-aud-man.webp", position: "70% center" },
   child: { src: "/images/stock/st-aud-child.webp", position: "center" },
-  expectant: { src: "/images/stock/st-aud-pregnancy.webp", position: "60% center" },
+  expectant: { src: "/images/stock/st-aud-expectant.webp", position: "center" },
   parent: { src: "/images/stock/st-aud-senior.webp", position: "center" },
   recovery: { src: "/images/stock/st-aud-recovery.webp", position: "center" },
 };

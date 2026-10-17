@@ -255,7 +255,7 @@ export async function HomeServices() {
     { href: "/quiz", image: "/images/stock/st-cat-capsules.webp", pack: false },
     { href: "/loyalty", image: productCutout("swiss-energy-immunovit-30") ?? null, pack: true },
     { href: "/delivery", image: "/images/stock/st-delivery-door.webp", pack: false },
-    { href: "/where-to-buy", image: "/images/stock/st-pharmacist-shelf.webp", pack: false },
+    { href: "/where-to-buy", image: "/images/stock/st-shelf-range.webp", pack: false },
   ];
 
   return (
@@ -311,8 +311,8 @@ export async function HomeOrigin() {
 
 const NEWS_IMAGES = [
   "/images/stock/st-cat-orange.webp",
-  "/images/stock/st-pharmacist-shelf.webp",
-  "/images/stock/st-pharmacist-help.webp",
+  "/images/stock/st-shelf-range.webp",
+  "/images/stock/st-range-devices.webp",
 ];
 
 export async function HomeNews({ locale }: { locale: Locale }) {
