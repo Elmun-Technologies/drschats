@@ -13,7 +13,7 @@ export function Card({ title, lead, actions, children, className, id }: { title?
     <section id={id} className={cn("min-w-0 rounded-[20px] border border-line bg-white p-5 sm:p-6", className)}>
       {(title || actions) && (
         <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-          <div className="min-w-0">
+          <div className="min-w-0 flex-1">
             {title && <h2 className="text-[18px] font-bold leading-6 text-ink">{title}</h2>}
             {lead && <p className="mt-1 text-[13px] leading-5 text-muted">{lead}</p>}
           </div>
@@ -131,12 +131,12 @@ export function ChipNav({ label, items, className }: { label: string; items: { h
 }
 
 /** A KPI tile. `delta` compares with the previous period of the same length. */
-export function Metric({ label, value, hint, delta, href }: { label: string; value: ReactNode; hint?: ReactNode; delta?: { current: number; previous: number }; href?: string }) {
+export function Metric({ label, value, hint, delta, href, chart }: { label: string; value: ReactNode; hint?: ReactNode; delta?: { current: number; previous: number }; href?: string; chart?: ReactNode }) {
   const change = delta && delta.previous > 0 ? Math.round(((delta.current - delta.previous) / delta.previous) * 100) : null;
   const body = (
     <>
       <p className="text-[14px] font-medium leading-5 text-ink-2">{label}</p>
-      <p className="mt-2 text-[22px] font-bold leading-7 tabular-nums text-ink lg:text-[26px] lg:leading-8">{value}</p>
+      <p className="mt-2 text-[22px] font-bold leading-7 tabular-nums text-ink lg:text-[24px] lg:leading-8">{value}</p>
       <p className="mt-1.5 flex min-h-5 flex-wrap items-center gap-x-2 text-[13px] text-muted">
         {change !== null && (
           <span className={cn("font-semibold tabular-nums", change >= 0 ? "text-ink" : "text-ink-2")}>
@@ -145,9 +145,10 @@ export function Metric({ label, value, hint, delta, href }: { label: string; val
         )}
         {hint}
       </p>
+      {chart && <div className="mt-3">{chart}</div>}
     </>
   );
-  const className = "block min-w-0 rounded-[20px] bg-tile p-5";
+  const className = "block h-full min-w-0 rounded-[20px] bg-tile p-5";
   return href ? (
     <Link href={href} className={cn(className, "transition-colors hover:bg-tile-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30")}>{body}</Link>
   ) : (
@@ -192,7 +193,7 @@ export function BarList({ rows, format = formatNumber, empty = "Maʼlumot yoʻq"
 
 export const tableClass = "w-full min-w-[640px] border-separate border-spacing-0 text-left text-[14px]";
 export const thClass = "border-b border-line px-3 pb-3 text-[13px] font-semibold text-muted first:pl-0 last:pr-0";
-export const tdClass = "border-b border-line px-3 py-3.5 align-middle text-ink first:pl-0 last:pr-0";
+export const tdClass = "border-b border-line px-3 py-3.5 align-middle first:pl-0 last:pr-0";
 
 export function TableWrap({ children }: { children: ReactNode }) {
   return <div className="-mx-5 overflow-x-auto px-5 sm:-mx-6 sm:px-6">{children}</div>;
@@ -200,6 +201,13 @@ export function TableWrap({ children }: { children: ReactNode }) {
 
 export function som(value: number): string {
   return `${formatNumber(Math.round(value))} soʻm`;
+}
+
+/** Big sums for tiles and notes: "26,01 mln soʻm". Below a million the exact figure reads fine. */
+export function somShort(value: number): string {
+  if (Math.abs(value) < 1_000_000) return som(value);
+  const millions = value / 1_000_000;
+  return `${millions.toLocaleString("ru-RU", { maximumFractionDigits: millions >= 100 ? 0 : millions >= 10 ? 1 : 2 })} mln soʻm`;
 }
 
 const RELATIVE = new Intl.RelativeTimeFormat("uz", { numeric: "auto" });

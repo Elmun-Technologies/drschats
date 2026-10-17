@@ -102,46 +102,6 @@ export function percent(part: number, whole: number): number {
 
 /* ─── Traffic ─────────────────────────────────────────────────────────────── */
 
-export interface DailyTraffic {
-  date: string;
-  visitors: number;
-  buyers: number;
-  orders: number;
-  revenue: number;
-}
-
-export async function dailyTraffic(days: Range): Promise<DailyTraffic[]> {
-  const { from, to } = rangeWindow(days);
-  const [events, sales] = await Promise.all([
-    query(sql`
-      select to_char(created_at at time zone 'Asia/Tashkent', 'YYYY-MM-DD') as d,
-             count(distinct visitor_id) filter (where session_id <> 'server') as visitors,
-             count(distinct visitor_id) filter (where type = 'purchase') as buyers
-      from visitor_events where created_at >= ${ts(from)} and created_at < ${ts(to)}
-      group by 1`),
-    query(sql`
-      select to_char(created_at at time zone 'Asia/Tashkent', 'YYYY-MM-DD') as d,
-             count(*) as orders,
-             coalesce(sum(total) filter (where status <> 'cancelled'), 0) as revenue
-      from orders where created_at >= ${ts(from)} and created_at < ${ts(to)}
-      group by 1`),
-  ]);
-  const byDay = new Map<string, DailyTraffic>();
-  for (let t = from.getTime(); t < to.getTime(); t += 86_400_000) {
-    const key = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tashkent" }).format(new Date(t));
-    byDay.set(key, { date: key, visitors: 0, buyers: 0, orders: 0, revenue: 0 });
-  }
-  for (const row of events) {
-    const day = byDay.get(row.d as string);
-    if (day) Object.assign(day, { visitors: num(row.visitors), buyers: num(row.buyers) });
-  }
-  for (const row of sales) {
-    const day = byDay.get(row.d as string);
-    if (day) Object.assign(day, { orders: num(row.orders), revenue: num(row.revenue) });
-  }
-  return [...byDay.values()];
-}
-
 export interface ChannelRow {
   channel: string;
   visitors: number;

@@ -50,7 +50,11 @@ vendor hostlarini ochadi. Maxfiy qiymatlarni chatga yoki kodga yozmang.
    15 kategoriya, brendlar) yoziladi va `site_settings.catalog.seededAt` belgisi
    qo'yiladi (`src/lib/admin/seed.ts`, `instrumentation.ts`). Belgi bor ekan bu
    qayta ishlamaydi — admin o'chirgan mahsulot qaytib kelmaydi. Yetishmaganini
-   qo'lda olib kelish: bosh sahifadagi import (takror bosish xavfsiz).
+   qo'lda olib kelish: `/admin/products` dagi «Saytdagi N ta mahsulot hali
+   panelda yo'q» kartasi → «Panelga olish» (takror bosish xavfsiz: faqat
+   yo'g'ini qo'shadi, rasmi ham kesmasi ham bo'sh mahsulotga saytdagi rasmni
+   yozadi, boshqa hech narsani o'zgartirmaydi). Ataylab o'chirilgan bo'lsa —
+   «Kerak emas» (`site_settings.catalog.importDismissed`).
 3. `fly secrets unset ADMIN_SETUP_TOKEN -a govita`.
 
 ## Bo'limlar
@@ -70,8 +74,9 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
 | Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
 | UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
-| Mahsulotlar | holat chiplari (sotuvda / tugagan / chegirmada / sotuvdan olingan), kategoriya filtri, yangi, tahrir (uz/ru), rasm yuklash. Saqlash saytni darhol yangilaydi |
-| Kategoriyalar, Brendlar | qo'shish, tahrir, o'chirish |
+| Mahsulotlar | Mahsulotlar / Kategoriyalar / Brendlar — bitta tab qatori. Holat chiplari (sotuvda / tugagan / chegirmada / rasmsiz / sotuvdan olingan), kategoriya va brend filtri, saralash (tartib, nom, narx, yangi), o'rnatilgan katalogdan import, yangi, tahrir (uz/ru). Rasmlar: saytdagi rasmlardan tanlash oynasi (`public/products`, `public/images/products/c-*.png`, `public/images/stock` — so'rov paytida o'qiladi, `lib/admin/repo-images.server.ts`), tartib strelkalari, Tigris bo'lsa yuklash. Kategoriya selekti yonida «+ Yangi kategoriya». Saqlash saytni darhol yangilaydi |
+| Kategoriyalar | kartalar setkasi (rasm, uz/ru nom, mahsulot soni), `categories/new`, `categories/[slug]` tahrir; slug bo'sh bo'lsa uz nomdan; mahsuloti bor kategoriya o'chirilmaydi |
+| Brendlar | qo'shish (slug nomdan), tahrir, o'chirish, mahsulot soni |
 | Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
 | Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend; saytning o'z kuzatuvi holati |
 | Administratorlar | qo'shish, o'chirish (o'zini va oxirgisini emas), parol almashtirish, barcha qurilmalardan chiqish |

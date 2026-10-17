@@ -20,7 +20,28 @@ deploy:  release_command → db/migrations → yangi mashinalar trafik oladi
 | `.github/workflows/fly-deploy.yml` | `main` ga push → `flyctl deploy` (faqat `FLY_API_TOKEN` secret bo'lsa) |
 | `scripts/db/migrate.mjs` | bitta tranzaksiya + `pg_advisory_xact_lock` — PgBouncer ortida ham xavfsiz |
 
-## Noldan ishga tushirish — ketma-ketlik
+## Eng qisqa yo'l — bitta buyruq
+
+`flyctl` o'rnatilgan kompyuterda (macOS/Linux terminali yoki Windows'da Git Bash),
+loyiha papkasida:
+
+```bash
+bash scripts/fly/setup.sh
+```
+
+Skript quyidagi 2–4-qadamlarni o'zi bajaradi va qayta ishga tushirilsa xavfsiz
+(bor narsani o'tkazib yuboradi, qo'yilgan kalitni **hech qachon** almashtirmaydi —
+aks holda adminlar chiqib ketardi va saqlangan integratsiya kalitlari o'qilmay qolardi):
+ilova → Managed Postgres + `fly mpg attach` → Tigris → maxfiy kalitlar
+(`ADMIN_SESSION_SECRET`, `EMAIL_TOKEN_SECRET`, `INTEGRATION_ENCRYPTION_KEY`,
+`CRON_SECRET`, `ADMIN_SETUP_TOKEN`, ixtiyoriy Telegram) → `fly deploy` →
+`FLY_API_TOKEN` (`gh` bo'lsa GitHub'ga o'zi yozadi, bo'lmasa ekranga chiqaradi).
+Oxirida `/admin/setup` havolasi va kodi chiqadi.
+
+GitHub'dagi «Deploy to Fly» `FLY_API_TOKEN` bo'lmasa sariq ogohlantirish bilan
+o'tadi — «yashil» belgi deploy bo'ldi degani emas.
+
+## Noldan ishga tushirish — qo'lda, ketma-ketlik
 
 Kompyuterda loyiha kodi **shart emas**: sayt ham, bot ham GitHub'dan Fly'ning
 o'z serverida build qilinadi. Kompyuterga faqat `flyctl` kerak.
@@ -56,6 +77,8 @@ fly secrets set -a govita \
   ADMIN_SESSION_SECRET="$(openssl rand -base64 48)" \
   ADMIN_SETUP_TOKEN=<yuqoridagi qiymat> \
   EMAIL_TOKEN_SECRET="$(openssl rand -base64 32)" \
+  INTEGRATION_ENCRYPTION_KEY="$(openssl rand -hex 32)" \
+  CRON_SECRET="$(openssl rand -hex 24)" \
   TELEGRAM_BOT_TOKEN=... TELEGRAM_CHAT_ID=...
 ```
 Windows'da `openssl` Git Bash ichida bor.
@@ -79,8 +102,11 @@ merge avtomatik deploy bo'ladi.
 
 ### 6. Birinchi admin
 `https://govita.fly.dev/admin/setup` → 3-qadamdagi `ADMIN_SETUP_TOKEN` →
-email + parol (≥ 12). Kirgach: Bosh sahifa → **«Import»** (o'rnatilgan katalog
-bazaga ko'chadi; narx va zaxirani shu yerda tahrirlaysiz). Keyin:
+email + parol (≥ 12). Saytdagi mahsulotlar, kategoriyalar va brendlar birinchi
+ishga tushishda bazaga **o'zi ko'chadi** (rasmlari bilan — fayllar repo'dagi
+`public/products/` va `public/images/products/`). Keyinroq saytga yangi mahsulot
+kodda qo'shilsa, Katalog → Mahsulotlar sahifasida «panelda yo'q» kartasi chiqadi —
+«Panelga olish» faqat yetishmaganini qo'shadi, tahrirlanganini o'zgartirmaydi. Keyin:
 ```bash
 fly secrets unset ADMIN_SETUP_TOKEN -a govita
 ```

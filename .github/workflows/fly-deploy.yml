@@ -29,7 +29,13 @@ jobs:
     steps:
       - name: Check token
         id: token
-        run: echo "present=$([ -n "$FLY_API_TOKEN" ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
+        run: |
+          if [ -n "$FLY_API_TOKEN" ]; then
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Fly deploy skipped::FLY_API_TOKEN secret yoʻq — sayt yangilanmadi. bash scripts/fly/setup.sh yoki docs/DEPLOY-FLY.md (4-qadam)"
+          fi
 
       - uses: actions/checkout@v4
         if: steps.token.outputs.present == 'yes'
