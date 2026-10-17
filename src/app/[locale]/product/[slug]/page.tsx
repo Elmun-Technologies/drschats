@@ -40,8 +40,10 @@ export default async function ProductPage({
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const product = await shopflow.getProduct(slug, locale);
-  if (!product) notFound();
+  const found = await shopflow.getProduct(slug, locale);
+  if (!found) notFound();
+  // A withdrawn product keeps its page for old links and orders, shown as not sold.
+  const product = found.assortment === "unlisted" ? { ...found, inStock: false } : found;
 
   const [upsells, allProducts, allTopics, categories, t] = await Promise.all([
     shopflow.getUpsells(product.id, locale).catch(() => []),
