@@ -20,6 +20,56 @@ deploy:  release_command → db/migrations → yangi mashinalar trafik oladi
 | `.github/workflows/fly-deploy.yml` | `main` ga push → `flyctl deploy` (faqat `FLY_API_TOKEN` secret bo'lsa) |
 | `scripts/db/migrate.mjs` | bitta tranzaksiya + `pg_advisory_xact_lock` — PgBouncer ortida ham xavfsiz |
 
+## Avtomatik deploy — terminalsiz, faqat brauzerda (tavsiya)
+
+Bir marta sozlanadi, keyin **GitHub'da PR merge qilish — saytni yangilashning
+o'zi**. `main` ga har merge'dan keyin CI o'tsa, GitHub Actions («Deploy to Fly»)
+o'zi: ilovani (yo'q bo'lsa) yaratadi, bazani ulaydi, ichki kalitlarni bir marta
+yaratadi, GitHub'dagi kalitlarni Fly'ga ko'chiradi va deploy qiladi; baza
+migratsiyalari `release_command` da. Skript: `scripts/fly/ci-prepare.sh`.
+
+**Bir martalik sozlash (taxminan 10 daqiqa):**
+
+1. **Fly hisobi** — https://fly.io → ro'yxatdan o'ting, to'lov kartasini qo'shing.
+2. **Baza** — Fly paneli → *Managed Postgres* → *Create* (region **fra**).
+   Yaratilgan klasterning **ID** sini nusxa oling.
+3. **Token** — Fly paneli → *Account* → *Access Tokens* → **Org token** yarating
+   (ilovani yaratish va bazani ulash uchun org token kerak; ilova va baza
+   allaqachon ulangan bo'lsa, `deploy` token ham yetadi).
+4. **GitHub** — repo → *Settings* → *Secrets and variables* → *Actions* →
+   *New repository secret*:
+
+   | secret | qiymat | majburiy |
+   |---|---|---|
+   | `FLY_API_TOKEN` | 3-qadamdagi token | ha |
+   | `FLY_MPG_CLUSTER_ID` | 2-qadamdagi klaster ID | ha (bazasiz admin yopiq) |
+   | `ADMIN_SETUP_TOKEN` | o'zingiz o'ylagan kod (16+ belgi) — birinchi admin uchun | birinchi marta |
+   | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID` | buyurtmalar keladigan operator guruhi (§3) | tavsiya |
+   | `ESKIZ_EMAIL`, `ESKIZ_PASSWORD`, `ESKIZ_SENDER` | SMS (yoki keyin `/admin/integrations` da) | ixtiyoriy |
+   | `RESEND_API_KEY`, `EMAIL_FROM`, `EMAIL_REPLY_TO` | email | ixtiyoriy |
+   | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINT_URL_S3`, `AWS_REGION`, `BUCKET_NAME` | Tigris (admin'dan rasm yuklash; Fly paneli → Tigris) | ixtiyoriy |
+   | `BOT_API_KEY`, `TELEGRAM_CLUB_BOT_TOKEN` | Telegram klub boti (`BOT-ADMIN.md`) | ixtiyoriy |
+
+   Fly tashkilotingiz nomi `personal` bo'lmasa: *Variables* bo'limida
+   `FLY_ORG` = tashkilot nomi.
+5. **Ishga tushirish** — GitHub → *Actions* → «Deploy to Fly» → *Run workflow*.
+   Tugagach, jurnal oxirida sayt va admin havolalari chiqadi:
+   `https://govita.fly.dev/admin/setup` → 4-qadamdagi `ADMIN_SETUP_TOKEN`.
+
+**Keyin:** kod o'zgarishi — PR → merge, bo'ldi. Kalitni o'zgartirish — GitHub
+Secrets'da qiymatni yangilab, «Deploy to Fly» → *Run workflow* (yoki keyingi
+merge). Ichki kalitlar (`ADMIN_SESSION_SECRET`, `INTEGRATION_ENCRYPTION_KEY`,
+`MESSAGE_LINK_SECRET`, `LOYALTY_SECRET`, `EMAIL_TOKEN_SECRET`, `CRON_SECRET`)
+faqat yo'q bo'lsa yaratiladi va **hech qachon almashtirilmaydi** — aks holda
+adminlar chiqib ketardi, shifrlangan sozlamalar o'qilmay qolardi va yuborilgan
+SMS havolalari buzilardi. Fly kalitlar ro'yxatini o'qib bo'lmasa, workflow
+hech narsani o'zgartirmay to'xtaydi. GitHub'dan secret o'chirilsa, Fly'dagi
+qiymat o'chmaydi.
+
+**Domen** (bir marta, §7): `fly certs add` o'rniga Fly paneli → ilova →
+*Certificates* → `govita.uz` va `www.govita.uz`; DNS yozuvlarini panel ko'rsatadi.
+Domen Fly'ga o'tgach, Vercel loyihasini uzish mumkin.
+
 ## Eng qisqa yo'l — bitta buyruq
 
 `flyctl` o'rnatilgan kompyuterda (macOS/Linux terminali yoki Windows'da Git Bash),
