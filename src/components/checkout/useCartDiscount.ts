@@ -62,6 +62,8 @@ export function useCartDiscount({ enabled, lines, phone, locale }: { enabled: bo
       if (!res) return;
       if (!res.ok) {
         setQuote(null);
+        // The code stays in the field but is not sent with the order; say so instead of showing it as applied.
+        if (code) setFailure({ reason: res.error === "rate_limited" ? "rate_limited" : "failed" });
         return;
       }
       setQuote(res);

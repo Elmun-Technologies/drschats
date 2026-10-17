@@ -3,7 +3,7 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { ORDERS_IN_DB, shopflow } from "@/lib/shopflow";
-import { clientIp, withinRateLimit } from "@/lib/rate-limit";
+import { clientIp, rateLimitSpent, withinRateLimit } from "@/lib/rate-limit";
 import { quoteDiscounts, type FirstOrderState } from "@/lib/promo/server";
 import type { PromoLine, PromoReason } from "@/lib/promo/rules";
 import type { OrderAdjustment } from "@/lib/shopflow/types";
@@ -15,12 +15,16 @@ import { isIntervalDays } from "@/lib/subscription/plans";
   Advisory only — the order action validates and redeems the code again,
   atomically, when the order is placed.
 
-  Two budgets: checks carrying a code are the ones a script would use to guess
-  codes, so they get the tighter one; phone-only checks (the first-order
-  discount, debounced while the phone is typed) the looser.
+  Two budgets. Every check counts against the looser one. Guessing codes
+  shows up as codes that do not exist, so only those misses count against
+  the tighter one — a code the customer already applied is asked again on
+  every cart edit and every phone keystroke, and counting those used to
+  spend the budget in a few minutes of normal use: the code then silently
+  stopped applying while the cart still showed it.
 */
-const CODE_RATE = { limit: 15, windowMs: 10 * 60 * 1000 };
-const PHONE_RATE = { limit: 40, windowMs: 10 * 60 * 1000 };
+const MISS_RATE = { limit: 15, windowMs: 10 * 60 * 1000 };
+const CHECK_RATE = { limit: 60, windowMs: 10 * 60 * 1000 };
+const GUESS_REASONS = new Set<PromoReason>(["not_found", "invalid_format"]);
 
 const inputSchema = z.object({
   code: z.string().trim().max(40).optional(),
@@ -57,7 +61,7 @@ export async function checkCartPromo(input: CartPromoInput): Promise<CartPromoQu
   const { code, phone, locale, items } = parsed.data;
 
   const ip = clientIp(await headers());
-  if (!withinRateLimit(code ? "promo-code" : "promo-phone", ip, code ? CODE_RATE : PHONE_RATE)) {
+  if (!withinRateLimit("promo-check", ip, CHECK_RATE) || (code && rateLimitSpent("promo-miss", ip, MISS_RATE))) {
     return { ok: false, error: "rate_limited" };
   }
 
@@ -73,6 +77,7 @@ export async function checkCartPromo(input: CartPromoInput): Promise<CartPromoQu
       .map((i) => ({ slug: i.slug, price: price.get(i.slug)!, quantity: i.quantity, upsellDiscountPercent: i.upsellDiscountPercent, subscription: i.subscription }));
 
     const quote = await quoteDiscounts({ lines, promotions, code: code || null, phone: phone || null });
+    if (quote.promo && !quote.promo.ok && GUESS_REASONS.has(quote.promo.reason)) withinRateLimit("promo-miss", ip, MISS_RATE);
     const promo = !quote.promo
       ? null
       : quote.promo.ok
