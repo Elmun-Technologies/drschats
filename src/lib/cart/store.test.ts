@@ -158,3 +158,25 @@ describe("sale expiry in the cart", () => {
     vi.useRealTimers();
   });
 });
+
+describe("cart lifetime", () => {
+  it("counts the thirty days from the last change, not the last add", () => {
+    vi.useFakeTimers({ now: Date.parse("2026-10-01T09:00:00Z") });
+    useCart.getState().add(product(), 1, { silent: true });
+    vi.setSystemTime(Date.parse("2026-10-20T09:00:00Z"));
+    useCart.getState().setQuantity(useCart.getState().lines[0].lineId, 2);
+    expect(useCart.getState()._savedAt).toBe(Date.parse("2026-10-20T09:00:00Z"));
+    vi.setSystemTime(Date.parse("2026-10-21T09:00:00Z"));
+    useCart.getState().syncPrices({});
+    expect(useCart.getState()._savedAt).toBe(Date.parse("2026-10-21T09:00:00Z"));
+    vi.setSystemTime(Date.parse("2026-10-22T09:00:00Z"));
+    useCart.getState().remove(useCart.getState().lines[0].lineId);
+    expect(useCart.getState()._savedAt).toBe(Date.parse("2026-10-22T09:00:00Z"));
+    vi.useRealTimers();
+  });
+
+  it("merges an empty store without throwing", () => {
+    const merge = useCart.persist.getOptions().merge!;
+    expect(merge(undefined, useCart.getState()).lines).toEqual([]);
+  });
+});
