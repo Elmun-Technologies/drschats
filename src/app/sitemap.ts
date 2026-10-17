@@ -11,13 +11,14 @@ import { TOPIC_BASE_PATH, TOPIC_KINDS } from "@/lib/content/health-topics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { absoluteUrl } from "@/lib/config/site";
 import { isStocked } from "@/lib/shop/categories";
+import { getAllProducts } from "@/lib/shop/all-products";
 import type { Product } from "@/lib/shopflow/types";
 import { brandOf } from "@/lib/catalog/product-facts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, allProducts] = await Promise.all([
     shopflow.getCategories(routing.defaultLocale).catch(() => []),
-    shopflow.getProducts({ locale: routing.defaultLocale, sort: "popular", pageSize: 200 }).catch(() => ({ items: [], total: 0, page: 1, pageSize: 200 })),
+    getAllProducts({ locale: routing.defaultLocale, sort: "popular" }).catch(() => ({ items: [] as Product[], total: 0, page: 1, pageSize: 0 })),
   ]);
 
   // Build a rating map for priority boosting
