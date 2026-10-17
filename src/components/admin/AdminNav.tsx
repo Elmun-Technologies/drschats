@@ -26,6 +26,7 @@ export const NAV_GROUPS = [
     label: "Marketing",
     items: [
       { href: "/admin/segments", label: "Segmentlar va retarget", icon: "target" },
+      { href: "/admin/storefront", label: "Vitrina", icon: "layout" },
       { href: "/admin/promotions", label: "Aksiyalar", icon: "percent" },
       { href: "/admin/campaigns", label: "Kampaniyalar", icon: "megaphone" },
       { href: "/admin/marketing", label: "UTM havolalar", icon: "link" },
@@ -66,6 +67,7 @@ export function NavIcon({ name, className }: { name: string; className?: string 
     target: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="4" /><circle cx="12" cy="12" r="0.8" /></>,
     percent: <><path d="M19 5 5 19" /><circle cx="7" cy="7" r="2.2" /><circle cx="17" cy="17" r="2.2" /></>,
     megaphone: <><path d="M4 12v-2a2 2 0 0 1 2-2h3l8-4v14l-8-4H6a2 2 0 0 1-2-2z" /><path d="m9 14 1.5 5H14l-2-4.5" /></>,
+    layout: <><rect x="3.5" y="4" width="17" height="16" rx="2" /><path d="M3.5 9h17M9 9v11" /></>,
     link: <><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1" /><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" /></>,
     box: <><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z" /><path d="m4.5 7.7 7.5 4.4 7.5-4.4M12 12v8.5" /></>,
     grid: <><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></>,

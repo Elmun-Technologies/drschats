@@ -71,6 +71,7 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Mijozlar yo'li | saytga kirgan har bir odam: manba, bosqich (kirdi → mahsulot ko'rdi → savat → rasmiylashtirish → sotib oldi), savatdagi mahsulotlar, tashriflar bo'yicha harakatlar tarixi |
 | Voronka | sayt voronkasi va har bosqichdagi yo'qotish (retarget segmentiga havola) + buyurtma bajarilishi va holatlar kanbani |
 | Segmentlar va retarget | avtomatik auditoriyalar: kursi tugayapti (25–40 kun), bir marta sotib olgan, 60+ kun, yo'qotilgan (180+), VIP, yangi (7 kun), savatni tashlab ketgan, rasmiylashtirishda to'xtagan, ko'rib ketgan. CSV (jamoa), Meta Custom Audience va Google Customer Match (SHA-256) eksporti, Telegram orqali shaxsiy xabar (`{ism}`) |
+| Vitrina | bannerlar (bosh sahifa slayderi, header ostidagi qator, katalog sahifalari — muddat, taymer, bosishlar soni), eʼlon qatori (TopBar), bugungi taklif (hozirgi + navbat). Pastda batafsil |
 | Aksiyalar | foizli chegirma, 2+1, summadan bepul yetkazish — mahsulotlar, boshlanish/tugash, yoqish/o'chirish. Jadvalda qator bo'lmasa kod ichidagi aksiyalar ishlaydi; «Panelga olish» ularni tahrirlanadigan qiladi. Pastda mahsulot chegirmalari (eski narx + muddat) |
 | Kampaniyalar | yuborilgan xabarlar: auditoriya, yuborildi / navbatda / yetmadi |
 | UTM havolalar | havola yaratish + `utm_campaign` bo'yicha natija (tashrif, xaridor, savdo) |
@@ -80,6 +81,62 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | Telegram klub | [`BOT-ADMIN.md`](BOT-ADMIN.md) |
 | Integratsiyalar | GA4, GTM, Yandex Metrika (+ Vebvizor), Meta Pixel, Google Search Console / Yandex Webmaster / Bing tasdiqlash kodi, Telegram operator, Resend; saytning o'z kuzatuvi holati |
 | Administratorlar | qo'shish, o'chirish (o'zini va oxirgisini emas), parol almashtirish, barcha qurilmalardan chiqish |
+
+## Vitrina — `/admin/storefront`
+
+Uchta tab, hammasi saqlash bilan saytni darhol yangilaydi (`revalidateTag("merch")`,
+taklifda `catalog` ham, + `revalidatePath("/", "layout")`). Saytdagi o'qish
+`src/lib/merch/store.ts` (kesh, tag `merch`, xato bo'lsa jim — o'rnatilgan
+ko'rinish), sof qism `src/lib/merch/model.ts` (testli).
+
+- **Bannerlar** (`banners`, 0008). Joyi: `hero` (bosh sahifa slayderi),
+  `strip` (header ostidagi ingichka qator, har sahifada), `category` (katalog
+  va kategoriya sahifasida setka ustida; qidiruvda yo'q). uz/ru sarlavha,
+  qo'shimcha matn, tugma; havola — saytdagi yo'l yoki `https://` (`safeHref`,
+  boshqasi rad etiladi); rasm — saytdagi rasmlar oynasi yoki Tigris yuklash,
+  telefon uchun alohida rasm ixtiyoriy; fon ochiq/qora; muddat (Toshkent vaqti).
+  **Taymer faqat tugash sanasi bilan** — baza `check` bilan ham ushlaydi.
+  Banner muddatidan oldin ko'rinmaydi, tugash daqiqasida ochiq sahifadan ham
+  yo'qoladi (`useUnexpired`). **Faol slayder banneri bo'lmasa — `home.slides`
+  dagi o'rnatilgan slaydlar aynan avvalgidek**; oxirgi banner sahifada tugasa
+  ham o'rnatilgan slaydlar qaytadi: hero hech qachon bo'sh emas.
+  Bosishlar: `trackPromotionClick` (`lib/analytics/events.ts`, GA4
+  `select_promotion`) + `POST /api/b/:id` beacon — bot UA, boshqa sayt
+  so'rovi va bitta manzildan 30 daqiqada takror bosish sanalmaydi.
+- **Eʼlon qatori** — `site_settings` → `storefront.announcements` (JSON,
+  ≤ 5 qator: uz/ru matn, havola, tugash vaqti, taymer, yoqilgan). Kompyuterda
+  TopBar o'rtasida (havolalar o'rnida), telefonda header ustida; bir nechta
+  bo'lsa 6 soniyada almashadi (hover/fokusda to'xtaydi, pauza tugmasi,
+  reduced-motion'da aylanmaydi). Yoqilgan qator bo'lmasa — odatiy TopBar.
+- **Bugungi taklif** (`deals`, 0008) — mahsulot + foiz yoki yangi narx +
+  boshlanish/tugash (sukut: hozir → bugun 23:59 Toshkent). Navbatga keyingi
+  kunlar uchun ham qo'yiladi; ikki taklif vaqti **ustma-ust tushmaydi**
+  (`exclude using gist`).
+
+### Bugungi taklif narxi qanday ishlaydi (qaror)
+
+Mahsulot qatori (`price`/`old_price`/`sale_ends_at`) **o'zgartirilmaydi**.
+Taklif — jadvaldagi yozuv; narx har o'qishda o'sha paytdagi soat bilan
+hisoblanadi (`lib/catalog/deals.ts` → `dealPrice`, `CatalogEngine.resolveProduct`
+ichida). Sabablar:
+
+- Taklif boshlanishi/tugashi paytida hech qanday jarayon uyg'oq turishi shart
+  emas (cron yo'q) — keshdagi ro'yxatda kelgusi taklif bor, oyna o'qishda tekshiriladi.
+- Qatorni o'zgartirish varianti taklif tugagach eski narxni «tiklash»ni talab
+  qilardi; admin shu orada narxni o'zgartirsa, tiklash uni bosib ketardi.
+- Buyurtma action'i narxni o'sha engine'dan oladi (`shopflow.getProduct` →
+  `repriceOrder`), shuning uchun checkout aynan sahifadagi narxni oladi va
+  oynadan tashqarida taklif narxida sotib bo'lmaydi.
+
+Taklif davomida: `oldPrice` = taklifdan oldingi **haqiqiy** narx (mahsulotning
+o'z chegirmasi bo'lsa, o'sha chegirma narxi — o'ylab topilgan «eski narx»
+yo'q), `price` = foiz (yuzlikkacha yaxlitlanadi) yoki yangi narx, `saleEndsAt`
+= taklif tugashi — PDP'dagi haqiqiy taymer va brauzerdagi `livePrice` narxni
+aynan o'sha soniyada qaytaradi. Yangi narx hozirgidan past bo'lmasa taklif
+hech narsa qilmaydi. Bosh sahifadagi «Bugungi taklif» bloki faqat taklif
+amalda bo'lganda (va mahsulot sotuvda bo'lsa) chiziladi. Kesh: katalog 60 s,
+sahifalar ISR 300 s — boshlanish bosh sahifada 5 daqiqagacha kechikishi
+mumkin, lekin **narx serverda har doim to'g'ri**.
 
 ## Saytning o'z kuzatuvi (mijozlar yo'li)
 
@@ -135,4 +192,7 @@ yashil yo'q (`src/components/admin/ui.tsx`).
 | `db/migrations/0004_admin_customer_notes.sql` | mijozga biriktirilgan ichki xizmat izohlari |
 | `db/migrations/0005_admin_integration_settings.sql` | panel sozlamalari uchun shifrlangan integration ciphertext jadvali |
 | `db/migrations/0006_crm_marketing.sql` | `visitors`, `visitor_events`, `orders.visitor_id`, `promotions`, `campaigns`, `site_settings`, `admin_users.session_epoch` |
+| `db/migrations/0008_storefront_merchandising.sql` | `banners`, `deals` (Vitrina) |
+| `src/lib/merch/` | Vitrina: `model.ts` (sof, testli), `store.ts` (saytdagi o'qish, kesh `merch`) |
+| `src/lib/catalog/deals.ts` | bugungi taklif narxi (sof, testli) |
 | `src/lib/journey/` | kuzatuv: brauzer klienti, server yig'uvchi, sof qoidalar (`model.ts`, testli) |
