@@ -27,6 +27,7 @@ export const NAV_GROUPS = [
     items: [
       { href: "/admin/segments", label: "Segmentlar va retarget", icon: "target" },
       { href: "/admin/promotions", label: "Aksiyalar", icon: "percent" },
+      { href: "/admin/promocodes", label: "Promokodlar", icon: "ticket" },
       { href: "/admin/campaigns", label: "Kampaniyalar", icon: "megaphone" },
       { href: "/admin/marketing", label: "UTM havolalar", icon: "link" },
     ],
@@ -70,6 +71,7 @@ export function NavIcon({ name, className }: { name: string; className?: string 
     box: <><path d="m12 3 8 4.5v9L12 21l-8-4.5v-9z" /><path d="m4.5 7.7 7.5 4.4 7.5-4.4M12 12v8.5" /></>,
     grid: <><rect x="4" y="4" width="6" height="6" rx="1" /><rect x="14" y="4" width="6" height="6" rx="1" /><rect x="4" y="14" width="6" height="6" rx="1" /><rect x="14" y="14" width="6" height="6" rx="1" /></>,
     tag: <><path d="M20 13 13 20 4 11V4h7z" /><circle cx="8" cy="8" r="1" /></>,
+    ticket: <><path d="M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4z" /><path d="M14 7v10" strokeDasharray="2 2" /></>,
     message: <><path d="M4 5h16v12H9l-5 4z" /><path d="M8 10h8M8 13h5" /></>,
     file: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v5h5M9 12h6M9 16h6" /></>,
     plug: <><path d="M8 4v5M16 4v5M6 9h12v2a6 6 0 0 1-6 6v4" /></>,

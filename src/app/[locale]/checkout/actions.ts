@@ -23,21 +23,30 @@ import { describeAttribution } from "@/lib/analytics/attribution";
 import { ordersFromPhone } from "@/lib/catalog/db";
 import { COMMERCE } from "@/lib/config/commerce";
 import { linkOrderToVisitor, visitorIdFrom, VISITOR_COOKIE } from "@/lib/journey/collect";
+import { placeOrder } from "@/lib/promo/server";
+import type { PromoReason } from "@/lib/promo/rules";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
 /*
-  The first-order discount (COMMERCE.discounts.firstOrderPercent) is applied
-  by the operator on confirmation; this line tells them whether it applies.
-  With the database the phone number is checked against earlier orders;
-  without it the operator checks by hand.
+  With the database the order-level discount is already in the total
+  (lib/promo/server.ts) and the message says which one. Without it the
+  first-order discount (COMMERCE.discounts.firstOrderPercent) is still the
+  operator's to apply on confirmation, and the line tells them to check.
 */
-async function firstOrderLine(phone: string): Promise<string> {
-  const percent = COMMERCE.discounts.firstOrderPercent;
-  const placed = await ordersFromPhone(phone);
-  if (placed === null) return `🎁 Birinchi buyurtma boʻlsa −${percent}% (tekshiring)`;
-  if (placed <= 1) return `🎁 Yangi mijoz — birinchi buyurtma −${percent}%`;
-  return `🔁 Qaytgan mijoz: avval ${placed - 1} ta buyurtma`;
+async function discountLines(order: OrderRequest): Promise<string[]> {
+  const adjustment = order.totals.adjustments?.[0];
+  const lines: string[] = [];
+  if (adjustment?.kind === "promo") lines.push(`🏷 Promokod ${adjustment.code}: −${formatMoney(adjustment.amount, "uz")} (qoʻllandi)`);
+  if (adjustment?.kind === "first_order") {
+    lines.push(`🎁 Birinchi buyurtma −${adjustment.percent}%: −${formatMoney(adjustment.amount, "uz")} (avtomatik qoʻllandi)`);
+  }
+  const placed = await ordersFromPhone(order.customer.phone);
+  if (placed === null) lines.push(`🎁 Birinchi buyurtma boʻlsa −${COMMERCE.discounts.firstOrderPercent}% (tekshiring)`);
+  else if (placed <= 1) {
+    if (adjustment?.kind !== "first_order") lines.push("🎁 Yangi mijoz");
+  } else lines.push(`🔁 Qaytgan mijoz: avval ${placed - 1} ta buyurtma`);
+  return lines;
 }
 
 async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Promise<boolean> {
@@ -57,7 +66,7 @@ async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Prom
     order.totals.discount > 0 ? `🏷 Chegirma: ${formatMoney(order.totals.discount, "uz")}` : "",
     `🚚 Yetkazish: ${formatMoney(order.totals.shipping, "uz")}`,
     `💰 Jami: ${formatMoney(order.totals.total, "uz")}`,
-    await firstOrderLine(order.customer.phone),
+    ...(await discountLines(order)),
     describeAttribution(order.attribution) ? `📣 Manba: ${describeAttribution(order.attribution)}` : "",
   ]
     .filter(Boolean)
@@ -145,11 +154,12 @@ async function clubBotReceipt(orderId: string, initData: string | undefined): Pr
   }
 }
 
-export type OrderError = "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "failed";
+export type OrderError =
+  | "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "invalid_offer" | "payment_unavailable" | "promo_invalid" | "failed";
 
 export async function submitOrder(
   payload: OrderRequest,
-): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string }> {
+): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason }> {
   const hdrs = await headers();
   if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
     return { ok: false, error: "rate_limited" };
@@ -192,9 +202,27 @@ export async function submitOrder(
     const found = products.filter((p): p is NonNullable<typeof p> => p !== null);
     const priced = repriceOrder(request, found, promotions, await offerContext(request, found));
     if (!priced.ok) return { ok: false, error: priced.error, slug: priced.slug };
-    const order = priced.order;
+    let order = priced.order;
 
-    const result = await shopflow.createOrder(order);
+    /*
+      Orders kept in our own database go through the promo transaction: the
+      code is re-validated with its row locked and redeemed with the order,
+      and the first-order discount is decided there too. An external backend
+      or no backend at all takes the order as before, without codes.
+    */
+    let result: OrderResult;
+    if (ORDERS_IN_DB) {
+      const placed = await placeOrder(order, promotions);
+      if (!placed.ok) {
+        if (placed.error === "promo_invalid") return { ok: false, error: "promo_invalid", promoReason: placed.rejection.reason };
+        return { ok: false, error: "failed" };
+      }
+      order = placed.order;
+      result = { ok: true, orderId: placed.orderId };
+    } else {
+      order = { ...order, promoCode: undefined };
+      result = await shopflow.createOrder(order);
+    }
     if (result.ok && result.orderId) {
       /*
         Everything awaited, not fire-and-forget: a serverless function is frozen
@@ -233,7 +261,8 @@ export async function submitOrder(
             })
           : Promise.resolve(),
       ]);
-      return { ...result, total: order.totals.total };
+      const adjustment = order.totals.adjustments?.[0];
+      return { ...result, total: order.totals.total, coupon: adjustment?.kind === "promo" ? adjustment.code : undefined };
     }
     return { ...result, error: result.ok ? undefined : "failed" };
   } catch (err) {

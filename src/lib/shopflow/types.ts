@@ -203,7 +203,16 @@ export interface OrderRequest {
     discount: Money;
     shipping: Money;
     total: Money;
+    /**
+     * Order-level discounts on top of the line offers and promotions, already
+     * included in `discount` and `total`. Set by the server only
+     * (lib/promo/server.ts): at most one — a promo code or the first-order
+     * discount, whichever is larger.
+     */
+    adjustments?: OrderAdjustment[];
   };
+  /** The promo code the customer entered; validated and redeemed on the server. */
+  promoCode?: string;
   locale: Locale;
   attribution?: OrderAttribution;
   /**
@@ -212,6 +221,10 @@ export interface OrderRequest {
    */
   telegram?: string;
 }
+
+export type OrderAdjustment =
+  | { kind: "promo"; code: string; amount: Money }
+  | { kind: "first_order"; percent: number; amount: Money };
 
 export interface OrderResult {
   ok: boolean;

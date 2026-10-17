@@ -69,6 +69,7 @@ export const orders = pgTable("orders", {
   adminNote: text("admin_note"),
   telegramChatId: bigint("telegram_chat_id", { mode: "number" }),
   visitorId: uuid("visitor_id"),
+  promoCode: text("promo_code"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -258,4 +259,37 @@ export const siteSettings = pgTable("site_settings", {
   value: text("value").notNull(),
   updatedBy: integer("updated_by").references(() => adminUsers.id, { onDelete: "set null" }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Promo codes — db/migrations/0007_promo_codes.sql */
+
+export const PROMO_SOURCES = ["manual", "campaign", "flow", "referral", "birthday", "first-order"] as const;
+export type PromoSource = (typeof PROMO_SOURCES)[number];
+
+export const promoCodes = pgTable("promo_codes", {
+  code: text("code").primaryKey(),
+  kind: text("kind").$type<"percent" | "fixed">().notNull(),
+  value: integer("value").notNull(),
+  minSubtotal: integer("min_subtotal"),
+  maxUses: integer("max_uses"),
+  uses: integer("uses").notNull().default(0),
+  perPhoneLimit: integer("per_phone_limit").notNull().default(1),
+  phone9: text("phone9"),
+  productSlugs: jsonb("product_slugs").$type<string[] | null>(),
+  startsAt: timestamp("starts_at", { withTimezone: true }),
+  endsAt: timestamp("ends_at", { withTimezone: true }),
+  active: boolean("active").notNull().default(true),
+  source: text("source").$type<PromoSource>().notNull().default("manual"),
+  campaignId: text("campaign_id"),
+  note: text("note"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const promoRedemptions = pgTable("promo_redemptions", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  code: text("code").notNull(),
+  orderId: bigint("order_id", { mode: "number" }).notNull(),
+  phone9: text("phone9").notNull(),
+  discount: integer("discount").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });

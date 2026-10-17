@@ -227,7 +227,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1514 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1544 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini
@@ -419,13 +419,31 @@ Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
 - Savatda: 2+1 eslatmasi (2 dona bo'lsa), bepul yetkazishgacha ≤150 000 so'm
   qolsa uni yolg'iz yopadigan mahsulotlar (`lib/cart/gap.ts`).
 
+## Promokodlar
+
+To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md#promokodlar)**. Faqat baza bo'lsa
+(`ORDERS_IN_DB`) — kod va redemption bazada sanaladi; bo'lmasa savatda maydon yo'q.
+
+- Qoidalar `lib/promo/rules.ts` (sof): kod taklif/obuna qatoriga qo'shilmaydi,
+  buyurtmaga bitta kod, birinchi buyurtma chegirmasi bilan **qo'shilmaydi —
+  kattasi** (teng — birinchi buyurtma), bepul yetkazish chegirmadan oldin o'lchanadi
+- Buyurtma `lib/promo/server.ts` `placeOrder` orqali: telefon lock + kod `for update`,
+  qayta tekshiruv, redemption, `uses + 1` — bitta tranzaksiya. Kod yaroqsiz bo'lib
+  qolsa `promo_invalid` — savat kodni olib tashlaydi, mijoz qayta yuboradi
+- Chegirma `orders.totals.adjustments` da (+ `orders.promo_code`); Telegram'da
+  `🏷 Promokod` / `🎁 Birinchi buyurtma` qatori; `trackOrder` `coupon` yuboradi
+- Birinchi buyurtma: `site_settings` `discount.firstOrder` (admin `/admin/promocodes`),
+  baza bo'lsa avtomatik, bo'lmasa operator. Matnlar `FirstOrderOffer` rejimiga qarab
+- Avtomatik kod kerak bo'lsa (SMS, referal, tug'ilgan kun) — `issuePromoCode()` /
+  `issuePromoCodeBatch()`; kodni o'zingiz yasamang
+
 ## Pop-up va taymerlar (marketing)
 
 - **Bitta navbat** (`lib/ui/popups.ts`): welcome, exit, quiz — bir vaqtda bitta,
   sessiyada bittadan ko'p emas, har birining kutish muddati (30/3/7 kun), boshqa
   dialog ochiq bo'lsa yoki `/cart`, `/checkout`, `/quiz`, `/account`, `/profile`
   da chiqmaydi. `navigator.webdriver` (botlar, audit) — umuman chiqmaydi.
-- **Welcome** — `COMMERCE.discounts.firstOrderPercent` (−10%, operator qo'llaydi;
+- **Welcome** — birinchi buyurtma chegirmasi (`FirstOrderOffer`: baza bo'lsa avtomatik, bo'lmasa operator qo'llaydi, o'chirilsa karta yo'q;
   Telegram'da `🎁 Yangi mijoz` / `🔁 Qaytgan mijoz` — baza bo'lsa telefon bo'yicha
   `ordersFromPhone`). **Exit** — savat bo'lsa savat + jami, bo'lmasa Telegram.
   **Quiz** — 3-sahifadan keyin burchak kartasi, quiz o'tilgan bo'lsa yo'q.

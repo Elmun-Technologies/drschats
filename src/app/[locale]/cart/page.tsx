@@ -5,6 +5,7 @@ import { buildPageMetadata } from "@/lib/seo/metadata";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { upsellPool } from "@/lib/upsell/pool";
+import { PROMO_CODES_ENABLED, firstOrderOffer } from "@/lib/promo/offer";
 
 // Prices on this page feed the order total; keep them close to the catalogue.
 export const revalidate = 300;
@@ -32,9 +33,10 @@ export default async function CartPage({
   setRequestLocale(locale);
 
   // The pool the modal and the order action use, so every offer shown is one the server accepts.
-  const [recommended, catalogue] = await Promise.all([
+  const [recommended, catalogue, firstOrder] = await Promise.all([
     upsellPool(locale),
     getAllProducts({ locale }),
+    firstOrderOffer(),
   ]);
   // Today's prices, so a cart kept for weeks shows what the order will cost.
   const prices = Object.fromEntries(
@@ -43,7 +45,7 @@ export default async function CartPage({
 
   return (
     <div className="wrap pb-9 pt-1 lg:pb-[72px] lg:pt-5">
-      <CheckoutForm recommended={recommended} prices={prices} />
+      <CheckoutForm recommended={recommended} prices={prices} promoCodes={PROMO_CODES_ENABLED} firstOrder={firstOrder} />
     </div>
   );
 }

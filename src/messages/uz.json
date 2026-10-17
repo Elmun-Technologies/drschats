@@ -702,7 +702,37 @@
       "telegram": "Telegramda yozish",
       "bonusNudge": "Yana 1 ta qoʻshing — 3-si sovgʻa",
       "fillersTitle": "Bittasini qoʻshing — yetkazish bepul boʻladi:",
-      "firstOrderNote": "Birinchi buyurtmangizmi? Operator tasdiqlashda −{percent}% chegirmani qoʻllaydi."
+      "firstOrderNote": "Birinchi buyurtmangizmi? Operator tasdiqlashda −{percent}% chegirmani qoʻllaydi.",
+      "firstOrderAuto": "Birinchi buyurtmaga −{percent}% avtomatik qoʻllanadi — telefon raqamingizni kiriting.",
+      "firstOrderApplied": "Birinchi buyurtmangiz uchun −{percent}% qoʻllandi.",
+      "firstOrderRow": "Birinchi buyurtma −{percent}%",
+      "firstOrderWins": "Birinchi buyurtma chegirmasi kattaroq — u qoʻllandi. Chegirmalar qoʻshilmaydi, promokod keyingi buyurtmaga qoladi.",
+      "promoWins": "Promokod chegirmasi kattaroq — u qoʻllandi. Birinchi buyurtma chegirmasi bilan qoʻshilmaydi.",
+      "promo": {
+        "toggle": "Promokodingiz bormi?",
+        "label": "Promokod",
+        "placeholder": "Masalan, GV-7K3P9Q",
+        "apply": "Qoʻllash",
+        "checking": "Tekshirilmoqda…",
+        "remove": "{code} promokodini olib tashlash",
+        "applied": "{code} promokodi qoʻllandi: −{amount}",
+        "row": "Promokod {code}",
+        "note": "Taklif va obuna narxidagi mahsulotlarga promokod qoʻshilmaydi.",
+        "errors": {
+          "invalid_format": "Promokod notoʻgʻri yozilgan.",
+          "not_found": "Bunday promokod topilmadi.",
+          "inactive": "Bu promokod oʻchirilgan.",
+          "not_started": "Bu promokod hali kuchga kirmagan.",
+          "expired": "Promokod muddati tugagan.",
+          "exhausted": "Bu promokoddan foydalanish limiti tugagan.",
+          "already_used": "Siz bu promokoddan allaqachon foydalangansiz.",
+          "wrong_phone": "Bu promokod boshqa telefon raqami uchun berilgan.",
+          "not_applicable": "Promokod savatdagi mahsulotlarga amal qilmaydi.",
+          "min_subtotal": "Promokod {min} dan boshlab amal qiladi — yana {amount} qoʻshing.",
+          "rate_limited": "Juda koʻp urinish. Birozdan keyin qayta urinib koʻring.",
+          "failed": "Promokodni tekshirib boʻlmadi. Qayta urinib koʻring."
+        }
+      }
     }
   },
   "checkout": {
@@ -788,7 +818,8 @@
       "payment_unavailable": "Bu toʻlov usuli hozir mavjud emas. Yetkazishda toʻlovni tanlang.",
       "failed": "Buyurtma yuborilmadi. Qayta urinib koʻring yoki {phone} raqamiga qoʻngʻiroq qiling.",
       "offerRemoved": "«{name}» uchun taklif chegirmasi endi amal qilmaydi — u savatdan olib tashlandi. Buyurtmani qayta yuboring.",
-      "lineRemoved": "«{name}» hozir sotuvda yoʻq — u savatdan olib tashlandi. Buyurtmani qayta yuboring."
+      "lineRemoved": "«{name}» hozir sotuvda yoʻq — u savatdan olib tashlandi. Buyurtmani qayta yuboring.",
+      "promoRemoved": "Promokod endi amal qilmaydi va olib tashlandi: {reason} Yangi jamini tekshirib, buyurtmani qayta yuboring."
     }
   },
   "footer": {
@@ -1613,7 +1644,9 @@
         ],
         "b2bTitle": "Dorixonalar va hamkorlar uchun",
         "b2bText": "Ulgurji narx, hudud va toʻlov muddati alohida shartnomada kelishiladi. Bu sahifadagi chakana chegirmalar bilan aralashmaydi.",
-        "b2bCta": "Hamkorlik boʻyicha yozish"
+        "b2bCta": "Hamkorlik boʻyicha yozish",
+        "firstNoteAuto": "Promokod kerak emas — chegirma savatda telefon raqamingiz boʻyicha avtomatik qoʻllanadi.",
+        "howAutoText": "Obuna va birinchi buyurtma chegirmasi savatchada avtomatik koʻrinadi. Promokodingiz boʻlsa, savatda kiriting — kattaroq chegirma qoʻllanadi."
       },
       "about": {
         "lead": "Vitaminlar va biologik faol qoʻshimchalarni Oʻzbekistonga rasmiy import qiluvchi va yetkazib beruvchi.",
@@ -2284,7 +2317,8 @@
       "perk3": "Yetkazib berishda naqd pul bilan toʻlov",
       "cta": "Katalogni koʻrish",
       "quiz": "2 daqiqalik vitamin testi",
-      "note": "Har bir mijoz uchun bir marta."
+      "note": "Har bir mijoz uchun bir marta.",
+      "bodyAuto": "Go Vitaʼda birinchi marta buyurtma berayapsizmi? Chegirma savatda telefon raqamingiz boʻyicha avtomatik qoʻllanadi — kod kerak emas."
     },
     "quiz": {
       "title": "Qaysi vitamin sizga kerak?",

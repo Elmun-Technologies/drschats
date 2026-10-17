@@ -226,6 +226,7 @@ Deploy qilgandan keyin:
 | imzolangan havolalar | `src/lib/email/token.ts` |
 | yuborish | `src/lib/email/send.ts` |
 | obuna shartlari | `src/lib/subscription/plans.ts` |
+| promokodlar va `issuePromoCode()` (avtomatik xabar, referal, tugʻilgan kun kodi shu yerdan olinadi) | `src/lib/promo/server.ts`; qoidalar — [`ADMIN.md`](ADMIN.md#promokodlar) |
 | cron | `src/app/api/cron/marketing/route.ts` |
 | navbat (kim, qachon) | `backend/app/routers/marketing.py` |
 | profil API | `backend/app/routers/profile.py` |
