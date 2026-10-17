@@ -80,7 +80,7 @@ export async function BlogIndex({
       {featured ? (
         <Link href={`/blog/${featured.slug}`} className="group grid overflow-hidden rounded-[24px] bg-tile lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:rounded-[28px]">
           <span className="relative block aspect-[16/10] lg:aspect-auto lg:min-h-[400px]">
-            <Image src={featured.image} alt="" fill priority sizes="(max-width: 1024px) 100vw, 660px" className="object-cover" />
+            <Image src={featured.image} alt="" fill priority sizes="(max-width: 1023px) 100vw, 660px" className="object-cover" />
           </span>
           <span className="flex flex-col items-start justify-center gap-3 p-5 lg:gap-4 lg:p-10">
             <span className="flex flex-wrap items-center gap-x-3 gap-y-1.5 text-[13px] text-muted">
@@ -129,7 +129,7 @@ export async function ArticleTile({ article, locale }: { article: Article; local
   return (
     <Link href={`/blog/${article.slug}`} className="group flex h-full flex-col gap-3">
       <span className="relative block aspect-[3/2] overflow-hidden rounded-[20px] bg-tile">
-        <Image src={article.image} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 400px" className="object-cover" />
+        <Image src={article.image} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1023px) 50vw, 400px" className="object-cover" />
       </span>
       <span className="flex items-center justify-between gap-3">
         <span className="inline-flex h-[26px] items-center rounded-pill bg-chip-strong px-2.5 text-[13px] font-semibold">#{article.category}</span>

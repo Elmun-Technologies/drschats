@@ -20,12 +20,12 @@ export default function AdminContentStudioPage() {
       {!ready ? (
         <Card>
           <Notice>
-            CMS hozircha sozlanmagan. Sanity project ID kiriting; production’da qoʻshimcha ravishda <code className="rounded-sm bg-white px-1.5 py-0.5">SANITY_STUDIO_ENABLED=on</code> talab qilinadi.
+            CMS hozircha sozlanmagan. Sanity project ID kiriting; productionʼda qoʻshimcha ravishda <code className="rounded-sm bg-white px-1.5 py-0.5">SANITY_STUDIO_ENABLED=on</code> talab qilinadi.
           </Notice>
-          <p className="mt-4 text-[12px] leading-5 text-muted">Kontent sahifasi maʼlumotlarni ichki statik maqolalardan ko‘rsatishda davom etadi. Studio sozlanmaguncha bu yerda nashr yoki tahrir amali bajarilmaydi.</p>
+          <p className="mt-4 text-[14px] leading-5 text-muted">Kontent sahifasi maʼlumotlarni ichki statik maqolalardan koʻrsatishda davom etadi. Studio sozlanmaguncha bu yerda nashr yoki tahrir amali bajarilmaydi.</p>
         </Card>
       ) : (
-        <div className="h-[calc(100vh-230px)] min-h-[560px] overflow-hidden rounded-md border border-line bg-white">
+        <div className="h-[calc(100vh-230px)] min-h-[560px] overflow-hidden rounded-[20px] border border-line bg-white">
           <AdminSanityStudio />
         </div>
       )}

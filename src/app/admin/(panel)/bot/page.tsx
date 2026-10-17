@@ -1,6 +1,6 @@
 import { ActionForm } from "@/components/admin/ActionForm";
 import { BotTabs } from "@/components/admin/BotTabs";
-import { Card, Field, Notice, PageHeader, inputClass, textareaClass } from "@/components/admin/ui";
+import { Card, Field, Metric, Notice, PageHeader, inputClass, textareaClass } from "@/components/admin/ui";
 import { broadcastAction, saveClub } from "@/app/admin/_actions/bot";
 import { MIN_BOT_KEY_LENGTH } from "@/lib/bot/auth";
 import { clubOverview, getClubConfig } from "@/lib/bot/store";
@@ -26,8 +26,8 @@ export default async function AdminBotPage() {
       <BotTabs active="/admin/bot" />
       {!keyReady && (
         <div className="mb-4">
-          <Notice tone="error">
-            Bot ulanmagan: <code>BOT_API_KEY</code> ({MIN_BOT_KEY_LENGTH}+ belgi) oʻrnatilmagan. Qadamlar — docs/BOT-ADMIN.md.
+          <Notice>
+            Bot hali ulanmagan: <code>BOT_API_KEY</code> ({MIN_BOT_KEY_LENGTH}+ belgi) oʻrnatilmagan. Qadamlar — docs/BOT-ADMIN.md.
           </Notice>
         </div>
       )}
@@ -38,21 +38,15 @@ export default async function AdminBotPage() {
           </Notice>
         </div>
       )}
-      <ul className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
-        {tiles.map((t) => (
-          <li key={t.label} className="rounded-md bg-bg p-4">
-            <p className="text-[13px] text-muted">{t.label}</p>
-            <p className="mt-1 text-[26px] font-bold leading-8">{t.value}</p>
-            {t.hint && <p className="mt-1 text-[13px] text-muted">{t.hint}</p>}
-          </li>
-        ))}
-      </ul>
+      <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
+        {tiles.map((t) => <Metric key={t.label} label={t.label} value={t.value} hint={t.hint} />)}
+      </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Card title="Sozlamalar">
           <ActionForm action={saveClub} className="grid gap-4">
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
-              <input type="checkbox" name="enabled" defaultChecked={club.enabled} className="h-5 w-5 accent-forest" />
+              <input type="checkbox" name="enabled" defaultChecked={club.enabled} className="h-5 w-5 accent-ink" />
               Buyurtma holati xabarlari yoqilgan
             </label>
             <Field label="Klub nomi">
@@ -79,7 +73,7 @@ export default async function AdminBotPage() {
               <textarea name="text" required maxLength={1000} className={textareaClass} />
             </Field>
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
-              <input type="checkbox" name="confirm" required className="h-5 w-5 accent-forest" />
+              <input type="checkbox" name="confirm" required className="h-5 w-5 accent-ink" />
               Hammaga yuborishni tasdiqlayman
             </label>
           </ActionForm>

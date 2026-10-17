@@ -221,7 +221,7 @@ export function QuizFlow({
                         src={photo.src}
                         alt=""
                         fill
-                        sizes="(max-width: 1024px) 64px, 330px"
+                        sizes="(max-width: 1023px) 64px, 330px"
                         className="object-cover"
                         style={{ objectPosition: photo.position }}
                       />

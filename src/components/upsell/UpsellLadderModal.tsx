@@ -176,8 +176,8 @@ export function UpsellLadderModal() {
                   )}
 
                   {/* Price */}
-                  <div className="mt-2 flex items-baseline gap-2">
-                    <span className="text-sm text-muted line-through">
+                  <div className="mt-2 flex flex-wrap items-baseline gap-x-2 gap-y-1">
+                    <span className="whitespace-nowrap text-sm text-muted line-through">
                       {formatMoney(step.product.price, locale)}
                     </span>
                     {isFreeGift ? (
@@ -186,7 +186,7 @@ export function UpsellLadderModal() {
                       </span>
                     ) : (
                       <>
-                        <span className="text-base font-bold text-ink">
+                        <span className="whitespace-nowrap text-base font-bold text-ink">
                           {formatMoney(step.discountedPrice, locale)}
                         </span>
                         <span className="rounded border border-line bg-tile px-1.5 py-0.5 text-xs font-bold text-ink-2">
@@ -217,10 +217,10 @@ export function UpsellLadderModal() {
               )}
 
               {/* CTA buttons */}
-              <div className="flex gap-3 px-5 pb-5">
+              <div className="flex flex-wrap gap-3 px-5 pb-5">
                 <button
                   onClick={handleAccept}
-                  className={`flex-1 rounded-full py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
+                  className={`min-w-fit flex-1 whitespace-nowrap rounded-full px-4 py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${
                     isFreeGift
                       ? "bg-ink text-white hover:brightness-95"
                       : "bg-ink text-white hover:bg-black"
@@ -230,7 +230,7 @@ export function UpsellLadderModal() {
                 </button>
                 <button
                   onClick={() => { trackUpsellSkip(currentStep + 1, step.product.id); skipStep(); }}
-                  className="rounded-full border border-line px-4 py-3 text-sm text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
+                  className="flex-1 whitespace-nowrap rounded-full border border-line px-4 py-3 text-sm text-ink-2 transition-colors hover:border-line-strong hover:text-ink"
                 >
                   {t("skip")}
                 </button>

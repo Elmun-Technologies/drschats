@@ -24,24 +24,32 @@ import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
 import { toMenuDeal } from "@/components/layout/menu-deal";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
 import { RouteAnalytics } from "@/components/analytics/RouteAnalytics";
+import { CartJourney } from "@/components/analytics/CartJourney";
+import { getPublicSettings } from "@/lib/integrations/site-settings";
 
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
 
 /*
-  Search Console / Yandex.Webmaster ownership tokens. Set in the deploy's env;
-  an unset one emits nothing rather than an empty tag.
+  Search Console / Yandex.Webmaster / Bing ownership tokens, entered in
+  /admin/integrations (the deploy env still works as a fallback). An unset
+  one emits nothing rather than an empty tag.
 */
-const verification: Metadata["verification"] = {
-  ...(process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : {}),
-  ...(process.env.YANDEX_VERIFICATION ? { yandex: process.env.YANDEX_VERIFICATION } : {}),
-};
-
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  verification,
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const saved = await getPublicSettings();
+  const google = saved["verify.google"] ?? process.env.GOOGLE_SITE_VERIFICATION;
+  const yandex = saved["verify.yandex"] ?? process.env.YANDEX_VERIFICATION;
+  const bing = saved["verify.bing"];
+  return {
+    metadataBase: new URL(SITE_URL),
+    verification: {
+      ...(google ? { google } : {}),
+      ...(yandex ? { yandex } : {}),
+      ...(bing ? { other: { "msvalidate.01": bing } } : {}),
+    },
+  };
+}
 
 export default async function LocaleLayout({
   children,
@@ -106,6 +114,7 @@ export default async function LocaleLayout({
           </PromotionsProvider>
         </NextIntlClientProvider>
         <Analytics />
+        <CartJourney />
         {/* useSearchParams: its own Suspense boundary so static pages stay static. */}
         <Suspense fallback={null}>
           <RouteAnalytics />

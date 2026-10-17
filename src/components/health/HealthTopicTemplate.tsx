@@ -141,7 +141,7 @@ export async function HealthTopicTemplate({
             <div
               className={cn(
                 "grid grid-cols-2 gap-4",
-                shown.length >= 4 ? "lg:grid-cols-4" : shown.length === 3 ? "lg:grid-cols-3" : "sm:max-w-xl lg:grid-cols-2",
+                shown.length >= 4 ? "md:grid-cols-3 lg:grid-cols-4" : shown.length === 3 ? "md:grid-cols-3" : "sm:max-w-xl lg:grid-cols-2",
               )}
             >
               {shown.map((p, i) => (

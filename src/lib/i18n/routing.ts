@@ -6,7 +6,7 @@ export const defaultLocale: Locale = "uz";
 
 export const localeNames: Record<Locale, string> = {
   ru: "Русский",
-  uz: "O’zbekcha",
+  uz: "Oʻzbekcha",
 };
 
 /** BCP-47 tags for <html lang> and hreflang alternates. */

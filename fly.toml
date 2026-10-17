@@ -10,6 +10,8 @@ primary_region = "fra"
 [build.args]
   NEXT_PUBLIC_SITE_URL = "https://www.govita.uz"
   CSP_MODE = "report-only"
+  # GA4 / GTM / Metrika / Meta Pixel IDs are entered in /admin/integrations.
+  ADMIN_ANALYTICS_CSP = "on"
   # NEXT_PUBLIC_GTM_ID = "GTM-XXXXXXX"
   # NEXT_PUBLIC_GA4_ID = "G-XXXXXXXXXX"
   # NEXT_PUBLIC_META_PIXEL_ID = ""

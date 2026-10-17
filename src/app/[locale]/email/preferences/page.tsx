@@ -6,6 +6,7 @@ import {
   EmailPreferencesView,
   type PreferenceStatus,
 } from "@/components/email/EmailPreferencesView";
+import { firstParam } from "@/lib/search-params";
 
 export const dynamic = "force-dynamic";
 
@@ -42,13 +43,13 @@ export default async function EmailPreferencesPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ status?: string; token?: string; email?: string }>;
+  searchParams: Promise<{ status?: string | string[]; token?: string | string[] }>;
 }) {
   const { locale } = await params;
   const query = await searchParams;
   setRequestLocale(locale);
 
-  const status = STATUSES.find((s) => s === query.status) ?? null;
+  const status = STATUSES.find((s) => s === firstParam(query.status)) ?? null;
 
-  return <EmailPreferencesView status={status} token={query.token} email={query.email} />;
+  return <EmailPreferencesView status={status} token={firstParam(query.token)} />;
 }

@@ -55,3 +55,6 @@ backend/*.db
 
 /public/products/inbox/
 !/public/products/inbox/.gitkeep
+
+# Agent worktrees (local checkouts)
+.claude/worktrees/

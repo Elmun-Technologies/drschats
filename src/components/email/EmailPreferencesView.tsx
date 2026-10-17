@@ -21,7 +21,6 @@ export type PreferenceStatus =
 interface Props {
   status: PreferenceStatus;
   token?: string;
-  email?: string;
 }
 
 type Busy = "idle" | "working" | "done" | "error";
@@ -34,12 +33,12 @@ type Busy = "idle" | "working" | "done" | "error";
   they are the same moment: they clicked something in an email and want to know
   what happened, with the controls to change it right there.
 */
-export function EmailPreferencesView({ status, token, email }: Props) {
+export function EmailPreferencesView({ status, token }: Props) {
   const t = useTranslations("emailPreferences");
   const locale = useLocale() as Locale;
   const setConsent = useProfile((s) => s.setConsent);
   const [busy, setBusy] = useState<Busy>("idle");
-  const [resubscribeEmail, setResubscribeEmail] = useState(email ?? "");
+  const [resubscribeEmail, setResubscribeEmail] = useState("");
 
   async function setSubscribed(subscribed: boolean) {
     if (!token) return;

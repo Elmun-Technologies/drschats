@@ -1,6 +1,7 @@
 import { EMPTY_PRODUCT, listBrands, listCategories } from "@/lib/admin/queries";
 import { ProductForm } from "@/components/admin/ProductForm";
-import { PageHeader } from "@/components/admin/ui";
+import Link from "next/link";
+import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { isStorageConfigured } from "@/lib/admin/storage";
 
 export const metadata = { title: "Yangi mahsulot" };
@@ -9,7 +10,7 @@ export default async function NewProductPage() {
   const [cats, brandRows] = await Promise.all([listCategories(), listBrands()]);
   return (
     <>
-      <PageHeader title="Yangi mahsulot" />
+      <PageHeader eyebrow="Mahsulotlar" title="Yangi mahsulot" lead="Saqlangan zahoti saytda chiqadi. Avval yashirin saqlamoqchi boʻlsangiz, «Koʻrinishi»ni «Sotuvdan olingan» qiling." actions={<Link href="/admin/products" className={secondaryButtonClass}>← Roʻyxat</Link>} />
       <ProductForm
         values={EMPTY_PRODUCT}
         categories={cats.map((c) => ({ slug: c.slug, name: c.name.uz }))}

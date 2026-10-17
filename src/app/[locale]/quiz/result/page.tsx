@@ -6,6 +6,7 @@ import { getQuizQuestions } from "@/lib/quiz/questions";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
 import { QuizPlanView } from "@/components/quiz/QuizPlanView";
+import { firstParam } from "@/lib/search-params";
 
 export const dynamic = "force-dynamic";
 
@@ -33,12 +34,12 @@ export default async function QuizResultPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ a?: string }>;
+  searchParams: Promise<{ a?: string | string[] }>;
 }) {
   const [{ locale }, { a }] = await Promise.all([params, searchParams]);
   setRequestLocale(locale);
 
-  const answers = decodeAnswers(a);
+  const answers = decodeAnswers(firstParam(a));
   const [plan, reviewerResult] = await Promise.all([
     buildQuizPlan(answers, locale),
     reviewerForKey("quiz", locale),

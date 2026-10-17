@@ -12,6 +12,7 @@ import {
   type DueMessage,
 } from "@/lib/marketing/api";
 import { notifyCustomer, notifyOperator } from "@/lib/notifications/operator";
+import { matchesSecret } from "@/lib/security/safe-equal";
 
 /*
   The daily send.
@@ -55,7 +56,7 @@ function authorised(request: NextRequest): boolean {
   // unauthenticated endpoint that sends email to real people is not a default.
   if (!secret) return false;
   const header = request.headers.get("authorization");
-  return header === `Bearer ${secret}`;
+  return matchesSecret(header, `Bearer ${secret}`);
 }
 
 /**

@@ -121,7 +121,7 @@ export async function ProgramTemplate({
             <div
               className={cn(
                 "mt-6 grid grid-cols-2 gap-4",
-                products.length >= 4 ? "lg:grid-cols-4" : products.length === 3 ? "lg:grid-cols-3" : "sm:max-w-xl lg:grid-cols-2",
+                products.length >= 4 ? "md:grid-cols-3 lg:grid-cols-4" : products.length === 3 ? "md:grid-cols-3" : "sm:max-w-xl lg:grid-cols-2",
               )}
             >
               {products.map((p, i) => (

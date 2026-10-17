@@ -207,7 +207,15 @@ export function CheckoutForm({
       telegram: telegramInitData(),
     };
 
-    const res = await submitOrder(payload);
+    let res: Awaited<ReturnType<typeof submitOrder>>;
+    try {
+      res = await submitOrder(payload);
+    } catch {
+      // A dropped connection must not leave both submit buttons disabled for good.
+      setServerError(te("failed", { phone: BRAND.contact.phone }));
+      setSubmitting(false);
+      return;
+    }
     if (res.ok && res.orderId) {
       trackOrder(res.orderId, { total: res.total ?? totals.total, shipping: totals.shipping }, analyticsItems());
       // Before clear(): the reorder reminders and the "already bought" signal read this history.

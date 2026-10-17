@@ -358,4 +358,12 @@ describe("next.config.ts shares the image host list", () => {
     expect(framingHeaders({ ...bot, CSP_MODE: "enforce" })).toEqual([]);
     expect(parse(buildContentSecurityPolicy(bot))["frame-ancestors"]).toEqual(["'self'", "https://web.telegram.org"]);
   });
+
+  it("lets Metrika's Webvisor frame the site only when Metrika can run", () => {
+    const value = framingHeaders({ ADMIN_ANALYTICS_CSP: "on" })[0]?.value ?? "";
+    expect(value).toContain("https://metrika.yandex.ru");
+    expect(value).toContain("https://*.webvisor.com");
+    expect(framingHeaders({ NEXT_PUBLIC_YANDEX_METRIKA_ID: "123" })[0]?.value).toContain("https://metrika.yandex.ru");
+    expect(framingHeaders(EMPTY)).toEqual([{ key: "X-Frame-Options", value: "SAMEORIGIN" }]);
+  });
 });

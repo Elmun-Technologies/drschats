@@ -82,7 +82,7 @@ export const useCart = create<CartState>()(
         set((state) => {
           const gone = state.lines.find((l) => l.lineId === lineId);
           if (gone) trackRemoveFromCart(itemOf(gone, gone.quantity, gone.upsellDiscountPercent));
-          return { lines: settle(state.lines.filter((l) => l.lineId !== lineId)) };
+          return { lines: settle(state.lines.filter((l) => l.lineId !== lineId)), _savedAt: Date.now() };
         }),
       setQuantity: (lineId, quantity) =>
         set((state) => {
@@ -93,11 +93,12 @@ export const useCart = create<CartState>()(
             trackAddToCart(itemOf(line, quantity - line.quantity, line.upsellDiscountPercent));
           }
           return {
-          lines: settle(
-            quantity <= 0
-              ? state.lines.filter((l) => l.lineId !== lineId)
-              : state.lines.map((l) => (l.lineId === lineId ? { ...l, quantity } : l)),
-          ),
+            lines: settle(
+              quantity <= 0
+                ? state.lines.filter((l) => l.lineId !== lineId)
+                : state.lines.map((l) => (l.lineId === lineId ? { ...l, quantity } : l)),
+            ),
+            _savedAt: Date.now(),
           };
         }),
       syncPrices: (current) =>
@@ -119,7 +120,9 @@ export const useCart = create<CartState>()(
             changed = true;
             return { ...l, price: now.price, oldPrice: now.oldPrice, saleEndsAt: now.saleEndsAt, soldOut: soldOut || undefined };
           });
-          return changed ? { lines: settle(lines) } : state;
+          // Opening the cart is activity: the thirty days count from here.
+          const _savedAt = state.lines.length > 0 ? Date.now() : state._savedAt;
+          return changed ? { lines: settle(lines), _savedAt } : { _savedAt };
         }),
       expireSales: () =>
         set((state) => {
@@ -135,7 +138,7 @@ export const useCart = create<CartState>()(
       name: STORAGE_KEYS.cart,
       partialize: (state) => ({ lines: state.lines, _savedAt: state._savedAt }),
       merge: (persisted, current) => {
-        const p = persisted as { lines: CartLine[]; _savedAt: number };
+        const p = (persisted ?? {}) as Partial<{ lines: CartLine[]; _savedAt: number }>;
         if (p._savedAt && Date.now() - p._savedAt > CART_TTL_MS) {
           return { ...current, lines: [], _savedAt: 0 };
         }

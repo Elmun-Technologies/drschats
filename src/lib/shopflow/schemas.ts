@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { MAX_LINE_QTY } from "@/lib/cart/pricing";
+import { isIntervalDays } from "@/lib/subscription/plans";
 
 /*
   Runtime validation. The mock client returns data that satisfies these, and
@@ -126,7 +127,7 @@ export const orderRequestSchema = z.object({
         quantity: z.number().int().positive().max(MAX_LINE_QTY),
         unitPrice: z.number().nonnegative(),
         subscription: z
-          .object({ intervalDays: z.number().int().min(7).max(365) })
+          .object({ intervalDays: z.number().int().refine(isIntervalDays) })
           .optional(),
         upsellDiscountPercent: z.number().int().min(1).max(100).optional(),
       }),

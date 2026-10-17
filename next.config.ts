@@ -40,6 +40,8 @@ const nextConfig: NextConfig = {
       still renders that segment's page.
     */
     globalNotFound: true,
+    // The admin uploads product photos up to 5 MB through a server action; the default limit is 1 MB.
+    serverActions: { bodySizeLimit: "6mb" },
   },
   async headers() {
     const routes = [

@@ -85,6 +85,14 @@ describe("URL round trip", () => {
     expect(parseFilters({ origin: "Shveytsariya" }).origins).toEqual(["Shveytsariya"]);
   });
 
+  it("survives repeated query parameters", () => {
+    const f = parseFilters({ brand: ["a", "b"], goal: ["x", "y"], min: ["10", "20"], stock: ["1", "0"] });
+    expect(f.brands).toEqual(["a", "b"]);
+    expect(f.goal).toBe("x");
+    expect(f.min).toBe(10);
+    expect(f.stock).toBe(true);
+  });
+
   it("counts a price range as one active filter", () => {
     expect(activeFilterCount({ ...EMPTY_FILTERS, min: 1, max: 2, sale: true })).toBe(2);
   });

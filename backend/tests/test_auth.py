@@ -102,6 +102,23 @@ async def test_code_dies_after_the_attempt_cap(client, db, telegram_stub):
     assert res.status_code == 401
 
 
+async def test_parallel_guesses_cannot_exceed_the_attempt_cap(client, db, telegram_stub):
+    import asyncio
+
+    await link_phone(db)
+    await request_code(client)
+    code = telegram_stub.last_code
+
+    await asyncio.gather(
+        *(client.post("/api/v1/auth/otp/verify", json={"phone": PHONE, "code": "000000"}) for _ in range(10))
+    )
+
+    record = await last_code_for(db)
+    assert record.attempts <= 5
+    res = await client.post("/api/v1/auth/otp/verify", json={"phone": PHONE, "code": code})
+    assert res.status_code == 401
+
+
 async def test_expired_code_is_rejected(client, db, telegram_stub, monkeypatch):
     from app.config import get_settings
 

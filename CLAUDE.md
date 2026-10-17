@@ -10,7 +10,9 @@ katalog o'sha yo'lning oxirida turadi.
 
 - **Stack**: Next.js 15, TypeScript, Tailwind CSS v4, Framer Motion, Zustand, next-intl, Zod, react-hook-form
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
-- **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io). Mahsulot, kategoriya, brend, buyurtmalar, administratorlar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi
+- **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io), sayt V3 uslubida. Analitika, mijozlar yo'li (birinchi tomon kuzatuv), voronka, segmentlar va retarget (CSV/Meta/Google eksport, Telegram kampaniya), aksiyalar (bazada), integratsiyalar markazi, katalog, buyurtmalar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi. Birinchi ishga tushishda o'rnatilgan katalog bazaga o'zi ko'chadi (`lib/admin/seed.ts`)
+- **Saytning o'z kuzatuvi**: `lib/journey/` + `POST /api/t` (`gv_vid` cookie, `visitors`/`visitor_events`). `lib/analytics/events.ts` dagi har bir hodisa u yerga ham yoziladi — **yangi hodisani faqat `events.ts` orqali qo'shing**. Buyurtma `linkOrderToVisitor` bilan tashrif buyuruvchiga bog'lanadi
+- **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
 - **Akkaunt backend**: `backend/` — FastAPI + SQLAlchemy + Alembic (auth, orders). **Deploy qilinmagan**; `NEXT_PUBLIC_API_URL` bo'sh bo'lsa `/account` `notFound()` qaytaradi va header'da havola chizilmaydi. Demo kabinet kerak bo'lsa `NEXT_PUBLIC_ACCOUNT_DEMO=on` (`src/lib/config/demo.ts`)
@@ -225,7 +227,7 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1512 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1514 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini
@@ -253,7 +255,7 @@ To'liq holat, qoidalar va off-page reja: **[`docs/SEO.md`](docs/SEO.md)**.
 - **Kategoriya matnlari**: `src/lib/content/category-seo.ts` (tibbiy va'dasiz, test bilan)
 - **hreflang**: `buildAlternates` (x-default = uz); `og:locale` `uz_UZ`/`ru_RU`
 - **robots.txt**: `/cart`, `/checkout`, `/studio` — disallow
-- **Verifikatsiya**: `GOOGLE_SITE_VERIFICATION`, `YANDEX_VERIFICATION`
+- **Verifikatsiya**: `/admin/integrations` (Google, Yandex, Bing) — `site_settings`; env (`GOOGLE_SITE_VERIFICATION`, `YANDEX_VERIFICATION`) zaxira
 
 ## Analytics
 
@@ -662,6 +664,8 @@ Tab bar va PDP/savatdagi xarid paneli — **`position: fixed`**. Hech qachon `po
 - **Client komponent server modulni import qilmasin.** `shopflow/index.ts` endi `postgres` ni tortadi; client fayl `lib/quiz/recommend` kabi loader'dan sof funksiya olsa, build `Can't resolve 'net'` bilan yiqiladi. Sof qismni alohida modulga chiqaring (`quiz/answers-codec.ts`)
 - **Mahsulot rasmi/brendi/birligi** — `cutoutOf(p)`, `brandOf(p)`, `unitOf(p)` (`lib/catalog/product-facts.ts`); `productCutout(p.slug)` to'g'ridan-to'g'ri chaqirilmaydi, aks holda admin'da qo'shilgan mahsulotda rasm chiqmaydi
 - **Bazaga yangi ustun** — `db/migrations/000N_*.sql` (yangi fayl, eskisini o'zgartirmang) + `src/lib/db/schema.ts`
+- **Xom `sql` ichida `Date` uzatmang** — `prepare: false` bilan postgres-js turini aniqlay olmaydi va so'rov yiqiladi; ISO matn + `::timestamptz` (`crm.ts` dagi `ts()`)
+- **Admin sahifalari** `components/admin/ui.tsx` dagi qismlardan (`Card`, `Metric`, `ChipNav`, `Pill`, `BarList`, jadval klasslari) quriladi; matn ≥ 12px, tugma `ink`, hex rang yozilmaydi
 
 ## Sifat darajasi — nolda turadi
 

@@ -97,7 +97,7 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
           <h2 className="text-xl font-bold lg:text-2xl">{t("emptyTitle")}</h2>
           <p className="max-w-[520px] text-base leading-6 text-ink-2">{t("emptyText", { limit: COMPARE_LIMIT })}</p>
           <Link href="/products" className={buttonVariants("primary", "lg")}>
-            {ts("show")}
+            {common("notFoundShop")}
           </Link>
         </div>
       ) : (

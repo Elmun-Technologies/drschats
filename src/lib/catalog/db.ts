@@ -1,21 +1,51 @@
 import { unstable_cache } from "next/cache";
 import { asc, count, sql } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db/client";
-import { brands, categories, orders, products } from "@/lib/db/schema";
-import { builtInCatalog, type RawProduct } from "@/lib/shopflow/mock";
+import { brands, categories, orders, products, promotions } from "@/lib/db/schema";
+import { builtInCatalog, type RawProduct, type RawPromotion } from "@/lib/shopflow/mock";
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
 import type { CatalogData } from "./engine";
+import { createCircuit } from "./circuit";
 
 export const CATALOG_TAG = "catalog";
 
 const EMPTY_REVIEWS = { uz: [], ru: [] };
 
+/*
+  Admin-managed promotions. With no rows yet the built-in ones apply; once the
+  team has any row, the table is the whole truth — an empty active set means
+  "no promotions right now", not "fall back to code".
+*/
+async function readPromotions(): Promise<RawPromotion[]> {
+  let rows: (typeof promotions.$inferSelect)[];
+  try {
+    rows = await getDb().select().from(promotions).orderBy(asc(promotions.sort), asc(promotions.createdAt));
+  } catch (err) {
+    console.error("[catalog] promotions read failed — using the built-in ones:", (err as Error).message);
+    return builtInCatalog.promotions;
+  }
+  if (rows.length === 0) return builtInCatalog.promotions;
+  const now = Date.now();
+  return rows
+    .filter((r) => r.active && (!r.startsAt || r.startsAt.getTime() <= now) && (!r.endsAt || r.endsAt.getTime() > now))
+    .map((r) => ({
+      id: r.id,
+      type: r.type,
+      title: r.title,
+      description: r.description,
+      ...(r.percent != null ? { percent: r.percent } : {}),
+      ...(r.threshold != null ? { threshold: r.threshold } : {}),
+      ...(r.productSlugs && r.productSlugs.length > 0 ? { productSlugs: r.productSlugs } : {}),
+    }));
+}
+
 async function readCatalog(): Promise<CatalogData> {
   const db = getDb();
-  const [cats, brandRows, rows] = await Promise.all([
+  const [cats, brandRows, rows, promos] = await Promise.all([
     db.select().from(categories).orderBy(asc(categories.sort), asc(categories.slug)),
     db.select().from(brands).orderBy(asc(brands.sort), asc(brands.name)),
     db.select().from(products).orderBy(asc(products.sort), asc(products.createdAt)),
+    readPromotions(),
   ]);
   const categoryId = new Map(cats.map((c) => [c.slug, c.id]));
   return {
@@ -50,28 +80,36 @@ async function readCatalog(): Promise<CatalogData> {
         brandSlug: p.brandSlug,
       }),
     ),
-    // Promotions are not admin-managed yet; the site-wide ones stay in code.
-    promotions: builtInCatalog.promotions,
+    promotions: promos,
   };
 }
 
-const cachedCatalog = unstable_cache(readCatalog, ["catalog-v1"], { tags: [CATALOG_TAG], revalidate: 300 });
+const cachedCatalog = unstable_cache(readCatalog, ["catalog-v2"], { tags: [CATALOG_TAG], revalidate: 60 });
 
 /*
   Never an empty shop. If the database cannot be read, or holds no products
   yet (before the first import from the admin panel), the built-in catalogue
   is served and the failure is logged — the 2026-10 outage was exactly a
   catalogue source that answered "nothing" and a site that believed it.
+
+  After a failed read the database is left alone for 30 seconds: during an
+  outage every request would otherwise wait out the connection timeout again
+  before falling back.
 */
+const dbCircuit = createCircuit(30_000);
+
 export async function loadDbCatalog(): Promise<CatalogData> {
+  if (dbCircuit.isOpen()) return builtInCatalog;
   try {
     const data = await cachedCatalog();
+    dbCircuit.succeed();
     if (data.products.length === 0) {
       console.warn("[catalog] database has no products yet — serving the built-in catalogue");
       return builtInCatalog;
     }
     return data;
   } catch (err) {
+    dbCircuit.fail();
     console.error("[catalog] database read failed — serving the built-in catalogue:", (err as Error).message);
     return builtInCatalog;
   }

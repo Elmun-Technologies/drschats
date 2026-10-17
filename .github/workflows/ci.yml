@@ -44,8 +44,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          SHOPFLOW_MODE: mock
 
   # The quality table in CLAUDE.md claims a row of zeros. This is what keeps
   # that claim true. Measured against a production build: a dev build has
@@ -69,8 +67,6 @@ jobs:
 
       - name: Build
         run: npm run build
-        env:
-          SHOPFLOW_MODE: mock
 
       - name: Serve and audit
         run: |
@@ -78,7 +74,6 @@ jobs:
           npx --yes wait-on http://localhost:3000/uz --timeout 90000
           npm run audit
         env:
-          SHOPFLOW_MODE: mock
           BASE_URL: http://localhost:3000
 
   # Sign-in codes, their rate limits and the bot webhook are places where a
@@ -101,6 +96,29 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
+
+      - name: Tests
+        run: python -m pytest -q
+
+  # The Telegram club bot ships from this repository too (fly-deploy.yml), so
+  # its tests gate the deploy like the site's.
+  bot:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: govita-vip-bot
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: govita-vip-bot/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt pytest
 
       - name: Tests
         run: python -m pytest -q

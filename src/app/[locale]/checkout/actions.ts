@@ -1,6 +1,6 @@
 "use server";
 
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { ORDERS_IN_DB, SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
 import { verifyInitData } from "@/lib/bot/webapp";
 import { announceOrderStatus, attachOrderChat } from "@/lib/bot/store";
@@ -8,6 +8,7 @@ import { isLiveDeployment } from "@/lib/config/live";
 import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
 import { repriceOrder, type OfferContext } from "@/lib/cart/reprice";
+import { lineTotal } from "@/lib/cart/pricing";
 import { getPrograms } from "@/lib/content/programs";
 import { isOnlineProviderAvailable } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
@@ -21,6 +22,7 @@ import { upsellPool } from "@/lib/upsell/pool";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { ordersFromPhone } from "@/lib/catalog/db";
 import { COMMERCE } from "@/lib/config/commerce";
+import { linkOrderToVisitor, visitorIdFrom, VISITOR_COOKIE } from "@/lib/journey/collect";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
@@ -87,7 +89,7 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
       items: order.items.map((item) => ({
         name: `${item.name} × ${item.quantity}`,
         url: `${siteOrigin()}/${order.locale}/product/${item.slug}`,
-        price: formatMoney(item.unitPrice * item.quantity, order.locale),
+        price: formatMoney(lineTotal({ price: item.unitPrice, quantity: item.quantity, upsellDiscountPercent: item.upsellDiscountPercent }), order.locale),
       })),
       total: formatMoney(order.totals.total, order.locale),
       orderUrl: `${siteOrigin()}/${order.locale}/checkout/success?order=${encodeURIComponent(orderId)}`,
@@ -211,6 +213,15 @@ export async function submitOrder(
         return { ok: false, error: "failed" };
       }
       await Promise.all([
+        ORDERS_IN_DB
+          ? linkOrderToVisitor(visitorIdFrom((await cookies()).get(VISITOR_COOKIE)?.value), {
+              number: result.orderId,
+              total: order.totals.total,
+              phone: order.customer.phone,
+              name: order.customer.name,
+              items: order.items,
+            })
+          : Promise.resolve(),
         clubBotReceipt(result.orderId, telegram),
         emailOrderConfirmation(order, result.orderId),
         order.customer.email && order.customer.marketingOptIn

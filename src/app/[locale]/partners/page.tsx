@@ -48,7 +48,7 @@ export default async function PartnersPage({ params }: { params: Promise<{ local
           </a>
         </div>
         <div className="relative h-48 lg:h-auto lg:w-[44%]">
-          <Image src="/images/stock/st-pharmacist-help.webp" alt="" fill sizes="(max-width: 1024px) 100vw, 420px" className="object-cover" />
+          <Image src="/images/stock/st-range-devices.webp" alt="" fill sizes="(max-width: 1023px) 100vw, 420px" className="object-cover" />
         </div>
       </div>
 

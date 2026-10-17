@@ -31,7 +31,7 @@ export function customerLifecycle(
   return "new";
 }
 
-export async function listCustomers(search?: string): Promise<CustomerRow[]> {
+export async function listCustomers(search?: string, limit = 250): Promise<CustomerRow[]> {
   const term = search?.trim().slice(0, 100);
   const nameExpr = sql<string>`${orders.customer}->>'name'`;
   const phoneExpr = sql<string>`${orders.customer}->>'phone'`;
@@ -61,7 +61,7 @@ export async function listCustomers(search?: string): Promise<CustomerRow[]> {
     .where(where)
     .groupBy(phoneTailSql)
     .orderBy(desc(lastOrderAt))
-    .limit(250);
+    .limit(limit);
 
   return rows.map((row) => ({
     ...row,

@@ -79,6 +79,7 @@ export async function productMetadata(product: Product, locale: Locale): Promise
     ),
     image: product.images[0]?.url,
     type: "product",
+    noindex: product.assortment === "unlisted",
   });
 }
 

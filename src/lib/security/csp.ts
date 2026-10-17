@@ -165,9 +165,19 @@ export function cspHeaderName(mode: CspMode): string {
 */
 const TELEGRAM_WEB = "https://web.telegram.org";
 
-/** Who may frame the site: ourselves, plus Telegram Web when the Mini App is on. */
+/*
+  Yandex Metrika's Webvisor replays a session by loading the page inside the
+  Metrika interface, so it needs the same exception — but only when Metrika
+  can be on at all (a build-time ID, or admin-managed analytics).
+*/
+const WEBVISOR = ["https://metrika.yandex.ru", "https://metrika.yandex.uz", "https://metrika.yandex.com", "https://*.webvisor.com"];
+
+/** Who may frame the site: ourselves, plus Telegram Web when the Mini App is on and Webvisor when Metrika may run. */
 export function frameAncestors(env: Record<string, string | undefined> = process.env): string[] {
-  return env.NEXT_PUBLIC_TELEGRAM_CLUB_BOT?.trim() ? ["'self'", TELEGRAM_WEB] : ["'self'"];
+  const out = ["'self'"];
+  if (env.NEXT_PUBLIC_TELEGRAM_CLUB_BOT?.trim()) out.push(TELEGRAM_WEB);
+  if (env.ADMIN_ANALYTICS_CSP === "on" || env.NEXT_PUBLIC_YANDEX_METRIKA_ID?.trim()) out.push(...WEBVISOR);
+  return out;
 }
 
 /**

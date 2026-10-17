@@ -5,6 +5,7 @@ import { verifyToken } from "@/lib/email/token";
 import { sendCampaign } from "@/lib/email/send";
 import { recordSubscriber } from "@/lib/marketing/api";
 import { notifyOperator } from "@/lib/notifications/operator";
+import { redactEmail } from "@/lib/privacy";
 
 /*
   The second half of double opt-in.
@@ -42,7 +43,7 @@ export async function GET(request: NextRequest) {
     campaign: { type: "welcome", quizUrl: `${siteOrigin()}/${locale}/quiz` },
   });
 
-  await notifyOperator(`✅ Obuna tasdiqlandi: ${verified.email}`);
+  await notifyOperator(`✅ Obuna tasdiqlandi: ${redactEmail(verified.email)}`);
 
   return redirect(locale, "confirmed");
 }

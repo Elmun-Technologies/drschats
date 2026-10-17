@@ -8,6 +8,7 @@ import { siteOrigin } from "@/lib/email/config";
 import { sendCampaign } from "@/lib/email/send";
 import { signToken } from "@/lib/email/token";
 import { notifyOperator } from "@/lib/notifications/operator";
+import { redactEmail } from "@/lib/privacy";
 
 /*
   Asking for permission, once.
@@ -58,7 +59,7 @@ export async function requestEmailOptIn(input: {
 
   // The operator hears about the request, not the confirmation, because an
   // address that never confirms is itself worth knowing about.
-  await notifyOperator(`📬 Obuna so'raldi: ${email}${source ? ` (${source})` : ""}`);
+  await notifyOperator(`📬 Obuna so'raldi: ${redactEmail(email)}${source ? ` (${source})` : ""}`);
 
   // The same answer whether or not the address is already on the list: telling
   // the caller which addresses are known turns this form into a lookup tool.

@@ -1,71 +1,103 @@
 import Link from "next/link";
-import { customerLifecycle, listCustomers } from "@/lib/admin/customers";
-import { formatDateTime } from "@/lib/admin/order-labels";
-import { Card, PageHeader, inputClass } from "@/components/admin/ui";
+import { customerLifecycle, listCustomers, type CustomerLifecycle } from "@/lib/admin/customers";
+import { daysSince } from "@/lib/journey/model";
+import { Card, ChipNav, EmptyState, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Mijozlar" };
 
+const EXPORT_HREF = "/admin/customers/export";
+
+const LIFECYCLE: Record<CustomerLifecycle, { label: string; tone: "neutral" | "outline" | "dark" | "muted" }> = {
+  new: { label: "Yangi", tone: "neutral" },
+  repeat: { label: "Qayta xarid", tone: "outline" },
+  vip: { label: "VIP", tone: "dark" },
+  dormant: { label: "Faolligi pasaygan", tone: "muted" },
+};
+
 function phoneMask(phone: string) {
   const digits = phone.replace(/\D/g, "");
-  return digits.length >= 9 ? `+${digits.slice(0, -9)} ${digits.slice(-9, -6)} ${digits.slice(-6, -3)} ${digits.slice(-3)}` : phone;
+  return digits.length >= 9 ? `+998 ${digits.slice(-9, -7)} ${digits.slice(-7, -4)} ${digits.slice(-4, -2)} ${digits.slice(-2)}` : phone;
 }
 
-function LifecyclePill({ stage }: { stage: ReturnType<typeof customerLifecycle> }) {
-  const labels = { new: "Yangi", repeat: "Qayta xarid", vip: "VIP", dormant: "Faolligi pasaygan" };
-  const classes = { new: "bg-[#f1f3f0] text-[#44494e]", repeat: "bg-[#f1f3f0] text-[#0f2d24]", vip: "bg-[#fbf6eb] text-[#806a3e]", dormant: "bg-[#fdf0ef] text-[#c8161d]" };
-  return <span className={`inline-flex rounded-full px-2.5 py-1 text-[9px] font-semibold ${classes[stage]}`}>{labels[stage]}</span>;
+function first(value: string | string[] | undefined) {
+  return Array.isArray(value) ? value[0] : value;
 }
 
-export default async function AdminCustomersPage({ searchParams }: { searchParams: Promise<{ q?: string }> }) {
-  const { q } = await searchParams;
-  const customers = await listCustomers(q);
-  const today = Date.now();
-  const returning = customers.filter((customer) => customer.successfulOrderCount > 1).length;
-  const vip = customers.filter((customer) => customerLifecycle(customer, today) === "vip").length;
-  const dormant = customers.filter((customer) => customerLifecycle(customer, today) === "dormant").length;
+export default async function AdminCustomersPage({ searchParams }: { searchParams: Promise<{ q?: string | string[]; stage?: string | string[] }> }) {
+  const params = await searchParams;
+  const q = first(params.q)?.trim() ?? "";
+  const stageParam = first(params.stage);
+  const stage = stageParam && stageParam in LIFECYCLE ? (stageParam as CustomerLifecycle) : null;
+  const all = (await listCustomers(q)).map((c) => ({ ...c, lifecycle: customerLifecycle(c) }));
+  const rows = stage ? all.filter((c) => c.lifecycle === stage) : all;
+  const counts = Object.fromEntries((Object.keys(LIFECYCLE) as CustomerLifecycle[]).map((key) => [key, all.filter((c) => c.lifecycle === key).length]));
+  const href = (next: CustomerLifecycle | null) => {
+    const search = new URLSearchParams();
+    if (q) search.set("q", q);
+    if (next) search.set("stage", next);
+    const text = search.toString();
+    return `/admin/customers${text ? `?${text}` : ""}`;
+  };
 
   return (
     <>
-      <PageHeader title="Mijozlar" lead="Buyurtmalarda ko‘rsatilgan telefon raqami bo‘yicha birlashtirilgan mijozlar. Profil maʼlumotlari faqat admin jamoasiga ko‘rinadi." />
-
-      <div className="mb-4 grid grid-cols-2 gap-3 xl:grid-cols-4">
-        {[["Roʻyxatdagi mijoz", customers.length], ["Qayta xarid qilgan", returning], ["VIP · 1 mln+ yoki 3 xarid", vip], ["Faolligi pasaygan · 60+ kun", dormant]].map(([label, value]) => (
-          <div key={label} className="rounded-md border border-[#e4e6e8] bg-white p-4 shadow-[0_2px_10px_rgba(23,25,27,0.035)]"><p className="text-[11px] text-[#63686e]">{label}</p><p className="mt-2 text-[23px] font-bold tracking-[-0.04em] text-[#0f2d24]">{value}</p></div>
-        ))}
-      </div>
-
-      <Card title="Mijozlar roʻyxati" actions={<span className="text-[10px] text-[#63686e]">{customers.length}{customers.length === 250 ? "+" : ""} ta koʻrsatilmoqda</span>}>
-        <form role="search" action="/admin/customers" className="mb-4 flex flex-wrap gap-2">
-          <input name="q" defaultValue={q} placeholder="Ism, telefon yoki email boʻyicha qidirish" aria-label="Mijozlarni qidirish" className={`${inputClass} max-w-[460px]`} />
-          <button type="submit" className="inline-flex h-11 items-center justify-center rounded-sm bg-[#0f2d24] px-4 text-[12px] font-semibold text-white hover:bg-[#09231a]">Qidirish</button>
-          {q && <Link href="/admin/customers" className="inline-flex h-11 items-center px-3 text-[12px] font-semibold text-[#44494e] hover:underline">Tozalash</Link>}
-        </form>
-
-        {customers.length ? (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[760px] text-left">
-              <thead><tr className="border-b border-[#e4e6e8] text-[10px] font-semibold uppercase tracking-[0.08em] text-[#63686e]"><th className="pb-3">Mijoz</th><th className="pb-3">Buyurtmalar</th><th className="pb-3">Buyurtmalar summasi</th><th className="pb-3">Soʻnggi faollik</th><th className="pb-3">Bosqich</th><th className="pb-3 text-right">Koʻrish</th></tr></thead>
-              <tbody className="divide-y divide-[#f1f3f0]">
-                {customers.map((customer) => (
-                  <tr key={customer.phone9} className="text-[12px]">
-                    <td className="py-3.5 pr-3"><Link href={`/admin/customers/${customer.phone9}`} className="block font-semibold text-[#0f2d24] hover:underline">{customer.name}</Link><span className="mt-0.5 block text-[10px] text-[#63686e]">{phoneMask(customer.phone)}{customer.email ? ` · ${customer.email}` : ""}</span></td>
-                    <td className="py-3.5 pr-3"><span className="font-semibold text-[#44494e]">{customer.orderCount}</span>{customer.orderCount > 1 && <span className="ml-1 text-[10px] text-[#0f2d24]">qayta</span>}</td>
-                    <td className="whitespace-nowrap py-3.5 pr-3 font-semibold text-[#0f2d24]">{formatNumber(customer.lifetimeValue)} soʻm</td>
-                    <td className="whitespace-nowrap py-3.5 pr-3 text-[#63686e]">{formatDateTime(customer.lastOrderAt)}</td>
-                    <td className="py-3.5 pr-3"><LifecyclePill stage={customerLifecycle(customer, today)} /></td>
-                    <td className="py-3.5 text-right"><Link href={`/admin/customers/${customer.phone9}`} aria-label={`${customer.name} profilini ochish`} className="inline-flex h-8 items-center rounded-sm border border-[#e4e6e8] px-3 text-[10px] font-semibold text-[#0f2d24] hover:bg-[#f1f3f0]">Profil ↗</Link></td>
-                  </tr>
-                ))}
+      <PageHeader
+        title="Mijozlar"
+        lead="Buyurtma bergan har bir mijoz, telefon raqami boʻyicha birlashtirilgan: qancha xarid qildi, oxirgi marta qachon va hozir qaysi bosqichda."
+        actions={<><a href={EXPORT_HREF} download className={secondaryButtonClass}>Excelʼga yuklash (CSV)</a><Link href="/admin/segments" className={secondaryButtonClass}>Segmentlar va retarget</Link></>}
+      />
+      <form role="search" action="/admin/customers" className="mb-4 flex flex-wrap gap-2">
+        {stage && <input type="hidden" name="stage" value={stage} />}
+        <input name="q" defaultValue={q} placeholder="Ism, telefon yoki email" aria-label="Mijozni qidirish" className={`${inputClass} max-w-[420px]`} />
+        <button type="submit" className={buttonClass}>Qidirish</button>
+        {q && <Link href={href(stage)} className={secondaryButtonClass}>Tozalash</Link>}
+      </form>
+      <ChipNav
+        label="Mijoz bosqichi"
+        className="mb-4"
+        items={[
+          { href: href(null), label: "Hammasi", active: stage === null, count: all.length },
+          ...(Object.keys(LIFECYCLE) as CustomerLifecycle[]).map((key) => ({ href: href(key), label: LIFECYCLE[key].label, active: stage === key, count: counts[key] })),
+        ]}
+      />
+      <Card>
+        {rows.length === 0 ? (
+          <EmptyState title="Mijoz topilmadi">Birinchi buyurtma tushishi bilan mijoz shu yerda paydo boʻladi.</EmptyState>
+        ) : (
+          <TableWrap>
+            <table className={tableClass}>
+              <thead>
+                <tr>
+                  <th className={thClass}>Mijoz</th>
+                  <th className={thClass}>Bosqich</th>
+                  <th className={`${thClass} text-right`}>Buyurtmalar</th>
+                  <th className={`${thClass} text-right`}>Jami xarid</th>
+                  <th className={`${thClass} text-right`}>Oxirgi xariddan beri</th>
+                </tr>
+              </thead>
+              <tbody>
+                {rows.map((c) => {
+                  const days = daysSince(c.lastOrderAt);
+                  return (
+                    <tr key={c.phone9}>
+                      <td className={tdClass}>
+                        <Link href={`/admin/customers/${c.phone9}`} className={linkClass}>{c.name}</Link>
+                        <span className="block text-[13px] text-muted">{phoneMask(c.phone)}{c.email ? ` · ${c.email}` : ""}</span>
+                      </td>
+                      <td className={tdClass}><Pill tone={LIFECYCLE[c.lifecycle].tone}>{LIFECYCLE[c.lifecycle].label}</Pill></td>
+                      <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.successfulOrderCount)}{c.orderCount > c.successfulOrderCount && <span className="block text-[13px] text-muted">+{c.orderCount - c.successfulOrderCount} bekor</span>}</td>
+                      <td className={`${tdClass} whitespace-nowrap text-right font-semibold tabular-nums`}>{som(c.lifetimeValue)}</td>
+                      <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{days === 0 ? "bugun" : `${days} kun`}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
-          </div>
-        ) : (
-          <div className="rounded-sm bg-[#f1f3f0] px-4 py-10 text-center"><p className="text-[13px] font-semibold text-[#44494e]">{q ? "Mijoz topilmadi" : "Hozircha mijozlar yoʻq"}</p><p className="mt-1 text-[11px] text-[#63686e]">{q ? "Qidiruv soʻzini yoki telefon raqamini tekshiring." : "Sayt orqali birinchi buyurtma kelganda mijoz profili avtomatik yaratiladi."}</p></div>
+          </TableWrap>
         )}
+        {all.length === 250 && <p className="mt-3 text-[13px] text-muted">Eng soʻnggi 250 ta mijoz koʻrsatildi — aniq mijozni qidiruv orqali toping.</p>}
       </Card>
-
-      <p className="mt-4 text-[10px] leading-4 text-[#63686e]">Roʻyxat oxirgi 250 ta noyob telefon raqamini ko‘rsatadi. Bosqichlar xarid maʼlumotidan avtomatik hisoblanadi: yangi → qayta xarid → VIP; 60 kundan ortiq buyurtmasiz qolgan mijoz “faolligi pasaygan”ga o‘tadi. Xarid summasiga bekor qilinganlar kiritilmaydi. Tibbiy maʼlumot saqlamang.</p>
     </>
   );
 }

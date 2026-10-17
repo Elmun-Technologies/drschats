@@ -106,6 +106,25 @@ describe("repriceOrder", () => {
     expect(repriceOrder(order([item("a"), item("b", 3, { upsellDiscountPercent: 10 })]), catalogue, [], ALL).ok).toBe(true);
   });
 
+  it("caps a programme offer across lines and rejects repeated lines", () => {
+    const offers: OfferContext = { programs: new Map([["p-b", new Set([12])]]), rail: new Map(), ladderPool: new Set() };
+    const offer = { upsellDiscountPercent: 12 };
+    const repeated = Array.from({ length: 5 }, () => item("b", 3, offer));
+    expect(repriceOrder(order(repeated), catalogue, [], offers)).toMatchObject({ ok: false, error: "invalid_offer", slug: "p-b" });
+    const split = [item("b", 2, offer), item("b", 2, { ...offer, subscription: { intervalDays: 30 } })];
+    expect(repriceOrder(order(split), catalogue, [], offers)).toMatchObject({ ok: false, error: "invalid_offer", slug: "p-b" });
+    const withinCap = [item("b", 2, offer), item("b", 1, { ...offer, subscription: { intervalDays: 30 } })];
+    expect(repriceOrder(order(withinCap), catalogue, [], offers).ok).toBe(true);
+    expect(repriceOrder(order([item("a"), item("a")]), catalogue, [])).toMatchObject({ ok: false, error: "invalid_offer", slug: "p-a" });
+  });
+
+  it("refuses withdrawn products and subscription intervals the shop does not offer", () => {
+    const withdrawn = { ...product("w", 30_000), slug: "p-w", assortment: "unlisted" } as Product;
+    expect(repriceOrder(order([item("w")]), [...catalogue, withdrawn], [])).toMatchObject({ ok: false, error: "out_of_stock", slug: "p-w" });
+    expect(repriceOrder(order([item("a", 1, { subscription: { intervalDays: 17 } })]), catalogue, [])).toMatchObject({ ok: false, error: "invalid_offer" });
+    expect(repriceOrder(order([item("a", 1, { subscription: { intervalDays: 60 } })]), catalogue, []).ok).toBe(true);
+  });
+
   it("names the line at fault so the cart can drop it", () => {
     expect(repriceOrder(order([item("a"), item("x")]), catalogue, [])).toMatchObject({ error: "out_of_stock", slug: "p-x" });
     const gift = [item("a"), item("b", 1, { upsellDiscountPercent: 10 }), item("d", 1, { upsellDiscountPercent: 100 })];

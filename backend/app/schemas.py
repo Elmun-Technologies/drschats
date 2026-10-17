@@ -26,11 +26,16 @@ class LineSubscription(BaseModel):
     intervalDays: int = Field(ge=7, le=365)
 
 
+# The storefront's own limits (src/lib/shopflow/schemas.ts): 99 per line, 50 lines.
+MAX_LINE_QTY = 99
+MAX_ORDER_LINES = 50
+
+
 class OrderLine(BaseModel):
     productId: str
     slug: str
     name: str
-    quantity: int = Field(gt=0)
+    quantity: int = Field(gt=0, le=MAX_LINE_QTY)
     unitPrice: int = Field(ge=0)
     # Present when the line was bought as a repeating delivery.
     subscription: LineSubscription | None = None
@@ -54,7 +59,7 @@ class Attribution(BaseModel):
 class OrderRequest(BaseModel):
     customer: Customer
     delivery: Delivery
-    items: list[OrderLine] = Field(min_length=1)
+    items: list[OrderLine] = Field(min_length=1, max_length=MAX_ORDER_LINES)
     appliedUpsells: list[str] = Field(default_factory=list)
     appliedPromotions: list[str] = Field(default_factory=list)
     totals: Totals

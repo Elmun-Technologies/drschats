@@ -3,7 +3,7 @@ import { getDb } from "@/lib/db/client";
 import { orders, type OrderStatus } from "@/lib/db/schema";
 import type { OrderAttribution, OrderRequest } from "@/lib/shopflow/types";
 
-export const REPORT_RANGES = [7, 30, 90] as const;
+export const REPORT_RANGES = [1, 7, 30, 90] as const;
 export type ReportRange = (typeof REPORT_RANGES)[number];
 
 type AnalyticsOrder = {

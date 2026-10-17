@@ -19,15 +19,15 @@ export function TopBar() {
     { href: "/partners", label: t("forPharmacies") },
   ];
   return (
-    <div className="wrap flex h-10 items-center gap-6 text-sm text-ink-2">
+    <div className="wrap flex h-10 items-center gap-4 whitespace-nowrap text-sm text-ink-2 xl:gap-6">
       <Link href="/contact" className="inline-flex items-center gap-1.5 font-semibold text-ink">
         <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
           <path d={ICONS.pin} />
         </svg>
         {t("city")}
       </Link>
-      {links.map((l) => (
-        <Link key={l.href} href={l.href} className="hover:text-ink">
+      {links.map((l, i) => (
+        <Link key={l.href} href={l.href} className={cn("hover:text-ink", i >= 3 && "max-xl:hidden")}>
           {l.label}
         </Link>
       ))}

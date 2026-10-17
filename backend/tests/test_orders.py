@@ -21,6 +21,14 @@ async def test_order_rejects_an_empty_basket(client, order_payload):
     assert res.status_code == 422
 
 
+async def test_order_rejects_quantities_and_baskets_beyond_the_storefront_limits(client, order_payload):
+    line = order_payload["items"][0]
+    too_many = {**order_payload, "items": [{**line, "quantity": 100}]}
+    assert (await client.post("/api/v1/orders", json=too_many)).status_code == 422
+    too_long = {**order_payload, "items": [line] * 51}
+    assert (await client.post("/api/v1/orders", json=too_long)).status_code == 422
+
+
 async def test_signing_in_claims_earlier_guest_orders(client, sign_in, order_payload):
     # Ordered as a guest first — the ordinary case, since checkout has no login.
     await client.post("/api/v1/orders", json=order_payload)

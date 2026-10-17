@@ -19,6 +19,7 @@ const BUILD_IDS = analyticsIdsFromEnvironment();
 
 export function Analytics() {
   const [ids, setIds] = useState<AnalyticsIds>(BUILD_IDS);
+  const [webvisor, setWebvisor] = useState(true);
   const [resolved, setResolved] = useState(false);
 
   useEffect(() => {
@@ -27,7 +28,10 @@ export function Analytics() {
       .then((response) => response.ok ? response.json() : null)
       .then((value) => {
         if (!active) return;
-        if (value && typeof value === "object") setIds(sanitizeAnalyticsIds(value as Partial<Record<keyof AnalyticsIds, unknown>>));
+        if (value && typeof value === "object") {
+          setIds(sanitizeAnalyticsIds(value as Partial<Record<keyof AnalyticsIds, unknown>>));
+          setWebvisor((value as { webvisor?: unknown }).webvisor !== false);
+        }
         setResolved(true);
       })
       .catch(() => {
@@ -68,7 +72,7 @@ export function Analytics() {
 
       {ym && (
         <Script id="yandex-metrika" strategy="afterInteractive">
-          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym(${ym},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true});`}
+          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym(${ym},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:${webvisor ? "true" : "false"}});`}
         </Script>
       )}
     </>

@@ -92,10 +92,11 @@ export async function HomeCategories({ categories }: { categories: Category[] })
                 i >= 6 && "max-lg:hidden",
               )}
             >
-              <span className="relative z-10 text-sm font-semibold leading-[17px] lg:text-[19px] lg:leading-6">{c.name}</span>
+              <span className="relative z-10 hyphens-auto break-words text-sm font-semibold leading-[17px] lg:text-[17px] lg:leading-[22px] xl:text-[19px] xl:leading-6">{c.name}</span>
+              {/* In the flow, so a two-line name shrinks the pack shot instead of disappearing under it. */}
               {img && (
-                <span className="absolute bottom-0.5 right-0.5 h-[82px] w-[82px] lg:bottom-1.5 lg:right-2 lg:h-[150px] lg:w-[150px]">
-                  <Image src={img} alt="" fill sizes="(max-width: 1024px) 82px, 150px" className="object-contain" />
+                <span className="relative -mr-2.5 mb-0.5 mt-auto max-h-[82px] min-h-0 w-[82px] flex-1 self-end lg:-mr-3.5 lg:mb-1.5 lg:max-h-[150px] lg:w-[150px]">
+                  <Image src={img} alt="" fill sizes="(max-width: 1023px) 82px, 150px" className="object-contain" />
                 </span>
               )}
             </Link>
@@ -221,7 +222,7 @@ export async function HomeAudience({ locale }: { locale: Locale }) {
                     src={photo.src}
                     alt=""
                     fill
-                    sizes="(max-width: 1024px) 136px, 200px"
+                    sizes="(max-width: 1023px) 136px, 200px"
                     className="object-cover"
                     style={{ objectPosition: photo.position }}
                   />
@@ -255,7 +256,7 @@ export async function HomeServices() {
     { href: "/quiz", image: "/images/stock/st-cat-capsules.webp", pack: false },
     { href: "/loyalty", image: productCutout("swiss-energy-immunovit-30") ?? null, pack: true },
     { href: "/delivery", image: "/images/stock/st-delivery-door.webp", pack: false },
-    { href: "/where-to-buy", image: "/images/stock/st-pharmacist-shelf.webp", pack: false },
+    { href: "/where-to-buy", image: "/images/stock/st-shelf-range.webp", pack: false },
   ];
 
   return (
@@ -272,17 +273,20 @@ export async function HomeServices() {
             <span className="relative z-10 text-[17px] font-bold leading-[21px] lg:text-[26px] lg:leading-[31px]">{c.title}</span>
             <span className="relative z-10 text-[13px] leading-[17px] text-ink-2 lg:hidden">{fill(c.short)}</span>
             <span className="relative z-10 hidden max-w-[260px] text-base leading-[23px] text-ink-2 lg:block">{fill(c.text)}</span>
-            {tile.image &&
-              (tile.pack ? (
-                <span className="absolute bottom-2 right-2 hidden h-[180px] w-[180px] lg:block">
-                  <Image src={tile.image} alt="" fill sizes="180px" className="object-contain" />
-                </span>
-              ) : (
-                <span className="absolute bottom-0 right-0 hidden h-[150px] w-[210px] overflow-hidden rounded-tl-[20px] lg:block">
-                  <Image src={tile.image} alt="" fill sizes="210px" className="object-cover" />
-                </span>
-              ))}
-            <ArrowCircle className="relative z-10 mt-auto h-10 w-10 bg-bg lg:h-12 lg:w-12 lg:bg-chip-strong" />
+            {/* Picture in the flow, under the text: an absolutely placed one sat on top of a long description. */}
+            <span className="mt-auto flex items-end justify-between gap-2">
+              <ArrowCircle className="relative z-10 h-10 w-10 shrink-0 bg-bg lg:h-12 lg:w-12 lg:bg-chip-strong" />
+              {tile.image &&
+                (tile.pack ? (
+                  <span className="relative -mb-5 -mr-5 hidden h-[180px] w-[180px] min-w-0 shrink lg:block">
+                    <Image src={tile.image} alt="" fill sizes="180px" className="object-contain" />
+                  </span>
+                ) : (
+                  <span className="relative -mb-7 -mr-7 hidden h-[150px] w-[210px] min-w-0 shrink overflow-hidden rounded-tl-[20px] lg:block">
+                    <Image src={tile.image} alt="" fill sizes="210px" className="object-cover" />
+                  </span>
+                ))}
+            </span>
           </Link>
         );
       })}
@@ -311,8 +315,8 @@ export async function HomeOrigin() {
 
 const NEWS_IMAGES = [
   "/images/stock/st-cat-orange.webp",
-  "/images/stock/st-pharmacist-shelf.webp",
-  "/images/stock/st-pharmacist-help.webp",
+  "/images/stock/st-shelf-range.webp",
+  "/images/stock/st-range-devices.webp",
 ];
 
 export async function HomeNews({ locale }: { locale: Locale }) {
