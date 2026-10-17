@@ -2,67 +2,6 @@ import Link from "next/link";
 import { cn, formatNumber } from "@/lib/utils";
 import { RANGES, type Range } from "@/lib/admin/crm";
 
-const MONTHS = ["yan", "fev", "mar", "apr", "may", "iyn", "iyl", "avg", "sen", "okt", "noy", "dek"];
-
-export function dayLabel(key: string): string {
-  const [, m, d] = key.split("-");
-  return `${Number(d)} ${MONTHS[Number(m) - 1] ?? ""}`;
-}
-
-/*
-  One series per chart, one axis, ink bars on white — two measures get two
-  charts, never a second y-scale. Each column is a hover target with the
-  exact value; the same numbers sit in a visually hidden table.
-*/
-export function DailyBars({ title, data, format = formatNumber, unit, className }: { title: string; data: { date: string; value: number }[]; format?: (n: number) => string; unit?: string; className?: string }) {
-  const max = Math.max(1, ...data.map((d) => d.value));
-  const total = data.reduce((sum, d) => sum + d.value, 0);
-  const every = Math.max(1, Math.ceil(data.length / 7));
-  const peak = data.reduce((best, d) => (d.value > best.value ? d : best), data[0] ?? { date: "", value: 0 });
-  return (
-    <section className={cn("min-w-0 rounded-[20px] border border-line bg-white p-5 sm:p-6", className)}>
-      <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-[18px] font-bold leading-6 text-ink">{title}</h2>
-        <p className="text-[14px] text-muted">Jami <span className="font-semibold tabular-nums text-ink">{format(total)}</span>{unit ? ` ${unit}` : ""}</p>
-      </div>
-      {total === 0 ? (
-        <p className="grid h-[180px] place-items-center rounded-[16px] bg-tile text-[14px] text-muted">Bu davrda maʼlumot yoʻq</p>
-      ) : (
-        <div className="relative" aria-hidden="true">
-          <div className="pointer-events-none absolute inset-x-0 top-0 border-t border-dashed border-line" />
-          <span className="pointer-events-none absolute right-0 top-1 text-[12px] tabular-nums text-muted">{format(max)}</span>
-          <div className="flex h-[180px] items-end gap-[2px] border-b border-line-strong pt-6">
-            {data.map((d) => (
-              <div key={d.date} title={`${dayLabel(d.date)}: ${format(d.value)}${unit ? ` ${unit}` : ""}`} className="group flex h-full min-w-0 flex-1 items-end">
-                <div
-                  className="w-full rounded-t-[4px] bg-ink transition-opacity group-hover:opacity-70"
-                  style={{ height: d.value > 0 ? `${Math.max(2, (d.value / max) * 100)}%` : "0%" }}
-                />
-              </div>
-            ))}
-          </div>
-          <div className="mt-2 flex gap-[2px]">
-            {data.map((d, i) => (
-              <span key={d.date} className="min-w-0 flex-1 truncate text-center text-[12px] text-muted">
-                {i % every === 0 || i === data.length - 1 ? dayLabel(d.date) : ""}
-              </span>
-            ))}
-          </div>
-          {peak.value > 0 && <p className="mt-2 text-[13px] text-muted">Eng yuqori: {dayLabel(peak.date)} — {format(peak.value)}{unit ? ` ${unit}` : ""}</p>}
-        </div>
-      )}
-      <table className="sr-only">
-        <caption>{title}</caption>
-        <tbody>
-          {data.map((d) => (
-            <tr key={d.date}><th scope="row">{dayLabel(d.date)}</th><td>{format(d.value)}</td></tr>
-          ))}
-        </tbody>
-      </table>
-    </section>
-  );
-}
-
 const RANGE_LABEL: Record<Range, string> = { 1: "Bugun", 7: "7 kun", 30: "30 kun", 90: "90 kun" };
 
 export function RangeTabs({ range, basePath, extra = "" }: { range: Range; basePath: string; extra?: string }) {
@@ -113,5 +52,48 @@ export function FunnelBars({ steps }: { steps: { label: string; hint?: string; v
         );
       })}
     </ol>
+  );
+}
+
+/** A trend glyph for a KPI tile: one ink line, no axis — the tile's number is the value. */
+export function Sparkline({ values, className }: { values: number[]; className?: string }) {
+  if (values.length < 2 || values.every((v) => v === 0)) return <span className={cn("block h-8", className)} aria-hidden="true" />;
+  const max = Math.max(...values);
+  const min = Math.min(...values);
+  const span = max - min || 1;
+  const points = values.map((v, i) => `${((i / (values.length - 1)) * 100).toFixed(2)},${(28 - ((v - min) / span) * 24).toFixed(2)}`);
+  return (
+    <svg viewBox="0 0 100 32" preserveAspectRatio="none" aria-hidden="true" className={cn("block h-8 w-full overflow-visible", className)}>
+      <polygon points={`0,32 ${points.join(" ")} 100,32`} className="fill-ink/[0.06]" />
+      <polyline points={points.join(" ")} fill="none" vectorEffect="non-scaling-stroke" strokeWidth={1.75} strokeLinejoin="round" strokeLinecap="round" className="stroke-ink" />
+    </svg>
+  );
+}
+
+const SHARE_TONES = ["bg-ink", "bg-muted", "bg-line-strong", "bg-chip-strong"];
+
+/**
+ * Parts of one whole as a single segmented bar with a legend that carries the
+ * numbers — identity is never colour alone. Up to four parts, darkest first.
+ */
+export function ShareBar({ parts, format = formatNumber }: { parts: { label: string; value: number; note?: string }[]; format?: (n: number) => string }) {
+  const total = parts.reduce((sum, p) => sum + p.value, 0);
+  if (total === 0) return <p className="rounded-[12px] bg-tile px-4 py-5 text-center text-[14px] text-muted">Maʼlumot yoʻq</p>;
+  return (
+    <div>
+      <div className="flex h-3 gap-[2px] overflow-hidden rounded-full" aria-hidden="true">
+        {parts.map((p, i) => p.value > 0 && <div key={p.label} className={cn("h-full first:rounded-l-full last:rounded-r-full", SHARE_TONES[i])} style={{ width: `${(p.value / total) * 100}%` }} />)}
+      </div>
+      <ul className="mt-4 flex flex-col gap-2.5">
+        {parts.map((p, i) => (
+          <li key={p.label} className="flex items-center gap-3 text-[14px]">
+            <span className={cn("h-3 w-3 shrink-0 rounded-[3px]", SHARE_TONES[i])} aria-hidden="true" />
+            <span className="min-w-0 flex-1 truncate text-ink">{p.label}{p.note && <span className="ml-1.5 text-[13px] text-muted">{p.note}</span>}</span>
+            <span className="shrink-0 font-semibold tabular-nums text-ink">{format(p.value)}</span>
+            <span className="w-12 shrink-0 text-right tabular-nums text-muted">{Math.round((p.value / total) * 100)}%</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

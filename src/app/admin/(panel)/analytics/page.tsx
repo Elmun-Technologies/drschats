@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { getOrderMetrics } from "@/lib/admin/metrics";
-import { channels, dailyTraffic, devices, parseRange, percent, productInterest, siteFunnel, topPages, topSearches } from "@/lib/admin/crm";
-import { DailyBars, RangeTabs } from "@/components/admin/charts";
+import { channels, devices, parseRange, percent, productInterest, siteFunnel, topPages, topSearches } from "@/lib/admin/crm";
+import { activityHeatmap, trafficSeries } from "@/lib/admin/dashboard";
+import { RangeTabs, ShareBar } from "@/components/admin/charts";
+import { TrendChart } from "@/components/admin/TrendChart";
+import { ActivityHeatmap } from "@/components/admin/ActivityHeatmap";
 import { BarList, Card, EmptyState, Metric, PageHeader, TableWrap, linkClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 
@@ -9,9 +12,10 @@ export const metadata = { title: "Analitika" };
 
 export default async function AdminAnalyticsPage({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
   const range = parseRange((await searchParams).range, 30);
-  const [funnel, daily, channelRows, deviceRows, interest, pages, searches, metrics] = await Promise.all([
+  const [funnel, series, heat, channelRows, deviceRows, interest, pages, searches, metrics] = await Promise.all([
     siteFunnel(range),
-    dailyTraffic(range),
+    trafficSeries(range),
+    activityHeatmap(range),
     channels(range),
     devices(range),
     productInterest(range, 12),
@@ -39,9 +43,9 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
         <Metric label="Savdo" value={som(metrics.current.revenue)} delta={{ current: metrics.current.revenue, previous: metrics.previous.revenue }} />
       </div>
 
-      <div className="mt-4 grid gap-4 xl:grid-cols-2">
-        <DailyBars title="Kunlik tashrif buyuruvchilar" data={daily.map((d) => ({ date: d.date, value: d.visitors }))} unit="kishi" />
-        <DailyBars title="Kunlik buyurtmalar" data={daily.map((d) => ({ date: d.date, value: d.orders }))} unit="ta" />
+      <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+        <TrendChart current={series.current} previous={series.previous} unit={series.unit} periodLabel={range === 1 ? "kun" : `${range} kun`} />
+        <ActivityHeatmap visits={heat.visits} orders={heat.orders} days={heat.days} />
       </div>
 
       <Card title="Kanallar" lead="Har bir manba qancha odam olib keldi va ulardan qanchasi sotib oldi" className="mt-4">
@@ -92,7 +96,7 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
         <Card title="Qurilmalar">
-          <BarList rows={deviceRows.map((d) => ({ label: d.device, value: d.visitors, note: `${percent(d.visitors, f.visitors)}%` }))} />
+          <ShareBar parts={deviceRows.slice(0, 4).map((d) => ({ label: d.device, value: d.visitors }))} />
         </Card>
         <Card title="Koʻp ochilgan sahifalar">
           <BarList rows={pages.map((page) => ({ label: page.path, value: page.views, note: `${formatNumber(page.visitors)} kishi` }))} />
