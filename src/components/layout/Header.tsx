@@ -66,7 +66,7 @@ export function Header({
 
   return (
     <header className="z-50 w-full border-b border-line bg-bg text-ink lg:sticky lg:top-0">
-      <div className="hidden lg:block">
+      <div data-miniapp-hide className="hidden lg:block">
         <div
           className={cn(
             "overflow-hidden transition-[max-height,opacity] duration-300 ease-out",

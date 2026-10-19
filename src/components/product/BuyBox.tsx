@@ -20,6 +20,8 @@ import { SaleCountdown } from "@/components/marketing/SaleCountdown";
 import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { useLiveProduct } from "@/lib/shop/useLiveProduct";
 import { lowStockLeft, stockCap } from "@/lib/catalog/stock-rules";
+import { useMiniAppMainButton } from "@/components/telegram/useMiniAppMainButton";
+import { haptic } from "@/lib/telegram/mini-app";
 
 /*
   Design: ProductV3 buy card. Price, the two ways to buy, quantity and the two
@@ -51,6 +53,17 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
   useEffect(() => {
     trackViewProduct(itemOf(product));
   }, [product]);
+
+  // In Telegram the native MainButton is the buy action; the phone's fixed
+  // bar is hidden there (globals.css) so the two cannot sit on top of each other.
+  useMiniAppMainButton({
+    text: mode === "subscription" ? ts("addSubscription") : t("addToCart"),
+    visible: product.inStock,
+    onClick: () => {
+      addToCart();
+      haptic("success");
+    },
+  });
 
   return (
     <div className="flex flex-col gap-4 lg:rounded-[20px] lg:border lg:border-line lg:bg-bg lg:p-6 lg:shadow-buybox">

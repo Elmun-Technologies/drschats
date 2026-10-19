@@ -40,6 +40,7 @@ import { useCartDiscount } from "./useCartDiscount";
 import { PointsField } from "./PointsField";
 import { usePoints } from "@/lib/loyalty/store";
 import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
+import { useMiniAppMainButton } from "@/components/telegram/useMiniAppMainButton";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -136,6 +137,7 @@ export function CheckoutForm({
     register,
     handleSubmit,
     watch,
+    getValues,
     setValue,
     formState: { errors },
   } = useForm<FormValues>({
@@ -148,6 +150,45 @@ export function CheckoutForm({
     },
   });
 
+
+  /*
+    A customer who linked their phone to the club bot does not type it again:
+    the verified initData is exchanged for the name and number the bot already
+    holds. Nothing is written over a value the customer has typed.
+  */
+  useEffect(() => {
+    const initData = telegramInitData();
+    if (!initData) return;
+    let alive = true;
+    fetch("/api/miniapp/profile", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ initData }),
+    })
+      .then((res) => (res.ok ? (res.json() as Promise<{ name?: string; phone?: string | null }>) : null))
+      .then((profile) => {
+        if (!alive || !profile) return;
+        if (profile.name && !getValues("name")) setValue("name", profile.name);
+        if (profile.phone && !getValues("phone")) setValue("phone", profile.phone);
+      })
+      .catch(() => {
+        // The form works exactly as before when Telegram is unreachable.
+      });
+    return () => {
+      alive = false;
+    };
+  }, [getValues, setValue]);
+
+  // The native button submits the same form, so validation and errors stay the site's.
+  useMiniAppMainButton({
+    text: submitting ? t("submitting") : t("submit"),
+    visible: lines.length > 0,
+    enabled: !submitting,
+    onClick: () => {
+      const form = document.getElementById("checkout-form");
+      if (form instanceof HTMLFormElement) form.requestSubmit();
+    },
+  });
 
   const discount = useCartDiscount({
     enabled: promoCodes || firstOrder.mode === "auto",
@@ -313,6 +354,7 @@ export function CheckoutForm({
 
   return (
     <form
+      id="checkout-form"
       onSubmit={handleSubmit(onSubmit)}
       onFocusCapture={() => {
         if (checkoutStarted.current) return;

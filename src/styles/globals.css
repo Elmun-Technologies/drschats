@@ -328,6 +328,36 @@
 }
 
 /*
+  Inside Telegram (components/telegram/TelegramMiniApp.tsx sets
+  `data-miniapp` on <html> only when Telegram signed the launch). Telegram
+  draws the header, the close button and the back arrow, and the MainButton
+  replaces the page's fixed buy bar — so the site's own bottom furniture and
+  overlay popups would sit on top of the client's chrome. Everything marked
+  `data-miniapp-hide` is the site chrome a Mini App must not repeat: the
+  announcement strip, the tab bar, the cookie bar, the scroll button, the
+  footer's link columns and the mobile buy bar. The cart drawer stays: it is
+  the shop's own control, not a popup.
+*/
+html[data-miniapp] {
+  --tab-bar: 0px;
+  --buy-bar: 0px;
+  --bottom-nav: 0px;
+  color-scheme: light;
+}
+html[data-miniapp] [data-miniapp-hide] {
+  display: none !important;
+}
+/* The native MainButton replaces the phone's fixed buy bar; until the SDK
+   proves it exists the bar is the only way to add to cart, so it stays. */
+html[data-miniapp-mainbutton] [data-buy-bar] {
+  display: none !important;
+}
+html[data-miniapp] body {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  overscroll-behavior-y: none;
+}
+
+/*
   Height of the desktop header once the page has scrolled (utility row folded
   away): the main row and the category row. Sticky elements under it — the
   product page's section tabs — take their `top` from here.

@@ -172,6 +172,14 @@ const TELEGRAM_WEB = "https://web.telegram.org";
 */
 const WEBVISOR = ["https://metrika.yandex.ru", "https://metrika.yandex.uz", "https://metrika.yandex.com", "https://*.webvisor.com"];
 
+/*
+  The official Mini App SDK, fetched only when a tab really is inside Telegram
+  (lib/telegram/mini-app.ts). It is what carries the native BackButton and
+  MainButton events; the plain postEvent bridge cannot receive them. Allowed
+  only when the club bot is configured, i.e. when a Mini App can exist at all.
+*/
+const TELEGRAM_SDK = "https://telegram.org";
+
 /** Who may frame the site: ourselves, plus Telegram Web when the Mini App is on and Webvisor when Metrika may run. */
 export function frameAncestors(env: Record<string, string | undefined> = process.env): string[] {
   const out = ["'self'"];
@@ -255,7 +263,12 @@ export function buildContentSecurityPolicy(
       injected <script src="https://evil.example"> is blocked even though an
       injected inline one is not.
     */
-    "script-src": ["'self'", "'unsafe-inline'", ...analytics],
+    "script-src": [
+      "'self'",
+      "'unsafe-inline'",
+      ...(env.NEXT_PUBLIC_TELEGRAM_CLUB_BOT?.trim() ? [TELEGRAM_SDK] : []),
+      ...analytics,
+    ],
 
     // Inline style= attributes are used throughout (410 on a catalogue page).
     "style-src": ["'self'", "'unsafe-inline'"],
