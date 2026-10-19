@@ -107,20 +107,33 @@ export function CheckoutForm({
   // begin_checkout: the first time the customer starts filling the order form.
   const checkoutStarted = useRef(false);
 
+  /*
+    A pickup customer collects the order, so asking them for a region and a
+    street address is a question with no answer — and a required one used to
+    block the order completely (`region` was non-empty in every case). Both are
+    required only for a courier delivery; for pickup the form sends the
+    collection point, which the customer has already been shown.
+  */
   const schema = z.object({
     name: z.string().min(2, t("errorRequired")),
     phone: z.string().min(7, t("errorPhone")),
     // Optional: the phone is what an operator calls, and demanding an address
     // as well would cost more orders than the confirmation email is worth.
     email: z.union([z.string().email(t("errorEmail")), z.literal("")]).optional(),
-    region: z.string().min(1, t("errorRequired")),
-    address: z.string().min(3, t("errorRequired")),
+    region: z.string().optional(),
+    address: z.string().optional(),
     note: z.string().optional(),
     method: z.enum(["courier", "pickup"]),
     payment: z.enum(["online", "cod"]),
     /** Which provider's page will take the money, when paying online. */
     provider: z.enum(["payme", "click", "uzum"]).optional(),
     subscribe: z.boolean().optional(),
+  }).superRefine((values, ctx) => {
+    if (values.method !== "courier") return;
+    if (!values.region) ctx.addIssue({ code: "custom", path: ["region"], message: t("errorRequired") });
+    if (!values.address || values.address.trim().length < 3) {
+      ctx.addIssue({ code: "custom", path: ["address"], message: t("errorRequired") });
+    }
   }).refine(
     /*
       Online payment without a provider is an order nobody can pay. The check
@@ -227,7 +240,8 @@ export function CheckoutForm({
       setValue("provider", value as "payme" | "click" | "uzum", { shouldValidate: Boolean(errors.provider) });
     }
   };
-  const totals = computeTotals(lines, promotions, { pickup: watch("method") === "pickup", rules: pricing });
+  const method = watch("method");
+  const totals = computeTotals(lines, promotions, { pickup: method === "pickup", rules: pricing });
   /*
     The order-level discount (a promo code or the first-order one) as the
     server priced it. Shipping is measured before it, as on the server.
@@ -271,8 +285,9 @@ export function CheckoutForm({
           ? { method: "online" as const, provider }
           : { method: "cod" as const },
       delivery: {
-        region: values.region,
-        address: values.address,
+        // A pickup order carries the collection point, never an empty string.
+        region: values.region || (locale === "ru" ? "г. Ташкент" : "Toshkent shahri"),
+        address: values.address || (locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address),
         note: values.note,
         method: values.method,
       },
@@ -429,7 +444,14 @@ export function CheckoutForm({
                 <OptionText title={t("methodPickup")} note={tp("pickupNote")} />
               </RadioCard>
             </div>
-            <div className="grid gap-3.5 lg:grid-cols-[260px_minmax(0,1fr)]">
+            {method === "pickup" ? (
+              <div className="rounded-[14px] bg-tile p-4">
+                <p className="text-[15px] font-semibold text-ink">{t("pickupPoint")}</p>
+                <p className="mt-1 text-sm text-ink-2">{locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address}</p>
+                <p className="mt-1 text-sm text-muted">{t("pickupPointNote")}</p>
+              </div>
+            ) : null}
+            <div className={cn("grid gap-3.5 lg:grid-cols-[260px_minmax(0,1fr)]", method === "pickup" && "hidden")}>
               <Field label={t("region")} error={errors.region?.message}>
                 <div className="relative">
                   <select className={cn(inputClass, "appearance-none pr-11")} {...register("region")}>
