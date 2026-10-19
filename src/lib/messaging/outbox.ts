@@ -76,7 +76,7 @@ export async function queueMessage(exec: Exec, m: QueueMessage): Promise<number 
 }
 
 export type Reach =
-  | { channel: "telegram"; chatId: number; phone9: string }
+  | { channel: "telegram"; chatId: number; phone9: string | null }
   | { channel: "sms"; phone9: string }
   | { channel: null; reason: string };
 
@@ -104,6 +104,18 @@ export async function resolveReach(exec: Exec, phone9: string, want: StepChannel
   if (!ctx.smsAvailable) return { channel: null, reason: "sms_not_configured" };
   if (await isOptedOut(exec, phone9, "sms")) return { channel: null, reason: "opted_out" };
   return { channel: "sms", phone9 };
+}
+
+/**
+ * Telegram reach for someone we only know by chat id — a bot member who has
+ * not linked a phone yet. Same rules as resolveReach: the club must be on and
+ * Telegram must not have refused this chat before (blocked_at).
+ */
+export async function resolveChatReach(exec: Exec, chatId: number, ctx: ReachContext): Promise<Reach> {
+  if (!ctx.clubEnabled) return { channel: null, reason: "club_disabled" };
+  const rows = (await exec.execute(sql`
+    select 1 from bot_members where chat_id = ${chatId} and blocked_at is null`)) as unknown as unknown[];
+  return rows[0] ? { channel: "telegram", chatId, phone9: null } : { channel: null, reason: "blocked" };
 }
 
 /** The attribution key a message's links and codes carry: flow-<id> or campaign-<id>. */

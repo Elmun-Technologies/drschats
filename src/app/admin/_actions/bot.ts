@@ -11,7 +11,12 @@ import type { FormState } from "./catalog";
 
 export async function saveClub(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin();
-  const parsed = clubConfigSchema.safeParse({ ...Object.fromEntries(form), enabled: form.get("enabled") === "on" });
+  const raw = Object.fromEntries(form);
+  const parsed = clubConfigSchema.safeParse({
+    ...raw,
+    enabled: form.get("enabled") === "on",
+    greeting: { uz: raw.greetingUz ?? "", ru: raw.greetingRu ?? "" },
+  });
   if (!parsed.success) return { error: "Maydonlarni tekshiring: doʻkon manzili https:// bilan boshlansin." };
   await saveClubConfig(parsed.data);
   revalidatePath("/admin/bot");

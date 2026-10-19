@@ -271,3 +271,14 @@ describe("bot shop API contract", () => {
     expect((await handleBotApi("POST", ["shop", "locale"], { chatId: 23, locale: "de" }, q)).status).toBe(422);
   });
 });
+
+describe("club greeting", () => {
+  it("keeps a saved greeting and fills a missing language from the default", () => {
+    const config = readClubConfig({ greeting: { uz: "Salom!" } });
+    expect(config.greeting).toEqual({ uz: "Salom!", ru: DEFAULT_CLUB.greeting.ru });
+  });
+
+  it("falls back to the defaults when a stored value is not an object", () => {
+    expect(readClubConfig({ greeting: "Salom" }).greeting).toEqual(DEFAULT_CLUB.greeting);
+  });
+});

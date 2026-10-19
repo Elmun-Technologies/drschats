@@ -29,6 +29,21 @@ TICKET_WINDOW_S = 30
 _last_ticket: dict[int, float] = {}
 
 
+async def greeting(api, locale="uz"):
+    """The welcome an admin wrote in /admin/bot, in the customer's language.
+
+    Plain text from the admin, so it is escaped before HTML parse mode sees it.
+    A config fetch that fails must not block /start: the built-in text is used.
+    """
+    try:
+        config = await api.request('GET', '/config')
+    except Exception as e:  # noqa: BLE001 — the greeting is never worth a failed /start
+        log.warning('config unavailable, using built-in greeting: %s', type(e).__name__)
+        return T['welcome']
+    saved = ((config or {}).get('greeting') or {}).get('ru' if locale == 'ru' else 'uz') or ''
+    return escape(saved.strip()) if saved.strip() else T['welcome']
+
+
 def menu(locale="uz", customer=None):
     """The club's main menu: the Mini App and the native shop side by side."""
     return shop_ui.main_menu(locale, customer)
@@ -47,7 +62,7 @@ async def start(m, api):
     except BackendError as e:
         if e.status != 404:
             raise
-        await m.answer(T['welcome'], reply_markup=menu())
+        await m.answer(await greeting(api), reply_markup=menu())
         return await m.answer(T['askContact'], reply_markup=contact_kb())
     if payload.startswith('o_'):
         return await show_order(m, api, m.from_user.id, payload[2:])

@@ -290,6 +290,14 @@ Segment sahifasidagi forma: kanal (Telegram / Telegram, boʻlmasa SMS / SMS),
 `{havola}` sahifasi, har bir mijozga shaxsiy promokod. Hammasi o'sha navbatdan —
 tungi vaqt, rad etish, STOP havolasi bir xil.
 
+**Bot auditoriyalari** (`lib/admin/segments.ts`, `kind: "bot"`) — `bot_members ⨝
+telegram_links` dan quriladi, shuning uchun telefoni bogʻlanmagan aʼzoni ham
+qamrab oladi: `bot-all`, `bot-linked`, `bot-buyers`, `bot-new`, `bot-cart`
+(savat qiymati `bot_carts` dan qayta hisoblanadi). Bu guruhga **faqat Telegram**
+kanali taklif qilinadi; dedupe kaliti — telefon oxiri, yoʻq boʻlsa `tg<chat>`
+(`campaignTargetKey`). Roʻyxat CSV eksport qilinmaydi: telefon hali yoʻq.
+Bloklagan aʼzo (`bot_members.blocked_at`) hech qachon nishonga olinmaydi.
+
 ## 5f. Sodiqlik: keshbek, tavsiya, tugʻilgan kun, bannerlar A/B (`/admin/loyalty`)
 
 Migratsiya `0011_loyalty_referral_ab.sql`. Sozlamalar — `site_settings`

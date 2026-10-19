@@ -22,11 +22,23 @@ async def test_menu_opens_the_shop_as_a_mini_app():
 
 @pytest.mark.asyncio
 async def test_unlinked_start_asks_for_contact():
-    api = SimpleNamespace(request=AsyncMock(side_effect=[{'ok': True}, BackendError(404, 'customer_not_linked')]))
+    api = SimpleNamespace(request=AsyncMock(side_effect=[
+        {'ok': True}, BackendError(404, 'customer_not_linked'), {'greeting': {'uz': 'Salom <b>Ali</b>'}}]))
     m = message()
     await remote.start(m, api)
     assert api.request.await_args_list[0].args[:2] == ('POST', '/members/7/start')
     assert m.answer.await_count == 2
+    # Admin text is plain: HTML in it must not become markup.
+    assert m.answer.await_args_list[0].args[0] == 'Salom &lt;b&gt;Ali&lt;/b&gt;'
+
+
+@pytest.mark.asyncio
+async def test_start_survives_a_config_failure():
+    api = SimpleNamespace(request=AsyncMock(side_effect=[
+        {'ok': True}, BackendError(404, 'customer_not_linked'), BackendError(503, 'upstream_unavailable')]))
+    m = message()
+    await remote.start(m, api)
+    assert m.answer.await_args_list[0].args[0] == remote.T['welcome']
 
 
 @pytest.mark.asyncio
