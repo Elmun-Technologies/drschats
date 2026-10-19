@@ -18,6 +18,15 @@ export const clubConfigSchema = z.object({
     .refine((u) => u.startsWith("https://"), "HTTPS"),
   supportPhone: z.string().trim().max(40),
   supportHours: z.string().trim().max(120),
+  /**
+   * The first message a new customer sees, in both languages. Plain text:
+   * the bot escapes it, so an admin cannot break the message with HTML.
+   * Empty falls back to the built-in welcome.
+   */
+  greeting: z.object({
+    uz: z.string().trim().max(600),
+    ru: z.string().trim().max(600),
+  }),
 });
 
 export type ClubConfig = z.infer<typeof clubConfigSchema>;
@@ -28,11 +37,21 @@ export const DEFAULT_CLUB: ClubConfig = {
   shopUrl: process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://") ? process.env.NEXT_PUBLIC_SITE_URL : "https://govita.uz",
   supportPhone: BRAND.contact.phone,
   supportHours: "Du–Sha, 09:00–18:00",
+  greeting: {
+    uz: "Assalomu alaykum! GoVita VIP Salomatlik Klubiga xush kelibsiz 👋",
+    ru: "Здравствуйте! Добро пожаловать в GoVita VIP клуб здоровья 👋",
+  },
 };
 
-/** Stored data merged over the defaults; a field that no longer validates falls back. */
+/**
+ * Stored data merged over the defaults; a field that no longer validates falls
+ * back. `greeting` merges key by key: an older row saved before the greeting
+ * existed must not wipe the rest of the settings.
+ */
 export function readClubConfig(stored: unknown): ClubConfig {
-  const merged = { ...DEFAULT_CLUB, ...(stored && typeof stored === "object" ? stored : {}) };
+  const saved = stored && typeof stored === "object" ? (stored as Record<string, unknown>) : {};
+  const greeting = saved.greeting && typeof saved.greeting === "object" ? (saved.greeting as Record<string, unknown>) : {};
+  const merged = { ...DEFAULT_CLUB, ...saved, greeting: { ...DEFAULT_CLUB.greeting, ...greeting } };
   const parsed = clubConfigSchema.safeParse(merged);
   return parsed.success ? parsed.data : DEFAULT_CLUB;
 }

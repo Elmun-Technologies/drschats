@@ -5,9 +5,17 @@ import { sendSegmentCampaign } from "@/app/admin/_actions/marketing";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { CampaignFields } from "@/components/admin/CampaignFields";
 import { Card, EmptyState, Field, Metric, PageHeader, Pill, TableWrap, inputClass, linkClass, secondaryButtonClass, smallButtonClass, som, tableClass, tdClass, thClass, timeAgo } from "@/components/admin/ui";
-import { formatNumber } from "@/lib/utils";
+import { cn, formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Segment" };
+
+/** +998 90 123-45-67 for a row that stores bare digits, otherwise as given. */
+function phoneLabel(phone: string | null): string | null {
+  const digits = phone?.replace(/\D/g, "") ?? "";
+  return digits.length === 12 && digits.startsWith("998")
+    ? `+998 ${digits.slice(3, 5)} ${digits.slice(5, 8)} ${digits.slice(8, 10)} ${digits.slice(10)}`
+    : phone;
+}
 
 const TEMPLATES: Record<string, { text: string; link: string }> = {
   "course-ending": { text: "Assalomu alaykum, {ism}! Vitamin kursingiz tugash arafasida. Takroriy buyurtma: {havola}", link: "/products" },
@@ -19,6 +27,11 @@ const TEMPLATES: Record<string, { text: string; link: string }> = {
   "abandoned-cart": { text: "{ism}, savatingizda mahsulotlar qoldi. Buyurtmani yakunlash: {havola}", link: "/cart" },
   "checkout-dropped": { text: "{ism}, buyurtmangiz yakunlanmay qoldi. Davom etish: {havola}", link: "/cart" },
   browsers: { text: "{ism}, siz koʻrgan mahsulotlar hali ham bor: {havola}", link: "/products" },
+  "bot-all": { text: "Assalomu alaykum, {ism}! Go Vita klubida yangi takliflar bor: {havola}", link: "/sale" },
+  "bot-linked": { text: "{ism}, sizning shaxsiy taklifingiz: {havola}", link: "/sale" },
+  "bot-buyers": { text: "{ism}, xaridingiz uchun rahmat! Sizga mos yangi mahsulotlar: {havola}", link: "/products" },
+  "bot-new": { text: "Assalomu alaykum, {ism}! Birinchi buyurtmangiz uchun maxsus taklif: {havola}", link: "/products" },
+  "bot-cart": { text: "{ism}, Telegram savatingizda mahsulotlar qoldi. Buyurtmani yakunlash: {havola}", link: "/cart" },
 };
 
 export default async function AdminSegmentPage({ params }: { params: Promise<{ id: string }> }) {
@@ -28,47 +41,63 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
   const [members, counts] = await Promise.all([segmentMembers(segment, 200), segmentCounts()]);
   const c = counts[segment.id];
   const isCustomers = segment.kind === "customers";
+  const isBot = segment.kind === "bot";
+  const valueHead = segment.id === "bot-cart" ? "Savatda" : isCustomers || isBot ? "Jami xarid" : "Savatda";
 
   return (
     <>
       <PageHeader eyebrow="Segmentlar va retarget" title={segment.title} lead={segment.description} actions={<Link href="/admin/segments" className={secondaryButtonClass}>← Barcha segmentlar</Link>} />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Auditoriya" value={formatNumber(c.size)} hint={isCustomers ? "mijoz" : "tashrif buyuruvchi"} />
-        <Metric label={isCustomers ? "Telegramga ulangan" : "Telefoni maʼlum"} value={formatNumber(c.reachable)} hint="toʻgʻridan-toʻgʻri murojaat" />
-        <Metric label={isCustomers ? "Jami xaridi" : "Savatlarda qolgan"} value={som(c.value)} />
+        <Metric label="Auditoriya" value={formatNumber(c.size)} hint={isCustomers ? "mijoz" : isBot ? "bot aʼzosi" : "tashrif buyuruvchi"} />
+        <Metric label={isCustomers ? "Telegramga ulangan" : isBot ? "Telegramga ochiq" : "Telefoni maʼlum"} value={formatNumber(c.reachable)} hint="toʻgʻridan-toʻgʻri murojaat" />
+        <Metric label={segment.id === "bot-cart" ? "Savatda qolgan" : isCustomers || isBot ? "Jami xaridi" : "Savatlarda qolgan"} value={som(c.value)} />
         <Metric label="Tavsiya" value={<span className="text-[17px] leading-6">{segment.action}</span>} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <Card
           title="Auditoriya"
-          lead={members.length === 200 ? "Birinchi 200 tasi — toʻliq roʻyxat eksportda" : undefined}
+          lead={isBot ? "Telefon faqat bogʻlanganda maʼlum boʻladi — shuning uchun bu roʻyxat eksport qilinmaydi, xabar bot orqali ketadi." : members.length === 200 ? "Birinchi 200 tasi — toʻliq roʻyxat eksportda" : undefined}
           actions={
-            <div className="flex flex-wrap gap-2">
-              <a href={`/admin/segments/${segment.id}/export?format=crm`} className={smallButtonClass}>CSV (jamoa uchun)</a>
-              <a href={`/admin/segments/${segment.id}/export?format=meta`} className={smallButtonClass}>Meta auditoriya</a>
-              <a href={`/admin/segments/${segment.id}/export?format=google`} className={smallButtonClass}>Google Customer Match</a>
-            </div>
+            isBot ? undefined : (
+              <div className="flex flex-wrap gap-2">
+                <a href={`/admin/segments/${segment.id}/export?format=crm`} className={smallButtonClass}>CSV (jamoa uchun)</a>
+                <a href={`/admin/segments/${segment.id}/export?format=meta`} className={smallButtonClass}>Meta auditoriya</a>
+                <a href={`/admin/segments/${segment.id}/export?format=google`} className={smallButtonClass}>Google Customer Match</a>
+              </div>
+            )
           }
         >
           {members.length === 0 ? (
             <EmptyState title="Hozircha bu segment boʻsh">Shartga mos kelgan odam paydo boʻlishi bilan roʻyxat oʻzi toʻladi.</EmptyState>
           ) : (
             <TableWrap>
-              <table className={tableClass}>
-                <thead><tr><th className={thClass}>Kim</th><th className={`${thClass} text-right`}>Buyurtmalar</th><th className={`${thClass} text-right`}>{isCustomers ? "Jami xarid" : "Savatda"}</th><th className={thClass}>{isCustomers ? "Oxirgi xarid" : "Oxirgi faollik"}</th><th className={thClass}>Telegram</th></tr></thead>
+              <table className={cn(tableClass, isBot && "min-w-[560px]")}>
+                <thead><tr><th className={thClass}>Kim</th><th className={`${thClass} text-right`}>Buyurtmalar</th><th className={`${thClass} text-right`}>{valueHead}</th><th className={thClass}>{isCustomers ? "Oxirgi xarid" : "Oxirgi faollik"}</th><th className={thClass}>Telegram</th></tr></thead>
                 <tbody>
                   {members.map((m) => (
                     <tr key={m.key}>
                       <td className={tdClass}>
-                        <Link href={isCustomers ? `/admin/customers/${m.key}` : `/admin/visitors/${m.key}`} className={linkClass}>{m.name ?? m.phone ?? `Mehmon ${m.key.slice(0, 6)}`}</Link>
-                        {m.phone && m.name && <span className="block text-[13px] text-muted">{m.phone}</span>}
+                        {isBot ? (
+                          <span className="font-semibold text-ink">{m.name ?? m.phone ?? `Chat ${m.telegramChatId}`}</span>
+                        ) : (
+                          <Link href={isCustomers ? `/admin/customers/${m.key}` : `/admin/visitors/${m.key}`} className={linkClass}>{m.name ?? m.phone ?? `Mehmon ${m.key.slice(0, 6)}`}</Link>
+                        )}
+                        {m.phone && m.name && <span className="block whitespace-nowrap text-[13px] text-muted">{phoneLabel(m.phone)}</span>}
                       </td>
                       <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(m.orders)}</td>
                       <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{som(m.value)}</td>
                       <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{timeAgo(m.lastAt)}</td>
-                      <td className={tdClass}>{m.telegramChatId ? <Pill tone="dark">ulangan</Pill> : <span className="text-muted">—</span>}</td>
+                      <td className={tdClass}>
+                        {isBot ? (
+                          <Pill tone={m.phone ? "dark" : "outline"}>{m.phone ? "telefon" : "bot chati"}</Pill>
+                        ) : m.telegramChatId ? (
+                          <Pill tone="dark">ulangan</Pill>
+                        ) : (
+                          <span className="text-muted">—</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -88,6 +117,7 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
                 defaultMessage={TEMPLATES[segment.id]?.text ?? ""}
                 defaultLink={TEMPLATES[segment.id]?.link ?? ""}
                 reach={{ telegram: c.reachable, phones: isCustomers ? c.size : c.reachable }}
+                channels={isBot ? ["telegram"] : undefined}
               />
               <label className="flex min-h-11 items-center gap-3 text-[14px] text-ink">
                 <input type="checkbox" name="confirm" className="h-5 w-5 accent-ink" required />
@@ -97,7 +127,13 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
           </Card>
           <Card title="Reklama kabinetida remarketing">
             <ol className="flex list-decimal flex-col gap-2 pl-5 text-[14px] leading-5 text-ink-2">
-              {isCustomers ? (
+              {isBot ? (
+                <>
+                  <li>Bu auditoriya faqat Telegram ichida: har bir aʼzo botni oʻzi ishga tushirgan.</li>
+                  <li>Telefoni bogʻlanmaganlar ham xabar oladi — SMS yoki reklama kabinetisiz.</li>
+                  <li>Yuborilgan xabar <Link href="/admin/campaigns" className={linkClass}>Kampaniyalar</Link> boʻlimida bosilish va buyurtma bilan hisoblanadi.</li>
+                </>
+              ) : isCustomers ? (
                 <>
                   <li><b>Meta auditoriya</b> faylini Meta Ads Manager → Audiences → Custom Audience → Customer list ga yuklang.</li>
                   <li><b>Google Customer Match</b> faylini Google Ads → Audience manager → Customer list ga yuklang.</li>

@@ -46,7 +46,7 @@ Telegram ──polling──▶ govita-vip-bot (Python, aiogram, Fly: govita-bot
 
 | Qayerda | Nima boʻladi |
 |---|---|
-| `/start` | Aʼzo yoziladi (`s_<manba>` deep-link — manba sifatida). Raqam bogʻlanmagan boʻlsa, kontakt soʻraladi |
+| `/start` | Aʼzo yoziladi (`s_<manba>` deep-link — manba sifatida). Salomlashuv `/admin/bot` dagi matndan (uz/ru) olinadi; API javob bermasa — ichki matn. Raqam bogʻlanmagan boʻlsa, kontakt soʻraladi |
 | Kontakt | Faqat **oʻz** kontakti (`contact.user_id == from.id`). Raqam boshqa chatga bogʻlangan boʻlsa — bogʻlanmaydi, operatorga «Raqam ziddiyati» murojaati |
 | «Doʻkon», menyu tugmasi | Sayt Mini App boʻlib ochiladi (`/uz`) |
 | Mini App'da buyurtma | `initData` serverda Telegram imzosi bilan tekshiriladi (`lib/bot/webapp.ts`), chat id buyurtmaga yoziladi. Brauzerdagi hech narsaga ishonilmaydi |
@@ -105,12 +105,37 @@ Ishchi (`src/lib/messaging/worker.ts`, har 5 daqiqada) uchta narsani bajaradi:
 
 Hamma flow'lar **oʻchiq holda** seed qilinadi — matnlarni `/admin/flows` da koʻrib, oʻzingiz yoqasiz. Sokin soatlar 21:00–09:00 (Toshkent), opt-out va dedupe engine darajasida.
 
+## Bot auditoriyalari (segmental kampaniya)
+
+`/admin/segments` da «Bot aʼzolari» guruhi — sayt segmentlaridan farqi: bu odamlar
+Telegramda, hatto telefon bogʻlanmagan boʻlsa ham. Xabar **faqat Telegram** orqali
+ketadi (SMS uchun raqam yoʻq) va oʻsha outbox, sokin soat, opt-out, shaxsiy
+promokod va bosish hisobini ishlatadi.
+
+| Segment | Kim | Dedupe kaliti |
+|---|---|---|
+| `bot-all` | Botni ishga tushirgan, bloklamaganlar | `telefon9`, yoʻq boʻlsa `tg<chat>` |
+| `bot-linked` | Telefonini ulaganlar | `telefon9` |
+| `bot-buyers` | Kamida bitta bekor qilinmagan buyurtmasi borlar | `telefon9` |
+| `bot-new` | Telefon ulagan, hali xarid qilmaganlar | `telefon9` |
+| `bot-cart` | Savatida mahsulot qoldirib, 1 soat–30 kun buyurtma bermaganlar | `telefon9` / `tg<chat>` |
+
+Telefon bogʻlanmagan aʼzo uchun opt-out — botni bloklash (`blocked_at`), shuning
+uchun bunday chatga faqat bloklanmagan boʻlsa yoziladi. Telefonli aʼzolar uchun
+odatdagi `marketing_optouts` qoidasi amal qiladi.
+
+Aʼzolar roʻyxati eksport qilinmaydi: telefon faqat bogʻlanganda maʼlum boʻladi,
+reklama kabineti auditoriyasi esa saytdagi «Mijozlar» segmentlaridan olinadi.
+
 ## Admin (`/admin/bot`)
 
 - **Klub** — 30 kunlik kanal statistikasi (bot / Mini App / sayt va bot savdo summasi), aʼzolar; sozlamalar (holat xabarlari yoqilgan, klub nomi,
-  Mini App manzili, operator telefoni, ish vaqti — bot keyingi soʻrovda oladi);
+  Mini App manzili, operator telefoni, ish vaqti, **salomlashuv uz/ru** — bot
+  keyingi soʻrovda oladi);
   **«Klubga xabar»** — botni bloklamagan barcha aʼzolarga (tasdiq belgisi bilan,
-  1000 belgi, HTML escape qilinadi).
+  1000 belgi, HTML escape qilinadi);
+  **«Segmental kampaniyalar»** — 5 bot auditoriyasi hajmi bilan, bosilsa
+  `/admin/segments/<id>` dagi tayyor shablon va kanal tanloviga olib boradi.
 - **Murojaatlar** — javob shu botdan boradi (bir murojaatga bitta javob), yopish.
 - **Aʼzolar** — /start bosganlar, raqam, manba, bloklagan.
 - **Xabarlar navbati** — har bir xabar holati, «Qayta yuborish».

@@ -1,14 +1,18 @@
+import Link from "next/link";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { BotTabs } from "@/components/admin/BotTabs";
 import { Card, Field, Metric, Notice, PageHeader, inputClass, somShort, textareaClass } from "@/components/admin/ui";
 import { broadcastAction, saveClub } from "@/app/admin/_actions/bot";
 import { MIN_BOT_KEY_LENGTH } from "@/lib/bot/auth";
 import { clubOverview, getClubConfig } from "@/lib/bot/store";
+import { SEGMENTS, segmentCounts } from "@/lib/admin/segments";
+import { formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Telegram klub" };
 
 export default async function AdminBotPage() {
-  const [stats, club] = await Promise.all([clubOverview(), getClubConfig()]);
+  const [stats, club, counts] = await Promise.all([clubOverview(), getClubConfig(), segmentCounts()]);
+  const botSegments = SEGMENTS.filter((s) => s.kind === "bot");
   const keyReady = (process.env.BOT_API_KEY?.length ?? 0) >= MIN_BOT_KEY_LENGTH;
   const miniAppReady = Boolean(process.env.TELEGRAM_CLUB_BOT_TOKEN);
 
@@ -59,6 +63,14 @@ export default async function AdminBotPage() {
             <Field label="Operator telefoni">
               <input name="supportPhone" defaultValue={club.supportPhone} maxLength={40} className={inputClass} />
             </Field>
+            <div className="grid gap-4 md:grid-cols-2">
+              <Field label="Salomlashuv (oʻzbekcha)" hint="Yangi mijoz /start bosganda shu matn chiqadi">
+                <textarea name="greetingUz" defaultValue={club.greeting.uz} maxLength={600} rows={3} className={textareaClass} />
+              </Field>
+              <Field label="Приветствие (русский)" hint="Пустое поле — встроенный текст">
+                <textarea name="greetingRu" defaultValue={club.greeting.ru} maxLength={600} rows={3} className={textareaClass} />
+              </Field>
+            </div>
             <Field label="Ish vaqti">
               <input name="supportHours" defaultValue={club.supportHours} maxLength={120} className={inputClass} />
             </Field>
@@ -78,6 +90,30 @@ export default async function AdminBotPage() {
               Hammaga yuborishni tasdiqlayman
             </label>
           </ActionForm>
+        </Card>
+      </div>
+
+      <div className="mt-6">
+        <Card
+          title="Segmental kampaniyalar"
+          lead="Barcha aʼzolarga emas — tanlangan guruhga Telegramda yozing. Har bir xabar navbat, tungi soat (21:00–09:00) va opt-out qoidalaridan oʻtadi."
+        >
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            {botSegments.map((segment) => (
+              <Link
+                key={segment.id}
+                href={`/admin/segments/${segment.id}`}
+                className="flex flex-col rounded-[16px] bg-tile p-4 transition-colors hover:bg-tile-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
+              >
+                <span className="flex items-baseline justify-between gap-3">
+                  <span className="text-[15px] font-semibold text-ink">{segment.title}</span>
+                  <span className="text-[22px] font-bold leading-7 tabular-nums text-ink">{formatNumber(counts[segment.id]?.reachable ?? 0)}</span>
+                </span>
+                <span className="mt-1 flex-1 text-[13px] leading-5 text-ink-2">{segment.description}</span>
+                <span className="mt-3 text-[13px] font-semibold text-ink">→ Xabar yuborish</span>
+              </Link>
+            ))}
+          </div>
         </Card>
       </div>
     </>

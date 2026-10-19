@@ -11,8 +11,8 @@ import { CATALOG_TAG } from "@/lib/catalog/db";
 import { rawPromotions } from "@/lib/shopflow/mock";
 import { SLUG_RE, fromTashkentInput } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
-import { segmentById, segmentMembers } from "@/lib/admin/segments";
-import { queueMessage, reachContext, resolveReach, type Reach } from "@/lib/messaging/outbox";
+import { campaignTargetKey, segmentById, segmentMembers } from "@/lib/admin/segments";
+import { queueMessage, reachContext, resolveChatReach, resolveReach, type Reach } from "@/lib/messaging/outbox";
 import { firstName, renderTemplate } from "@/lib/messaging/template";
 import { isQuietHours } from "@/lib/messaging/quiet-hours";
 import { campaignMessageKey } from "@/lib/messaging/keys";
@@ -67,23 +67,36 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   const ctx = await reachContext();
   if (d.channel === "sms" && !ctx.smsAvailable) return { error: "SMS ulanmagan. Integratsiyalar → SMS (Eskiz) boʻlimida sozlang." };
 
-  const targets: { phone9: string; name: string | null; reach: Exclude<Reach, { channel: null }> }[] = [];
+  /*
+    A bot audience also contains people who pressed /start but never linked a
+    phone. They can still be written to in Telegram, by chat id — but SMS is
+    impossible without a number, so that channel is rejected outright.
+  */
+  if (segment.kind === "bot" && d.channel !== "telegram") {
+    return { error: "Bot auditoriyasiga faqat Telegram orqali yoziladi: telefon raqami hali maʼlum emas." };
+  }
+
+  const targets: { phone9: string | null; key: string; name: string | null; reach: Exclude<Reach, { channel: null }> }[] = [];
   const seen = new Set<string>();
   let unreachable = 0;
   for (const member of members) {
-    const phone9 = member.phone?.replace(/\D/g, "").slice(-9) ?? "";
-    if (phone9.length !== 9 || seen.has(phone9)) continue;
-    seen.add(phone9);
-    const reach = await resolveReach(db, phone9, d.channel, ctx);
+    const digits = member.phone?.replace(/\D/g, "").slice(-9) ?? "";
+    const phone9 = digits.length === 9 ? digits : null;
+    const key = campaignTargetKey(phone9, member.telegramChatId);
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    const reach = phone9 ? await resolveReach(db, phone9, d.channel, ctx) : await resolveChatReach(db, member.telegramChatId!, ctx);
     if (reach.channel === null) unreachable += 1;
-    else targets.push({ phone9, name: member.name, reach });
+    else targets.push({ phone9, key, name: member.name, reach });
   }
   if (targets.length === 0) {
     return {
       error:
-        d.channel === "telegram"
-          ? "Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi."
-          : "Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq yoki obunadan chiqqan).",
+        segment.kind === "bot"
+          ? "Bu auditoriyada ochiq Telegram chati yoʻq: hamma botni bloklagan yoki klub oʻchirilgan."
+          : d.channel === "telegram"
+            ? "Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi."
+            : "Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq yoki obunadan chiqqan).",
     };
   }
 
@@ -102,7 +115,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
       link: d.link || null,
       promo,
       campaignId: campaign.id,
-      dedupeKey: campaignMessageKey(campaign.id, t.phone9),
+      dedupeKey: campaignMessageKey(campaign.id, t.key),
     });
     if (id) queued += 1;
   }

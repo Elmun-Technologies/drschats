@@ -17,8 +17,19 @@ const CHANNELS: { value: CampaignChannel; label: string; hint: string }[] = [
   { value: "sms", label: "SMS", hint: "telefoni maʼlum mijozlar" },
 ];
 
-export function CampaignFields({ defaultMessage, defaultLink, reach }: { defaultMessage: string; defaultLink: string; reach: { telegram: number; phones: number } }) {
-  const [channel, setChannel] = useState<CampaignChannel>("telegram");
+export function CampaignFields({
+  defaultMessage,
+  defaultLink,
+  reach,
+  channels = ["telegram", "telegram_then_sms", "sms"],
+}: {
+  defaultMessage: string;
+  defaultLink: string;
+  reach: { telegram: number; phones: number };
+  /** A bot audience has no phone for everyone, so it offers Telegram only. */
+  channels?: CampaignChannel[];
+}) {
+  const [channel, setChannel] = useState<CampaignChannel>(channels[0] ?? "telegram");
   const [message, setMessage] = useState(defaultMessage);
   const [promo, setPromo] = useState<"none" | "percent" | "fixed">("none");
 
@@ -26,11 +37,13 @@ export function CampaignFields({ defaultMessage, defaultLink, reach }: { default
     <>
       <fieldset className="flex flex-col gap-2">
         <legend className="mb-1.5 text-[14px] font-semibold text-ink">Kanal</legend>
-        {CHANNELS.map((c) => (
+        {CHANNELS.filter((c) => channels.includes(c.value)).map((c) => (
           <label key={c.value} className="flex min-h-11 cursor-pointer items-center gap-3 rounded-[12px] border border-transparent bg-tile px-3.5 text-[14px] text-ink has-[:checked]:border-ink has-[:checked]:bg-white">
             <input type="radio" name="channel" value={c.value} checked={channel === c.value} onChange={() => setChannel(c.value)} className="h-5 w-5 accent-ink" />
             <span className="font-semibold">{c.label}</span>
-            <span className="ml-auto text-right text-[13px] text-muted">{c.value === "telegram" ? `${reach.telegram} ta` : `${reach.phones} ta`} · {c.hint}</span>
+            <span className="ml-auto text-right text-[13px] text-muted">
+              {c.value === "telegram" ? `${reach.telegram} ta` : `${reach.phones} ta`} · {c.value === "telegram" && channels.length === 1 ? "bot aʼzolari" : c.hint}
+            </span>
           </label>
         ))}
       </fieldset>

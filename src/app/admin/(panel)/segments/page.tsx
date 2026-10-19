@@ -9,6 +9,7 @@ export default async function AdminSegmentsPage() {
   const counts = await segmentCounts();
   const groups = [
     { kind: "customers" as const, title: "Mijozlar (telefoni maʼlum)", lead: "Eksport qilib Meta / Google auditoriyasiga yuklang yoki Telegram orqali xabar yuboring." },
+    { kind: "bot" as const, title: "Bot aʼzolari (Telegram)", lead: "Botni ishga tushirganlar. Telefon hali bogʻlanmagan boʻlsa ham ularga bot orqali yozish mumkin — sayt segmentlaridan farqi shu." },
     { kind: "visitors" as const, title: "Tashrif buyuruvchilar (anonim)", lead: "Pixel orqali remarketing auditoriyasi; telefoni maʼlum boʻlganlarga toʻgʻridan-toʻgʻri murojaat." },
   ];
   return (
@@ -29,8 +30,14 @@ export default async function AdminSegmentsPage() {
                   </div>
                   <p className="mt-1.5 flex-1 text-[14px] leading-5 text-ink-2">{segment.description}</p>
                   <div className="mt-4 flex flex-wrap items-center gap-2">
-                    <Pill tone={c.reachable > 0 ? "dark" : "outline"}>{segment.kind === "customers" ? `Telegram: ${formatNumber(c.reachable)}` : `Telefoni bor: ${formatNumber(c.reachable)}`}</Pill>
-                    {c.value > 0 && <Pill tone="outline">{segment.kind === "customers" ? "LTV" : "Savatlarda"} {som(c.value)}</Pill>}
+                    <Pill tone={c.reachable > 0 ? "dark" : "outline"}>
+                      {segment.kind === "visitors" ? `Telefoni bor: ${formatNumber(c.reachable)}` : `Telegram: ${formatNumber(c.reachable)}`}
+                    </Pill>
+                    {c.value > 0 && (
+                      <Pill tone="outline">
+                        {segment.kind === "customers" ? "LTV" : segment.kind === "bot" ? (segment.id === "bot-cart" ? "Savatda" : "Xarid") : "Savatlarda"} {som(c.value)}
+                      </Pill>
+                    )}
                   </div>
                   <p className="mt-3 text-[13px] font-semibold text-ink">→ {segment.action}</p>
                 </Link>
