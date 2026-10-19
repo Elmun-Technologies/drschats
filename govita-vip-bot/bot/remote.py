@@ -87,7 +87,9 @@ async def show_order(m, api, chat, code):
     if o.get('timeline'):
         lines.append('')
         lines += [f"• {escape(t['stage'])}" for t in o['timeline']]
-    await m.answer('\n'.join(lines), reply_markup=kb([b('💬 Savol berish', 'm:help')], [b('⬅️ Menyu', 'm:menu')]))
+    locale = await shop_ui.locale_of(api, chat)
+    again = "🔁 Qayta buyurtma" if locale != "ru" else "🔁 Повторить заказ"
+    await m.answer('\n'.join(lines), reply_markup=kb([b(again, f"reorder:{o['code']}")], [b('💬 Savol berish', 'm:help')], [b('⬅️ Menyu', 'm:menu')]))
 
 
 @router.callback_query()
@@ -107,6 +109,19 @@ async def callback(q, api):
         await q.message.answer('📦 Buyurtmalarim', reply_markup=kb(*rows, [b('⬅️ Menyu', 'm:menu')]))
     elif data.startswith('ord:'):
         await show_order(q.message, api, chat, data[4:])
+    elif data.startswith('reorder:'):
+        code = data[8:]
+        try:
+            await api.request('POST', '/shop/reorder', body={'chatId': chat, 'orderNumber': code})
+            locale = await shop_ui.locale_of(api, chat)
+            await shop_ui.send_cart(q.message, api, chat, locale, edit=False)
+        except BackendError as e:
+            if e.status == 404:
+                await q.message.answer('Buyurtma topilmadi.')
+            elif e.status == 409:
+                await q.message.answer('Bu buyurtmadagi mahsulotlar hozir sotuvda yoʻq.')
+            else:
+                await q.message.answer('Qayta buyurtma hozir imkonsiz. Birozdan keyin urinib koʻring.')
     else:
         locale = await shop_ui.locale_of(api, chat)
         customer = await shop_ui.customer_of(api, chat)

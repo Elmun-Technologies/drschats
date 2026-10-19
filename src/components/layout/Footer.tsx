@@ -41,6 +41,8 @@ export function Footer({
   const header = useTranslations("header");
   const contact = useTranslations("contact");
   const legal = useTranslations("legal");
+  // Static year avoids a hydration mismatch at the New Year boundary (server at 23:59, client at 00:00).
+  // The legal line is refreshed each deploy; an exact midnight rollover is not worth client JavaScript.
   const year = new Date().getFullYear();
 
   const bot = process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME?.trim().replace(/^@/, "");
@@ -152,7 +154,7 @@ export function Footer({
         </div>
 
         <div className="flex flex-col gap-3 text-[13px] leading-[19px] text-ink-2 md:flex-row md:flex-wrap md:items-start md:justify-between md:gap-x-8 md:text-sm md:leading-5">
-          <p className="max-w-[760px] md:flex-[1_1_520px]">
+          <p suppressHydrationWarning className="max-w-[760px] md:flex-[1_1_520px]">
             © {year} Go Vita. {t("importer", { name: BRAND.legal.importer })} {legal("footer")}
           </p>
           <span className="flex flex-wrap gap-x-5 gap-y-1">
