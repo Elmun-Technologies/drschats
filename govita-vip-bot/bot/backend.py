@@ -10,8 +10,10 @@ import aiohttp
 
 
 class BackendError(Exception):
-    def __init__(self, status, code):
+    def __init__(self, status, code, data=None):
         self.status, self.code = status, code
+        # Only the fields the shop UI can act on; never a full response body.
+        self.data = data or {}
         # Never include URL, keys, response bodies or customer data in errors.
         super().__init__(f"GoVita backend {status}: {code}")
 
@@ -53,7 +55,15 @@ class GoVitaBackend:
                     headers={'Authorization': f'Bearer {self.key}'},
                     json=body, params=params, allow_redirects=False) as response:
                 if not 200 <= response.status < 300:
-                    raise BackendError(response.status, 'request_failed')
+                    code, data = 'request_failed', {}
+                    try:
+                        payload = await response.json()
+                        if isinstance(payload, dict):
+                            code = str(payload.get('error') or 'request_failed')[:64]
+                            data = {k: payload[k] for k in ('reason', 'slug', 'available') if k in payload}
+                    except Exception:  # noqa: BLE001 — a non-JSON error is just the status
+                        pass
+                    raise BackendError(response.status, code, data)
                 return await response.json()
         except (aiohttp.ClientError, TimeoutError, ValueError) as exc:
             raise BackendError(503, 'upstream_unavailable') from exc

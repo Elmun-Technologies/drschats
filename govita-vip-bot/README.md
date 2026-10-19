@@ -6,13 +6,17 @@ Sayt (`govita.uz`, repo ildizidagi Next.js) dan **alohida** loyiha. Spec va mock
 
 **ShopFlow ishlatilmaydi.** GoVita backendga admin va service API qo‘shildi.
 Production adapter haqiqiy customers/orders/subscriptions/tickets/outbox
-bilan ishlaydi. To‘liq VIP funksiyalar hali yakunlanmagan.
+bilan ishlaydi. **Native do‘kon** (`bot/shop.py`) tayyor: katalog, savat,
+qadam-baqadam checkout va idempotent buyurtma — barchasi sayt API’si orqali.
+To‘liq VIP funksiyalar hali yakunlanmagan.
 Sozlash va cheklovlar: [BOT-ADMIN.md](../docs/BOT-ADMIN.md).
 
 ## Lokal prototipdagi oqimlar (mockuplar 01–10)
 - `/start` → salomlashuv, «Klubda nima bor», `📱 Raqamni ulashish`; begona kontakt rad etiladi, raqam konflikti → operator lidi
 - Deep link: `login`, `club`, `o_<kod>`, `r_<ref>`, `s_<manba>`, `sub_<id>` (egalik tekshiruvi bilan)
-- Bosh menyu: Doʻkon (Mini App), Buyurtmalarim, Obunalarim, Eslatmalar, VIP klub, Aksiyalar, Vitamin testi, Savol berish, Maʼlumot, Til
+- Bosh menyu: Doʻkon (Mini App), Katalog, Savat, Buyurtmalarim, VIP klub, Savol berish, Til
+- `/katalog`, `/savat` — native doʻkonni toʻgʻridan-toʻgʻri ochadi
+- Savat serverda (`bot_carts`): `➕` / `➖` / `🗑`, promokod; har bir narx serverda qayta hisoblanadi
 - Buyurtma kartasi (bosqichlar, tarkib, jami), bosqich xabarlari (dedupe) — `workers.push_stage()`
 - Qabul eslatmalari (✅ Ichdim / ⏱ 1 soat / ⏸ oʻchirish), bir slotga bitta xabar
 - Kurs tugashi xabari (doza boʻyicha, sokin soatlar, obunadagiga yoʻq)
@@ -39,7 +43,7 @@ docker compose logs --tail=50 bot
 Kalitlarni chatda yoki Git’da saqlamang. API manzili admin panelning frontend
 URL’i emas, server endpointlari bazasi bo‘ladi.
 
-Production: `GOVITA_API_URL=https://<backend>/api/v1/bot`, xizmat kaliti backend
+Production: `GOVITA_API_URL=https://<sayt>/api/bot`, xizmat kaliti backend
 `BOT_API_KEY` bilan bir xil. Lokal sinov uchun `python -m bot --demo`.
 SQLite va lokal pepper Docker `/data` volume’da saqlanadi.
 
@@ -47,5 +51,6 @@ SQLite va lokal pepper Docker `/data` volume’da saqlanadi.
 ayni token bilan yoqmang. Bu loyiha webhook’ni avtomatik o‘chirmaydi.
 
 ## Keyingi qadam
-Kurs/eslatma, katalog doza ma’lumotlari va obuna run idempotency yakunlanadi.
-Admin moduli va real Telegram end-to-end sinovi kerak; 100% tayyor emas.
+Mini App adaptatsiyasi (soddalashtirilgan header/footer, safe-area, haptics),
+bot marketing avtomatizatsiyasi va `/admin/bot` statistikasi. Real Telegram
+end-to-end sinovi talab qilinadi; 100% tayyor emas.

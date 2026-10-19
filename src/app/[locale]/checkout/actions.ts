@@ -13,78 +13,23 @@ import { getPrograms } from "@/lib/content/programs";
 import { isOnlineProviderAvailable } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
 import { clientIp, withinRateLimit } from "@/lib/rate-limit";
-import { notifyOperator } from "@/lib/notifications/operator";
 import { siteOrigin } from "@/lib/email/config";
 import { sendCampaign } from "@/lib/email/send";
 import { requestEmailOptIn } from "@/app/actions/emailOptIn";
 import { formatMoney } from "@/lib/utils";
 import { upsellPool } from "@/lib/upsell/pool";
-import { describeAttribution } from "@/lib/analytics/attribution";
-import { ordersFromPhone } from "@/lib/catalog/db";
-import { COMMERCE } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { pricingRulesOf } from "@/lib/commerce/settings";
 import { linkOrderToVisitor, visitorIdFrom, VISITOR_COOKIE } from "@/lib/journey/collect";
 import { placeOrder } from "@/lib/promo/server";
 import { discountAdjustment, phone9Of, pointsSpent, type PromoReason } from "@/lib/promo/rules";
+import { notifyOperatorOfOrder } from "@/lib/orders/notify";
 import { readLoyaltyRules } from "@/lib/loyalty/settings";
 import { signReceipt } from "@/lib/loyalty/receipt";
 import { both, earnLaterLine, joinLines, spentLine } from "@/lib/loyalty/messages";
 import { ensureReferralCode } from "@/lib/referral/server";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
-
-/*
-  With the database the order-level discount is already in the total
-  (lib/promo/server.ts) and the message says which one. Without it the
-  first-order discount (COMMERCE.discounts.firstOrderPercent) is still the
-  operator's to apply on confirmation, and the line tells them to check.
-*/
-async function discountLines(order: OrderRequest): Promise<string[]> {
-  const adjustment = discountAdjustment(order.totals.adjustments);
-  const lines: string[] = [];
-  if (adjustment?.kind === "promo") lines.push(`🏷 Promokod ${adjustment.code}: −${formatMoney(adjustment.amount, "uz")} (qoʻllandi)`);
-  if (adjustment?.kind === "referral") lines.push(`🤝 Doʻst kodi ${adjustment.code} −${adjustment.percent}%: −${formatMoney(adjustment.amount, "uz")} (qoʻllandi)`);
-  const points = pointsSpent(order.totals.adjustments);
-  if (points > 0) lines.push(`💎 Ball bilan toʻlandi: −${formatMoney(points, "uz")} (SMS kod bilan tasdiqlangan)`);
-  if (adjustment?.kind === "first_order") {
-    lines.push(`🎁 Birinchi buyurtma −${adjustment.percent}%: −${formatMoney(adjustment.amount, "uz")} (avtomatik qoʻllandi)`);
-  }
-  const placed = await ordersFromPhone(order.customer.phone);
-  if (placed === null) lines.push(`🎁 Birinchi buyurtma boʻlsa −${COMMERCE.discounts.firstOrderPercent}% (tekshiring)`);
-  else if (placed <= 1) {
-    if (adjustment?.kind !== "first_order") lines.push("🎁 Yangi mijoz");
-  } else lines.push(`🔁 Qaytgan mijoz: avval ${placed - 1} ta buyurtma`);
-  return lines;
-}
-
-async function notifyOperatorOfOrder(order: OrderRequest, orderId: string): Promise<boolean> {
-  const items = order.items
-    .map((i) => `  • ${i.name} × ${i.quantity}${i.upsellDiscountPercent ? ` (−${i.upsellDiscountPercent}%)` : ""}${i.subscription ? ` · obuna ${i.subscription.intervalDays} kun` : ""}`)
-    .join("\n");
-  const text = [
-    `🛒 Yangi buyurtma #${orderId}`,
-    `👤 ${order.customer.name} — ${order.customer.phone}`,
-    order.customer.email ? `✉️ ${order.customer.email}` : "",
-    `📍 ${order.delivery.region}, ${order.delivery.address}`,
-    `🚚 ${order.delivery.method}`,
-    order.payment
-      ? `💳 ${order.payment.method === "online" ? `Onlayn to'lov: ${order.payment.provider}` : "Yetkazishda to'lov"}`
-      : "",
-    `\n${items}`,
-    order.totals.discount > 0 ? `🏷 Chegirma: ${formatMoney(order.totals.discount, "uz")}` : "",
-    `🚚 Yetkazish: ${formatMoney(order.totals.shipping, "uz")}`,
-    `💰 Jami: ${formatMoney(order.totals.total, "uz")}`,
-    ...(await discountLines(order)),
-    describeAttribution(order.attribution) ? `📣 Manba: ${describeAttribution(order.attribution)}` : "",
-  ]
-    .filter(Boolean)
-    .join("\n");
-
-  // Plain text: a "_" or "*" in a customer's name or address would make
-  // Telegram reject a Markdown message, and the order would never reach anyone.
-  return notifyOperator(text);
-}
 
 /**
  * The customer's copy of the order.
@@ -152,10 +97,13 @@ async function offerContext(order: OrderRequest, products: Product[]): Promise<O
   so the customer is told about every status change there. Orders from the
   website reach Telegram too when their phone is linked to the bot.
 */
-async function clubBotReceipt(orderId: string, initData: string | undefined, loyalty: { earn: number; spent: number }): Promise<void> {
+async function clubBotReceipt(
+  orderId: string,
+  user: ReturnType<typeof verifyInitData>,
+  loyalty: { earn: number; spent: number },
+): Promise<void> {
   if (!ORDERS_IN_DB) return;
   try {
-    const user = verifyInitData(initData);
     if (user) await attachOrderChat(orderId, user.id);
     const extra = joinLines(
       loyalty.spent > 0 ? both((l) => spentLine(loyalty.spent, l)) : null,
@@ -202,6 +150,22 @@ export async function submitOrder(
     return { ok: false, error: "invalid" };
   }
   const { telegram, ...request } = parsed.data as OrderRequest;
+  /*
+    A signed Mini App launch makes this a Telegram order: the chat id is kept
+    on the order (status messages go there) and the source is set here, never
+    from the payload. An unsigned `telegram` string changes nothing.
+  */
+  const telegramUser = verifyInitData(telegram);
+  // The channel is decided here, never trusted from the payload: without a
+  // signed Mini App launch a browser order is a site order.
+  request.source = telegramUser ? "telegram_mini" : "site";
+  if (telegramUser) {
+    request.attribution = {
+      ...(request.attribution ?? {}),
+      utmSource: request.attribution?.utmSource || "telegram",
+      utmMedium: request.attribution?.utmMedium || "mini_app",
+    };
+  }
 
   // Reject online payment unless the provider has a complete, verified flow.
   if (request.payment?.method === "online" && !isOnlineProviderAvailable(request.payment.provider)) {
@@ -291,7 +255,7 @@ export async function submitOrder(
               items: order.items,
             })
           : Promise.resolve(),
-        clubBotReceipt(result.orderId, telegram, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
+        clubBotReceipt(result.orderId, telegramUser, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
         emailOrderConfirmation(order, result.orderId),
         order.customer.email && order.customer.marketingOptIn
           ? requestEmailOptIn({

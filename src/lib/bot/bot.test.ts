@@ -16,7 +16,22 @@ vi.mock("./store", () => ({
   claimJobs: vi.fn(async () => []),
   receipt: vi.fn(async () => true),
 }));
+vi.mock("./shop", () => ({
+  botCategories: vi.fn(async () => [{ slug: "vitamins", name: "Vitaminlar", count: 4 }]),
+  botCatalog: vi.fn(async (input: { page: number }) => ({ locale: "uz", categories: [], items: [], total: 0, page: input.page, pages: 1 })),
+  botProduct: vi.fn(async (slug: string) => (slug === "delical-vanil-200ml" ? { slug, name: "Delical", price: 118000, inStock: true } : null)),
+  botLocale: vi.fn(async () => "uz"),
+  quoteBotCart: vi.fn(async () => ({ locale: "uz", lines: [], issues: [], totals: {}, promo: { code: null, ok: false }, firstOrder: {}, adjustment: null })),
+  addToCart: vi.fn(async () => ({ added: true })),
+  setCartQuantity: vi.fn(async () => ({})),
+  clearCart: vi.fn(async () => undefined),
+  setCartPromo: vi.fn(async () => undefined),
+  placeBotOrder: vi.fn(async () => ({ ok: true, orderId: "GV-000123", total: 118000, alreadyCreated: false })),
+  reorderToCart: vi.fn(async () => 1),
+  setBotLocale: vi.fn(async () => undefined),
+}));
 const store = await import("./store");
+const shop = await import("./shop");
 const { handleBotApi } = await import("./api");
 
 describe("phone", () => {
@@ -113,5 +128,146 @@ describe("bot API routing", () => {
     expect(store.receipt).toHaveBeenCalledWith(3, "a".repeat(32), { result: "retry", retryAfter: 5 });
     expect((await handleBotApi("POST", ["outbox", "claim"], {}, q)).status).toBe(200);
     expect((await handleBotApi("DELETE", ["config"], undefined, q)).status).toBe(404);
+  });
+});
+
+describe("bot shop API contract", () => {
+  beforeEach(() => vi.clearAllMocks());
+  const q = new URLSearchParams();
+
+  it("lists categories and passes catalogue filters through", async () => {
+    const cats = await handleBotApi("GET", ["shop", "categories"], undefined, new URLSearchParams("locale=ru"));
+    expect(cats.status).toBe(200);
+    expect(shop.botCategories).toHaveBeenCalledWith("ru");
+
+    const list = await handleBotApi("GET", ["shop", "catalog"], undefined, new URLSearchParams("locale=uz&page=2&category=vitamins&q=vit"));
+    expect(list.status).toBe(200);
+    expect(shop.botCatalog).toHaveBeenCalledWith({ locale: "uz", page: 2, category: "vitamins", q: "vit" });
+    expect((await handleBotApi("GET", ["shop", "catalog"], undefined, new URLSearchParams("locale=de"))).status).toBe(422);
+  });
+
+  it("returns a product card with the BAD warning and 404 for an unknown slug", async () => {
+    const r = await handleBotApi("GET", ["shop", "product", "delical-vanil-200ml"], undefined, new URLSearchParams("locale=uz"));
+    expect(r.status).toBe(200);
+    expect((r.body as { product: { price: number } }).product.price).toBe(118000);
+    expect((r.body as { disclaimer: string }).disclaimer).toContain("Dori vositasi emas");
+    expect((await handleBotApi("GET", ["shop", "product", "nope"], undefined, q)).status).toBe(404);
+    expect((await handleBotApi("GET", ["shop", "product", "x".repeat(161)], undefined, q)).status).toBe(422);
+  });
+
+  it("reads the server-side cart and the language before a phone is linked", async () => {
+    const r = await handleBotApi("GET", ["shop", "cart"], undefined, new URLSearchParams("chatId=7&locale=uz"));
+    expect(r.status).toBe(200);
+    expect(shop.quoteBotCart).toHaveBeenCalledWith({ chatId: 7, locale: "uz" });
+    expect((await handleBotApi("GET", ["shop", "cart"], undefined, q)).status).toBe(422);
+    const locale = await handleBotApi("GET", ["shop", "locale"], undefined, new URLSearchParams("chatId=7"));
+    expect(locale).toEqual({ status: 200, body: { locale: "uz" } });
+  });
+
+  it("adds, caps and clears cart lines", async () => {
+    const add = await handleBotApi("POST", ["shop", "cart", "add"], { chatId: 11, slug: "delical-vanil-200ml", qty: 2 }, q);
+    expect(add.status).toBe(201);
+    expect(shop.addToCart).toHaveBeenCalledWith(11, "delical-vanil-200ml", 2);
+
+    (shop.addToCart as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ added: false, reason: "qty_cap" });
+    const capped = await handleBotApi("POST", ["shop", "cart", "add"], { chatId: 11, slug: "delical-vanil-200ml", qty: 1 }, q);
+    expect(capped).toEqual({ status: 409, body: { error: "qty_cap" } });
+
+    await handleBotApi("POST", ["shop", "cart", "set"], { chatId: 11, slug: "delical-vanil-200ml", qty: 0 }, q);
+    expect(shop.setCartQuantity).toHaveBeenCalledWith(11, "delical-vanil-200ml", 0);
+    await handleBotApi("POST", ["shop", "cart", "clear"], { chatId: 11 }, q);
+    expect(shop.clearCart).toHaveBeenCalledWith(11);
+  });
+
+  it("rate-limits cart spam per chat", async () => {
+    let last = { status: 0 };
+    for (let i = 1; i <= 41; i++) {
+      last = await handleBotApi("POST", ["shop", "cart", "add"], { chatId: 12, slug: "delical-vanil-200ml", qty: 1 }, q);
+    }
+    expect(last).toEqual({ status: 429, body: { error: "rate_limited" } });
+  });
+
+  it("stores a promo and quotes pickup separately", async () => {
+    const promo = await handleBotApi("POST", ["shop", "promo"], { chatId: 13, code: "GOVITA10" }, q);
+    expect(promo.status).toBe(200);
+    expect(shop.setCartPromo).toHaveBeenCalledWith(13, "GOVITA10");
+
+    const quote = await handleBotApi("POST", ["shop", "quote"], { chatId: 13, method: "pickup" }, q);
+    expect(quote.status).toBe(200);
+    expect(shop.quoteBotCart).toHaveBeenLastCalledWith({ chatId: 13, locale: undefined, method: "pickup", promoCode: undefined });
+  });
+
+  it("validates and creates an order once", async () => {
+    const body = {
+      chatId: 14,
+      locale: "uz",
+      name: "Ali Valiyev",
+      phone: "+998901234567",
+      method: "courier",
+      region: "Toshkent shahri",
+      address: "Amir Temur 12",
+      idempotencyKey: "a".repeat(16),
+    };
+    const r = await handleBotApi("POST", ["shop", "order"], body, q);
+    expect(r.status).toBe(201);
+    expect(shop.placeBotOrder).toHaveBeenCalledWith({ ...body, locale: "uz", region: "Toshkent shahri" });
+
+    expect((await handleBotApi("POST", ["shop", "order"], { ...body, chatId: 15, phone: "12" }, q)).status).toBe(422);
+    expect((await handleBotApi("POST", ["shop", "order"], { ...body, chatId: 16, idempotencyKey: "short" }, q)).status).toBe(422);
+  });
+
+  it("maps shop failures to explicit statuses the bot can explain", async () => {
+    const body = {
+      chatId: 17,
+      name: "Ali",
+      phone: "+998901234567",
+      method: "courier" as const,
+      region: "Toshkent",
+      address: "Amir Temur 12",
+      idempotencyKey: "b".repeat(16),
+    };
+    (shop.placeBotOrder as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ ok: false, error: "out_of_stock", slug: "delical", available: 0 });
+    expect(await handleBotApi("POST", ["shop", "order"], body, q)).toEqual({
+      status: 409,
+      body: { error: "out_of_stock", slug: "delical", available: 0 },
+    });
+
+    (shop.placeBotOrder as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ ok: false, error: "promo_invalid", reason: "expired" });
+    expect(await handleBotApi("POST", ["shop", "order"], { ...body, chatId: 18 }, q)).toEqual({
+      status: 422,
+      body: { error: "promo_invalid", reason: "expired" },
+    });
+
+    (shop.placeBotOrder as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ ok: false, error: "pending" });
+    expect((await handleBotApi("POST", ["shop", "order"], { ...body, chatId: 19 }, q)).status).toBe(425);
+
+    (shop.placeBotOrder as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ ok: false, error: "not_linked" });
+    expect((await handleBotApi("POST", ["shop", "order"], { ...body, chatId: 20 }, q)).status).toBe(409);
+  });
+
+  it("reorders only the items still on sale", async () => {
+    (store.orderFor as ReturnType<typeof vi.fn>).mockResolvedValueOnce({
+      items: [
+        { slug: "delical-vanil-200ml", qty: 2 },
+        { slug: "gone", qty: 1 },
+      ],
+    });
+    const r = await handleBotApi("POST", ["shop", "reorder"], { chatId: 21, orderNumber: "GV-000123" }, q);
+    expect(r.status).toBe(200);
+    expect(shop.reorderToCart).toHaveBeenCalledWith(21, [
+      { slug: "delical-vanil-200ml", qty: 2 },
+      { slug: "gone", qty: 1 },
+    ], "uz");
+    expect((await handleBotApi("POST", ["shop", "reorder"], { chatId: 21, orderNumber: "nope" }, q)).status).toBe(422);
+    (shop.reorderToCart as ReturnType<typeof vi.fn>).mockResolvedValueOnce(0);
+    (store.orderFor as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ items: [] });
+    expect((await handleBotApi("POST", ["shop", "reorder"], { chatId: 22, orderNumber: "GV-000124" }, q)).status).toBe(409);
+  });
+
+  it("remembers the chosen language", async () => {
+    const r = await handleBotApi("POST", ["shop", "locale"], { chatId: 23, locale: "ru" }, q);
+    expect(r).toEqual({ status: 200, body: { ok: true, locale: "ru" } });
+    expect(shop.setBotLocale).toHaveBeenCalledWith(23, "ru");
+    expect((await handleBotApi("POST", ["shop", "locale"], { chatId: 23, locale: "de" }, q)).status).toBe(422);
   });
 });

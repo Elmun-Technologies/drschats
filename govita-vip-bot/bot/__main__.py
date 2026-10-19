@@ -23,6 +23,7 @@ async def main():
     if not demo:
         from .backend import GoVitaBackend
         from .remote import router as remote_router, outbox_loop
+        from .shop import router as shop_router
         api = await GoVitaBackend(cfg.backend_url, cfg.backend_key).open()
         try:
             settings = await api.request('GET', '/config')
@@ -35,8 +36,15 @@ async def main():
             # The menu button beside the message field opens the shop inside Telegram.
             await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
                 text="Doʻkon", web_app=WebAppInfo(url=f"{cfg.shop_url}/uz")))
-            await bot.set_my_commands([BotCommand(command="start", description="Bosh menyu")])
+            await bot.set_my_commands([
+                BotCommand(command="start", description="Bosh menyu"),
+                BotCommand(command="katalog", description="Katalog"),
+                BotCommand(command="savat", description="Savat"),
+            ])
             dp = Dispatcher(api=api)
+            # The shop first: it owns the catalogue/cart/checkout callbacks and
+            # the FSM text steps; the club menu catches everything else.
+            dp.include_router(shop_router)
             dp.include_router(remote_router)
             worker = asyncio.create_task(outbox_loop(bot, api))
             try:
