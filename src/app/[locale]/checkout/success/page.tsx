@@ -11,6 +11,7 @@ import { readReceipt } from "@/lib/loyalty/receipt";
 import { getLoyaltyRules } from "@/lib/loyalty/settings";
 import { referralRewardKind } from "@/lib/loyalty/model";
 import { referralLink } from "@/lib/referral/rules";
+import { displayOrderNumber } from "@/lib/orders/number";
 import { ShareCode } from "@/components/checkout/ShareCode";
 
 export const metadata: Metadata = { robots: { index: false } };
@@ -42,7 +43,7 @@ export default async function SuccessPage({
   const t = await getTranslations("checkout.success");
   const tv = await getTranslations("cart.v3");
 
-  const shortOrder = order ? order.slice(-8).toUpperCase() : null;
+  const orderLabel = displayOrderNumber(order);
   const steps = [
     { title: tv("step1Title"), text: tv("step1") },
     { title: tv("step2Title"), text: tv("step2") },
@@ -60,10 +61,10 @@ export default async function SuccessPage({
           </span>
           <h1 className="text-[30px] font-bold leading-9 lg:text-[44px] lg:leading-[50px]">{t("title")}</h1>
           <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("subtitle")}</p>
-          {shortOrder && (
+          {orderLabel && (
             <span className="mt-1 flex flex-col gap-0.5 self-start rounded-[16px] bg-tile px-4 py-3.5 lg:px-5">
               <span className="text-[13px] text-muted">{t("orderId")}</span>
-              <span className="text-lg font-bold tabular-nums lg:text-xl">№ {shortOrder}</span>
+              <span className="text-lg font-bold tabular-nums lg:text-xl">№ {orderLabel}</span>
             </span>
           )}
         </div>
