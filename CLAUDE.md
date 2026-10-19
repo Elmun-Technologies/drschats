@@ -736,6 +736,7 @@ emas, qanday **javob berishini** o'lchaydi va shu sababli brauzersiz, oddiy
 | Kesilgan matn (uz + ru) | 0 |
 | Pastki chekka elementlari kesishuvi | 0 |
 | 404 bo'lishi kerak URL 404 qaytaradi (soft-404 yo'q) | 0 |
+| Hydration xatosi (#418/#423/#425) va konsol xatosi | 0 |
 
 Amaliy qoidalar, har biri haqiqiy nuqsondan chiqqan:
 

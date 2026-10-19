@@ -5,6 +5,7 @@ import * as targetSize from "./checks/target-size.mjs";
 import * as clipped from "./checks/clipped.mjs";
 import * as bottomEdge from "./checks/bottom-edge.mjs";
 import * as states from "./checks/states.mjs";
+import * as consoleErrors from "./checks/console.mjs";
 import * as soft404 from "./checks/soft404.mjs";
 
 /*
@@ -17,6 +18,8 @@ import * as soft404 from "./checks/soft404.mjs";
   Most of these look at what a page renders. The first one looks at what it
   *answers*, because a correct-looking page served under the wrong status code
   is invisible to every other check here and is still a bug Google reports.
+  The last one listens rather than looks: a hydration mismatch re-renders the
+  page into something that passes every other check and still throws #418.
 
   Usage:  BASE_URL=http://localhost:3000 npm run audit
   The server must already be serving a production build; a dev build measures
@@ -35,6 +38,7 @@ const PER_LOCALE = [
   ["target size (WCAG 2.2 spacing exception applied)", targetSize],
   ["text clipped inside its own box", clipped],
   ["content trapped under the bottom bars", bottomEdge],
+  ["hydration mismatches and console errors", consoleErrors],
 ];
 
 const ONCE = [["overlays: names, dialog semantics, Escape", states]];
