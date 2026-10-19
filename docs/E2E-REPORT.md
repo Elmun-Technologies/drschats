@@ -14,7 +14,7 @@ node scripts/e2e/setup-admin.mjs
 # storefront, admin catalogue, Mini App, automation, admin UI,
 # merchandising, cashback, promo strip
 for f in flow-storefront flow-admin-catalog flow-miniapp flow-automation \
-         flow-admin-ui flow-merch flow-points flow-strip; do
+         flow-admin-ui flow-merch flow-points flow-strip flow-bot-order; do
   node scripts/e2e/$f.mjs
 done
 ```
@@ -36,6 +36,7 @@ screenshots land) and, on a machine without Playwright's own browser,
 | 6. Promo code, 2+1, stock cap, deal of the day, cancellation | `flow-merch.mjs` | 13/13 |
 | 7. Cashback spent with an SMS code | `flow-points.mjs` | 5/5 |
 | 8. Promo strip and first-order offer | `flow-strip.mjs` | 4/4 |
+| 9. Bot API → order → admin list | `flow-bot-order.mjs` | 12/12 |
 
 Bot side:
 

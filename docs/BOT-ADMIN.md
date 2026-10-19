@@ -53,7 +53,7 @@ Telegram ──polling──▶ govita-vip-bot (Python, aiogram, Fly: govita-bot
 | «Buyurtmalarim» | Shu chatdan (Mini App) yoki bogʻlangan raqamdan berilgan buyurtmalar (oxirgi 9 raqam boʻyicha — saytdagi buyurtmalar ham chiqadi) |
 | Holat oʻzgarishi | `/admin/orders` da holat oʻzgarsa — mijozga botda xabar (uz/ru), «Batafsil» tugmasi bilan |
 | «Katalog» / `/katalog` | Kategoriyalar → sahifalangan mahsulotlar (6 tadan). Har bir tugmada nom va **haqiqiy** narx |
-| Mahsulot kartasi | Rasm, narx, real eski narx, «Faqat N ta qoldi», qisqa tavsif va **BAD ogohlantirishi**. Sotuvda yoʻq boʻlsa «➕» tugmasi chiqmaydi |
+| Mahsulot kartasi | Rasm, narx, real eski narx, «Faqat N ta qoldi», qisqa tavsif va **BAD ogohlantirishi**. Sotuvda yoʻq boʻlsa «➕» tugmasi chiqmaydi. Rasm faqat `https://` boʻlsa yuboriladi — Telegram boshqa sxemani qabul qilmaydi, shuning uchun karta matn boʻlib ochiladi |
 | Savat | Serverdagi savat: `➕` / `➖` / `🗑`, promokod, tozalash, «Buyurtma berish». Narxlar har safar katalogdan qayta hisoblanadi |
 | Qadam-baqadam buyurtma | Ism → **telefon (faqat Telegram kontaktidan)** → yetkazish usuli → viloyat + manzil yoki lokatsiya → izoh → promokod (ixtiyoriy) → server hisoblagan yakuniy summa → «Tasdiqlash» |
 | Tasdiqlash | `idempotencyKey` bilan bitta buyurtma: ikki marta bosish yoki taym-autdan keyingi qayta urinish dublikat yaratmaydi. Savat faqat buyurtma yaratilgandan keyin boʻshaydi |
@@ -196,4 +196,26 @@ reklama kabineti auditoriyasi esa saytdagi «Mijozlar» segmentlaridan olinadi.
 | `src/lib/telegram/mini-app.ts` · `components/telegram/TelegramMiniApp.tsx` | Mini App: initData, `web_app_ready`/`expand` (Telegram skriptisiz) |
 | `govita-vip-bot/bot/remote.py` | Production bot; test — `tests/test_remote.py` |
 | `govita-vip-bot/bot/shop.py` | Native doʻkon: katalog, savat, qadam-baqadam checkout; test — `tests/test_shop.py` |
+| `govita-vip-bot/scripts/live_smoke.py` | 20 ta API tekshiruvi: savat, promokod, buyurtma, idempotentlik, holat xabari |
+| `govita-vip-bot/scripts/live_shop_ui.py` | Doʻkon handlerlarini tirik saytga qarshi yuritadi (16 ekran): katalog → savat → checkout → buyurtma → «Qayta buyurtma» |
+| `scripts/e2e/flow-bot-order.mjs` | Bot API → `orders` → `/admin/orders` (kanal «Telegram bot») tekshiruvi |
 | `govita-vip-bot/fly.toml` | Bot deploy |
+
+## Lokal tekshirish
+
+Botni saytga qarshi lokal yurgizish mumkin: `GoVitaBackend` faqat **loopback**
+uchun `http://` ga ruxsat beradi (boshqa hostlar uchun faqat `https://`,
+credentials/query/fragment baribir taqiqlangan). Shu bilan:
+
+```bash
+# sayt 3000-portda
+cd govita-vip-bot
+GOVITA_LIVE_API=http://localhost:3000/api/bot GOVITA_LIVE_KEY=$BOT_API_KEY \
+  .venv/bin/python scripts/live_smoke.py      # 20/20
+GOVITA_LIVE_API=http://localhost:3000/api/bot GOVITA_LIVE_KEY=$BOT_API_KEY \
+  .venv/bin/python scripts/live_shop_ui.py    # 16 ekran, buyurtma raqami
+```
+
+`live_shop_ui.py` Telegramni almashtiradi (xabarlar chop etiladi), lekin API,
+baza va `placeOrder()` — haqiqiy. Shu bilan matnda qolib ketgan `{ism}`,
+eski narx yoki 4096 belgidan uzun xabar darhol koʻrinadi.
