@@ -1,0 +1,21 @@
+import { BASE, login, newPage, openBrowser, shot } from "./lib.mjs";
+
+const id = process.env.ID;
+const browser = await openBrowser();
+const { page } = await newPage(browser);
+await login(page);
+await page.goto(`${BASE}/admin/products/${encodeURIComponent(id)}`, { waitUntil: "networkidle" });
+const price = page.locator('input[name="price"]');
+console.log("inputs", await page.locator("input").count());
+await price.fill("140000");
+console.log("value", await price.inputValue());
+const submit = page.locator('button[type="submit"]').last();
+console.log("submit", await submit.innerText());
+await submit.click();
+await page.waitForTimeout(3000);
+console.log("url", page.url());
+const text = await page.locator("body").innerText();
+const notice = text.split("\n").filter((l) => /Saqlandi|Xato|tekshir|Maydon|kerak|noto/i.test(l)).slice(0, 5);
+console.log("notices", notice);
+await shot(page, "probe-edit-after");
+await browser.close();
