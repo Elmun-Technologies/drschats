@@ -1,6 +1,6 @@
 import { ActionForm } from "@/components/admin/ActionForm";
 import { BotTabs } from "@/components/admin/BotTabs";
-import { Card, Field, Metric, Notice, PageHeader, inputClass, textareaClass } from "@/components/admin/ui";
+import { Card, Field, Metric, Notice, PageHeader, inputClass, somShort, textareaClass } from "@/components/admin/ui";
 import { broadcastAction, saveClub } from "@/app/admin/_actions/bot";
 import { MIN_BOT_KEY_LENGTH } from "@/lib/bot/auth";
 import { clubOverview, getClubConfig } from "@/lib/bot/store";
@@ -16,7 +16,8 @@ export default async function AdminBotPage() {
     { label: "Aʼzolar", value: stats.members, hint: `${stats.blocked} tasi botni bloklagan` },
     { label: "Raqami bogʻlangan", value: stats.linked },
     { label: "Ochiq murojaatlar", value: stats.openTickets },
-    { label: "Mini App buyurtmalari", value: stats.miniAppOrders },
+    { label: "Botdan (30 kun)", value: stats.botOrders30d },
+    { label: "Mini App (30 kun)", value: stats.miniOrders30d, hint: `${stats.siteOrders30d} ta saytdan · ${somShort(stats.botRevenue30d)}` },
     { label: "Navbatda", value: stats.pendingJobs, hint: stats.failedJobs ? `${stats.failedJobs} tasi yuborilmadi` : undefined },
   ];
 
@@ -38,7 +39,7 @@ export default async function AdminBotPage() {
           </Notice>
         </div>
       )}
-      <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {tiles.map((t) => <Metric key={t.label} label={t.label} value={t.value} hint={t.hint} />)}
       </div>
 

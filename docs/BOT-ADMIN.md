@@ -93,9 +93,21 @@ Xatolar `{ error, slug?, name?, reason?, available? }`:
 **Muhim:** `promoCode: null` — «promokodsiz», maydon umuman yoʻq boʻlsa —
 savatdagi kod ishlatiladi.
 
+## Avtomatizatsiya
+
+Ishchi (`src/lib/messaging/worker.ts`, har 5 daqiqada) uchta narsani bajaradi:
+
+| Nima | Qayerda | Qoida |
+|---|---|---|
+| **Omborga keldi** | `lib/notify/waitlist.ts` → `enqueueRestockMessage()` | Restock soʻrovi avval **restock flow** orqali yuboriladi (sokin soatlar, opt-out, outbox). Flow oʻchirilgan boʻlsa — avvalgi toʻgʻridan-toʻgʻri kanallar (Telegram → SMS → operator). `notified_via='flow'` |
+| **Bugungi taklif boshlandi** | `lib/merch/deal-notify.ts` | `starts_at` oʻtgan har bir aksiya `deal_notifications` da **bir marta** belgilanadi va oʻsha mahsulotga «narxi tushsa xabar bering» deganlarga xabar boradi. Ikki mashina bir vaqtda ishlasa ham dublikat yoʻq |
+| **Bot savati tashlab ketildi** | `lib/bot/abandoned.ts` | `bot_carts` 2 soatdan 26 soatgacha tegilmagan, ichida mahsulot bor va chatga telefon bogʻlangan boʻlsa — saytdagi «Tashlab ketilgan savat» flow'iga yoziladi (bir savat bir marta; yangi buyurtma flow'ni toʻxtatadi). Flow oʻchirilgan boʻlsa hech narsa yuborilmaydi |
+
+Hamma flow'lar **oʻchiq holda** seed qilinadi — matnlarni `/admin/flows` da koʻrib, oʻzingiz yoqasiz. Sokin soatlar 21:00–09:00 (Toshkent), opt-out va dedupe engine darajasida.
+
 ## Admin (`/admin/bot`)
 
-- **Klub** — koʻrsatkichlar; sozlamalar (holat xabarlari yoqilgan, klub nomi,
+- **Klub** — 30 kunlik kanal statistikasi (bot / Mini App / sayt va bot savdo summasi), aʼzolar; sozlamalar (holat xabarlari yoqilgan, klub nomi,
   Mini App manzili, operator telefoni, ish vaqti — bot keyingi soʻrovda oladi);
   **«Klubga xabar»** — botni bloklamagan barcha aʼzolarga (tasdiq belgisi bilan,
   1000 belgi, HTML escape qilinadi).

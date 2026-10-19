@@ -18,6 +18,8 @@ export interface WaitMessage {
   /** Known Telegram chat (stored with the request or linked since); null = look it up. */
   chatId: number | null;
   productName: string;
+  /** Product slug, for the restock flow's link and dedupe cycle. */
+  slug: string;
   price: number;
   /** The price the customer saw when asking (price_drop). */
   before: number | null;
@@ -28,7 +30,7 @@ export interface WaitMessage {
 export type Outcome = { ok: true } | { ok: false; reason: "not_configured" | "no_recipient" | "failed" };
 
 export interface Notifier {
-  readonly channel: Exclude<WaitChannel, "operator" | "manual">;
+  readonly channel: Exclude<WaitChannel, "operator" | "manual" | "flow">;
   send(message: WaitMessage): Promise<Outcome>;
 }
 

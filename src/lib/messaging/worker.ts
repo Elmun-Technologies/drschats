@@ -1,6 +1,8 @@
 import { ensureDefaultFlows, runFlows, type FlowRunResult } from "@/lib/flows/engine";
 import { drainOutbox, type DrainResult } from "./outbox";
 import { expirePoints } from "@/lib/loyalty/server";
+import { notifyStartedDeals } from "@/lib/merch/deal-notify";
+import { sweepBotCarts } from "@/lib/bot/abandoned";
 
 /*
   The message worker. Runs inside the Next.js server process (started from
@@ -31,6 +33,9 @@ const holder = globalThis as unknown as Holder;
 export interface TickResult {
   flows: FlowRunResult | null;
   outbox: DrainResult | null;
+  /** Deals that started since the last tick and bot carts enrolled while flows ran. */
+  deals?: { started: number; notified: number };
+  carts?: { candidates: number; enrolled: number };
   busy?: boolean;
 }
 
@@ -44,8 +49,21 @@ export async function runMessagingTick(options: { now?: Date; flows?: boolean } 
   const now = options.now ?? new Date();
   try {
     let flows: FlowRunResult | null = null;
+    let deals: TickResult["deals"];
+    let carts: TickResult["carts"];
     if (options.flows ?? Date.now() - lastFlows >= FLOWS_EVERY_MS) {
       lastFlows = Date.now();
+      // A deal opening is a clock event, not a write: this is what tells the
+      // "narxi tushsa xabar bering" customers about it, exactly once.
+      deals = await notifyStartedDeals(now).catch((err: Error) => {
+        console.error("[deals] sweep failed:", err.message);
+        return undefined;
+      });
+      // Bot carts deliberately join the same abandoned-cart flow as the site.
+      carts = await sweepBotCarts(now).catch((err: Error) => {
+        console.error("[bot-carts] sweep failed:", err.message);
+        return undefined;
+      });
       flows = await runFlows(now);
     }
     if (options.flows || Date.now() - lastExpire >= EXPIRE_EVERY_MS) {
@@ -54,7 +72,7 @@ export async function runMessagingTick(options: { now?: Date; flows?: boolean } 
     }
     // Messages the flows just queued go out in the same tick.
     const outbox = await drainOutbox(options.now ?? new Date());
-    return { flows, outbox };
+    return { flows, outbox, deals, carts };
   } finally {
     running = false;
   }
@@ -66,6 +84,8 @@ function log(result: TickResult) {
   const parts: string[] = [];
   if (f && (f.enrolled || f.queued || f.converted || f.exited)) parts.push(`flows +${f.enrolled} enrolled, ${f.queued} queued, ${f.converted} converted, ${f.exited} exited`);
   if (o && (o.sent || o.failed || o.retried || o.skipped || o.deferred)) parts.push(`outbox ${o.sent} sent, ${o.retried} retry, ${o.failed} failed, ${o.skipped} skipped, ${o.deferred} deferred`);
+  if (result.deals?.started) parts.push(`deals ${result.deals.started} started, ${result.deals.notified} notified`);
+  if (result.carts?.enrolled) parts.push(`bot carts ${result.carts.enrolled} enrolled`);
   if (parts.length) console.log(`[messages] ${parts.join(" · ")}`);
 }
 

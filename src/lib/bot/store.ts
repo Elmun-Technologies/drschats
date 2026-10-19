@@ -340,7 +340,13 @@ export async function clubOverview() {
       (select count(*) from bot_tickets where status = 'open') as open_tickets,
       (select count(*) from bot_jobs where status in ('pending', 'leased')) as pending_jobs,
       (select count(*) from bot_jobs where status = 'failed') as failed_jobs,
-      (select count(*) from orders where telegram_chat_id is not null) as mini_app_orders`);
+      (select count(*) from orders where telegram_chat_id is not null) as mini_app_orders,
+      (select count(*) from orders where source = 'telegram_bot' and created_at >= now() - interval '30 days') as bot_orders_30d,
+      (select count(*) from orders where source = 'telegram_mini' and created_at >= now() - interval '30 days') as mini_orders_30d,
+      (select count(*) from orders where source = 'site' and created_at >= now() - interval '30 days') as site_orders_30d,
+      (select coalesce(sum(total), 0) from orders
+        where source in ('telegram_bot', 'telegram_mini') and status <> 'cancelled'
+          and created_at >= now() - interval '30 days') as bot_revenue_30d`);
   const r = (rows as unknown as Record<string, string | number>[])[0] ?? {};
   return {
     members: Number(r.members ?? 0),
@@ -350,6 +356,10 @@ export async function clubOverview() {
     pendingJobs: Number(r.pending_jobs ?? 0),
     failedJobs: Number(r.failed_jobs ?? 0),
     miniAppOrders: Number(r.mini_app_orders ?? 0),
+    botOrders30d: Number(r.bot_orders_30d ?? 0),
+    miniOrders30d: Number(r.mini_orders_30d ?? 0),
+    siteOrders30d: Number(r.site_orders_30d ?? 0),
+    botRevenue30d: Number(r.bot_revenue_30d ?? 0),
   };
 }
 

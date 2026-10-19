@@ -10,6 +10,7 @@ const base: WaitMessage = {
   phone9: "901234567",
   chatId: null,
   productName: "Omega-3",
+  slug: "omega-3",
   price: 129_000,
   before: null,
   url: "https://www.govita.uz/uz/product/omega-3?utm_source=telegram&utm_medium=restock&utm_campaign=restock",
