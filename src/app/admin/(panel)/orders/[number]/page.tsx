@@ -136,7 +136,10 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
               <Row label="Izoh">{o.delivery.note}</Row>
               <Row label="Toʻlov">{o.payment ? `${PAYMENT_LABEL[o.payment.method] ?? o.payment.method}${o.payment.provider ? ` · ${o.payment.provider}` : ""}` : PAYMENT_LABEL.cod}</Row>
               <Row label="Til">{LOCALE_LABEL[o.locale] ?? o.locale}</Row>
-              <Row label="Telegram">{o.telegramChatId ? "Mini App orqali — holat botda xabar qilinadi" : null}</Row>
+              <Row label="Kanal">
+                {o.source === "telegram_bot" ? "Telegram bot — rasmiy doʻkon" : o.source === "telegram_mini" ? "Telegram Mini App" : "Sayt"}
+              </Row>
+              <Row label="Telegram">{o.telegramChatId ? "Holat botda xabar qilinadi" : null}</Row>
             </dl>
           </Card>
         </div>

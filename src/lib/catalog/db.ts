@@ -161,6 +161,7 @@ export function orderValues(payload: OrderRequest, promoCode: string | null = nu
     locale: payload.locale,
     attribution: payload.attribution,
     promoCode,
+    source: payload.source ?? "site",
   };
 }
 

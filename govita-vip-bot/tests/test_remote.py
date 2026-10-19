@@ -46,4 +46,5 @@ async def test_operator_messages_are_throttled():
     api = SimpleNamespace(request=AsyncMock(return_value={'id': 1}))
     await remote.text(message(text='salom'), api)
     await remote.text(message(text='salom yana'), api)
-    assert api.request.await_count == 1
+    tickets = [c for c in api.request.await_args_list if c.args[:2] == ('POST', '/customers/7/tickets')]
+    assert len(tickets) == 1

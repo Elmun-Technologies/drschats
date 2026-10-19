@@ -145,6 +145,9 @@ export const orderRequestSchema = z.object({
   promoCode: z.string().trim().max(40).optional(),
   pointsToken: z.string().max(400).optional(),
   locale: z.enum(["ru", "uz"]),
+  // Only the checkout action and the bot API set this; a request that sends
+  // it is overwritten server-side.
+  source: z.enum(["site", "telegram_bot", "telegram_mini"]).optional(),
   attribution: z
     .object({
       utmSource: z.string().max(200).optional(),

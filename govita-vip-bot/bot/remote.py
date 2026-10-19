@@ -16,8 +16,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.exceptions import TelegramForbiddenError, TelegramRetryAfter
 
 from .backend import BackendError
-from .config import cfg
 from .logic import som
+from . import shop as shop_ui
 from .ui import b, kb, contact_kb, T
 
 router = Router()
@@ -29,18 +29,9 @@ TICKET_WINDOW_S = 30
 _last_ticket: dict[int, float] = {}
 
 
-def shop(path=""):
-    """The shop inside Telegram (Mini App), opened in the club's language."""
-    return f"{cfg.shop_url}/uz{path}"
-
-
-def menu():
-    return kb(
-        [b("🛍 Doʻkon", webapp=shop())],
-        [b("📦 Buyurtmalarim", "m:orders"), b("⭐ VIP klub", "m:club")],
-        [b("🧪 Vitamin testi", webapp=shop("/quiz"))],
-        [b("💬 Savol berish", "m:help")],
-    )
+def menu(locale="uz", customer=None):
+    """The club's main menu: the Mini App and the native shop side by side."""
+    return shop_ui.main_menu(locale, customer)
 
 
 @router.message(CommandStart())
@@ -60,26 +51,9 @@ async def start(m, api):
         return await m.answer(T['askContact'], reply_markup=contact_kb())
     if payload.startswith('o_'):
         return await show_order(m, api, m.from_user.id, payload[2:])
-    await m.answer(T['menu'], reply_markup=menu())
-
-
-@router.message(F.contact)
-async def contact(m, api):
-    if m.contact.user_id != m.from_user.id or m.chat.id != m.from_user.id:
-        return await m.answer(T['contactNotOwn'])
-    try:
-        await api.request('POST', '/contacts', body={'telegramUserId': m.from_user.id,
-            'contactUserId': m.contact.user_id, 'chatId': m.chat.id,
-            'phone': m.contact.phone_number, 'name': m.from_user.full_name,
-            'username': m.from_user.username})
-    except BackendError as e:
-        if e.status == 409:
-            return await m.answer(T['conflict'])
-        raise
-    from aiogram.types import ReplyKeyboardRemove
-    await m.answer('✅ Raqamingiz GoVita klubiga bogʻlandi. Buyurtma holati shu yerga keladi.',
-                   reply_markup=ReplyKeyboardRemove())
-    await m.answer(T['menu'], reply_markup=menu())
+    customer = await shop_ui.customer_of(api, m.from_user.id)
+    locale = (customer or {}).get('locale') or 'uz'
+    await m.answer(T['menu'], reply_markup=menu(locale, customer))
 
 
 async def show_order(m, api, chat, code):
@@ -112,41 +86,44 @@ async def callback(q, api):
         d = await api.request('GET', f'/customers/{chat}/orders', params={'limit': 10})
         rows = [[b(f"№{o['code']} · {o['stage']} · {som(o['total'])}", f"ord:{o['code']}")] for o in d['items']]
         if not rows:
-            return await q.message.answer('Buyurtma topilmadi. Doʻkondan buyurtma bering — holati shu yerga keladi.',
-                                          reply_markup=menu())
+            locale = await shop_ui.locale_of(api, chat)
+            return await q.message.answer('Buyurtma topilmadi. Katalogdan buyurtma bering — holati shu yerga keladi.',
+                                          reply_markup=menu(locale))
         await q.message.answer('📦 Buyurtmalarim', reply_markup=kb(*rows, [b('⬅️ Menyu', 'm:menu')]))
     elif data.startswith('ord:'):
         await show_order(q.message, api, chat, data[4:])
-    elif data == 'm:help':
-        c = await api.request('GET', '/config')
-        phone = f"\nOperator: <b>{escape(c['supportPhone'])}</b>" if c.get('supportPhone') else ''
-        await q.message.answer(f"Savolingizni bitta xabarda yozing — operatorga yuboramiz.{phone}\n{escape(c.get('supportHours', ''))}")
-    elif data == 'm:club':
-        try:
-            c = await api.request('GET', f'/customers/{chat}')
-        except BackendError as e:
-            if e.status != 404:
-                raise
-            return await q.message.answer(T['askContact'], reply_markup=contact_kb())
-        await q.message.answer(f"⭐ <b>{escape(cfg.club_name)}</b>\n{escape(c['name'] or '')} · +{escape(c['phone'])}\n\n"
-                               "Buyurtma holati, klub takliflari va operator javoblari shu yerga keladi.",
-                               reply_markup=menu())
     else:
-        await q.message.answer(T['menu'], reply_markup=menu())
+        locale = await shop_ui.locale_of(api, chat)
+        customer = await shop_ui.customer_of(api, chat)
+        await q.message.answer(T['menu'], reply_markup=menu(locale, customer))
 
 
 @router.message()
 async def text(m, api):
     if m.chat.id != m.from_user.id:
         return
+    locale = await shop_ui.locale_of(api, m.from_user.id)
+    customer = await shop_ui.customer_of(api, m.from_user.id)
     if not m.text or m.text.startswith('/'):
-        return await m.answer(T['menu'], reply_markup=menu())
+        return await m.answer(T['menu'], reply_markup=menu(locale, customer))
+    if m.text in {'☰ Menyu', 'Menyu'}:
+        return await m.answer(T['menu'], reply_markup=menu(locale, customer))
+    # A typed product name is a search, not a support ticket: the shop must
+    # answer the obvious question first and offer the operator only when the
+    # catalogue has nothing.
+    try:
+        data = await api.request('GET', '/shop/catalog', params={'locale': locale, 'q': m.text.strip()[:60], 'page': 1})
+    except BackendError:
+        data = {'items': []}
+    if data.get('items'):
+        return await shop_ui.send_list(m, api, locale, None, 1, m.text.strip()[:60], edit=False)
     now = time.monotonic()
     if now - _last_ticket.get(m.chat.id, 0) < TICKET_WINDOW_S:
         return await m.answer('Xabaringiz operatorda. Javobni shu yerga yozamiz.')
     await api.request('POST', f'/customers/{m.from_user.id}/tickets', body={'category': 'operator', 'text': m.text[:3000]})
     _last_ticket[m.chat.id] = now
-    await m.answer('✅ Xabaringiz GoVita operatoriga yuborildi. Javob shu yerga keladi.')
+    await m.answer('Hech narsa topilmadi. Savolingiz operatorga yuborildi — javob shu yerga keladi.',
+                   reply_markup=menu(locale, customer))
 
 
 @router.errors()

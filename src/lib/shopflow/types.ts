@@ -222,6 +222,11 @@ export interface OrderRequest {
   /** Proof (from the SMS code) that this phone may spend its points; verified and re-priced on the server. */
   pointsToken?: string;
   locale: Locale;
+  /**
+   * Which channel placed the order. The checkout decides this itself from
+   * verified Telegram data — a browser cannot make an order look like a bot's.
+   */
+  source?: "site" | "telegram_bot" | "telegram_mini";
   attribution?: OrderAttribution;
   /**
    * Telegram Mini App `initData`, verified on the server (lib/bot/webapp.ts)

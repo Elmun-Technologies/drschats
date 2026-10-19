@@ -58,6 +58,10 @@ export const products = pgTable("products", {
 export const ORDER_STATUSES = ["new", "confirmed", "shipped", "delivered", "cancelled"] as const;
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 
+/** Channel an order came from — the website or one of the bot's two storefronts. */
+export const ORDER_SOURCES = ["site", "telegram_bot", "telegram_mini"] as const;
+export type OrderSource = (typeof ORDER_SOURCES)[number];
+
 export const orders = pgTable("orders", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
   number: text("number"),
@@ -74,6 +78,8 @@ export const orders = pgTable("orders", {
   telegramChatId: bigint("telegram_chat_id", { mode: "number" }),
   visitorId: uuid("visitor_id"),
   promoCode: text("promo_code"),
+  /** Which channel sold the order (0012). */
+  source: text("source").$type<OrderSource>().notNull().default("site"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -95,7 +101,7 @@ export const WAIT_KINDS = ["restock", "price_drop"] as const;
 export type WaitKind = (typeof WAIT_KINDS)[number];
 export const WAIT_STATUSES = ["waiting", "notified", "cancelled"] as const;
 export type WaitStatus = (typeof WAIT_STATUSES)[number];
-export type WaitChannel = "telegram" | "sms" | "operator" | "manual";
+export type WaitChannel = "telegram" | "sms" | "operator" | "manual" | "flow";
 
 export const restockRequests = pgTable("restock_requests", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
@@ -338,6 +344,35 @@ export const deals = pgTable("deals", {
   createdBy: integer("created_by").references(() => adminUsers.id, { onDelete: "set null" }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** One row per deal whose start the waitlist has already been told about (0012). */
+export const dealNotifications = pgTable("deal_notifications", {
+  dealId: bigint("deal_id", { mode: "number" }).primaryKey(),
+  notifiedAt: timestamp("notified_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Telegram bot shop, db/migrations/0012_bot_shop.sql. A cart stores only what
+   to buy — prices are resolved from the catalogue on every read. */
+
+export interface BotCartLine {
+  slug: string;
+  qty: number;
+}
+
+export const botCarts = pgTable("bot_carts", {
+  chatId: bigint("chat_id", { mode: "number" }).primaryKey(),
+  lines: jsonb("lines").$type<BotCartLine[]>().notNull().default([]),
+  promoCode: text("promo_code"),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const botOrderKeys = pgTable("bot_order_keys", {
+  chatId: bigint("chat_id", { mode: "number" }).notNull(),
+  key: text("key").notNull(),
+  orderNumber: text("order_number"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export const siteSettings = pgTable("site_settings", {

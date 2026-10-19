@@ -1,12 +1,19 @@
 import Link from "next/link";
 import { ORDER_PERIODS, listOrders, orderStatusCounts, periodStart, type OrderPeriod } from "@/lib/admin/queries";
-import { ORDER_STATUSES, type OrderStatus } from "@/lib/db/schema";
+import { ORDER_STATUSES, type OrderSource, type OrderStatus } from "@/lib/db/schema";
 import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { cn, formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Buyurtmalar" };
+
+/* Channel labels: the bot's two storefronts must be readable at a glance. */
+const SOURCE_LABEL: Record<OrderSource, string> = {
+  site: "Sayt",
+  telegram_bot: "Telegram bot",
+  telegram_mini: "Mini App",
+};
 
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -87,12 +94,13 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
         ) : (
           <TableWrap>
             <table className={tableClass}>
-              <thead><tr><th className={thClass}>Buyurtma</th><th className={thClass}>Mijoz</th><th className={thClass}>Manba</th><th className={thClass}>Holat</th><th className={`${thClass} text-right`}>Jami</th></tr></thead>
+              <thead><tr><th className={thClass}>Buyurtma</th><th className={thClass}>Mijoz</th><th className={thClass}>Kanal</th><th className={thClass}>Manba</th><th className={thClass}>Holat</th><th className={`${thClass} text-right`}>Jami</th></tr></thead>
               <tbody>
                 {rows.map((o) => (
                   <tr key={o.id}>
                     <td className={tdClass}><Link href={`/admin/orders/${o.number}`} className={linkClass}>{o.number}</Link><span className="block text-[13px] text-muted">{formatDateTime(o.createdAt)}</span></td>
                     <td className={`${tdClass} max-w-[260px]`}><span className="block truncate">{o.customer.name}</span><span className="block text-[13px] text-muted">{o.customer.phone} · {o.items.reduce((sum, item) => sum + item.quantity, 0)} dona</span></td>
+                    <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{SOURCE_LABEL[o.source]}</td>
                     <td className={`${tdClass} max-w-[180px] truncate text-ink-2`}>{describeAttribution(o.attribution ?? undefined) || "Bevosita"}</td>
                     <td className={tdClass}><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill></td>
                     <td className={`${tdClass} whitespace-nowrap text-right font-semibold tabular-nums`}>{som(o.total)}</td>
