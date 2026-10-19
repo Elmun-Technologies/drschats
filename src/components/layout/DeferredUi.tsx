@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { useCart } from "@/lib/cart/store";
 import { SHOW_SAMPLE_SOCIAL_PROOF } from "@/lib/content/sample-social-proof";
 import { useCommerce } from "@/lib/commerce/context";
+import { isMiniApp } from "@/lib/telegram/mini-app";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
 
 /*
@@ -44,6 +45,9 @@ const LivePurchaseToast = dynamic(
 /** `firstOrder` — what the welcome card may promise (lib/promo/offer.ts); off means no card. */
 export function DeferredUi({ firstOrder }: { firstOrder: FirstOrderOffer }) {
   const [ready, setReady] = useState(false);
+  // Inside Telegram the shop has no cookie wall, no exit-intent popup and no
+  // welcome modal: a Mini App is a session the customer started on purpose.
+  const [miniApp, setMiniApp] = useState(false);
   const cartOpen = useCart((s) => s.isOpen);
   // A popup switched off in /admin/commerce is not even loaded.
   const { popups } = useCommerce();
@@ -54,6 +58,7 @@ export function DeferredUi({ firstOrder }: { firstOrder: FirstOrderOffer }) {
         ? window.requestIdleCallback
         : (cb: () => void) => window.setTimeout(cb, 200);
     const handle = schedule(() => setReady(true));
+    setMiniApp(isMiniApp());
 
     return () => {
       if (typeof window.cancelIdleCallback === "function" && typeof handle === "number") {
@@ -67,13 +72,13 @@ export function DeferredUi({ firstOrder }: { firstOrder: FirstOrderOffer }) {
   return (
     <>
       <CartDrawer />
-      {popups.exit.enabled && <ExitIntentPopup />}
-      {popups.welcome.enabled && firstOrder.mode !== "off" && <WelcomeOffer offer={firstOrder} />}
-      {popups.quiz.enabled && <QuizNudge />}
+      {!miniApp && popups.exit.enabled && <ExitIntentPopup />}
+      {!miniApp && popups.welcome.enabled && firstOrder.mode !== "off" && <WelcomeOffer offer={firstOrder} />}
+      {!miniApp && popups.quiz.enabled && <QuizNudge />}
       {/* The toast narrates purchases nobody made until the flag says a demo
           deployment wants to see it working. Kept out of the dynamic import
           above so its bundle is not even fetched when it will never render. */}
-      {SHOW_SAMPLE_SOCIAL_PROOF && <LivePurchaseToast />}
+      {!miniApp && SHOW_SAMPLE_SOCIAL_PROOF && <LivePurchaseToast />}
     </>
   );
 }

@@ -119,7 +119,7 @@ export function Footer({
             </div>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.2fr)]">
+          <div data-miniapp-hide className="grid gap-6 md:grid-cols-2 md:gap-8 lg:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.2fr)]">
             {/* Mobile: the club card leads, then the columns fold. */}
             <ClubCard
               href={clubHref}
@@ -135,7 +135,7 @@ export function Footer({
           </div>
         </div>
 
-        <div className="flex flex-col gap-5 border-line-strong md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-x-10 md:border-t md:pt-7">
+        <div data-miniapp-hide className="flex flex-col gap-5 border-line-strong md:flex-row md:flex-wrap md:items-center md:justify-between md:gap-x-10 md:border-t md:pt-7">
           <div className="flex flex-col gap-2.5 md:flex-row md:flex-wrap md:items-center md:gap-3">
             <span className="text-[15px] font-semibold md:mr-1">{t("paymentMethods")}</span>
             <div className="flex flex-wrap gap-2 md:gap-3">

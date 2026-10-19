@@ -150,6 +150,15 @@ describe("buildContentSecurityPolicy", () => {
     expect(d["script-src"]).not.toContain("https://evil.example");
   });
 
+  it("allows the Telegram Mini App SDK only when the club bot is configured", () => {
+    const off = parse(buildContentSecurityPolicy({}));
+    expect(off["script-src"]).not.toContain("https://telegram.org");
+    const on = parse(buildContentSecurityPolicy({ NEXT_PUBLIC_TELEGRAM_CLUB_BOT: "govita_club_bot" }));
+    expect(on["script-src"]).toContain("https://telegram.org");
+    // Nothing else opens: the SDK may load, arbitrary third-party scripts may not.
+    expect(on["script-src"]).not.toContain("https://evil.example");
+  });
+
   it("adds each analytics provider only when its own ID is set", () => {
     const gtm = parse(buildContentSecurityPolicy({ NEXT_PUBLIC_GTM_ID: "GTM-ABC" }));
     expect(gtm["script-src"]).toContain("https://www.googletagmanager.com");
