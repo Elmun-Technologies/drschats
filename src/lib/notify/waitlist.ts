@@ -6,6 +6,7 @@ import { normalizeUzPhone } from "@/lib/bot/phone";
 import { siteOrigin } from "@/lib/email/config";
 import { dueRequests, phone9Of } from "@/lib/catalog/stock-rules";
 import { customerChannels, linkedChat, operatorNotifier } from "./channels";
+import { enqueueRestockMessage } from "@/lib/flows/restock";
 import { waitlistUrl } from "./messages";
 import type { WaitMessage } from "./types";
 
@@ -127,6 +128,7 @@ export async function notifyWaitlist(productId: string): Promise<DispatchResult>
     locale: r.locale === "ru" ? "ru" : "uz",
     phone: r.phone,
     phone9: r.phone9,
+    slug: product.slug,
     chatId: r.telegramChatId,
     productName: product.content.name[r.locale === "ru" ? "ru" : "uz"] || product.content.name.uz,
     price,
@@ -135,8 +137,33 @@ export async function notifyWaitlist(productId: string): Promise<DispatchResult>
   }));
 
   const via = new Map<number, WaitChannel>();
+
+  /*
+    "Omborga keldi" goes through the restock flow first: it respects quiet
+    hours, opt-out and the outbox, and it is the one flow an admin can edit.
+    When the flow is switched off (or has no steps) the direct channels below
+    are exactly what shipped before — nothing changes for a deployment that
+    never turns it on.
+  */
+  for (const m of messages) {
+    if (m.kind !== "restock") continue;
+    try {
+      const handled = await enqueueRestockMessage({
+        phone: m.phone,
+        productSlug: m.slug,
+        productName: m.productName,
+        locale: m.locale,
+        restockId: String(m.requestId),
+      });
+      if (handled) via.set(m.requestId, "flow");
+    } catch (err) {
+      console.error("[notify] restock flow failed:", (err as Error).message);
+    }
+  }
+
   const channels = customerChannels();
   for (const m of messages) {
+    if (via.has(m.requestId)) continue;
     for (const channel of channels) {
       const outcome = await channel.send(m);
       if (outcome.ok) {
