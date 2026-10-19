@@ -16,6 +16,7 @@ import { placeOrder, promoLinesOf, quoteDiscounts, type DiscountQuote } from "@/
 import { announceOrderStatus, attachOrderChat, linkOf, memberLocale } from "@/lib/bot/store";
 import { earnLaterLine, both, joinLines } from "@/lib/loyalty/messages";
 import { notifyOperatorOfOrder } from "@/lib/orders/notify";
+import { linkBotOrderToVisitor } from "@/lib/journey/collect";
 import { siteOrigin } from "@/lib/email/config";
 
 /*
@@ -526,6 +527,13 @@ export async function placeBotOrder(input: BotOrderInput): Promise<BotOrderResul
       );
       await announceOrderStatus(placed.orderId, "new", extra);
       await notifyOperatorOfOrder(placed.order, placed.orderId);
+      await linkBotOrderToVisitor({
+        number: placed.orderId,
+        total: placed.order.totals.total,
+        phone: placed.order.customer.phone,
+        name: placed.order.customer.name,
+        items: placed.order.items.map((i) => ({ slug: i.slug })),
+      });
     } catch (err) {
       console.error("[bot-shop] order side effects failed:", (err as Error).message);
     }

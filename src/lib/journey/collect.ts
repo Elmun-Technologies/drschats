@@ -116,6 +116,67 @@ export async function recordBatch(visitorId: string, batch: JourneyBatch, contex
  * the browser that placed it and records the purchase server-side, so it is
  * counted even when the browser never sends its own event.
  */
+/**
+ * Bot orders have no browser cookie: link by phone9 to an existing visitor or
+ * create a lightweight one. Keeps funnel, customer lifecycle and segment
+ * counts consistent for Telegram sales.
+ */
+export async function linkBotOrderToVisitor(
+  order: { number: string; total: number; phone: string; name: string; items: { slug: string }[] },
+): Promise<void> {
+  const phone9 = order.phone.replace(/\D/g, "").slice(-9);
+  if (phone9.length !== 9) return;
+  const now = new Date();
+  try {
+    const db = getDb();
+    const existing = await db
+      .select({ id: visitors.id })
+      .from(visitors)
+      .where(sql`phone9 = ${phone9}`)
+      .limit(1);
+    let visitorId: string;
+    if (existing[0]) {
+      visitorId = existing[0].id;
+      await db
+        .update(visitors)
+        .set({
+          stage: "customer",
+          name: order.name.slice(0, 120),
+          ordersCount: sql`${visitors.ordersCount} + 1`,
+          lastOrderAt: now,
+          lastSeenAt: now,
+          cartValue: 0,
+          cartItems: [],
+          cartAt: null,
+        })
+        .where(sql`${visitors.id} = ${visitorId}`);
+    } else {
+      visitorId = newVisitorId();
+      await db.insert(visitors).values({
+        id: visitorId,
+        stage: "customer",
+        phone9,
+        name: order.name.slice(0, 120),
+        ordersCount: 1,
+        lastOrderAt: now,
+        firstSeenAt: now,
+        lastSeenAt: now,
+      });
+    }
+    await db.insert(visitorEvents).values({
+      visitorId,
+      sessionId: "server",
+      type: "purchase",
+      path: "/checkout",
+      value: order.total,
+      meta: { order: order.number, items: order.items.map((i) => i.slug).slice(0, 50) },
+    });
+    await db.update(orders).set({ visitorId }).where(sql`${orders.number} = ${order.number}`);
+  } catch (err) {
+    console.error("[journey] bot order link failed:", (err as Error).message);
+  }
+}
+
 export async function linkOrderToVisitor(
   visitorId: string | null,
   order: { number: string; total: number; phone: string; name: string; items: { slug: string }[] },

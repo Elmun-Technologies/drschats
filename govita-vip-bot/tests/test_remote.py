@@ -60,3 +60,48 @@ async def test_operator_messages_are_throttled():
     await remote.text(message(text='salom yana'), api)
     tickets = [c for c in api.request.await_args_list if c.args[:2] == ('POST', '/customers/7/tickets')]
     assert len(tickets) == 1
+
+@pytest.mark.asyncio
+async def test_order_shows_reorder_button():
+    order = {'code': 'GV-000123', 'stage': 'Yetkazildi', 'items': [{'name': 'Delical 200ml', 'qty': 1, 'unitPrice': 118000}],
+             'total': 118000, 'delivery': {'address': 'Toshkent'}, 'timeline': []}
+    api = SimpleNamespace(request=AsyncMock(side_effect=[
+        order,  # GET /customers/.../orders/GV-000123
+        {'locale': 'uz'}  # locale_of
+    ]))
+    # Also need shop_ui.locale_of mock? show_order now calls locale_of first via shop_ui
+    # We'll patch shop_ui.locale_of by making api return locale via shop/locale
+    # Instead mock remote's dependency: patch shop_ui.locale_of to return 'uz'
+    from unittest.mock import patch
+    m = message()
+    with patch('bot.shop.locale_of', new=AsyncMock(return_value='uz')):
+        await remote.show_order(m, api, 7, 'GV-000123')
+    text = m.answer.await_args.args[0]
+    assert 'GV-000123' in text
+    kb = m.answer.await_args.kwargs.get('reply_markup') or m.answer.await_args.args[1]
+    # Check that one button has callback_data starting with reorder:
+    flat = [b.callback_data for row in kb.inline_keyboard for b in row if b.callback_data]
+    assert any(d.startswith('reorder:') for d in flat), f"buttons: {flat}"
+
+
+@pytest.mark.asyncio
+async def test_reorder_callback_triggers_api_and_cart():
+    from types import SimpleNamespace as NS
+    from unittest.mock import AsyncMock, patch
+    api = SimpleNamespace(request=AsyncMock())
+    # api request for reorder then cart
+    api.request = AsyncMock(side_effect=[
+        {'locale': 'uz', 'lines': [], 'totals': {}},  # not used, just reorder success
+    ])
+    # Need to fake callback query
+    q = NS(from_user=NS(id=7), message=NS(chat=NS(id=7), answer=AsyncMock(), edit_text=AsyncMock()), data='reorder:GV-000123', answer=AsyncMock())
+    # Patch send_cart
+    with patch('bot.shop.send_cart', new=AsyncMock()) as mock_cart:
+        with patch('bot.shop.locale_of', new=AsyncMock(return_value='uz')):
+            # need api to return success for reorder
+            api.request = AsyncMock(return_value={'items': []})
+            await remote.callback(q, api)
+            # should have claimed reorder
+            assert api.request.await_count >= 1
+            assert any('reorder' in str(c.args) for c in api.request.await_args_list)
+
