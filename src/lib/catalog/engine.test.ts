@@ -47,3 +47,39 @@ describe("deal of the day", () => {
     expect(upcoming).toMatchObject({ price: plain.price, oldPrice: undefined });
   });
 });
+
+describe("a catalogue with a half-written row", () => {
+  /*
+    A product imported or hand-fixed outside the admin form can miss a
+    localized key. That used to throw inside the mapping and the resilient
+    read answered with an empty list — one bad row blanked the whole shop.
+  */
+  const broken = {
+    ...builtInCatalog.products[0],
+    slug: "half-written",
+    id: "p-half-written",
+    // The `ru` side never got written.
+    name: { uz: "Yarim yozilgan" } as unknown as { uz: string; ru: string },
+    tagline: undefined as unknown as { uz: string; ru: string },
+    highlights: { uz: ["Bor"] } as unknown as { uz: string[]; ru: string[] },
+    faq: undefined as unknown as { uz: unknown[]; ru: unknown[] },
+  };
+  const engine = new CatalogEngine(async () => ({
+    ...builtInCatalog,
+    products: [...builtInCatalog.products, broken as never],
+  }));
+
+  it("still lists every other product", async () => {
+    const page = await engine.getProducts({ locale: "ru", pageSize: 200 });
+    expect(page.items.some((p) => p.slug === broken.slug)).toBe(true);
+    expect(page.items.length).toBeGreaterThanOrEqual(builtInCatalog.products.length);
+  });
+
+  it("falls back to the other language instead of crashing", async () => {
+    const p = await engine.getProduct(broken.slug, "ru");
+    expect(p?.name).toBe("Yarim yozilgan");
+    expect(p?.tagline).toBe("");
+    expect(p?.highlights).toEqual(["Bor"]);
+    expect(p?.faq).toEqual([]);
+  });
+});
