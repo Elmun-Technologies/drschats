@@ -367,11 +367,11 @@ def summary_text(locale: str, quote: dict, draft: dict) -> str:
     lines.append(f"👤 {escape(draft.get('name') or '')} · +{escape(draft.get('phone') or '')}")
     method = draft.get("method")
     if method == "pickup":
-        lines.append(f"🏬 {t(locale, 'pickup')}")
+        lines.append(t(locale, "pickup"))
         if draft.get("address"):
             lines.append(f"📍 {escape(draft['address'])}")
     else:
-        lines.append(f"🚚 {t(locale, 'courier')}: {escape(draft.get('region') or '')}, {escape(draft.get('address') or '')}")
+        lines.append(f"{t(locale, 'courier')}: {escape(draft.get('region') or '')}, {escape(draft.get('address') or '')}")
         lines.append(t(locale, "delivery_tashkent") if draft.get("region") == REGIONS[0][0] else t(locale, "delivery_regions"))
     if draft.get("note"):
         lines.append(f"📝 {escape(draft['note'])}")
@@ -427,8 +427,12 @@ async def send_product(m, api, locale: str, slug: str, back_data: str = "cat"):
     p = data["product"]
     markup = product_kb(locale, p, back_data)
     caption = product_caption(locale, p)
+    # Telegram only fetches https URLs; anything else would be a rejected
+    # request on every card, so fall back to text before trying. (A local
+    # site serves http://localhost images, which only the bot's text path
+    # can show — the same is true of any misconfigured production host.)
     image = p.get("image")
-    if image:
+    if isinstance(image, str) and image.startswith("https://"):
         try:
             await m.answer_photo(photo=image, caption=caption[:1024], reply_markup=markup)
             return

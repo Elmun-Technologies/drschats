@@ -388,3 +388,33 @@ async def test_long_slugs_never_produce_invalid_callback_data():
     callbacks = [btn.callback_data for btn in all_buttons(markup) if btn.callback_data]
     assert all(len(c.encode()) <= 64 for c in callbacks)
     assert not any("x" * 10 in c for c in callbacks)
+
+
+QUOTE = {
+    **CART,
+    "promo": {"code": None, "ok": False, "reason": None},
+}
+
+
+@pytest.mark.asyncio
+async def test_summary_does_not_repeat_a_label_that_already_has_its_icon():
+    for locale, region in (("uz", "Toshkent shahri"), ("ru", "город Ташкент")):
+        text = shop.summary_text(
+            locale, QUOTE, {"name": "Ali", "phone": "998901234567", "method": "courier", "region": region, "address": "Chilonzor 9"}
+        )
+        assert text.count("🚚") == 1, text
+        pickup = shop.summary_text(
+            locale, QUOTE, {"name": "Ali", "phone": "998901234567", "method": "pickup", "region": "Toshkent", "address": "Ombor"}
+        )
+        assert pickup.count("🏬") == 1, pickup
+
+
+@pytest.mark.asyncio
+async def test_a_product_without_a_fetchable_photo_still_opens_as_text():
+    """Telegram only fetches https; an http image must not cost a failed call."""
+    api = Api(lambda m, p, b, q: {"product": {**PRODUCT, "image": "http://localhost:3000/p.png"}})
+    m = message()
+    await shop.send_product(m, api, "uz", PRODUCT["slug"])
+    m.answer_photo.assert_not_awaited()
+    assert "Delical vanil 200 ml" in m.answer.await_args.args[0]
+    assert "Biologik faol qoʻshimcha" in m.answer.await_args.args[0]
