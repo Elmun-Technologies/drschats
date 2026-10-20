@@ -8,7 +8,7 @@ vi.mock("./shop", () => ({ quoteBotCart: vi.fn() }));
 
 const { enrollSubject } = await import("@/lib/flows/engine");
 const { quoteBotCart } = await import("./shop");
-const { sweepBotCarts, ABANDON_AFTER_MS } = await import("./abandoned");
+const { sweepBotCarts, touchMoment, ABANDON_AFTER_MS } = await import("./abandoned");
 
 const cart = {
   locale: "uz",
@@ -33,6 +33,8 @@ describe("bot cart sweep", () => {
       flowId: "cart-abandoned",
       subject: "901234567",
       cycle: "bot:7:20261019T050000",
+      // Counted from the abandonment, not from the sweep: same rule as the site.
+      anchor: new Date("2026-10-19T05:00:00Z"),
       context: expect.objectContaining({ name: "Ali", locale: "uz", cartValue: 258000, source: "telegram_bot" }),
     });
     // The window really is "idle for at least two hours, no older than 26".
@@ -40,6 +42,11 @@ describe("bot cart sweep", () => {
     const values = sql.queryChunks.filter((c: unknown) => typeof c === "string");
     expect(values.length).toBeGreaterThan(0);
     expect(now.getTime() - ABANDON_AFTER_MS).toBe(Date.parse("2026-10-19T08:00:00Z"));
+  });
+
+  it("reads the compact touch stamp as UTC", () => {
+    expect(touchMoment("20261019T050000").toISOString()).toBe("2026-10-19T05:00:00.000Z");
+    expect(touchMoment("20261231T235959").toISOString()).toBe("2026-12-31T23:59:59.000Z");
   });
 
   it("skips carts that emptied between the query and the read", async () => {

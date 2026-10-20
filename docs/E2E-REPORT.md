@@ -15,7 +15,7 @@ node scripts/e2e/setup-admin.mjs
 # merchandising, cashback, promo strip
 for f in flow-storefront flow-admin-catalog flow-miniapp flow-automation \
          flow-admin-ui flow-merch flow-points flow-strip flow-bot-order \
-         flow-bot-settings; do
+         flow-bot-settings flow-abandoned; do
   node scripts/e2e/$f.mjs
 done
 ```
@@ -39,6 +39,7 @@ screenshots land) and, on a machine without Playwright's own browser,
 | 8. Promo strip and first-order offer | `flow-strip.mjs` | 4/4 |
 | 9. Bot API → order → admin list | `flow-bot-order.mjs` | 12/12 |
 | 10. `/admin/bot` settings reach the bot | `flow-bot-settings.mjs` | 8/8 |
+| 11. A bot cart enters the site's abandoned-cart flow, on Telegram | `flow-abandoned.mjs` | 12/12 |
 
 Bot side:
 
@@ -50,8 +51,8 @@ GOVITA_LIVE_API=http://localhost:3000/api/bot \
   GOVITA_LIVE_KEY=… .venv/bin/python scripts/live_shop_ui.py # 16 screens, clean
 ```
 
-Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 662/662,
-`next build` OK, `npm run audit` → “clean — 680 s”.
+Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 663/663,
+`next build` OK, `npm run audit` → “clean — 711 s”.
 
 ## Bugs this run found and fixed
 
@@ -82,6 +83,14 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 662/662,
    overwrite a good value, a failed fetch keeps the last known one.
 7. **The bot API client refused the local site.** `GoVitaBackend` rejected
    plain `http://` even on loopback, so no bot flow could be tested locally.
+8. **A bot cart was counted from the sweep, not from the abandonment.**
+   `sweepBotCarts` enrolled the cart with the default anchor (`now`), so the
+   first message waited an extra hour after the sweep and the conversion
+   check (“an order since the anchor”) ignored any order placed between the
+   last cart touch and the sweep — the customer could be messaged about a
+   cart they had already ordered. The enrolment is now anchored at the
+   cart's `updated_at`, exactly like the site's visitor trigger; the flow's
+   delays count from the abandonment.
 
 ## Known gaps
 
@@ -89,6 +98,9 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 662/662,
   (`SMS_FAKE=1`); a real account is still needed to confirm the live payload.
 - The Mini App was driven with an `initData` signed by the test (the real
   signature algorithm), not inside the Telegram client.
+- Flow 11 drives the worker with its `?at=` hook (10:00 and 11:00 Tashkent)
+  rather than waiting in real time; delivery to Telegram itself is read from
+  `bot_jobs`/`outbound_messages`, not from the Telegram API.
 - The Lighthouse/performance budget and the payment providers are unchanged
   by this work.
 

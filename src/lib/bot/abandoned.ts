@@ -16,11 +16,31 @@ import { quoteBotCart } from "./shop";
   still holding something, and the chat has a verified phone number. The
   cycle includes the cart's last-touch hour, so refilling the cart starts a
   new cycle while a single abandoned cart is enrolled once.
+
+  The enrolment is anchored at the cart's last touch, exactly as the site's
+  visitor trigger is: step delays count from the abandonment, not from the
+  moment the sweep noticed it. Anchoring at `now` would message a customer
+  who left at 09:00 some time after 12:00, and the conversion check ("an
+  order since the anchor") would ignore orders placed in between.
 */
 
 export const ABANDON_AFTER_MS = 2 * 60 * 60_000;
 /** A cart idle for longer than this is stale, not abandoned — the customer has moved on. */
 export const ABANDON_WINDOW_MS = 26 * 60 * 60_000;
+
+/** `YYYYMMDDTHHMMSS` (UTC) from `to_char` → the moment the cart was last touched. */
+export function touchMoment(touched: string): Date {
+  return new Date(
+    Date.UTC(
+      Number(touched.slice(0, 4)),
+      Number(touched.slice(4, 6)) - 1,
+      Number(touched.slice(6, 8)),
+      Number(touched.slice(9, 11)),
+      Number(touched.slice(11, 13)),
+      Number(touched.slice(13, 15)),
+    ),
+  );
+}
 
 export interface CartSweepResult {
   candidates: number;
@@ -61,6 +81,7 @@ export async function sweepBotCarts(now = new Date(), limit = 25): Promise<CartS
         flowId: "cart-abandoned",
         subject: row.phone.replace(/\D/g, "").slice(-9),
         cycle: `bot:${row.chat_id}:${row.touched}`.slice(0, 120),
+        anchor: touchMoment(row.touched),
         context: {
           name: row.name,
           locale: row.locale === "ru" ? "ru" : "uz",

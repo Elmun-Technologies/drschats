@@ -101,7 +101,7 @@ Ishchi (`src/lib/messaging/worker.ts`, har 5 daqiqada) uchta narsani bajaradi:
 |---|---|---|
 | **Omborga keldi** | `lib/notify/waitlist.ts` → `enqueueRestockMessage()` | Restock soʻrovi avval **restock flow** orqali yuboriladi (sokin soatlar, opt-out, outbox). Flow oʻchirilgan boʻlsa — avvalgi toʻgʻridan-toʻgʻri kanallar (Telegram → SMS → operator). `notified_via='flow'` |
 | **Bugungi taklif boshlandi** | `lib/merch/deal-notify.ts` | `starts_at` oʻtgan har bir aksiya `deal_notifications` da **bir marta** belgilanadi va oʻsha mahsulotga «narxi tushsa xabar bering» deganlarga xabar boradi. Ikki mashina bir vaqtda ishlasa ham dublikat yoʻq |
-| **Bot savati tashlab ketildi** | `lib/bot/abandoned.ts` | `bot_carts` 2 soatdan 26 soatgacha tegilmagan, ichida mahsulot bor va chatga telefon bogʻlangan boʻlsa — saytdagi «Tashlab ketilgan savat» flow'iga yoziladi (bir savat bir marta; yangi buyurtma flow'ni toʻxtatadi). Flow oʻchirilgan boʻlsa hech narsa yuborilmaydi |
+| **Bot savati tashlab ketildi** | `lib/bot/abandoned.ts` | `bot_carts` 2 soatdan 26 soatgacha tegilmagan, ichida mahsulot bor va chatga telefon bogʻlangan boʻlsa — saytdagi «Tashlab ketilgan savat» flow'iga yoziladi (bir savat bir marta; yangi buyurtma flow'ni toʻxtatadi). Flow vaqti savat oxirgi tegilmagan paytdan (`bot_carts.updated_at`) hisoblanadi — saytdagi visitor trigger bilan bir xil — shuning uchun 1-soatlik kechikish «tashlab ketilgandan keyin 1 soat» degani. Flow oʻchirilgan boʻlsa hech narsa yuborilmaydi |
 
 Hamma flow'lar **oʻchiq holda** seed qilinadi — matnlarni `/admin/flows` da koʻrib, oʻzingiz yoqasiz. Sokin soatlar 21:00–09:00 (Toshkent), opt-out va dedupe engine darajasida.
 
