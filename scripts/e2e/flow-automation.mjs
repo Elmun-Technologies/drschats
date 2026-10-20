@@ -28,6 +28,11 @@ const tick = async (at) => {
 const sql = await db();
 const browser = await openBrowser();
 const started = Date.now();
+/** The flows this script switches on are the admin's switches: put them back. */
+const FLOWS = ["restock"];
+let before = [];
+
+before = await sql`select id, active from flows where id in ${sql(FLOWS)}`;
 
 try {
   // ── 1. restock ─────────────────────────────────────────────────────────
@@ -140,6 +145,9 @@ try {
 
   await ctx.close();
 } finally {
+  // Leaving "Omborga keldi" switched on would message every waiter at the
+  // next tick long after the test finished.
+  for (const f of before) await sql`update flows set active = ${Boolean(f.active)} where id = ${f.id}`;
   await sql.end();
   await browser.close();
 }
