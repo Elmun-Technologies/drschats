@@ -18,11 +18,21 @@ class BackendError(Exception):
         super().__init__(f"GoVita backend {status}: {code}")
 
 
+def _loopback(host: str | None) -> bool:
+    """localhost / 127.0.0.1 / ::1 — a developer's own machine, never a deployment."""
+    h = (host or '').strip('[]').lower()
+    return h in ('localhost', '127.0.0.1', '::1', '0.0.0.0')
+
+
 class GoVitaBackend:
     def __init__(self, base_url, key, session=None):
         u = urlsplit(base_url)
-        if (u.scheme != 'https' or not u.netloc or u.username or u.password
-                or u.query or u.fragment):
+        # HTTPS everywhere but the developer's own machine: a plain-HTTP shop
+        # URL in production would put the service key and every customer's
+        # phone number on the wire in clear text.
+        if not ((u.scheme == 'https' or (u.scheme == 'http' and _loopback(u.hostname)))
+                and u.netloc and not u.username and not u.password
+                and not u.query and not u.fragment):
             raise ValueError('GOVITA_API_URL must be a clean HTTPS base URL')
         if not key.strip() or any(c.isspace() for c in key):
             raise ValueError('GOVITA_API_KEY must be a nonempty service key without whitespace')

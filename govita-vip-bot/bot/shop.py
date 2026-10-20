@@ -213,16 +213,35 @@ def cbd(data: str) -> str | None:
     return data if len(data.encode("utf-8")) <= 64 else None
 
 
+#: label key, callback data — in the order the menu has always used.
+MENU_LAYOUT = (
+    ("catalog", "cat"),
+    ("search", "search"),
+    ("cart", "cart"),
+    ("orders", "m:orders"),
+    ("promo", "promo"),
+    ("help", "ticket"),
+)
+
+
+def menu_switch(key: str) -> bool:
+    """Whether /admin/bot left this button on. A missing map means all on."""
+    switches = getattr(cfg, "menu", None)
+    return True if not isinstance(switches, dict) else bool(switches.get(key, True))
+
+
 def main_menu(locale: str, customer: dict | None = None):
     rows = []
-    if cfg.shop_url.startswith("https://"):
+    if menu_switch("miniApp") and cfg.shop_url.startswith("https://"):
         rows.append([b(t(locale, "mini_app"), webapp=f"{cfg.shop_url}/uz")])
-    rows += [
-        [b(t(locale, "catalog"), "cat"), b(t(locale, "search"), "search")],
-        [b(t(locale, "cart"), "cart"), b(t(locale, "orders"), "m:orders")],
-        [b(t(locale, "promo"), "promo"), b(t(locale, "help"), "ticket")],
-        [b("🌐 " + ("Русский" if locale != "ru" else "Oʻzbekcha"), "lang:" + ("ru" if locale != "ru" else "uz"))],
-    ]
+    # Two per row, skipping what the panel switched off. An empty list would
+    # leave the customer with no way back, so all-off falls back to the full menu.
+    buttons = [(key, data) for key, data in MENU_LAYOUT if menu_switch(key)]
+    if not buttons:
+        buttons = list(MENU_LAYOUT)
+    for i in range(0, len(buttons), 2):
+        rows.append([b(t(locale, key), data) for key, data in buttons[i:i + 2]])
+    rows.append([b("🌐 " + ("Русский" if locale != "ru" else "Oʻzbekcha"), "lang:" + ("ru" if locale != "ru" else "uz"))])
     if customer:
         rows.insert(0, [b(f"👤 {escape(customer.get('name') or '')}", "club")])
     return kb(*rows)
@@ -367,11 +386,11 @@ def summary_text(locale: str, quote: dict, draft: dict) -> str:
     lines.append(f"👤 {escape(draft.get('name') or '')} · +{escape(draft.get('phone') or '')}")
     method = draft.get("method")
     if method == "pickup":
-        lines.append(f"🏬 {t(locale, 'pickup')}")
+        lines.append(t(locale, "pickup"))
         if draft.get("address"):
             lines.append(f"📍 {escape(draft['address'])}")
     else:
-        lines.append(f"🚚 {t(locale, 'courier')}: {escape(draft.get('region') or '')}, {escape(draft.get('address') or '')}")
+        lines.append(f"{t(locale, 'courier')}: {escape(draft.get('region') or '')}, {escape(draft.get('address') or '')}")
         lines.append(t(locale, "delivery_tashkent") if draft.get("region") == REGIONS[0][0] else t(locale, "delivery_regions"))
     if draft.get("note"):
         lines.append(f"📝 {escape(draft['note'])}")
@@ -427,8 +446,12 @@ async def send_product(m, api, locale: str, slug: str, back_data: str = "cat"):
     p = data["product"]
     markup = product_kb(locale, p, back_data)
     caption = product_caption(locale, p)
+    # Telegram only fetches https URLs; anything else would be a rejected
+    # request on every card, so fall back to text before trying. (A local
+    # site serves http://localhost images, which only the bot's text path
+    # can show — the same is true of any misconfigured production host.)
     image = p.get("image")
-    if image:
+    if isinstance(image, str) and image.startswith("https://"):
         try:
             await m.answer_photo(photo=image, caption=caption[:1024], reply_markup=markup)
             return

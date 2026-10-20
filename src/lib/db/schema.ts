@@ -202,6 +202,8 @@ export const botJobs = pgTable("bot_jobs", {
   leaseToken: text("lease_token"),
   leasedUntil: timestamp("leased_until", { withTimezone: true }),
   sentAt: timestamp("sent_at", { withTimezone: true }),
+  /** Why the last attempt did not deliver (0013); null once it is sent. */
+  error: text("error"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 

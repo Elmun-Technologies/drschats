@@ -65,7 +65,13 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
 
   return (
     <div className="flex min-w-0 flex-col gap-3 lg:gap-3.5">
-      <div className="relative">
+      {/*
+        The entering slide is animated from translateX(30px), and for those
+        0.5 s it stuck 14 px out of a 390 px screen — the page could be dragged
+        sideways until the animation finished. Clipping the rotator (rather than
+        the slide, which already clips itself) keeps the motion and the width.
+      */}
+      <div className="relative overflow-x-clip">
         {slide.experiment && slide.variantB && slide.bannerId && slide.variantB.bannerId ? (
           <AbSlot
             key={slide.key}

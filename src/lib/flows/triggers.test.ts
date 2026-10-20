@@ -56,6 +56,15 @@ describe("candidateQuery", () => {
     expect(sql).toContain("f.status = 'delivered'");
   });
 
+  it("judges conversions at the millisecond the anchor was stored with", () => {
+    // `course-ending`/`lapsed` anchor at the order's own created_at. Comparing
+    // microseconds (the DB value) with milliseconds (the JS Date `advance`
+    // reads) made the order later than its own anchor and the flow closed
+    // itself as converted before sending.
+    const { sql } = render(conversionQuery("901234567", window.from, null));
+    expect(sql).toContain("date_trunc('milliseconds', o.created_at)");
+  });
+
   it("matches conversions by phone tail or the cart's browser", () => {
     const withVisitor = render(conversionQuery("901234567", window.from, "8d6c0d2e-0000-4000-8000-000000000000"));
     expect(withVisitor.params).toEqual(expect.arrayContaining(["901234567", "8d6c0d2e-0000-4000-8000-000000000000", window.from.toISOString()]));

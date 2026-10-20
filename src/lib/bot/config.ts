@@ -6,6 +6,25 @@ import { BRAND } from "@/lib/brand";
   GET /api/bot/config, so a change applies without redeploying the bot.
 */
 
+/**
+ * The buttons the bot's main menu may show. The panel decides which ones a
+ * customer sees; the bot keeps the order and the texts, because a menu row
+ * with a missing callback would be dead. Products, prices and stock never
+ * come from here — those stay in the catalogue.
+ */
+export const MENU_BUTTONS = ["miniApp", "catalog", "search", "cart", "orders", "promo", "help"] as const;
+export type MenuButton = (typeof MENU_BUTTONS)[number];
+
+export const menuSchema = z.object({
+  miniApp: z.boolean(),
+  catalog: z.boolean(),
+  search: z.boolean(),
+  cart: z.boolean(),
+  orders: z.boolean(),
+  promo: z.boolean(),
+  help: z.boolean(),
+});
+
 export const clubConfigSchema = z.object({
   /** Off: order status messages are not queued. Ticket replies still go. */
   enabled: z.boolean(),
@@ -27,6 +46,8 @@ export const clubConfigSchema = z.object({
     uz: z.string().trim().max(600),
     ru: z.string().trim().max(600),
   }),
+  /** Which standard buttons the main menu shows. All on unless the team turns one off. */
+  menu: menuSchema,
 });
 
 export type ClubConfig = z.infer<typeof clubConfigSchema>;
@@ -41,6 +62,7 @@ export const DEFAULT_CLUB: ClubConfig = {
     uz: "Assalomu alaykum! GoVita VIP Salomatlik Klubiga xush kelibsiz 👋",
     ru: "Здравствуйте! Добро пожаловать в GoVita VIP клуб здоровья 👋",
   },
+  menu: { miniApp: true, catalog: true, search: true, cart: true, orders: true, promo: true, help: true },
 };
 
 /**
@@ -51,7 +73,13 @@ export const DEFAULT_CLUB: ClubConfig = {
 export function readClubConfig(stored: unknown): ClubConfig {
   const saved = stored && typeof stored === "object" ? (stored as Record<string, unknown>) : {};
   const greeting = saved.greeting && typeof saved.greeting === "object" ? (saved.greeting as Record<string, unknown>) : {};
-  const merged = { ...DEFAULT_CLUB, ...saved, greeting: { ...DEFAULT_CLUB.greeting, ...greeting } };
+  const menu = saved.menu && typeof saved.menu === "object" ? (saved.menu as Record<string, unknown>) : {};
+  const merged = {
+    ...DEFAULT_CLUB,
+    ...saved,
+    greeting: { ...DEFAULT_CLUB.greeting, ...greeting },
+    menu: { ...DEFAULT_CLUB.menu, ...menu },
+  };
   const parsed = clubConfigSchema.safeParse(merged);
   return parsed.success ? parsed.data : DEFAULT_CLUB;
 }

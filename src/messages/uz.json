@@ -873,7 +873,9 @@
       "insufficient_stock": "Savatdagi mahsulotlardan biri omborda yetarli emas. Sonini kamaytirib, qayta urinib koʻring.",
       "onlyLeft": "«{name}»: omborda faqat {count} ta qoldi — savatdagi soni shunga tushirildi. Buyurtmani qayta yuboring.",
       "points_invalid": "Ballar tasdigʻi eskirdi yoki balans oʻzgardi — ballar olib tashlandi. Kodni qayta tasdiqlang yoki ballarsiz yuboring."
-    }
+    },
+    "pickupPoint": "Olib ketish manzili",
+    "pickupPointNote": "Buyurtma tayyor boʻlgach, shu manzildan olib ketasiz. Operator qoʻngʻiroq qilganda vaqtni kelishamiz."
   },
   "footer": {
     "tagline": "Sogʻlom hayot uchun tanlangan nutriyentlar.",

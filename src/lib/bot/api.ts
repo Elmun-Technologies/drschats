@@ -90,6 +90,10 @@ const receiptSchema = z.discriminatedUnion("result", [
   z.object({ leaseToken: z.string().min(16).max(64), result: z.literal("sent") }),
   z.object({ leaseToken: z.string().min(16).max(64), result: z.literal("blocked") }),
   z.object({ leaseToken: z.string().min(16).max(64), result: z.literal("retry"), retryAfter: z.number().int().min(1).max(86400).default(60) }),
+  // Telegram refused it for good (too long, bad markup, chat gone). Retrying
+  // the same payload cannot succeed, so it is recorded immediately, with the
+  // reason, instead of being retried eight times.
+  z.object({ leaseToken: z.string().min(16).max(64), result: z.literal("failed"), error: z.string().trim().max(300).optional() }),
 ]);
 
 export async function handleBotApi(method: string, path: string[], body: unknown, query: URLSearchParams): Promise<ApiResponse> {

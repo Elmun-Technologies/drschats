@@ -116,11 +116,25 @@ export function candidateQuery(trigger: FlowTrigger, window: TriggerWindow, opti
   }
 }
 
-/** An order from the subject after the anchor — the customer came back; the flow stops. */
+/*
+  An order from the subject after the anchor — the customer came back; the
+  flow stops.
+
+  Conversion is judged at millisecond precision, on purpose. The anchor is
+  written by `enroll` from a database timestamp (microseconds) but comes back
+  through node-postgres as a JS Date (milliseconds) when `advance` reads the
+  row. Comparing the full-precision order (`course-ending` and `lapsed` are
+  anchored at the order's own `created_at`) would then look "later than" its
+  own anchor by the microseconds lost in the round trip and close the
+  enrollment before its first step — the flow would never send anything.
+  Truncating both sides to the millisecond makes the triggering order equal
+  to its anchor, while a real repeat order (seconds or minutes later) still
+  converts.
+*/
 export function conversionQuery(subject: string, anchor: Date, visitorId: string | null): SQL {
   return sql`
     select o.id from orders o
-    where o.created_at > ${iso(anchor)}
+    where date_trunc('milliseconds', o.created_at) > ${iso(anchor)}
       and (${ORDER_PHONE} = ${subject} ${visitorId ? sql`or o.visitor_id = ${visitorId}::uuid` : sql``})
     order by o.created_at asc
     limit 1`;

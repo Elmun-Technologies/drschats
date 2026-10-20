@@ -8,6 +8,11 @@ export const metadata = { title: "Xabarlar navbati" };
 
 const KIND: Record<string, string> = { order_status: "Buyurtma holati", support: "Operator javobi", broadcast: "Klub xabari" };
 const STATUS = { pending: "Kutmoqda", leased: "Yuborilmoqda", sent: "Yuborildi", failed: "Yuborilmadi", blocked: "Bloklangan" } as const;
+/** Telegram's own reason, kept short: an admin needs to know what to fix. */
+const REASON: Record<string, string> = {
+  telegram_refused: "Telegram qabul qilmadi",
+  retry_exhausted: "Qayta urinishlar tugadi",
+};
 
 export default async function BotOutboxPage() {
   const rows = await listJobs();
@@ -24,7 +29,10 @@ export default async function BotOutboxPage() {
               <li key={j.id} className="flex flex-wrap items-center gap-x-4 gap-y-2 py-3 text-[15px]">
                 <span className="w-[56px] font-semibold">#{j.id}</span>
                 <span className="w-[140px]">{KIND[j.kind] ?? j.kind}</span>
-                <span className="min-w-0 flex-1 truncate text-ink-2">{j.payload.text.replace(/<[^>]+>/g, "")}</span>
+                <span className="min-w-0 flex-1 truncate text-ink-2">
+                  {j.payload.text.replace(/<[^>]+>/g, "")}
+                  {j.error && <span className="ml-2 text-[13px] text-red">{REASON[j.error] ?? j.error}</span>}
+                </span>
                 <span className="w-[140px] text-[13px] text-muted">{formatDateTime(j.sentAt ?? j.createdAt)}</span>
                 <Pill tone={j.status === "failed" || j.status === "blocked" ? "red" : j.status === "sent" ? "neutral" : "dark"}>
                   {STATUS[j.status]}

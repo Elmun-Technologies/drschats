@@ -27,6 +27,11 @@ class Config:
     backend_url: str = field(default_factory=lambda: _env("GOVITA_API_URL"))
     backend_key: str = field(default_factory=lambda: _env("GOVITA_API_KEY"))
     free_delivery_from: int = 300_000
+    #: Which standard buttons the main menu shows; /admin/bot owns the switches.
+    menu: dict = field(default_factory=lambda: {
+        "miniApp": True, "catalog": True, "search": True, "cart": True,
+        "orders": True, "promo": True, "help": True,
+    })
 
 
 cfg = Config()

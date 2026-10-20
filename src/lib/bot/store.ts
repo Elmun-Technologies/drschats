@@ -234,7 +234,11 @@ export async function claimJobs(limit: number): Promise<ClaimedJob[]> {
   });
 }
 
-export type Receipt = { result: "sent" } | { result: "retry"; retryAfter: number } | { result: "blocked" };
+export type Receipt =
+  | { result: "sent" }
+  | { result: "retry"; retryAfter: number }
+  | { result: "blocked" }
+  | { result: "failed"; error?: string };
 
 /** The bot reports a delivery. False when the lease is unknown or has expired. */
 export async function receipt(id: number, leaseToken: string, r: Receipt): Promise<boolean> {
@@ -244,13 +248,16 @@ export async function receipt(id: number, leaseToken: string, r: Receipt): Promi
       ? sql`'sent'`
       : r.result === "blocked"
         ? sql`'blocked'`
-        : sql`case when attempts >= ${MAX_ATTEMPTS} then 'failed' else 'pending' end`;
+        : r.result === "failed"
+          ? sql`'failed'`
+          : sql`case when attempts >= ${MAX_ATTEMPTS} then 'failed' else 'pending' end`;
   const rows = await db.execute(sql`
     update bot_jobs set
       status = ${status},
       lease_token = null,
       leased_until = null,
       sent_at = ${r.result === "sent" ? sql`now()` : sql`sent_at`},
+      error = ${r.result === "failed" ? (r.error ?? "telegram_refused") : r.result === "sent" ? null : sql`error`},
       due_at = ${r.result === "retry" ? sql`now() + make_interval(secs => ${r.retryAfter})` : sql`due_at`}
     where id = ${id} and status = 'leased' and lease_token = ${leaseToken} and leased_until > now()
     returning chat_id`);
@@ -395,7 +402,7 @@ export async function listJobs(limit = 100) {
 export async function retryJob(id: number): Promise<boolean> {
   const rows = await getDb()
     .update(botJobs)
-    .set({ status: "pending", attempts: 0, dueAt: new Date(), leaseToken: null, leasedUntil: null })
+    .set({ status: "pending", attempts: 0, dueAt: new Date(), leaseToken: null, leasedUntil: null, error: null })
     .where(and(eq(botJobs.id, id), inArray(botJobs.status, ["failed", "blocked"])))
     .returning({ chatId: botJobs.chatId });
   if (!rows[0]) return false;

@@ -4,11 +4,23 @@ import { BotTabs } from "@/components/admin/BotTabs";
 import { Card, Field, Metric, Notice, PageHeader, inputClass, somShort, textareaClass } from "@/components/admin/ui";
 import { broadcastAction, saveClub } from "@/app/admin/_actions/bot";
 import { MIN_BOT_KEY_LENGTH } from "@/lib/bot/auth";
+import { MENU_BUTTONS } from "@/lib/bot/config";
 import { clubOverview, getClubConfig } from "@/lib/bot/store";
 import { SEGMENTS, segmentCounts } from "@/lib/admin/segments";
 import { formatNumber } from "@/lib/utils";
 
 export const metadata = { title: "Telegram klub" };
+
+/** The panel speaks the same words the bot's own menu uses (shop.py, t(locale, key)). */
+const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = {
+  miniApp: "Mini App (Doʻkon)",
+  catalog: "Katalog",
+  search: "Qidiruv",
+  cart: "Savat",
+  orders: "Buyurtmalarim",
+  promo: "Aksiyalar",
+  help: "Yordam",
+};
 
 export default async function AdminBotPage() {
   const [stats, club, counts] = await Promise.all([clubOverview(), getClubConfig(), segmentCounts()]);
@@ -74,6 +86,20 @@ export default async function AdminBotPage() {
             <Field label="Ish vaqti">
               <input name="supportHours" defaultValue={club.supportHours} maxLength={120} className={inputClass} />
             </Field>
+            <fieldset className="grid gap-2">
+              <legend className="text-[14px] font-semibold text-ink">Menyu tugmalari</legend>
+              <p className="text-[13px] leading-5 text-muted">
+                Botning asosiy menyusida koʻrinadigan tugmalar. Hech biri qolmasa, bot standart menyuni koʻrsatadi.
+              </p>
+              <div className="grid gap-1 sm:grid-cols-2">
+                {MENU_BUTTONS.map((key) => (
+                  <label key={key} className="flex min-h-11 items-center gap-3 text-[15px]">
+                    <input type="checkbox" name={`menu.${key}`} defaultChecked={club.menu[key]} className="h-5 w-5 accent-ink" />
+                    {MENU_LABEL[key]}
+                  </label>
+                ))}
+              </div>
+            </fieldset>
           </ActionForm>
         </Card>
 

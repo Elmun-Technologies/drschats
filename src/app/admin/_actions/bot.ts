@@ -4,7 +4,7 @@ import { randomUUID } from "node:crypto";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin/session";
-import { clubConfigSchema } from "@/lib/bot/config";
+import { MENU_BUTTONS, clubConfigSchema } from "@/lib/bot/config";
 import { escapeHtml } from "@/lib/bot/messages";
 import { answerTicket, broadcast, closeTicket, retryJob, saveClubConfig } from "@/lib/bot/store";
 import type { FormState } from "./catalog";
@@ -12,10 +12,12 @@ import type { FormState } from "./catalog";
 export async function saveClub(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin();
   const raw = Object.fromEntries(form);
+  const menu = Object.fromEntries(MENU_BUTTONS.map((k) => [k, form.get(`menu.${k}`) === "on"]));
   const parsed = clubConfigSchema.safeParse({
     ...raw,
     enabled: form.get("enabled") === "on",
     greeting: { uz: raw.greetingUz ?? "", ru: raw.greetingRu ?? "" },
+    menu,
   });
   if (!parsed.success) return { error: "Maydonlarni tekshiring: doʻkon manzili https:// bilan boshlansin." };
   await saveClubConfig(parsed.data);

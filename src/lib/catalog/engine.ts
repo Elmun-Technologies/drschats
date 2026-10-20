@@ -40,13 +40,34 @@ export type OrderSink = (payload: OrderRequest) => Promise<OrderResult>;
 
 const listed = (p: RawProduct) => (p.kind ?? "core") !== "unlisted";
 
+/*
+  A localized value read without trusting the row's shape.
+
+  Every `content` column in the database is JSON that an admin form writes
+  complete, but a partial import, an older row or a hand-fixed product can
+  miss a key. Reading `p.name[locale]` on such a row threw inside the
+  mapping, the resilient read returned an empty list, and the whole shop
+  went blank because of one product — the one state the catalogue is not
+  allowed to be in. Missing text degrades to the other language, then to an
+  empty string; a missing list to an empty list.
+*/
+function localized<T>(value: { uz?: T; ru?: T } | null | undefined, locale: Locale, empty: T): T {
+  if (!value) return empty;
+  const other: Locale = locale === "ru" ? "uz" : "ru";
+  return value[locale] ?? value[other] ?? empty;
+}
+
+/** What a raw row needs before it can be drawn at all. */
+function drawable(p: RawProduct): boolean {
+  return Boolean(p && typeof p.slug === "string" && p.slug.length > 0);
+}
 
 function resolveCategory(c: RawCategory, data: CatalogData, locale: Locale): Category {
   return {
     id: c.id,
     slug: c.slug,
-    name: c.name[locale],
-    description: c.description[locale],
+    name: localized(c.name, locale, c.slug),
+    description: localized(c.description, locale, ""),
     image: c.image,
     // Counted the way the shelf lists (by slug, without withdrawn products). Counting by
     // categoryId kept "collagen" and "herbal" stocked while their pages showed nothing.
@@ -85,9 +106,9 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
   return {
     id: p.id,
     slug: p.slug,
-    name: p.name[locale],
-    tagline: p.tagline[locale],
-    description: p.description[locale],
+    name: localized(p.name, locale, p.slug),
+    tagline: localized(p.tagline, locale, ""),
+    description: localized(p.description, locale, ""),
     categoryId: p.categoryId,
     categorySlug: p.categorySlug,
     price,
@@ -97,16 +118,16 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     rating: SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
     reviewCount: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,
     inStock: p.inStock,
-    images: photos.map((url) => ({ url, alt: p.name[locale] })),
-    highlights: p.highlights[locale],
-    benefits: p.benefits[locale],
-    ingredients: p.ingredients[locale],
-    howToUse: p.howToUse[locale],
-    faq: p.faq[locale],
-    reviews: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviews[locale] : [],
-    badges: p.badges[locale],
-    servings: p.servings[locale],
-    origin: p.origin[locale],
+    images: photos.map((url) => ({ url, alt: localized(p.name, locale, p.slug) })),
+    highlights: localized(p.highlights, locale, []),
+    benefits: localized(p.benefits, locale, []),
+    ingredients: localized(p.ingredients, locale, []),
+    howToUse: localized(p.howToUse, locale, ""),
+    faq: localized(p.faq, locale, []),
+    reviews: SHOW_SAMPLE_SOCIAL_PROOF ? localized(p.reviews, locale, []) : [],
+    badges: localized(p.badges, locale, []),
+    servings: localized(p.servings, locale, ""),
+    origin: localized(p.origin, locale, ""),
     /*
       Empty on purpose: the shop holds no certificates of its own, and
       manufacturer certificates are per batch, sent on request.
@@ -166,7 +187,17 @@ export class CatalogEngine implements ShopflowClient {
       // Products withdrawn from sale disappear from every listing unless a
       // caller explicitly asks for the whole archive.
       .filter((p) => assortment === "all" || listed(p))
-      .map((p) => resolveProduct(p, data, locale));
+      // One row this code cannot draw is left out and named in the log; the
+      // rest of the catalogue still renders.
+      .flatMap((p) => {
+        if (!drawable(p)) return [];
+        try {
+          return [resolveProduct(p, data, locale)];
+        } catch (err) {
+          console.error(`[catalog] product ${p.slug} skipped:`, (err as Error).message);
+          return [];
+        }
+      });
 
     if (assortment === "core") items = items.filter((p) => p.assortment === "core");
 
@@ -197,7 +228,13 @@ export class CatalogEngine implements ShopflowClient {
   async getProduct(slug: string, locale: Locale): Promise<Product | null> {
     const data = await this.load();
     const raw = data.products.find((p) => p.slug === slug);
-    return raw ? resolveProduct(raw, data, locale) : null;
+    if (!raw || !drawable(raw)) return null;
+    try {
+      return resolveProduct(raw, data, locale);
+    } catch (err) {
+      console.error(`[catalog] product ${slug} not drawable:`, (err as Error).message);
+      return null;
+    }
   }
 
   /*

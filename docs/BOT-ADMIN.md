@@ -53,7 +53,7 @@ Telegram ──polling──▶ govita-vip-bot (Python, aiogram, Fly: govita-bot
 | «Buyurtmalarim» | Shu chatdan (Mini App) yoki bogʻlangan raqamdan berilgan buyurtmalar (oxirgi 9 raqam boʻyicha — saytdagi buyurtmalar ham chiqadi) |
 | Holat oʻzgarishi | `/admin/orders` da holat oʻzgarsa — mijozga botda xabar (uz/ru), «Batafsil» tugmasi bilan |
 | «Katalog» / `/katalog` | Kategoriyalar → sahifalangan mahsulotlar (6 tadan). Har bir tugmada nom va **haqiqiy** narx |
-| Mahsulot kartasi | Rasm, narx, real eski narx, «Faqat N ta qoldi», qisqa tavsif va **BAD ogohlantirishi**. Sotuvda yoʻq boʻlsa «➕» tugmasi chiqmaydi |
+| Mahsulot kartasi | Rasm, narx, real eski narx, «Faqat N ta qoldi», qisqa tavsif va **BAD ogohlantirishi**. Sotuvda yoʻq boʻlsa «➕» tugmasi chiqmaydi. Rasm faqat `https://` boʻlsa yuboriladi — Telegram boshqa sxemani qabul qilmaydi, shuning uchun karta matn boʻlib ochiladi |
 | Savat | Serverdagi savat: `➕` / `➖` / `🗑`, promokod, tozalash, «Buyurtma berish». Narxlar har safar katalogdan qayta hisoblanadi |
 | Qadam-baqadam buyurtma | Ism → **telefon (faqat Telegram kontaktidan)** → yetkazish usuli → viloyat + manzil yoki lokatsiya → izoh → promokod (ixtiyoriy) → server hisoblagan yakuniy summa → «Tasdiqlash» |
 | Tasdiqlash | `idempotencyKey` bilan bitta buyurtma: ikki marta bosish yoki taym-autdan keyingi qayta urinish dublikat yaratmaydi. Savat faqat buyurtma yaratilgandan keyin boʻshaydi |
@@ -93,6 +93,37 @@ Xatolar `{ error, slug?, name?, reason?, available? }`:
 **Muhim:** `promoCode: null` — «promokodsiz», maydon umuman yoʻq boʻlsa —
 savatdagi kod ishlatiladi.
 
+## Xatolar mijozga qanday aytiladi
+
+Bot hech qachon jim qolmaydi va savatni yoʻqotmaydi (`pytest` da har biri
+alohida test):
+
+| Holat | Mijoz koʻradi | Savat |
+|---|---|---|
+| Mahsulot tugadi (checkout paytida) | «… hozir sotuvda yoʻq» + savat tugmasi | saqlanadi |
+| Promokod eskirgan (tasdiqlashda) | «Promokod yaroqsiz: muddati tugagan» + kod savatdan ham, holatdan ham olib tashlanadi | saqlanadi, «Tekshirish» qayta ochiladi |
+| Narx oʻzgardi (aksiya tugadi) | buyurtma qabul qilinadi + «Narx yangilandi. Yakuniy summa: …» | — |
+| Sayt ishlamayapti | «Buyurtma yuborilmadi. Birozdan keyin qayta urinib koʻring.» | draft saqlanadi, `order_key` oʻsha — qayta bosilsa dublikat boʻlmaydi |
+| Telefon ulanmagan | kontakt soʻraladi, tasdiqlangach checkout davom etadi | saqlanadi |
+| Takroriy bosish / timeout | «Bu buyurtma allaqachon qabul qilingan: №…» | — |
+
+## Navbat (outbox) shartnomasi
+
+Sayt `bot_jobs` ga yozadi, bot `/outbox/claim` bilan 10 tadan oladi (3 daqiqali
+liza), har biri uchun `/outbox/:id/receipt` bilan javob beradi:
+
+| Natija | Qachon | Saytda |
+|---|---|---|
+| `sent` | xabar yetdi (uzun matn boʻlsa — boʻlaklarga boʻlinib, hammasi) | `sent`, `sent_at` |
+| `blocked` | mijoz botni bloklagan | `blocked`, aʼzo bloklangan deb belgilanadi |
+| `retry` | Telegram `429` yoki vaqtinchalik xato | `pending`, `due_at` kechiktiriladi |
+| `failed` | Telegram payload'ni umuman qabul qilmaydi (4096+ belgi, buzuq HTML, chat yoʻq) | `failed` + sabab, darhol; 8 marta urinilmaydi |
+
+4096 belgidan uzun matn boʻlaklarga boʻlinadi (paragraf → satr → gap → soʻz
+chegarasida), ochiq HTML teglari yopilib keyingi boʻlakda qayta ochiladi,
+tugmalar oxirgi boʻlakda qoladi. `/admin/bot/outbox` «Yuborilmadi» yonida
+sababni koʻrsatadi va «Qayta yuborish» urinishlar hamda xatoni tozalaydi.
+
 ## Avtomatizatsiya
 
 Ishchi (`src/lib/messaging/worker.ts`, har 5 daqiqada) uchta narsani bajaradi:
@@ -101,7 +132,8 @@ Ishchi (`src/lib/messaging/worker.ts`, har 5 daqiqada) uchta narsani bajaradi:
 |---|---|---|
 | **Omborga keldi** | `lib/notify/waitlist.ts` → `enqueueRestockMessage()` | Restock soʻrovi avval **restock flow** orqali yuboriladi (sokin soatlar, opt-out, outbox). Flow oʻchirilgan boʻlsa — avvalgi toʻgʻridan-toʻgʻri kanallar (Telegram → SMS → operator). `notified_via='flow'` |
 | **Bugungi taklif boshlandi** | `lib/merch/deal-notify.ts` | `starts_at` oʻtgan har bir aksiya `deal_notifications` da **bir marta** belgilanadi va oʻsha mahsulotga «narxi tushsa xabar bering» deganlarga xabar boradi. Ikki mashina bir vaqtda ishlasa ham dublikat yoʻq |
-| **Bot savati tashlab ketildi** | `lib/bot/abandoned.ts` | `bot_carts` 2 soatdan 26 soatgacha tegilmagan, ichida mahsulot bor va chatga telefon bogʻlangan boʻlsa — saytdagi «Tashlab ketilgan savat» flow'iga yoziladi (bir savat bir marta; yangi buyurtma flow'ni toʻxtatadi). Flow oʻchirilgan boʻlsa hech narsa yuborilmaydi |
+| **Boshqa flowlar** (`first-purchase`, `course-ending`, `lapsed`, `birthday`) | `lib/flows/triggers.ts` | Bot buyurtmasi oddiy `orders` qatoridir, shuning uchun bu triggerlar uni saytdagi buyurtmadan farqlamaydi. Yetkazilganlik `bot_order_events.status='delivered'` dan olinadi (`first-purchase`), kurs/takroriy buyurtma esa `orders.created_at` dan. Kanal — bogʻlangan chat boʻlsa Telegram, aks holda SMS; sokin soat, opt-out, dedupe umumiy |
+| **Bot savati tashlab ketildi** | `lib/bot/abandoned.ts` | `bot_carts` 2 soatdan 26 soatgacha tegilmagan, ichida mahsulot bor va chatga telefon bogʻlangan boʻlsa — saytdagi «Tashlab ketilgan savat» flow'iga yoziladi (bir savat bir marta; yangi buyurtma flow'ni toʻxtatadi). Flow vaqti savat oxirgi tegilmagan paytdan (`bot_carts.updated_at`) hisoblanadi — saytdagi visitor trigger bilan bir xil — shuning uchun 1-soatlik kechikish «tashlab ketilgandan keyin 1 soat» degani. Flow oʻchirilgan boʻlsa hech narsa yuborilmaydi |
 
 Hamma flow'lar **oʻchiq holda** seed qilinadi — matnlarni `/admin/flows` da koʻrib, oʻzingiz yoqasiz. Sokin soatlar 21:00–09:00 (Toshkent), opt-out va dedupe engine darajasida.
 
@@ -131,7 +163,14 @@ reklama kabineti auditoriyasi esa saytdagi «Mijozlar» segmentlaridan olinadi.
 
 - **Klub** — 30 kunlik kanal statistikasi (bot / Mini App / sayt va bot savdo summasi), aʼzolar; sozlamalar (holat xabarlari yoqilgan, klub nomi,
   Mini App manzili, operator telefoni, ish vaqti, **salomlashuv uz/ru** — bot
-  keyingi soʻrovda oladi);
+  ularni ishga tushishda va keyin har 5 daqiqada (`bot/settings.py`, outbox
+  sikli) qayta oʻqiydi, shuning uchun qayta ishga tushirish shart emas;
+  salomlashuv esa har `/start` da olinadi);
+  **menyu tugmalari** — qaysi standart tugma koʻrinishini panel belgilaydi
+  (`miniApp`, `catalog`, `search`, `cart`, `orders`, `promo`, `help`); bot
+  tartibni va matnlarni oʻzi saqlaydi, chunki mavjud boʻlmagan `callback_data`
+  oʻlik tugma boʻlardi. Hammasi oʻchirilsa bot toʻliq menyuni koʻrsatadi —
+  mijozni boshqaruvsiz qoldirmaslik uchun;
   **«Klubga xabar»** — botni bloklamagan barcha aʼzolarga (tasdiq belgisi bilan,
   1000 belgi, HTML escape qilinadi);
   **«Segmental kampaniyalar»** — 5 bot auditoriyasi hajmi bilan, bosilsa
@@ -196,4 +235,26 @@ reklama kabineti auditoriyasi esa saytdagi «Mijozlar» segmentlaridan olinadi.
 | `src/lib/telegram/mini-app.ts` · `components/telegram/TelegramMiniApp.tsx` | Mini App: initData, `web_app_ready`/`expand` (Telegram skriptisiz) |
 | `govita-vip-bot/bot/remote.py` | Production bot; test — `tests/test_remote.py` |
 | `govita-vip-bot/bot/shop.py` | Native doʻkon: katalog, savat, qadam-baqadam checkout; test — `tests/test_shop.py` |
+| `govita-vip-bot/scripts/live_smoke.py` | 20 ta API tekshiruvi: savat, promokod, buyurtma, idempotentlik, holat xabari |
+| `govita-vip-bot/scripts/live_shop_ui.py` | Doʻkon handlerlarini tirik saytga qarshi yuritadi (16 ekran): katalog → savat → checkout → buyurtma → «Qayta buyurtma» |
+| `scripts/e2e/flow-bot-order.mjs` | Bot API → `orders` → `/admin/orders` (kanal «Telegram bot») tekshiruvi |
 | `govita-vip-bot/fly.toml` | Bot deploy |
+
+## Lokal tekshirish
+
+Botni saytga qarshi lokal yurgizish mumkin: `GoVitaBackend` faqat **loopback**
+uchun `http://` ga ruxsat beradi (boshqa hostlar uchun faqat `https://`,
+credentials/query/fragment baribir taqiqlangan). Shu bilan:
+
+```bash
+# sayt 3000-portda
+cd govita-vip-bot
+GOVITA_LIVE_API=http://localhost:3000/api/bot GOVITA_LIVE_KEY=$BOT_API_KEY \
+  .venv/bin/python scripts/live_smoke.py      # 20/20
+GOVITA_LIVE_API=http://localhost:3000/api/bot GOVITA_LIVE_KEY=$BOT_API_KEY \
+  .venv/bin/python scripts/live_shop_ui.py    # 16 ekran, buyurtma raqami
+```
+
+`live_shop_ui.py` Telegramni almashtiradi (xabarlar chop etiladi), lekin API,
+baza va `placeOrder()` — haqiqiy. Shu bilan matnda qolib ketgan `{ism}`,
+eski narx yoki 4096 belgidan uzun xabar darhol koʻrinadi.
