@@ -24,11 +24,13 @@ async def main():
         from .backend import GoVitaBackend
         from .remote import router as remote_router, outbox_loop
         from .shop import router as shop_router
+        from . import settings as settings_store
         api = await GoVitaBackend(cfg.backend_url, cfg.backend_key).open()
         try:
             settings = await api.request('GET', '/config')
-            cfg.shop_url = settings['shopUrl'].rstrip('/')
-            cfg.club_name = settings['clubName']
+            # One place copies the panel's values onto cfg; the outbox loop
+            # re-reads them later, so an admin edit applies without a restart.
+            settings_store.apply(settings)
             bot = Bot(cfg.bot_token, default=DefaultBotProperties(parse_mode="HTML"))
             me = await bot.get_webhook_info()
             if me.url:

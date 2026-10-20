@@ -131,7 +131,9 @@ reklama kabineti auditoriyasi esa saytdagi «Mijozlar» segmentlaridan olinadi.
 
 - **Klub** — 30 kunlik kanal statistikasi (bot / Mini App / sayt va bot savdo summasi), aʼzolar; sozlamalar (holat xabarlari yoqilgan, klub nomi,
   Mini App manzili, operator telefoni, ish vaqti, **salomlashuv uz/ru** — bot
-  keyingi soʻrovda oladi);
+  ularni ishga tushishda va keyin har 5 daqiqada (`bot/settings.py`, outbox
+  sikli) qayta oʻqiydi, shuning uchun qayta ishga tushirish shart emas;
+  salomlashuv esa har `/start` da olinadi);
   **«Klubga xabar»** — botni bloklamagan barcha aʼzolarga (tasdiq belgisi bilan,
   1000 belgi, HTML escape qilinadi);
   **«Segmental kampaniyalar»** — 5 bot auditoriyasi hajmi bilan, bosilsa

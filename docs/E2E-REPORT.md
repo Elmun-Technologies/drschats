@@ -14,7 +14,8 @@ node scripts/e2e/setup-admin.mjs
 # storefront, admin catalogue, Mini App, automation, admin UI,
 # merchandising, cashback, promo strip
 for f in flow-storefront flow-admin-catalog flow-miniapp flow-automation \
-         flow-admin-ui flow-merch flow-points flow-strip flow-bot-order; do
+         flow-admin-ui flow-merch flow-points flow-strip flow-bot-order \
+         flow-bot-settings; do
   node scripts/e2e/$f.mjs
 done
 ```
@@ -37,11 +38,12 @@ screenshots land) and, on a machine without Playwright's own browser,
 | 7. Cashback spent with an SMS code | `flow-points.mjs` | 5/5 |
 | 8. Promo strip and first-order offer | `flow-strip.mjs` | 4/4 |
 | 9. Bot API → order → admin list | `flow-bot-order.mjs` | 12/12 |
+| 10. `/admin/bot` settings reach the bot | `flow-bot-settings.mjs` | 8/8 |
 
 Bot side:
 
 ```bash
-cd govita-vip-bot && pytest -q                              # 36 passed
+cd govita-vip-bot && pytest -q                              # 42 passed
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
   GOVITA_LIVE_KEY=… .venv/bin/python scripts/live_smoke.py  # 20/20
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
@@ -71,7 +73,14 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 662/662,
 5. **Bot summaries repeated the courier icon** (`🚚 🚚 Kuryer`) and tried to
    send `http://` photos, which Telegram always rejects; the bot now skips the
    photo call for non-https URLs and falls back to text.
-6. **The bot API client refused the local site.** `GoVitaBackend` rejected
+6. **Half of `/admin/bot` never reached the bot.** The shop address and the
+   club name were copied once at startup (an edit needed a restart) and the
+   support phone and working hours never at all — «Yordam» kept printing the
+   compiled-in values. `bot/settings.py` now re-reads `GET /config` from the
+   outbox loop every five minutes (and on every `/start`), updates `cfg`, and
+   re-sets the Telegram menu button when the address changes; blanks never
+   overwrite a good value, a failed fetch keeps the last known one.
+7. **The bot API client refused the local site.** `GoVitaBackend` rejected
    plain `http://` even on loopback, so no bot flow could be tested locally.
 
 ## Known gaps
@@ -92,3 +101,5 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 662/662,
 - `docs/e2e-shots/flow6-deal-of-day.png` — “Bugungi taklif” on the home page
 - `docs/e2e-shots/flow7-points-verified.png` — cashback verified with a code
 - `docs/e2e-shots/flow8-promo-strip.png` — the promo strip under the header
+- `docs/e2e-shots/flow9-bot-order.png` — the bot order in the panel
+- `docs/e2e-shots/flow10-bot-settings.png` — the settings the bot reads

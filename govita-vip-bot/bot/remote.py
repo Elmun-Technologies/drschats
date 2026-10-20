@@ -12,11 +12,13 @@ from urllib.parse import quote
 
 from aiogram import F, Router
 from aiogram.filters import CommandStart
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, MenuButtonWebApp, WebAppInfo
 from aiogram.exceptions import TelegramForbiddenError, TelegramRetryAfter
 
 from .backend import BackendError
+from .config import cfg
 from .logic import som
+from . import settings as settings_store
 from . import shop as shop_ui
 from .ui import b, kb, contact_kb, T
 
@@ -40,6 +42,9 @@ async def greeting(api, locale="uz"):
     except Exception as e:  # noqa: BLE001 — the greeting is never worth a failed /start
         log.warning('config unavailable, using built-in greeting: %s', type(e).__name__)
         return T['welcome']
+    # A /start is also a good moment to pick up the rest of the panel: the
+    # address, the phone and the hours are shown in this same conversation.
+    settings_store.apply(config or {})
     saved = ((config or {}).get('greeting') or {}).get('ru' if locale == 'ru' else 'uz') or ''
     return escape(saved.strip()) if saved.strip() else T['welcome']
 
@@ -171,6 +176,17 @@ async def errors(event):
 async def outbox_loop(bot, api):
     while True:
         try:
+            # Pick up an admin's change to the shop address, the club name or
+            # the support phone within a few minutes, without a restart. The
+            # menu button beside the message field lives on Telegram's side,
+            # so it is re-set only when the address really changed.
+            changed = await settings_store.refresh(api)
+            if "shop_url" in changed:
+                try:
+                    await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
+                        text="Doʻkon", web_app=WebAppInfo(url=f"{cfg.shop_url}/uz")))
+                except Exception as e:  # noqa: BLE001 — a stale button is not worth the loop
+                    log.warning("menu button not updated: %s", type(e).__name__)
             batch = await api.request('POST', '/outbox/claim', body={'limit': 10})
             for job in batch['items']:
                 receipt = {'leaseToken': job['leaseToken'], 'result': 'sent'}
