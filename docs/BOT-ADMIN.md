@@ -93,6 +93,20 @@ Xatolar `{ error, slug?, name?, reason?, available? }`:
 **Muhim:** `promoCode: null` — «promokodsiz», maydon umuman yoʻq boʻlsa —
 savatdagi kod ishlatiladi.
 
+## Xatolar mijozga qanday aytiladi
+
+Bot hech qachon jim qolmaydi va savatni yoʻqotmaydi (`pytest` da har biri
+alohida test):
+
+| Holat | Mijoz koʻradi | Savat |
+|---|---|---|
+| Mahsulot tugadi (checkout paytida) | «… hozir sotuvda yoʻq» + savat tugmasi | saqlanadi |
+| Promokod eskirgan (tasdiqlashda) | «Promokod yaroqsiz: muddati tugagan» + kod savatdan ham, holatdan ham olib tashlanadi | saqlanadi, «Tekshirish» qayta ochiladi |
+| Narx oʻzgardi (aksiya tugadi) | buyurtma qabul qilinadi + «Narx yangilandi. Yakuniy summa: …» | — |
+| Sayt ishlamayapti | «Buyurtma yuborilmadi. Birozdan keyin qayta urinib koʻring.» | draft saqlanadi, `order_key` oʻsha — qayta bosilsa dublikat boʻlmaydi |
+| Telefon ulanmagan | kontakt soʻraladi, tasdiqlangach checkout davom etadi | saqlanadi |
+| Takroriy bosish / timeout | «Bu buyurtma allaqachon qabul qilingan: №…» | — |
+
 ## Navbat (outbox) shartnomasi
 
 Sayt `bot_jobs` ga yozadi, bot `/outbox/claim` bilan 10 tadan oladi (3 daqiqali

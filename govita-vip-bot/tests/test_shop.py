@@ -463,3 +463,117 @@ def test_all_switches_off_still_leaves_a_working_menu(menu_switches):
 def test_the_mini_app_button_hides_on_its_own_switch(menu_switches):
     menu_switches.menu = {**menu_switches.menu, "miniApp": False}
     assert not any(btn.web_app for row in shop.main_menu("uz").inline_keyboard for btn in row)
+
+
+@pytest.mark.asyncio
+async def test_the_comment_is_sent_with_the_order():
+    state = State({
+        "name": "Ali", "phone": "998901234567", "method": "courier",
+        "region": "Toshkent shahri", "address": "Amir Temur 12",
+        "note": "Domofon 12, 3-qavat", "order_key": "k" * 16,
+    })
+
+    def handler(method, path, body, params):
+        if path == "/shop/locale":
+            return {"locale": "uz"}
+        if path == "/shop/order":
+            return {"ok": True, "orderId": "GV-000123", "total": 236000}
+        raise AssertionError(path)
+
+    api = Api(handler)
+    q = callback("co:confirm")
+    await shop.cb_confirm(q, api, state)
+    sent = [c[2] for c in api.calls if c[1] == "/shop/order"][0]
+    assert sent["note"] == "Domofon 12, 3-qavat"
+    # Everything else the courier needs travels in the same call.
+    assert (sent["region"], sent["address"], sent["method"]) == ("Toshkent shahri", "Amir Temur 12", "courier")
+
+
+@pytest.mark.asyncio
+async def test_a_note_is_not_longer_than_the_api_accepts():
+    def handler(method, path, body, params):
+        if path == "/shop/locale":
+            return {"locale": "uz"}
+        raise AssertionError(path)
+
+    state = State({"name": "Ali", "phone": "998901234567", "method": "courier"})
+    await shop.on_note(message(text="x" * 1500), Api(handler), state)
+    assert len(state.data["note"]) == 1000
+
+
+@pytest.mark.asyncio
+async def test_a_price_change_is_told_after_the_order_is_placed():
+    state = State({
+        "name": "Ali", "phone": "998901234567", "method": "courier",
+        "region": "Toshkent shahri", "address": "Amir Temur 12", "order_key": "k" * 16,
+        "summary_total": 236000,
+    })
+
+    def handler(method, path, body, params):
+        if path == "/shop/locale":
+            return {"locale": "uz"}
+        if path == "/shop/order":
+            # The deal ended between the summary and the confirm.
+            return {"ok": True, "orderId": "GV-000124", "total": 258000}
+        raise AssertionError(path)
+
+    api = Api(handler)
+    q = callback("co:confirm")
+    await shop.cb_confirm(q, api, state)
+    text = q.message.answer.await_args.args[0]
+    assert "GV-000124" in text
+    # The customer is not charged a sum they never saw without being told.
+    assert "258 000" in text and "Narx yangilandi" in text
+
+
+@pytest.mark.asyncio
+async def test_the_site_being_down_at_confirm_never_looks_like_success():
+    state = State({
+        "name": "Ali", "phone": "998901234567", "method": "courier",
+        "region": "Toshkent shahri", "address": "Amir Temur 12", "order_key": "k" * 16,
+    })
+
+    def handler(method, path, body, params):
+        if path == "/shop/locale":
+            return {"locale": "uz"}
+        if path == "/shop/order":
+            raise BackendError(503, "unavailable")
+        raise AssertionError(path)
+
+    api = Api(handler)
+    q = callback("co:confirm")
+    await shop.cb_confirm(q, api, state)
+    text = q.message.answer.await_args.args[0]
+    assert "yuborilmadi" in text and "GV-" not in text
+    # The draft is still there: the customer taps confirm again once the site is back.
+    assert state.data.get("order_key") == "k" * 16
+
+
+@pytest.mark.asyncio
+async def test_a_promo_that_died_before_confirm_is_explained_and_cleared():
+    state = State({
+        "name": "Ali", "phone": "998901234567", "method": "courier",
+        "region": "Toshkent shahri", "address": "Amir Temur 12",
+        "promo": "E2E7", "order_key": "k" * 16,
+    })
+
+    def handler(method, path, body, params):
+        if path == "/shop/locale":
+            return {"locale": "uz"}
+        if path == "/shop/order":
+            raise BackendError(422, "promo_invalid", {"reason": "expired"})
+        if path == "/shop/promo":
+            assert body["code"] == "", body
+            return CART
+        raise AssertionError(path)
+
+    api = Api(handler)
+    q = callback("co:confirm")
+    await shop.cb_confirm(q, api, state)
+    text = q.message.answer.await_args.args[0]
+    assert "Promokod yaroqsiz" in text and "muddati" in text
+    # The dead code is gone from both the chat state and the server cart.
+    assert state.data["promo"] == ""
+    assert [c for c in api.calls if c[1] == "/shop/promo"]
+    # And the customer can re-open the server-computed summary, not a dead end.
+    assert any(btn.callback_data == "co:summary" for btn in all_buttons(q.message.answer.await_args.kwargs["reply_markup"]))

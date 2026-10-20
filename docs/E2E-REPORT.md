@@ -46,7 +46,7 @@ screenshots land) and, on a machine without Playwright's own browser,
 Bot side:
 
 ```bash
-cd govita-vip-bot && pytest -q                              # 54 passed
+cd govita-vip-bot && pytest -q                              # 59 passed
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
   GOVITA_LIVE_KEY=… .venv/bin/python scripts/live_smoke.py  # 20/20
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
