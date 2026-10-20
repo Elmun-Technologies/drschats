@@ -54,7 +54,7 @@ GOVITA_LIVE_API=http://localhost:3000/api/bot \
 ```
 
 Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 667/667,
-`next build` OK, `npm run audit` → “clean — 675 s”.
+`next build` OK, `npm run audit` → “clean — 674 s”.
 
 ## Production pipeline (checked 2026-10-20)
 
