@@ -15,7 +15,7 @@ node scripts/e2e/setup-admin.mjs
 # merchandising, cashback, promo strip
 for f in flow-storefront flow-admin-catalog flow-miniapp flow-automation \
          flow-admin-ui flow-merch flow-points flow-strip flow-bot-order \
-         flow-bot-settings flow-abandoned flow-bot-customer; do
+         flow-bot-settings flow-abandoned flow-bot-customer flow-bot-outbox; do
   node scripts/e2e/$f.mjs
 done
 ```
@@ -41,11 +41,12 @@ screenshots land) and, on a machine without Playwright's own browser,
 | 10. `/admin/bot` settings and menu switches reach the bot | `flow-bot-settings.mjs` | 15/15 |
 | 11. A bot cart enters the site's abandoned-cart flow, on Telegram | `flow-abandoned.mjs` | 12/12 |
 | 12. Bot customer: status messages, cashback, quiet hours, opt-out, restock, first-purchase, course-ending | `flow-bot-customer.mjs` | 45/45 |
+| 13. Bot outbox: claim, lease, failed/retry/sent, panel retry | `flow-bot-outbox.mjs` | 14/14 |
 
 Bot side:
 
 ```bash
-cd govita-vip-bot && pytest -q                              # 48 passed
+cd govita-vip-bot && pytest -q                              # 54 passed
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
   GOVITA_LIVE_KEY=… .venv/bin/python scripts/live_smoke.py  # 20/20
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
@@ -120,6 +121,16 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 667/667,
     the flow fails if the stored greeting opens with a quote or if the value
     after the restore differs from the value before it.
 
+11. **A message Telegram will never accept was retried eight times.** The bot
+    could only report `retry` or `blocked`, so a payload over 4096 characters
+    (or with broken markup, or a chat that no longer exists) spent eight
+    minutes in the queue and then showed as "Yuborilmadi" with no reason.
+    The bot now reports `failed` with the reason on the first refusal; the
+    panel shows it and «Qayta yuborish» clears it. Long queued texts are split
+    at a paragraph, line, sentence or word boundary — never truncated — with
+    the open HTML tags closed and reopened so each part is valid markup, and
+    the buttons stay on the last part.
+
 ## Known gaps
 
 - Eskiz delivery is only exercised against the fake gateway
@@ -147,3 +158,4 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 667/667,
 - `docs/e2e-shots/flow9-bot-order.png` — the bot order in the panel
 - `docs/e2e-shots/flow10-bot-settings.png` — the settings and menu switches the bot reads
 - `docs/e2e-shots/flow12-bot-customer-status.png` — a bot order delivered, with its messages
+- `docs/e2e-shots/flow13-bot-outbox.png` — a refused message and its reason in the panel

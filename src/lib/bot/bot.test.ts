@@ -126,6 +126,12 @@ describe("bot API routing", () => {
     const r = await handleBotApi("POST", ["outbox", "3", "receipt"], { leaseToken: "a".repeat(32), result: "retry", retryAfter: 5 }, q);
     expect(r.status).toBe(200);
     expect(store.receipt).toHaveBeenCalledWith(3, "a".repeat(32), { result: "retry", retryAfter: 5 });
+    // A payload Telegram refuses for good: recorded once, with its reason.
+    const failed = await handleBotApi("POST", ["outbox", "4", "receipt"], { leaseToken: "b".repeat(32), result: "failed", error: "telegram_refused" }, q);
+    expect(failed.status).toBe(200);
+    expect(store.receipt).toHaveBeenCalledWith(4, "b".repeat(32), { result: "failed", error: "telegram_refused" });
+    // The reason is capped, so a long Telegram error cannot bloat the row.
+    expect((await handleBotApi("POST", ["outbox", "5", "receipt"], { leaseToken: "c".repeat(32), result: "failed", error: "x".repeat(400) }, q)).status).toBe(422);
     expect((await handleBotApi("POST", ["outbox", "claim"], {}, q)).status).toBe(200);
     expect((await handleBotApi("DELETE", ["config"], undefined, q)).status).toBe(404);
   });

@@ -93,6 +93,23 @@ Xatolar `{ error, slug?, name?, reason?, available? }`:
 **Muhim:** `promoCode: null` — «promokodsiz», maydon umuman yoʻq boʻlsa —
 savatdagi kod ishlatiladi.
 
+## Navbat (outbox) shartnomasi
+
+Sayt `bot_jobs` ga yozadi, bot `/outbox/claim` bilan 10 tadan oladi (3 daqiqali
+liza), har biri uchun `/outbox/:id/receipt` bilan javob beradi:
+
+| Natija | Qachon | Saytda |
+|---|---|---|
+| `sent` | xabar yetdi (uzun matn boʻlsa — boʻlaklarga boʻlinib, hammasi) | `sent`, `sent_at` |
+| `blocked` | mijoz botni bloklagan | `blocked`, aʼzo bloklangan deb belgilanadi |
+| `retry` | Telegram `429` yoki vaqtinchalik xato | `pending`, `due_at` kechiktiriladi |
+| `failed` | Telegram payload'ni umuman qabul qilmaydi (4096+ belgi, buzuq HTML, chat yoʻq) | `failed` + sabab, darhol; 8 marta urinilmaydi |
+
+4096 belgidan uzun matn boʻlaklarga boʻlinadi (paragraf → satr → gap → soʻz
+chegarasida), ochiq HTML teglari yopilib keyingi boʻlakda qayta ochiladi,
+tugmalar oxirgi boʻlakda qoladi. `/admin/bot/outbox` «Yuborilmadi» yonida
+sababni koʻrsatadi va «Qayta yuborish» urinishlar hamda xatoni tozalaydi.
+
 ## Avtomatizatsiya
 
 Ishchi (`src/lib/messaging/worker.ts`, har 5 daqiqada) uchta narsani bajaradi:
