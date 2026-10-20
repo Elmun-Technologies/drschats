@@ -38,21 +38,21 @@ screenshots land) and, on a machine without Playwright's own browser,
 | 7. Cashback spent with an SMS code | `flow-points.mjs` | 5/5 |
 | 8. Promo strip and first-order offer | `flow-strip.mjs` | 4/4 |
 | 9. Bot API → order → admin list | `flow-bot-order.mjs` | 12/12 |
-| 10. `/admin/bot` settings reach the bot | `flow-bot-settings.mjs` | 8/8 |
+| 10. `/admin/bot` settings and menu switches reach the bot | `flow-bot-settings.mjs` | 15/15 |
 | 11. A bot cart enters the site's abandoned-cart flow, on Telegram | `flow-abandoned.mjs` | 12/12 |
 | 12. Bot customer: status messages, cashback, quiet hours, opt-out, restock, first-purchase, course-ending | `flow-bot-customer.mjs` | 45/45 |
 
 Bot side:
 
 ```bash
-cd govita-vip-bot && pytest -q                              # 42 passed
+cd govita-vip-bot && pytest -q                              # 48 passed
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
   GOVITA_LIVE_KEY=… .venv/bin/python scripts/live_smoke.py  # 20/20
 GOVITA_LIVE_API=http://localhost:3000/api/bot \
   GOVITA_LIVE_KEY=… .venv/bin/python scripts/live_shop_ui.py # 16 screens, clean
 ```
 
-Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 664/664,
+Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 667/667,
 `next build` OK, `npm run audit` → “clean — 679 s”.
 
 ## Production pipeline (checked 2026-10-20)
@@ -111,6 +111,14 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 664/664,
    first step was never sent. Both conversion checks (`advance` and the bulk
    pass) now compare at millisecond precision; flow 12 proves the
    course-ending message reaches the bot.
+
+10. *(test harness)* **Flow 10's cleanup corrupted the greeting.** It wrote
+    the original text back with `JSON.stringify(text)::jsonb`, which the
+    driver JSON-encodes a second time: the row held `"\"Assalomu…\""` and the
+    bot would have sent a greeting wrapped in quotes and backslashes. The
+    restore now uses `to_jsonb(text)` (and `sql.json` for the menu map), and
+    the flow fails if the stored greeting opens with a quote or if the value
+    after the restore differs from the value before it.
 
 ## Known gaps
 

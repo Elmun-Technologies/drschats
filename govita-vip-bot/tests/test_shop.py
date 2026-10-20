@@ -418,3 +418,48 @@ async def test_a_product_without_a_fetchable_photo_still_opens_as_text():
     m.answer_photo.assert_not_awaited()
     assert "Delical vanil 200 ml" in m.answer.await_args.args[0]
     assert "Biologik faol qoʻshimcha" in m.answer.await_args.args[0]
+
+
+# ── the main menu follows /admin/bot ──────────────────────────────────────
+
+
+def _labels(markup):
+    return [btn.text for row in markup.inline_keyboard for btn in row]
+
+
+@pytest.fixture
+def menu_switches():
+    """The process-wide cfg carries the menu; every test puts it back."""
+    from bot.config import cfg
+
+    saved = getattr(cfg, "menu", None)
+    yield cfg
+    cfg.menu = saved
+
+
+def test_main_menu_shows_every_button_by_default(menu_switches):
+    labels = _labels(shop.main_menu("uz"))
+    assert "📚 Katalog" in labels and "🛒 Savat" in labels and "🏷 Promokod" in labels
+    assert sum("🌐" in label for label in labels) == 1
+
+
+def test_main_menu_skips_the_buttons_the_panel_switched_off(menu_switches):
+    menu_switches.menu = {**menu_switches.menu, "promo": False, "help": False}
+    markup = shop.main_menu("ru")
+    labels = _labels(markup)
+    assert "🏷 Промокод" not in labels and "💬 Задать вопрос" not in labels
+    assert "📚 Каталог" in labels
+    # Six buttons minus two leave two full rows of two, not a ragged pair.
+    assert all(len(row) <= 2 for row in markup.inline_keyboard)
+
+
+def test_all_switches_off_still_leaves_a_working_menu(menu_switches):
+    menu_switches.menu = {key: False for key in menu_switches.menu}
+    labels = _labels(shop.main_menu("uz"))
+    assert "📚 Katalog" in labels and "🛒 Savat" in labels
+    assert not any(btn.web_app for row in shop.main_menu("uz").inline_keyboard for btn in row)
+
+
+def test_the_mini_app_button_hides_on_its_own_switch(menu_switches):
+    menu_switches.menu = {**menu_switches.menu, "miniApp": False}
+    assert not any(btn.web_app for row in shop.main_menu("uz").inline_keyboard for btn in row)

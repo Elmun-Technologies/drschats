@@ -135,6 +135,11 @@ reklama kabineti auditoriyasi esa saytdagi «Mijozlar» segmentlaridan olinadi.
   ularni ishga tushishda va keyin har 5 daqiqada (`bot/settings.py`, outbox
   sikli) qayta oʻqiydi, shuning uchun qayta ishga tushirish shart emas;
   salomlashuv esa har `/start` da olinadi);
+  **menyu tugmalari** — qaysi standart tugma koʻrinishini panel belgilaydi
+  (`miniApp`, `catalog`, `search`, `cart`, `orders`, `promo`, `help`); bot
+  tartibni va matnlarni oʻzi saqlaydi, chunki mavjud boʻlmagan `callback_data`
+  oʻlik tugma boʻlardi. Hammasi oʻchirilsa bot toʻliq menyuni koʻrsatadi —
+  mijozni boshqaruvsiz qoldirmaslik uchun;
   **«Klubga xabar»** — botni bloklamagan barcha aʼzolarga (tasdiq belgisi bilan,
   1000 belgi, HTML escape qilinadi);
   **«Segmental kampaniyalar»** — 5 bot auditoriyasi hajmi bilan, bosilsa

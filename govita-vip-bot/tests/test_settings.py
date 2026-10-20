@@ -16,7 +16,7 @@ CONFIG = {
 @pytest.fixture(autouse=True)
 def restore():
     """Every test writes to the process-wide cfg; put it back afterwards."""
-    saved = {attr: getattr(cfg, attr) for attr in settings_store.FIELDS.values()}
+    saved = {attr: getattr(cfg, attr) for attr in (*settings_store.FIELDS.values(), "menu")}
     settings_store.reset()
     yield
     for attr, value in saved.items():
@@ -94,3 +94,19 @@ async def test_the_greeting_route_also_refreshes_the_rest():
     text = await remote.greeting(GreetingApi(), "ru")
     assert text == "Привет"
     assert cfg.operator_phone == "+998 71 000 11 22"
+
+
+def test_menu_switches_apply_and_keep_the_ones_not_sent():
+    """The panel sends seven booleans; a missing one must keep its value."""
+    changed = settings_store.apply({"menu": {"promo": False}})
+    assert changed == {"menu"}
+    assert cfg.menu["promo"] is False
+    assert cfg.menu["catalog"] is True
+    # Again with the same value: nothing changed.
+    assert settings_store.apply({"menu": {"promo": False}}) == set()
+
+
+def test_menu_ignores_values_that_are_not_booleans():
+    before = dict(cfg.menu)
+    assert settings_store.apply({"menu": {"cart": "no", "orders": 1}}) == set()
+    assert cfg.menu == before

@@ -27,6 +27,10 @@ FIELDS = {
     "supportHours": "support_hours",
 }
 
+#: The menu switches are booleans, not text, so they travel separately.
+MENU_KEY = "menu"
+MENU_BUTTONS = ("miniApp", "catalog", "search", "cart", "orders", "promo", "help")
+
 
 def apply(settings: dict) -> set[str]:
     """Copy the panel's values onto `cfg`; return the names that changed.
@@ -49,6 +53,17 @@ def apply(settings: dict) -> set[str]:
         if getattr(cfg, attr, None) != value:
             setattr(cfg, attr, value)
             changed.add(attr)
+    menu = settings.get(MENU_KEY)
+    if isinstance(menu, dict):
+        # A switch the panel did not send keeps its current value: a partial
+        # payload (an older panel) must not blank the rest of the menu.
+        merged = dict(getattr(cfg, "menu", None) or {})
+        for key in MENU_BUTTONS:
+            if isinstance(menu.get(key), bool):
+                merged[key] = menu[key]
+        if merged != getattr(cfg, "menu", None):
+            setattr(cfg, "menu", merged)
+            changed.add("menu")
     return changed
 
 

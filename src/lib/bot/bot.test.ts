@@ -272,6 +272,24 @@ describe("bot shop API contract", () => {
   });
 });
 
+describe("club menu", () => {
+  it("keeps a switch the panel saved and defaults the ones it did not", () => {
+    const config = readClubConfig({ menu: { promo: false } });
+    expect(config.menu).toEqual({ ...DEFAULT_CLUB.menu, promo: false });
+  });
+
+  it("falls back to the whole menu when the stored value is not an object", () => {
+    expect(readClubConfig({ menu: "none" }).menu).toEqual(DEFAULT_CLUB.menu);
+  });
+
+  it("ships every standard button, so an upgrade changes nothing for customers", () => {
+    expect(Object.values(DEFAULT_CLUB.menu).every(Boolean)).toBe(true);
+    expect(Object.keys(DEFAULT_CLUB.menu).sort()).toEqual(
+      ["cart", "catalog", "help", "miniApp", "orders", "promo", "search"],
+    );
+  });
+});
+
 describe("club greeting", () => {
   it("keeps a saved greeting and fills a missing language from the default", () => {
     const config = readClubConfig({ greeting: { uz: "Salom!" } });
