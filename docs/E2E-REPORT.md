@@ -145,5 +145,5 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 667/667,
 - `docs/e2e-shots/flow7-points-verified.png` — cashback verified with a code
 - `docs/e2e-shots/flow8-promo-strip.png` — the promo strip under the header
 - `docs/e2e-shots/flow9-bot-order.png` — the bot order in the panel
-- `docs/e2e-shots/flow10-bot-settings.png` — the settings the bot reads
+- `docs/e2e-shots/flow10-bot-settings.png` — the settings and menu switches the bot reads
 - `docs/e2e-shots/flow12-bot-customer-status.png` — a bot order delivered, with its messages
