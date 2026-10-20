@@ -201,7 +201,7 @@ export async function runFlows(now = new Date()): Promise<FlowRunResult> {
       from (
         select a.id, (
           select o.id from orders o
-          where o.created_at > a.anchor_at
+          where date_trunc('milliseconds', o.created_at) > date_trunc('milliseconds', a.anchor_at)
             and (right(regexp_replace(o.customer->>'phone', '\\D', '', 'g'), 9) = a.subject
                  or (a.context ? 'visitorId' and o.visitor_id::text = a.context->>'visitorId'))
           order by o.created_at limit 1

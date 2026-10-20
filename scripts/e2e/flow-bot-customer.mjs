@@ -94,7 +94,7 @@ try {
   await sql`delete from loyalty_ledger where phone9 = ${PHONE9}`;
   await sql`delete from bot_carts where chat_id = ${CHAT}`;
 
-  prevFlows = await sql`select id, active from flows where id in ('cart-abandoned', 'restock', 'first-purchase')`;
+  prevFlows = await sql`select id, active from flows where id in ('cart-abandoned', 'restock', 'first-purchase', 'course-ending')`;
   await sql`update flows set active = true where id in ('cart-abandoned', 'restock')`;
   const [loyaltyRow] = await sql`select value from site_settings where key = 'loyalty.rules'`;
   prevLoyalty = loyaltyRow?.value ?? null;
@@ -276,6 +276,22 @@ try {
   const [firstJob] = await sql`select payload from bot_jobs where id = ${firstOut?.bot_job_id}`;
   // `{ism}` is the first name, so the text opens with "Bot,".
   check("the bot has the first-purchase text", String(firstJob?.payload?.text ?? "").startsWith("Bot,"), String(firstJob?.payload?.text ?? "").slice(0, 140));
+
+  // ── 7. course ending, 25 days after the order ─────────────────────────
+  // The trigger is the latest order's date, and the first step is due 25 days
+  // later. The order is back-dated (it is the test's own row), then the flow
+  // is switched on and the worker ticked at a daytime hour.
+  await sql`update orders set created_at = now() - interval '26 days' where id = ${order.id}`;
+  await sql`update flows set active = true where id = 'course-ending'`;
+  const courseTick = await tick(new Date(morning.getTime() + 45 * 60_000));
+  check("the course-ending tick runs", courseTick.status === 200, JSON.stringify(courseTick.body).slice(0, 120));
+  const [course] = await sql`select status, cycle from flow_enrollments where flow_id = 'course-ending' and subject = ${PHONE9} order by id desc limit 1`;
+  check("the bot order enters “course ending”", course?.cycle === String(order.id), JSON.stringify(course));
+  const [courseOut] = await sql`select channel, chat_id, bot_job_id, text from outbound_messages where flow_id = 'course-ending' and phone9 = ${PHONE9} order by id desc limit 1`;
+  check("the course reminder goes to Telegram", courseOut?.channel === "telegram" && Number(courseOut?.chat_id) === CHAT, JSON.stringify(courseOut)?.slice(0, 160));
+  check("the course text names the product and has no placeholder", String(courseOut?.text ?? "").includes(product.name) && !/\{[a-z]+\}/i.test(String(courseOut?.text ?? "")), String(courseOut?.text ?? "").slice(0, 160));
+  const [courseJob] = await sql`select payload from bot_jobs where id = ${courseOut?.bot_job_id}`;
+  check("the bot has the course-ending text", Boolean(courseJob), JSON.stringify(courseJob)?.slice(0, 140));
 
   await admin.ctx.close();
 } finally {

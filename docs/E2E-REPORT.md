@@ -40,7 +40,7 @@ screenshots land) and, on a machine without Playwright's own browser,
 | 9. Bot API → order → admin list | `flow-bot-order.mjs` | 12/12 |
 | 10. `/admin/bot` settings reach the bot | `flow-bot-settings.mjs` | 8/8 |
 | 11. A bot cart enters the site's abandoned-cart flow, on Telegram | `flow-abandoned.mjs` | 12/12 |
-| 12. Bot customer: status messages, cashback, quiet hours, opt-out, restock, first-purchase | `flow-bot-customer.mjs` | 40/40 |
+| 12. Bot customer: status messages, cashback, quiet hours, opt-out, restock, first-purchase, course-ending | `flow-bot-customer.mjs` | 45/45 |
 
 Bot side:
 
@@ -52,8 +52,8 @@ GOVITA_LIVE_API=http://localhost:3000/api/bot \
   GOVITA_LIVE_KEY=… .venv/bin/python scripts/live_shop_ui.py # 16 screens, clean
 ```
 
-Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 663/663,
-`next build` OK, `npm run audit` → “clean — 711 s”.
+Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 664/664,
+`next build` OK, `npm run audit` → “clean — 679 s”.
 
 ## Bugs this run found and fixed
 
@@ -92,6 +92,14 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 663/663,
    cart they had already ordered. The enrolment is now anchored at the
    cart's `updated_at`, exactly like the site's visitor trigger; the flow's
    delays count from the abandonment.
+9. **Course-ending and lapsed reminders never went out.** `advance` reads the
+   enrollment's anchor back as a JavaScript `Date` (milliseconds) while the
+   order's `created_at` keeps microseconds. The conversion check — “an order
+   since the anchor” — therefore saw the very order that triggered the flow
+   as *later* than its anchor, closed the enrollment as `converted` and the
+   first step was never sent. Both conversion checks (`advance` and the bulk
+   pass) now compare at millisecond precision; flow 12 proves the
+   course-ending message reaches the bot.
 
 ## Known gaps
 
@@ -102,9 +110,9 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 663/663,
 - Flow 11 drives the worker with its `?at=` hook (10:00 and 11:00 Tashkent)
   rather than waiting in real time; delivery to Telegram itself is read from
   `bot_jobs`/`outbound_messages`, not from the Telegram API.
-- Flow 12 checks the first-purchase flow for a bot order; course-ending and
-  lapsed read the same `orders` table and the same candidate query, but their
-  delays are 3–60 days, so they are not driven here.
+- Flow 12 back-dates its own order by 26 days to drive course-ending; lapsed
+  shares the same candidate query and the same channel rules but its 60-day
+  delay is not driven.
 - The Lighthouse/performance budget and the payment providers are unchanged
   by this work.
 
