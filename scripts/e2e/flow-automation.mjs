@@ -71,8 +71,17 @@ try {
   const [enrollment] = await sql`select id, flow_id, subject, status from flow_enrollments where flow_id = 'restock' and subject = '905554433' order by id desc limit 1`;
   check("the customer is enrolled in the restock flow", Boolean(enrollment), "no enrollment");
 
-  // Advance the flow at the real time of day: this is where the text is queued.
-  const realtime = await tick();
+  /*
+    Advance the flow on a simulated clock: the next 22:00 in Tashkent. Using
+    the real clock made this check pass only while the test itself ran at
+    night — the message was already due at 09:00 otherwise.
+  */
+  const HOUR = 3600_000;
+  let night = new Date();
+  night = new Date(Date.UTC(night.getUTCFullYear(), night.getUTCMonth(), night.getUTCDate(), 17, 0, 0));
+  if (night.getTime() <= Date.now()) night = new Date(night.getTime() + 24 * HOUR);
+  const morningAt = new Date(night.getTime() + 11 * HOUR + 60_000);
+  const realtime = await tick(night.toISOString());
   check("the message worker tick runs", realtime.status === 200 && realtime.body?.ok !== false, JSON.stringify(realtime).slice(0, 200));
 
   // The message is queued, not sent: it is ~22:30 in Tashkent, inside the
@@ -83,7 +92,7 @@ try {
   const tashkentHour = (new Date(queued.scheduled_at).getUTCHours() + 5) % 24;
   check("quiet hours push the message to 09:00 Tashkent", tashkentHour === 9 && queued.status === "pending", `${queued.scheduled_at} (${tashkentHour}h)`);
 
-  const morning = await tick("2026-10-20T05:00:00.000Z");
+  const morning = await tick(morningAt.toISOString());
   check("the morning tick delivers what the night held", morning.status === 200 && morning.body?.ok !== false, JSON.stringify(morning).slice(0, 200));
   await page.waitForTimeout(2500);
   const log = await readFile(SMS_LOG, "utf8").catch(() => "");
@@ -110,10 +119,13 @@ try {
   // design — the test must exercise a *new* start, not re-claim an old one.
   await sql`delete from deal_notifications`;
   await sql`delete from deals where product_slug = ${dealProduct.slug}`;
+  // A daytime tick after the restock's morning, so the price-drop SMS is not
+  // deferred by quiet hours: 10:00 Tashkent on the same simulated day.
+  const dealAt = new Date(morningAt.getTime() + HOUR);
   await sql`
     insert into deals (product_slug, price, percent, starts_at, ends_at)
-    values (${dealProduct.slug}, ${target}, null, now() - interval '1 minute', now() + interval '1 day')`;
-  const afterDeal = await tick("2026-10-20T05:00:30.000Z");
+    values (${dealProduct.slug}, ${target}, null, ${new Date(dealAt.getTime() - 60_000).toISOString()}::timestamptz, ${new Date(dealAt.getTime() + 24 * HOUR).toISOString()}::timestamptz)`;
+  const afterDeal = await tick(dealAt.toISOString());
   await page.waitForTimeout(2000);
   const [dealNote] = await sql`select deal_id from deal_notifications order by deal_id desc limit 1`;
   check("the deal sweep claims the deal once", Boolean(dealNote), JSON.stringify(afterDeal.body).slice(0, 200));
@@ -122,7 +134,7 @@ try {
   const dealLog = (await readFile(SMS_LOG, "utf8").catch(() => "")).split("\n").filter(Boolean);
   check("the price-drop message is in the gateway log", dealLog.some((l) => l.includes("907776655")), `${dealLog.length} lines`);
 
-  const second = await tick("2026-10-20T05:01:00.000Z");
+  const second = await tick(new Date(dealAt.getTime() + 30_000).toISOString());
   const [stillOnce] = await sql`select count(*)::int as n from deal_notifications where deal_id = ${dealNote?.deal_id}`;
   check("a second tick does not repeat the message", stillOnce?.n === 1, `${stillOnce?.n} rows, tick ${JSON.stringify(second.body).slice(0, 120)}`);
 

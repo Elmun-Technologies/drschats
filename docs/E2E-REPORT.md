@@ -15,7 +15,7 @@ node scripts/e2e/setup-admin.mjs
 # merchandising, cashback, promo strip
 for f in flow-storefront flow-admin-catalog flow-miniapp flow-automation \
          flow-admin-ui flow-merch flow-points flow-strip flow-bot-order \
-         flow-bot-settings flow-abandoned; do
+         flow-bot-settings flow-abandoned flow-bot-customer; do
   node scripts/e2e/$f.mjs
 done
 ```
@@ -40,6 +40,7 @@ screenshots land) and, on a machine without Playwright's own browser,
 | 9. Bot API → order → admin list | `flow-bot-order.mjs` | 12/12 |
 | 10. `/admin/bot` settings reach the bot | `flow-bot-settings.mjs` | 8/8 |
 | 11. A bot cart enters the site's abandoned-cart flow, on Telegram | `flow-abandoned.mjs` | 12/12 |
+| 12. Bot customer: status messages, cashback, quiet hours, opt-out, restock, first-purchase | `flow-bot-customer.mjs` | 40/40 |
 
 Bot side:
 
@@ -101,6 +102,9 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 663/663,
 - Flow 11 drives the worker with its `?at=` hook (10:00 and 11:00 Tashkent)
   rather than waiting in real time; delivery to Telegram itself is read from
   `bot_jobs`/`outbound_messages`, not from the Telegram API.
+- Flow 12 checks the first-purchase flow for a bot order; course-ending and
+  lapsed read the same `orders` table and the same candidate query, but their
+  delays are 3–60 days, so they are not driven here.
 - The Lighthouse/performance budget and the payment providers are unchanged
   by this work.
 
@@ -115,3 +119,4 @@ Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 663/663,
 - `docs/e2e-shots/flow8-promo-strip.png` — the promo strip under the header
 - `docs/e2e-shots/flow9-bot-order.png` — the bot order in the panel
 - `docs/e2e-shots/flow10-bot-settings.png` — the settings the bot reads
+- `docs/e2e-shots/flow12-bot-customer-status.png` — a bot order delivered, with its messages
