@@ -161,6 +161,9 @@ try {
     check(`the order is ${step.status}`, row?.status === step.status, row?.status);
   }
   check("the quick-action bar is gone once delivered", (await section.count()) === 0 || !(await section.first().isVisible()), "still visible");
+  // Read the page once more, so the screenshot shows the delivered order and its
+  // whole timeline, not the render from before the last quick action.
+  await admin.page.reload({ waitUntil: "networkidle" });
   await shot(admin.page, "flow12-bot-customer-status");
 
   const jobs = await sql`select payload->>'text' as text from bot_jobs where chat_id = ${CHAT} and kind = 'order_status' order by id`;
