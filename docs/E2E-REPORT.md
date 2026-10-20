@@ -55,6 +55,17 @@ GOVITA_LIVE_API=http://localhost:3000/api/bot \
 Project gates on the same tree: `tsc` 0, `eslint` 0, `vitest` 664/664,
 `next build` OK, `npm run audit` → “clean — 679 s”.
 
+## Production pipeline (checked 2026-10-20)
+
+- The `Deploy to Fly` workflow succeeded on `main` at `4412cc9` (run
+  `39291787016`), so `FLY_API_TOKEN` is present and the deploy job works. The
+  secrets list itself is not readable with this integration token (HTTP 403).
+- `https://govita.fly.dev/uz` and `/admin` were **not reachable from the E2E
+  sandbox** — `govita.fly.dev` does not resolve here — so the owner should
+  open them after this branch merges.
+- Migrations in the repo: `0001`–`0012` (0012 is the bot shop); all of them
+  were applied to the local PostgreSQL used for these flows.
+
 ## Bugs this run found and fixed
 
 1. **Pickup could not be ordered.** The checkout required a region and a
