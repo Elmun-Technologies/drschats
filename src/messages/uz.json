@@ -1110,6 +1110,10 @@
       "partners": {
         "title": "Ulgurji hamkorlik — dorixonalar va distributorlar uchun | Go Vita",
         "description": "Dorixonalar, distributorlar va korporativ mijozlar uchun Go Vita bilan hamkorlik: ulgurji narx, hudud va toʻlov muddati alohida shartnomada. Ariza qoldiring."
+      },
+      "privacy": {
+        "title": "Maxfiylik siyosati — shaxsiy maʼlumotlar himoyasi | Go Vita",
+        "description": "Go Vita qanday maʼlumotlarni toʻplaydi, ulardan nima uchun foydalanadi va qanday himoya qiladi: buyurtma, yetkazib berish, analitika va cookie fayllari."
       }
     }
   },

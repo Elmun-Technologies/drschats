@@ -11,7 +11,8 @@ import { SITE_URL } from "./metadata";
   It is intersectional, so it may sit in the `*` group.
 */
 // /api/: search suggestions, health and trackers are endpoints, not pages.
-export const DISALLOW = ["/*/cart", "/*/checkout", "/*/stop/", "/studio", "/admin", "/api/", "/r/", "/s/"] as const;
+// /cart is not listed: it carries noindex, and a crawler only reads that on a page it may fetch.
+export const DISALLOW = ["/*/checkout", "/*/stop/", "/studio", "/admin", "/api/", "/r/", "/s/"] as const;
 
 export const YANDEX_CLEAN_PARAMS = [
   "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",

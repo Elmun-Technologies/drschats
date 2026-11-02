@@ -57,12 +57,18 @@ async function regionsLabel(locale: Locale) {
 export const STATIC_PAGE_KEYS = [
   "about", "contact", "delivery", "payment", "guarantee", "requisites", "licenses",
   "blog", "brands", "loyalty", "reviews", "whereToBuy", "offer", "sale",
-  "goals", "symptoms", "vitamins", "programs", "quiz", "ingredients", "partners",
+  "goals", "symptoms", "vitamins", "programs", "quiz", "ingredients", "partners", "privacy",
 ] as const;
 
 export type StaticPageKey = (typeof STATIC_PAGE_KEYS)[number];
 
-export async function staticPageMetadata(locale: Locale, key: StaticPageKey, path: string): Promise<Metadata> {
+/** `noindex`: a page with nothing of its own to show yet (lib/seo/indexable.ts). */
+export async function staticPageMetadata(
+  locale: Locale,
+  key: StaticPageKey,
+  path: string,
+  options: { noindex?: boolean } = {},
+): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta.pages" });
   const values = { ...(await delivery()), regions: await regionsLabel(locale) };
   return buildPageMetadata({
@@ -70,6 +76,7 @@ export async function staticPageMetadata(locale: Locale, key: StaticPageKey, pat
     path,
     title: t(`${key}.title`),
     description: clampDescription(t(`${key}.description`, values)),
+    noindex: options.noindex,
   });
 }
 

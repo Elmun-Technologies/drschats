@@ -19,7 +19,7 @@ import { Toaster } from "@/components/ui/Toaster";
 import { ScrollProgress } from "@/components/ui/ScrollProgress";
 import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
-import { SITE_URL } from "@/lib/seo/metadata";
+import { SITE_NAME, SITE_URL } from "@/lib/seo/metadata";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
 import { toMenuDeal } from "@/components/layout/menu-deal";
 import { ServiceWorkerRegistration } from "@/components/pwa/ServiceWorkerRegistration";
@@ -51,6 +51,12 @@ export async function generateMetadata(): Promise<Metadata> {
   const bing = saved["verify.bing"];
   return {
     metadataBase: new URL(SITE_URL),
+    /*
+      A page that names only itself ("Tanlanganlar", the checkout success
+      screen) still reads as the shop in a tab or a result. page-meta titles
+      already carry the brand and set an absolute title, so it is never doubled.
+    */
+    title: { default: SITE_NAME, template: `%s — ${SITE_NAME}` },
     verification: {
       ...(google ? { google } : {}),
       ...(yandex ? { yandex } : {}),

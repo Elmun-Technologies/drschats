@@ -8,12 +8,13 @@ import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { hasLicence } from "@/lib/seo/indexable";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  return staticPageMetadata(locale, "licenses", "/licenses");
+  return staticPageMetadata(locale, "licenses", "/licenses", { noindex: !hasLicence() });
 }
 
 export default async function LicensesPage({ params }: { params: Promise<{ locale: Locale }> }) {

@@ -93,6 +93,7 @@ async function readCatalog(): Promise<CatalogData> {
         price: p.price,
         oldPrice: p.oldPrice ?? undefined,
         saleEndsAt: p.saleEndsAt ? p.saleEndsAt.toISOString() : undefined,
+        updatedAt: p.updatedAt.toISOString(),
         rating: 0,
         reviewCount: 0,
         inStock: p.inStock,

@@ -8,7 +8,7 @@ import { NotFoundView } from "@/components/layout/NotFoundView";
   and topic pages that call notFound() into a 500 at runtime.
 */
 export const metadata: Metadata = {
-  title: "Sahifa topilmadi · Страница не найдена | Go Vita",
+  title: { absolute: "Sahifa topilmadi · Страница не найдена | Go Vita" },
   robots: { index: false },
 };
 

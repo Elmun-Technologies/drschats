@@ -8,6 +8,7 @@ import { getCommerceSettings } from "@/lib/commerce/server";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { loyaltyProgrammeLive } from "@/lib/seo/indexable";
 import { firstOrderOffer } from "@/lib/promo/offer";
 import { getLoyaltyRules } from "@/lib/loyalty/settings";
 import { referralRewardKind } from "@/lib/loyalty/model";
@@ -33,7 +34,7 @@ export const revalidate = 3600;
 */
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  return staticPageMetadata(locale, "loyalty", "/loyalty");
+  return staticPageMetadata(locale, "loyalty", "/loyalty", { noindex: !loyaltyProgrammeLive(await getLoyaltyRules()) });
 }
 
 export default async function LoyaltyPage({ params }: { params: Promise<{ locale: Locale }> }) {
