@@ -99,7 +99,7 @@ function readPrefixes(): Set<string> {
 
     for (const { name, ns } of names) {
       const full = (key: string) => (ns ? (key ? `${ns}.${key}` : ns) : key);
-      const use = new RegExp(String.raw`(?<![\w.$])${name}(?:\.(?:rich|raw|markup|has))?(?![\w$])`, "g");
+      const use = new RegExp(String.raw`(?<![\w.$])${name}(?:\s*\.(?:rich|raw|markup|has))?(?![\w$])`, "g");
       for (const m of src.matchAll(use)) {
         if (inDeclaration(m.index!)) continue;
         const after = src.slice(m.index! + m[0].length);
