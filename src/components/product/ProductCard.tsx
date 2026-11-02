@@ -90,7 +90,7 @@ export function ProductCard({
         <Link
           href={href}
           tabIndex={-1}
-          aria-hidden
+          aria-label={product.name}
           className="relative block aspect-square overflow-hidden rounded-[16px] bg-tile"
         >
           {image ? (
