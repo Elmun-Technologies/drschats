@@ -5,7 +5,7 @@ import { desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { getOrder } from "@/lib/admin/queries";
 import { botOrderEvents, ORDER_STATUSES, products } from "@/lib/db/schema";
-import { DELIVERY_LABEL, LOCALE_LABEL, NEXT_STATUS, PAYMENT_LABEL, STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
+import { DELIVERY_LABEL, LOCALE_LABEL, NEXT_STATUS, PAYMENT_LABEL, PAYMENT_STATE_LABEL, PAYMENT_STATUS_LABEL, STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
 import { setOrderStatus, updateOrder } from "@/app/admin/_actions/orders";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { CopyButton } from "@/components/admin/CopyButton";
@@ -14,6 +14,7 @@ import { describeAttribution } from "@/lib/analytics/attribution";
 import { lineTotal } from "@/lib/cart/pricing";
 import { discountAdjustment, pointsSpent } from "@/lib/promo/rules";
 import { requireAdmin } from "@/lib/admin/session";
+import { paymentsOfOrder } from "@/lib/payments/store";
 
 export const metadata = { title: "Buyurtma" };
 
@@ -34,9 +35,10 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
   if (!o) notFound();
   const db = getDb();
   const slugs = [...new Set(o.items.map((i) => i.slug))];
-  const [history, pics] = await Promise.all([
+  const [history, pics, payments] = await Promise.all([
     db.select().from(botOrderEvents).where(eq(botOrderEvents.orderId, o.id)).orderBy(desc(botOrderEvents.createdAt)),
     slugs.length ? db.select({ slug: products.slug, id: products.id, cutout: products.cutout, images: products.images }).from(products).where(inArray(products.slug, slugs)) : Promise.resolve([]),
+    paymentsOfOrder(o.number!).catch(() => []),
   ]);
   const picOf = new Map(pics.map((p) => [p.slug, { id: p.id, src: p.cutout ?? p.images[0] ?? null }]));
   const phoneDigits = o.customer.phone.replace(/\D/g, "");
@@ -55,7 +57,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
       <PageHeader
         eyebrow={`${formatDateTime(o.createdAt)} · ${timeAgo(o.createdAt)}`}
         title={`Buyurtma ${o.number}`}
-        lead={<span className="inline-flex items-center gap-2"><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill><span className="text-ink-2">{units} dona · {som(o.total)}</span></span>}
+        lead={<span className="inline-flex items-center gap-2"><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill>{o.paymentStatus !== "unpaid" && <Pill tone={o.paymentStatus === "paid" ? "dark" : "outline"}>{PAYMENT_STATUS_LABEL[o.paymentStatus]}</Pill>}<span className="text-ink-2">{units} dona · {som(o.total)}</span></span>}
         actions={<>
           <a href={`/admin/print/orders/${o.number}`} target="_blank" rel="noopener noreferrer" className={secondaryButtonClass}>Yuk varagʻi</a>
           <Link href="/admin/orders" className={secondaryButtonClass}>← Buyurtmalar</Link>
@@ -137,6 +139,18 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
               <Row label="Manzil">{address ? <span className="flex flex-wrap items-center gap-2"><span>{address}</span><CopyButton text={address} /></span> : null}</Row>
               <Row label="Izoh">{o.delivery.note}</Row>
               <Row label="Toʻlov">{o.payment ? `${PAYMENT_LABEL[o.payment.method] ?? o.payment.method}${o.payment.provider ? ` · ${o.payment.provider}` : ""}` : PAYMENT_LABEL.cod}</Row>
+              {(o.paymentStatus !== "unpaid" || payments.length > 0) && (
+                <Row label="Toʻlov holati">
+                  <span className="flex flex-col gap-1">
+                    <span className="font-semibold">{PAYMENT_STATUS_LABEL[o.paymentStatus]}{o.paidAt ? ` · ${formatDateTime(o.paidAt)}` : ""}</span>
+                    {payments.map((p) => (
+                      <span key={p.id} className="text-[13px] text-muted">
+                        {p.provider === "payme" ? "Payme" : "Click"} #{p.providerTxId.slice(-10)} · {som(p.amount / 100)} · {PAYMENT_STATE_LABEL[p.state]}
+                      </span>
+                    ))}
+                  </span>
+                </Row>
+              )}
               <Row label="Til">{LOCALE_LABEL[o.locale] ?? o.locale}</Row>
               <Row label="Kanal">
                 {o.source === "telegram_bot" ? "Telegram bot — rasmiy doʻkon" : o.source === "telegram_mini" ? "Telegram Mini App" : "Sayt"}

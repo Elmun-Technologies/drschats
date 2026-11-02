@@ -32,6 +32,7 @@ import { abHeadScript } from "@/lib/merch/ab";
 import { ReferralCapture } from "@/components/checkout/ReferralCapture";
 import { PromoStrip } from "@/components/marketing/AnnouncementBar";
 import { getCommerceSettings } from "@/lib/commerce/server";
+import { getOnlineProviders } from "@/lib/payments/availability";
 import { CommerceProvider } from "@/lib/commerce/context";
 
 export function generateStaticParams() {
@@ -71,7 +72,7 @@ export default async function LocaleLayout({
 
   // Categories are layout data now that the header's catalogue menu lists
   // them; the read is cached and revalidated like the promotions beside it.
-  const [messages, promotions, categories, topicPaths, tc, deals, firstOrder, announcements, strips, commerce, experiments] = await Promise.all([
+  const [messages, promotions, categories, topicPaths, tc, deals, firstOrder, announcements, strips, commerce, experiments, onlineProviders] = await Promise.all([
     getMessages(),
     shopflow.getPromotions(locale as Locale).catch(() => []),
     shopflow.getCategories(locale as Locale).catch(() => []),
@@ -85,6 +86,7 @@ export default async function LocaleLayout({
     getBanners("strip", locale as Locale),
     getCommerceSettings(),
     liveExperiments(locale as Locale),
+    getOnlineProviders().catch(() => []),
   ]);
   const weeklyDeal = toMenuDeal(deals?.items[0]);
 
@@ -120,7 +122,7 @@ export default async function LocaleLayout({
                   again at the end of the footer, which is what actually runs
                   beneath it when scrolled to the bottom. */}
               <main id="main-content" className="pb-[var(--bottom-nav)]">{children}</main>
-              <Footer categories={categories} topicPaths={topicPaths} />
+              <Footer categories={categories} topicPaths={topicPaths} onlineProviders={onlineProviders} />
               <CookieConsent />
               <Toaster />
               <BackToTop />

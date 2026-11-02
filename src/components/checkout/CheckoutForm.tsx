@@ -31,7 +31,7 @@ import { gapFillers } from "@/lib/cart/gap";
 import { FreeShippingFillers } from "@/components/cart/FreeShippingFillers";
 import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
-import { ONLINE_PAYMENT_MARKS, ONLINE_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
+import { paymentMarks, type OnlineProviderId } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 import { telegramInitData } from "@/lib/telegram/mini-app";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
@@ -65,7 +65,10 @@ export function CheckoutForm({
   promoCodes = false,
   firstOrder = { mode: "operator", percent: COMMERCE.discounts.firstOrderPercent },
   loyalty = LOYALTY_OFF,
+  onlineProviders = [],
 }: {
+  /** Payme / Click when switched on with keys in the admin (lib/payments/availability.ts). */
+  onlineProviders?: OnlineProviderId[];
   recommended: Product[];
   prices: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>;
   /** Promo codes are counted in our database; without it the field is not offered. */
@@ -159,8 +162,8 @@ export function CheckoutForm({
     resolver: zodResolver(schema),
     defaultValues: {
       method: "courier",
-      payment: onlinePaymentAvailable() ? "online" : "cod",
-      provider: ONLINE_PROVIDERS[0]?.id,
+      payment: onlineProviders.length ? "online" : "cod",
+      provider: onlineProviders[0],
       subscribe: false,
     },
   });
@@ -344,6 +347,15 @@ export function CheckoutForm({
       if (res.receipt) query.set("k", res.receipt);
       if (values.method === "pickup") query.set("m", "pickup");
       if (res.track) query.set("t", res.track);
+      /*
+        Online payment: straight to the gateway. It brings the customer back to
+        the order's tracking page, which shows whether the payment went through
+        and offers to pay again if it did not.
+      */
+      if (res.payUrl) {
+        window.location.assign(res.payUrl);
+        return;
+      }
       router.push(`/checkout/success?${query}`);
       return;
     }
@@ -496,17 +508,17 @@ export function CheckoutForm({
           */}
           <Step n={3} title={t("paymentTitle")}>
             <div role="radiogroup" aria-label={t("paymentTitle")} className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-2.5">
-              {ONLINE_PROVIDERS.map((p) => (
+              {onlineProviders.map((id) => (
                 <RadioCard
-                  key={p.id}
+                  key={id}
                   name="pay-choice"
-                  value={p.id}
-                  checked={payChoice === p.id}
-                  onChange={() => choosePay(p.id)}
+                  value={id}
+                  checked={payChoice === id}
+                  onChange={() => choosePay(id)}
                   className="p-3.5 lg:p-4"
                 >
                   <span className="flex flex-col items-start gap-0.5">
-                    <PaymentMark id={p.id} size="sm" className="h-6 justify-start bg-transparent px-0 text-base" />
+                    <PaymentMark id={id} size="sm" className="h-6 justify-start bg-transparent px-0 text-base" />
                     <span className="text-[13px] text-ink-2 lg:text-sm">{tv("online")}</span>
                   </span>
                 </RadioCard>
@@ -520,7 +532,7 @@ export function CheckoutForm({
                 {errors.provider.message}
               </p>
             )}
-            <p className="text-sm text-muted">{onlinePaymentAvailable() ? tv("gatewayNote") : t("payUnavailable")}</p>
+            <p className="text-sm text-muted">{onlineProviders.length ? tv("gatewayNote") : t("payUnavailable")}</p>
           </Step>
         </div>
 
@@ -607,9 +619,9 @@ export function CheckoutForm({
           <div className="hidden flex-col gap-3 rounded-[20px] bg-tile px-5 py-[18px] text-sm leading-[19px] lg:flex">
             <TrustRow d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4">{tc("trustGuarantee")}</TrustRow>
             {/* "Secure payment" describes an online gateway; with cash only it promised something that does not exist. */}
-            {onlinePaymentAvailable() && <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>}
-            <TrustRow d="M4 5h16v11H9l-5 4z">{onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}</TrustRow>
-            <PaymentMarks ids={ONLINE_PAYMENT_MARKS} size="sm" label={t("paymentTitle")} className="pt-1" />
+            {onlineProviders.length > 0 && <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>}
+            <TrustRow d="M4 5h16v11H9l-5 4z">{onlineProviders.length ? t("operatorNote") : t("payUnavailable")}</TrustRow>
+            <PaymentMarks ids={paymentMarks(onlineProviders)} size="sm" label={t("paymentTitle")} className="pt-1" />
           </div>
         </aside>
       </div>

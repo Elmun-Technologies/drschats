@@ -324,3 +324,134 @@ export async function sendTestSms(_: FormState, form: FormData): Promise<FormSta
   if (result.error === "eskiz_login_rejected") return { error: "Eskiz email yoki parolni qabul qilmadi." };
   return { error: `SMS yuborilmadi: ${result.error}` };
 }
+
+/* ---------- online payments (lib/payments) ---------- */
+
+const secretField = z.string().max(256).regex(/^[\x21-\x7e]*$/, "Kalitda boʻsh joy yoki notoʻgʻri belgi bor — Payme/Click kabinetidan qayta nusxalang.");
+
+const paymeSchema = z.object({
+  merchantId: z.string().trim().max(64).regex(/^$|^[A-Za-z0-9]{8,64}$/, "Merchant ID — Payme Business kabinetidagi kassa IDʼsi (lotin harf va raqamlar)."),
+  key: secretField,
+  testKey: secretField,
+  account: z.string().trim().max(32).regex(/^[a-z][a-z0-9_]{1,31}$/, "Hisob maydoni nomi lotin kichik harflarda (masalan order_id)."),
+  enabled: z.boolean(),
+  testMode: z.boolean(),
+  clearKey: z.boolean(),
+  clearTestKey: z.boolean(),
+});
+
+export async function savePaymeIntegration(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const raw = (k: string) => (typeof form.get(k) === "string" ? (form.get(k) as string).trim() : "");
+  const parsed = paymeSchema.safeParse({
+    merchantId: formString(form, "merchantId"),
+    key: raw("key"),
+    testKey: raw("testKey"),
+    account: formString(form, "account") || "order_id",
+    enabled: form.get("enabled") === "on",
+    testMode: form.get("testMode") === "on",
+    clearKey: form.get("clearKey") === "on",
+    clearTestKey: form.get("clearTestKey") === "on",
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Payme sozlamalarini tekshiring." };
+  const d = parsed.data;
+
+  const updates: IntegrationSettingUpdates = { "payme.merchantId": d.merchantId || null };
+  if (d.clearKey) updates["payme.key"] = null;
+  else if (d.key) updates["payme.key"] = d.key;
+  if (d.clearTestKey) updates["payme.testKey"] = null;
+  else if (d.testKey) updates["payme.testKey"] = d.testKey;
+
+  const current = (await getRuntimeIntegrationSettings()).payme;
+  const key = d.testMode ? (d.clearTestKey ? "" : d.testKey || current.testKey) : (d.clearKey ? "" : d.key || current.key);
+  if (d.enabled && (!d.merchantId || !key)) {
+    return { error: d.testMode ? "Test rejimida yoqish uchun Merchant ID va test kaliti kerak." : "Yoqish uchun Merchant ID va kassa kaliti kerak." };
+  }
+
+  const unavailable = integrationSettingsError();
+  if (unavailable) return unavailable;
+  try {
+    await saveIntegrationSettings(updates, admin.id);
+    await savePublicSettings(
+      { "payments.payme": d.enabled ? "on" : null, "payments.payme.test": d.testMode ? "on" : null, "payments.payme.account": d.account === "order_id" ? null : d.account },
+      admin.id,
+    );
+  } catch (error) {
+    return { error: saveErrorMessage(error) };
+  }
+  revalidateTag(SITE_SETTINGS_TAG);
+  revalidatePath("/admin/integrations");
+  return { ok: d.enabled ? `Saqlandi. Payme ${d.testMode ? "test rejimida " : ""}yoqildi — checkoutʼda koʻrinadi.` : "Saqlandi. Payme oʻchiq — checkoutʼda koʻrinmaydi." };
+}
+
+const clickSchema = z.object({
+  serviceId: z.string().trim().max(20).regex(/^$|^\d{1,20}$/, "Service ID faqat raqamlardan iborat."),
+  merchantId: z.string().trim().max(20).regex(/^$|^\d{1,20}$/, "Merchant ID faqat raqamlardan iborat."),
+  secretKey: secretField,
+  enabled: z.boolean(),
+  clearSecretKey: z.boolean(),
+});
+
+export async function saveClickIntegration(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const secret = form.get("secretKey");
+  const parsed = clickSchema.safeParse({
+    serviceId: formString(form, "serviceId"),
+    merchantId: formString(form, "merchantId"),
+    secretKey: typeof secret === "string" ? secret.trim() : "",
+    enabled: form.get("enabled") === "on",
+    clearSecretKey: form.get("clearSecretKey") === "on",
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Click sozlamalarini tekshiring." };
+  const d = parsed.data;
+
+  const updates: IntegrationSettingUpdates = { "click.serviceId": d.serviceId || null, "click.merchantId": d.merchantId || null };
+  if (d.clearSecretKey) updates["click.secretKey"] = null;
+  else if (d.secretKey) updates["click.secretKey"] = d.secretKey;
+  const current = (await getRuntimeIntegrationSettings()).click;
+  const secretKey = d.clearSecretKey ? "" : d.secretKey || current.secretKey;
+  if (d.enabled && (!d.serviceId || !d.merchantId || !secretKey)) return { error: "Yoqish uchun Service ID, Merchant ID va Secret key kerak." };
+
+  const unavailable = integrationSettingsError();
+  if (unavailable) return unavailable;
+  try {
+    await saveIntegrationSettings(updates, admin.id);
+    await savePublicSettings({ "payments.click": d.enabled ? "on" : null }, admin.id);
+  } catch (error) {
+    return { error: saveErrorMessage(error) };
+  }
+  revalidateTag(SITE_SETTINGS_TAG);
+  revalidatePath("/admin/integrations");
+  return { ok: d.enabled ? "Saqlandi. Click yoqildi — checkoutʼda koʻrinadi." : "Saqlandi. Click oʻchiq — checkoutʼda koʻrinmaydi." };
+}
+
+const fiscalSchema = z.object({
+  shippingMxik: z.string().trim().regex(/^$|^\d{17}$/, "MXIK kodi 17 ta raqam (tasnif.soliq.uz)."),
+  shippingPackage: z.string().trim().regex(/^$|^\d{1,20}$/, "Qadoq kodi faqat raqamlar."),
+  vatPercent: z.string().trim().regex(/^(\d{1,2}|100)$/, "QQS foizi 0–100 butun son."),
+});
+
+export async function saveFiscalSettings(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  const parsed = fiscalSchema.safeParse({
+    shippingMxik: formString(form, "shippingMxik"),
+    shippingPackage: formString(form, "shippingPackage"),
+    vatPercent: formString(form, "vatPercent") || "12",
+  });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Fiskal sozlamalarni tekshiring." };
+  try {
+    await savePublicSettings(
+      {
+        "payments.shippingMxik": parsed.data.shippingMxik || null,
+        "payments.shippingPackage": parsed.data.shippingPackage || null,
+        "payments.vatPercent": parsed.data.vatPercent === "12" ? null : parsed.data.vatPercent,
+      },
+      admin.id,
+    );
+  } catch {
+    return { error: "Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring." };
+  }
+  revalidateTag(SITE_SETTINGS_TAG);
+  revalidatePath("/admin/integrations");
+  return { ok: "Saqlandi. Keyingi Payme toʻlovlari chekida shu kodlar ishlatiladi." };
+}

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { BRAND } from "@/lib/brand";
 import { isApiConfigured } from "@/lib/api/client";
 import { accountAreaAvailable } from "@/lib/config/demo";
-import { ONLINE_PAYMENT_MARKS } from "@/lib/config/payments";
+import { paymentMarks, type OnlineProviderId } from "@/lib/config/payments";
 import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { isNavigable } from "@/lib/content/nav-sections";
 import type { Category } from "@/lib/shopflow/types";
@@ -30,9 +30,12 @@ interface FooterLink {
 export function Footer({
   categories = [],
   topicPaths = [],
+  onlineProviders = [],
 }: {
   categories?: Category[];
   topicPaths?: string[];
+  /** Payme / Click when switched on with keys (lib/payments/availability.ts). */
+  onlineProviders?: OnlineProviderId[];
 }) {
   const t = useTranslations("footer");
   const nav = useTranslations("nav");
@@ -143,7 +146,7 @@ export function Footer({
           <div className="flex flex-col gap-2.5 md:flex-row md:flex-wrap md:items-center md:gap-3">
             <span className="text-[15px] font-semibold md:mr-1">{t("paymentMethods")}</span>
             <div className="flex flex-wrap gap-2 md:gap-3">
-              <PaymentMarks ids={ONLINE_PAYMENT_MARKS} label={t("paymentMethods")} />
+              <PaymentMarks ids={paymentMarks(onlineProviders)} label={t("paymentMethods")} />
               <span className="inline-flex h-10 items-center rounded-[10px] bg-bg px-3 text-[15px] font-bold">{t("cash")}</span>
             </div>
           </div>

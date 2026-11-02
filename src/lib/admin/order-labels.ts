@@ -35,3 +35,17 @@ export const NEXT_STATUS: Partial<Record<OrderStatus, { status: OrderStatus; lab
   confirmed: { status: "shipped", label: "Joʻnatildi" },
   shipped: { status: "delivered", label: "Yetkazildi" },
 };
+
+export const PAYMENT_STATUS_LABEL: Record<string, string> = {
+  unpaid: "Toʻlanmagan",
+  pending: "Toʻlov kutilmoqda",
+  paid: "Toʻlangan",
+  refunded: "Qaytarilgan",
+};
+
+export const PAYMENT_STATE_LABEL: Record<number, string> = {
+  1: "yaratildi",
+  2: "toʻlandi",
+  [-1]: "bekor (toʻlanmagan)",
+  [-2]: "qaytarildi",
+};

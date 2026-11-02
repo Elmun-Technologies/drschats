@@ -11,7 +11,9 @@ import { orderRequestSchema } from "@/lib/shopflow/schemas";
 import { repriceOrder, type OfferContext } from "@/lib/cart/reprice";
 import { lineTotal } from "@/lib/cart/pricing";
 import { getPrograms } from "@/lib/content/programs";
-import { isOnlineProviderAvailable } from "@/lib/config/payments";
+import { readOnlineProviders } from "@/lib/payments/availability";
+import { paymentUrl } from "@/lib/payments/links";
+import { isOnlineProviderId } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
 import { clientIp, withinRateLimit } from "@/lib/rate-limit";
 import { siteOrigin } from "@/lib/email/config";
@@ -148,7 +150,7 @@ export type OrderError =
 
 export async function submitOrder(
   payload: OrderRequest,
-): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string; track?: string }> {
+): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string; track?: string; payUrl?: string }> {
   /*
     Validation first: a form sent back for a typo costs nothing, so it must not
     use up one of the ten orders an address may place. Mobile operators put
@@ -182,7 +184,8 @@ export async function submitOrder(
   }
 
   // Reject online payment unless the provider has a complete, verified flow.
-  if (request.payment?.method === "online" && !isOnlineProviderAvailable(request.payment.provider)) {
+  const provider = request.payment?.provider;
+  if (request.payment?.method === "online" && !(isOnlineProviderId(provider) && (await readOnlineProviders()).includes(provider))) {
     return { ok: false, error: "payment_unavailable" };
   }
 
@@ -301,9 +304,19 @@ export async function submitOrder(
             return undefined;
           })
         : undefined;
+      /*
+        Online payment: the gateway page for exactly this order and its saved
+        total. If the link cannot be built now the order still stands — the
+        tracking page offers "To'lash" again, and the operator sees it unpaid.
+      */
+      const payUrl =
+        ORDERS_IN_DB && order.payment?.method === "online" && isOnlineProviderId(order.payment.provider)
+          ? await paymentUrl(order.payment.provider, { number: result.orderId, total: order.totals.total, locale: order.locale }).catch(() => null)
+          : null;
       return {
         ...result,
         total: order.totals.total,
+        payUrl: payUrl ?? undefined,
         coupon: adjustment?.kind === "promo" || adjustment?.kind === "referral" ? adjustment.code : undefined,
         receipt,
         // Signed: the success page links to tracking only for the order this response is about.

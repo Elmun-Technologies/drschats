@@ -22,6 +22,13 @@ export const INTEGRATION_SETTING_KEYS = [
   "sms.email",
   "sms.password",
   "sms.sender",
+  // Online payments (lib/payments). Ids are not secret, but they sit with the keys they belong to.
+  "payme.merchantId",
+  "payme.key",
+  "payme.testKey",
+  "click.serviceId",
+  "click.merchantId",
+  "click.secretKey",
 ] as const;
 
 export type IntegrationSettingKey = (typeof INTEGRATION_SETTING_KEYS)[number];
@@ -38,6 +45,9 @@ export interface RuntimeIntegrationSettings {
   sms: { email: string; password: string; sender: string; transliterate: boolean };
   analytics: AnalyticsIds;
   webvisor: boolean;
+  payme: { enabled: boolean; testMode: boolean; merchantId: string; key: string; testKey: string; account: string };
+  click: { enabled: boolean; serviceId: string; merchantId: string; secretKey: string };
+  fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number };
 }
 
 interface LoadedSettings {
@@ -64,7 +74,19 @@ const ENVIRONMENT: Record<IntegrationSettingKey, string> = {
   "sms.email": process.env.ESKIZ_EMAIL?.trim() ?? "",
   "sms.password": process.env.ESKIZ_PASSWORD?.trim() ?? "",
   "sms.sender": process.env.ESKIZ_SENDER?.trim() ?? "",
+  "payme.merchantId": process.env.PAYME_MERCHANT_ID?.trim() ?? "",
+  "payme.key": process.env.PAYME_KEY?.trim() ?? "",
+  "payme.testKey": process.env.PAYME_TEST_KEY?.trim() ?? "",
+  "click.serviceId": process.env.CLICK_SERVICE_ID?.trim() ?? "",
+  "click.merchantId": process.env.CLICK_MERCHANT_ID?.trim() ?? "",
+  "click.secretKey": process.env.CLICK_SECRET_KEY?.trim() ?? "",
 };
+
+/** VAT on the fiscal receipt: 12% unless the shop set another rate (0 for a VAT-exempt merchant). */
+function vatPercentOf(value: string | undefined): number {
+  const n = Number(value);
+  return value != null && value !== "" && Number.isInteger(n) && n >= 0 && n <= 100 ? n : 12;
+}
 
 function isSettingKey(value: string): value is IntegrationSettingKey {
   return (INTEGRATION_SETTING_KEYS as readonly string[]).includes(value);
@@ -135,6 +157,25 @@ async function loadEffectiveSettings(): Promise<LoadedSettings> {
         yandexMetrika: analyticsValue("analytics.yandexMetrikaId"),
       }),
       webvisor: publicSettings["analytics.webvisor"] !== "off",
+      payme: {
+        enabled: publicSettings["payments.payme"] === "on",
+        testMode: publicSettings["payments.payme.test"] === "on",
+        merchantId: value("payme.merchantId"),
+        key: value("payme.key"),
+        testKey: value("payme.testKey"),
+        account: publicSettings["payments.payme.account"] || "order_id",
+      },
+      click: {
+        enabled: publicSettings["payments.click"] === "on",
+        serviceId: value("click.serviceId"),
+        merchantId: value("click.merchantId"),
+        secretKey: value("click.secretKey"),
+      },
+      fiscal: {
+        shippingMxik: publicSettings["payments.shippingMxik"] ?? "",
+        shippingPackage: publicSettings["payments.shippingPackage"] ?? "",
+        vatPercent: vatPercentOf(publicSettings["payments.vatPercent"]),
+      },
     },
     storedKeys: stored.keys,
     storeStatus: stored.status,
@@ -183,6 +224,24 @@ export interface IntegrationAdminOverview {
   analyticsCspReady: boolean;
   webvisor: boolean;
   verification: { google: string; yandex: string; bing: string };
+  payme: {
+    enabled: boolean;
+    testMode: boolean;
+    merchantId: string;
+    account: string;
+    keyConfigured: boolean;
+    keyManagedInAdmin: boolean;
+    testKeyConfigured: boolean;
+    testKeyManagedInAdmin: boolean;
+  };
+  click: {
+    enabled: boolean;
+    serviceId: string;
+    merchantId: string;
+    secretKeyConfigured: boolean;
+    secretKeyManagedInAdmin: boolean;
+  };
+  fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number };
 }
 
 /** Safe-to-render status only. Secret values are deliberately not returned. */
@@ -240,11 +299,29 @@ export async function getIntegrationAdminOverview(): Promise<IntegrationAdminOve
       yandex: loaded.publicSettings["verify.yandex"] ?? process.env.YANDEX_VERIFICATION ?? "",
       bing: loaded.publicSettings["verify.bing"] ?? "",
     },
+    payme: {
+      enabled: settings.payme.enabled,
+      testMode: settings.payme.testMode,
+      merchantId: settings.payme.merchantId,
+      account: settings.payme.account,
+      keyConfigured: Boolean(settings.payme.key),
+      keyManagedInAdmin: adminOverride("payme.key"),
+      testKeyConfigured: Boolean(settings.payme.testKey),
+      testKeyManagedInAdmin: adminOverride("payme.testKey"),
+    },
+    click: {
+      enabled: settings.click.enabled,
+      serviceId: settings.click.serviceId,
+      merchantId: settings.click.merchantId,
+      secretKeyConfigured: Boolean(settings.click.secretKey),
+      secretKeyManagedInAdmin: adminOverride("click.secretKey"),
+    },
+    fiscal: settings.fiscal,
   };
 }
 
 /** Saves or removes encrypted admin overrides as one transaction. */
-export async function saveIntegrationSettings(updates: IntegrationSettingUpdates, adminUserId: number): Promise<void> {
+export async function saveIntegrationSettings(updates: IntegrationSettingUpdates, adminUserId: number | null): Promise<void> {
   if (!isDbConfigured) throw new Error("DATABASE_URL is not configured");
   if (!isIntegrationEncryptionConfigured()) {
     throw new Error("INTEGRATION_ENCRYPTION_KEY is missing or invalid");

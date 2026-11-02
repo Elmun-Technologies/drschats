@@ -7,6 +7,7 @@ import { getAllProducts } from "@/lib/shop/all-products";
 import { upsellPool } from "@/lib/upsell/pool";
 import { PROMO_CODES_ENABLED, firstOrderOffer } from "@/lib/promo/offer";
 import { publicLoyalty } from "@/lib/loyalty/settings";
+import { readOnlineProviders } from "@/lib/payments/availability";
 
 // Rendered per request: the promo field and the first-order offer depend on the
 // database, which the build (Fly builds without one) cannot see. A prerendered
@@ -36,11 +37,12 @@ export default async function CartPage({
   setRequestLocale(locale);
 
   // The pool the modal and the order action use, so every offer shown is one the server accepts.
-  const [recommended, catalogue, firstOrder, loyalty] = await Promise.all([
+  const [recommended, catalogue, firstOrder, loyalty, onlineProviders] = await Promise.all([
     upsellPool(locale),
     getAllProducts({ locale }),
     firstOrderOffer(),
     publicLoyalty(),
+    readOnlineProviders(),
   ]);
   // Today's prices, so a cart kept for weeks shows what the order will cost.
   const prices = Object.fromEntries(
@@ -49,7 +51,7 @@ export default async function CartPage({
 
   return (
     <div className="wrap pb-9 pt-1 lg:pb-[72px] lg:pt-5">
-      <CheckoutForm recommended={recommended} prices={prices} promoCodes={PROMO_CODES_ENABLED} firstOrder={firstOrder} loyalty={loyalty} />
+      <CheckoutForm recommended={recommended} prices={prices} promoCodes={PROMO_CODES_ENABLED} firstOrder={firstOrder} loyalty={loyalty} onlineProviders={onlineProviders} />
     </div>
   );
 }

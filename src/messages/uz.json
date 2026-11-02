@@ -2481,6 +2481,11 @@
     "free": "Bepul",
     "another": "Boshqa buyurtmani koʻrish",
     "cta": "Buyurtmani kuzatish",
-    "byOperator": "Buyurtma holatini operatordan bilishingiz mumkin: telefon yoki Telegram orqali ({hours}). Buyurtma raqamini ayting."
+    "byOperator": "Buyurtma holatini operatordan bilishingiz mumkin: telefon yoki Telegram orqali ({hours}). Buyurtma raqamini ayting.",
+    "paid": "Toʻlandi — {provider}",
+    "payPending": "Toʻlov kutilmoqda",
+    "payPendingHint": "Toʻlagan boʻlsangiz, bir daqiqadan keyin sahifani yangilang — holat toʻlov tizimi tasdiqlashi bilan oʻzgaradi.",
+    "payNow": "{provider} orqali toʻlash",
+    "refunded": "Toʻlov qaytarildi"
   }
 }

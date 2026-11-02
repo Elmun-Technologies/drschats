@@ -138,6 +138,9 @@ export const productFieldsSchema = z
     inStock: z.string().optional(),
     stockQty: z.union([z.literal(""), z.coerce.number().int("Ombordagi soni butun son boʻlsin").min(0, "Ombordagi soni manfiy boʻlmaydi").max(1_000_000)]).optional(),
     lowStockAt: z.union([z.literal(""), z.coerce.number().int().min(1, "Chegara kamida 1").max(1000)]).optional(),
+    // Fiscal receipt (Payme): the MXIK/IKPU code is 17 digits (tasnif.soliq.uz), the package code digits only.
+    mxikCode: z.string().trim().regex(/^$|^[0-9]{17}$/, "MXIK (IKPU) kodi 17 ta raqamdan iborat").optional(),
+    packageCode: z.string().trim().regex(/^$|^[0-9]{1,20}$/, "Qadoq kodi faqat raqamlardan iborat").optional(),
     kind: z.enum(["core", "addon", "unlisted"]),
     sort: z.coerce.number().int().min(-10000).max(10000).default(0),
     images: z.string().optional(),

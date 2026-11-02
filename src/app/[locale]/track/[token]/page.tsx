@@ -12,6 +12,8 @@ import { cutoutOf } from "@/lib/catalog/product-facts";
 import { BRAND } from "@/lib/brand";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn, formatDate, formatMoney } from "@/lib/utils";
+import { ONLINE_PROVIDER_LABELS, isOnlineProviderId } from "@/lib/config/payments";
+import { paymentUrl } from "@/lib/payments/links";
 
 export const dynamic = "force-dynamic";
 
@@ -46,6 +48,25 @@ export default async function TrackedOrderPage({ params }: { params: Promise<{ l
   const cancelled = order.status === "cancelled";
   const known = KNOWN.has(order.status) ? (order.status as (typeof ORDER_STEPS)[number] | "cancelled") : null;
   const hint = known ? t(`hint.${known}`, { hours: tc("workHours") }) : null;
+  /*
+    Payment: the gateways bring the customer back here. Paid and refunded are
+    the gateway's word (its callback set them); an online order still waiting
+    gets its "pay" link again, built from the saved total.
+  */
+  const provider = isOnlineProviderId(order.provider) ? order.provider : null;
+  const providerLabel = provider ? ONLINE_PROVIDER_LABELS[provider] : "";
+  const awaitingPayment = order.payment === "online" && provider && !cancelled && (order.paymentStatus === "pending" || order.paymentStatus === "unpaid");
+  const payLink = awaitingPayment && provider ? await paymentUrl(provider, { number: order.number, total: order.total, locale: order.locale }).catch(() => null) : null;
+  const paymentLine =
+    order.paymentStatus === "paid"
+      ? t("paid", { provider: providerLabel || t("payOnline") })
+      : order.paymentStatus === "refunded"
+        ? t("refunded")
+        : awaitingPayment
+          ? t("payPending")
+          : order.payment === "online"
+            ? t("payOnline")
+            : t("payCod");
 
   return (
     <div className="wrap flex max-w-[1080px] flex-col gap-5 pb-12 pt-6 lg:gap-7 lg:pb-20 lg:pt-10">
@@ -135,7 +156,17 @@ export default async function TrackedOrderPage({ params }: { params: Promise<{ l
             <span>{tv("total")}</span>
             <span>{formatMoney(order.total, locale)}</span>
           </span>
-          <span className="text-sm text-ink-2">{order.payment === "online" ? t("payOnline") : t("payCod")}</span>
+          <span className={cn("text-sm", order.paymentStatus === "paid" ? "font-semibold text-ink" : "text-ink-2")}>{paymentLine}</span>
+          {awaitingPayment && (
+            <>
+              {payLink && (
+                <a href={payLink} className={cn(buttonVariants("primary"), "mt-1 w-full")}>
+                  {t("payNow", { provider: providerLabel })}
+                </a>
+              )}
+              <span className="text-[13px] leading-[18px] text-muted">{t("payPendingHint")}</span>
+            </>
+          )}
         </div>
       </div>
 

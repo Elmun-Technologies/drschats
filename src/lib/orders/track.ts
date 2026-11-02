@@ -23,6 +23,10 @@ export interface TrackedOrder {
   total: number;
   /** "cod" or "online" — whether the customer still pays on receipt. */
   payment: string | null;
+  /** The gateway chosen at checkout (payme / click), when online. */
+  provider: string | null;
+  paymentStatus: "unpaid" | "pending" | "paid" | "refunded";
+  locale: string;
 }
 
 export const trackingAvailable = ORDERS_IN_DB;
@@ -35,7 +39,9 @@ type Row = {
   delivery: { method?: string } | null;
   items: { slug: string; name: string; quantity: number; unitPrice: number; upsellDiscountPercent?: number }[];
   totals: { subtotal: number; discount: number; shipping: number; total: number };
-  payment: { method?: string } | null;
+  payment: { method?: string; provider?: string } | null;
+  payment_status: TrackedOrder["paymentStatus"] | null;
+  locale: string;
 };
 
 const iso = (v: string | Date) => (v instanceof Date ? v : new Date(v)).toISOString();
@@ -43,7 +49,7 @@ const iso = (v: string | Date) => (v instanceof Date ? v : new Date(v)).toISOStr
 export async function trackedOrder(number: string): Promise<TrackedOrder | null> {
   if (!trackingAvailable) return null;
   const [o] = (await getDb().execute(sql`
-    select number, status, created_at, updated_at, delivery, items, totals, payment
+    select number, status, created_at, updated_at, delivery, items, totals, payment, payment_status, locale
     from orders where number = ${number} limit 1`)) as unknown as Row[];
   if (!o) return null;
   return {
@@ -63,6 +69,9 @@ export async function trackedOrder(number: string): Promise<TrackedOrder | null>
     shipping: o.totals?.shipping ?? 0,
     total: o.totals?.total ?? 0,
     payment: o.payment?.method ?? null,
+    provider: o.payment?.provider ?? null,
+    paymentStatus: o.payment_status ?? "unpaid",
+    locale: o.locale,
   };
 }
 

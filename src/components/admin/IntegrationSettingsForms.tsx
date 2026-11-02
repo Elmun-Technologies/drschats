@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { saveAnalyticsIntegration, saveEmailIntegration, saveOperatorIntegration, saveSmsIntegration, saveVerificationCodes, sendResendTestEmail, sendTestSms, testOperatorTelegramConnection } from "@/app/admin/_actions/integrations";
+import { saveAnalyticsIntegration, saveClickIntegration, saveEmailIntegration, saveFiscalSettings, savePaymeIntegration, saveOperatorIntegration, saveSmsIntegration, saveVerificationCodes, sendResendTestEmail, sendTestSms, testOperatorTelegramConnection } from "@/app/admin/_actions/integrations";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, Field, Notice, Pill, inputClass } from "@/components/admin/ui";
 import type { IntegrationAdminOverview } from "@/lib/integrations/settings";
@@ -180,5 +180,102 @@ export function SmsForm({ overview }: { overview: IntegrationAdminOverview }) {
         </ActionForm>
       </div>
     </Card>
+  );
+}
+
+function Check({ name, defaultChecked, children }: { name: string; defaultChecked: boolean; children: ReactNode }) {
+  return (
+    <label className="flex min-h-11 items-start gap-3 text-[14px] leading-5 text-ink">
+      <input type="checkbox" name={name} defaultChecked={defaultChecked} className="mt-0.5 h-5 w-5 shrink-0 accent-ink" />
+      <span>{children}</span>
+    </label>
+  );
+}
+
+function Endpoint({ label, url }: { label: string; url: string }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <span className="text-[13px] font-semibold text-ink-2">{label}</span>
+      <code className="break-all rounded-[12px] bg-tile px-3 py-2 text-[13px] text-ink">{url}</code>
+    </div>
+  );
+}
+
+function secretHint(configured: boolean, inAdmin: boolean, env: string): string {
+  if (!configured) return "Kiritilmagan.";
+  return inAdmin ? "Shifrlangan holda saqlangan va qayta koʻrsatilmaydi. Almashtirish uchun yangisini kiriting." : `Deploy sozlamasidan (${env}) olinmoqda.`;
+}
+
+export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overview: IntegrationAdminOverview; siteUrl: string; ready: { payme: boolean; click: boolean }; ordersInDb: boolean }) {
+  const { payme, click, fiscal } = overview;
+  const status = (on: boolean, enabled: boolean, test = false) => <Status on={on} label={on ? (test ? "Test rejimi" : "Ishlayapti") : enabled ? "Kalit yetishmaydi" : "Oʻchiq"} />;
+  return (
+    <>
+      {!ordersInDb && <div className="mb-4"><Notice tone="error">Onlayn toʻlov buyurtmalar bazada saqlanganda ishlaydi (DATABASE_URL). Hozir checkoutʼda faqat naqd pul.</Notice></div>}
+      {!overview.encryptionConfigured && <div className="mb-4"><Notice>Kalitlarni panelda saqlash uchun deployʼda INTEGRATION_ENCRYPTION_KEY kerak (openssl rand -hex 32).</Notice></div>}
+      <div className="grid gap-4 xl:grid-cols-2">
+        <Card title="Payme" lead="Payme Business → Kassa. Kalitlar shifrlangan holda saqlanadi; mijoz Payme sahifasida toʻlaydi va buyurtma sahifasiga qaytadi." actions={status(ready.payme, payme.enabled, payme.testMode)}>
+          <ActionForm action={savePaymeIntegration} submitLabel="Saqlash" className="flex flex-col gap-4">
+            <Field label="Merchant ID (kassa ID)" hint="Payme Business → Kassa → Sozlamalar.">
+              <input name="merchantId" defaultValue={payme.merchantId} autoComplete="off" spellCheck={false} placeholder="5e730e8e0b852a417aa49ceb" className={inputClass} />
+            </Field>
+            <Field label="Kassa kaliti (Key)" hint={secretHint(payme.keyConfigured, payme.keyManagedInAdmin, "PAYME_KEY")}>
+              <input name="key" type="password" autoComplete="new-password" spellCheck={false} className={inputClass} />
+            </Field>
+            <Field label="Test kaliti (Test key)" hint={secretHint(payme.testKeyConfigured, payme.testKeyManagedInAdmin, "PAYME_TEST_KEY")}>
+              <input name="testKey" type="password" autoComplete="new-password" spellCheck={false} className={inputClass} />
+            </Field>
+            <Field label="Hisob maydoni (account)" hint="Kassa sozlamasidagi «Rekvizitlar» maydoni nomi. Odatda order_id.">
+              <input name="account" defaultValue={payme.account} autoComplete="off" spellCheck={false} placeholder="order_id" className={inputClass} />
+            </Field>
+            <Check name="testMode" defaultChecked={payme.testMode}>Test rejimi — test.paycom.uz va test kaliti. Haqiqiy pul yechilmaydi; Payme «Pesochnitsa»sidan tekshirish uchun.</Check>
+            <Check name="enabled" defaultChecked={payme.enabled}>Checkoutʼda Payme orqali toʻlashni yoqish</Check>
+            {payme.keyManagedInAdmin && <ClearOverride name="clearKey" label="Paneldagi kassa kalitini oʻchirish" />}
+            {payme.testKeyManagedInAdmin && <ClearOverride name="clearTestKey" label="Paneldagi test kalitini oʻchirish" />}
+          </ActionForm>
+          <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4">
+            <Endpoint label="Payme kabinetiga kiriting — Endpoint URL" url={`${siteUrl}/api/payments/payme`} />
+            <p className="text-[13px] leading-[18px] text-muted">Payme ushbu manzilga CheckPerformTransaction, CreateTransaction, PerformTransaction, CancelTransaction, CheckTransaction, GetStatement soʻrovlarini yuboradi. Toʻlangan buyurtma «Toʻlangan» boʻladi va operatorga Telegram xabari ketadi. Qaytarish (refund) Payme kabinetidan qilinadi — yetkazilgan buyurtmani qaytarib boʻlmaydi.</p>
+          </div>
+        </Card>
+
+        <Card title="Click" lead="merchant.click.uz → Servis sozlamalari. Mijoz Click sahifasida toʻlaydi va buyurtma sahifasiga qaytadi." actions={status(ready.click, click.enabled)}>
+          <ActionForm action={saveClickIntegration} submitLabel="Saqlash" className="flex flex-col gap-4">
+            <Field label="Service ID">
+              <input name="serviceId" defaultValue={click.serviceId} inputMode="numeric" autoComplete="off" placeholder="12345" className={inputClass} />
+            </Field>
+            <Field label="Merchant ID">
+              <input name="merchantId" defaultValue={click.merchantId} inputMode="numeric" autoComplete="off" placeholder="6789" className={inputClass} />
+            </Field>
+            <Field label="Secret key" hint={secretHint(click.secretKeyConfigured, click.secretKeyManagedInAdmin, "CLICK_SECRET_KEY")}>
+              <input name="secretKey" type="password" autoComplete="new-password" spellCheck={false} className={inputClass} />
+            </Field>
+            <Check name="enabled" defaultChecked={click.enabled}>Checkoutʼda Click orqali toʻlashni yoqish</Check>
+            {click.secretKeyManagedInAdmin && <ClearOverride name="clearSecretKey" label="Paneldagi Secret keyʼni oʻchirish" />}
+          </ActionForm>
+          <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4">
+            <Endpoint label="Prepare URL" url={`${siteUrl}/api/payments/click/prepare`} />
+            <Endpoint label="Complete URL" url={`${siteUrl}/api/payments/click/complete`} />
+            <p className="text-[13px] leading-[18px] text-muted">Har soʻrovning md5 imzosi Secret key bilan tekshiriladi; summa buyurtma jamiga teng boʻlmasa toʻlov rad etiladi.</p>
+          </div>
+        </Card>
+      </div>
+
+      <div className="mt-4">
+        <Card title="Fiskal chek (Payme)" lead="Payme har toʻlovga soliq chekini chiqaradi. Har mahsulotning MXIK (IKPU) va qadoq kodi mahsulot formasida («Fiskal chek») kiritiladi; bu yerda — yetkazib berish xizmati va QQS.">
+          <ActionForm action={saveFiscalSettings} submitLabel="Saqlash" className="grid gap-4 md:grid-cols-3">
+            <Field label="Yetkazish MXIK kodi" hint="17 raqam, tasnif.soliq.uz">
+              <input name="shippingMxik" defaultValue={fiscal.shippingMxik} inputMode="numeric" maxLength={17} autoComplete="off" className={inputClass} />
+            </Field>
+            <Field label="Yetkazish qadoq kodi">
+              <input name="shippingPackage" defaultValue={fiscal.shippingPackage} inputMode="numeric" autoComplete="off" className={inputClass} />
+            </Field>
+            <Field label="QQS, %" hint="QQS toʻlovchisi boʻlmasangiz 0.">
+              <input name="vatPercent" defaultValue={String(fiscal.vatPercent)} inputMode="numeric" maxLength={3} autoComplete="off" className={inputClass} />
+            </Field>
+          </ActionForm>
+        </Card>
+      </div>
+    </>
   );
 }

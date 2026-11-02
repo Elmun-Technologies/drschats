@@ -110,6 +110,8 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     inStock,
     ...(qtyTouched ? { stockQty } : {}),
     lowStockAt: d.lowStockAt === "" || d.lowStockAt == null ? null : Number(d.lowStockAt),
+    mxikCode: d.mxikCode || null,
+    packageCode: d.packageCode || null,
     kind: d.kind,
     sort: d.sort,
     images: parseImages(d.images),
