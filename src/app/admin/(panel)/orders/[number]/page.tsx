@@ -13,6 +13,7 @@ import { Card, Field, PageHeader, Pill, buttonClass, inputClass, secondaryButton
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { lineTotal } from "@/lib/cart/pricing";
 import { discountAdjustment, pointsSpent } from "@/lib/promo/rules";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Buyurtma" };
 
@@ -27,6 +28,7 @@ function Row({ label, children }: { label: string; children?: React.ReactNode })
 }
 
 export default async function AdminOrderPage({ params }: { params: Promise<{ number: string }> }) {
+  await requireAdmin();
   const { number } = await params;
   const o = await getOrder(number);
   if (!o) notFound();

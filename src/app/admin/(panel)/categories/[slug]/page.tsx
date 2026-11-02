@@ -5,10 +5,12 @@ import { listRepoImages } from "@/lib/admin/repo-images.server";
 import { deleteCategory } from "@/app/admin/_actions/catalog";
 import { Notice, PageHeader, dangerButtonClass, secondaryButtonClass } from "@/components/admin/ui";
 import { CategoryForm } from "@/components/admin/catalog/CategoryForm";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Kategoriyani tahrirlash" };
 
 export default async function EditCategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ saved?: string; blocked?: string }> }) {
+  await requireAdmin();
   const [{ slug }, { saved, blocked }] = await Promise.all([params, searchParams]);
   const [category, counts, repoImages] = await Promise.all([getCategory(decodeURIComponent(slug)), productCountsByCategory(), listRepoImages()]);
   if (!category) notFound();

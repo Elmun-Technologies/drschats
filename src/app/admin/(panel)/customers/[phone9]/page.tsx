@@ -16,12 +16,14 @@ import { DEVICE_LABEL } from "@/lib/admin/event-labels";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { lineTotal } from "@/lib/cart/pricing";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Mijoz profili" };
 
 const LIFECYCLE_LABEL = { new: "Yangi mijoz", repeat: "Qayta xarid qilgan", vip: "VIP mijoz", dormant: "Faolligi pasaygan" } as const;
 
 export default async function AdminCustomerPage({ params }: { params: Promise<{ phone9: string }> }) {
+  await requireAdmin();
   const { phone9 } = await params;
   const [customer, notes, visitors, events] = await Promise.all([getCustomerDetails(phone9), listCustomerNotes(phone9), visitorsForPhone(phone9), recentEventsForPhone(phone9)]);
   if (!customer) notFound();

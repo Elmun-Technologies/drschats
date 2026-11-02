@@ -2,10 +2,12 @@ import { BotTabs } from "@/components/admin/BotTabs";
 import { Card, PageHeader, Pill } from "@/components/admin/ui";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { listMembers } from "@/lib/bot/store";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Klub aʼzolari" };
 
 export default async function BotMembersPage() {
+  await requireAdmin();
   const rows = await listMembers();
   return (
     <>

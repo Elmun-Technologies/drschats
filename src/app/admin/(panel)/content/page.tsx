@@ -2,10 +2,12 @@ import Link from "next/link";
 import { getArticles } from "@/lib/content/blog.sanity";
 import type { Article } from "@/lib/content/blog.sanity";
 import { Card, PageHeader } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Blog va kontent" };
 
 export default async function AdminContentPage() {
+  await requireAdmin();
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID?.trim();
   const sanityConfigured = Boolean(projectId && projectId !== "placeholder");
   const studioAvailable = sanityConfigured && (process.env.NODE_ENV !== "production" || process.env.SANITY_STUDIO_ENABLED === "on");

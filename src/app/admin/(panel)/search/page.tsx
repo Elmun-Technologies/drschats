@@ -5,6 +5,7 @@ import { listCustomers } from "@/lib/admin/customers";
 import { listVisitors } from "@/lib/admin/crm";
 import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
 import { Card, EmptyState, PageHeader, Pill, buttonClass, inputClass, som, timeAgo } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Qidiruv" };
 
@@ -15,6 +16,7 @@ function first(value: string | string[] | undefined) {
 const rowClass = "-mx-2 flex items-center justify-between gap-3 rounded-[12px] px-2 py-2.5 hover:bg-tile";
 
 export default async function AdminSearchPage({ searchParams }: { searchParams: Promise<{ q?: string | string[] }> }) {
+  await requireAdmin();
   const q = first((await searchParams).q)?.trim().slice(0, 80) ?? "";
   const [orders, customers, products, visitors] = q.length >= 2
     ? await Promise.all([listOrders({ q, limit: 8 }), listCustomers(q, 8), listProducts(q).then((rows) => rows.slice(0, 8)), listVisitors({ filter: "identified", q, pageSize: 8 })])

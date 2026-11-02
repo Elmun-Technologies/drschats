@@ -7,6 +7,7 @@ import { generatePromoBatch, saveFirstOrderDiscount } from "@/app/admin/_actions
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, ChipNav, EmptyState, Field, Metric, Notice, PageHeader, Pill, SectionTitle, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, somShort, tableClass, tdClass, thClass, type PillTone } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Promokodlar" };
 
@@ -30,6 +31,7 @@ function conditions(row: PromoListRow): string {
 }
 
 export default async function AdminPromoCodesPage({ searchParams }: { searchParams: Promise<Search> }) {
+  await requireAdmin();
   const params = await searchParams;
   const filter = parsePromoFilter(params.filter);
   const source = (PROMO_SOURCES as readonly string[]).includes(params.source ?? "") ? (params.source as PromoSource) : null;

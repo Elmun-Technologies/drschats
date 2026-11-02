@@ -8,6 +8,7 @@ import { MENU_BUTTONS } from "@/lib/bot/config";
 import { clubOverview, getClubConfig } from "@/lib/bot/store";
 import { SEGMENTS, segmentCounts } from "@/lib/admin/segments";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Telegram klub" };
 
@@ -23,6 +24,7 @@ const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = {
 };
 
 export default async function AdminBotPage() {
+  await requireAdmin();
   const [stats, club, counts] = await Promise.all([clubOverview(), getClubConfig(), segmentCounts()]);
   const botSegments = SEGMENTS.filter((s) => s.kind === "bot");
   const keyReady = (process.env.BOT_API_KEY?.length ?? 0) >= MIN_BOT_KEY_LENGTH;

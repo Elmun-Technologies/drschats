@@ -7,10 +7,12 @@ import { DEVICE_LABEL } from "@/lib/admin/event-labels";
 import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
 import { Card, Metric, PageHeader, Pill, linkClass, secondaryButtonClass, som, timeAgo } from "@/components/admin/ui";
 import { cn, formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Tashrif buyuruvchi" };
 
 export default async function AdminVisitorPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const data = await getVisitor(id);
   if (!data) notFound();

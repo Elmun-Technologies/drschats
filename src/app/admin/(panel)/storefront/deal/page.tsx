@@ -11,12 +11,14 @@ import { formatDateTime } from "@/lib/admin/order-labels";
 import { StorefrontTabs } from "@/components/admin/storefront/StorefrontTabs";
 import { DealForm, type DealFormValues } from "@/components/admin/storefront/DealForm";
 import { Card, EmptyState, Notice, PageHeader, Pill, SectionTitle, TableWrap, linkClass, smallButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Bugungi taklif" };
 
 type DealRow = typeof deals.$inferSelect;
 
 export default async function DealOfDayPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string; ended?: string; edit?: string }> }) {
+  await requireAdmin();
   const params = await searchParams;
   const db = getDb();
   const [upcoming, past, catalogue] = await Promise.all([

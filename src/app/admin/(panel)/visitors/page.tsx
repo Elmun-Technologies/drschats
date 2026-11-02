@@ -4,6 +4,7 @@ import { VISITOR_FILTERS, listVisitors, parseVisitorFilter, type VisitorFilter }
 import { DEVICE_LABEL } from "@/lib/admin/event-labels";
 import { ChipNav, Card, EmptyState, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass, timeAgo } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Mijozlar yoʻli" };
 
@@ -14,6 +15,7 @@ function first(value: string | string[] | undefined) {
 }
 
 export default async function AdminVisitorsPage({ searchParams }: { searchParams: Promise<{ filter?: string | string[]; q?: string | string[]; page?: string | string[] }> }) {
+  await requireAdmin();
   const params = await searchParams;
   const filter = parseVisitorFilter(params.filter);
   const q = first(params.q)?.trim() ?? "";

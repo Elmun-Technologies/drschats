@@ -2,10 +2,12 @@ import Link from "next/link";
 import { listProducts } from "@/lib/admin/queries";
 import { PromoCodeForm } from "@/components/admin/PromoCodeForm";
 import { Card, PageHeader, secondaryButtonClass } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Yangi promokod" };
 
 export default async function NewPromoCodePage() {
+  await requireAdmin();
   const products = await listProducts();
   return (
     <>

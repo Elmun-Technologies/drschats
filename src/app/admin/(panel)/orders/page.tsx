@@ -5,6 +5,7 @@ import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-lab
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { cn, formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Buyurtmalar" };
 
@@ -20,6 +21,7 @@ function first(value: string | string[] | undefined) {
 }
 
 export default async function AdminOrdersPage({ searchParams }: { searchParams: Promise<{ status?: string | string[]; q?: string | string[]; period?: string | string[] }> }) {
+  await requireAdmin();
   const params = await searchParams;
   const status = first(params.status);
   const q = first(params.q)?.trim() ?? "";

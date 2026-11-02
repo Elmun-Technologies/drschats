@@ -11,6 +11,7 @@ import { ExperimentsCard } from "@/components/admin/storefront/ExperimentsCard";
 import { experimentResults } from "@/lib/merch/ab-stats";
 import { Card, EmptyState, Notice, PageHeader, Pill, TableWrap, buttonClass, linkClass, smallButtonClass, tableClass, tdClass, thClass, type PillTone } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Vitrina" };
 
@@ -18,6 +19,7 @@ const TONE: Record<ScheduleStatus, PillTone> = { live: "dark", scheduled: "outli
 const isLocal = (src: string) => src.startsWith("/") && !src.startsWith("//");
 
 export default async function StorefrontBannersPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string }> }) {
+  await requireAdmin();
   const params = await searchParams;
   const [rows, experiments] = await Promise.all([
     getDb().select().from(banners).orderBy(asc(banners.placement), asc(banners.sort), asc(banners.id)),

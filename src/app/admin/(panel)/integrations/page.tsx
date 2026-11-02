@@ -7,6 +7,7 @@ import { SITE_URL } from "@/lib/config/site";
 import { AnalyticsForm, MessagingForms, SmsForm, Status, VerificationForm } from "@/components/admin/IntegrationSettingsForms";
 import { Card, Notice, PageHeader, SectionTitle, linkClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Integratsiyalar" };
 export const dynamic = "force-dynamic";
@@ -33,6 +34,7 @@ function Row({ name, detail, on, label }: { name: string; detail: string; on: bo
 }
 
 export default async function AdminIntegrationsPage() {
+  await requireAdmin();
   const [overview, health] = await Promise.all([getIntegrationAdminOverview(), journeyHealth()]);
   const a = overview.analytics;
   const telegramClub = Boolean(process.env.BOT_API_KEY && process.env.TELEGRAM_CLUB_BOT_TOKEN);

@@ -6,6 +6,7 @@ import { shopflow } from "@/lib/shopflow";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { CommerceCardForm } from "@/components/admin/CommerceCardForm";
 import { Card, Field, Notice, PageHeader, Pill, inputClass, linkClass, som } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Savdo qoidalari" };
 
@@ -94,6 +95,7 @@ const POPUP_COPY: Record<PopupId, { title: string; when: string; delayLabel: str
 };
 
 export default async function AdminCommercePage() {
+  await requireAdmin();
   const [{ settings, meta }, promotions] = await Promise.all([readCommerceSettings(), shopflow.getPromotions("uz").catch(() => [])]);
   const defaults = defaultCommerceSettings();
   const { delivery, ladder, subscription, cart, popups } = settings;

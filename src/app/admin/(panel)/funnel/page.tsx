@@ -5,6 +5,7 @@ import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-lab
 import { FunnelBars, RangeTabs } from "@/components/admin/charts";
 import { Card, EmptyState, Metric, PageHeader, Pill, linkClass, som } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Voronka" };
 
@@ -23,6 +24,7 @@ const DROP_LINKS: Record<string, { href: string; label: string }> = {
 };
 
 export default async function AdminFunnelPage({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
+  await requireAdmin();
   const range = parseRange((await searchParams).range, 30);
   const [funnel, metrics] = await Promise.all([siteFunnel(range), getOrderMetrics(range)]);
   const f = funnel.current;

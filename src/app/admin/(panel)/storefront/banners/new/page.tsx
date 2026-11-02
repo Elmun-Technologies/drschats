@@ -7,6 +7,7 @@ import { isStorageConfigured } from "@/lib/admin/storage";
 import { toTashkentInput } from "@/lib/admin/product-form";
 import { BannerForm, type BannerFormValues } from "@/components/admin/storefront/BannerForm";
 import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Yangi banner" };
 
@@ -46,6 +47,7 @@ async function variantOf(id: number): Promise<BannerFormValues | null> {
 }
 
 export default async function NewBannerPage({ searchParams }: { searchParams: Promise<{ placement?: string; from?: string }> }) {
+  await requireAdmin();
   const [{ placement, from }, repoImages] = await Promise.all([searchParams, listRepoImages()]);
   const initial = PLACEMENTS.find((p) => p === placement) ?? "hero";
   const copy = from ? await variantOf(Number(from)) : null;
