@@ -5,10 +5,11 @@ import { cn } from "@/lib/utils";
 /*
   Filter and tag chip (design: kit `.chip`, `.chip.on`). A link when it
   navigates (filters are URLs here), a button when it toggles in place.
+  44px on touch layouts (the tap-target floor), the kit's 40px from `lg`.
 */
 export function chipClass(active = false) {
   return cn(
-    "inline-flex h-10 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm px-4 text-[15px] font-medium transition-colors",
+    "inline-flex h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-sm px-4 text-[15px] font-medium transition-colors lg:h-10",
     active ? "bg-ink text-white" : "bg-tile text-ink hover:bg-tile-hover",
   );
 }

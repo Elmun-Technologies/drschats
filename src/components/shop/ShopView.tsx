@@ -234,14 +234,14 @@ export async function ShopView({
                   key={c.key}
                   href={href(c.next)}
                   aria-label={t("removeFilter", { name: c.label })}
-                  className={cn(chipClass(true), "h-9 text-sm lg:h-10 lg:text-[15px]")}
+                  className={cn(chipClass(true), "text-sm lg:text-[15px]")}
                 >
                   {c.label}
                   <Icon d="M6 6l12 12M18 6L6 18" className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
                 </Link>
               ))}
               {chips.length > 1 && (
-                <Link href={href(EMPTY_FILTERS)} className="inline-flex h-9 shrink-0 items-center px-2 text-sm underline lg:h-10 lg:text-[15px]">
+                <Link href={href(EMPTY_FILTERS)} className="inline-flex h-11 shrink-0 items-center px-2 text-sm underline lg:h-10 lg:text-[15px]">
                   {v3("clearAll")}
                 </Link>
               )}

@@ -148,7 +148,7 @@ function FilterSheet({ ctx, onClose }: { ctx: PanelContext; onClose: () => void 
           <Group title={t("sort")} sheet>
             <div className="flex flex-wrap gap-1.5">
               {SORT_ORDER.map((s) => (
-                <button key={s} type="button" aria-pressed={s === sort} onClick={() => setSort(s)} className={cn(chipClass(s === sort), "h-9")}>
+                <button key={s} type="button" aria-pressed={s === sort} onClick={() => setSort(s)} className={chipClass(s === sort)}>
                   {t(sortKey(s))}
                 </button>
               ))}
