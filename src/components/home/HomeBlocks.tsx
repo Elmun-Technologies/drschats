@@ -273,7 +273,7 @@ export async function HomeServices() {
             className="relative flex min-h-[168px] flex-col gap-1.5 overflow-hidden rounded-[20px] bg-tile p-4 transition-colors hover:bg-tile-hover lg:min-h-[280px] lg:gap-3 lg:rounded-3xl lg:p-7"
           >
             <span className="relative z-10 text-[17px] font-bold leading-[21px] lg:text-[26px] lg:leading-[31px]">{c.title}</span>
-            <span className="relative z-10 text-[13px] leading-[17px] text-ink-2 lg:hidden">{fill(c.short)}</span>
+            <span className="relative z-10 text-caption text-ink-2 lg:hidden">{fill(c.short)}</span>
             <span className="relative z-10 hidden max-w-[260px] text-base leading-[23px] text-ink-2 lg:block">{fill(c.text)}</span>
             {/* Picture in the flow, under the text: an absolutely placed one sat on top of a long description. */}
             <span className="mt-auto flex items-end justify-between gap-2">

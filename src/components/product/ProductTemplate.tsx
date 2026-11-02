@@ -204,7 +204,7 @@ export async function ProductTemplate({
           {product.ingredients.length > 0 && (
             <div className="hidden flex-col gap-2 rounded-[20px] bg-tile px-5 py-[18px] lg:flex">
               <span className="text-[15px] font-bold">{tv("inDose", { dose })}</span>
-              <span className="text-[15px] leading-[23px] text-ink-2">
+              <span className="text-body text-ink-2">
                 {product.ingredients.map((i) => `${i.name} ${i.amount}`).join(" · ")}
               </span>
             </div>

@@ -39,7 +39,7 @@ export function NotifyNowButton({ productId, disabled }: { productId: string; di
         {pending ? "Yuborilmoqda…" : "Hozir xabar yuborish"}
       </button>
       {(state?.ok || state?.error) && (
-        <p role="status" className={cn("max-w-[280px] text-right text-[13px] leading-[17px]", state.error ? "text-red" : "text-ink-2")}>
+        <p role="status" className={cn("max-w-[280px] text-right text-caption", state.error ? "text-red" : "text-ink-2")}>
           {state.ok ?? state.error}
         </p>
       )}

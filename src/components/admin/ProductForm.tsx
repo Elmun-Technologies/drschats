@@ -97,7 +97,7 @@ export function ProductForm({
           <ImageListField name="images" value={images} onChange={setImages} repoImages={repoImages} slug={slug} storageReady={storageReady} />
         </Panel>
         <Panel title="Fiskal chek (Payme)">
-          <p className="text-[13px] leading-[17px] text-muted">Onlayn toʻlovda chek shu kodlar bilan chiqadi. Kodni tasnif.soliq.uz dan oling; boʻsh boʻlsa Payme chekni maʼlumotsiz qabul qiladi.</p>
+          <p className="text-caption text-muted">Onlayn toʻlovda chek shu kodlar bilan chiqadi. Kodni tasnif.soliq.uz dan oling; boʻsh boʻlsa Payme chekni maʼlumotsiz qabul qiladi.</p>
           <Field label="MXIK (IKPU) kodi" hint="17 ta raqam">
             <input name="mxikCode" inputMode="numeric" maxLength={17} pattern="[0-9]{17}" defaultValue={values.mxikCode} className={inputClass} />
           </Field>
@@ -196,7 +196,7 @@ export function ProductForm({
             </Field>
           </div>
           {tracked ? (
-            <p className="text-[13px] leading-[17px] text-muted">Soni kiritilgan: «Omborda bor» sondan aniqlanadi (0 — tugagan). Buyurtma sonni kamaytiradi, bekor qilish qaytaradi. Saytda soni chegaradan kam boʻlganda «Omborda N ta qoldi» chiqadi.</p>
+            <p className="text-caption text-muted">Soni kiritilgan: «Omborda bor» sondan aniqlanadi (0 — tugagan). Buyurtma sonni kamaytiradi, bekor qilish qaytaradi. Saytda soni chegaradan kam boʻlganda «Omborda N ta qoldi» chiqadi.</p>
           ) : (
             <label className="flex min-h-11 items-center gap-3 text-[15px] font-semibold">
               <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-ink" />

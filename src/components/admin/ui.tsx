@@ -31,7 +31,7 @@ export function PageHeader({ title, lead, eyebrow, actions }: { title: string; l
       <div className="min-w-0">
         {eyebrow && <p className="mb-1 text-[14px] text-muted">{eyebrow}</p>}
         <h1 className="text-[28px] font-bold leading-[34px] text-ink lg:text-[36px] lg:leading-[42px]">{title}</h1>
-        {lead && <p className="mt-2 max-w-3xl text-[15px] leading-[23px] text-ink-2">{lead}</p>}
+        {lead && <p className="mt-2 max-w-3xl text-body text-ink-2">{lead}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -69,7 +69,7 @@ export function Field({ label, hint, children, className }: { label: string; hin
     <label className={cn("flex flex-col gap-1.5", className)}>
       <span className="text-[14px] font-semibold text-ink">{label}</span>
       {children}
-      {hint && <span className="text-[13px] leading-[17px] text-muted">{hint}</span>}
+      {hint && <span className="text-caption text-muted">{hint}</span>}
     </label>
   );
 }
