@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { categoryCutout } from "@/lib/content/product-cutouts";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { trackPageNotFound } from "@/lib/analytics/events";
 
 /* Design: NotFoundV3 — the one page every wrong URL lands on. */
 const POPULAR = ["vitamins", "immunity", "beauty", "kids", "effervescent"] as const;
@@ -15,6 +17,10 @@ export function NotFoundView() {
   const header = useTranslations("header");
   const names = useTranslations("categoryNames");
   const locale = useLocale();
+
+  useEffect(() => {
+    trackPageNotFound();
+  }, []);
 
   return (
     <div className="wrap flex flex-col gap-10 pb-12 pt-10 lg:gap-14 lg:pb-20 lg:pt-16">
