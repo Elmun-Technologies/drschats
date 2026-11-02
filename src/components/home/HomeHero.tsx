@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { isAllowedImageUrl } from "@/lib/security/csp";
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -179,29 +179,48 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
         )}
       </span>
       {slide.image && (
-        <span
-          className={cn(
-            "relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]",
-            slide.imageMobile && "max-md:hidden",
+        <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]">
+          {slide.imageMobile ? (
+            <ArtDirected desktop={slide.image} mobile={slide.imageMobile} priority={priority} />
+          ) : (
+            <Image
+              src={slide.image}
+              alt=""
+              fill
+              priority={priority}
+              unoptimized={!isLocal(slide.image)}
+              sizes="(max-width: 767px) 176px, 330px"
+              className="object-contain"
+            />
           )}
-        >
-          <Image
-            src={slide.image}
-            alt=""
-            fill
-            priority={priority}
-            unoptimized={!isLocal(slide.image)}
-            sizes="(max-width: 767px) 176px, 330px"
-            className="object-contain"
-          />
         </span>
       )}
-      {slide.imageMobile && (
+      {!slide.image && slide.imageMobile && (
         <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:hidden">
           <Image src={slide.imageMobile} alt="" fill priority={priority} unoptimized={!isLocal(slide.imageMobile)} sizes="176px" className="object-contain" />
         </span>
       )}
     </BannerLink>
+  );
+}
+
+/*
+  A banner with its own phone picture: one <picture>, so the browser fetches
+  only the file for its viewport. Two <Image priority> used to preload both on
+  every visit. getImageProps does not preload; the chosen file still gets
+  fetchpriority=high when the slide is the first one.
+*/
+function ArtDirected({ desktop, mobile, priority }: { desktop: string; mobile: string; priority: boolean }) {
+  const common = { alt: "", fill: true, className: "object-contain", ...(priority ? { fetchPriority: "high" as const, loading: "eager" as const } : {}) };
+  const {
+    props: { srcSet: phone },
+  } = getImageProps({ ...common, src: mobile, sizes: "176px", unoptimized: !isLocal(mobile) });
+  const { props } = getImageProps({ ...common, src: desktop, sizes: "330px", unoptimized: !isLocal(desktop) });
+  return (
+    <picture>
+      <source media="(max-width: 767px)" srcSet={phone ?? mobile} />
+      <img {...props} alt="" />
+    </picture>
   );
 }
 
@@ -263,7 +282,7 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
       </Link>
       {deal.image && (
         <span className="absolute bottom-3 right-3 h-[180px] w-[clamp(100px,calc(100%-172px),180px)]">
-          <Image src={deal.image} alt="" fill sizes="180px" className="object-contain" />
+          <Image src={deal.image} alt={deal.name} fill sizes="180px" className="object-contain" />
         </span>
       )}
       {deals.length > 1 && (

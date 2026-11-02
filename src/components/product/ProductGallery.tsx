@@ -124,7 +124,7 @@ export function ProductGallery({
               >
                 <Image
                   src={img.url}
-                  alt={img.alt}
+                  alt={i === 0 ? img.alt : `${img.alt}, ${t("thumb", { index: i + 1 })}`}
                   fill
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
