@@ -104,11 +104,7 @@ export async function recordBatch(visitorId: string, batch: JourneyBatch, contex
       createdAt: now,
     })),
   );
-
-  // Raw events older than ~13 months are dropped; the visitor row keeps the summary.
-  if (Math.random() < 0.002) {
-    await db.execute(sql`delete from visitor_events where created_at < now() - interval '400 days'`);
-  }
+  // Raw events older than ~13 months are dropped by the worker's retention sweep (lib/ops/retention.ts).
 }
 
 /**

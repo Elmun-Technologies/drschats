@@ -4,6 +4,9 @@ import { orders, products, siteSettings, stockMovements } from "@/lib/db/schema"
 import {
   DEFAULT_LOW_STOCK_AT,
   LOW_STOCK_SETTING_KEY,
+  MAX_TRACKED_LINE_QTY,
+  RELEASE_UNPAID_KEY,
+  parseReleaseHours,
   adjustedQty,
   cancelRestores,
   parseLowStockAt,
@@ -47,6 +50,11 @@ export async function takeStock(
 ): Promise<string[]> {
   const changed: string[] = [];
   for (const [productId, qty] of quantitiesByProduct(items)) {
+    if (qty > MAX_TRACKED_LINE_QTY) {
+      // Only tracked products are capped; the cart then offers the number it may take.
+      const [row] = await tx.select({ qty: products.stockQty }).from(products).where(eq(products.id, productId)).limit(1);
+      if (row && row.qty != null) throw new StockShortage(productId, Math.min(row.qty, MAX_TRACKED_LINE_QTY));
+    }
     const rows = (await tx.execute(sql`
       update products
       set stock_qty = stock_qty - ${qty},
@@ -209,5 +217,23 @@ export async function saveLowStockDefault(value: number, adminUserId: number): P
   await getDb()
     .insert(siteSettings)
     .values({ key: LOW_STOCK_SETTING_KEY, value: text, updatedBy: adminUserId })
+    .onConflictDoUpdate({ target: siteSettings.key, set: { value: text, updatedBy: adminUserId, updatedAt: new Date() } });
+}
+
+/** Hours after which an unpaid online order is cancelled and its stock returned; 0 = never (site_settings). */
+export async function readReleaseHours(db: Db = getDb()): Promise<number> {
+  try {
+    const [row] = await db.select({ value: siteSettings.value }).from(siteSettings).where(eq(siteSettings.key, RELEASE_UNPAID_KEY)).limit(1);
+    return parseReleaseHours(row?.value);
+  } catch {
+    return parseReleaseHours(null);
+  }
+}
+
+export async function saveReleaseHours(value: number, adminUserId: number): Promise<void> {
+  const text = String(parseReleaseHours(String(value)));
+  await getDb()
+    .insert(siteSettings)
+    .values({ key: RELEASE_UNPAID_KEY, value: text, updatedBy: adminUserId })
     .onConflictDoUpdate({ target: siteSettings.key, set: { value: text, updatedBy: adminUserId, updatedAt: new Date() } });
 }

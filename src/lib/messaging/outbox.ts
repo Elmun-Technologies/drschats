@@ -183,6 +183,8 @@ export interface DrainResult {
   failed: number;
   skipped: number;
   retried: number;
+  /** Rows this call took from the queue. */
+  claimed?: number;
 }
 
 type Outcome =
@@ -190,7 +192,7 @@ type Outcome =
   | { status: "skipped"; error: string }
   | { status: "retry" | "failed"; error: string };
 
-async function finish(m: Claimed, outcome: Outcome, now: Date): Promise<keyof Omit<DrainResult, "locked" | "deferred">> {
+async function finish(m: Claimed, outcome: Outcome, now: Date): Promise<"sent" | "skipped" | "failed" | "retried"> {
   const db = getDb();
   if (outcome.status === "sent") {
     await db.execute(sql`
@@ -310,12 +312,22 @@ async function release(ids: number[]) {
     where status = 'sending' and id in (${sql.join(ids.map((id) => sql`${id}`), sql`, `)})`);
 }
 
+/*
+  Throughput. A batch is sent SEND_CONCURRENCY messages at a time — within
+  Eskiz's per-second limit, and the gateway's own 429 is a retryable error
+  anyway — and drainOutboxFor keeps claiming batches while the queue is full,
+  up to a time budget inside the minute. Sequential, 30 a minute, a 10 000
+  SMS campaign took about 5.5 hours and ran into the night window.
+*/
+export const SEND_CONCURRENCY = 4;
+export const BATCH_SIZE = 50;
+
 /**
  * Sends what is due. Safe to call from several places at once (the
  * in-process timer, the cron endpoint, a second machine): only one claims at
  * a time, and each row is claimed once.
  */
-export async function drainOutbox(now = new Date(), limit = 30): Promise<DrainResult> {
+export async function drainOutbox(now = new Date(), limit = BATCH_SIZE): Promise<DrainResult> {
   const result: DrainResult = { locked: false, deferred: 0, sent: 0, failed: 0, skipped: 0, retried: 0 };
   const db = getDb();
   const claimed = await db.transaction(async (tx) => {
@@ -355,11 +367,7 @@ export async function drainOutbox(now = new Date(), limit = 30): Promise<DrainRe
   const sms = needsSms ? await resolveSmsProvider().catch(() => null) : null;
   const clubEnabled = claimed.some((m) => m.channel === "telegram") ? Boolean((await getClubConfig().catch(() => null))?.enabled) : false;
 
-  for (const [i, m] of claimed.entries()) {
-    if (stopping) {
-      await release(claimed.slice(i).map((r) => r.id)).catch((err: Error) => console.error("[messages] release on shutdown failed:", err.message));
-      break;
-    }
+  const sendOne = async (m: Claimed) => {
     let outcome: Outcome;
     try {
       outcome = await deliver(m, sms, clubEnabled);
@@ -371,8 +379,36 @@ export async function drainOutbox(now = new Date(), limit = 30): Promise<DrainRe
     } catch (err) {
       console.error(`[messages] status update failed for #${m.id}:`, (err as Error).message);
     }
+  };
+  for (let i = 0; i < claimed.length; i += SEND_CONCURRENCY) {
+    if (stopping) {
+      await release(claimed.slice(i).map((r) => r.id)).catch((err: Error) => console.error("[messages] release on shutdown failed:", err.message));
+      break;
+    }
+    await Promise.all(claimed.slice(i, i + SEND_CONCURRENCY).map(sendOne));
   }
+  result.claimed = claimed.length;
   return result;
+}
+
+/**
+ * Batches until the queue has nothing due or the time budget is spent (the
+ * next tick picks up the rest). The worker calls this once a minute.
+ */
+export async function drainOutboxFor(budgetMs: number, now = () => new Date()): Promise<DrainResult> {
+  const total: DrainResult = { locked: false, deferred: 0, sent: 0, failed: 0, skipped: 0, retried: 0, claimed: 0 };
+  const started = Date.now();
+  for (;;) {
+    const r = await drainOutbox(now());
+    total.locked = total.locked || r.locked;
+    total.deferred += r.deferred;
+    total.sent += r.sent;
+    total.failed += r.failed;
+    total.skipped += r.skipped;
+    total.retried += r.retried;
+    total.claimed = (total.claimed ?? 0) + (r.claimed ?? 0);
+    if (!r.locked || (r.claimed ?? 0) < BATCH_SIZE || stopping || Date.now() - started > budgetMs) return total;
+  }
 }
 
 /** The site's URL for a path in a locale, for the click redirect. */

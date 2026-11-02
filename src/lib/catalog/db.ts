@@ -127,18 +127,40 @@ const cachedCatalog = unstable_cache(readCatalog, ["catalog-v3"], { tags: [CATAL
 */
 const dbCircuit = createCircuit(30_000);
 
+/*
+  When this process last served the built-in catalogue instead of the
+  database, and why — read by /api/health ("degraded") and by the operator
+  alert (lib/ops/alerts.ts). In memory: it describes this machine.
+*/
+const fallback = { at: 0, reason: "" as "" | "error" | "empty", count: 0 };
+
+function usedFallback(reason: "error" | "empty") {
+  fallback.at = Date.now();
+  fallback.reason = reason;
+  fallback.count += 1;
+}
+
+export function catalogFallbackState(): { lastAt: number | null; reason: string | null; count: number; circuitOpen: boolean } {
+  return { lastAt: fallback.at || null, reason: fallback.reason || null, count: fallback.count, circuitOpen: dbCircuit.isOpen() };
+}
+
 export async function loadDbCatalog(): Promise<CatalogData> {
-  if (dbCircuit.isOpen()) return builtInCatalog;
+  if (dbCircuit.isOpen()) {
+    usedFallback("error");
+    return builtInCatalog;
+  }
   try {
     const data = await cachedCatalog();
     dbCircuit.succeed();
     if (data.products.length === 0) {
+      usedFallback("empty");
       console.warn("[catalog] database has no products yet — serving the built-in catalogue");
       return builtInCatalog;
     }
     return data;
   } catch (err) {
     dbCircuit.fail();
+    usedFallback("error");
     console.error("[catalog] database read failed — serving the built-in catalogue:", (err as Error).message);
     return builtInCatalog;
   }
