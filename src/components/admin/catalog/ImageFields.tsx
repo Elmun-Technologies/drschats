@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRef, useState } from "react";
 import { uploadProductImage, type FormState } from "@/app/admin/_actions/catalog";
 import type { RepoImage, RepoImageKind } from "@/lib/admin/repo-images";
-import { Field, inputClass, secondaryButtonClass, smallButtonClass } from "@/components/admin/ui";
+import { Field, inputClass, secondaryButtonClass, smallButtonClass, smallDangerButtonClass } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
 import { ImagePicker } from "./ImagePicker";
 
@@ -165,7 +165,7 @@ export function SingleImageField({
         </span>
         <div className="flex flex-wrap gap-2">
           <button type="button" onClick={() => setPickerOpen(true)} className={smallButtonClass}>{src ? "Almashtirish" : "Tanlash"}</button>
-          {src && <button type="button" onClick={() => onChange("")} className="inline-flex h-11 items-center rounded-[12px] px-3.5 text-[14px] font-semibold text-red hover:bg-tile">Olib tashlash</button>}
+          {src && <button type="button" onClick={() => onChange("")} className={smallDangerButtonClass}>Olib tashlash</button>}
         </div>
       </div>
       <Field label={label} hint={hint}>

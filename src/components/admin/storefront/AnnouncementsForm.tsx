@@ -3,7 +3,7 @@
 import { useActionState, useState } from "react";
 import { saveAnnouncements } from "@/app/admin/_actions/storefront";
 import type { FormState } from "@/app/admin/_actions/catalog";
-import { Field, Notice, inputClass, secondaryButtonClass } from "@/components/admin/ui";
+import { Field, Notice, inputClass, secondaryButtonClass, smallButtonClass, smallDangerButtonClass } from "@/components/admin/ui";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { cn } from "@/lib/utils";
 
@@ -44,9 +44,9 @@ export function AnnouncementsForm({ rows: initial, max }: { rows: AnnouncementRo
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-[17px] font-bold text-ink">{i + 1}-eʼlon</h2>
               <div className="flex gap-1.5">
-                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`${i + 1}-eʼlonni yuqoriga`} className="grid h-11 w-11 place-items-center rounded-[12px] bg-tile text-ink hover:bg-tile-hover disabled:opacity-40">↑</button>
-                <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={`${i + 1}-eʼlonni pastga`} className="grid h-11 w-11 place-items-center rounded-[12px] bg-tile text-ink hover:bg-tile-hover disabled:opacity-40">↓</button>
-                <button type="button" onClick={() => setRows((list) => list.filter((x) => x.key !== r.key))} className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-tile">
+                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`${i + 1}-eʼlonni yuqoriga`} className={cn(smallButtonClass, "w-11 px-0 disabled:opacity-40")}>↑</button>
+                <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={`${i + 1}-eʼlonni pastga`} className={cn(smallButtonClass, "w-11 px-0 disabled:opacity-40")}>↓</button>
+                <button type="button" onClick={() => setRows((list) => list.filter((x) => x.key !== r.key))} className={smallDangerButtonClass}>
                   Olib tashlash
                 </button>
               </div>

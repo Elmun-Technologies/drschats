@@ -59,6 +59,9 @@ export const smallButtonClass =
   "inline-flex h-11 items-center justify-center gap-2 rounded-[12px] bg-tile px-3.5 text-[14px] font-semibold text-ink transition-colors hover:bg-tile-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30";
 export const dangerButtonClass =
   "inline-flex h-12 items-center justify-center gap-2 rounded-[12px] border border-red/30 bg-white px-4 text-[15px] font-semibold text-red transition-colors hover:bg-red/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red/20";
+/** A destructive action inside a row or a field (remove an image, a line): `dangerButtonClass` at the small size. */
+export const smallDangerButtonClass =
+  "inline-flex h-11 items-center justify-center gap-2 rounded-[12px] px-3.5 text-[14px] font-semibold text-red transition-colors hover:bg-red/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red/20";
 export const linkClass = "font-semibold text-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30 rounded-[4px]";
 
 export function Field({ label, hint, children, className }: { label: string; hint?: string; children: ReactNode; className?: string }) {
@@ -210,7 +213,19 @@ export function somShort(value: number): string {
   return `${millions.toLocaleString("ru-RU", { maximumFractionDigits: millions >= 100 ? 0 : millions >= 10 ? 1 : 2 })} mln soʻm`;
 }
 
-const RELATIVE = new Intl.RelativeTimeFormat("uz", { numeric: "auto" });
+/*
+  Written out by hand, as utils.formatDate is: ICU's Uzbek data is thin and
+  differs between Node and browsers (an English or "-3 h" fallback in some
+  builds), and the same string renders on both sides.
+*/
+const UNIT = { minute: "daqiqa", hour: "soat", day: "kun", month: "oy", year: "yil" } as const;
+
+function relativeUz(value: number, unit: keyof typeof UNIT): string {
+  if (unit === "day" && value === -1) return "kecha";
+  if (unit === "day" && value === 1) return "ertaga";
+  const n = Math.abs(value);
+  return value < 0 ? `${n} ${UNIT[unit]} oldin` : `${n} ${UNIT[unit]}dan keyin`;
+}
 
 /** "3 soat oldin" — the panel speaks in how long ago, the tooltip has the exact time. */
 export function timeAgo(date: Date | null | undefined, now = Date.now()): string {
@@ -218,9 +233,9 @@ export function timeAgo(date: Date | null | undefined, now = Date.now()): string
   const seconds = Math.round((date.getTime() - now) / 1000);
   const abs = Math.abs(seconds);
   if (abs < 60) return "hozirgina";
-  if (abs < 3600) return RELATIVE.format(Math.round(seconds / 60), "minute");
-  if (abs < 86400) return RELATIVE.format(Math.round(seconds / 3600), "hour");
-  if (abs < 86400 * 45) return RELATIVE.format(Math.round(seconds / 86400), "day");
-  if (abs < 86400 * 400) return RELATIVE.format(Math.round(seconds / (86400 * 30)), "month");
-  return RELATIVE.format(Math.round(seconds / (86400 * 365)), "year");
+  if (abs < 3600) return relativeUz(Math.round(seconds / 60), "minute");
+  if (abs < 86400) return relativeUz(Math.round(seconds / 3600), "hour");
+  if (abs < 86400 * 45) return relativeUz(Math.round(seconds / 86400), "day");
+  if (abs < 86400 * 400) return relativeUz(Math.round(seconds / (86400 * 30)), "month");
+  return relativeUz(Math.round(seconds / (86400 * 365)), "year");
 }
