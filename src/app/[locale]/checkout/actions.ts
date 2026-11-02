@@ -140,14 +140,19 @@ export type OrderError =
 export async function submitOrder(
   payload: OrderRequest,
 ): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string }> {
-  const hdrs = await headers();
-  if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
-    return { ok: false, error: "rate_limited" };
-  }
-
+  /*
+    Validation first: a form sent back for a typo costs nothing, so it must not
+    use up one of the ten orders an address may place. Mobile operators put
+    many customers behind one address, and a few corrected typos used to lock
+    the whole block out for ten minutes.
+  */
   const parsed = orderRequestSchema.safeParse(payload);
   if (!parsed.success) {
     return { ok: false, error: "invalid" };
+  }
+  const hdrs = await headers();
+  if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
+    return { ok: false, error: "rate_limited" };
   }
   const { telegram, ...request } = parsed.data as OrderRequest;
   /*

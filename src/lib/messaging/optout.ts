@@ -29,3 +29,9 @@ export async function optOutCount(): Promise<number> {
   const rows = (await getDb().execute(sql`select count(distinct phone9) as n from marketing_optouts`)) as unknown as { n: string }[];
   return Number(rows[0]?.n ?? 0);
 }
+
+/** Every phone that stopped any marketing channel — for ad-audience exports. */
+export async function optedOutPhones(): Promise<Set<string>> {
+  const rows = (await getDb().execute(sql`select distinct phone9 from marketing_optouts`)) as unknown as { phone9: string }[];
+  return new Set(rows.map((r) => r.phone9));
+}
