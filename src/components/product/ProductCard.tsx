@@ -86,9 +86,11 @@ export function ProductCard({
       )}
     >
       <div className="relative">
+        {/* One tab stop per card: the name link below goes to the same page. */}
         <Link
           href={href}
-          aria-label={product.name}
+          tabIndex={-1}
+          aria-hidden
           className="relative block aspect-square overflow-hidden rounded-[16px] bg-tile"
         >
           {image ? (
