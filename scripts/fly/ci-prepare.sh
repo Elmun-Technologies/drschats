@@ -83,11 +83,13 @@ for name in \
   if [ -n "$value" ]; then synced+=("$name=$value"); fi
 done
 
+# Through stdin (`secrets import`), not as arguments: a value on the command
+# line shows in the runner's process list for as long as flyctl runs.
 if [ "${#generated[@]}" -gt 0 ]; then
-  flyctl secrets set -a "$APP" --stage "${generated[@]}" >/dev/null
+  printf '%s\n' "${generated[@]}" | flyctl secrets import -a "$APP" --stage >/dev/null
 fi
 if [ "${#synced[@]}" -gt 0 ]; then
-  flyctl secrets set -a "$APP" --stage "${synced[@]}" >/dev/null ||
+  printf '%s\n' "${synced[@]}" | flyctl secrets import -a "$APP" --stage >/dev/null ||
     warn "GitHub kalitlarini Fly'ga yozib boʻlmadi — deploy eski qiymatlar bilan davom etadi"
   note "${#synced[@]} ta kalit GitHub'dan Fly'ga koʻchirildi"
 fi

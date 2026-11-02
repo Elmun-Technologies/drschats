@@ -31,7 +31,37 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 export async function notifyOperator(text: string, options?: { markdown?: boolean }): Promise<boolean> {
   const { operatorBotToken: token, operatorChatId: chatId } = await getRuntimeIntegrationSettings();
   if (!token || !chatId) return false;
+  // Telegram refuses a message over 4096 characters — a 50-line order can be one.
+  for (const part of splitForTelegram(text)) {
+    if (!(await sendOnce(token, chatId, part, options))) return false;
+  }
+  return true;
+}
 
+const TELEGRAM_LIMIT = 4000;
+
+/** Splits at line breaks into parts Telegram accepts; a single over-long line is cut. */
+export function splitForTelegram(text: string, limit = TELEGRAM_LIMIT): string[] {
+  if (text.length <= limit) return [text];
+  const parts: string[] = [];
+  let current = "";
+  for (const line of text.split("\n")) {
+    for (let i = 0; i < line.length || i === 0; i += limit) {
+      const piece = line.slice(i, i + limit);
+      if (current && current.length + 1 + piece.length > limit) {
+        parts.push(current);
+        current = piece;
+      } else {
+        current = current ? `${current}\n${piece}` : piece;
+      }
+      if (line.length === 0) break;
+    }
+  }
+  if (current) parts.push(current);
+  return parts;
+}
+
+async function sendOnce(token: string, chatId: string, text: string, options?: { markdown?: boolean }): Promise<boolean> {
   for (let attempt = 1; attempt <= ATTEMPTS; attempt++) {
     let wait = 400 * attempt;
     try {

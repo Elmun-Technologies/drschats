@@ -6,6 +6,7 @@ import { sendCampaign } from "@/lib/email/send";
 import { recordSubscriber } from "@/lib/marketing/api";
 import { notifyOperator } from "@/lib/notifications/operator";
 import { redactEmail } from "@/lib/privacy";
+import { withinRateLimit } from "@/lib/rate-limit";
 
 /*
   The second half of double opt-in.
@@ -36,6 +37,13 @@ export async function GET(request: NextRequest) {
   if (!verified) return redirect(locale, "invalid");
 
   await recordSubscriber({ email: verified.email, status: "confirmed", locale });
+
+  // Mail clients and link scanners open a link more than once: welcome mail and
+  // the operator ping go out once a day per address, the confirmation itself
+  // is idempotent and always answered.
+  if (!withinRateLimit("email-confirm", verified.email.toLowerCase(), { limit: 1, windowMs: 24 * 60 * 60 * 1000 })) {
+    return redirect(locale, "confirmed");
+  }
 
   await sendCampaign({
     to: verified.email,

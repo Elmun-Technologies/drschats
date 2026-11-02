@@ -50,3 +50,25 @@ describe("notifyOperator", () => {
     expect(fetchMock).toHaveBeenCalledTimes(3);
   });
 });
+
+describe("splitForTelegram", () => {
+  it("keeps a short message whole", async () => {
+    const { splitForTelegram } = await import("./operator");
+    expect(splitForTelegram("a\nb")).toEqual(["a\nb"]);
+  });
+
+  it("splits at line breaks under the limit, losing nothing", async () => {
+    const { splitForTelegram } = await import("./operator");
+    const lines = Array.from({ length: 60 }, (_, i) => `${i + 1}. Mahsulot nomi juda uzun × 2 — 158 000 soʻm`);
+    const parts = splitForTelegram(lines.join("\n"), 500);
+    expect(parts.length).toBeGreaterThan(1);
+    expect(parts.every((p) => p.length <= 500)).toBe(true);
+    expect(parts.join("\n")).toBe(lines.join("\n"));
+  });
+
+  it("cuts a single line longer than the limit", async () => {
+    const { splitForTelegram } = await import("./operator");
+    const parts = splitForTelegram("x".repeat(1200), 500);
+    expect(parts.map((p) => p.length)).toEqual([500, 500, 200]);
+  });
+});
