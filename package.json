@@ -19,7 +19,7 @@
     "db:migrate": "node scripts/db/migrate.mjs"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.1147.0",
+    "@aws-sdk/client-s3": "^3.1161.0",
     "@hookform/resolvers": "^3.9.1",
     "@sanity/image-url": "^2.1.1",
     "@sanity/vision": "^3.99.0",
@@ -31,26 +31,26 @@
     "next-sanity": "^9.12.3",
     "postgres": "^3.4.9",
     "qrcode": "^1.5.4",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7",
-    "react-hook-form": "^7.54.2",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-hook-form": "^7.91.0",
     "react-is": "^19.2.8",
     "sanity": "^3.99.0",
-    "styled-components": "^6.4.3",
+    "styled-components": "^6.6.0",
     "tailwind-merge": "^2.5.5",
     "zod": "^3.24.1",
-    "zustand": "^5.0.2"
+    "zustand": "^5.0.16"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.7",
     "@tailwindcss/postcss": "^4.0.0",
     "@types/node": "^22.10.2",
     "@types/qrcode": "^1.5.6",
-    "@types/react": "^19.0.2",
-    "@types/react-dom": "^19.0.2",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "eslint": "^9.17.0",
     "eslint-config-next": "^15.5.27",
-    "playwright": "^1.49.1",
+    "playwright": "^1.64.1",
     "tailwindcss": "^4.0.0",
     "typescript": "5.8.2",
     "vitest": "^2.1.8"
