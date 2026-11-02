@@ -7,10 +7,12 @@ import { TrendChart } from "@/components/admin/TrendChart";
 import { ActivityHeatmap } from "@/components/admin/ActivityHeatmap";
 import { BarList, Card, EmptyState, Metric, PageHeader, TableWrap, linkClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Analitika" };
 
 export default async function AdminAnalyticsPage({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
+  await requireAdmin();
   const range = parseRange((await searchParams).range, 30);
   const [funnel, series, heat, channelRows, deviceRows, interest, pages, searches, metrics] = await Promise.all([
     siteFunnel(range),

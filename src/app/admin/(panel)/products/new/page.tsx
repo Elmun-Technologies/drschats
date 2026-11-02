@@ -5,10 +5,12 @@ import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { isStorageConfigured } from "@/lib/admin/storage";
 import { listRepoImages } from "@/lib/admin/repo-images.server";
 import { readLowStockDefault } from "@/lib/catalog/stock";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Yangi mahsulot" };
 
 export default async function NewProductPage() {
+  await requireAdmin();
   const [cats, brandRows, repoImages, lowStockDefault] = await Promise.all([listCategories(), listBrands(), listRepoImages(), readLowStockDefault()]);
   return (
     <>

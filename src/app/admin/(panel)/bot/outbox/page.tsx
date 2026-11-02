@@ -3,6 +3,7 @@ import { Card, PageHeader, Pill, secondaryButtonClass } from "@/components/admin
 import { retryJobAction } from "@/app/admin/_actions/bot";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { listJobs } from "@/lib/bot/store";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Xabarlar navbati" };
 
@@ -15,6 +16,7 @@ const REASON: Record<string, string> = {
 };
 
 export default async function BotOutboxPage() {
+  await requireAdmin();
   const rows = await listJobs();
   return (
     <>

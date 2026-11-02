@@ -1,11 +1,13 @@
 import Link from "next/link";
 import { AdminSanityStudio } from "@/components/admin/AdminSanityStudio";
 import { Card, Notice, PageHeader, secondaryButtonClass } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "Kontentni tahrirlash" };
 
-export default function AdminContentStudioPage() {
+export default async function AdminContentStudioPage() {
+  await requireAdmin();
   const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID?.trim();
   const studioEnabled = process.env.NODE_ENV !== "production" || process.env.SANITY_STUDIO_ENABLED === "on";
   const ready = Boolean(projectId && projectId !== "placeholder" && studioEnabled);

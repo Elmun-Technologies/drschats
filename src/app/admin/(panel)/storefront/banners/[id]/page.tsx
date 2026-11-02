@@ -9,10 +9,12 @@ import { toTashkentInput } from "@/lib/admin/product-form";
 import { formatNumber } from "@/lib/utils";
 import { BannerForm } from "@/components/admin/storefront/BannerForm";
 import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Banner" };
 
 export default async function EditBannerPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const num = Number(id);
   if (!Number.isSafeInteger(num) || num <= 0) notFound();

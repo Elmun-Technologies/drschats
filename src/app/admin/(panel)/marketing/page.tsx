@@ -4,10 +4,12 @@ import { Card, EmptyState, PageHeader, TableWrap, som, tableClass, tdClass, thCl
 import { parseRange, percent, utmCampaigns } from "@/lib/admin/crm";
 import { SITE_URL } from "@/lib/config/site";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "UTM havolalar" };
 
 export default async function AdminMarketingPage({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
+  await requireAdmin();
   const range = parseRange((await searchParams).range, 30);
   const rows = await utmCampaigns(range);
   return (

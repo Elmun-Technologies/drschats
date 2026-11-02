@@ -9,6 +9,7 @@ import { PROMOTION_TYPE_LABEL } from "@/components/admin/PromotionForm";
 import { Card, EmptyState, Notice, PageHeader, Pill, SectionTitle, TableWrap, buttonClass, linkClass, smallButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Aksiyalar" };
 
@@ -20,6 +21,7 @@ function status(p: typeof promotions.$inferSelect, now: number): { label: string
 }
 
 export default async function AdminPromotionsPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string; imported?: string }> }) {
+  await requireAdmin();
   const params = await searchParams;
   const db = getDb();
   const [rows, sales] = await Promise.all([

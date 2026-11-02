@@ -1,7 +1,8 @@
 import createMiddleware from "next-intl/middleware";
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
 import { routing } from "@/lib/i18n/routing";
 import { AB_COOKIE, AB_COOKIE_RE } from "@/lib/merch/ab";
+import { SESSION_COOKIE, isPublicAdminPath } from "@/lib/admin/cookie";
 
 const intl = createMiddleware(routing);
 
@@ -13,6 +14,8 @@ const intl = createMiddleware(routing);
   the variant is chosen in the browser, before the first paint.
 */
 export default function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+  if (pathname === "/admin" || pathname.startsWith("/admin/")) return adminGate(request);
   const response = intl(request);
   if (!AB_COOKIE_RE.test(request.cookies.get(AB_COOKIE)?.value ?? "")) {
     response.cookies.set(AB_COOKIE, crypto.randomUUID().replace(/-/g, ""), {
@@ -26,9 +29,21 @@ export default function middleware(request: NextRequest) {
   return response;
 }
 
+/*
+  A second wall in front of the admin panel. Without a session cookie nothing
+  under /admin is rendered at all; with one, every page still verifies it
+  (requireAdmin) before it reads anything — a forged cookie gets that far and
+  no further.
+*/
+function adminGate(request: NextRequest) {
+  if (isPublicAdminPath(request.nextUrl.pathname) || request.cookies.has(SESSION_COOKIE)) return NextResponse.next();
+  return NextResponse.redirect(new URL("/admin/login", request.url));
+}
+
 export const config = {
   // Match all pathnames except for
   // - /api, /_next, /_vercel
   // - files with an extension (e.g. /favicon.ico, /og.png)
-  matcher: ["/((?!api|_next|_vercel|studio|admin|r/|s/|.*\\..*).*)"],
+  // - /admin is matched on its own and only passes through adminGate
+  matcher: ["/((?!api|_next|_vercel|studio|admin|r/|s/|.*\\..*).*)", "/admin", "/admin/:path*"],
 };

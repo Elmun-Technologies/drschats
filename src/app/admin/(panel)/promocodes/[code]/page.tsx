@@ -11,10 +11,12 @@ import { PromoCodeForm } from "@/components/admin/PromoCodeForm";
 import { CopyButton } from "@/components/admin/CopyButton";
 import { Card, EmptyState, Notice, PageHeader, Pill, TableWrap, dangerButtonClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Promokod" };
 
 export default async function PromoCodePage({ params, searchParams }: { params: Promise<{ code: string }>; searchParams: Promise<{ inUse?: string }> }) {
+  await requireAdmin();
   const { code: raw } = await params;
   const { inUse } = await searchParams;
   const code = decodeURIComponent(raw);

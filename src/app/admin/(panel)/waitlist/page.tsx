@@ -6,6 +6,7 @@ import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, seconda
 import { NotifyNowButton, PhoneReveal } from "@/components/admin/catalog/WaitlistControls";
 import { CatalogTabs } from "@/components/admin/catalog/CatalogTabs";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Kutayotganlar" };
 export const dynamic = "force-dynamic";
@@ -26,6 +27,7 @@ function maskPhone(phone: string): string {
 }
 
 export default async function WaitlistPage({ searchParams }: { searchParams: Promise<{ status?: string | string[]; kind?: string | string[] }> }) {
+  await requireAdmin();
   const params = await searchParams;
   const statusParam = first(params.status) ?? "waiting";
   const status = statusParam === "all" ? undefined : (WAIT_STATUSES as readonly string[]).includes(statusParam) ? (statusParam as WaitStatus) : "waiting";

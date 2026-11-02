@@ -6,6 +6,7 @@ import { ActionForm } from "@/components/admin/ActionForm";
 import { CampaignFields } from "@/components/admin/CampaignFields";
 import { Card, EmptyState, Field, Metric, PageHeader, Pill, TableWrap, inputClass, linkClass, secondaryButtonClass, smallButtonClass, som, tableClass, tdClass, thClass, timeAgo } from "@/components/admin/ui";
 import { cn, formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Segment" };
 
@@ -35,6 +36,7 @@ const TEMPLATES: Record<string, { text: string; link: string }> = {
 };
 
 export default async function AdminSegmentPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const segment = segmentById(id);
   if (!segment) notFound();

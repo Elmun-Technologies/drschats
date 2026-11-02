@@ -6,10 +6,12 @@ import { toTashkentInput } from "@/lib/admin/product-form";
 import { StorefrontTabs } from "@/components/admin/storefront/StorefrontTabs";
 import { AnnouncementsForm } from "@/components/admin/storefront/AnnouncementsForm";
 import { Notice, PageHeader } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Eʼlon qatori" };
 
 export default async function AnnouncementsPage() {
+  await requireAdmin();
   const [row] = await getDb().select({ value: siteSettings.value }).from(siteSettings).where(eq(siteSettings.key, ANNOUNCEMENTS_KEY));
   const items = parseAnnouncements(row?.value);
   return (

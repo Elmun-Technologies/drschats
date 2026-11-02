@@ -4,6 +4,7 @@ import { daysSince } from "@/lib/journey/model";
 import { customerStats } from "@/lib/admin/dashboard";
 import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Mijozlar" };
 
@@ -26,6 +27,7 @@ function first(value: string | string[] | undefined) {
 }
 
 export default async function AdminCustomersPage({ searchParams }: { searchParams: Promise<{ q?: string | string[]; stage?: string | string[] }> }) {
+  await requireAdmin();
   const params = await searchParams;
   const q = first(params.q)?.trim() ?? "";
   const stageParam = first(params.stage);

@@ -705,6 +705,7 @@ Tab bar va PDP/savatdagi xarid paneli — **`position: fixed`**. Hech qachon `po
 - **Mahsulot rasmi/brendi/birligi** — `cutoutOf(p)`, `brandOf(p)`, `unitOf(p)` (`lib/catalog/product-facts.ts`); `productCutout(p.slug)` to'g'ridan-to'g'ri chaqirilmaydi, aks holda admin'da qo'shilgan mahsulotda rasm chiqmaydi
 - **Bazaga yangi ustun** — `db/migrations/000N_*.sql` (yangi fayl, eskisini o'zgartirmang) + `src/lib/db/schema.ts`
 - **Xom `sql` ichida `Date` uzatmang** — `prepare: false` bilan postgres-js turini aniqlay olmaydi va so'rov yiqiladi; ISO matn + `::timestamptz` (`crm.ts` dagi `ts()`)
+- **Har admin `page.tsx` birinchi `await` sifatida `requireAdmin()` ni chaqiradi** — `(panel)/layout.tsx` dagisi to'siq emas: Next layout va page'ni parallel render qiladi va page ma'lumoti login'ga 307 javobining tanasida ketib qolardi (2026-11, mijoz ismi/telefoni/manzili). `src/app/admin/admin-guard.test.ts` buni har sahifa uchun tekshiradi; middleware esa cookie'siz so'rovni `/admin/login` ga qaytaradi (`lib/admin/cookie.ts`), lekin u faqat ikkinchi devor
 - **Admin sahifalari** `components/admin/ui.tsx` dagi qismlardan (`Card`, `Metric`, `ChipNav`, `Pill`, `BarList`, jadval klasslari) quriladi; matn ≥ 12px, tugma `ink`, hex rang yozilmaydi
 
 ## Sifat darajasi — nolda turadi

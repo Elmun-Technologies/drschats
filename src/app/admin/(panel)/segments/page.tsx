@@ -2,10 +2,12 @@ import Link from "next/link";
 import { SEGMENTS, segmentCounts } from "@/lib/admin/segments";
 import { PageHeader, Pill, SectionTitle, som } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Segmentlar va retarget" };
 
 export default async function AdminSegmentsPage() {
+  await requireAdmin();
   const counts = await segmentCounts();
   const groups = [
     { kind: "customers" as const, title: "Mijozlar (telefoni maʼlum)", lead: "Eksport qilib Meta / Google auditoriyasiga yuklang yoki Telegram orqali xabar yuboring." },

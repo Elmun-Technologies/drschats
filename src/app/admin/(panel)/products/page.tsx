@@ -10,6 +10,7 @@ import { BuiltInSyncCard } from "@/components/admin/catalog/BuiltInSyncCard";
 import { LowStockDefaultForm, StockButton } from "@/components/admin/catalog/StockControls";
 import { readLowStockDefault } from "@/lib/catalog/stock";
 import { isLowStock, stockLabel } from "@/lib/catalog/stock-rules";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Mahsulotlar" };
 
@@ -64,6 +65,7 @@ export default async function AdminProductsPage({
 }: {
   searchParams: Promise<{ q?: string | string[]; deleted?: string; filter?: string | string[]; category?: string | string[]; brand?: string | string[]; sort?: string | string[]; imported?: string }>;
 }) {
+  await requireAdmin();
   const params = await searchParams;
   const q = first(params.q)?.trim() ?? "";
   const filterParam = first(params.filter) ?? "all";

@@ -10,6 +10,7 @@ import { saveBirthdayRules, saveCashbackRules, saveReferralRules } from "@/app/a
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, EmptyState, Field, Metric, Notice, PageHeader, Pill, SectionTitle, TableWrap, inputClass, linkClass, som, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Sodiqlik" };
 
@@ -34,6 +35,7 @@ async function birthdayFlow(): Promise<{ id: string; active: boolean } | null> {
 }
 
 export default async function AdminLoyaltyPage() {
+  await requireAdmin();
   const [rules, stats, referral, birthdays, sms, flow] = await Promise.all([
     readLoyaltyRules(),
     loyaltyStats(),

@@ -6,6 +6,7 @@ import { closeTicketAction, replyTicket } from "@/app/admin/_actions/bot";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { listTickets } from "@/lib/bot/store";
 import { cn } from "@/lib/utils";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Murojaatlar" };
 
@@ -13,6 +14,7 @@ const CATEGORY = { operator: "Savol", consult: "Maslahat", return: "Qaytarish", 
 const STATUS = { open: "Ochiq", answered: "Javob berilgan", closed: "Yopilgan" } as const;
 
 export default async function BotTicketsPage({ searchParams }: { searchParams: Promise<{ all?: string }> }) {
+  await requireAdmin();
   const all = (await searchParams).all === "1";
   const rows = await listTickets(all ? "all" : "open");
 

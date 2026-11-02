@@ -3,10 +3,12 @@ import { listCategories } from "@/lib/admin/queries";
 import { listRepoImages } from "@/lib/admin/repo-images.server";
 import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { CategoryForm } from "@/components/admin/catalog/CategoryForm";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Yangi kategoriya" };
 
 export default async function NewCategoryPage() {
+  await requireAdmin();
   const [cats, repoImages] = await Promise.all([listCategories(), listRepoImages()]);
   const nextSort = cats.reduce((max, c) => Math.max(max, c.sort), -1) + 1;
   return (

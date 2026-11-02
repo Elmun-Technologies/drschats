@@ -1,5 +1,5 @@
 import { createHmac } from "node:crypto";
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 vi.mock("@/lib/bot/store", () => ({ linkOf: vi.fn(async () => null) }));
 vi.mock("server-only", () => ({}));
@@ -27,6 +27,13 @@ describe("Mini App profile", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.stubEnv("TELEGRAM_CLUB_BOT_TOKEN", TOKEN);
+    // initData older than a day is refused, so the signatures are dated against a fixed clock.
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(NOW);
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("returns the linked name and phone for signed data", async () => {

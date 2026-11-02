@@ -3,10 +3,12 @@ import Link from "next/link";
 import { listCategories, productCountsByCategory } from "@/lib/admin/queries";
 import { EmptyState, Notice, PageHeader, Pill, buttonClass, smallButtonClass } from "@/components/admin/ui";
 import { CatalogTabs } from "@/components/admin/catalog/CatalogTabs";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Kategoriyalar" };
 
 export default async function AdminCategoriesPage({ searchParams }: { searchParams: Promise<{ deleted?: string; created?: string }> }) {
+  await requireAdmin();
   const { deleted, created } = await searchParams;
   const [rows, counts] = await Promise.all([listCategories(), productCountsByCategory()]);
   const createdName = created ? rows.find((c) => c.slug === created)?.name.uz : undefined;

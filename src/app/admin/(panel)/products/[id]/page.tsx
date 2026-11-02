@@ -8,10 +8,12 @@ import { isStorageConfigured } from "@/lib/admin/storage";
 import { listRepoImages } from "@/lib/admin/repo-images.server";
 import { readLowStockDefault, stockHistory } from "@/lib/catalog/stock";
 import { StockHistory } from "@/components/admin/catalog/StockHistory";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Mahsulotni tahrirlash" };
 
 export default async function EditProductPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ saved?: string; copied?: string }> }) {
+  await requireAdmin();
   const [{ id }, { saved, copied }] = await Promise.all([params, searchParams]);
   const productId = decodeURIComponent(id);
   const [values, cats, brandRows, repoImages, lowStockDefault, history] = await Promise.all([

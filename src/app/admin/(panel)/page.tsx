@@ -42,8 +42,8 @@ function Attention({ href, value, label, hint }: { href: string; value: number; 
 }
 
 export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
-  const range = parseRange((await searchParams).range, 7);
   const admin = await requireAdmin();
+  const range = parseRange((await searchParams).range, 7);
   const [metrics, funnel, series, channelRows, deviceRows, mix, heat, cats, top, live, segments, counts, tickets, lowStock, waiting] = await Promise.all([
     getOrderMetrics(range),
     siteFunnel(range),

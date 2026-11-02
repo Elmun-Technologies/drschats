@@ -6,10 +6,12 @@ import { promotions } from "@/lib/db/schema";
 import { listProducts } from "@/lib/admin/queries";
 import { PromotionForm } from "@/components/admin/PromotionForm";
 import { Card, PageHeader, secondaryButtonClass } from "@/components/admin/ui";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Aksiya" };
 
 export default async function EditPromotionPage({ params }: { params: Promise<{ id: string }> }) {
+  await requireAdmin();
   const { id } = await params;
   const [[promotion], products] = await Promise.all([getDb().select().from(promotions).where(eq(promotions.id, id)).limit(1), listProducts()]);
   if (!promotion) notFound();

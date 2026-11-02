@@ -7,10 +7,12 @@ import { deleteBrand, saveBrand } from "@/app/admin/_actions/catalog";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, Field, Notice, PageHeader, dangerButtonClass, inputClass, linkClass } from "@/components/admin/ui";
 import { CatalogTabs } from "@/components/admin/catalog/CatalogTabs";
+import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Brendlar" };
 
 export default async function AdminBrandsPage({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
+  await requireAdmin();
   const { deleted } = await searchParams;
   const [rows, perBrand] = await Promise.all([
     listBrands(),

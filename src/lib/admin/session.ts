@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { eq } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db/client";
 import { adminUsers } from "@/lib/db/schema";
+import { SESSION_COOKIE } from "@/lib/admin/cookie";
 
 /*
   Stateless admin session: a signed cookie carrying the user id, the user's
@@ -14,7 +15,7 @@ import { adminUsers } from "@/lib/db/schema";
   The cookie is scoped to /admin, httpOnly, SameSite=Strict (an admin action
   is never the target of a cross-site link) and Secure outside development.
 */
-export const SESSION_COOKIE = "govita_admin";
+export { SESSION_COOKIE };
 const SESSION_DAYS = 7;
 
 function secret(): string {
