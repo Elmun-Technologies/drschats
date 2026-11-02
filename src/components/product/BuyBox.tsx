@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
-import { cn, formatMoney, formatNumber } from "@/lib/utils";
-import { DiscountBadge, discountPercent } from "@/components/ui/Price";
+import { cn, formatMoney } from "@/lib/utils";
+import { DiscountBadge, Price, discountPercent } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { itemOf, trackViewProduct } from "@/lib/analytics/events";
@@ -69,10 +69,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
     <div className="flex flex-col gap-4 lg:rounded-[20px] lg:border lg:border-line lg:bg-bg lg:p-6 lg:shadow-buybox">
       <div className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          <span className="text-[30px] font-bold leading-9 lg:text-price-l lg:leading-10">{formatMoney(product.price, locale)}</span>
-          {product.oldPrice && product.oldPrice > product.price && (
-            <span className="text-[17px] text-muted line-through lg:text-lg">{formatNumber(product.oldPrice)}</span>
-          )}
+          <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="pdp" layout="inline" className="gap-x-2.5" />
           <DiscountBadge percent={discount} />
         </div>
         {(perUnit || discount > 0) && (
@@ -218,12 +215,7 @@ function MobileBuyBar({ product: listed }: { product: Product }) {
       data-buy-bar
       className="fixed inset-x-0 bottom-[var(--tab-bar)] z-40 flex h-[var(--buy-bar)] items-center gap-2.5 border-t border-line bg-bg px-4 lg:hidden"
     >
-      <div className="flex shrink-0 flex-col">
-        <span className="text-[19px] font-bold leading-[23px]">{formatMoney(product.price, locale)}</span>
-        {product.oldPrice && product.oldPrice > product.price && (
-          <span className="text-[13px] text-muted line-through">{formatNumber(product.oldPrice)}</span>
-        )}
-      </div>
+      <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="bar" className="shrink-0" />
       <Button
         size="lg"
         className="min-w-0 flex-1 rounded-input"

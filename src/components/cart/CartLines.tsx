@@ -15,7 +15,7 @@ import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { productBrand } from "@/lib/content/product-brands";
 import { productCutout } from "@/lib/content/product-cutouts";
 import { PRODUCT_UNITS } from "@/lib/content/product-units";
-import { DiscountBadge } from "@/components/ui/Price";
+import { DiscountBadge, Price } from "@/components/ui/Price";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /*
@@ -104,10 +104,7 @@ function Line({ line: l, compact, onNavigate }: { line: CartLine; compact: boole
       </Link>
 
       <div className={cn("flex min-w-0 flex-col gap-1", !compact && "lg:gap-1.5")}>
-        <div className={cn("flex items-baseline gap-1.5", !compact && "lg:hidden")}>
-          <span className="text-lg font-bold">{formatMoney(total, locale)}</span>
-          {before && <span className="text-[13px] text-muted line-through">{formatNumber(before)}</span>}
-        </div>
+        <Price amount={total} oldAmount={before ?? undefined} locale={locale} size="sm" layout="inline" className={cn("gap-x-1.5", !compact && "lg:hidden")} />
         <Link href={`/product/${l.slug}`} onClick={onNavigate} className={cn("text-[15px] leading-5 hover:underline", !compact && "lg:text-[17px] lg:font-medium lg:leading-[23px]")}>
           {l.name}
         </Link>
