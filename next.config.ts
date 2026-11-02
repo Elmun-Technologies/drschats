@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import { REMOTE_IMAGE_HOSTS, cspHeaders, cspMode, framingHeaders } from "./src/lib/security/csp";
+import { REMOTE_IMAGE_HOSTS, adminCspHeader, cspHeaders, cspMode, framingHeaders, reportingHeaders } from "./src/lib/security/csp";
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
@@ -87,8 +87,9 @@ const nextConfig: NextConfig = {
       still renders that segment's page.
     */
     globalNotFound: true,
-    // The admin uploads product photos up to 5 MB through a server action; the default limit is 1 MB.
-    serverActions: { bodySizeLimit: "6mb" },
+    // Every server action keeps Next's 1 MB body limit; product photos (5 MB) go to a route handler
+    // (app/admin/(panel)/products/upload/route.ts).
+    serverActions: { bodySizeLimit: "1mb" },
   },
   async redirects() {
     return [...apexRedirects(), ...localeRedirects()];
@@ -127,7 +128,11 @@ const nextConfig: NextConfig = {
       security headers below and is protected by `requireAdmin()`.
     */
     const csp = cspHeaders(process.env);
-    if (csp) routes[0].headers.push(csp);
+    if (csp) routes[0].headers.push(csp, ...reportingHeaders(process.env));
+
+    // The admin panel's own, enforced policy (stricter than the storefront's; see csp.ts adminCspHeader).
+    routes.push({ source: "/admin", headers: [adminCspHeader(process.env)] });
+    routes.push({ source: "/admin/((?!content/studio).*)", headers: [adminCspHeader(process.env)] });
 
     // Sanity needs to own its CSP, but the admin-mounted Studio still gets the
     // non-CSP baseline headers. X-Frame-Options permits same-origin embedding

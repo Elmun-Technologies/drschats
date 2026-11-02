@@ -1,6 +1,10 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { auditLog } from "@/lib/admin/audit";
+import { anonymiseCustomer } from "@/lib/admin/anonymise";
+import { redactPhone } from "@/lib/privacy";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin/session";
 import { getCustomerDetails } from "@/lib/admin/customers";
@@ -29,4 +33,31 @@ export async function addCustomerNote(_: FormState, form: FormData): Promise<For
   revalidatePath(`/admin/customers/${parsed.data.phone9}`);
   revalidatePath("/admin/customers");
   return { ok: "Izoh saqlandi." };
+}
+
+const ANONYMISE_CONFIRM = "OʻCHIRISH";
+const anonymiseSchema = z.object({
+  phone9: z.string().regex(/^\d{9}$/, "Mijoz identifikatori notoʻgʻri."),
+  confirm: z.string().trim(),
+});
+
+/*
+  The customer's right to erasure (lib/admin/anonymise.ts). Owner only — it
+  cannot be undone — and confirmed by typing the word, not by one click.
+  The audit row names the number only redacted.
+*/
+export async function anonymiseCustomerAction(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin("users");
+  const parsed = anonymiseSchema.safeParse({ phone9: form.get("phone9"), confirm: form.get("confirm") ?? "" });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (parsed.data.confirm.toUpperCase().replace(/[ʻ'`’]/g, "ʻ") !== ANONYMISE_CONFIRM) return { error: `Tasdiqlash uchun «${ANONYMISE_CONFIRM}» deb yozing.` };
+  try {
+    const removed = await anonymiseCustomer(parsed.data.phone9);
+    await auditLog(admin, "customer.anonymise", redactPhone(parsed.data.phone9), removed);
+  } catch (err) {
+    console.error("[admin] anonymise failed:", (err as Error).message);
+    return { error: "Oʻchirib boʻlmadi. Qayta urinib koʻring." };
+  }
+  revalidatePath("/admin/customers");
+  redirect("/admin/customers?anonymised=1");
 }

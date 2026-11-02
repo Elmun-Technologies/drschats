@@ -4,7 +4,7 @@ import { randomInt } from "node:crypto";
 import { and, eq, ne, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { loyaltyLedger, referralCodes, referrals, type ReferralReward } from "@/lib/db/schema";
-import { issuePromoCode, previousOrders } from "@/lib/promo/server";
+import { issuePromoCode, previousOrders } from "@/lib/promo/issue";
 import { firstOrderDiscount, type PromoLine } from "@/lib/promo/rules";
 import { queueMessage, reachContext, resolveReach } from "@/lib/messaging/outbox";
 import { lotExpiry, referralRewardKind, type LoyaltyRules } from "@/lib/loyalty/model";

@@ -4,7 +4,9 @@ import { headers } from "next/headers";
 import { z } from "zod";
 import { ORDERS_IN_DB } from "@/lib/shopflow";
 import { clientIp, withinRateLimit } from "@/lib/rate-limit";
-import { phone9Of } from "@/lib/promo/rules";
+import { hitRateLimit } from "@/lib/rate-limit-store";
+import { phone9Of } from "@/lib/phone9";
+import { normalizeUzPhone } from "@/lib/phone";
 import { readLoyaltyRules, smsAvailable } from "@/lib/loyalty/settings";
 import { pointsBalance } from "@/lib/loyalty/server";
 import { requestRedeemCode, verifyRedeemCode } from "@/lib/loyalty/otp-server";
@@ -24,7 +26,8 @@ const CODE_IP_RATE = { limit: 10, windowMs: 60 * 60_000 };
 const VERIFY_RATE = { limit: 30, windowMs: 10 * 60_000 };
 const BIRTHDAY_RATE = { limit: 10, windowMs: 10 * 60_000 };
 
-const phoneSchema = z.string().trim().min(7).max(20).regex(/^\+?[\d\s()-]+$/);
+/* An Uzbek number by the checkout's own rule (lib/phone.ts), never "any seven digits". */
+const phoneSchema = z.string().trim().max(20).refine((raw) => normalizeUzPhone(raw) !== null, "invalid_phone");
 
 async function ip(): Promise<string> {
   return clientIp(await headers());
@@ -38,7 +41,8 @@ export async function pointsStatus(phone: string): Promise<PointsStatus> {
   const parsed = phoneSchema.safeParse(phone);
   const phone9 = parsed.success ? phone9Of(parsed.data) : null;
   if (!phone9) return { ok: false, error: "invalid" };
-  if (!withinRateLimit("points-status", await ip(), STATUS_RATE)) return { ok: false, error: "rate_limited" };
+  // Shared across machines: the balance of a number is not something to enumerate.
+  if (!(await hitRateLimit("points-status", await ip(), STATUS_RATE))) return { ok: false, error: "rate_limited" };
   try {
     const rules = await readLoyaltyRules();
     if (!rules.enabled) return { ok: false, error: "off" };
@@ -57,7 +61,7 @@ export async function sendPointsCode(input: { phone: string; locale: "uz" | "ru"
   const parsed = phoneSchema.safeParse(input.phone);
   const phone9 = parsed.success ? phone9Of(parsed.data) : null;
   if (!phone9) return { ok: false, error: "invalid" };
-  if (!withinRateLimit("points-code-ip", await ip(), CODE_IP_RATE)) return { ok: false, error: "rate_limited" };
+  if (!(await hitRateLimit("points-code-ip", await ip(), CODE_IP_RATE))) return { ok: false, error: "rate_limited" };
   try {
     if (!(await readLoyaltyRules()).enabled) return { ok: false, error: "off" };
     return await requestRedeemCode(phone9, input.locale === "ru" ? "ru" : "uz");
@@ -76,12 +80,47 @@ export async function confirmPointsCode(input: { phone: string; code: string }):
   const parsed = phoneSchema.safeParse(input.phone);
   const phone9 = parsed.success ? phone9Of(parsed.data) : null;
   if (!phone9 || typeof input.code !== "string" || input.code.length > 12) return { ok: false, error: "invalid" };
-  if (!withinRateLimit("points-verify", await ip(), VERIFY_RATE)) return { ok: false, error: "rate_limited" };
+  if (!(await hitRateLimit("points-verify", await ip(), VERIFY_RATE))) return { ok: false, error: "rate_limited" };
   try {
     if (!(await readLoyaltyRules()).enabled) return { ok: false, error: "off" };
     return await verifyRedeemCode(phone9, input.code);
   } catch (err) {
     console.error("[loyalty] code check failed:", (err as Error).message);
+    return { ok: false, error: "invalid" };
+  }
+}
+
+/*
+  Proving the phone in the cart, for the first-order and referral discounts
+  (lib/promo/server.ts → phoneProven). The same SMS code and limits as the
+  points code, without needing a balance or the loyalty programme. The
+  returned token goes with the order as `phoneToken` and with the cart's
+  discount preview (checkCartPromo).
+*/
+export async function sendPhoneCode(input: { phone: string; locale: "uz" | "ru" }): Promise<SendCodeResult> {
+  if (!ORDERS_IN_DB) return { ok: false, error: "off" };
+  const parsed = phoneSchema.safeParse(input.phone);
+  const phone9 = parsed.success ? phone9Of(parsed.data) : null;
+  if (!phone9) return { ok: false, error: "invalid" };
+  if (!(await hitRateLimit("points-code-ip", await ip(), CODE_IP_RATE))) return { ok: false, error: "rate_limited" };
+  try {
+    return await requestRedeemCode(phone9, input.locale === "ru" ? "ru" : "uz", new Date(), "verify");
+  } catch (err) {
+    console.error("[phone] code request failed:", (err as Error).message);
+    return { ok: false, error: "failed" };
+  }
+}
+
+export async function confirmPhoneCode(input: { phone: string; code: string }): Promise<ConfirmCodeResult> {
+  if (!ORDERS_IN_DB) return { ok: false, error: "off" };
+  const parsed = phoneSchema.safeParse(input.phone);
+  const phone9 = parsed.success ? phone9Of(parsed.data) : null;
+  if (!phone9 || typeof input.code !== "string" || input.code.length > 12) return { ok: false, error: "invalid" };
+  if (!(await hitRateLimit("points-verify", await ip(), VERIFY_RATE))) return { ok: false, error: "rate_limited" };
+  try {
+    return await verifyRedeemCode(phone9, input.code);
+  } catch (err) {
+    console.error("[phone] code check failed:", (err as Error).message);
     return { ok: false, error: "invalid" };
   }
 }

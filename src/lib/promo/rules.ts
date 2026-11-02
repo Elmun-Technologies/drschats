@@ -66,11 +66,7 @@ export function normalizePromoCode(raw: string | null | undefined): string | nul
   return CODE_RE.test(code) ? code : null;
 }
 
-/** The last nine digits of a phone number — how the shop matches one customer across formats. */
-export function phone9Of(phone: string | null | undefined): string | null {
-  const digits = (phone ?? "").replace(/\D/g, "").slice(-9);
-  return digits.length === 9 ? digits : null;
-}
+export { phone9Of } from "@/lib/phone9";
 
 /** A line the order-level discounts may count: no offer of its own, no subscription. */
 export function discountableLine(l: PromoLine): boolean {

@@ -340,6 +340,8 @@ export async function quoteBotCart(input: {
     promotions,
     code,
     phone: phone || null,
+    // The number is the one the customer shared with Telegram's contact button: Telegram vouches for it.
+    phoneVerified: Boolean(phone),
   });
   const base = computeTotals(
     pricedOrder.order.items.map((i) => ({
@@ -503,7 +505,7 @@ export async function placeBotOrder(input: BotOrderInput): Promise<BotOrderResul
       return { ok: false, error: pricedOrder.error === "out_of_stock" ? "out_of_stock" : "failed", slug: pricedOrder.slug };
     }
 
-    const placed = await placeOrder(pricedOrder.order, promotions);
+    const placed = await placeOrder(pricedOrder.order, promotions, { phoneVerified: true });
     if (!placed.ok) {
       await releaseKey(input.chatId, input.idempotencyKey);
       if (placed.error === "promo_invalid") return { ok: false, error: "promo_invalid", reason: placed.rejection.reason };

@@ -57,7 +57,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
       <PageHeader
         eyebrow={`${formatDateTime(o.createdAt)} · ${timeAgo(o.createdAt)}`}
         title={`Buyurtma ${o.number}`}
-        lead={<span className="inline-flex items-center gap-2"><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill>{o.paymentStatus !== "unpaid" && <Pill tone={o.paymentStatus === "paid" ? "dark" : "outline"}>{PAYMENT_STATUS_LABEL[o.paymentStatus]}</Pill>}<span className="text-ink-2">{units} dona · {som(o.total)}</span></span>}
+        lead={<span className="inline-flex items-center gap-2"><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill>{o.paymentStatus !== "unpaid" && <Pill tone={o.paymentStatus === "paid" ? "dark" : "outline"}>{PAYMENT_STATUS_LABEL[o.paymentStatus]}</Pill>}{!o.operatorNotifiedAt && <Pill tone="outline">Telegram xabari yetib bormagan</Pill>}<span className="text-ink-2">{units} dona · {som(o.total)}</span></span>}
         actions={<>
           <a href={`/admin/print/orders/${o.number}`} target="_blank" rel="noopener noreferrer" className={secondaryButtonClass}>Yuk varagʻi</a>
           <Link href="/admin/orders" className={secondaryButtonClass}>← Buyurtmalar</Link>

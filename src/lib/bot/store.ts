@@ -1,5 +1,8 @@
+import "server-only";
+
 import { and, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
+import { phone9Sql } from "@/lib/db/phone";
 import {
   botConfig,
   botJobs,
@@ -105,7 +108,15 @@ function customerOrders(chatId: number, phone: string | null) {
 
 type OrderRow = typeof orders.$inferSelect;
 
-function orderOut(o: OrderRow, locale: Locale) {
+/*
+  A website order is matched to this chat only by the phone typed in the
+  form, and anyone can type anyone's number. Such an order is listed (it may
+  well be the customer's) but marked `unverified` and without the address —
+  the address of whoever placed it is not shown to the number's owner.
+  Orders from this chat, or from the bot's own shop, are the customer's.
+*/
+function orderOut(o: OrderRow, locale: Locale, chatId: number) {
+  const verified = o.telegramChatId === chatId || o.source !== "site";
   return {
     code: o.number,
     status: o.status,
@@ -113,7 +124,8 @@ function orderOut(o: OrderRow, locale: Locale) {
     createdAt: o.createdAt,
     total: o.total,
     shipping: o.totals.shipping,
-    delivery: { region: o.delivery.region, address: o.delivery.address ?? "", method: o.delivery.method },
+    unverified: !verified,
+    delivery: { region: o.delivery.region, address: verified ? (o.delivery.address ?? "") : "", method: o.delivery.method },
     items: o.items.map((i) => ({ productId: i.productId, slug: i.slug, name: i.name, qty: i.quantity, unitPrice: i.unitPrice })),
   };
 }
@@ -126,7 +138,7 @@ export async function ordersFor(chatId: number, limit: number, locale: Locale) {
     .where(customerOrders(chatId, link?.phone ?? null))
     .orderBy(desc(orders.createdAt))
     .limit(limit);
-  return rows.map((o) => orderOut(o, locale));
+  return rows.map((o) => orderOut(o, locale, chatId));
 }
 
 export async function orderFor(chatId: number, number: string, locale: Locale) {
@@ -142,7 +154,7 @@ export async function orderFor(chatId: number, number: string, locale: Locale) {
     .from(botOrderEvents)
     .where(eq(botOrderEvents.orderId, o.id))
     .orderBy(botOrderEvents.createdAt);
-  return { ...orderOut(o, locale), timeline: events.map((e) => ({ stage: statusLabel(e.status, locale), at: e.createdAt })) };
+  return { ...orderOut(o, locale, chatId), timeline: events.map((e) => ({ stage: statusLabel(e.status, locale), at: e.createdAt })) };
 }
 
 // ── Tickets ───────────────────────────────────────────────────────────────
@@ -296,7 +308,7 @@ export async function announceOrderStatus(
     if (!chatId) {
       const tail = phoneTail(o.customer.phone);
       const [link] = tail.length === 9
-        ? await db.select().from(telegramLinks).where(sql`right(${telegramLinks.phone}, 9) = ${tail}`).limit(1)
+        ? await db.select().from(telegramLinks).where(sql`${phone9Sql(sql`${telegramLinks.phone}`)} = ${tail}`).limit(1)
         : [];
       chatId = link?.chatId ?? null;
     }

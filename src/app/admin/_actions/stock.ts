@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/admin/session";
 import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { CATALOG_TAG } from "@/lib/catalog/db";
-import { adjustStock, saveLowStockDefault } from "@/lib/catalog/stock";
+import { adjustStock, saveLowStockDefault, saveReleaseHours } from "@/lib/catalog/stock";
 import { afterProductChange, cancelWaitRequest, notifyWaitlist, type DispatchResult } from "@/lib/notify/waitlist";
 import type { FormState } from "./catalog";
 
@@ -69,6 +69,17 @@ export async function notifyWaitlistNow(_: FormState, form: FormData): Promise<F
   revalidatePath("/admin/waitlist");
   if (r.due === 0) return { error: "Hozir xabar beradigan hech kim yoʻq: mahsulot sotuvda emas yoki narxi kutilgan narxdan tushmagan." };
   return { ok: `Yuborildi.${sentNote(r)}` };
+}
+
+const releaseSchema = z.object({ hours: z.coerce.number().int().min(0).max(168) });
+
+export async function saveReleaseHoursAction(_: FormState, form: FormData): Promise<FormState> {
+  const me = await requireAdmin("catalog");
+  const parsed = releaseSchema.safeParse({ hours: form.get("hours") });
+  if (!parsed.success) return { error: "0 dan 168 gacha son kiriting." };
+  await saveReleaseHours(parsed.data.hours, me.id);
+  await auditLog(me, "stock.release_hours", null, { hours: parsed.data.hours });
+  return { ok: parsed.data.hours ? `Saqlandi: ${parsed.data.hours} soat.` : "Saqlandi: avtomatik bekor qilish oʻchiq." };
 }
 
 export async function cancelWaitRequestAction(form: FormData) {

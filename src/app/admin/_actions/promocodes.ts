@@ -12,7 +12,7 @@ import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { SLUG_RE, fromTashkentInput } from "@/lib/admin/product-form";
 import { SITE_SETTINGS_TAG } from "@/lib/integrations/site-settings";
 import { normalizePromoCode, phone9Of } from "@/lib/promo/rules";
-import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/server";
+import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/issue";
 import { saveFirstOrderSetting } from "@/lib/promo/settings";
 import type { FormState } from "./catalog";
 

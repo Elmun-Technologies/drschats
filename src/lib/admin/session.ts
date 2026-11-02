@@ -1,3 +1,5 @@
+import "server-only";
+
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
@@ -17,7 +19,16 @@ import { can, isAdminRole, permissionForPath, type Permission } from "@/lib/admi
   is never the target of a cross-site link) and Secure outside development.
 */
 export { SESSION_COOKIE };
+/** Absolute lifetime of a sign-in. */
 const SESSION_DAYS = 7;
+/**
+ * Idle timeout: a session not used for 12 hours ends. The token carries the
+ * last time it was refreshed (`seen`); the middleware re-signs it on page
+ * loads (lib/admin/session-edge.ts), so an admin who keeps working stays
+ * signed in until SESSION_DAYS, and a cookie left on a shared computer dies
+ * overnight.
+ */
+export const SESSION_IDLE_MS = 12 * 3_600_000;
 
 function secret(): string {
   const value = process.env.ADMIN_SESSION_SECRET?.trim();
@@ -33,11 +44,11 @@ function sign(payload: string) {
 }
 
 export function createSessionToken(userId: number, epoch = 0, now = Date.now()): string {
-  const payload = Buffer.from(JSON.stringify({ uid: userId, ep: epoch, exp: now + SESSION_DAYS * 864e5 })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({ uid: userId, ep: epoch, exp: now + SESSION_DAYS * 864e5, seen: now })).toString("base64url");
   return `${payload}.${sign(payload)}`;
 }
 
-type TokenBody = { uid: number; ep?: number; exp: number; k?: string };
+type TokenBody = { uid: number; ep?: number; exp: number; k?: string; seen?: number };
 
 function readToken(token: string | undefined, now: number): TokenBody | null {
   if (!token) return null;
@@ -58,6 +69,9 @@ export function readSessionToken(token: string | undefined, now = Date.now()): {
   const body = readToken(token, now);
   // A half-finished sign-in (password checked, code not yet) is never a session.
   if (!body || body.k !== undefined) return null;
+  // Tokens from before the idle timeout carry no `seen`: they count from when they were issued.
+  const seen = typeof body.seen === "number" ? body.seen : body.exp - SESSION_DAYS * 864e5;
+  if (now - seen > SESSION_IDLE_MS) return null;
   // Cookies issued before epochs existed carry none; they belong to epoch 0.
   return { uid: body.uid, epoch: body.ep ?? 0 };
 }
@@ -96,7 +110,7 @@ export async function setSessionCookie(userId: number, epoch: number) {
     secure: process.env.NODE_ENV !== "development",
     sameSite: "strict",
     path: "/admin",
-    maxAge: SESSION_DAYS * 86400,
+    maxAge: SESSION_IDLE_MS / 1000,
   });
 }
 

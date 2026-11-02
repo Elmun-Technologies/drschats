@@ -2,17 +2,18 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { eq, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { timingSafeEqual } from "node:crypto";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { adminUsers } from "@/lib/db/schema";
-import { clientIp, withinRateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/rate-limit";
+import { hitRateLimit, rateLimitReached, resetRateLimit } from "@/lib/rate-limit-store";
 import { hashPassword, MIN_PASSWORD_LENGTH, verifyPassword } from "@/lib/admin/password";
 import { cookies } from "next/headers";
-import { clearPendingCookie, clearSessionCookie, readPendingToken, requireAdmin, setPendingCookie, setSessionCookie } from "@/lib/admin/session";
+import { clearPendingCookie, clearSessionCookie, readPendingToken, readSessionToken, requireAdmin, setPendingCookie, setSessionCookie } from "@/lib/admin/session";
 import { ADMIN_TABLE_LOCK } from "@/lib/admin/accounts";
-import { PENDING_2FA_COOKIE } from "@/lib/admin/cookie";
+import { PENDING_2FA_COOKIE, SESSION_COOKIE } from "@/lib/admin/cookie";
 import { hashRecoveryCode, normalizeRecoveryCode, verifyTotp } from "@/lib/admin/totp";
 import { openTotpSecret } from "@/lib/admin/totp-store";
 import { auditLog } from "@/lib/admin/audit";
@@ -26,42 +27,40 @@ const BAD_LOGIN = "Email yoki parol notoʻgʻri.";
 const TOO_MANY = "Urinishlar juda koʻp. 10 daqiqadan keyin qayta urining.";
 
 /*
-  Failed passwords per email. Only failures count: counting every attempt
-  let anyone who knew an admin's email keep them locked out with five junk
-  logins every ten minutes.
+  Failed passwords, counted in Postgres (lib/rate-limit-store.ts), so a
+  deploy or a second machine does not reset them. Only failures count.
+
+  The lock is keyed on (IP, email): five wrong passwords from one address
+  lock that address out of that account. Keyed on the email alone, anyone who
+  knew an admin's email could keep them locked out from anywhere. Across
+  addresses the account only slows down (EMAIL_SLOW) — a correct password
+  still gets in.
 */
-const failures = new Map<string, { count: number; resetAt: number }>();
-
-function emailLocked(email: string, now = Date.now()): boolean {
-  const entry = failures.get(email);
-  return Boolean(entry && entry.resetAt > now && entry.count >= LOGIN_RATE.limit);
-}
-
-function recordFailure(email: string, now = Date.now()) {
-  const entry = failures.get(email);
-  if (!entry || entry.resetAt <= now) failures.set(email, { count: 1, resetAt: now + LOGIN_RATE.windowMs });
-  else entry.count += 1;
-  if (failures.size > 5000) for (const [key, value] of failures) if (value.resetAt <= now) failures.delete(key);
-}
+const FAIL_SCOPE = "admin-login-fail";
+const EMAIL_SLOW = { limit: 20, windowMs: 60 * 60 * 1000 };
+const SLOW_DOWN_MS = 2000;
 
 export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   const email = String(form.get("email") ?? "").trim().toLowerCase().slice(0, 160);
   const password = String(form.get("password") ?? "").slice(0, 200);
   const ip = clientIp(await headers());
-  if (!withinRateLimit("admin-login-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs }) || emailLocked(email)) {
+  if (!email || !password) return { error: BAD_LOGIN };
+  const pair = `${ip}|${email}`;
+  if (!(await hitRateLimit("admin-login-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs })) || (await rateLimitReached(FAIL_SCOPE, pair, LOGIN_RATE))) {
     return { error: TOO_MANY };
   }
-  if (!email || !password) return { error: BAD_LOGIN };
+  if (await rateLimitReached("admin-login-email", email, EMAIL_SLOW)) await new Promise((resolve) => setTimeout(resolve, SLOW_DOWN_MS));
 
   const db = getDb();
   const [user] = await db.select().from(adminUsers).where(eq(adminUsers.email, email)).limit(1);
   // Hash even when the user is missing so both paths take the same time.
   const ok = user ? await verifyPassword(password, user.passwordHash) : (await hashPassword(password), false);
   if (!user || !ok) {
-    recordFailure(email);
+    await hitRateLimit(FAIL_SCOPE, pair, LOGIN_RATE);
+    await hitRateLimit("admin-login-email", email, EMAIL_SLOW);
     return { error: BAD_LOGIN };
   }
-  failures.delete(email);
+  await resetRateLimit(FAIL_SCOPE, pair);
 
   // Two-factor sign-in: the password only opens the second step, for five minutes.
   if (user.totpEnabledAt && user.totpSecret) {
@@ -74,7 +73,7 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   redirect("/admin");
 }
 
-const codeFailures = new Map<number, { count: number; resetAt: number }>();
+const CODE_FAIL_SCOPE = "admin-2fa-fail";
 
 /*
   The second step: a code from the authenticator app, or one of the recovery
@@ -84,10 +83,9 @@ export async function verifySecondFactor(_: AuthState, form: FormData): Promise<
   const pending = readPendingToken((await cookies()).get(PENDING_2FA_COOKIE)?.value);
   if (!pending) return { error: "Kirish muddati tugadi. Email va parolni qayta kiriting." };
   const ip = clientIp(await headers());
-  if (!withinRateLimit("admin-2fa-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs })) return { error: TOO_MANY };
+  if (!(await hitRateLimit("admin-2fa-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs }))) return { error: TOO_MANY };
   const now = Date.now();
-  const fails = codeFailures.get(pending.uid);
-  if (fails && fails.resetAt > now && fails.count >= LOGIN_RATE.limit) {
+  if (await rateLimitReached(CODE_FAIL_SCOPE, String(pending.uid), LOGIN_RATE)) {
     await clearPendingCookie();
     return { error: TOO_MANY };
   }
@@ -122,19 +120,31 @@ export async function verifySecondFactor(_: AuthState, form: FormData): Promise<
   }
 
   if (!accepted) {
-    const entry = codeFailures.get(user.id);
-    if (!entry || entry.resetAt <= now) codeFailures.set(user.id, { count: 1, resetAt: now + LOGIN_RATE.windowMs });
-    else entry.count += 1;
+    await hitRateLimit(CODE_FAIL_SCOPE, String(user.id), LOGIN_RATE);
     return { error: "Kod notoʻgʻri yoki eskirgan." };
   }
-  codeFailures.delete(user.id);
+  await resetRateLimit(CODE_FAIL_SCOPE, String(user.id));
   await clearPendingCookie();
   await setSessionCookie(user.id, user.sessionEpoch);
   await auditLog({ id: user.id, email: user.email }, via === "recovery" ? "login.recovery_code" : "login", null, via === "recovery" ? { left: (user.recoveryCodes?.length ?? 1) - 1 } : null);
   redirect("/admin");
 }
 
+/*
+  Signing out ends the session on the server too: the epoch goes up, so a
+  copy of this cookie (a shared computer, a stolen one) stops working at once
+  instead of living out its lifetime. It also signs out this admin's other
+  devices — the price of a stateless cookie.
+*/
 export async function logout() {
+  const session = readSessionToken((await cookies()).get(SESSION_COOKIE)?.value);
+  if (session) {
+    await getDb()
+      .update(adminUsers)
+      .set({ sessionEpoch: sql`${adminUsers.sessionEpoch} + 1` })
+      .where(and(eq(adminUsers.id, session.uid), eq(adminUsers.sessionEpoch, session.epoch)))
+      .catch((err: Error) => console.error("[admin] logout: session epoch not bumped:", err.message));
+  }
   await clearSessionCookie();
   await clearPendingCookie();
   redirect("/admin/login");
@@ -171,7 +181,7 @@ function tokenMatches(given: string): boolean {
 */
 export async function setupFirstAdmin(_: AuthState, form: FormData): Promise<AuthState> {
   const ip = clientIp(await headers());
-  if (!withinRateLimit("admin-setup", ip, LOGIN_RATE)) return { error: "Urinishlar juda koʻp." };
+  if (!(await hitRateLimit("admin-setup", ip, LOGIN_RATE))) return { error: "Urinishlar juda koʻp." };
   const parsed = setupSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: `Maydonlarni tekshiring: parol kamida ${MIN_PASSWORD_LENGTH} belgi.` };
   if (!tokenMatches(parsed.data.token)) return { error: "Sozlash kaliti notoʻgʻri." };

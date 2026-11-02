@@ -156,7 +156,8 @@ async function loadEffectiveSettings(): Promise<LoadedSettings> {
         metaPixel: analyticsValue("analytics.metaPixelId"),
         yandexMetrika: analyticsValue("analytics.yandexMetrikaId"),
       }),
-      webvisor: publicSettings["analytics.webvisor"] !== "off",
+      // Session recording only when switched on: it records every visitor's screen.
+      webvisor: publicSettings["analytics.webvisor"] === "on",
       payme: {
         enabled: publicSettings["payments.payme"] === "on",
         testMode: publicSettings["payments.payme.test"] === "on",

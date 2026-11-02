@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState, useId, useState } from "react";
-import { adjustStockAction, saveLowStockDefaultAction } from "@/app/admin/_actions/stock";
+import { adjustStockAction, saveLowStockDefaultAction, saveReleaseHoursAction } from "@/app/admin/_actions/stock";
 import type { FormState } from "@/app/admin/_actions/catalog";
 import { Field, Notice, buttonClass, inputClass, secondaryButtonClass, smallButtonClass } from "@/components/admin/ui";
 import { stockLabel } from "@/lib/catalog/stock-rules";
@@ -108,6 +108,25 @@ export function LowStockDefaultForm({ value }: { value: number }) {
     <form action={action} className="flex flex-wrap items-end gap-2">
       <Field label="Kam qoldi chegarasi (standart)" hint="Saytda «Omborda N ta qoldi» shu sondan kam yoki teng boʻlganda chiqadi" className="w-full max-w-[360px]">
         <input name="lowStockAt" type="number" min={1} max={1000} step={1} required defaultValue={value} inputMode="numeric" className={inputClass} />
+      </Field>
+      <button type="submit" disabled={pending} className={cn(smallButtonClass, "h-12")}>{pending ? "Saqlanmoqda…" : "Saqlash"}</button>
+      {state?.error && <Notice tone="error">{state.error}</Notice>}
+      {state?.ok && <Notice tone="ok">{state.ok}</Notice>}
+    </form>
+  );
+}
+
+/* Unpaid online orders give their units back after this many hours (lib/orders/release.ts). */
+export function ReleaseHoursForm({ value }: { value: number }) {
+  const [state, action, pending] = useActionState<FormState, FormData>(saveReleaseHoursAction, undefined);
+  return (
+    <form action={action} className="flex flex-wrap items-end gap-2">
+      <Field
+        label="Toʻlanmagan onlayn buyurtma (soat)"
+        hint="Onlayn toʻlov shu vaqt ichida kelmasa, «Yangi» buyurtma avtomatik bekor qilinadi va mahsulot omborga qaytadi. 0 — hech qachon. Naqd buyurtmalarga tegilmaydi."
+        className="w-full max-w-[360px]"
+      >
+        <input name="hours" type="number" min={0} max={168} step={1} required defaultValue={value} inputMode="numeric" className={inputClass} />
       </Field>
       <button type="submit" disabled={pending} className={cn(smallButtonClass, "h-12")}>{pending ? "Saqlanmoqda…" : "Saqlash"}</button>
       {state?.error && <Notice tone="error">{state.error}</Notice>}

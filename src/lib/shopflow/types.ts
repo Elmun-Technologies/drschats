@@ -223,6 +223,8 @@ export interface OrderRequest {
   promoCode?: string;
   /** Proof (from the SMS code) that this phone may spend its points; verified and re-priced on the server. */
   pointsToken?: string;
+  /** Proof (from the SMS code) that the customer owns this phone — needed for the first-order and referral discounts. */
+  phoneToken?: string;
   locale: Locale;
   /**
    * Which channel placed the order. The checkout decides this itself from

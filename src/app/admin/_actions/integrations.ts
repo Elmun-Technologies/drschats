@@ -305,6 +305,8 @@ export async function saveSmsIntegration(_: FormState, form: FormData): Promise<
     return { error: "Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring." };
   }
   revalidatePath("/admin/integrations");
+  // Pages promise the automatic first-order discount only where SMS can prove the phone (lib/promo/offer.ts).
+  revalidateTag(SITE_SETTINGS_TAG);
   await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: "SMS sozlamalari saqlandi. Ulanishni «Test SMS yuborish» bilan tekshiring." };
 }

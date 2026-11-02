@@ -1,4 +1,6 @@
-import { desc, gte } from "drizzle-orm";
+import "server-only";
+
+import { desc, gte, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { orders, type OrderStatus } from "@/lib/db/schema";
 import type { OrderAttribution, OrderRequest } from "@/lib/shopflow/types";
@@ -182,27 +184,68 @@ export async function getOrderMetrics(days: ReportRange = 30): Promise<OrderMetr
   const currentFrom = new Date(dayStart.getTime() - (days - 1) * oneDay);
   const previousFrom = new Date(currentFrom.getTime() - days * oneDay);
 
-  const rows = await getDb()
-    .select({
-      number: orders.number,
-      status: orders.status,
-      total: orders.total,
-      customer: orders.customer,
-      items: orders.items,
-      attribution: orders.attribution,
-      createdAt: orders.createdAt,
-    })
-    .from(orders)
-    .where(gte(orders.createdAt, previousFrom))
-    .orderBy(desc(orders.createdAt));
+  /*
+    The current period is read row by row (it draws the lists and the daily
+    chart). The previous one only feeds the deltas, so Postgres adds it up:
+    a 90-day report used to load 180 days of orders with their items.
+  */
+  const [rows, previousTotals] = await Promise.all([
+    getDb()
+      .select({
+        number: orders.number,
+        status: orders.status,
+        total: orders.total,
+        customer: orders.customer,
+        items: orders.items,
+        attribution: orders.attribution,
+        createdAt: orders.createdAt,
+      })
+      .from(orders)
+      .where(gte(orders.createdAt, currentFrom))
+      .orderBy(desc(orders.createdAt)),
+    previousPeriodTotals(previousFrom, currentFrom),
+  ]);
 
-  const currentRows = rows.filter((row) => row.createdAt >= currentFrom) as AnalyticsOrder[];
-  const previousRows = rows.filter((row) => row.createdAt < currentFrom) as AnalyticsOrder[];
   return {
     range: days,
-    current: summarize(currentRows, now, days),
-    previous: summarize(previousRows, currentFrom, days),
+    current: summarize(rows as AnalyticsOrder[], now, days),
+    previous: { ...summarize([], currentFrom, days), ...previousTotals },
     generatedAt: now,
+  };
+}
+
+async function previousPeriodTotals(from: Date, to: Date): Promise<Pick<PeriodMetrics, "orderCount" | "revenue" | "averageOrder" | "customerCount" | "deliveredCount" | "deliveredRevenue" | "cancelledCount" | "statusCounts">> {
+  const rows = (await getDb().execute(sql`
+    select status, count(*)::int as n, coalesce(sum(total), 0)::bigint as revenue,
+      count(distinct coalesce(nullif(right(regexp_replace(customer->>'phone', '\D', '', 'g'), 9), ''), lower(customer->>'email')))::int as customers
+    from orders
+    where created_at >= ${from.toISOString()}::timestamptz and created_at < ${to.toISOString()}::timestamptz
+    group by rollup (status)`)) as unknown as { status: OrderStatus | null; n: number; revenue: string | number; customers: number }[];
+  const statusCounts = zeroStatusCounts();
+  let orderCount = 0;
+  let customerCount = 0;
+  let revenue = 0;
+  let deliveredRevenue = 0;
+  for (const row of rows) {
+    if (row.status === null) {
+      orderCount = Number(row.n);
+      customerCount = Number(row.customers);
+      continue;
+    }
+    statusCounts[row.status] = Number(row.n);
+    if (row.status !== "cancelled") revenue += Number(row.revenue);
+    if (row.status === "delivered") deliveredRevenue = Number(row.revenue);
+  }
+  const live = orderCount - statusCounts.cancelled;
+  return {
+    orderCount,
+    revenue,
+    averageOrder: live > 0 ? Math.round(revenue / live) : 0,
+    customerCount,
+    deliveredCount: statusCounts.delivered,
+    deliveredRevenue,
+    cancelledCount: statusCounts.cancelled,
+    statusCounts,
   };
 }
 

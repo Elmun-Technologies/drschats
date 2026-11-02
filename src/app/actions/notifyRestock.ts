@@ -2,7 +2,9 @@
 
 import { headers } from "next/headers";
 import { z } from "zod";
-import { clientIp, withinRateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/rate-limit";
+import { hitRateLimit } from "@/lib/rate-limit-store";
+import { phone9Of } from "@/lib/phone9";
 import { isOperatorChannelConfigured, notifyOperator } from "@/lib/notifications/operator";
 import { redactPhone } from "@/lib/privacy";
 import { isDbConfigured } from "@/lib/db/client";
@@ -17,6 +19,7 @@ import { createWaitRequest } from "@/lib/notify/waitlist";
   submission lands in a Telegram group a human reads.
 */
 const RATE = { limit: 20, windowMs: 60 * 60 * 1000 };
+const PHONE_RATE = { limit: 10, windowMs: 24 * 60 * 60 * 1000 };
 
 const restockSchema = z.object({
   productId: z.string().trim().min(1).max(120),
@@ -66,7 +69,10 @@ export async function notifyRestock(
   if (!parsed.success) return { ok: false, error: "invalid" };
 
   const hdrs = await headers();
-  if (!withinRateLimit("restock", clientIp(hdrs), RATE)) {
+  const phone9 = phone9Of(parsed.data.phone);
+  if (!phone9) return { ok: false, error: "invalid" };
+  // Per address and per number: one number cannot be signed up to every product from many addresses.
+  if (!(await hitRateLimit("restock", clientIp(hdrs), RATE)) || !(await hitRateLimit("restock-phone", phone9, PHONE_RATE))) {
     return { ok: false, error: "rate_limited" };
   }
 

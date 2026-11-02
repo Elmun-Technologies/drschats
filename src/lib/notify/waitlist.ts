@@ -1,3 +1,5 @@
+import "server-only";
+
 import { and, eq, gt, inArray, lte, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { deals, products, restockRequests, type WaitChannel, type WaitKind } from "@/lib/db/schema";

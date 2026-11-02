@@ -9,6 +9,7 @@ import { AnalyticsForm, MessagingForms, PaymentForms, SmsForm, Status, Verificat
 import { Card, Notice, PageHeader, SectionTitle, linkClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { configStatus } from "@/lib/ops/config-status";
 
 export const metadata = { title: "Integratsiyalar" };
 export const dynamic = "force-dynamic";
@@ -47,7 +48,7 @@ function Row({ name, detail, on, label }: { name: string; detail: string; on: bo
 
 export default async function AdminIntegrationsPage() {
   await requireAdmin();
-  const [overview, health, online, noFiscal] = await Promise.all([getIntegrationAdminOverview(), journeyHealth(), readOnlineProviders(), missingFiscal()]);
+  const [overview, health, online, noFiscal, system] = await Promise.all([getIntegrationAdminOverview(), journeyHealth(), readOnlineProviders(), missingFiscal(), configStatus()]);
   const ready = { payme: online.includes("payme"), click: online.includes("click") };
   const a = overview.analytics;
   const telegramClub = Boolean(process.env.BOT_API_KEY && process.env.TELEGRAM_CLUB_BOT_TOKEN);
@@ -89,6 +90,30 @@ export default async function AdminIntegrationsPage() {
             <Link href="/admin/flows" className={linkClass}>Avtomatlashtirish →</Link>
             <Link href="/admin/messages" className={linkClass}>Xabarlar jurnali →</Link>
           </p>
+        </Card>
+      </div>
+
+      <SectionTitle>Tizim holati</SectionTitle>
+      <div className="grid gap-4 xl:grid-cols-2">
+        <Card title="Sozlamalar" lead="Muhit oʻzgaruvchilari va panel birga — nima yoqilgan, nima yoʻq. Qiymatlar koʻrsatilmaydi. Sogʻliq tekshiruvi: /api/health.">
+          <ul className="divide-y divide-line">
+            {system.items.map((item) => <Row key={item.name} name={item.name} detail={item.detail} on={item.on} />)}
+          </ul>
+          {system.issues.length > 0 && <div className="mt-3"><Notice tone="error">Notoʻgʻri qiymat: {system.issues.join("; ")}</Notice></div>}
+        </Card>
+        <Card title="Fon ishlari va CSP" lead="Xabarlar navbati, buyurtma xabarlari va brauzer xavfsizlik siyosati buzilishlari (soʻnggi 7 kun).">
+          {system.worker ? (
+            <ul className="divide-y divide-line">
+              <Row name="Navbat kechikishi" detail={`${formatNumber(system.worker.lagSec)} s · 10 daqiqadan ortiq kutayotgan: ${formatNumber(system.worker.overdue)}`} on={system.worker.overdue === 0} label={system.worker.overdue === 0 ? "Joyida" : "Orqada"} />
+              <Row name="Soʻnggi soatda yuborilmagan" detail={`${formatNumber(system.worker.failed1h)} ta xabar`} on={system.worker.failed1h === 0} label={system.worker.failed1h === 0 ? "Yoʻq" : "Bor"} />
+              <Row name="Yetib bormagan buyurtma xabarlari" detail={`${formatNumber(system.worker.unsentOperatorPings)} ta (24 soat)`} on={system.worker.unsentOperatorPings === 0} label={system.worker.unsentOperatorPings === 0 ? "Yoʻq" : "Bor"} />
+            </ul>
+          ) : <p className="text-[14px] text-muted">Baza ulanmagan — fon ishlari yoʻq.</p>}
+          {system.csp.length > 0 ? (
+            <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3 text-[13px] text-ink-2">
+              {system.csp.map((r) => <li key={`${r.directive}:${r.blocked}`} className="flex justify-between gap-3"><span className="min-w-0 truncate">{r.directive} · {r.blocked}</span><span className="font-semibold text-ink">{formatNumber(r.count)}</span></li>)}
+            </ul>
+          ) : <p className="mt-3 border-t border-line pt-3 text-[13px] text-muted">CSP buzilishi qayd etilmagan.</p>}
         </Card>
       </div>
 

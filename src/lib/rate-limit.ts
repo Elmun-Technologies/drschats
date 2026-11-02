@@ -1,12 +1,12 @@
 /*
   A per-IP counter held in memory.
 
-  Deliberately not a shared store. On Vercel each instance keeps its own map,
-  so the real limit is (instances × limit) — which is fine for what this
-  defends against: a script hammering a public form from one address. Anything
-  determined enough to spread across instances needs the edge to stop it, not a
-  Map, and pulling in Redis to pretend otherwise would add a dependency that
-  can fail and take checkout down with it.
+  Each machine keeps its own map and a deploy empties it, so the real limit is
+  (machines × limit) per release — fine for cheap endpoints (the journey
+  beacon, previews). Forms where a restart must not reset the budget —
+  checkout, admin sign-in, opt-in, restock SMS — use the Postgres counter in
+  lib/rate-limit-store.ts, which falls back to this one when the database is
+  down, so a database blink never takes checkout with it.
 
   Buckets are swept lazily; a request that finds an expired bucket replaces it,
   and once a scope grows past SWEEP_THRESHOLD every expired bucket is dropped,
@@ -63,6 +63,10 @@ export function withinRateLimit(name: string, key: string, { limit, windowMs }: 
   if (bucket.count >= limit) return false;
   bucket.count += 1;
   return true;
+}
+
+export function clearRateLimit(name: string, key: string): void {
+  buckets.get(name)?.delete(key);
 }
 
 /** Number of keys currently held for a scope — exposed for tests. */

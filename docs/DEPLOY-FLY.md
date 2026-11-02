@@ -215,20 +215,130 @@ Ixtiyoriy tashqi cron (masalan, Fly scheduled machine yoki uptime-servis):
 `curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://www.govita.uz/api/cron/messages`.
 O'chirish: `MESSAGE_WORKER=off` (cron endpoint ishlayveradi).
 
-Secret'lar: `MESSAGE_LINK_SECRET` (ixtiyoriy, lekin tavsiya — `openssl rand -base64 32`;
-bo'lmasa `EMAIL_TOKEN_SECRET`, keyin `ADMIN_SESSION_SECRET` ishlatiladi. **Bir marta
-qo'yib, o'zgartirmang**: SMS dagi STOP va qisqa havolalar shu kalit bilan imzolangan).
-`LOYALTY_SECRET` (ixtiyoriy) — ballarni ishlatish SMS kodining HMAC'i va muvaffaqiyat
-sahifasi kvitansiyasi; bo'lmasa `ADMIN_SESSION_SECRET` dan keltiriladi. Almashtirilsa
-faqat 5 daqiqalik kodlar va 30 daqiqalik tokenlar bekor bo'ladi.
+Ishchi yana: har daqiqada xabarlarni 50 tadan, bir vaqtda 4 tadan yuboradi va
+navbat to'la bo'lsa daqiqaning 40 soniyasigacha davom etadi; aksiya/banner oynasi
+ochilgan yoki yopilgan sahifalarni yangilaydi; heartbeat'ni `ops_state` ga yozadi.
+Har 5 daqiqada: yetib bormagan operator xabarlarini qayta yuboradi, muddati
+o'tgan to'lanmagan onlayn buyurtmalarni bekor qiladi (`orders.releaseUnpaidHours`,
+`/admin/products` → «Ombor», standart 24 soat), operator ogohlantirishlari
+(`lib/ops/alerts.ts`). Har soatda: ballar muddati, saqlash muddati (`lib/ops/retention.ts`).
+
+Secret'lar: `MESSAGE_LINK_SECRET` va `LOYALTY_SECRET` — live deploy'da (`GOVITA_PRODUCTION=1`)
+**majburiy** (bo'lmasa birinchi STOP havolasi yoki ball kodi xato beradi; `ci-prepare.sh`
+ikkalasini bir marta yaratadi). `MESSAGE_LINK_SECRET` ni **o'zgartirmang**: SMS dagi STOP va
+qisqa havolalar shu kalit bilan imzolangan. `LOYALTY_SECRET` almashtirilsa faqat 5 daqiqalik
+kodlar va 30 daqiqalik tokenlar bekor bo'ladi.
 Eskiz login/parol — `/admin/integrations` (shifrlangan) yoki `ESKIZ_EMAIL`,
 `ESKIZ_PASSWORD`, `ESKIZ_SENDER` secret'lari. `SMS_FAKE=1` live deploy'da
 (`GOVITA_PRODUCTION=1`) e'tiborga olinmaydi.
 
+## Kuzatuv va ogohlantirish
+
+- **`/api/health`** — tashqi uptime-monitor shu manzilni kuzatsin (Fly `/uz` ni
+  tekshiradi). Baza o'lsa **503**. Tanada: `database`, `degraded` (bu mashina
+  o'rnatilgan katalogga tushgan yoki ishchi 3 daqiqadan beri aylanmagan) va
+  `worker` — oxirgi aylanish, navbat kechikishi, 10 daqiqadan ortiq kutayotganlar,
+  soatlik xatolar, yetib bormagan buyurtma xabarlari. Faqat sonlar.
+- **Operator guruhiga ogohlantirish** (har turdan 3 soatda bir martadan ko'p emas):
+  soatiga 10 tadan ortiq xabar yuborilmasa, navbatda 50 tadan ortiq xabar 10
+  daqiqadan beri tursa, buyurtma xabari guruhga yetmasa, sayt bazani o'qiy olmay
+  o'rnatilgan katalogni ko'rsatsa.
+- **`/admin/integrations` → «Tizim holati»** — nima yoqilgan (qiymatsiz), navbat
+  holati va haftalik CSP buzilishlari.
+- Har so'rovda `x-request-id` (javob sarlavhasida ham); server xatosi log'ida
+  `rid=` bilan chiqadi.
+- **CSP hisobotlari** `/api/csp-report` ga keladi (kunlik son, IP va sahifa
+  manzilisiz). `CSP_MODE=enforce` ga o'tishdan oldin bir necha kun «Tizim holati»
+  dagi ro'yxatni kuzating: haqiqiy analytics teglari bilan bo'sh bo'lsa — yoqing.
+  `/admin` har doim o'zining qat'iy siyosati bilan (enforce) ishlaydi.
+
+## Runbook — nosozlikda nima qilinadi
+
+### Orqaga qaytarish (rollback)
+
+```bash
+fly releases -a govita                 # versiyalar va image'lar ro'yxati
+fly deploy -a govita --image registry.fly.io/govita:deployment-<OLDINGI_ID>
+```
+
+`--image` qayta build qilmaydi — o'sha image darhol chiqadi. **Migratsiyalar
+orqaga qaytmaydi**: shuning uchun quyidagi qoida.
+
+### Migratsiya qoidasi: avval kengaytir, keyin qisqart (expand/contract)
+
+Har migratsiya **faqat qo'shadi**: yangi jadval, yangi ustun (nullable yoki
+default bilan), yangi indeks. Eski kod yangi sxemada ishlay olishi shart — aks
+holda rollback buziladi va rolling deploy paytida eski mashina yiqiladi.
+
+- Ustunni olib tashlash yoki nomini o'zgartirish **ikki relizda**: 1) kod uni
+  o'qishni to'xtatadi (yangi ustunga ham yozadi), deploy; 2) keyingi relizda
+  `drop column`.
+- `not null` ni mavjud ustunga — avval default va to'ldirish, keyingi relizda constraint.
+- Uzoq indeks — `create index concurrently` bitta tranzaksiyada ishlamaydi;
+  katta jadvalda alohida qo'lda, so'ng `if not exists` bilan migratsiyaga.
+- Eski migratsiya faylini o'zgartirmang (`migrate.mjs` checksum bilan rad etadi) —
+  yangi `00NN_*.sql`.
+- Ilova roli uchun so'rov chegarasi 30 s (0021); `migrate.mjs` o'z
+  tranzaksiyasida uni olib tashlaydi.
+
+### Zaxira nusxa va tiklash (backup/restore)
+
+Fly Managed Postgres kunlik zaxira va PITR'ni o'zi qiladi — sozlamasini
+`fly mpg` panelida tekshiring (QOLGAN-ISHLAR, X24). Qo'shimcha qo'lda nusxa:
+
+```bash
+fly mpg proxy -a <cluster> &           # localhost:16380 ga tunnel
+pg_dump "postgres://…@localhost:16380/govita" -Fc -f govita-$(date +%F).dump
+# tiklash — avval BO'SH bazaga, tekshirib, keyin DATABASE_URL ni almashtirish:
+pg_restore -d "postgres://…/govita_restore" --no-owner govita-$(date +%F).dump
+```
+
+Yiliga bir marta tiklashni sinab ko'ring (bo'sh bazaga, sayt `DATABASE_URL` bilan
+lokal ishga tushadi). Rasmlar Tigris'da — bucket o'chirilmasa yo'qolmaydi.
+
+### Kalitlar: saqlash va almashtirish
+
+Kalitlar faqat GitHub Secrets va Fly secrets'da. Parol menejerida (egasi)
+alohida nusxa saqlansin — ayniqsa **`INTEGRATION_ENCRYPTION_KEY`**: u yo'qolsa
+paneldagi barcha shifrlangan kalitlar (Eskiz, Payme, Click, bot tokenlari)
+ochilmaydi va qayta kiritiladi.
+
+| Kalit | Almashtirilsa | Qanday |
+|---|---|---|
+| `ADMIN_SESSION_SECRET` | hamma admin chiqib ketadi; 2FA sirlari ochilmaydi (qayta ulash kerak) | `fly secrets set` → deploy |
+| `INTEGRATION_ENCRYPTION_KEY` | panelga kiritilgan maxfiy kalitlar qayta kiritiladi | yangi qiymat → `/admin/integrations` da kalitlarni qayta saqlash |
+| `MESSAGE_LINK_SECRET` | yuborilgan SMS'dagi STOP va `/r/` havolalari ishlamay qoladi | **almashtirmang**; faqat sizib chiqsa |
+| `LOYALTY_SECRET` | ochiq SMS kodlari va 30 daqiqalik tokenlar bekor | istalgan vaqt |
+| `BOT_API_KEY` | bot va sayt bir vaqtda yangilanadi | ikkala app'ga bir xil qiymat, ketma-ket deploy |
+| `CRON_SECRET`, `EMAIL_TOKEN_SECRET` | tashqi cron / ochiq email havolalari | yangi qiymat → deploy |
+
+`ci-prepare.sh` ichki kalitlarni **faqat yo'q bo'lsa** yaratadi — mavjudini hech
+qachon almashtirmaydi; almashtirish har doim qo'lda va ataylab.
+
+### Tez-tez uchraydigan nosozliklar
+
+- **Eskiz ishlamayapti** (ogohlantirish «yuborilmadi»): `/admin/integrations` →
+  «Test SMS». Navbat yo'qolmaydi — qayta urinishlar `MAX_SEND_ATTEMPTS` gacha,
+  keyin `failed`; Eskiz tiklangach yangi xabarlar ketadi. Timeout bo'lgan SMS
+  **qayta yuborilmaydi** (yetib borgan bo'lishi mumkin) — `/admin/messages` da
+  `eskiz_timeout`.
+- **Telegram (operator) ishlamayapti**: buyurtmalar bazada turadi (`/admin/orders`),
+  buyurtma sahifasida «Telegram xabari yetib bormagan»; ishchi 24 soat ichida 6
+  marta qayta yuboradi.
+- **Ishchi to'xtagan** (`worker.state = stale`): `fly logs -a govita | grep messages`;
+  `MESSAGE_WORKER=off` emasligini tekshiring; vaqtincha
+  `curl -X POST -H "Authorization: Bearer $CRON_SECRET" https://www.govita.uz/api/cron/messages`.
+- **Baza yo'q** (`/api/health` 503): sayt o'rnatilgan katalog bilan sotishda davom
+  etadi, buyurtma bazasiz qabul qilinmaydi (`ORDERS_IN_DB`). `fly mpg status`.
+
 ## Nima o'zgarmadi
 
 - `npm run build` CI'da avvalgidek (standalone faqat `BUILD_STANDALONE=1` da).
-- Build paytida baza yo'q — sahifalar o'rnatilgan katalogdan prerender bo'ladi va
-  runtime'da bazadan yangilanadi (ISR); admin saqlasa darhol yangilanadi.
+- Build paytida baza yo'q — sahifalar o'rnatilgan katalogdan prerender bo'ladi;
+  server ishga tushgach 15 soniyada butun kesh eskirgan deb belgilanadi
+  (`refreshAfterBoot`), keyingi tashrif bazadan chiziladi; admin saqlasa darhol yangilanadi.
+- Image ichida ilova fayllari `root` ga tegishli; `app` foydalanuvchisi faqat
+  `.next/cache` va ISR natijasiga yoza oladi. `BUCKET_NAME` build arg sifatida
+  beriladi (`fly-deploy.yml`) — rasm optimizatori faqat shu bucket'dan oladi.
 - Marketing cron'i (`vercel.json`) backend deploy qilinmaguncha baribir hech narsa
   qilmaydi; backend chiqqanda Fly scheduled machine bilan ulanadi.

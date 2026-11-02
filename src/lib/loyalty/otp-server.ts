@@ -34,14 +34,27 @@ export const CODES_PER_PHONE_HOUR = 3;
 export type OtpRequestResult = { ok: true } | { ok: false; error: "no_sms" | "phone_limit" | "no_balance" | "failed" };
 
 const OTP_TEXT = {
-  uz: (code: string) => `Go Vita: ballarni ishlatish kodi ${code}. 5 daqiqa amal qiladi. Kodni hech kimga aytmang.`,
-  ru: (code: string) => `Go Vita: код для списания баллов ${code}. Действует 5 минут. Никому его не сообщайте.`,
+  redeem: {
+    uz: (code: string) => `Go Vita: ballarni ishlatish kodi ${code}. 5 daqiqa amal qiladi. Kodni hech kimga aytmang.`,
+    ru: (code: string) => `Go Vita: код для списания баллов ${code}. Действует 5 минут. Никому его не сообщайте.`,
+  },
+  verify: {
+    uz: (code: string) => `Go Vita: telefonni tasdiqlash kodi ${code}. 5 daqiqa amal qiladi. Kodni hech kimga aytmang.`,
+    ru: (code: string) => `Go Vita: код подтверждения телефона ${code}. Действует 5 минут. Никому его не сообщайте.`,
+  },
 };
 
-export async function requestRedeemCode(phone9: string, locale: "uz" | "ru", now = new Date()): Promise<OtpRequestResult> {
+/*
+  `redeem` — spending points (needs a balance). `verify` — proving the phone
+  for the first-order and referral discounts (lib/promo/server.ts →
+  phoneProven); same code, same limits, same token.
+*/
+export type OtpPurpose = "redeem" | "verify";
+
+export async function requestRedeemCode(phone9: string, locale: "uz" | "ru", now = new Date(), purpose: OtpPurpose = "redeem"): Promise<OtpRequestResult> {
   const sms = await resolveSmsProvider().catch(() => null);
   if (!sms?.provider) return { ok: false, error: "no_sms" };
-  if ((await pointsBalance(phone9, now)) <= 0) return { ok: false, error: "no_balance" };
+  if (purpose === "redeem" && (await pointsBalance(phone9, now)) <= 0) return { ok: false, error: "no_balance" };
   const db = getDb();
   const code = generateOtp(randomInt);
   const sent = await db.transaction(async (tx) => {
@@ -55,7 +68,7 @@ export async function requestRedeemCode(phone9: string, locale: "uz" | "ru", now
     return true;
   });
   if (!sent) return { ok: false, error: "phone_limit" };
-  const text = prepareSmsText(OTP_TEXT[locale](code), { transliterate: sms.transliterate });
+  const text = prepareSmsText(OTP_TEXT[purpose][locale](code), { transliterate: sms.transliterate });
   const result = await sms.provider.send(`+998${phone9}`, text).catch((err: Error) => ({ ok: false as const, retryable: false, error: err.message }));
   if (!result.ok) {
     console.error(`[loyalty] code SMS to ${redactPhone(phone9)} failed:`, result.error);

@@ -29,6 +29,8 @@ const GUESS_REASONS = new Set<PromoReason>(["not_found", "invalid_format"]);
 const inputSchema = z.object({
   code: z.string().trim().max(40).optional(),
   phone: z.string().trim().max(20).optional(),
+  /** The SMS-code proof of the phone (confirmPhoneCode); without it no first-order or referral discount is promised. */
+  phoneToken: z.string().max(400).optional(),
   locale: z.enum(["ru", "uz"]),
   items: z
     .array(
@@ -58,7 +60,7 @@ export async function checkCartPromo(input: CartPromoInput): Promise<CartPromoQu
   if (!ORDERS_IN_DB) return { ok: false, error: "unavailable" };
   const parsed = inputSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "invalid" };
-  const { code, phone, locale, items } = parsed.data;
+  const { code, phone, phoneToken, locale, items } = parsed.data;
 
   const ip = clientIp(await headers());
   if (!withinRateLimit("promo-check", ip, CHECK_RATE) || (code && rateLimitSpent("promo-miss", ip, MISS_RATE))) {
@@ -76,7 +78,7 @@ export async function checkCartPromo(input: CartPromoInput): Promise<CartPromoQu
       .filter((i) => price.has(i.slug))
       .map((i) => ({ slug: i.slug, price: price.get(i.slug)!, quantity: i.quantity, upsellDiscountPercent: i.upsellDiscountPercent, subscription: i.subscription }));
 
-    const quote = await quoteDiscounts({ lines, promotions, code: code || null, phone: phone || null });
+    const quote = await quoteDiscounts({ lines, promotions, code: code || null, phone: phone || null, phoneToken: phoneToken || null });
     if (quote.promo && !quote.promo.ok && GUESS_REASONS.has(quote.promo.reason)) withinRateLimit("promo-miss", ip, MISS_RATE);
     const promo = !quote.promo
       ? null
