@@ -281,6 +281,25 @@ async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean
   return { status: "sent", text: body, botJobId };
 }
 
+let stopping = false;
+
+/**
+ * The server is shutting down (deploy, scale-down): finish the message in
+ * hand, hand the rest of the batch back. A row left in 'sending' is never
+ * resent — it may have gone out — so a deploy in the middle of a batch used
+ * to fail up to 29 messages that had not been tried at all.
+ */
+export function stopDraining() {
+  stopping = true;
+}
+
+async function release(ids: number[]) {
+  if (ids.length === 0) return;
+  await getDb().execute(sql`
+    update outbound_messages set status = 'pending', attempts = greatest(attempts - 1, 0), claimed_at = null
+    where status = 'sending' and id in (${sql.join(ids.map((id) => sql`${id}`), sql`, `)})`);
+}
+
 /**
  * Sends what is due. Safe to call from several places at once (the
  * in-process timer, the cron endpoint, a second machine): only one claims at
@@ -324,7 +343,11 @@ export async function drainOutbox(now = new Date(), limit = 30): Promise<DrainRe
   const sms = needsSms ? await resolveSmsProvider().catch(() => null) : null;
   const clubEnabled = claimed.some((m) => m.channel === "telegram") ? Boolean((await getClubConfig().catch(() => null))?.enabled) : false;
 
-  for (const m of claimed) {
+  for (const [i, m] of claimed.entries()) {
+    if (stopping) {
+      await release(claimed.slice(i).map((r) => r.id)).catch((err: Error) => console.error("[messages] release on shutdown failed:", err.message));
+      break;
+    }
     let outcome: Outcome;
     try {
       outcome = await deliver(m, sms, clubEnabled);

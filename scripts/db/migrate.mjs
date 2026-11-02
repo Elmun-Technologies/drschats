@@ -3,6 +3,7 @@
   Runs before `next build` (Vercel) or as Fly's release_command; without
   DATABASE_URL it does nothing, so CI and a database-less build are unchanged.
 */
+import { createHash } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import postgres from "postgres";
@@ -19,6 +20,8 @@ if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production") {
 }
 
 const dir = path.resolve("db/migrations");
+// Line endings do not count: a checkout on Windows must not look like an edit.
+const checksum = (text) => createHash("sha256").update(text.replace(/\r\n/g, "\n")).digest("hex");
 // prepare: false — the URL may point at a transaction pooler (PgBouncer),
 // where a prepared statement does not survive to the next query.
 const sql = postgres(url, { max: 1, prepare: false, onnotice: () => {} });
@@ -37,14 +40,32 @@ try {
   const applied = await sql.begin(async (tx) => {
     await tx`select pg_advisory_xact_lock(${LOCK_ID})`;
     await tx`create table if not exists schema_migrations (name text primary key, applied_at timestamptz not null default now())`;
-    const done = new Set((await tx`select name from schema_migrations`).map((r) => r.name));
+    await tx`alter table schema_migrations add column if not exists checksum text`;
+    const done = new Map((await tx`select name, checksum from schema_migrations`).map((r) => [r.name, r.checksum]));
     const files = (await readdir(dir)).filter((f) => f.endsWith(".sql")).sort();
     const ran = [];
+    const edited = [];
     for (const file of files) {
-      if (done.has(file)) continue;
-      await tx.unsafe(await readFile(path.join(dir, file), "utf8"));
-      await tx`insert into schema_migrations (name) values (${file})`;
+      const text = await readFile(path.join(dir, file), "utf8");
+      const sum = checksum(text);
+      if (done.has(file)) {
+        const stored = done.get(file);
+        // Rows from before checksums existed take the file as it is now.
+        if (stored == null) await tx`update schema_migrations set checksum = ${sum} where name = ${file}`;
+        else if (stored !== sum) edited.push(file);
+        continue;
+      }
+      await tx.unsafe(text);
+      await tx`insert into schema_migrations (name, checksum) values (${file}, ${sum})`;
       ran.push(file);
+    }
+    /*
+      An applied migration never runs again, so editing it changes nothing in
+      a database that already has it and something in a fresh one: the two
+      schemas drift apart without a trace. Refuse, and say which file.
+    */
+    if (edited.length) {
+      throw new Error(`applied migration(s) changed after they ran: ${edited.join(", ")} — put the change in a new 00NN_*.sql file instead`);
     }
     return ran;
   });

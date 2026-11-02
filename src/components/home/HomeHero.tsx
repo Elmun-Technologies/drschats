@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { isAllowedImageUrl } from "@/lib/security/csp";
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
@@ -177,8 +178,13 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
   );
 }
 
-/* Remote pictures (Tigris uploads) may sit on hosts the optimiser does not proxy; the site's own files go through it. */
-const isLocal = (src: string) => src.startsWith("/") && !src.startsWith("//");
+/*
+  Admin uploads (Tigris) are on a host the optimiser proxies, so they get the
+  same AVIF/WebP and sizing as the site's own files — a 5 MB hero upload used
+  to reach phones as-is and was the LCP image. Only a URL outside the allowed
+  hosts (which the admin form refuses anyway) is passed through untouched.
+*/
+const isLocal = (src: string) => isAllowedImageUrl(src);
 
 /*
   "Haftaning taklifi": the catalogue's real discounts, deepest first. The arrows

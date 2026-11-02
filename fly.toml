@@ -1,6 +1,10 @@
 # Go Vita storefront on Fly.io — setup and secrets: docs/DEPLOY-FLY.md
 app = "govita"
 primary_region = "fra"
+# Time to finish in-flight requests and hand an unsent message batch back
+# (lib/messaging/outbox.ts stopDraining) before the machine is killed.
+kill_signal = "SIGTERM"
+kill_timeout = "30s"
 
 [build]
   dockerfile = "Dockerfile"

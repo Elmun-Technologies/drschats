@@ -1,5 +1,5 @@
 import { ensureDefaultFlows, runFlows, type FlowRunResult } from "@/lib/flows/engine";
-import { drainOutbox, type DrainResult } from "./outbox";
+import { drainOutbox, stopDraining, type DrainResult } from "./outbox";
 import { expirePoints } from "@/lib/loyalty/server";
 import { notifyStartedDeals } from "@/lib/merch/deal-notify";
 import { sweepBotCarts } from "@/lib/bot/abandoned";
@@ -103,5 +103,12 @@ export function startMessageWorker(): void {
     .then((n) => { if (n) console.log(`[flows] ${n} playbook flows created (inactive)`); })
     .catch((err: Error) => console.error("[flows] seed skipped:", err.message));
   setTimeout(tick, 20_000).unref?.();
+  // Next closes the server on these and then exits; the batch in hand stops after its current message.
+  const stop = () => {
+    clearInterval(timer);
+    stopDraining();
+  };
+  process.once("SIGTERM", stop);
+  process.once("SIGINT", stop);
   console.log("[messages] worker started (every 60s, flows every 5 min)");
 }
