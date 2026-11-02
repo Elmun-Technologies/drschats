@@ -9,7 +9,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: L
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "shop.compare" });
   // One visitor's picks are not a search result.
-  return { ...buildPageMetadata({ locale, path: "/compare", title: `${t("title")} — Go Vita`, description: t("note") }), robots: { index: false, follow: true } };
+  return { ...buildPageMetadata({ locale, noindex: true, path: "/compare", title: t("title"), description: t("note") }), robots: { index: false, follow: true } };
 }
 
 export default async function ComparePage({ params }: { params: Promise<{ locale: Locale }> }) {

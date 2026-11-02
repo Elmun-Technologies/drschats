@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import {
   EmailPreferencesView,
   type PreferenceStatus,
@@ -28,8 +28,9 @@ export async function generateMetadata({
   return {
     ...buildPageMetadata({
       locale,
+      noindex: true,
       path: "/email/preferences",
-      title: `${t("title")} — ${SITE_NAME}`,
+      title: t("title"),
       description: t("manage.description"),
     }),
     // Carries a signed token in the query string; nothing here should ever be

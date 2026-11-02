@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import * as React from "react";
 import { renderToStaticMarkup } from "react-dom/server";
-import { JsonLd, articleGraph, priceValidUntil, productGraph, serializeJsonLd } from "./jsonld";
+import { JsonLd, articleGraph, breadcrumbLd, collectionLd, localBusinessLd, organizationNode, priceValidUntil, productGraph, serializeJsonLd } from "./jsonld";
 import { SITE_URL } from "./metadata";
 import { COMMERCE } from "@/lib/config/commerce";
 import type { Product } from "@/lib/shopflow/types";
@@ -112,5 +112,42 @@ describe("articleGraph", () => {
   it("claims no dateModified without a real edit date", () => {
     expect(page(articleGraph({ ...base, author: null }))).not.toHaveProperty("dateModified");
     expect(page(articleGraph({ ...base, author: null, dateModified: "2026-06-01" })).dateModified).toBe("2026-06-01");
+  });
+});
+
+describe("breadcrumbLd", () => {
+  it("starts the trail at the home page of the URL's locale", () => {
+    const ld = breadcrumbLd([{ name: "Kafolat", url: `${SITE_URL}/uz/guarantee` }]);
+    expect(ld.itemListElement.map((i) => i.name)).toEqual(["Bosh sahifa", "Kafolat"]);
+    expect(ld.itemListElement[0].item).toBe(`${SITE_URL}/uz`);
+  });
+
+  it("does not repeat a home crumb the caller already gave", () => {
+    const ld = breadcrumbLd([
+      { name: "Главная", url: `${SITE_URL}/ru` },
+      { name: "Каталог", url: `${SITE_URL}/ru/products` },
+    ]);
+    expect(ld.itemListElement).toHaveLength(2);
+  });
+});
+
+describe("shared nodes", () => {
+  it("Organization and Store name the same profiles", () => {
+    expect(localBusinessLd("uz").sameAs).toEqual(organizationNode("uz").sameAs);
+  });
+
+  it("states Tashkent and the regions as two shipping promises", () => {
+    const shipping = offerOf(productGraph({ product, locale: "uz", reviewer: null, author: null })).shippingDetails as {
+      shippingDestination: { addressRegion?: string };
+      deliveryTime: { transitTime: { maxValue: number } };
+    }[];
+    expect(shipping).toHaveLength(2);
+    expect(shipping[0].shippingDestination.addressRegion).toBe("UZ-TK");
+    expect(shipping[0].deliveryTime.transitTime.maxValue).toBeLessThan(shipping[1].deliveryTime.transitTime.maxValue);
+  });
+
+  it("collection pages hang off a WebSite node that is actually there", () => {
+    const ld = collectionLd({ name: "X", url: `${SITE_URL}/uz/products/x`, products: [] });
+    expect(ld.isPartOf).toMatchObject({ "@type": "WebSite", "@id": `${SITE_URL}/#website` });
   });
 });

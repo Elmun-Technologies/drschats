@@ -9,7 +9,6 @@ describe("robots.txt", () => {
       [
         "User-Agent: *",
         "Allow: /",
-        "Disallow: /*/cart",
         "Disallow: /*/checkout",
         "Disallow: /*/stop/",
         "Disallow: /studio",
@@ -20,6 +19,10 @@ describe("robots.txt", () => {
       ].join("\n"),
     );
     expect(txt).toMatch(/\n\nSitemap: https:\/\/www\.govita\.uz\/sitemap\.xml\n$/);
+  });
+
+  it("lets crawlers fetch /cart, so they can read its noindex", () => {
+    expect(txt).not.toContain("Disallow: /*/cart");
   });
 
   it("tells Yandex the ad and analytics markers do not change a page", () => {

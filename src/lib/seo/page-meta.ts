@@ -57,12 +57,18 @@ async function regionsLabel(locale: Locale) {
 export const STATIC_PAGE_KEYS = [
   "about", "contact", "delivery", "payment", "guarantee", "requisites", "licenses",
   "blog", "brands", "loyalty", "reviews", "whereToBuy", "offer", "sale",
-  "goals", "symptoms", "vitamins", "programs", "quiz", "ingredients", "partners",
+  "goals", "symptoms", "vitamins", "programs", "quiz", "ingredients", "partners", "privacy",
 ] as const;
 
 export type StaticPageKey = (typeof STATIC_PAGE_KEYS)[number];
 
-export async function staticPageMetadata(locale: Locale, key: StaticPageKey, path: string): Promise<Metadata> {
+/** `noindex`: a page with nothing of its own to show yet (lib/seo/indexable.ts). */
+export async function staticPageMetadata(
+  locale: Locale,
+  key: StaticPageKey,
+  path: string,
+  options: { noindex?: boolean } = {},
+): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta.pages" });
   const values = { ...(await delivery()), regions: await regionsLabel(locale) };
   return buildPageMetadata({
@@ -70,6 +76,7 @@ export async function staticPageMetadata(locale: Locale, key: StaticPageKey, pat
     path,
     title: t(`${key}.title`),
     description: clampDescription(t(`${key}.description`, values)),
+    noindex: options.noindex,
   });
 }
 
@@ -100,6 +107,15 @@ function listingFacts(products: Product[], locale: Locale) {
   return { count: String(products.length), min: formatMoney(min, locale) };
 }
 
+/** "… | Go Vita" → "… — 2-sahifa | Go Vita": page 2 of a shelf is its own result, not a duplicate title. */
+export async function pagedTitle(locale: Locale, title: string, page: number | null): Promise<string> {
+  if (!page) return title;
+  const t = await getTranslations({ locale, namespace: "meta.seo" });
+  const label = t("page", { page: String(page) });
+  const cut = title.lastIndexOf(" | ");
+  return cut > 0 ? `${title.slice(0, cut)} — ${label}${title.slice(cut)}` : `${title} — ${label}`;
+}
+
 export async function listingMetadata({
   locale,
   kind,
@@ -108,6 +124,7 @@ export async function listingMetadata({
   products,
   fallbackDescription,
   filtered,
+  page = null,
 }: {
   locale: Locale;
   kind: "category" | "brand";
@@ -115,8 +132,10 @@ export async function listingMetadata({
   path: string;
   products: Product[];
   fallbackDescription: string;
-  /** Sorted, filtered or paged views are the same shelf; only the clean URL is indexed. */
+  /** Sorted, filtered or searched views are the same shelf; only the clean URL is indexed. */
   filtered: boolean;
+  /** A plain `?page=N` (lib/seo/query-params.ts): indexed under its own canonical. */
+  page?: number | null;
 }): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta.seo" });
   const description =
@@ -125,10 +144,10 @@ export async function listingMetadata({
       : fallbackDescription;
   return buildPageMetadata({
     locale,
-    path,
-    title: t(kind, { name }),
+    path: page ? `${path}?page=${page}` : path,
+    title: await pagedTitle(locale, t(kind, { name }), page),
     description: clampDescription(description),
-    noindex: filtered,
+    noindex: filtered && !page,
   });
 }
 

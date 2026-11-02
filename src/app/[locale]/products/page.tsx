@@ -6,7 +6,8 @@ import { ShopView } from "@/components/shop/ShopView";
 import { isCatalogSort } from "@/lib/shop/catalog-sort";
 import { parseFilters, type FilterParams } from "@/lib/shop/catalog-filters";
 import { firstParam } from "@/lib/search-params";
-import { CATALOG_VARIANT_PARAMS, isVariantQuery } from "@/lib/seo/query-params";
+import { CATALOG_VARIANT_PARAMS, isVariantQuery, plainPageNumber } from "@/lib/seo/query-params";
+import { pagedTitle } from "@/lib/seo/page-meta";
 
 export const revalidate = 300;
 
@@ -20,12 +21,13 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const [{ locale }, query] = await Promise.all([params, searchParams]);
   const t = await getTranslations({ locale, namespace: "meta" });
+  const page = plainPageNumber(query, CATALOG_VARIANT_PARAMS);
   return buildPageMetadata({
     locale,
-    path: "/products",
-    title: t("shopTitle"),
+    path: page ? `/products?page=${page}` : "/products",
+    title: await pagedTitle(locale, t("shopTitle"), page),
     description: t("shopDescription"),
-    noindex: isVariantQuery(query, CATALOG_VARIANT_PARAMS),
+    noindex: !page && isVariantQuery(query, CATALOG_VARIANT_PARAMS),
   });
 }
 

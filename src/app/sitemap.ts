@@ -15,7 +15,8 @@ import { getAllProducts } from "@/lib/shop/all-products";
 import type { Product } from "@/lib/shopflow/types";
 import { brandOf } from "@/lib/catalog/product-facts";
 import { getCustomerStories } from "@/lib/content/stories.sanity";
-import { BRAND } from "@/lib/brand";
+import { OFFER_PUBLISHED, hasLicence, hasReviews, loyaltyProgrammeLive } from "@/lib/seo/indexable";
+import { getLoyaltyRules } from "@/lib/loyalty/settings";
 
 /*
   Built per request, not at build time: the Docker build has no database, so a
@@ -38,12 +39,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // An empty shelf is a page with nothing on it — listed once it has a product.
   const categoryPaths = categories.filter(isStocked).map((c) => `/products/${c.slug}`);
-  const [blogSlugs, expertSlugs, healthTopics, programSlugs, stories] = await Promise.all([
+  const [blogSlugs, expertSlugs, healthTopics, programSlugs, stories, loyaltyRules] = await Promise.all([
     listArticleSlugs(),
     listExpertSlugs(),
     getHealthTopicIndex(),
     getProgramSlugs(),
     getCustomerStories("uz").catch(() => []),
+    getLoyaltyRules(),
   ]);
 
   // A topic family with nothing published is an empty page; submitting it is
@@ -53,23 +55,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const hasNews = (news.raw("items") as unknown[]).length > 0;
 
   /*
-    Two pages that only show their honest empty state today. /reviews renders
-    "no reviews yet" until a product carries a real review or a customer story
-    is published (the same two lists the page renders); /licenses is a list of
-    "on request" lines until BRAND.legal.licence holds the actual number.
-    Both stay linked in the footer — they are just not worth a crawl yet.
+    Pages that only show their honest empty state today stay linked in the
+    footer but are not submitted; their metadata says noindex from the same
+    predicates (lib/seo/indexable.ts).
   */
-  const hasReviews = stories.length > 0 || allProducts.items.some((p) => (p.reviews?.length ?? 0) > 0);
-  const hasLicence = Boolean(BRAND.legal.licence);
+  const optional = [
+    ...(hasLicence() ? ["/licenses"] : []),
+    ...(hasReviews(allProducts.items, stories.length) ? ["/reviews"] : []),
+    ...(OFFER_PUBLISHED ? ["/offer"] : []),
+    ...(loyaltyProgrammeLive(loyaltyRules) ? ["/loyalty"] : []),
+  ];
 
   const populatedFamilies = new Set(healthTopics.map((t) => TOPIC_BASE_PATH[t.kind]));
 
   const staticPaths = [
     "", "/products", "/about", "/blog", "/contact", "/delivery",
-    "/loyalty", "/ingredients", "/brands", "/payment", "/guarantee",
-    "/requisites", "/quiz", "/programs", "/where-to-buy", "/partners", "/sale",
-    ...(hasLicence ? ["/licenses"] : []),
-    ...(hasReviews ? ["/reviews"] : []),
+    "/ingredients", "/brands", "/payment", "/guarantee",
+    "/requisites", "/quiz", "/programs", "/where-to-buy", "/partners", "/sale", "/privacy",
+    ...optional,
     ...(hasNews ? ["/news"] : []),
     ...(expertSlugs.length > 0 ? ["/experts"] : []),
     ...TOPIC_KINDS.map((kind) => TOPIC_BASE_PATH[kind]).filter((p) => populatedFamilies.has(p)),
@@ -81,8 +84,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   );
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);
   const articles = await getArticles("uz");
-  // lastmod only where the date is real; a "now" on every URL teaches crawlers to ignore it.
-  const lastModified = new Map(articles.map((a) => [`/blog/${a.slug}`, new Date(a.date)]));
+  /*
+    lastmod only where the date is real; a "now" on every URL teaches crawlers
+    to ignore it. Products carry products.updated_at when the catalogue is the
+    database; the built-in catalogue has no such date and claims none.
+  */
+  const lastModified = new Map<string, Date>([
+    ...articles.map((a): [string, Date] => [`/blog/${a.slug}`, new Date(a.date)]),
+    ...allProducts.items
+      .filter((p) => p.updatedAt && Number.isFinite(Date.parse(p.updatedAt)))
+      .map((p): [string, Date] => [`/product/${p.slug}`, new Date(p.updatedAt!)]),
+  ]);
   const images = new Map<string, string[]>(
     allProducts.items.map((p) => [`/product/${p.slug}`, p.images.slice(0, 3).map((i) => absoluteUrl(i.url))]),
   );

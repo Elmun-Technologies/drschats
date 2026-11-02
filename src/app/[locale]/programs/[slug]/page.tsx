@@ -5,7 +5,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { getProgram } from "@/lib/content/programs.sanity";
 import { loadProgramPage } from "@/lib/content/program-loader";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
-import { JsonLd, breadcrumbLd, faqLd } from "@/lib/seo/jsonld";
+import { JsonLd, breadcrumbLd, collectionLd, faqLd } from "@/lib/seo/jsonld";
 import { ProgramTemplate } from "@/components/program/ProgramTemplate";
 import { clampDescription, seoTitle } from "@/lib/seo/page-meta";
 
@@ -56,6 +56,15 @@ export default async function ProgramPage({
           { name: data.program.name, url: `${SITE_URL}/${locale}/programs/${slug}` },
         ])}
       />
+      {data.products.length > 0 && (
+        <JsonLd
+          data={collectionLd({
+            name: data.program.name,
+            url: `${SITE_URL}/${locale}/programs/${slug}`,
+            products: data.products,
+          })}
+        />
+      )}
       {data.program.faq.length > 0 && <JsonLd data={faqLd(data.program.faq)} />}
       <ProgramTemplate data={data} locale={locale} />
     </>

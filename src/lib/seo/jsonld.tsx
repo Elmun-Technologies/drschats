@@ -105,6 +105,9 @@ const ORG_DESCRIPTION: Record<string, string> = {
   ru: "Официальный импорт витаминов, биологически активных добавок и медицинских товаров в Узбекистан.",
 };
 
+/** One list for Organization and Store: two different sets read as two different entities. */
+export const SAME_AS = [BRAND.social.telegram, BRAND.social.instagram, BRAND.social.facebook];
+
 /** The registered address in the page's language: the Russian pages had it in Latin. */
 function postalAddress(locale: Locale) {
   const ru = locale === "ru" && BRAND.legal.addressRu;
@@ -136,7 +139,7 @@ export function organizationNode(locale: Locale = "uz") {
       areaServed: "UZ",
       availableLanguage: ["Uzbek", "Russian"],
     },
-    sameAs: [BRAND.social.telegram, BRAND.social.instagram, BRAND.social.facebook],
+    sameAs: SAME_AS,
   };
 }
 
@@ -172,6 +175,37 @@ export function merchantReturnPolicyNode(locale: Locale) {
     refundType: "https://schema.org/FullRefund",
     merchantReturnLink: `${SITE_URL}/${locale}/guarantee`,
   };
+}
+
+/*
+  Two promises, as /delivery makes them: Tashkent within
+  COMMERCE.delivery.tashkent.hours (0–1 day in transit), the rest of the
+  country in 1–3 days. One country-wide 1–3 day node understated the city,
+  where most orders go. Tashkent city is UZ-TK in ISO 3166-2.
+*/
+export function shippingDetailsNodes(price: number, pricing: Pick<PricingRules, "freeShippingOver" | "shippingFee">) {
+  const rate = {
+    "@type": "MonetaryAmount",
+    // What one unit actually costs to ship: free only above the threshold.
+    value: price >= pricing.freeShippingOver ? 0 : pricing.shippingFee,
+    currency: "UZS",
+  };
+  const days = (min: number, max: number) => ({ "@type": "QuantitativeValue", minValue: min, maxValue: max, unitCode: "DAY" });
+  const cityDays = Math.max(1, Math.ceil(COMMERCE.delivery.tashkent.hours / 24));
+  return [
+    {
+      "@type": "OfferShippingDetails",
+      shippingRate: rate,
+      shippingDestination: { "@type": "DefinedRegion", addressCountry: "UZ", addressRegion: "UZ-TK" },
+      deliveryTime: { "@type": "ShippingDeliveryTime", handlingTime: days(0, 0), transitTime: days(0, cityDays) },
+    },
+    {
+      "@type": "OfferShippingDetails",
+      shippingRate: rate,
+      shippingDestination: { "@type": "DefinedRegion", addressCountry: "UZ" },
+      deliveryTime: { "@type": "ShippingDeliveryTime", handlingTime: days(0, 1), transitTime: days(1, 3) },
+    },
+  ];
 }
 
 /**
@@ -254,24 +288,7 @@ export function productGraph({
           url,
           seller: { "@id": `${SITE_URL}/#organization` },
           hasMerchantReturnPolicy: merchantReturnPolicyNode(locale),
-          shippingDetails: {
-            "@type": "OfferShippingDetails",
-            shippingRate: {
-              "@type": "MonetaryAmount",
-              // What one unit actually costs to ship: free only above the threshold.
-              value: product.price >= pricing.freeShippingOver ? 0 : pricing.shippingFee,
-              currency: "UZS",
-            },
-            shippingDestination: {
-              "@type": "DefinedRegion",
-              addressCountry: "UZ",
-            },
-            deliveryTime: {
-              "@type": "ShippingDeliveryTime",
-              handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
-              transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
-            },
-          },
+          shippingDetails: shippingDetailsNodes(product.price, pricing),
         },
       },
       organizationNode(locale),
@@ -320,10 +337,6 @@ export function articleGraph({
         author: author ? personNode(author) : { "@id": `${SITE_URL}/#organization` },
         ...(reviewer ? { reviewedBy: personNode(reviewer) } : {}),
         publisher: { "@id": `${SITE_URL}/#organization` },
-        speakable: {
-          "@type": "SpeakableSpecification",
-          cssSelector: ["h1", "h2", ".article-excerpt"],
-        },
       },
       organizationNode(locale),
     ],
@@ -356,11 +369,20 @@ export function itemListLd(name: string, items: { name: string; description?: st
   };
 }
 
+const HOME_CRUMB: Record<Locale, string> = { uz: "Bosh sahifa", ru: "Главная" };
+
+/**
+ * The trail always starts at the home page of the URL's locale: a one-item
+ * list ("Kafolat") is not a trail, and Google drops it.
+ */
 export function breadcrumbLd(items: { name: string; url: string }[]) {
+  const locale = (items[0]?.url.slice(SITE_URL.length).split("/")[1] ?? "") as Locale;
+  const home = `${SITE_URL}/${locale}`;
+  const trail = HOME_CRUMB[locale] && items[0]?.url !== home ? [{ name: HOME_CRUMB[locale], url: home }, ...items] : items;
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
-    itemListElement: items.map((it, i) => ({
+    itemListElement: trail.map((it, i) => ({
       "@type": "ListItem",
       position: i + 1,
       name: it.name,
@@ -382,7 +404,8 @@ export function collectionLd({ name, url, products }: { name: string; url: strin
     url,
     name,
     inLanguage: locale,
-    isPartOf: { "@id": `${SITE_URL}/#website` },
+    // Inline, not a bare @id: the WebSite node is only printed on the home page.
+    isPartOf: websiteNode(),
     mainEntity: {
       "@type": "ItemList",
       numberOfItems: products.length,
@@ -396,24 +419,21 @@ export function collectionLd({ name, url, products }: { name: string; url: strin
   };
 }
 
-/** WebSite node with SearchAction — enables Google Sitelinks Search Box. */
+function websiteNode() {
+  return { "@type": "WebSite", "@id": `${SITE_URL}/#website`, url: SITE_URL, name: SITE_NAME };
+}
+
+/*
+  The site name for results. No SearchAction: Google retired the sitelinks
+  search box (2024) and nothing else reads it.
+*/
 export function websiteLd(locale: Locale) {
   return {
     "@context": "https://schema.org",
-    "@type": "WebSite",
-    "@id": `${SITE_URL}/#website`,
-    url: SITE_URL,
-    name: SITE_NAME,
+    ...websiteNode(),
     description: ORG_DESCRIPTION[locale] ?? ORG_DESCRIPTION.uz,
     inLanguage: locales as unknown as string[],
-    potentialAction: {
-      "@type": "SearchAction",
-      target: {
-        "@type": "EntryPoint",
-        urlTemplate: `${SITE_URL}/${locale}/search?q={search_term_string}`,
-      },
-      "query-input": "required name=search_term_string",
-    },
+    publisher: { "@id": `${SITE_URL}/#organization` },
   };
 }
 
@@ -436,7 +456,7 @@ export function localBusinessLd(locale: Locale = "uz") {
       "@type": "Country",
       name: "Uzbekistan",
     },
-    sameAs: [BRAND.social.telegram, BRAND.social.instagram],
+    sameAs: SAME_AS,
     parentOrganization: { "@id": `${SITE_URL}/#organization` },
   };
 }

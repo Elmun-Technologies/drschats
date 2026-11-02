@@ -114,6 +114,7 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     price,
     oldPrice,
     saleEndsAt,
+    ...(p.updatedAt ? { updatedAt: p.updatedAt } : {}),
     currency: "UZS",
     rating: SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
     reviewCount: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,

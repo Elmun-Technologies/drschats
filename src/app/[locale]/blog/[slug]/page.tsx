@@ -44,6 +44,7 @@ export async function generateMetadata({
     description: clampDescription(article.excerpt),
     image: article.image,
     type: "article",
+    publishedTime: article.date,
   });
 }
 

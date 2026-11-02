@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { ProfileView } from "@/components/profile/ProfileView";
 import { getLoyaltyRules } from "@/lib/loyalty/settings";
 
@@ -21,8 +21,9 @@ export async function generateMetadata({
   return {
     ...buildPageMetadata({
       locale,
+      noindex: true,
       path: "/profile",
-      title: `${t("title")} — ${SITE_NAME}`,
+      title: t("title"),
       description: t("subtitle"),
     }),
     robots: { index: false, follow: false },

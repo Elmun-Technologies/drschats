@@ -158,6 +158,7 @@ export interface RawProduct {
   oldPrice?: number;
   /** ISO time the sale ends; after it the product sells at `oldPrice` again. */
   saleEndsAt?: string;
+  updatedAt?: string;
   rating: number;
   reviewCount: number;
   inStock: boolean;

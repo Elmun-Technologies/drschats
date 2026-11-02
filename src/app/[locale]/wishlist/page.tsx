@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getAllProducts } from "@/lib/shop/all-products";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { WishlistView } from "@/components/wishlist/WishlistView";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 
@@ -18,8 +18,9 @@ export async function generateMetadata({
   return {
     ...buildPageMetadata({
       locale,
+      noindex: true,
       path: "/wishlist",
-      title: `${t("title")} — ${SITE_NAME}`,
+      title: t("title"),
       description: t("metaDescription"),
     }),
     // One visitor's saved list is not a search result.

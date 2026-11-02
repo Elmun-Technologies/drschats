@@ -32,6 +32,21 @@ export function isTrackingParam(key: string): boolean {
   return k.startsWith("utm_") || (TRACKING_PARAMS as readonly string[]).includes(k);
 }
 
+/*
+  `?page=N` alone (no sort, filter or search) is indexed with its own
+  canonical: the "Yana N ta" link is the only way a crawler reaches the
+  products past the first 24, and behind noindex those were reachable only
+  through pages search engines are told to drop.
+*/
+export function plainPageNumber(query: RawSearchParams, variantParams: readonly string[]): number | null {
+  const raw = query.page;
+  const value = Array.isArray(raw) ? raw[0] : raw;
+  if (!value || !/^[1-9]\d{0,3}$/.test(value) || Number(value) < 2) return null;
+  const { page: _page, ...rest } = query;
+  void _page;
+  return isVariantQuery(rest, variantParams) ? null : Number(value);
+}
+
 /** True when the query selects a sorted, filtered, searched or paged variant of the page. */
 export function isVariantQuery(query: RawSearchParams, variantParams: readonly string[]): boolean {
   return Object.entries(query).some(([key, value]) => {

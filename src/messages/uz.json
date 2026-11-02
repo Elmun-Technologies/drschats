@@ -172,11 +172,6 @@
         "clinical-nutrition": "Ixtisoslashgan ovqatlanish"
       }
     },
-    "bestsellers": {
-      "title": "Eng koʻp tanlanganlar",
-      "subtitle": "Mijozlarimiz eng koʻp sevadigan mahsulotlar",
-      "eyebrow": "Mashhur"
-    },
     "trust": {
       "title": "Go Vitaʼga nima uchun ishonishadi",
       "stats": {
@@ -398,11 +393,32 @@
         "title": "Bugungi taklif",
         "lead": "Bitta mahsulot — cheklangan vaqtga maxsus narx. Muddat tugagach narx odatiy holiga qaytadi.",
         "save": "Tejaysiz: {amount}"
+      },
+      "intro": {
+        "title": "Go Vita — vitaminlar va BAD internet-doʻkoni",
+        "lead": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — rasmiy import. Toshkent boʻylab {hours} soatda va butun Oʻzbekiston boʻylab yetkazib beramiz.",
+        "goals": "Maqsad boʻyicha tanlang",
+        "goalsAll": "Barcha maqsadlar"
+      },
+      "lp": {
+        "eyebrowSale": "Aksiya",
+        "saleTitle": "Chegirmadagi vitaminlar va BAD",
+        "saleLead": "Narxi haqiqatan tushgan mahsulotlar: eski va yangi narx katalogdagi bilan bir xil.",
+        "eyebrowCategory": "Katalog boʻlimi",
+        "categoryLead": "«{name}» boʻlimidagi mahsulotlar — Oʻzbekistonga rasmiy import.",
+        "eyebrowBrand": "Brend",
+        "brandLead": "{brand} mahsulotlari — Oʻzbekistonga rasmiy import.",
+        "eyebrowProduct": "Mahsulot",
+        "productsTitle": "Shu toʻplamdagi mahsulotlar",
+        "moreTitle": "Shu boʻlimdan",
+        "all": "Barchasini koʻrish",
+        "details": "Mahsulot haqida batafsil"
       }
     }
   },
   "product": {
     "breadcrumbHome": "Bosh sahifa",
+    "breadcrumb": "Navigatsiya yoʻli",
     "highlights": "Asosiy afzalliklar",
     "benefits": "Foydalari",
     "ingredients": "Tarkibi",
@@ -566,6 +582,9 @@
       "more": "Yana {count} ta koʻrsatish",
       "seoTitle": "{name} — Toshkentda xarid qilish",
       "seoText": "Go Vita katalogida «{name}» boʻlimida {count} ta mahsulot. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan. Toshkent boʻylab Yandex Dostavka {hours} soat ichida, viloyatlarga BTS yetkazadi, {free} soʻmdan ortiq buyurtmalar bepul.",
+      "catalogSeoTitle": "Vitaminlar va BAD katalogi",
+      "catalogSeoText": "Go Vita katalogida {count} ta mahsulot: vitaminlar, minerallar, biologik faol qoʻshimchalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan, narxlar soʻmda. Toshkent boʻylab {hours} soat ichida yetkazamiz, {free} soʻmdan ortiq buyurtmalar bepul.",
+      "catalogSeoGoals": "Nimani tanlashni bilmasangiz, sogʻliq maqsadidan boshlang",
       "categories": "Boʻlimlar",
       "priceMin": "Eng past narx",
       "priceMax": "Eng yuqori narx",
@@ -1024,7 +1043,8 @@
       "blogCategory": "{name} — vitaminlar va sogʻliq haqida maqolalar | Go Vita",
       "blogCategoryDescription": "«{name}» boʻlimidagi maqolalar: vitaminlar, minerallar va BAD haqida tushunarli tushuntirishlar, tanlash va qabul qilish boʻyicha maslahatlar.",
       "blogArticle": "{title} | Go Vita blogi",
-      "regions": "1–3 kun"
+      "regions": "1–3 kun",
+      "page": "{page}-sahifa"
     },
     "pages": {
       "about": {
@@ -1110,6 +1130,10 @@
       "partners": {
         "title": "Ulgurji hamkorlik — dorixonalar va distributorlar uchun | Go Vita",
         "description": "Dorixonalar, distributorlar va korporativ mijozlar uchun Go Vita bilan hamkorlik: ulgurji narx, hudud va toʻlov muddati alohida shartnomada. Ariza qoldiring."
+      },
+      "privacy": {
+        "title": "Maxfiylik siyosati — shaxsiy maʼlumotlar himoyasi | Go Vita",
+        "description": "Go Vita qanday maʼlumotlarni toʻplaydi, ulardan nima uchun foydalanadi va qanday himoya qiladi: buyurtma, yetkazib berish, analitika va cookie fayllari."
       }
     }
   },
@@ -2037,6 +2061,8 @@
     "keyIngredients": "Asosiy nutriyentlar",
     "allVitamins": "Barcha vitaminlar",
     "relatedProducts": "Tegishli mahsulotlar",
+    "shelfLink": "«{name}» boʻlimi",
+    "moreProducts": "Yana mahsulotlar",
     "relatedTopics": "Shuningdek qarang",
     "topicIndex": {
       "takeQuiz": "Testni boshlash",

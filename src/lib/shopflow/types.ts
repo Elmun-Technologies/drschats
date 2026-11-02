@@ -66,6 +66,8 @@ export interface Product {
   oldPrice?: Money;
   /** ISO time a running sale ends (the countdown); absent when the sale has no end date. */
   saleEndsAt?: string;
+  /** ISO time the row last changed (database catalogue only) — the sitemap's lastmod. */
+  updatedAt?: string;
   currency: Currency;
   rating: number;
   reviewCount: number;

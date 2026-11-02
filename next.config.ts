@@ -21,7 +21,8 @@ if (process.env.VERCEL_ENV === "production" || process.env.GOVITA_PRODUCTION ===
   One host for search engines: the bare domain answers with a permanent
   redirect to the www host the canonical tags already name. Derived from
   NEXT_PUBLIC_SITE_URL, so a deploy without a www host gets no rule at all.
-  *.fly.dev is left alone — the team opens /admin/setup there.
+  *.fly.dev is not redirected — the team opens /admin/setup there — but it is
+  kept out of the index by the X-Robots-Tag rule in headers() below.
 */
 function apexRedirects() {
   const site = new URL(process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.govita.uz");
@@ -35,6 +36,33 @@ function apexRedirects() {
     },
   ];
 }
+
+/*
+  One permanent hop for the two URLs a crawler meets without a locale:
+  - `/` → `/uz`: next-intl answered with a 307 picked per visitor, which search
+    engines treat as temporary and keep `/` as the indexed URL;
+  - `/en/...`: there is no English site, and next-intl prefixed it to
+    `/uz/en/...` (a 307 into a 404). Old or mistyped links land on the same
+    path in Uzbek instead.
+*/
+function localeRedirects() {
+  return [
+    { source: "/", destination: "/uz", permanent: true },
+    { source: "/en", destination: "/uz", permanent: true },
+    { source: "/en/:path*", destination: "/uz/:path*", permanent: true },
+  ];
+}
+
+/*
+  The Fly app host (govita.fly.dev) serves the whole shop and stays reachable
+  for /admin/setup. Search engines get noindex there for everything but the
+  admin (which is not crawlable anyway), so the shop has one indexed host.
+*/
+const FLY_HOST_NOINDEX = {
+  source: "/((?!admin).*)",
+  has: [{ type: "host" as const, value: ".*\\.fly\\.dev" }],
+  headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+};
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -63,10 +91,10 @@ const nextConfig: NextConfig = {
     serverActions: { bodySizeLimit: "6mb" },
   },
   async redirects() {
-    return apexRedirects();
+    return [...apexRedirects(), ...localeRedirects()];
   },
   async headers() {
-    const routes = [
+    const routes: { source: string; has?: typeof FLY_HOST_NOINDEX.has; headers: { key: string; value: string }[] }[] = [
       {
         source: "/((?!studio|admin/content/studio).*)",
         headers: [
@@ -121,6 +149,8 @@ const nextConfig: NextConfig = {
       source: "/fonts/:path*",
       headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
     });
+
+    routes.push(FLY_HOST_NOINDEX);
 
     return routes;
   },
