@@ -44,7 +44,7 @@ export default async function CampaignLanding({
               {t("cta.title")}
             </h1>
             <p className="mx-auto mt-6 max-w-xl text-lg text-ink-2">{t("cta.subtitle")}</p>
-            <Link href="/products" className={buttonVariants("dark", "lg") + " mt-10"}>
+            <Link href="/products" className={buttonVariants("primary", "lg") + " mt-10"}>
               {t("cta.button")}
             </Link>
           </div>

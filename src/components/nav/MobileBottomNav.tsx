@@ -138,7 +138,7 @@ function Tab({
     );
   }
   return (
-    <button type="button" onClick={onClick} aria-expanded={expanded} className={className}>
+    <button type="button" onClick={onClick} aria-haspopup="dialog" aria-expanded={expanded} className={className}>
       {body}
     </button>
   );

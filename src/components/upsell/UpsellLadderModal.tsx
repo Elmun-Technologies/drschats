@@ -94,7 +94,7 @@ export function UpsellLadderModal() {
             aria-modal="true"
             aria-labelledby="upsell-offer-title"
             tabIndex={-1}
-            className="fixed inset-x-4 bottom-0 z-[61] mx-auto max-w-sm sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
+            className="fixed inset-x-4 bottom-0 z-[61] mx-auto max-h-[calc(100dvh-16px)] max-w-sm overflow-y-auto overscroll-contain sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
           >
           <motion.div
             key={currentStep}

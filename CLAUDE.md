@@ -322,7 +322,7 @@ TELEGRAM_CHAT_ID=your_chat_id
 
 ## PWA
 
-- `public/manifest.json` — name, icons (192/512), theme `#0ea5e9`, display `standalone`
+- `public/manifest.json` — name, icons (192/512), theme `#ffffff` (bilan `<meta name="theme-color">` bir xil), display `standalone`
 - `public/sw.js` — cache-first static, network-first API/data
 - `public/icons/icon-192.png`, `icon-512.png`
 - `ServiceWorkerRegistration` — layout-da, faqat client-side

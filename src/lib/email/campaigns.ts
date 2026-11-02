@@ -123,7 +123,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           ],
           products: campaign.items,
           bullets: [uz ? `Jami: ${campaign.total}` : `Итого: ${campaign.total}`],
-          cta: { label: uz ? "Buyurtmani ko'rish" : "Посмотреть заказ", url: campaign.orderUrl },
+          cta: { label: uz ? "Buyurtmani koʻrish" : "Посмотреть заказ", url: campaign.orderUrl },
         },
       };
 
@@ -157,7 +157,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
             ? "Tugʻilgan kuningiz bilan!"
             : "С днём рождения!",
         blocks: {
-          preheader: uz ? "Kichik sovg'amiz bor." : "У нас есть небольшой подарок.",
+          preheader: uz ? "Kichik sovgʻamiz bor." : "У нас есть небольшой подарок.",
           heading: who
             ? uz
               ? `${who}ning tugʻilgan kuni yaqin`
@@ -182,14 +182,14 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
                   : `Промокод: ${campaign.promoCode} — действует на следующий заказ`,
               ]
             : undefined,
-          cta: { label: uz ? "Katalogga o'tish" : "Перейти в каталог", url: campaign.shopUrl },
+          cta: { label: uz ? "Katalogga oʻtish" : "Перейти в каталог", url: campaign.shopUrl },
         },
       };
     }
 
     case "child-season":
       return {
-        subject: uz ? "O'quv yili oldidan" : "Перед началом учебного года",
+        subject: uz ? "Oʻquv yili oldidan" : "Перед началом учебного года",
         blocks: {
           preheader: uz
             ? "Bolalar uchun mavsumiy tanlov."
@@ -209,7 +209,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
               ? "Bolalar uchun moʻljallangan mahsulotlarni alohida boʻlimga yigʻdik. Dozani yoshga qarab tanlash kerak — farmatsevtimiz bilan maslahatlashishingiz mumkin."
               : "Мы собрали товары для детей в отдельный раздел. Дозировка подбирается по возрасту — вы можете посоветоваться с нашим фармацевтом.",
           ],
-          cta: { label: uz ? "Bolalar bo'limi" : "Раздел для детей", url: campaign.shopUrl },
+          cta: { label: uz ? "Bolalar boʻlimi" : "Раздел для детей", url: campaign.shopUrl },
           note: uz
             ? "Bolaga har qanday qoʻshimcha berishdan oldin shifokor bilan maslahatlashing."
             : "Перед приёмом любых добавок ребёнком проконсультируйтесь с врачом.",
@@ -249,7 +249,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           preheader: uz
             ? "Oʻzgartirish, oʻtkazib yuborish yoki bekor qilish — bir bosishda."
             : "Изменить, пропустить или отменить — в один клик.",
-          heading: uz ? "Obuna bo'yicha keyingi yetkazib berish" : "Ближайшая доставка по подписке",
+          heading: uz ? "Obuna boʻyicha keyingi yetkazib berish" : "Ближайшая доставка по подписке",
           paragraphs: [
             uz
               ? `${campaign.daysUntil} kundan keyin (${campaign.deliveryDate}) obunangiz boʻyicha navbatdagi buyurtma tayyorlanadi.`
@@ -270,7 +270,7 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           preheader: uz
             ? "Bu manzil sizniki ekanini tasdiqlang."
             : "Подтвердите, что этот адрес принадлежит вам.",
-          heading: uz ? "Ro'yxatdan o'tganingiz bilan" : "Регистрация почти завершена",
+          heading: uz ? "Roʻyxatdan oʻtganingiz bilan" : "Регистрация почти завершена",
           paragraphs: [
             greeting(locale, campaign.name),
             uz

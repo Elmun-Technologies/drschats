@@ -8,10 +8,8 @@ import type { ButtonHTMLAttributes } from "react";
   add to cart, checkout, the quiz's "next". `light` is the tile-grey button
   (the card's "Savatga" before anything is in the cart), `secondary` the
   outlined one for navigation and second choices, `ghost` a bare text button.
-  `dark` and `gold` are kept as aliases of `primary` so older call sites
-  compile; the design has no gold button.
 */
-type Variant = "primary" | "light" | "secondary" | "ghost" | "dark" | "gold";
+type Variant = "primary" | "light" | "secondary" | "ghost";
 type Size = "sm" | "md" | "lg";
 
 export function buttonVariants(variant: Variant = "primary", size: Size = "md") {
@@ -21,8 +19,6 @@ export function buttonVariants(variant: Variant = "primary", size: Size = "md") 
   const ink = "bg-ink text-white hover:bg-black hover:text-white";
   const variants: Record<Variant, string> = {
     primary: ink,
-    dark: ink,
-    gold: ink,
     light: "bg-tile text-ink hover:bg-tile-hover",
     secondary: "border-[1.5px] border-line-strong bg-bg text-ink hover:border-ink",
     ghost: "text-ink hover:bg-tile",

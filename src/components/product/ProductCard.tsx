@@ -44,6 +44,8 @@ export function ProductCard({
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
+  // Stepper labels name the product: a grid of 24 identical "Increase" buttons tells a screen reader nothing.
+  const tco = useTranslations("checkout");
   const product = useLiveProduct(listed);
   const add = useCart((s) => s.add);
   const setQuantity = useCart((s) => s.setQuantity);
@@ -165,7 +167,7 @@ export function ProductCard({
             <button
               type="button"
               onClick={() => setQuantity(lineId, qty - 1)}
-              aria-label={t("decrease")}
+              aria-label={tco("decreaseFor", { name: product.name })}
               className="flex h-11 w-11 items-center justify-center text-xl"
             >
               −
@@ -177,7 +179,7 @@ export function ProductCard({
               type="button"
               onClick={() => setQuantity(lineId, qty + 1)}
               disabled={qty >= maxQty}
-              aria-label={t("increase")}
+              aria-label={tco("increaseFor", { name: product.name })}
               className="flex h-11 w-11 items-center justify-center text-xl disabled:opacity-40"
             >
               +

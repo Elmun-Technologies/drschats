@@ -48,9 +48,9 @@ export function SectionTitle({ children, actions }: { children: ReactNode; actio
 }
 
 export const inputClass =
-  "h-12 w-full rounded-[12px] border border-line-strong bg-white px-3.5 text-[15px] text-ink outline-none transition placeholder:text-muted focus:border-ink focus-visible:ring-2 focus-visible:ring-ink/15";
+  "h-12 w-full rounded-[12px] border border-line-strong bg-white px-3.5 text-[15px] text-ink outline-none transition placeholder:text-muted focus:border-ink focus-visible:ring-2 focus-visible:ring-ink/40";
 export const textareaClass =
-  "min-h-24 w-full rounded-[12px] border border-line-strong bg-white px-3.5 py-3 text-[15px] leading-6 text-ink outline-none transition placeholder:text-muted focus:border-ink focus-visible:ring-2 focus-visible:ring-ink/15";
+  "min-h-24 w-full rounded-[12px] border border-line-strong bg-white px-3.5 py-3 text-[15px] leading-6 text-ink outline-none transition placeholder:text-muted focus:border-ink focus-visible:ring-2 focus-visible:ring-ink/40";
 export const buttonClass =
   "inline-flex h-12 items-center justify-center gap-2 rounded-[12px] bg-ink px-5 text-[15px] font-semibold text-white transition-colors hover:bg-black focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 disabled:opacity-50";
 export const secondaryButtonClass =

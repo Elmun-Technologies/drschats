@@ -72,7 +72,7 @@ export function CartDrawer() {
                   </svg>
                 </div>
                 <p className="text-ink-2">{t("empty")}</p>
-                <Link href="/products" onClick={close} className={buttonVariants("dark")}>
+                <Link href="/products" onClick={close} className={buttonVariants("primary")}>
                   {t("emptyCta")}
                 </Link>
               </div>

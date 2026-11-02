@@ -31,7 +31,6 @@
   --radius-xl: 1.25rem;
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --animate-marquee: marquee 28s linear infinite;
-  --animate-float: float 6s ease-in-out infinite;
 }
 
 /*
@@ -192,16 +191,6 @@
   }
 }
 
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-12px);
-  }
-}
-
 @keyframes pagein {
   from {
     opacity: 0;
@@ -210,49 +199,6 @@
   to {
     opacity: 1;
     transform: none;
-  }
-}
-
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@layer utilities {
-  .animate-fade-in-up {
-    animation: fade-in-up 0.6s var(--ease-out-expo) forwards;
-  }
-
-  /*
-    One hero backdrop for every product page.
-
-    Each flagship page used to paint its own full-screen scene: a pink radial,
-    an orange radial, a blue radial, a rainbow conic sweep, a gold sun, a green
-    radial, plus a moon, fourteen drifting stars and three rotating rings. Six
-    products, six colour schemes, none of them related to anything the shopper
-    can verify — and a dark ground behind text written for a light one.
-
-    A product hero now shares a single warm wash on the porcelain ground, so
-    the product photo is the only thing on screen that is allowed to be a
-    different colour.
-  */
-  .product-hero {
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(70% 60% at 50% 0%, rgba(180, 139, 62, 0.10), transparent 70%),
-      radial-gradient(50% 45% at 85% 20%, rgba(43, 113, 89, 0.06), transparent 70%);
-  }
-
-  /* The flat stage a product photo sits on, so cards and heroes agree. */
-  .product-stage {
-    background: var(--color-tile);
   }
 }
 
@@ -483,23 +429,6 @@ html[data-miniapp] body {
     [id] {
       scroll-margin-top: 8.5rem;
     }
-  }
-}
-
-/*
-  Section rhythm.
-
-  Home and the long marketing pages alternated between py-16/20/24 sections
-  with four different desktop paddings, which is what makes a long page feel
-  hand-assembled. One utility, used by the Section component, so every band
-  breathes by the same amount.
-*/
-@layer utilities {
-  .section-y {
-    padding-block: clamp(3.25rem, 6vw, 5.5rem);
-  }
-  .section-y-tight {
-    padding-block: clamp(2.5rem, 4.5vw, 4rem);
   }
 }
 
