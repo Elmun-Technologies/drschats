@@ -172,11 +172,6 @@
         "clinical-nutrition": "Ixtisoslashgan ovqatlanish"
       }
     },
-    "bestsellers": {
-      "title": "Eng koʻp tanlanganlar",
-      "subtitle": "Mijozlarimiz eng koʻp sevadigan mahsulotlar",
-      "eyebrow": "Mashhur"
-    },
     "trust": {
       "title": "Go Vitaʼga nima uchun ishonishadi",
       "stats": {
@@ -398,6 +393,26 @@
         "title": "Bugungi taklif",
         "lead": "Bitta mahsulot — cheklangan vaqtga maxsus narx. Muddat tugagach narx odatiy holiga qaytadi.",
         "save": "Tejaysiz: {amount}"
+      },
+      "intro": {
+        "title": "Go Vita — vitaminlar va BAD internet-doʻkoni",
+        "lead": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — rasmiy import. Toshkent boʻylab {hours} soatda va butun Oʻzbekiston boʻylab yetkazib beramiz.",
+        "goals": "Maqsad boʻyicha tanlang",
+        "goalsAll": "Barcha maqsadlar"
+      },
+      "lp": {
+        "eyebrowSale": "Aksiya",
+        "saleTitle": "Chegirmadagi vitaminlar va BAD",
+        "saleLead": "Narxi haqiqatan tushgan mahsulotlar: eski va yangi narx katalogdagi bilan bir xil.",
+        "eyebrowCategory": "Katalog boʻlimi",
+        "categoryLead": "«{name}» boʻlimidagi mahsulotlar — Oʻzbekistonga rasmiy import.",
+        "eyebrowBrand": "Brend",
+        "brandLead": "{brand} mahsulotlari — Oʻzbekistonga rasmiy import.",
+        "eyebrowProduct": "Mahsulot",
+        "productsTitle": "Shu toʻplamdagi mahsulotlar",
+        "moreTitle": "Shu boʻlimdan",
+        "all": "Barchasini koʻrish",
+        "details": "Mahsulot haqida batafsil"
       }
     }
   },
@@ -2046,6 +2061,8 @@
     "keyIngredients": "Asosiy nutriyentlar",
     "allVitamins": "Barcha vitaminlar",
     "relatedProducts": "Tegishli mahsulotlar",
+    "shelfLink": "«{name}» boʻlimi",
+    "moreProducts": "Yana mahsulotlar",
     "relatedTopics": "Shuningdek qarang",
     "topicIndex": {
       "takeQuiz": "Testni boshlash",

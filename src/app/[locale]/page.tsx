@@ -12,6 +12,7 @@ import { SALE_HREF } from "@/components/layout/nav-links";
 import { Link } from "@/lib/i18n/navigation";
 import { HeroSlider, WeeklyDeal, type HeroSlide } from "@/components/home/HomeHero";
 import { BrandPanel } from "@/components/home/BrandPanel";
+import { HomeIntro } from "@/components/home/HomeIntro";
 import {
   HomeAudience,
   HomeCategories,
@@ -71,12 +72,11 @@ export default async function HomePage({
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const [categories, listing, promotions, t, meta, nav, heroBanners, dealOfDay] = await Promise.all([
+  const [categories, listing, promotions, t, nav, heroBanners, dealOfDay] = await Promise.all([
     shopflow.getCategories(locale),
     shopflow.getProducts({ locale, sort: "popular", pageSize: 50, assortment: "core" }),
     shopflow.getPromotions(locale).catch(() => []),
     getTranslations({ locale, namespace: "home" }),
-    getTranslations({ locale, namespace: "meta" }),
     getTranslations({ locale, namespace: "nav" }),
     getBanners("hero", locale),
     getDealOfDay(locale),
@@ -135,7 +135,6 @@ export default async function HomePage({
       <JsonLd data={organizationLd(locale)} />
       <JsonLd data={websiteLd(locale)} />
       <JsonLd data={localBusinessLd(locale)} />
-      <h1 className="sr-only">{meta("homeTitle")}</h1>
       <div className="flex flex-col gap-8 pb-9 pt-1 lg:gap-16 lg:pb-[72px] lg:pt-6">
         <QuickChips categories={shelves} saleLabel={nav("topDeals")} label={nav("shopByCategories")} />
 
@@ -147,6 +146,8 @@ export default async function HomePage({
             </div>
           )}
         </section>
+
+        <HomeIntro locale={locale} />
 
         <HomeCategories categories={shelves} />
 
