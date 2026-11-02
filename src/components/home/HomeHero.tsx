@@ -8,6 +8,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import type { Locale } from "@/lib/i18n/routing";
 import { discountPercent, type MenuDeal } from "@/components/layout/menu-deal";
+import { DiscountBadge } from "@/components/ui/Price";
 import { BannerLink, useUnexpired } from "@/components/marketing/BannerLink";
 import { SaleCountdown } from "@/components/marketing/SaleCountdown";
 import { AbSlot } from "@/components/marketing/AbSlot";
@@ -231,7 +232,7 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
       <Link href={href} className="grid grid-cols-[minmax(0,1fr)_120px] items-center gap-2 rounded-3xl bg-tile p-[18px]">
         <span className="flex flex-col items-start gap-1.5">
           <span className="text-lg font-bold">{header("weekOffer")}</span>
-          <SalePill percent={discountPercent(deal)} />
+          <DiscountBadge percent={discountPercent(deal)} />
           <span className="flex flex-wrap items-baseline gap-x-2">
             <span className="text-[22px] font-bold">{formatMoney(deal.price, locale)}</span>
             <span className="text-sm text-muted line-through">{formatNumber(deal.oldPrice)}</span>
@@ -252,7 +253,7 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
   return (
     <div className="relative flex h-[420px] flex-col items-start gap-2.5 overflow-hidden rounded-[28px] bg-tile p-7">
       <span className="text-[26px] font-bold leading-8">{header("weekOffer")}</span>
-      <SalePill percent={discountPercent(deal)} className="mt-1.5" />
+      <DiscountBadge percent={discountPercent(deal)} className="mt-1.5" />
       <span className="flex flex-wrap items-baseline gap-x-2.5">
         <span className="text-[30px] font-bold leading-9">{formatMoney(deal.price, locale)}</span>
         <span className="text-[17px] text-muted line-through">{formatNumber(deal.oldPrice)}</span>
@@ -272,14 +273,6 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
         </div>
       )}
     </div>
-  );
-}
-
-export function SalePill({ percent, className }: { percent: number; className?: string }) {
-  return (
-    <span className={cn("inline-flex h-[26px] items-center rounded-pill bg-red px-2.5 text-sm font-bold text-white", className)}>
-      −{percent}%
-    </span>
   );
 }
 

@@ -62,13 +62,13 @@ export function discountPercent(price: number, oldPrice?: number): number {
   return oldPrice && oldPrice > price ? Math.round((1 - price / oldPrice) * 100) : 0;
 }
 
-/** "−11%" — the red pill, the only place the sale colour is allowed. */
+/** "−11%" — the red pill, the only place the sale colour is allowed. Kit size (26px, 14px bold) everywhere. */
 export function DiscountBadge({ percent, className }: { percent: number; className?: string }) {
   if (percent <= 0) return null;
   return (
     <span
       className={cn(
-        "inline-flex h-6 items-center whitespace-nowrap rounded-pill bg-red px-[9px] text-[13px] font-bold text-white",
+        "inline-flex h-[26px] items-center whitespace-nowrap rounded-pill bg-red px-2.5 text-sm font-bold text-white",
         className,
       )}
     >

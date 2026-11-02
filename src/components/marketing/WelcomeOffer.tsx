@@ -7,6 +7,7 @@ import { localizedOr } from "@/lib/commerce/settings";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { isQuietPath, usePopups } from "@/lib/ui/popups";
 import { buttonVariants } from "@/components/ui/Button";
+import { DiscountBadge } from "@/components/ui/Price";
 import { PopupShell } from "./PopupShell";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
 
@@ -50,9 +51,7 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
 
   return (
     <PopupShell open={active} onClose={close} labelledBy="welcome-title" closeLabel={tc("close")}>
-      <span className="inline-flex rounded-full bg-red px-3 py-1 text-sm font-bold text-white">
-        −{offer.percent}%
-      </span>
+      <DiscountBadge percent={offer.percent} />
       <h2 id="welcome-title" className="mt-4 pr-8 text-[26px] font-bold leading-8">
         {localizedOr(rule.title, locale, t("title", { percent: offer.percent })).replaceAll("{percent}", String(offer.percent))}
       </h2>

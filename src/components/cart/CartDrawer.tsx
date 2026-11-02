@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
@@ -9,20 +8,20 @@ import { useCart } from "@/lib/cart/store";
 import { useSaleClock } from "@/lib/cart/useSaleClock";
 import { useDialog } from "@/lib/ui/useDialog";
 import { usePromotions } from "@/lib/cart/promotions-context";
-import { computeTotals, lineQtyCap, lineListTotal, lineTotal } from "@/lib/cart/pricing";
+import { computeTotals } from "@/lib/cart/pricing";
 import { usePricingRules } from "@/lib/commerce/context";
 import { formatMoney } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/Button";
 import { UpsellLadderModal } from "@/components/upsell/UpsellLadderModal";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
+import { CartLines } from "@/components/cart/CartLines";
 
 export function CartDrawer() {
   const locale = useLocale() as Locale;
   const t = useTranslations("cart");
   const tc = useTranslations("common");
   const ts = useTranslations("subscription");
-  const tco = useTranslations("checkout");
-  const { lines, isOpen, close, setQuantity, remove } = useCart();
+  const { lines, isOpen, close } = useCart();
   useSaleClock();
   const promotions = usePromotions();
   const pricing = usePricingRules();
@@ -96,44 +95,8 @@ export function CartDrawer() {
                   </div>
                 )}
 
-                <div className="flex-1 space-y-4 overflow-y-auto overscroll-contain px-6 py-5">
-                  {lines.map((l) => (
-                    <div key={l.lineId} className="flex gap-3">
-                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[16px] bg-tile">
-                        {l.image && <Image src={l.image} alt={l.name} fill sizes="80px" className="object-contain p-2" />}
-                      </div>
-                      <div className="flex flex-1 flex-col">
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="text-sm font-medium text-ink">{l.name}</p>
-                          <button type="button" onClick={() => remove(l.lineId)} className="-mr-3 -mt-3 grid h-11 w-11 shrink-0 place-items-center text-muted hover:text-ink" aria-label={t("remove")}>
-                            <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8">
-                              <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-                            </svg>
-                          </button>
-                        </div>
-                        <p className="mt-1 text-[15px] font-bold text-ink">{formatMoney(lineTotal(l), locale)}</p>
-                        {lineListTotal(l) && (
-                          <div className="mt-0.5 flex items-center gap-2">
-                            <span className="text-[13px] text-muted line-through">{formatMoney(lineListTotal(l)!, locale)}</span>
-                            <span className="rounded-full bg-red px-2 py-0.5 text-[12px] font-semibold leading-4 text-white">
-                              −{Math.round((1 - lineTotal(l) / lineListTotal(l)!) * 100)}%
-                            </span>
-                          </div>
-                        )}
-                        {l.soldOut && <p role="status" className="mt-0.5 text-xs font-semibold text-red">{tc("outOfStock")}</p>}
-                        {l.subscription && (
-                          <p className="mt-0.5 text-xs font-semibold text-ink">
-                            {ts("everyDays", { days: l.subscription.intervalDays })}
-                          </p>
-                        )}
-                        <div className="mt-auto flex items-center gap-2 pt-2">
-                          <QtyButton label={tco("decreaseFor", { name: l.name })} disabled={l.quantity <= 1} onClick={() => setQuantity(l.lineId, l.quantity - 1)}>−</QtyButton>
-                          <span className="w-7 text-center text-[15px] font-semibold tabular-nums">{l.quantity}</span>
-                          <QtyButton label={tco("increaseFor", { name: l.name })} disabled={l.quantity >= lineQtyCap(l)} onClick={() => setQuantity(l.lineId, l.quantity + 1)}>+</QtyButton>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex-1 overflow-y-auto overscroll-contain px-6 py-1">
+                  <CartLines lines={lines} upsells={[]} compact onNavigate={close} />
                 </div>
 
                 <UpsellSavingsBar />
@@ -185,30 +148,6 @@ export function CartDrawer() {
       )}
     </AnimatePresence>
     </>
-  );
-}
-
-function QtyButton({
-  children,
-  onClick,
-  label,
-  disabled,
-}: {
-  children: React.ReactNode;
-  onClick: () => void;
-  label: string;
-  disabled?: boolean;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      disabled={disabled}
-      aria-label={label}
-      className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-tile text-lg text-ink transition-colors hover:bg-tile-hover disabled:opacity-40"
-    >
-      {children}
-    </button>
   );
 }
 

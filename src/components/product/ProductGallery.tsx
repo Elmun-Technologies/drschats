@@ -137,7 +137,7 @@ export function ProductGallery({
 
           {(discountPercent > 0 || guaranteeLabel || outOfStockLabel) && (
             <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5 lg:left-4 lg:top-4">
-              <DiscountBadge percent={discountPercent} className="h-[26px] px-2.5 text-sm" />
+              <DiscountBadge percent={discountPercent} />
               {guaranteeLabel && <Badge tone="hit" className="text-sm">{guaranteeLabel}</Badge>}
               {outOfStockLabel && <Badge className="text-sm">{outOfStockLabel}</Badge>}
             </div>

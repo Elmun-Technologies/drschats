@@ -73,7 +73,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
           {product.oldPrice && product.oldPrice > product.price && (
             <span className="text-[17px] text-muted line-through lg:text-lg">{formatNumber(product.oldPrice)}</span>
           )}
-          <DiscountBadge percent={discount} className="h-[26px] px-2.5 text-sm" />
+          <DiscountBadge percent={discount} />
         </div>
         {(perUnit || discount > 0) && (
           <span className="text-sm text-ink-2">
