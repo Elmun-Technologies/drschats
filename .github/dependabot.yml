@@ -1,0 +1,51 @@
+# Dependency update PRs. Weekly, grouped so the queue stays reviewable;
+# every PR runs CI (build, lint, tests, render audit, dependency audit) like
+# any other. Major versions are opened one package at a time (CLAUDE.md:
+# one major per PR) — the groups below take minor and patch updates only.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+      timezone: Asia/Tashkent
+    open-pull-requests-limit: 5
+    groups:
+      npm-minor-patch:
+        update-types: [minor, patch]
+    ignore:
+      # Sanity 3 -> 6 is a migration of its own (see scripts/audit/deps.mjs baseline).
+      - dependency-name: sanity
+        update-types: [version-update:semver-major]
+      - dependency-name: "@sanity/*"
+        update-types: [version-update:semver-major]
+      - dependency-name: next-sanity
+        update-types: [version-update:semver-major]
+
+  # Actions are pinned to commit SHAs; Dependabot moves the SHA and the
+  # version comment together.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "05:00"
+      timezone: Asia/Tashkent
+    groups:
+      actions:
+        patterns: ["*"]
+
+  - package-ecosystem: pip
+    directory: /govita-vip-bot
+    schedule:
+      interval: monthly
+    groups:
+      bot:
+        patterns: ["*"]
+
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: monthly

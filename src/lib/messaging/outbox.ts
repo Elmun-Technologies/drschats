@@ -11,7 +11,8 @@ import { prepareSmsText } from "@/lib/sms/segments";
 import { resolveSmsProvider, type ResolvedSms } from "@/lib/sms";
 import { MAX_SEND_ATTEMPTS, retryDelayMinutes } from "@/lib/flows/schedule";
 import type { StepChannel } from "@/lib/flows/types";
-import { isOptedOut } from "./optout";
+import { inOptOuts, isOptedOut, optOutsOf } from "./optout";
+import { phone9Sql } from "@/lib/db/phone";
 import { isQuietHours, nextSendWindow } from "./quiet-hours";
 import { finalizeText, formatExpiry, withOptOut, type MessageLocale } from "./template";
 import { botJobKey } from "./keys";
@@ -104,7 +105,7 @@ export async function resolveReach(exec: Exec, phone9: string, want: StepChannel
     const rows = (await exec.execute(sql`
       select l.chat_id from telegram_links l
       left join bot_members m on m.chat_id = l.chat_id
-      where right(l.phone, 9) = ${phone9} and m.blocked_at is null
+      where ${phone9Sql("l.phone")} = ${phone9} and m.blocked_at is null
       limit 1`)) as unknown as { chat_id: string | number }[];
     if (rows[0]) return { channel: "telegram", chatId: Number(rows[0].chat_id), phone9 };
   }
@@ -241,11 +242,11 @@ async function ensurePromo(m: Claimed): Promise<{ code: string; endsAt: Date | n
   return { code, endsAt };
 }
 
-async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean): Promise<Outcome> {
+async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean, optOuts: Set<string>): Promise<Outcome> {
   const db = getDb();
   const transactional = m.kind === "transactional";
   // An order SMS is not marketing: "stop" ends offers, not news about an order the customer placed.
-  if (!transactional && (await isOptedOut(db, m.phone9, m.channel))) return { status: "skipped", error: "opted_out" };
+  if (!transactional && inOptOuts(optOuts, m.phone9, m.channel)) return { status: "skipped", error: "opted_out" };
   if (m.channel === "sms" && (!sms?.provider || !m.phone9)) return { status: "skipped", error: "sms_not_configured" };
   if (m.channel === "telegram") {
     if (!clubEnabled) return { status: "skipped", error: "club_disabled" };
@@ -368,11 +369,13 @@ export async function drainOutbox(now = new Date(), limit = BATCH_SIZE): Promise
   const needsSms = claimed.some((m) => m.channel === "sms");
   const sms = needsSms ? await resolveSmsProvider().catch(() => null) : null;
   const clubEnabled = claimed.some((m) => m.channel === "telegram") ? Boolean((await getClubConfig().catch(() => null))?.enabled) : false;
+  // One query for the whole batch, not one per message.
+  const optOuts = await optOutsOf(db, claimed.map((m) => m.phone9 ?? ""));
 
   const sendOne = async (m: Claimed) => {
     let outcome: Outcome;
     try {
-      outcome = await deliver(m, sms, clubEnabled);
+      outcome = await deliver(m, sms, clubEnabled, optOuts);
     } catch (err) {
       outcome = { status: "retry", error: (err as Error).message || "error" };
     }

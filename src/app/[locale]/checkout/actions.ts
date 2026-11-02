@@ -17,6 +17,7 @@ import { isOnlineProviderId } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
 import { clientIp } from "@/lib/rate-limit";
 import { hitRateLimit } from "@/lib/rate-limit-store";
+import { logServerError } from "@/lib/request-id-server";
 import { siteOrigin } from "@/lib/email/config";
 import { sendCampaign } from "@/lib/email/send";
 import { requestEmailOptIn } from "@/app/actions/emailOptIn";
@@ -338,7 +339,7 @@ export async function submitOrder(
     }
     return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };
   } catch (err) {
-    console.error("[checkout] createOrder failed", err instanceof Error ? err.message : "unknown error");
+    await logServerError("checkout", err, "createOrder failed");
     return { ok: false, error: "failed" };
   }
 }

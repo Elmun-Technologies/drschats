@@ -15,6 +15,21 @@ export async function isOptedOut(exec: Exec, phone9: string | null, channel: "sm
   return rows.length > 0;
 }
 
+/** The opt-outs of many phones in one query: a Set of "phone9:channel" (channel sms, telegram or all). */
+export async function optOutsOf(exec: Exec, phones: string[]): Promise<Set<string>> {
+  const unique = [...new Set(phones.filter(Boolean))];
+  if (unique.length === 0) return new Set();
+  const rows = (await exec.execute(sql`
+    select phone9, channel from marketing_optouts
+    where phone9 in (${sql.join(unique.map((p) => sql`${p}`), sql`, `)})`)) as unknown as { phone9: string; channel: string }[];
+  return new Set(rows.map((r) => `${r.phone9}:${r.channel}`));
+}
+
+/** Reads a Set from optOutsOf the way isOptedOut reads the table. */
+export function inOptOuts(set: Set<string>, phone9: string | null, channel: "sms" | "telegram"): boolean {
+  return Boolean(phone9) && (set.has(`${phone9}:${channel}`) || set.has(`${phone9}:all`));
+}
+
 /** Records a "stop". Idempotent; pending messages to that channel are skipped right away. */
 export async function recordOptOut(phone9: string, channel: OptOutChannel, source: string): Promise<void> {
   const db = getDb();
