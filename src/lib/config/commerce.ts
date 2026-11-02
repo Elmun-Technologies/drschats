@@ -1,3 +1,5 @@
+import { formatNumber } from "@/lib/utils";
+
 /*
   Commercial rules that the storefront quotes in more than one place.
 
@@ -62,7 +64,9 @@ export const COMMERCE = {
   },
 } as const;
 
-/** `formatMoney`-free helper for the "300 000 so'm" copy in translations. */
-export function thousands(value: number): string {
-  return value.toLocaleString("ru-RU").replace(/\u00a0/g, " ");
-}
+/**
+ * The "300 000" in translated copy. One digit grouper for the site: Intl's
+ * ru-RU separator is U+00A0 in some ICU builds and U+202F in others, so the
+ * server and the browser could print the same amount differently.
+ */
+export const thousands = formatNumber;
