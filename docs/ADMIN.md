@@ -286,6 +286,45 @@ standartiga alohida qaytadi (`coerceCommerceSettings`).
 - CSP: `ADMIN_ANALYTICS_CSP=on` Dockerfile va `fly.toml` da yoqilgan — to'rtta
   vendorning hostlari va Vebvizor uchun `frame-ancestors` (metrika.yandex.*, webvisor.com).
 
+## Onlayn toʻlov (Payme, Click)
+
+`/admin/integrations` → «Onlayn toʻlov». Kod: `src/lib/payments/`, jadval `payments`
+va `orders.payment_status`/`paid_at` (`0015_online_payments.sql`).
+
+**Ulash (bir marta):**
+1. **Payme Business** → Kassa: Merchant ID, kassa kaliti va test kaliti — panelga.
+   Kassa sozlamasida *Endpoint URL* = `https://<domen>/api/payments/payme`,
+   rekvizit maydoni `order_id` (boshqacha boʻlsa panelda «Hisob maydoni»).
+   Avval «Test rejimi» bilan Payme «Pesochnitsa»sidan oʻtkazing, keyin test rejimini oʻchiring.
+2. **Click** (merchant.click.uz) → Servis: Service ID, Merchant ID, Secret key — panelga.
+   *Prepare URL* = `https://<domen>/api/payments/click/prepare`,
+   *Complete URL* = `https://<domen>/api/payments/click/complete`.
+3. «Checkoutʼda … yoqish» belgisi — provayder checkoutʼda, footerda va PDPʼda paydo boʻladi.
+   Kalit yetishmasa yoqib boʻlmaydi; baza boʻlmasa (`DATABASE_URL`) hech biri chiqmaydi.
+4. Fiskal chek: har mahsulot formasida «Fiskal chek» — MXIK (17 raqam, tasnif.soliq.uz)
+   va qadoq kodi; panelda yetkazish xizmatining kodi va QQS (standart 12%). Kod
+   yetishmasa Payme `detail` yuborilmaydi va panel qaysi mahsulotlar ekanini aytadi.
+
+**Oqim:** checkout buyurtmani `payment_status='pending'` bilan saqlaydi va mijozni
+toʻlov sahifasiga yuboradi (summa — serverdagi jami, brauzerdan emas). Toʻlov tizimi
+mijozni imzolangan `/track/<raqam>.<imzo>` sahifasiga qaytaradi: holat, kerak boʻlsa
+«… orqali toʻlash» tugmasi. Callback toʻlovni va buyurtmani **bitta tranzaksiyada**
+(buyurtma qatori qulflangan) `paid` qiladi va operatorga «💳 #N toʻlandi» ketadi.
+
+**Qoidalar (kodda):**
+- Payme: Basic auth (test rejimida test kaliti), summa tiyinda va aynan jamiga teng,
+  buyurtmaga bitta ochiq tranzaksiya (`-31099`), 12 soatda yakunlanmagan tranzaksiya
+  bekor (reason 4), takroriy Create/Perform/Cancel oldingi javobni qaytaradi,
+  toʻlangan buyurtma bekor qilinsa (`-2`) — `refunded`, **yetkazilgan buyurtmani
+  qaytarib boʻlmaydi** (`-31007`), doʻkon bekor qilgan buyurtma uchun pul olinmaydi.
+  `ChangePassword` yangi kalitni shifrlab saqlaydi.
+- Click: md5 imzo Secret key bilan, `service_id` va summa tekshiriladi, Prepare
+  takrorlansa oʻsha `merchant_prepare_id`, Complete `error<0` — bekor (`-9`),
+  allaqachon toʻlangan — `-4`.
+- Ikki tizim bir buyurtmani ikki marta toʻlay olmaydi: ikkinchisi rad etiladi
+  (Payme `-31008`, Click `-4`) va pul yechilmaydi.
+- Qaytarish (refund) — toʻlov tizimi kabinetidan; Payme uni `CancelTransaction` bilan bizga aytadi.
+
 ## Xavfsizlik
 
 - Parol — scrypt (`node:crypto`), sessiya — HMAC imzolangan cookie
