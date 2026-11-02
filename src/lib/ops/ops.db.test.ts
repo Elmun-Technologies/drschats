@@ -54,6 +54,28 @@ describe.skipIf(!url)("operations SQL (Postgres)", () => {
     expect(typeof (await runRetention())).toBe("object");
   });
 
+  it("anonymises a customer and keeps the order's totals", async () => {
+    const { getDb } = await import("@/lib/db/client");
+    const { sql } = await import("drizzle-orm");
+    const { anonymiseCustomer, ANONYMISED_NAME } = await import("@/lib/admin/anonymise");
+    const phone9 = "9" + String(Date.now()).slice(-8);
+    const [order] = (await getDb().execute(sql`
+      insert into orders (total, customer, delivery, items, totals, locale)
+      values (1000, ${JSON.stringify({ name: "Ali", phone: `+998${phone9}`, email: "a@b.uz" })}::jsonb,
+              '{"region": "Toshkent", "address": "Chilonzor 1", "method": "courier"}'::jsonb, '[]'::jsonb, '{"total": 1000}'::jsonb, 'uz')
+      returning id`)) as unknown as { id: number }[];
+    await getDb().execute(sql`insert into admin_customer_notes (phone9, note) values (${phone9}, 'call after 15')`);
+    const removed = await anonymiseCustomer(phone9);
+    expect(removed.orders).toBe(1);
+    expect(removed.notes).toBe(1);
+    const [row] = (await getDb().execute(sql`select customer, delivery, total from orders where id = ${order.id}`)) as unknown as { customer: { name: string; phone: string }; delivery: { address: string; region: string }; total: number }[];
+    expect(row.customer.name).toBe(ANONYMISED_NAME);
+    expect(row.customer.phone).toBe("");
+    expect(row.delivery).toMatchObject({ address: "", region: "Toshkent" });
+    expect(row.total).toBe(1000);
+    await getDb().execute(sql`delete from orders where id = ${order.id}`);
+  });
+
   it("finds operator pings to retry and unpaid orders to release", async () => {
     const { releaseUnpaidOrders } = await import("@/lib/orders/release");
     expect((await releaseUnpaidOrders()).released).toBeGreaterThanOrEqual(0);

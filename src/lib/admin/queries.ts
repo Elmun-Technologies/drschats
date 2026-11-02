@@ -1,3 +1,5 @@
+import "server-only";
+
 import { and, asc, count, desc, eq, gte, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, orders, products, type OrderStatus } from "@/lib/db/schema";

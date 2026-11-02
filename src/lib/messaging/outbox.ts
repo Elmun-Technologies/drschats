@@ -1,3 +1,5 @@
+import "server-only";
+
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { botJobs, type BotJobPayload, type MessageChannel, type MessageKind, type MessagePromo } from "@/lib/db/schema";

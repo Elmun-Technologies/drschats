@@ -1,3 +1,5 @@
+import "server-only";
+
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { asc, count, gt, sql } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db/client";

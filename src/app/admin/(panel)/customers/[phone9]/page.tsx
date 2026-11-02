@@ -6,11 +6,12 @@ import { botOrderEvents } from "@/lib/db/schema";
 import { customerLifecycle, getCustomerDetails, listCustomerNotes } from "@/lib/admin/customers";
 import { recentEventsForPhone, visitorsForPhone } from "@/lib/admin/crm";
 import { daysSince, STAGE_LABEL } from "@/lib/journey/model";
-import { addCustomerNote } from "@/app/admin/_actions/crm";
+import { addCustomerNote, anonymiseCustomerAction } from "@/app/admin/_actions/crm";
+import { can } from "@/lib/admin/roles";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Timeline } from "@/components/admin/Timeline";
 import { CustomerLoyalty } from "@/components/admin/loyalty/CustomerLoyalty";
-import { Card, Field, Metric, PageHeader, Pill, buttonClass, linkClass, secondaryButtonClass, som, textareaClass, timeAgo } from "@/components/admin/ui";
+import { Card, Field, Metric, PageHeader, Pill, buttonClass, inputClass, linkClass, secondaryButtonClass, som, textareaClass, timeAgo } from "@/components/admin/ui";
 import { STATUS_LABEL, STATUS_TONE, formatDate, formatDateTime } from "@/lib/admin/order-labels";
 import { DEVICE_LABEL } from "@/lib/admin/event-labels";
 import { describeAttribution } from "@/lib/analytics/attribution";
@@ -23,7 +24,7 @@ export const metadata = { title: "Mijoz profili" };
 const LIFECYCLE_LABEL = { new: "Yangi mijoz", repeat: "Qayta xarid qilgan", vip: "VIP mijoz", dormant: "Faolligi pasaygan" } as const;
 
 export default async function AdminCustomerPage({ params }: { params: Promise<{ phone9: string }> }) {
-  await requireAdmin();
+  const admin = await requireAdmin();
   const { phone9 } = await params;
   const [customer, notes, visitors, events] = await Promise.all([getCustomerDetails(phone9), listCustomerNotes(phone9), visitorsForPhone(phone9), recentEventsForPhone(phone9)]);
   if (!customer) notFound();
@@ -124,6 +125,16 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
               </ul>
             ) : <p className="mt-3 text-[14px] text-muted">Hali izoh yoʻq.</p>}
           </Card>
+          {can(admin.role, "users") && (
+            <Card title="Shaxsiy maʼlumotni oʻchirish" lead="Mijoz soʻrasa: ism, telefon, email va manzil buyurtmalardan olib tashlanadi; tashriflar, izohlar, kutish roʻyxati, xabarlar, ballar, tavsiya kodi, tugʻilgan kun va Telegram bogʻlanishi oʻchiriladi. Buyurtma summasi va tarkibi hisobot uchun qoladi. Qaytarib boʻlmaydi.">
+              <ActionForm action={anonymiseCustomerAction} submitLabel="Maʼlumotni oʻchirish" className="flex flex-col gap-3">
+                <input type="hidden" name="phone9" value={customer.phone9} />
+                <Field label="Tasdiqlash uchun «OʻCHIRISH» deb yozing">
+                  <input name="confirm" required autoComplete="off" className={inputClass} />
+                </Field>
+              </ActionForm>
+            </Card>
+          )}
         </div>
       </div>
     </>

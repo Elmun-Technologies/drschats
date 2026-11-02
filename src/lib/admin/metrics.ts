@@ -1,3 +1,5 @@
+import "server-only";
+
 import { desc, gte } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { orders, type OrderStatus } from "@/lib/db/schema";

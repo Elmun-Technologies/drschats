@@ -1,3 +1,5 @@
+import "server-only";
+
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { ORDER_PHONE9, phone9Sql } from "@/lib/db/phone";

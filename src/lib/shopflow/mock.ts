@@ -142,7 +142,8 @@ export const rawCategories: RawCategory[] = [
     },
     image: img("cat-skin", "Skin").url,
   },
-  catSimple("cat-herbal", "herbal", "Oʻsimlik vositalari", "Растительные средства"),
+  // One name everywhere (uz/ru.json categoryNames.herbal); "vositalari" read as "remedies".
+  catSimple("cat-herbal", "herbal", "Oʻsimlik mahsulotlari", "Растительные продукты"),
   catSimple("cat-collagen", "collagen", "Kollagen", "Коллаген"),
   catSimple("cat-omega", "omega", "Omega va baliq yogʻi", "Омега и рыбий жир"),
   catSimple("cat-sport", "sport", "Sport va fitnes", "Спорт и фитнес"),
@@ -1178,26 +1179,27 @@ export const rawProducts: RawProduct[] = [
     badges: { uz: ["Aksiya", "Oʻsimlik asosida"], ru: ["Акция", "На растительной основе"] },
     name: { uz: "Hamdard Safi 200 ml", ru: "Hamdard Safi 200 мл" },
     searchAliases: { uz: ["safi", "safi-eks", "hamdard"], ru: ["сафи", "сафи-экс", "хамдард"] },
+    // No medical promise ("qonni tozalash", acne): it is a supplement (db/migrations/0022 fixes seeded rows).
     tagline: {
-      uz: "Qonni kompleks tozalash uchun oʻsimlik siropi",
-      ru: "Растительный сироп для комплексного очищения крови",
+      uz: "Hindistonda ishlab chiqarilgan oʻsimlik siropi",
+      ru: "Растительный сироп индийского производства",
     },
     description: {
-      uz: "HAMDARD SAFI — qonni tozalash uchun Hindiston oʻsimlik siropi. Teridagi muammolar va organizmni tozalash uchun anʼanaviy vosita. 200 ml.",
-      ru: "HAMDARD SAFI — индийский растительный сироп для очищения крови. Традиционное средство для кожных проблем и детоксикации организма. 200 мл.",
+      uz: "HAMDARD SAFI — oʻsimlik ekstraktlari asosidagi sirop, Hindistonda ishlab chiqarilgan. 200 ml. Biologik faol qoʻshimcha, dori vositasi emas.",
+      ru: "HAMDARD SAFI — сироп на основе растительных экстрактов, произведён в Индии. 200 мл. Биологически активная добавка, не является лекарством.",
     },
     highlights: {
-      uz: ["Qonni tozalash", "Oʻsimlik asosida", "Hindiston formulasi", "200 ml"],
-      ru: ["Очищение крови", "На растительной основе", "Индийская формула", "200 мл"],
+      uz: ["Oʻsimlik asosida", "Hindiston formulasi", "200 ml"],
+      ru: ["На растительной основе", "Индийская формула", "200 мл"],
     },
     benefits: {
       uz: [
-        { icon: "shield", title: "Qon tozalash", description: "Tanani ichkaridan tozalaydi." },
-        { icon: "sparkle", title: "Teri muammolari", description: "Akne va teri kasalliklarida yordam beradi." },
+        { icon: "shield", title: "Oʻsimlik asosida", description: "Oʻsimlik ekstraktlari kompleksi." },
+        { icon: "sparkle", title: "Anʼanaviy retsept", description: "Hindiston formulasi boʻyicha tayyorlangan." },
       ],
       ru: [
-        { icon: "shield", title: "Очищение крови", description: "Очищает организм изнутри." },
-        { icon: "sparkle", title: "Проблемы кожи", description: "Помогает при акне и кожных заболеваниях." },
+        { icon: "shield", title: "На растительной основе", description: "Комплекс растительных экстрактов." },
+        { icon: "sparkle", title: "Традиционный рецепт", description: "Приготовлен по индийской формуле." },
       ],
     },
     ingredients: {
