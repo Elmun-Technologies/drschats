@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { buildKeywordList, guessSubject, languageOf, normalizeKeyword, toPlannerCsv } from "./generate";
+import { buildKeywordList, guessSubject, keywordIndex, languageOf, normalizeKeyword, toPlannerCsv } from "./generate";
 import { SUBJECTS } from "./subjects";
 
 describe("keyword list", () => {
@@ -33,6 +33,9 @@ describe("keyword list", () => {
     expect(guessSubject("витамин д3 для детей капли")?.subject).toBe("vitamin-d");
     expect(guessSubject("omega 3 qaysi biri yaxshi")?.subject).toBe("omega-3");
     expect(guessSubject("ремонт телефона")).toBeNull();
+    // Planner returns Uzbek apostrophes as spaces.
+    expect(keywordIndex(rows).get("soch to kilishi")?.subject).toBe("sym-hair-loss");
+    expect(guessSubject("bo g im og rig i davolash")?.subject).toBe("sym-joint-pain");
     expect(languageOf("магний нархи")).toBe("uz-cyrl");
     expect(languageOf("магний купить")).toBe("ru");
     expect(languageOf("magniy narxi")).toBe("uz");

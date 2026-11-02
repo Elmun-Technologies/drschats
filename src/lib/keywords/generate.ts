@@ -50,6 +50,15 @@ export function normalizeKeyword(text: string): string {
     .trim();
 }
 
+/**
+ * The key two spellings of one search share. Keyword Planner hands Uzbek
+ * apostrophes back as spaces ("soch to'kilishi" → "soch to kilishi"), so
+ * matching ignores them.
+ */
+export function matchKey(text: string): string {
+  return normalizeKeyword(text).replace(/'/g, " ").replace(/\s+/g, " ").trim();
+}
+
 function namesOf(subject: KeywordSubject): Record<KeywordLang, string[]> {
   // Foreign brand names are not typed in Uzbek Cyrillic; their Cyrillic form is the Russian one.
   const cyr = subject.kind === "brand" ? (subject.uzCyr ?? []) : [...subject.uz.map(uzLatinToCyrillic), ...(subject.uzCyr ?? [])];
@@ -102,7 +111,7 @@ export function buildKeywordList(catalogue: CatalogueEntry[] = []): KeywordRow[]
 
 /** The keyword → subject map, for reading Planner results back. */
 export function keywordIndex(rows: KeywordRow[]): Map<string, KeywordRow> {
-  return new Map(rows.map((r) => [r.keyword, r]));
+  return new Map(rows.map((r) => [matchKey(r.keyword), r]));
 }
 
 /**
@@ -110,12 +119,12 @@ export function keywordIndex(rows: KeywordRow[]): Map<string, KeywordRow> {
  * whose name it contains, longest name first, or null.
  */
 export function guessSubject(keyword: string): { subject: string; kind: SubjectKind } | null {
-  const k = ` ${normalizeKeyword(keyword)} `;
+  const k = ` ${matchKey(keyword)} `;
   let best: { subject: string; kind: SubjectKind; len: number } | null = null;
   for (const s of SUBJECTS) {
     const names = namesOf(s);
     for (const n of [...names.ru, ...names.uz, ...names["uz-cyrl"]]) {
-      const name = normalizeKeyword(n);
+      const name = matchKey(n);
       if (name.length >= 3 && k.includes(` ${name}`) && (!best || name.length > best.len)) best = { subject: s.id, kind: s.kind, len: name.length };
     }
   }

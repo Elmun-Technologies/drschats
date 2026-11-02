@@ -5,8 +5,9 @@ import { getDb } from "@/lib/db/client";
 import { keywordImports, keywordStats } from "@/lib/db/schema";
 import { shopflow } from "@/lib/shopflow";
 import { getHealthTopicIndex } from "@/lib/content/health-topics";
+import { brandOf } from "@/lib/catalog/product-facts";
 import { analyseDemand, type ShopProduct, type StatRow } from "./analysis";
-import { buildKeywordList, guessSubject, keywordIndex, languageOf, normalizeKeyword, type KeywordRow } from "./generate";
+import { buildKeywordList, guessSubject, keywordIndex, languageOf, matchKey, normalizeKeyword, type KeywordRow } from "./generate";
 import type { PlannerFile } from "./planner-import";
 
 /** The shop's products in both languages, as the analysis and the keyword list read them. */
@@ -21,9 +22,9 @@ async function catalogue() {
     return {
       slug: p.slug,
       name: { uz: p.name, ru: r?.name ?? p.name },
-      brand: p.brand?.name ?? null,
+      brand: brandOf(p)?.name ?? null,
       inStock: p.inStock,
-      text: [p.name, r?.name, p.brand?.name, ...(p.ingredients ?? []).map((i) => i.name), ...(r?.ingredients ?? []).map((i) => i.name)].filter(Boolean).join(" · ").toLowerCase(),
+      text: [p.name, r?.name, brandOf(p)?.name, ...(p.ingredients ?? []).map((i) => i.name), ...(r?.ingredients ?? []).map((i) => i.name)].filter(Boolean).join(" · ").toLowerCase(),
     };
   });
 }
@@ -38,7 +39,7 @@ export async function importPlannerFile(file: PlannerFile, fileName: string | nu
   let matched = 0;
   const values = file.rows.map((r) => {
     const keyword = normalizeKeyword(r.keyword);
-    const known = index.get(keyword);
+    const known = index.get(matchKey(keyword));
     const guess = known ? null : guessSubject(keyword);
     if (known || guess) matched++;
     return {
