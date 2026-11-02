@@ -15,6 +15,14 @@ import { getAllProducts } from "@/lib/shop/all-products";
 import type { Product } from "@/lib/shopflow/types";
 import { brandOf } from "@/lib/catalog/product-facts";
 
+/*
+  Built per request, not at build time: the Docker build has no database, so a
+  prerendered sitemap listed the built-in catalogue forever and never the
+  products, categories and brands added in the admin. The catalogue reads
+  underneath are cached, so this costs a cache hit, not a full query.
+*/
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, allProducts] = await Promise.all([
     shopflow.getCategories(routing.defaultLocale).catch(() => []),
