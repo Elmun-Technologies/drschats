@@ -197,12 +197,10 @@
 
 @keyframes pagein {
   from {
-    opacity: 0;
-    transform: translateY(8px);
+    opacity: 0.6;
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
 
@@ -371,11 +369,14 @@ html[data-miniapp] body {
 }
 
 /* CSS-only route transition (no JS dependency → never hides content).
-   `backwards` (not `both`): a filled-forwards transform leaves an identity
-   matrix on the wrapper, which turns it into the containing block for every
-   `position: fixed` descendant (sticky buy bar, drawers, popups). */
-.page-in {
-  animation: pagein 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+   Opacity only, from 0.6 and for 0.2s: the old 0.42s slide from opacity 0
+   held every page's first paint (and LCP) back, and its transform made the
+   wrapper the containing block of every `position: fixed` descendant (buy
+   bar, drawers, popups) while it ran. Off for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .page-in {
+    animation: pagein 0.2s ease-out backwards;
+  }
 }
 
 :root {
