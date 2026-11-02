@@ -67,7 +67,7 @@ const bannerSchema = z.object({
 });
 
 export async function saveBanner(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const data = strings(form);
   const parsed = bannerSchema.safeParse(data);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
@@ -135,14 +135,14 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
 }
 
 export async function toggleBanner(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const id = Number(form.get("id"));
   if (id) await getDb().update(banners).set({ active: sql`not ${banners.active}`, updatedAt: new Date() }).where(eq(banners.id, id));
   refreshStorefront();
 }
 
 export async function deleteBanner(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const id = Number(form.get("id"));
   if (id) await getDb().delete(banners).where(eq(banners.id, id));
   refreshStorefront();
@@ -156,7 +156,7 @@ export async function deleteBanner(form: FormData) {
   language are dropped (that is how a row is removed).
 */
 export async function saveAnnouncements(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const data = strings(form);
   const rows = new Map<string, Record<string, string>>();
   for (const [key, value] of Object.entries(data)) {
@@ -215,7 +215,7 @@ const dealSchema = z.object({
 });
 
 export async function saveDeal(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const data = strings(form);
   const parsed = dealSchema.safeParse(data);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
@@ -269,7 +269,7 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
 }
 
 export async function deleteDeal(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const id = Number(form.get("id"));
   if (id) await getDb().delete(deals).where(eq(deals.id, id));
   refreshStorefront({ catalog: true });
@@ -278,7 +278,7 @@ export async function deleteDeal(form: FormData) {
 
 /* Ends the running deal now: the product's usual price is back on the next page view. */
 export async function endDealNow(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const id = Number(form.get("id"));
   if (id) {
     await getDb()

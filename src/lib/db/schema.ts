@@ -133,6 +133,26 @@ export const adminUsers = pgTable("admin_users", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
   sessionEpoch: integer("session_epoch").notNull().default(0),
+  /** 0016: owner / manager / operator (lib/admin/roles.ts). */
+  role: text("role").$type<AdminRole>().notNull().default("operator"),
+  totpSecret: text("totp_secret"),
+  totpEnabledAt: timestamp("totp_enabled_at", { withTimezone: true }),
+  totpLastStep: bigint("totp_last_step", { mode: "number" }),
+  recoveryCodes: text("recovery_codes").array(),
+});
+
+export const ADMIN_ROLES = ["owner", "manager", "operator"] as const;
+export type AdminRole = (typeof ADMIN_ROLES)[number];
+
+export const adminAuditLog = pgTable("admin_audit_log", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  adminUserId: integer("admin_user_id").references(() => adminUsers.id, { onDelete: "set null" }),
+  adminEmail: text("admin_email"),
+  action: text("action").notNull(),
+  target: text("target"),
+  detail: jsonb("detail"),
+  ip: text("ip"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 /** Internal service notes; never store health or payment-card data here. */

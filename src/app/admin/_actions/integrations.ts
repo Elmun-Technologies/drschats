@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { getEmailConfig } from "@/lib/email/config";
 import { isIntegrationEncryptionConfigured } from "@/lib/integrations/crypto";
 import { getRuntimeIntegrationSettings, saveIntegrationSettings, type IntegrationSettingUpdates } from "@/lib/integrations/settings";
@@ -74,7 +75,7 @@ function integrationSettingsError(): FormState | null {
 }
 
 export async function saveAnalyticsIntegration(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   if (process.env.NODE_ENV === "production" && process.env.ANALYTICS_CSP_BUILD_ENABLED !== "on") {
     return { error: "Bu build analitika hostlarini CSPʼda ochmagan. Deployʼda ADMIN_ANALYTICS_CSP=on bilan qayta build qiling (fly.tomlʼda allaqachon yoqilgan — keyingi deployʼdan keyin ishlaydi)." };
   }
@@ -106,13 +107,14 @@ export async function saveAnalyticsIntegration(_: FormState, form: FormData): Pr
   }
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: "Saqlandi. Saytning keyingi sahifa yuklanishlari yangi teglar bilan ishlaydi." };
 }
 
 const verificationSchema = z.object({ google: z.string().max(400), yandex: z.string().max(400), bing: z.string().max(400) });
 
 export async function saveVerificationCodes(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   const parsed = verificationSchema.safeParse({ google: formString(form, "google"), yandex: formString(form, "yandex"), bing: formString(form, "bing") });
   if (!parsed.success) return { error: "Kodlar juda uzun." };
   const codes = { google: verificationCode(parsed.data.google), yandex: verificationCode(parsed.data.yandex), bing: verificationCode(parsed.data.bing) };
@@ -127,11 +129,12 @@ export async function saveVerificationCodes(_: FormState, form: FormData): Promi
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/", "layout");
   revalidatePath("/admin/integrations");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: "Saqlandi. Tasdiqlash meta-tegi saytning barcha sahifalarida chiqadi — endi Search Console / Webmasterʼda «Tasdiqlash» tugmasini bosing." };
 }
 
 export async function saveOperatorIntegration(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   const parsed = operatorSchema.safeParse({
     botToken: formString(form, "botToken"),
     chatId: formString(form, "chatId"),
@@ -156,11 +159,12 @@ export async function saveOperatorIntegration(_: FormState, form: FormData): Pro
   }
   revalidatePath("/admin/integrations");
   revalidatePath("/admin/marketing");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: "Telegram operator sozlamalari saqlandi. Yangi xabarlar shu konfiguratsiyadan foydalanadi." };
 }
 
 export async function saveEmailIntegration(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   const parsed = emailSchema.safeParse({
     apiKey: formString(form, "apiKey"),
     from: formString(form, "from"),
@@ -189,12 +193,13 @@ export async function saveEmailIntegration(_: FormState, form: FormData): Promis
   }
   revalidatePath("/admin/integrations");
   revalidatePath("/admin/marketing");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: "Email sozlamalari saqlandi. Yangi xatlar ushbu server konfiguratsiyasidan foydalanadi." };
 }
 
 /** Validates both the bot token and that the bot can resolve the operator chat. */
 export async function testOperatorTelegramConnection(_: FormState, _form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("integrations");
   const { operatorBotToken: token, operatorChatId: chatId } = await getRuntimeIntegrationSettings();
   if (!token || !chatId) return { error: "Avval Telegram bot tokeni va operator chat IDʼni saqlang." };
 
@@ -222,7 +227,7 @@ const testEmailSchema = z.string().trim().email("Test uchun toʻgʻri email manz
 
 /** Sends one explicit, non-marketing test message to the recipient entered by the admin. */
 export async function sendResendTestEmail(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("integrations");
   const parsedRecipient = testEmailSchema.safeParse(formString(form, "testRecipient"));
   if (!parsedRecipient.success) return { error: parsedRecipient.error.issues[0]?.message ?? "Email manzilini tekshiring." };
 
@@ -265,7 +270,7 @@ const smsSchema = z.object({
 });
 
 export async function saveSmsIntegration(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   const password = form.get("password");
   const parsed = smsSchema.safeParse({
     email: formString(form, "email"),
@@ -300,6 +305,7 @@ export async function saveSmsIntegration(_: FormState, form: FormData): Promise<
     return { error: "Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring." };
   }
   revalidatePath("/admin/integrations");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: "SMS sozlamalari saqlandi. Ulanishni «Test SMS yuborish» bilan tekshiring." };
 }
 
@@ -311,7 +317,7 @@ const testPhone = z
 
 /** One plain test SMS to a number the admin typed; not stored in the outbox and not marketing. */
 export async function sendTestSms(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("integrations");
   const parsed = testPhone.safeParse(formString(form, "testPhone"));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Raqamni tekshiring." };
   const { resolveSmsProvider } = await import("@/lib/sms");
@@ -341,7 +347,7 @@ const paymeSchema = z.object({
 });
 
 export async function savePaymeIntegration(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   const raw = (k: string) => (typeof form.get(k) === "string" ? (form.get(k) as string).trim() : "");
   const parsed = paymeSchema.safeParse({
     merchantId: formString(form, "merchantId"),
@@ -381,6 +387,7 @@ export async function savePaymeIntegration(_: FormState, form: FormData): Promis
   }
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: d.enabled ? `Saqlandi. Payme ${d.testMode ? "test rejimida " : ""}yoqildi — checkoutʼda koʻrinadi.` : "Saqlandi. Payme oʻchiq — checkoutʼda koʻrinmaydi." };
 }
 
@@ -393,7 +400,7 @@ const clickSchema = z.object({
 });
 
 export async function saveClickIntegration(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   const secret = form.get("secretKey");
   const parsed = clickSchema.safeParse({
     serviceId: formString(form, "serviceId"),
@@ -422,6 +429,7 @@ export async function saveClickIntegration(_: FormState, form: FormData): Promis
   }
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: d.enabled ? "Saqlandi. Click yoqildi — checkoutʼda koʻrinadi." : "Saqlandi. Click oʻchiq — checkoutʼda koʻrinmaydi." };
 }
 
@@ -432,7 +440,7 @@ const fiscalSchema = z.object({
 });
 
 export async function saveFiscalSettings(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("integrations");
   const parsed = fiscalSchema.safeParse({
     shippingMxik: formString(form, "shippingMxik"),
     shippingPackage: formString(form, "shippingPackage"),
@@ -453,5 +461,6 @@ export async function saveFiscalSettings(_: FormState, form: FormData): Promise<
   }
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
+  await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: "Saqlandi. Keyingi Payme toʻlovlari chekida shu kodlar ishlatiladi." };
 }

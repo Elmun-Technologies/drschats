@@ -14,7 +14,7 @@ const noteSchema = z.object({
 });
 
 export async function addCustomerNote(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("customers");
   const parsed = noteSchema.safeParse({ phone9: form.get("phone9"), note: form.get("note") });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
 

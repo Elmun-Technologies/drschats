@@ -33,6 +33,7 @@ export const PUBLIC_SETTING_KEYS = [
   "payments.shippingMxik",
   "payments.shippingPackage",
   "payments.vatPercent",
+  "admin.require2fa",
 ] as const;
 
 export type PublicSettingKey = (typeof PUBLIC_SETTING_KEYS)[number];

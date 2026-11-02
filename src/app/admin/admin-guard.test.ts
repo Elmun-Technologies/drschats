@@ -10,7 +10,7 @@ import { describe, expect, it } from "vitest";
   before it reads anything.
 */
 const ROOT = join(process.cwd(), "src/app/admin");
-const PUBLIC = new Set(["login/page.tsx", "setup/page.tsx"]);
+const PUBLIC = new Set(["login/page.tsx", "login/verify/page.tsx", "setup/page.tsx"]);
 
 function pages(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {

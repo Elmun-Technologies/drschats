@@ -2,6 +2,7 @@
 
 import { revalidatePath, revalidateTag } from "next/cache";
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { SITE_SETTINGS_TAG } from "@/lib/integrations/site-settings";
 import { saveCommerceSection } from "@/lib/commerce/server";
 import { isCommerceSection, parseCommerceSection } from "@/lib/commerce/form";
@@ -14,7 +15,7 @@ import type { FormState } from "./catalog";
   the new rules on the next request.
 */
 export async function saveCommerceSettings(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("commerce");
   const section = form.get("section");
   if (!isCommerceSection(section)) return { error: "Boʻlim topilmadi." };
   const label = admin.name?.trim() || admin.email;
@@ -31,5 +32,6 @@ export async function saveCommerceSettings(_: FormState, form: FormData): Promis
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/", "layout");
   revalidatePath("/admin/commerce");
+  await auditLog(admin, "commerce.save", auditTarget(form));
   return { ok: form.get("intent") === "reset" ? "Standart qiymatlar tiklandi." : "Saqlandi. Saytda va savatda darhol amal qiladi." };
 }

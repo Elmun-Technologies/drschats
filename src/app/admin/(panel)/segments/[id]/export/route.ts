@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog } from "@/lib/admin/audit";
 import { segmentById, segmentMembers } from "@/lib/admin/segments";
 import { segmentCsv, type ExportFormat } from "@/lib/admin/segment-export";
 import { optedOutPhones } from "@/lib/messaging/optout";
@@ -8,7 +9,9 @@ export const dynamic = "force-dynamic";
 const FORMATS: ExportFormat[] = ["crm", "meta", "google"];
 
 export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  await requireAdmin();
+  const admin = await requireAdmin("marketing");
+  // Bulk personal data leaving the panel: always in the audit log.
+  await auditLog(admin, "export.segment");
   const { id } = await params;
   const segment = segmentById(id);
   if (!segment) return new Response("Not found", { status: 404 });

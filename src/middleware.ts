@@ -2,7 +2,7 @@ import createMiddleware from "next-intl/middleware";
 import { NextResponse, type NextRequest } from "next/server";
 import { routing } from "@/lib/i18n/routing";
 import { AB_COOKIE, AB_COOKIE_RE } from "@/lib/merch/ab";
-import { SESSION_COOKIE, isPublicAdminPath } from "@/lib/admin/cookie";
+import { ADMIN_PATH_HEADER, SESSION_COOKIE, isPublicAdminPath } from "@/lib/admin/cookie";
 
 const intl = createMiddleware(routing);
 
@@ -36,8 +36,13 @@ export default function middleware(request: NextRequest) {
   no further.
 */
 function adminGate(request: NextRequest) {
-  if (isPublicAdminPath(request.nextUrl.pathname) || request.cookies.has(SESSION_COOKIE)) return NextResponse.next();
-  return NextResponse.redirect(new URL("/admin/login", request.url));
+  if (!isPublicAdminPath(request.nextUrl.pathname) && !request.cookies.has(SESSION_COOKIE)) {
+    return NextResponse.redirect(new URL("/admin/login", request.url));
+  }
+  // The page's path for requireAdmin (role check). Set here, so a client-sent value never survives.
+  const forwarded = new Headers(request.headers);
+  forwarded.set(ADMIN_PATH_HEADER, request.nextUrl.pathname);
+  return NextResponse.next({ request: { headers: forwarded } });
 }
 
 export const config = {

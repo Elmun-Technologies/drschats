@@ -3,6 +3,7 @@
 import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { CATALOG_TAG } from "@/lib/catalog/db";
 import { adjustStock, saveLowStockDefault } from "@/lib/catalog/stock";
 import { afterProductChange, cancelWaitRequest, notifyWaitlist, type DispatchResult } from "@/lib/notify/waitlist";
@@ -33,7 +34,7 @@ const adjustSchema = z.object({
 
 /* The products list's "Soni" dialog: ± units, an exact count, or stop tracking. */
 export async function adjustStockAction(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  const admin = await requireAdmin("catalog");
   const parsed = adjustSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: "Sonni tekshiring." };
   const { id, mode, value, note } = parsed.data;
@@ -44,13 +45,14 @@ export async function adjustStockAction(_: FormState, form: FormData): Promise<F
   refresh();
   const sent = await afterProductChange(id, result.before, result.after);
   const now = result.after.stockQty == null ? "kuzatilmaydi" : `${result.after.stockQty} ta`;
+  await auditLog(admin, "stock.adjust", auditTarget(form));
   return { ok: `Saqlandi: ${now}.${sentNote(sent)}` };
 }
 
 const thresholdSchema = z.object({ lowStockAt: z.coerce.number().int().min(1).max(1000) });
 
 export async function saveLowStockDefaultAction(_: FormState, form: FormData): Promise<FormState> {
-  const me = await requireAdmin();
+  const me = await requireAdmin("catalog");
   const parsed = thresholdSchema.safeParse({ lowStockAt: form.get("lowStockAt") });
   if (!parsed.success) return { error: "1 dan 1000 gacha son kiriting." };
   await saveLowStockDefault(parsed.data.lowStockAt, me.id);
@@ -60,7 +62,7 @@ export async function saveLowStockDefaultAction(_: FormState, form: FormData): P
 
 /* "Hozir xabar yuborish": everyone the product's current state answers (back in stock / cheaper). */
 export async function notifyWaitlistNow(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("waitlist");
   const id = String(form.get("productId") ?? "");
   if (!id) return { error: "Mahsulot tanlanmagan." };
   const r = await notifyWaitlist(id);
@@ -70,7 +72,7 @@ export async function notifyWaitlistNow(_: FormState, form: FormData): Promise<F
 }
 
 export async function cancelWaitRequestAction(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("waitlist");
   const id = Number(form.get("id"));
   if (Number.isInteger(id) && id > 0) await cancelWaitRequest(id);
   revalidatePath("/admin/waitlist");

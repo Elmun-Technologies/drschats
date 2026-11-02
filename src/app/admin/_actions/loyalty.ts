@@ -39,7 +39,7 @@ async function persist(next: LoyaltyRules, adminId: number): Promise<void> {
 
 /** One form per section; the other sections keep what they had. */
 export async function saveCashbackRules(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const parsed = cashbackSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const current = await readLoyaltyRules();
@@ -48,7 +48,7 @@ export async function saveCashbackRules(_: FormState, form: FormData): Promise<F
 }
 
 export async function saveReferralRules(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const parsed = referralSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const current = await readLoyaltyRules();
@@ -57,7 +57,7 @@ export async function saveReferralRules(_: FormState, form: FormData): Promise<F
 }
 
 export async function saveBirthdayRules(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const parsed = birthdaySchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const current = await readLoyaltyRules();
@@ -77,7 +77,7 @@ const adjustSchema = z.object({
 
 /** Manual correction on the customer page. The note is required: every change to a balance has a reason on record. */
 export async function adjustCustomerPoints(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const parsed = adjustSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const balance = await adjustPoints({ ...parsed.data, adminId: admin.id });

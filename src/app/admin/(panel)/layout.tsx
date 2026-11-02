@@ -23,7 +23,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
   const badges = await navBadges();
   return (
     <AdminShell
-      admin={{ name: admin.name, email: admin.email }}
+      admin={{ name: admin.name, email: admin.email, role: admin.role }}
       badges={badges}
       logout={
         <form action={logout}>

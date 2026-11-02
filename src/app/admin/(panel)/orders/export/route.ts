@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog } from "@/lib/admin/audit";
 import { ORDER_PERIODS, listOrders, periodStart, type OrderPeriod } from "@/lib/admin/queries";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/db/schema";
 import { DELIVERY_LABEL, STATUS_LABEL, formatDateTime } from "@/lib/admin/order-labels";
@@ -8,7 +9,9 @@ import { csvResponse, toCsv } from "@/lib/admin/csv";
 export const dynamic = "force-dynamic";
 
 export async function GET(req: Request) {
-  await requireAdmin();
+  const admin = await requireAdmin("analytics");
+  // Bulk personal data leaving the panel: always in the audit log.
+  await auditLog(admin, "export.orders");
   const params = new URL(req.url).searchParams;
   const status = params.get("status");
   const period = params.get("period") ?? "all";

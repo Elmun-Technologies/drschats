@@ -11,6 +11,7 @@ import { CATALOG_TAG } from "@/lib/catalog/db";
 import { rawPromotions } from "@/lib/shopflow/mock";
 import { SLUG_RE, fromTashkentInput } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { campaignTargetKey, segmentById, segmentMembers } from "@/lib/admin/segments";
 import { queueMessage, reachContext, resolveChatReach, resolveReach, type Reach } from "@/lib/messaging/outbox";
 import { firstName, renderTemplate } from "@/lib/messaging/template";
@@ -53,7 +54,7 @@ const campaignSchema = z
   we have from an order. {ism} becomes the customer's first name.
 */
 export async function sendSegmentCampaign(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const parsed = campaignSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const segment = segmentById(parsed.data.segment);
@@ -124,6 +125,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   revalidatePath("/admin/messages");
   revalidatePath(`/admin/segments/${segment.id}`);
   const night = isQuietHours(new Date()) ? " Hozir tungi vaqt — xabarlar ertalab 09:00 da ketadi." : "";
+  await auditLog(admin, "campaign.send", auditTarget(form));
   return { ok: `${queued} ta mijozga navbatga qoʻyildi${unreachable ? ` (${unreachable} tasiga kanal yoʻq yoki obunadan chiqqan)` : ""}. Ishchi har daqiqada yuboradi.${night}` };
 }
 
@@ -159,7 +161,7 @@ function refreshCatalog() {
 }
 
 export async function savePromotion(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const data = Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")) as Record<string, string>;
   const parsed = promotionSchema.safeParse(data);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
@@ -192,11 +194,12 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   refreshCatalog();
   revalidatePath("/admin/promotions");
   if (!id) redirect("/admin/promotions?saved=1");
+  await auditLog(admin, "promotion.save", auditTarget(form));
   return { ok: "Saqlandi. Saytda darhol amal qiladi." };
 }
 
 export async function togglePromotion(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const id = String(form.get("id") ?? "");
   if (id) await getDb().update(promotions).set({ active: sql`not ${promotions.active}`, updatedAt: new Date() }).where(eq(promotions.id, id));
   refreshCatalog();
@@ -204,7 +207,7 @@ export async function togglePromotion(form: FormData) {
 }
 
 export async function deletePromotion(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const id = String(form.get("id") ?? "");
   if (id) await getDb().delete(promotions).where(eq(promotions.id, id));
   refreshCatalog();
@@ -213,7 +216,7 @@ export async function deletePromotion(form: FormData) {
 
 /* Copies the promotions the site runs today into the table, so the team can edit or switch them off. */
 export async function importBuiltInPromotions(_: FormState, _form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const rows = await getDb()
     .insert(promotions)
     .values(
