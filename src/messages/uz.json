@@ -704,7 +704,12 @@
       "house": "Uy",
       "apartment": "Xonadon",
       "landmark": "Moʻljal (ixtiyoriy)",
-      "landmarkPlaceholder": "Masalan: maktab yonida, 2-podyezd"
+      "landmarkPlaceholder": "Masalan: maktab yonida, 2-podyezd",
+      "phoneProof": {
+        "title": "Birinchi buyurtmaga −{percent}%",
+        "send": "SMS kod olish",
+        "why": "Chegirma raqami tasdiqlangan mijozga avtomatik qoʻllanadi. Shu raqamga 6 xonali kod yuboramiz."
+      }
     }
   },
   "checkout": {

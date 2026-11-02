@@ -24,7 +24,7 @@ function itemsOf(lines: CartLine[]): CartPromoInput["items"] {
  * full phone number is typed. Re-asked, debounced, whenever the lines, the
  * phone or the code change; a stale answer never overwrites a newer one.
  */
-export function useCartDiscount({ enabled, lines, phone, locale }: { enabled: boolean; lines: CartLine[]; phone: string; locale: Locale }) {
+export function useCartDiscount({ enabled, lines, phone, phoneToken, locale }: { enabled: boolean; lines: CartLine[]; phone: string; phoneToken?: string; locale: Locale }) {
   const code = usePromoCode((s) => s.code);
   const setCode = usePromoCode((s) => s.setCode);
   const [quote, setQuote] = useState<OkQuote | null>(null);
@@ -43,12 +43,12 @@ export function useCartDiscount({ enabled, lines, phone, locale }: { enabled: bo
       const current = linesRef.current;
       if (current.length === 0) return null;
       const id = ++seq.current;
-      const res = await checkCartPromo({ code: withCode ?? undefined, phone: phone9 || undefined, locale, items: itemsOf(current) }).catch(
+      const res = await checkCartPromo({ code: withCode ?? undefined, phone: phone9 || undefined, phoneToken, locale, items: itemsOf(current) }).catch(
         () => ({ ok: false, error: "invalid" }) as const,
       );
       return id === seq.current ? res : null;
     },
-    [phone9, locale],
+    [phone9, phoneToken, locale],
   );
 
   useEffect(() => {

@@ -42,6 +42,7 @@ import type { FirstOrderOffer } from "@/lib/promo/rules";
 import { PromoCodeField } from "./PromoCodeField";
 import { useCartDiscount } from "./useCartDiscount";
 import { PointsField } from "./PointsField";
+import { PhoneProofField } from "./PhoneProofField";
 import { usePoints } from "@/lib/loyalty/store";
 import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
 import { useMiniAppMainButton } from "@/components/telegram/useMiniAppMainButton";
@@ -271,10 +272,15 @@ export function CheckoutForm({
     },
   });
 
+  // The SMS proof of the phone for the automatic first-order discount (PhoneProofField).
+  const [phoneProof, setPhoneProof] = useState<{ phone9: string; token: string } | null>(null);
+  const typedPhone9 = (watch("phone") ?? "").replace(/\D/g, "").slice(-9);
+  const phoneToken = phoneProof && phoneProof.phone9 === typedPhone9 ? phoneProof.token : undefined;
   const discount = useCartDiscount({
     enabled: promoCodes || firstOrder.mode === "auto",
     lines,
     phone: watch("phone") ?? "",
+    phoneToken,
     locale,
   });
 
@@ -394,6 +400,7 @@ export function CheckoutForm({
       },
       promoCode: discount.orderCode,
       pointsToken: pointsApplied > 0 && pointsToken ? pointsToken : undefined,
+      phoneToken,
       locale,
       attribution: getAttribution(),
       telegram: telegramInitData(),
@@ -512,7 +519,7 @@ export function CheckoutForm({
                   {formatNumber(Math.max(0, totals.subtotal - totals.discount))} / {formatMoney(totals.freeShippingThreshold, locale)}
                 </span>
               </div>
-              <div className="h-1.5 rounded-full bg-[#DCDFDB] lg:h-2">
+              <div className="h-1.5 rounded-full bg-line-strong lg:h-2">
                 <div className="h-full rounded-full bg-ink transition-[width] duration-500" style={{ width: `${progress}%` }} />
               </div>
               {/* "Order by 16:00 for today" is a Tashkent courier promise; the regions travel by BTS. */}
@@ -701,6 +708,9 @@ export function CheckoutForm({
               <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} sale />
             )}
             {loyalty.redeemable && <PointsField phone={watch("phone") ?? ""} applied={pointsApplied} maxSharePercent={loyalty.maxSharePercent} />}
+            {firstOrder.mode === "auto" && phone9 && !phoneToken && !(pointsToken && pointsPhone === phone9) && (
+              <PhoneProofField phone={watch("phone") ?? ""} percent={firstOrder.percent} onProven={(p9, token) => setPhoneProof({ phone9: p9, token })} />
+            )}
             {applied && extra > 0 && (
               <SummaryRow
                 label={
@@ -721,7 +731,7 @@ export function CheckoutForm({
               label={tc("shipping")}
               value={totals.shipping === 0 ? tc("free") : formatMoney(totals.shipping, locale)}
             />
-            <div className="flex items-baseline justify-between gap-3 border-t border-[#DCDFDB] pt-3.5 text-[22px] font-bold lg:border-line lg:text-[26px]">
+            <div className="flex items-baseline justify-between gap-3 border-t border-line-strong pt-3.5 text-[22px] font-bold lg:border-line lg:text-[26px]">
               <span>{tc("total")}</span>
               <span>{formatMoney(grandTotal, locale)}</span>
             </div>

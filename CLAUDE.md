@@ -11,6 +11,9 @@ katalog o'sha yo'lning oxirida turadi.
 - **Stack**: Next.js 15, TypeScript, Tailwind CSS v4, Framer Motion, Zustand, next-intl, Zod, react-hook-form
 - **Tillar**: `uz` (default) va `ru`. **`en` yo'q** — `locales = ["ru", "uz"]` (`src/lib/i18n/routing.ts`), `src/messages/` ichida faqat shu ikkitasi
 - **Admin panel**: `/admin` — o'z panelimiz (Postgres + Drizzle, Fly.io), sayt V3 uslubida. Analitika, mijozlar yo'li (birinchi tomon kuzatuv), voronka, segmentlar va retarget (CSV/Meta/Google eksport, Telegram kampaniya), aksiyalar (bazada), integratsiyalar markazi, katalog, buyurtmalar. To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md)**. `DATABASE_URL` bo'lmasa `/admin` 404 va sayt o'rnatilgan katalogda ishlaydi. Birinchi ishga tushishda o'rnatilgan katalog bazaga o'zi ko'chadi (`lib/admin/seed.ts`)
+- **Admin rollari, 2FA va audit** (0016, `lib/admin/roles.ts`, `totp.ts`, `audit.ts`): rollar `owner` / `manager` / `operator`; ruxsat jadvali bitta — menyu, sahifa (yo'l bo'yicha, middleware `x-govita-admin-path` beradi) va server action (**har action `requireAdmin("<permission>")` bilan ruxsatini o'zi aytadi** — `roles.test.ts`). Ro'yxatda yo'q sahifa faqat egaga ochiq. Kirish 2 bosqichli bo'lishi mumkin (TOTP, QR `/admin/security`, 10 ta tiklash kodi, sir `ADMIN_SESSION_SECRET` dan olingan kalit bilan AES-GCM), ega uni hammaga majburiy qila oladi. Pul, kalit, katalog, buyurtma holati va har bir eksport `auditLog()` bilan `/admin/audit` ga yoziladi
+- **Talab tahlili** (0030, `lib/keywords/`, `/admin/keywords`): Google Keyword Planner uchun kalit so'zlar ro'yxati (ru / uz lotin / uz kirill, mavzular `subjects.ts`, katalogdan ham) va Planner eksportini yuklash (UTF-16/UTF-8, en/ru, diapazonlar). Har mavzu bo'yicha oylik talab, mavsum, bizda bormi, sahifa, saytdagi qidiruv va «talab bor — bizda yo'q». Planner apostrofni bo'sh joy qilib qaytaradi — moslash `matchKey()` orqali
+- **Sharhlar va obunalar** (0017): sharh mahsulot sahifasida `pending`, `/admin/reviews` tasdiqlagach reyting va ro'yxatga kiradi (o'ylab topilgan sharh yo'q). Obuna qatori buyurtma bilan `subscriptions` ga yoziladi, `/admin/subscriptions` muddati kelganlarni ko'rsatadi, eslatma `subscription_due` oqimi (sukut: o'chiq)
 - **Saytning o'z kuzatuvi**: `lib/journey/` + `POST /api/t` (`gv_vid` cookie, `visitors`/`visitor_events`). `lib/analytics/events.ts` dagi har bir hodisa u yerga ham yoziladi — **yangi hodisani faqat `events.ts` orqali qo'shing**. Buyurtma `linkOrderToVisitor` bilan tashrif buyuruvchiga bog'lanadi
 - **Vitrina** (`/admin/storefront`, 0008): bannerlar (`banners`: hero / header ostidagi `strip` / `category`), eʼlon qatori (`site_settings` → `storefront.announcements`), bugungi taklif (`deals`). Saytda `lib/merch/store.ts` (kesh tag `merch`). Faol hero banner bo'lmasa — `home.slides` aynan avvalgidek (**hech qachon bo'sh hero emas**); taymer faqat haqiqiy `ends_at` bilan. **Bugungi taklif mahsulot qatorini o'zgartirmaydi**: narx har o'qishda `lib/catalog/deals.ts` (`dealPrice`, engine ichida) bilan oyna bo'yicha hisoblanadi — cron yo'q, checkout ham shu engine'dan narxlaydi. Batafsil: `docs/ADMIN.md` → Vitrina
 - **Savdo qoidalari panelda** (`/admin/commerce`, `site_settings` `commerce.rules`, `lib/commerce/`): bepul yetkazish chegarasi, kuryer narxi, viloyatlar muddati, bugun yetkazish chegarasi (env `NEXT_PUBLIC_DELIVERY_CUTOFF` endi faqat standart, runtime'da o'qiladi), upsell zinapoyasi foizlari/sovg'a, obuna %, savat takliflari chegarasi, pop-up'lar (yoqish, kechikish, cool-down, matn uz/ru). `lib/config/commerce.ts` dagi konstantalar — **faqat standart**: narxlaydigan yoki iqtibos keltiradigan kod samarali qiymatni o'qiydi (server `getCommerceSettings()`, klient `useCommerce()`/`usePricingRules()` — layout'dagi `CommerceProvider`), sof funksiyalarga qiymat argument bilan beriladi (`computeTotals(..., { rules })`, `repriceOrder(..., { pricing, ladder })`, `buildUpsellLadder(..., ladder)`, `gapFillers(..., { window })`, `subscriptionPricing(price, percents)`). Server qabul qiladigan zinapoya foizlari shu sozlamadan (`ladderPercentsAccepted`). To'liq: `docs/ADMIN.md` §Savdo qoidalari
@@ -44,8 +47,7 @@ demo ekspertlar va o'ylab topilgan yangiliklar olib tashlangan; birinchi haqiqiy
 qo'shilishi bilan bo'lim o'zi qaytadi. `BRAND.contact` va `BRAND.social` Go Vita
 manzillariga o'tkazilgan.
 
-Hali bo'sh: `/reviews` (halol bo'sh holat ko'rsatadi — o'ylab topilgan sharh
-yo'q), `BRAND.logo` (matnli wordmark chiziladi) va `BRAND.legal.licence`
+Hali bo'sh: `/reviews` (tasdiqlangan sharh bo'lmaguncha halol bo'sh holat va `noindex`), `BRAND.logo` (matnli wordmark chiziladi) va `BRAND.legal.licence`
 ("yangilanmoqda" qatori chiziladi). Ikkalasi ham atayin: o'ylab topilgan
 litsenziya raqami yo'q raqamdan yomon.
 
@@ -181,7 +183,7 @@ chaqirilgandan **keyin** chizing.
 | `social-proof/` | LivePurchaseToast (har 35s, Framer Motion) |
 | `exit-intent/` | ExitIntentPopup (faqat `mouseleave` — ya'ni desktop; telefonda chiqmaydi), sessionStorage once |
 | `pwa/` | ServiceWorkerRegistration |
-| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), StarRating, ScrollProgress, BackToTop |
+| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), StarRating, BackToTop |
 | `analytics/` | Analytics (GTM Script) |
 
 ## State Management
@@ -237,12 +239,19 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1684 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1467 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini
 `src/messages/keys-used.test.ts` tekshiradi: yo'q kalit next-intl'da xato emas,
-sahifada kalit nomining o'zi (`common.savings`) chiqadi.
+sahifada kalit nomining o'zi (`common.savings`) chiqadi. Teskarisi —
+`keys-unused.test.ts`: hech qayerda o'qilmaydigan kalit qolsa test qizil, ya'ni
+komponentni o'chirganda uning kalitlarini ham o'chiring.
+
+**Klientga faqat kerakli namespace'lar ketadi** (`lib/i18n/client-messages.ts`,
+`CLIENT_MESSAGE_PATHS`). Client komponentda yangi `useTranslations("x")` yozsangiz
+`x` ni shu ro'yxatga qo'shing — `client-messages.test.ts` import grafigini
+kuzatib, yetishmasa yiqiladi.
 
 **Namespace-lar** (ikkala faylda bir xil; `track` — kuzatish sahifasi, `popups` — pop-up matnlari): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `popups`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `track`, `upsell`, `wishlist`
 
