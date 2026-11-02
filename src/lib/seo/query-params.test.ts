@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { BRAND_VARIANT_PARAMS, CATALOG_VARIANT_PARAMS, isTrackingParam, isVariantQuery } from "./query-params";
+import { BRAND_VARIANT_PARAMS, CATALOG_VARIANT_PARAMS, isTrackingParam, isVariantQuery, plainPageNumber } from "./query-params";
 import type { FilterParams } from "@/lib/shop/catalog-filters";
 
 describe("isVariantQuery", () => {
@@ -47,5 +47,18 @@ describe("isTrackingParam", () => {
       expect(isTrackingParam(key), key).toBe(true);
     }
     expect(isTrackingParam("sort")).toBe(false);
+  });
+});
+
+describe("plainPageNumber", () => {
+  it("is the page of a clean shelf", () => {
+    expect(plainPageNumber({ page: "3" }, CATALOG_VARIANT_PARAMS)).toBe(3);
+    expect(plainPageNumber({ page: "2", utm_source: "x" }, CATALOG_VARIANT_PARAMS)).toBe(2);
+  });
+
+  it("is null for page 1, junk, or a sorted/filtered/searched view", () => {
+    for (const q of [{}, { page: "1" }, { page: "abc" }, { page: "02" }, { page: "2", sort: "price_asc" }, { page: "2", brand: "x" }, { page: "2", q: "d3" }]) {
+      expect(plainPageNumber(q, CATALOG_VARIANT_PARAMS), JSON.stringify(q)).toBeNull();
+    }
   });
 });
