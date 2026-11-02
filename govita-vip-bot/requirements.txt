@@ -3,6 +3,3 @@
 aiogram==3.13.1
 aiosqlite==0.20.0
 python-dotenv==1.0.1
-# Kept here only because CI installs `requirements.txt pytest` for the bot
-# job; move it to requirements-dev.txt once CI installs that file instead.
-pytest-asyncio==0.24.0
