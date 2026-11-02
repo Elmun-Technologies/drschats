@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getMessages, getTranslations } from "next-intl/server";
 import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routing";
+import { pickMessages } from "@/lib/i18n/client-messages";
 import { shopflow } from "@/lib/shopflow";
 import { PromotionsProvider } from "@/lib/cart/promotions-context";
 import { populatedTopicPaths } from "@/lib/content/nav-sections";
@@ -101,7 +102,7 @@ export default async function LocaleLayout({
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className="grain min-h-screen antialiased">
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={pickMessages(messages)}>
           <PromotionsProvider promotions={promotions}>
           <CommerceProvider settings={commerce}>
             <a
