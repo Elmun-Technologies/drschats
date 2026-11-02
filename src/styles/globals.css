@@ -260,6 +260,13 @@
   `--tab-bar` is the tab bar alone; `--bottom-nav` adds the product page's
   fixed buy bar, which sits on top of it. A page opts in by rendering an
   element with `data-buy-bar`, so the offset exists exactly while the bar does.
+
+  No `env(safe-area-inset-*)` on the site's own furniture: the viewport is not `viewport-fit=cover`,
+  so the browser already keeps the page out of the notch and the home
+  indicator and every inset reads 0. Opting into `cover` means adding the
+  insets back here, on the tab bar, the bottom sheets and the drawer footer,
+  and padding the containers for landscape. (The Mini App body below keeps
+  its inset: Telegram's own webview decides that one.)
 */
 :root {
   --tab-bar: 0px;
@@ -268,7 +275,7 @@
 }
 @media (max-width: 1023.98px) {
   :root {
-    --tab-bar: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+    --tab-bar: 4.25rem;
   }
   :root:has([data-buy-bar]) {
     --buy-bar: 4.5rem;
