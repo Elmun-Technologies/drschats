@@ -64,6 +64,7 @@ const PATHS: [string, Permission][] = [
   ["/admin/visitors", "analytics"],
   ["/admin/funnel", "analytics"],
   ["/admin/search", "orders"],
+  ["/admin/keywords", "analytics"],
   ["/admin/segments", "marketing"],
   ["/admin/storefront", "marketing"],
   ["/admin/promotions", "marketing"],

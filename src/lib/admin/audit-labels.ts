@@ -27,4 +27,5 @@ export const AUDIT_ACTION_LABEL: Record<string, string> = {
   "export.waitlist": "Kutayotganlar eksporti",
   "broadcast.send": "Telegram tarqatma",
   "campaign.send": "Kampaniya yuborildi",
+  "keywords.import": "Keyword Planner maʼlumoti yuklandi",
 };

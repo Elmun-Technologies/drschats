@@ -1,4 +1,4 @@
-import { bigint, bigserial, boolean, integer, jsonb, pgTable, serial, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, bigserial, boolean, integer, jsonb, numeric, pgTable, serial, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import type { L, RawProduct } from "@/lib/shopflow/mock";
 import type { OrderRequest } from "@/lib/shopflow/types";
 
@@ -612,5 +612,38 @@ export const payments = pgTable("payments", {
   providerTime: bigint("provider_time", { mode: "number" }),
   raw: jsonb("raw"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Keyword research — db/migrations/0030_keyword_research.sql */
+export const keywordImports = pgTable("keyword_imports", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  fileName: text("file_name"),
+  rows: integer("rows").notNull(),
+  matched: integer("matched").notNull(),
+  currency: text("currency"),
+  ranged: boolean("ranged").notNull().default(false),
+  adminUserId: integer("admin_user_id").references(() => adminUsers.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const keywordStats = pgTable("keyword_stats", {
+  keyword: text("keyword").primaryKey(),
+  lang: text("lang").$type<"ru" | "uz" | "uz-cyrl">().notNull(),
+  subject: text("subject"),
+  kind: text("kind"),
+  intent: text("intent"),
+  avgMonthly: integer("avg_monthly"),
+  avgLow: integer("avg_low"),
+  avgHigh: integer("avg_high"),
+  ranged: boolean("ranged").notNull().default(false),
+  competition: text("competition").$type<"low" | "medium" | "high">(),
+  competitionIndex: smallint("competition_index"),
+  bidLow: numeric("bid_low", { precision: 14, scale: 2 }),
+  bidHigh: numeric("bid_high", { precision: 14, scale: 2 }),
+  threeMonthChange: text("three_month_change"),
+  yoyChange: text("yoy_change"),
+  monthly: jsonb("monthly").$type<Record<string, number>>().notNull().default({}),
+  importId: bigint("import_id", { mode: "number" }),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

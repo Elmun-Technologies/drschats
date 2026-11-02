@@ -13,6 +13,7 @@ export const NAV_GROUPS = [
     items: [
       { href: "/admin", label: "Bosh sahifa", icon: "home", exact: true },
       { href: "/admin/analytics", label: "Analitika", icon: "chart" },
+      { href: "/admin/keywords", label: "Talab tahlili", icon: "target" },
     ],
   },
   {
