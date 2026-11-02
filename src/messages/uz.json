@@ -560,7 +560,7 @@
       "quizCta": "Testni boshlash",
       "subEyebrow": "Subscribe & Save",
       "subTitle": "Obuna: bugun −{first}%, keyin har safar −{recurring}%",
-      "subText": "Oraliqni {intervals} kun qilib tanlaysiz. Istalgan vaqtda bekor qilish mumkin.",
+      "subText": "Oraliqni {intervals} kun qilib tanlaysiz. Bekor qilish — operator orqali.",
       "subCta": "Batafsil",
       "shown": "{total} ta mahsulotdan {shown} tasi koʻrsatildi",
       "more": "Yana {count} ta koʻrsatish",
@@ -703,10 +703,12 @@
       "nextSteps": "Keyingi qadamlar",
       "step1Title": "Buyurtma qabul qilindi",
       "step1": "Buyurtma operator navbatiga tushdi.",
-      "step2Title": "Buyurtma yigʻiladi",
-      "step2": "24–48 soat ichida joʻnatishga tayyorlanadi.",
+      "step2Title": "Operator tasdiqlaydi",
+      "step2": "Qoʻngʻiroq qilib, buyurtma va yetkazish vaqtini kelishib oladi.",
       "step3Title": "Kuryer yetkazib beradi",
       "step3": "Buyurtma manzilingizga yetkaziladi.",
+      "step3PickupTitle": "Oʻzi olib ketasiz",
+      "step3Pickup": "Buyurtma tayyor boʻlgach, operator olib ketish manzili va vaqtini aytadi.",
       "telegram": "Telegramda yozish",
       "bonusNudge": "Yana 1 ta qoʻshing — 3-si sovgʻa",
       "fillersTitle": "Bittasini qoʻshing — yetkazish bepul boʻladi:",
@@ -799,7 +801,7 @@
     "errorPhone": "Toʻgʻri telefon raqamini kiriting",
     "success": {
       "title": "Buyurtmangiz qabul qilindi!",
-      "subtitle": "Tez orada operatorimiz siz bilan bogʻlanadi.",
+      "subtitle": "Operatorimiz ish vaqtida ({hours}) qoʻngʻiroq qilib, buyurtmani tasdiqlaydi.",
       "orderId": "Buyurtma raqami",
       "home": "Bosh sahifaga",
       "whatsNext": "Keyingi qadam",
@@ -809,7 +811,7 @@
       "step3": "Kuryer manzilingizga yetkazib beradi",
       "continueShopping": "Xarid qilishni davom ettirish",
       "trackBot": "Telegram orqali buyurtmani kuzatish",
-      "trackBotDesc": "@drschatsstorebot orqali buyurtma holatini real vaqtda bilib turing",
+      "trackBotDesc": "Go Vita Telegram-boti orqali buyurtma holatini real vaqtda bilib turing",
       "loyalty": {
         "pointsTitle": "Keshbek ballari",
         "earn": "Buyurtma yetkazilgach hisobingizga {points} ball tushadi.",
@@ -822,7 +824,11 @@
         "copied": "Nusxalandi",
         "share": "Havolani ulashish",
         "shareMessage": "Go Vitaʼda birinchi buyurtmangizga −{percent}% chegirma: {code} kodi bilan — {link}"
-      }
+      },
+      "summaryTitle": "Buyurtmangiz",
+      "summaryTotal": "Jami",
+      "summaryPayment": "Yetkazishda naqd pul bilan toʻlanadi",
+      "summaryPickup": "Oʻzi olib ketish"
     },
     "upsellAdd": "Qoʻshish",
     "upsellFree": "BEPUL 🎁",
@@ -1189,7 +1195,7 @@
         "badge": "−{first}% → −{recurring}%",
         "title": "Obuna (Subscribe & Save)",
         "text": "Bugungi yetkazishda {first}% chegirma, keyingi har bir yetkazishda {recurring}%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.",
-        "note": "Istalgan vaqtda toʻxtatish, oʻtkazib yuborish yoki bekor qilish mumkin."
+        "note": "Toʻxtatish, oʻtkazib yuborish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling."
       },
       {
         "badge": "{free}",
@@ -1673,7 +1679,7 @@
         "firstNote": "Promokod kerak emas — operator buyurtmani tasdiqlashda qoʻllaydi.",
         "subTitle": "Obuna (Subscribe & Save)",
         "subText": "Bugungi yetkazishda {first}% chegirma, keyingi har bir yetkazishda {next}%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.",
-        "subNote": "Istalgan vaqtda toʻxtatish, oʻtkazib yuborish yoki bekor qilish mumkin.",
+        "subNote": "Toʻxtatish, oʻtkazib yuborish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling.",
         "clubTitle": "VIP klub (Telegram-bot)",
         "clubText": "{amount} soʻmdan yuqori buyurtmalarga bepul yetkazish, klub takliflari va qabul eslatmalari.",
         "clubNote": "Qoʻshimcha foiz chegirma vaʼda qilinmaydi.",
@@ -1954,11 +1960,11 @@
   "privacy": {
     "title": "Maxfiylik siyosati",
     "effective": "Kuchga kirish sanasi: 2026 yil 28 iyun",
-    "intro": "Dr. Schatz Store sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday maʼlumotlarni toʻplashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
+    "intro": "Go Vita («DR SCHATZ» MChJ) sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday maʼlumotlarni toʻplashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
     "sections": [
       {
         "heading": "1. Qanday maʼlumotlarni toʻplaymiz",
-        "body": "Telegram-bot (@drschatsstorebot) orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi.\n\nAgar /profile sahifasida «Tugʻilgan kunimda sovgʻa olishni xohlayman» belgisini qoʻysangiz — ism, tugʻilgan kun (kun va oy, yil ixtiyoriy) va telefon raqami serverga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi; rozilikni oʻsha sahifada bekor qilsangiz, maʼlumot oʻchiriladi. Keshbek ballari va doʻst kodlari telefon raqamingizga bogʻlanadi; ballarni ishlatish uchun shu raqamga bir martalik SMS kod yuboriladi (serverda kodning oʻzi emas, faqat shifrlangan izi 1 kun saqlanadi)."
+        "body": "Go Vita Telegram-boti orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi.\n\nAgar /profile sahifasida «Tugʻilgan kunimda sovgʻa olishni xohlayman» belgisini qoʻysangiz — ism, tugʻilgan kun (kun va oy, yil ixtiyoriy) va telefon raqami serverga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi; rozilikni oʻsha sahifada bekor qilsangiz, maʼlumot oʻchiriladi. Keshbek ballari va doʻst kodlari telefon raqamingizga bogʻlanadi; ballarni ishlatish uchun shu raqamga bir martalik SMS kod yuboriladi (serverda kodning oʻzi emas, faqat shifrlangan izi 1 kun saqlanadi)."
       },
       {
         "heading": "2. Maʼlumotlardan qanday foydalanamiz",
@@ -2360,7 +2366,7 @@
     "perServing": "{price} / porsiya",
     "benefitDiscount": "Bugun −{first}%, keyingi yetkazishlarda −{recurring}%",
     "benefitShipping": "{amount} soʻmdan yuqori obuna buyurtmalari bepul yetkaziladi",
-    "benefitControl": "Istalgan vaqtda oʻzgartirish, toʻxtatish yoki bekor qilish mumkin",
+    "benefitControl": "Oʻzgartirish, toʻxtatish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling",
     "intervalLabel": "Yetkazib berish oraligʻi",
     "everyDays": "Har {days} kunda",
     "recurringNote": "Keyingi yetkazishlar: {price}, har {days} kunda",
@@ -2387,7 +2393,7 @@
     },
     "benefitFirst": "Birinchi buyurtmada {first}% chegirma ({price})",
     "benefitRecurring": "Keyingi har bir buyurtmada {recurring}% doimiy chegirma",
-    "benefitCancel": "Istalgan vaqtda 1 bosish bilan bekor qilish mumkin",
+    "benefitCancel": "Bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling",
     "deliveryInterval": "Yetkazish davriyligi:",
     "oneTimeNote": "Doimiy majburiyatlarsiz standart xarid",
     "autoDelivery": "Har oy avtomatik yetkazish",

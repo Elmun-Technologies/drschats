@@ -13,14 +13,16 @@ import { referralRewardKind } from "@/lib/loyalty/model";
 import { referralLink } from "@/lib/referral/rules";
 import { displayOrderNumber } from "@/lib/orders/number";
 import { ShareCode } from "@/components/checkout/ShareCode";
+import { OrderSummary } from "@/components/checkout/OrderSummary";
 
 export const metadata: Metadata = { robots: { index: false } };
 
 /*
   Design: OrderSuccessV3 / OrderSuccessMobileV3.
 
-  The page knows the order number and nothing else — the cart is cleared
-  before the redirect — so it shows what it can stand behind. The design's
+  The server knows the order number and nothing else — the cart is cleared
+  before the redirect — so it shows what it can stand behind; the items and
+  total come from the tab's own summary (OrderSummary). The design's
   "Payme · toʻlandi" card and a first step saying the payment went through
   are left out: a cash-on-delivery order has not been paid, and an online
   one is confirmed by the provider, not by this page.
@@ -30,7 +32,7 @@ export default async function SuccessPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ order?: string | string[]; k?: string | string[] }>;
+  searchParams: Promise<{ order?: string | string[]; k?: string | string[]; m?: string | string[] }>;
 }) {
   const { locale } = await params;
   const query = await searchParams;
@@ -42,12 +44,14 @@ export default async function SuccessPage({
   setRequestLocale(locale);
   const t = await getTranslations("checkout.success");
   const tv = await getTranslations("cart.v3");
+  const tc = await getTranslations("contact");
+  const pickup = firstParam(query.m) === "pickup";
 
   const orderLabel = displayOrderNumber(order);
   const steps = [
     { title: tv("step1Title"), text: tv("step1") },
     { title: tv("step2Title"), text: tv("step2") },
-    { title: tv("step3Title"), text: tv("step3") },
+    pickup ? { title: tv("step3PickupTitle"), text: tv("step3Pickup") } : { title: tv("step3Title"), text: tv("step3") },
   ];
 
   return (
@@ -60,7 +64,7 @@ export default async function SuccessPage({
             </svg>
           </span>
           <h1 className="text-[30px] font-bold leading-9 lg:text-[44px] lg:leading-[50px]">{t("title")}</h1>
-          <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("subtitle")}</p>
+          <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("subtitle", { hours: tc("workHours") })}</p>
           {orderLabel && (
             <span className="mt-1 flex flex-col gap-0.5 self-start rounded-[16px] bg-tile px-4 py-3.5 lg:px-5">
               <span className="text-[13px] text-muted">{t("orderId")}</span>
@@ -69,6 +73,8 @@ export default async function SuccessPage({
           )}
         </div>
   
+        {order && <OrderSummary order={order} />}
+
         {receipt && rules && (receipt.e > 0 || receipt.s > 0) && (
           <section aria-labelledby="order-points" className="flex flex-col gap-1.5 rounded-[20px] bg-tile p-5 lg:p-7">
             <h2 id="order-points" className="text-[19px] font-bold lg:text-2xl">{tl("pointsTitle")}</h2>

@@ -35,6 +35,8 @@ export const STORAGE_KEYS = {
   telegram: `${PREFIX}telegram`,
   /** sessionStorage: first-party journey session id + last activity (lib/journey/client.ts). */
   journey: `${PREFIX}journey`,
+  /** sessionStorage: what the success page shows of the order just placed (lib/orders/last-order.ts). */
+  lastOrder: `${PREFIX}last-order`,
 } as const;
 
 let migrated = false;

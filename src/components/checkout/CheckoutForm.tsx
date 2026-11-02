@@ -41,6 +41,8 @@ import { PointsField } from "./PointsField";
 import { usePoints } from "@/lib/loyalty/store";
 import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
 import { useMiniAppMainButton } from "@/components/telegram/useMiniAppMainButton";
+import { normalizeUzPhone } from "@/lib/phone";
+import { saveLastOrder } from "@/lib/orders/last-order";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -116,7 +118,7 @@ export function CheckoutForm({
   */
   const schema = z.object({
     name: z.string().min(2, t("errorRequired")),
-    phone: z.string().min(7, t("errorPhone")),
+    phone: z.string().refine((v) => normalizeUzPhone(v) !== null, t("errorPhone")),
     // Optional: the phone is what an operator calls, and demanding an address
     // as well would cost more orders than the confirmation email is worth.
     email: z.union([z.string().email(t("errorEmail")), z.literal("")]).optional(),
@@ -329,9 +331,19 @@ export function CheckoutForm({
       if (res.coupon) discount.remove();
       // Before clear(): the reorder reminders and the "already bought" signal read this history.
       trackPurchase(lines.map((l) => ({ slug: l.slug, name: l.name })));
+      saveLastOrder({
+        order: res.orderId,
+        total: res.total ?? grandTotal,
+        method: values.method,
+        payment: values.payment,
+        items: lines.map((l) => ({ name: l.name, quantity: l.quantity })),
+      });
       clear();
       usePoints.getState().clear();
-      router.push(`/checkout/success?order=${res.orderId}${res.receipt ? `&k=${encodeURIComponent(res.receipt)}` : ""}`);
+      const query = new URLSearchParams({ order: res.orderId });
+      if (res.receipt) query.set("k", res.receipt);
+      if (values.method === "pickup") query.set("m", "pickup");
+      router.push(`/checkout/success?${query}`);
       return;
     }
     if (res.error === "points_invalid") {

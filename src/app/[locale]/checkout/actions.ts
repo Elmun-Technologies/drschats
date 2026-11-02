@@ -245,7 +245,16 @@ export async function submitOrder(
         console.error(`[checkout] order ${result.orderId} not delivered to the operator channel`);
         return { ok: false, error: "failed" };
       }
-      await Promise.all([
+      if (!delivered) {
+        // The order is saved and listed in /admin/orders; only the Telegram ping is missing.
+        console.error(`[checkout] order ${result.orderId} saved, but the operator channel did not take the notification`);
+      }
+      /*
+        From here the order exists. A side step that fails (visitor link,
+        receipt, email) is logged, never returned as "failed": the customer
+        would submit again and the shop would get the same order twice.
+      */
+      const sideSteps = await Promise.allSettled([
         ORDERS_IN_DB
           ? linkOrderToVisitor(visitorIdFrom((await cookies()).get(VISITOR_COOKIE)?.value), {
               number: result.orderId,
@@ -266,12 +275,23 @@ export async function submitOrder(
             })
           : Promise.resolve(),
       ]);
+      for (const step of sideSteps) {
+        if (step.status === "rejected") {
+          console.error(`[checkout] order ${result.orderId}: a post-order step failed`, step.reason instanceof Error ? step.reason.message : "unknown error");
+        }
+      }
       const adjustment = discountAdjustment(order.totals.adjustments);
+      const receipt = ORDERS_IN_DB
+        ? await loyaltyReceipt(result.orderId, order, pointsEarn).catch((err) => {
+            console.error(`[checkout] order ${result.orderId}: loyalty receipt failed`, err instanceof Error ? err.message : "unknown error");
+            return undefined;
+          })
+        : undefined;
       return {
         ...result,
         total: order.totals.total,
         coupon: adjustment?.kind === "promo" || adjustment?.kind === "referral" ? adjustment.code : undefined,
-        receipt: ORDERS_IN_DB ? await loyaltyReceipt(result.orderId, order, pointsEarn) : undefined,
+        receipt,
       };
     }
     return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };

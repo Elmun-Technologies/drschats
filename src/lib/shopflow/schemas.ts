@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { MAX_LINE_QTY } from "@/lib/cart/pricing";
 import { isIntervalDays } from "@/lib/subscription/plans";
+import { normalizeUzPhone } from "@/lib/phone";
 
 /*
   Runtime validation. The mock client returns data that satisfies these, and
@@ -102,7 +103,12 @@ export const productListResultSchema = z.object({
 export const orderRequestSchema = z.object({
   customer: z.object({
     name: z.string().trim().min(2).max(120),
-    phone: z.string().trim().min(7).max(20).regex(/^\+?[\d\s()-]+$/),
+    // Normalised to +998XXXXXXXXX: the operator calls this number back.
+    phone: z
+      .string()
+      .max(20)
+      .refine((v) => normalizeUzPhone(v) !== null)
+      .transform((v) => normalizeUzPhone(v) as string),
     email: z.string().email().max(160).optional(),
     marketingOptIn: z.boolean().optional(),
   }),
