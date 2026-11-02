@@ -24,7 +24,7 @@ describe("admin session idle timeout", () => {
     expect(await refreshedSessionToken(createSessionToken(7, 0))).toBeNull();
     expect(await refreshedSessionToken(createSessionToken(7, 0, Date.now() - SESSION_IDLE_MS - 1000))).toBeNull();
     const [payload, mac] = createSessionToken(7, 0, Date.now() - 3_600_000).split(".");
-    expect(await refreshedSessionToken(`${payload}.x${mac.slice(1)}`)).toBeNull();
+    expect(await refreshedSessionToken(`${payload}.${mac[0] === "x" ? "y" : "x"}${mac.slice(1)}`)).toBeNull();
     expect(await refreshedSessionToken(undefined)).toBeNull();
   });
 });

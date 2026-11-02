@@ -12,7 +12,7 @@ describe("admin session token", () => {
     const [payload, mac] = createSessionToken(42).split(".");
     const forged = Buffer.from(JSON.stringify({ uid: 1, exp: Date.now() + 1e9 })).toString("base64url");
     expect(readSessionToken(`${forged}.${mac}`)).toBeNull();
-    expect(readSessionToken(`${payload}.x${mac.slice(1)}`)).toBeNull();
+    expect(readSessionToken(`${payload}.${mac[0] === "x" ? "y" : "x"}${mac.slice(1)}`)).toBeNull();
   });
 
   it("rejects an expired token", () => {
