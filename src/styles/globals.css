@@ -381,7 +381,9 @@ html[data-miniapp] body {
   IntersectionObserver adds `.reveal-in`, with the stagger passed as a custom
   property.
 
-  No-JS and reduced-motion both fall back to fully visible content.
+  The server never renders `.reveal`: Reveal adds it after hydration, and only
+  to elements still below the fold, so no-JS, slow JS and the first screen are
+  always visible. Reduced motion shows everything at once.
 */
 @keyframes reveal-in {
   from {
@@ -407,10 +409,6 @@ html[data-miniapp] body {
     opacity: 1;
     animation: none;
   }
-}
-/* Content must never stay invisible if the observer never runs. */
-.no-js .reveal {
-  opacity: 1;
 }
 
 /* CSS-only route transition (no JS dependency → never hides content).

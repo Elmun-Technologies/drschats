@@ -126,15 +126,15 @@ export async function HomeTrust() {
   const t = await getTranslations("home.v3");
   const items = t.raw("trust") as { title: string; text: string }[];
   return (
-    <section className="wrap hidden gap-6 md:grid md:grid-cols-2 lg:grid-cols-4">
+    <section className="wrap grid grid-cols-2 gap-x-3 gap-y-4 md:grid-cols-2 md:gap-6 lg:grid-cols-4">
       {items.map((item, i) => (
-        <div key={item.title} className="flex items-start gap-3.5">
-          <span className="flex h-[52px] w-[52px] shrink-0 items-center justify-center rounded-full bg-tile">
-            <Icon d={TRUST_ICONS[i] ?? TRUST_ICONS[0]} className="h-6 w-6" />
+        <div key={item.title} className="flex flex-col items-start gap-2 md:flex-row md:gap-3.5">
+          <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-tile md:h-[52px] md:w-[52px]">
+            <Icon d={TRUST_ICONS[i] ?? TRUST_ICONS[0]} className="h-5 w-5 md:h-6 md:w-6" />
           </span>
-          <span className="flex flex-col gap-1 pt-0.5">
-            <span className="text-[17px] font-bold">{item.title}</span>
-            <span className="text-sm leading-5 text-ink-2">
+          <span className="flex flex-col gap-1 md:pt-0.5">
+            <span className="text-[15px] font-bold leading-5 md:text-[17px]">{item.title}</span>
+            <span className="text-[13px] leading-[18px] text-ink-2 md:text-sm md:leading-5">
               {item.text.replace("{hours}", String(COMMERCE.delivery.tashkent.hours))}
             </span>
           </span>

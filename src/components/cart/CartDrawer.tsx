@@ -56,13 +56,8 @@ export function CartDrawer() {
             className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col border-l border-line bg-bg"
           >
             <header className="flex items-center justify-between border-b border-line px-6 py-5 bg-bg text-ink">
-              <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-tile text-ink font-bold text-sm">
-                  🛒
-                </span>
-                <h2 id="cart-drawer-title" className="text-lg font-extrabold text-ink">{t("title")}</h2>
-              </div>
-              <button onClick={close} aria-label={tc("close")} className="rounded-full bg-tile p-1.5 text-ink-2 hover:text-ink">
+              <h2 id="cart-drawer-title" className="text-[19px] font-bold text-ink">{t("title")}</h2>
+              <button type="button" onClick={close} aria-label={tc("close")} className="grid h-11 w-11 place-items-center rounded-full bg-tile text-ink-2 hover:bg-tile-hover hover:text-ink">
                 <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                 </svg>
@@ -101,26 +96,26 @@ export function CartDrawer() {
                   </div>
                 )}
 
-                <div className="flex-1 space-y-4 overflow-y-auto px-6 py-5">
+                <div data-lenis-prevent className="flex-1 space-y-4 overflow-y-auto overscroll-contain px-6 py-5">
                   {lines.map((l) => (
                     <div key={l.lineId} className="flex gap-3">
-                      <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-tile">
-                        {l.image && <Image src={l.image} alt={l.name} fill sizes="64px" className="object-cover" />}
+                      <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[16px] bg-tile">
+                        {l.image && <Image src={l.image} alt={l.name} fill sizes="80px" className="object-contain p-2" />}
                       </div>
                       <div className="flex flex-1 flex-col">
                         <div className="flex items-start justify-between gap-2">
                           <p className="text-sm font-medium text-ink">{l.name}</p>
-                          <button onClick={() => remove(l.lineId)} className="text-muted hover:text-red" aria-label={t("remove")}>
-                            <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+                          <button type="button" onClick={() => remove(l.lineId)} className="-mr-3 -mt-3 grid h-11 w-11 shrink-0 place-items-center text-muted hover:text-ink" aria-label={t("remove")}>
+                            <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.8">
                               <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                             </svg>
                           </button>
                         </div>
-                        <p className="mt-1 text-sm text-ink">{formatMoney(lineTotal(l), locale)}</p>
+                        <p className="mt-1 text-[15px] font-bold text-ink">{formatMoney(lineTotal(l), locale)}</p>
                         {lineListTotal(l) && (
                           <div className="mt-0.5 flex items-center gap-2">
-                            <span className="text-xs text-ink-2 line-through">{formatMoney(lineListTotal(l)!, locale)}</span>
-                            <span className="rounded border border-line bg-tile px-1.5 py-0 text-[10px] font-medium text-ink-2">
+                            <span className="text-[13px] text-muted line-through">{formatMoney(lineListTotal(l)!, locale)}</span>
+                            <span className="rounded-full bg-red px-2 py-0.5 text-[12px] font-semibold leading-4 text-white">
                               −{Math.round((1 - lineTotal(l) / lineListTotal(l)!) * 100)}%
                             </span>
                           </div>
@@ -133,7 +128,7 @@ export function CartDrawer() {
                         )}
                         <div className="mt-auto flex items-center gap-2 pt-2">
                           <QtyButton label={tco("decreaseFor", { name: l.name })} disabled={l.quantity <= 1} onClick={() => setQuantity(l.lineId, l.quantity - 1)}>−</QtyButton>
-                          <span className="w-6 text-center text-sm">{l.quantity}</span>
+                          <span className="w-7 text-center text-[15px] font-semibold tabular-nums">{l.quantity}</span>
                           <QtyButton label={tco("increaseFor", { name: l.name })} disabled={l.quantity >= lineQtyCap(l)} onClick={() => setQuantity(l.lineId, l.quantity + 1)}>+</QtyButton>
                         </div>
                       </div>
@@ -151,7 +146,7 @@ export function CartDrawer() {
                     label={t("shipping")}
                     value={totals.shipping === 0 ? t("free") : formatMoney(totals.shipping, locale)}
                   />
-                  <div className="flex items-center justify-between border-t border-line pt-3 text-base font-semibold">
+                  <div className="flex items-center justify-between border-t border-line pt-3 text-[17px] font-bold">
                     <span>{t("total")}</span>
                     <span>{formatMoney(totals.total, locale)}</span>
                   </div>
@@ -210,7 +205,7 @@ function QtyButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={label}
-      className="flex h-7 w-7 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-line-strong hover:text-ink disabled:opacity-40"
+      className="flex h-11 w-11 items-center justify-center rounded-[12px] bg-tile text-lg text-ink transition-colors hover:bg-tile-hover disabled:opacity-40"
     >
       {children}
     </button>

@@ -8,7 +8,6 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from "react";
-import { cn } from "@/lib/utils";
 
 /*
   One IntersectionObserver for the whole page instead of one animation runtime
@@ -61,12 +60,11 @@ export function Reveal({ children, index = 0, className, as = "div", style, ...r
     const node = ref.current;
     if (!node) return;
 
+    // Server HTML is fully visible: no JS, slow JS and the first screen never wait on this.
+    // Only what is still below the fold at hydration is hidden and then revealed on scroll.
     const io = getObserver();
-    if (!io) {
-      // Without observer support, show the content rather than hide it forever.
-      node.classList.add("reveal-in");
-      return;
-    }
+    if (!io || node.getBoundingClientRect().top < window.innerHeight) return;
+    node.classList.add("reveal");
     io.observe(node);
     return () => io.unobserve(node);
   }, []);
@@ -76,7 +74,7 @@ export function Reveal({ children, index = 0, className, as = "div", style, ...r
   return (
     <Component
       ref={ref}
-      className={cn("reveal", className)}
+      className={className}
       style={{ ...style, "--reveal-delay": `${Math.min(index, 6) * 80}ms` } as CSSProperties}
       {...rest}
     >

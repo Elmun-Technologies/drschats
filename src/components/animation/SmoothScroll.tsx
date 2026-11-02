@@ -20,6 +20,10 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      // The cart drawer, catalog menu, search list and dialogs scroll on their own;
+      // without these the wheel moved the page behind them instead.
+      allowNestedScroll: true,
+      prevent: (node) => Boolean(node.closest?.('[role="dialog"], [aria-modal="true"], [data-lenis-prevent]')),
     });
 
     let frame = 0;
