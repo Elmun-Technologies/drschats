@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { confirmTwoFactor, regenerateRecoveryCodes, type RecoveryState } from "@/app/admin/_actions/accounts";
 import { Field, Notice, inputClass } from "./ui";
@@ -24,6 +25,7 @@ function CodeForm({ action, submit, pending }: { action: (s: RecoveryState, f: F
       <div className="flex flex-col gap-3">
         {state.ok && <Notice tone="ok">{state.ok}</Notice>}
         <Codes codes={state.codes} />
+        <Link href="/admin/security" className="text-[14px] font-semibold text-ink underline underline-offset-4">Saqlab oldim — davom etish</Link>
       </div>
     );
   }

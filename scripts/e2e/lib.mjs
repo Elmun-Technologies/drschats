@@ -1,11 +1,13 @@
 import { chromium } from "playwright";
 import postgres from "postgres";
 import { mkdir, writeFile } from "node:fs/promises";
+import { existsSync } from "node:fs";
 
 export const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 export const DB_URL = process.env.DATABASE_URL ?? "postgres://postgres@127.0.0.1:5434/postgres";
 export const SHOTS = process.env.E2E_SHOTS ?? "/tmp/e2e-shots";
-export const CHROME = process.env.PLAYWRIGHT_CHROMIUM_PATH ?? "/tmp/chromium";
+// The sandbox's own Chromium build when it is there; otherwise Playwright's (CI installs it).
+export const CHROME = process.env.PLAYWRIGHT_CHROMIUM_PATH ?? (existsSync("/tmp/chromium") ? "/tmp/chromium" : undefined);
 export const E2E_EMAIL = process.env.E2E_ADMIN_EMAIL ?? "admin@govita.local";
 export const E2E_PASSWORD = process.env.E2E_ADMIN_PASSWORD ?? "lokal-parol-123456";
 

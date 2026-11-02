@@ -161,7 +161,7 @@ export async function confirmTwoFactor(_: RecoveryState, form: FormData): Promis
     .set({ totpEnabledAt: new Date(), totpLastStep: step, recoveryCodes: codes.map(hashRecoveryCode) })
     .where(eq(adminUsers.id, me.id));
   await auditLog(me, "account.2fa_on");
-  revalidatePath("/admin/security");
+  // No revalidatePath: re-rendering the page would swap this form out before the codes are seen.
   return { ok: "Ikki bosqichli kirish yoqildi.", codes };
 }
 

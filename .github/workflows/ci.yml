@@ -82,6 +82,67 @@ jobs:
         env:
           BASE_URL: http://localhost:3000
 
+  # The paths that only exist with a database — orders, the payment
+  # callbacks (Payme, Click), signed tracking, the admin wall, roles and
+  # two-factor sign-in — run end to end against a production build, the way
+  # Fly runs it: built without a database, started with one.
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: govita
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/govita
+      BASE_URL: http://localhost:3000
+      ADMIN_SESSION_SECRET: ci-admin-session-secret-0123456789abcdef
+      ADMIN_SETUP_TOKEN: ci-setup-token-0123456789
+      MESSAGE_LINK_SECRET: ci-message-link-secret-0123456789
+      INTEGRATION_ENCRYPTION_KEY: "0000000000000000000000000000000000000000000000000000000000000000"
+      PAYME_MERCHANT_ID: 5e730e8e0b852a417aa49ceb
+      PAYME_TEST_KEY: ci-payme-test-key
+      CLICK_SERVICE_ID: "111"
+      CLICK_MERCHANT_ID: "222"
+      CLICK_SECRET_KEY: ci-click-secret
+      MESSAGE_WORKER: "off"
+      SMS_FAKE: "1"
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - name: Setup Node
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Build (no database, as on Fly)
+        run: DATABASE_URL= npm run build
+
+      - name: Migrate
+        run: npm run db:migrate
+
+      - name: Serve and run the flows
+        run: |
+          npx next start -p 3000 > server.log 2>&1 &
+          npx --yes wait-on http://localhost:3000/api/health --timeout 90000
+          node scripts/e2e/ci.mjs
+
+      - name: Server log
+        if: failure()
+        run: tail -200 server.log
+
   # Sign-in codes, their rate limits and the bot webhook are places where a
   # regression is a security bug rather than a cosmetic one, so they get run
   # on every change rather than trusted.
