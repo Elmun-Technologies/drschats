@@ -18,12 +18,13 @@ export async function SupportButton({ about }: { about?: string }) {
       data-miniapp-hide
       aria-label={about ? t("labelAbout", { name: about }) : t("label")}
       title={t("hours", { hours: tc("workHours") })}
-      className="fixed bottom-[calc(var(--bottom-nav)+0.75rem)] left-3 z-30 inline-flex h-11 items-center gap-2 rounded-full border border-line-strong bg-bg px-4 text-[15px] font-semibold text-ink shadow-md transition-colors hover:bg-tile lg:bottom-6 lg:left-6 [:root:has([data-cookie-bar])_&]:hidden"
+      className="fixed bottom-[calc(var(--bottom-nav)+0.75rem)] left-3 z-30 inline-flex h-11 w-11 items-center justify-center gap-2 rounded-full border border-line-strong bg-bg text-[15px] font-semibold text-ink shadow-md transition-colors hover:bg-tile lg:bottom-6 lg:left-6 lg:w-auto lg:px-4 [:root:has([data-cookie-bar])_&]:hidden"
     >
       <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M4 5h16v11H9l-5 4z" />
       </svg>
-      {t("cta")}
+      {/* Icon only on phones: a pill there sat over the price of the first screen. */}
+      <span className="sr-only lg:not-sr-only">{t("cta")}</span>
     </a>
   );
 }
