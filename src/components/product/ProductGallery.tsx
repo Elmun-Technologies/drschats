@@ -78,7 +78,7 @@ export function ProductGallery({
               aria-label={t("thumb", { index: i + 1 })}
               aria-current={i === active}
               className={cn(
-                "relative h-[76px] w-[76px] overflow-hidden rounded-[14px] border-2 bg-tile transition-colors",
+                "relative h-[76px] w-[76px] overflow-hidden rounded-input border-2 bg-tile transition-colors",
                 i === active ? "border-ink" : "border-transparent hover:border-line-strong",
               )}
             >
@@ -124,7 +124,7 @@ export function ProductGallery({
               >
                 <Image
                   src={img.url}
-                  alt={img.alt}
+                  alt={i === 0 ? img.alt : `${img.alt}, ${t("thumb", { index: i + 1 })}`}
                   fill
                   priority={i === 0}
                   loading={i === 0 ? undefined : "lazy"}
@@ -137,7 +137,7 @@ export function ProductGallery({
 
           {(discountPercent > 0 || guaranteeLabel || outOfStockLabel) && (
             <div className="pointer-events-none absolute left-3 top-3 flex flex-wrap gap-1.5 lg:left-4 lg:top-4">
-              <DiscountBadge percent={discountPercent} className="h-[26px] px-2.5 text-sm" />
+              <DiscountBadge percent={discountPercent} />
               {guaranteeLabel && <Badge tone="hit" className="text-sm">{guaranteeLabel}</Badge>}
               {outOfStockLabel && <Badge className="text-sm">{outOfStockLabel}</Badge>}
             </div>

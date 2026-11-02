@@ -11,6 +11,7 @@ import { isNavigable } from "@/lib/content/nav-sections";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Category } from "@/lib/shopflow/types";
 import { discountPercent, type MenuDeal } from "./menu-deal";
+import { DiscountBadge } from "@/components/ui/Price";
 import { HEALTH_LINKS, SALE_HREF } from "./nav-links";
 import { isStocked } from "@/lib/shop/categories";
 
@@ -178,9 +179,7 @@ export function CatalogMenu({
                   className="hidden min-h-[420px] flex-col gap-2 rounded-3xl bg-tile p-6 transition-colors hover:bg-tile-hover xl:flex"
                 >
                   <span className="text-[22px] font-bold leading-7">{t("weekOffer")}</span>
-                  <span className="inline-flex h-[26px] items-center self-start rounded-pill bg-red px-2.5 text-sm font-bold text-white">
-                    −{discountPercent(deal)}%
-                  </span>
+                  <DiscountBadge percent={discountPercent(deal)} className="self-start" />
                   <span className="flex flex-wrap items-baseline gap-x-2">
                     <span className="text-[26px] font-bold leading-8">{formatMoney(deal.price, locale)}</span>
                     <span className="text-[15px] text-muted line-through">{formatMoney(deal.oldPrice, locale)}</span>
@@ -225,7 +224,7 @@ const TRIGGER_CLASS =
   "inline-flex h-[52px] items-center gap-2 rounded-sm bg-ink px-[22px] text-button font-semibold text-white transition-colors hover:bg-black";
 
 const ROW_CLASS =
-  "flex items-center gap-3 rounded-[14px] px-3 py-2 text-base font-medium text-ink transition-colors hover:bg-tile";
+  "flex items-center gap-3 rounded-input px-3 py-2 text-base font-medium text-ink transition-colors hover:bg-tile";
 
 const GROUP_LINK_CLASS = "text-[15px] leading-5 text-ink-2 hover:text-black hover:underline";
 

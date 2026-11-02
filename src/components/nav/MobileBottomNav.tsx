@@ -56,7 +56,7 @@ export function MobileBottomNav({
       <nav
         aria-label={t("mainNav")}
         data-miniapp-hide
-        className="fixed inset-x-0 bottom-0 z-50 h-[var(--tab-bar)] border-t border-line bg-bg pb-[env(safe-area-inset-bottom,0px)] lg:hidden"
+        className="fixed inset-x-0 bottom-0 z-50 h-[var(--tab-bar)] border-t border-line bg-bg lg:hidden"
       >
         <div className="grid h-full grid-cols-5 px-1 pb-2.5 pt-1.5">
           <Tab href="/" label={nav("home")} icon={ICONS.home} active={!menuOpen && pathname === "/"} />
@@ -263,4 +263,4 @@ function LinkPanel({ label, links }: { label: string; links: { href: string; lab
 }
 
 const MENU_ROW =
-  "flex min-h-16 items-center gap-3.5 border-b border-[#EEF0F1] px-4 text-[17px] font-medium";
+  "flex min-h-16 items-center gap-3.5 border-b border-line-soft px-4 text-[17px] font-medium";

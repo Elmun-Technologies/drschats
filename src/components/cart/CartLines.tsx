@@ -15,7 +15,7 @@ import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { productBrand } from "@/lib/content/product-brands";
 import { productCutout } from "@/lib/content/product-cutouts";
 import { PRODUCT_UNITS } from "@/lib/content/product-units";
-import { DiscountBadge } from "@/components/ui/Price";
+import { DiscountBadge, Price } from "@/components/ui/Price";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /*
@@ -23,16 +23,30 @@ import { cutoutOf } from "@/lib/catalog/product-facts";
   row. Quantity stops at 1 — the store reads 0 as "remove", and one press too
   many used to delete a product with nothing to undo it; removing is its own
   labelled control.
+
+  `compact` is the cart drawer: the phone row at every width (the drawer is
+  448px wide on desktop too), and `onNavigate` closes it when a product link
+  is followed. One row component, so the drawer and /cart cannot drift apart.
 */
-export function CartLines({ lines, upsells }: { lines: CartLine[]; upsells: UpsellStep[] }) {
+export function CartLines({
+  lines,
+  upsells,
+  compact = false,
+  onNavigate,
+}: {
+  lines: CartLine[];
+  upsells: UpsellStep[];
+  compact?: boolean;
+  onNavigate?: () => void;
+}) {
   const t = useTranslations("cart.v3");
   const tc = useTranslations("checkout");
 
   return (
-    <div className="flex flex-col lg:rounded-[20px] lg:border lg:border-line lg:px-6 lg:py-1">
+    <div className={cn("flex flex-col", !compact && "lg:rounded-[20px] lg:border lg:border-line lg:px-6 lg:py-1")}>
       <ul>
         {lines.map((l) => (
-          <Line key={l.lineId} line={l} />
+          <Line key={l.lineId} line={l} compact={compact} onNavigate={onNavigate} />
         ))}
       </ul>
       {upsells.length > 0 && (
@@ -49,7 +63,7 @@ export function CartLines({ lines, upsells }: { lines: CartLine[]; upsells: Upse
   );
 }
 
-function Line({ line: l }: { line: CartLine }) {
+function Line({ line: l, compact, onNavigate }: { line: CartLine; compact: boolean; onNavigate?: () => void }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("cart.v3");
   const tc = useTranslations("checkout");
@@ -78,21 +92,23 @@ function Line({ line: l }: { line: CartLine }) {
   };
 
   return (
-    <li className="grid grid-cols-[92px_minmax(0,1fr)] gap-3.5 border-b border-line py-4 lg:grid-cols-[112px_minmax(0,1fr)_132px_150px] lg:items-start lg:gap-[18px] lg:py-[22px]">
+    <li
+      className={cn(
+        "grid grid-cols-[92px_minmax(0,1fr)] gap-3.5 border-b border-line py-4",
+        compact ? "last:border-b-0" : "lg:grid-cols-[112px_minmax(0,1fr)_132px_150px] lg:items-start lg:gap-[18px] lg:py-[22px]",
+      )}
+    >
       {/* Out of the tab order: the name link below goes to the same page. */}
-      <Link href={`/product/${l.slug}`} aria-label={l.name} tabIndex={-1} className="relative h-[92px] w-[92px] rounded-[16px] bg-tile lg:h-28 lg:w-28">
-        {image && <Image src={image} alt="" fill sizes="112px" className="object-contain p-2" />}
+      <Link href={`/product/${l.slug}`} onClick={onNavigate} aria-label={l.name} tabIndex={-1} className={cn("relative h-[92px] w-[92px] rounded-[16px] bg-tile", !compact && "lg:h-28 lg:w-28")}>
+        {image && <Image src={image} alt="" fill sizes={compact ? "92px" : "112px"} className="object-contain p-2" />}
       </Link>
 
-      <div className="flex min-w-0 flex-col gap-1 lg:gap-1.5">
-        <div className="flex items-baseline gap-1.5 lg:hidden">
-          <span className="text-lg font-bold">{formatMoney(total, locale)}</span>
-          {before && <span className="text-[13px] text-muted line-through">{formatNumber(before)}</span>}
-        </div>
-        <Link href={`/product/${l.slug}`} className="text-[15px] leading-5 hover:underline lg:text-[17px] lg:font-medium lg:leading-[23px]">
+      <div className={cn("flex min-w-0 flex-col gap-1", !compact && "lg:gap-1.5")}>
+        <Price amount={total} oldAmount={before ?? undefined} locale={locale} size="sm" layout="inline" className={cn("gap-x-1.5", !compact && "lg:hidden")} />
+        <Link href={`/product/${l.slug}`} onClick={onNavigate} className={cn("text-[15px] leading-5 hover:underline", !compact && "lg:text-[17px] lg:font-medium lg:leading-[23px]")}>
           {l.name}
         </Link>
-        {meta && <span className="hidden text-sm text-muted lg:block">{meta}</span>}
+        {meta && !compact && <span className="hidden text-sm text-muted lg:block">{meta}</span>}
         {l.soldOut && <span role="status" className="text-sm font-semibold text-red">{common("outOfStock")}</span>}
         {bonus && (
           <button
@@ -106,12 +122,14 @@ function Line({ line: l }: { line: CartLine }) {
         {l.subscription && (
           <span className="text-sm font-semibold">{ts("everyDays", { days: l.subscription.intervalDays })}</span>
         )}
-        <span className="hidden items-center gap-1.5 text-sm text-ink-2 lg:flex">
-          <Icon d={ICON.truck} className="h-4 w-4" />
-          {t("deliveryEta", { hours: COMMERCE.delivery.tashkent.hours })}
-        </span>
+        {!compact && (
+          <span className="hidden items-center gap-1.5 text-sm text-ink-2 lg:flex">
+            <Icon d={ICON.truck} className="h-4 w-4" />
+            {t("deliveryEta", { hours: COMMERCE.delivery.tashkent.hours })}
+          </span>
+        )}
 
-        <div className="mt-1.5 flex items-center justify-between lg:hidden">
+        <div className={cn("mt-1.5 flex items-center justify-between", !compact && "lg:hidden")}>
           <Stepper line={l} small />
           <div className="flex text-ink-2">
             <IconButton label={t("favoriteFor", { name: l.name })} onClick={wish} pressed={saved} d={ICON.heart} filled={saved} />
@@ -119,24 +137,30 @@ function Line({ line: l }: { line: CartLine }) {
           </div>
         </div>
 
-        <div className="mt-1.5 hidden gap-5 lg:flex">
-          <TextButton onClick={wish} pressed={saved} d={ICON.heart} filled={saved}>
-            {tp("favorite")}
-          </TextButton>
-          <TextButton onClick={() => remove(l.lineId)} d={ICON.trash} label={tc("removeFor", { name: l.name })}>
-            {tc("remove")}
-          </TextButton>
-        </div>
+        {!compact && (
+          <div className="mt-1.5 hidden gap-5 lg:flex">
+            <TextButton onClick={wish} pressed={saved} d={ICON.heart} filled={saved}>
+              {tp("favorite")}
+            </TextButton>
+            <TextButton onClick={() => remove(l.lineId)} d={ICON.trash} label={tc("removeFor", { name: l.name })}>
+              {tc("remove")}
+            </TextButton>
+          </div>
+        )}
       </div>
 
-      <div className="hidden lg:block">
-        <Stepper line={l} />
-      </div>
-      <div className="hidden flex-col items-end gap-0.5 lg:flex">
-        <span className="whitespace-nowrap text-xl font-bold">{formatMoney(total, locale)}</span>
-        {before && <span className="text-sm text-muted line-through">{formatNumber(before)}</span>}
-        {l.quantity > 1 && <span className="text-[13px] text-muted">{t("each", { price: formatMoney(Math.round(total / l.quantity), locale) })}</span>}
-      </div>
+      {!compact && (
+        <>
+          <div className="hidden lg:block">
+            <Stepper line={l} />
+          </div>
+          <div className="hidden flex-col items-end gap-0.5 lg:flex">
+            <span className="whitespace-nowrap text-xl font-bold">{formatMoney(total, locale)}</span>
+            {before && <span className="text-sm text-muted line-through">{formatNumber(before)}</span>}
+            {l.quantity > 1 && <span className="text-[13px] text-muted">{t("each", { price: formatMoney(Math.round(total / l.quantity), locale) })}</span>}
+          </div>
+        </>
+      )}
     </li>
   );
 }

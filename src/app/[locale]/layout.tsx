@@ -6,18 +6,16 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { setRequestLocale, getMessages, getTranslations } from "next-intl/server";
 import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routing";
+import { pickMessages } from "@/lib/i18n/client-messages";
 import { shopflow } from "@/lib/shopflow";
 import { PromotionsProvider } from "@/lib/cart/promotions-context";
 import { populatedTopicPaths } from "@/lib/content/nav-sections";
-import { SmoothScroll } from "@/components/animation/SmoothScroll";
+import { MotionPreferences } from "@/components/animation/MotionPreferences";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/layout/CookieConsent";
 import { DeferredUi } from "@/components/layout/DeferredUi";
 import { TelegramMiniApp } from "@/components/telegram/TelegramMiniApp";
-import { Toaster } from "@/components/ui/Toaster";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
 import { SITE_NAME, SITE_URL } from "@/lib/seo/metadata";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
@@ -103,14 +101,18 @@ export default async function LocaleLayout({
         {/* Picks each running banner test's variant from the gv_ab cookie before the first paint — no layout shift, the page stays cached. */}
         {experiments.length > 0 && <script dangerouslySetInnerHTML={{ __html: abHeadScript(experiments) }} />}
         <link rel="manifest" href="/manifest.json" />
-        {/* Latin Onest and the wordmark face are on every first paint; the
-            other subsets load only when a page needs their characters. */}
+        {/* Latin Onest and the wordmark face are on every first paint, and
+            Cyrillic Onest on every /ru one; the other subsets load only when
+            a page needs their characters. */}
         <link rel="preload" href="/fonts/onest-v11/onest-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        {locale === "ru" && (
+          <link rel="preload" href="/fonts/onest-v11/onest-cyrillic.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+        )}
         <link rel="preload" href="/fonts/playfair-v40/playfair-500-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className="grain min-h-screen antialiased">
-        <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={pickMessages(messages)}>
           <PromotionsProvider promotions={promotions}>
           <CommerceProvider settings={commerce}>
             <a
@@ -119,8 +121,7 @@ export default async function LocaleLayout({
             >
               {tc("skipToContent")}
             </a>
-            <ScrollProgress />
-            <SmoothScroll>
+            <MotionPreferences>
               <Header categories={categories} topicPaths={topicPaths} deal={weeklyDeal} announcements={announcements} />
               {strips.length > 0 && <PromoStrip banners={strips} />}
               {/* The tab bar is fixed, so its height is reserved twice: here, so
@@ -130,11 +131,9 @@ export default async function LocaleLayout({
               <main id="main-content" className="pb-[var(--bottom-nav)]">{children}</main>
               <Footer categories={categories} topicPaths={topicPaths} onlineProviders={onlineProviders} />
               <CookieConsent />
-              <Toaster />
-              <BackToTop />
               <MobileBottomNav categories={categories} topicPaths={topicPaths} />
               <DeferredUi firstOrder={firstOrder} />
-            </SmoothScroll>
+            </MotionPreferences>
           </CommerceProvider>
           </PromotionsProvider>
         </NextIntlClientProvider>

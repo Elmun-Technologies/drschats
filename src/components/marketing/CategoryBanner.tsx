@@ -3,11 +3,13 @@
 import Image from "next/image";
 import type { StoreBanner } from "@/lib/merch/model";
 import { cn } from "@/lib/utils";
+import { isAllowedImageUrl } from "@/lib/security/csp";
 import { AbSlot } from "./AbSlot";
 import { BannerLink, useUnexpired } from "./BannerLink";
 import { SaleCountdown } from "./SaleCountdown";
 
-const isLocal = (src: string) => src.startsWith("/") && !src.startsWith("//");
+/* Bundled files and admin uploads on an allowed host go through the optimiser; anything else is passed through as is. */
+const optimisable = (src: string) => isAllowedImageUrl(src);
 
 /* A banner placed "category": one card above the catalogue grid — the first one running. */
 export function CategoryBanner({ banners }: { banners: StoreBanner[] }) {
@@ -52,12 +54,12 @@ function CategoryCard({ b }: { b: StoreBanner }) {
       </span>
       {image && (
         <span className={cn("relative h-24 w-24 md:h-32 md:w-32", b.imageMobile && "max-md:hidden")}>
-          <Image src={image} alt="" fill unoptimized={!isLocal(image)} sizes="128px" className="object-contain" />
+          <Image src={image} alt="" fill unoptimized={!optimisable(image)} sizes="128px" className="object-contain" />
         </span>
       )}
       {b.imageMobile && (
         <span className="relative h-24 w-24 md:hidden">
-          <Image src={b.imageMobile} alt="" fill unoptimized={!isLocal(b.imageMobile)} sizes="96px" className="object-contain" />
+          <Image src={b.imageMobile} alt="" fill unoptimized={!optimisable(b.imageMobile)} sizes="96px" className="object-contain" />
         </span>
       )}
     </BannerLink>

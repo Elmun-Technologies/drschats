@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import type { Locale } from "@/lib/i18n/routing";
 
 /*
   Sample data. Nobody in this list bought anything — the names exist to show
@@ -10,21 +11,23 @@ import { useTranslations } from "next-intl";
   NEXT_PUBLIC_SAMPLE_SOCIAL_PROOF is on. Replace this array with a real feed of
   recent orders before turning it on anywhere a customer will look.
 */
-const PURCHASES = [
-  { name: "Anvar T.", city: "Toshkent", product: "Omega-3 Premium" },
-  { name: "Malika S.", city: "Samarqand", product: "Vitamin D3+K2" },
-  { name: "Bobur N.", city: "Farg'ona", product: "Magnesium B6" },
-  { name: "Dilnoza R.", city: "Buxoro", product: "Vitamin C 1000" },
-  { name: "Jasur K.", city: "Namangan", product: "Omega-3 Premium" },
-  { name: "Nilufar A.", city: "Toshkent", product: "Zinc + Selenium" },
-  { name: "Sardor M.", city: "Andijon", product: "Multivitamin Complex" },
-  { name: "Feruza B.", city: "Qo'qon", product: "Vitamin D3+K2" },
-  { name: "Ulugbek H.", city: "Toshkent", product: "Omega-3 Premium" },
-  { name: "Zulfiya I.", city: "Qarshi", product: "Magnesium B6" },
+type L10n = { uz: string; ru: string };
+const PURCHASES: { name: L10n; city: L10n; product: string }[] = [
+  { name: { uz: "Anvar T.", ru: "Анвар Т." }, city: { uz: "Toshkent", ru: "Ташкент" }, product: "Omega-3 Premium" },
+  { name: { uz: "Malika S.", ru: "Малика С." }, city: { uz: "Samarqand", ru: "Самарканд" }, product: "Vitamin D3+K2" },
+  { name: { uz: "Bobur N.", ru: "Бобур Н." }, city: { uz: "Fargʻona", ru: "Фергана" }, product: "Magnesium B6" },
+  { name: { uz: "Dilnoza R.", ru: "Дилноза Р." }, city: { uz: "Buxoro", ru: "Бухара" }, product: "Vitamin C 1000" },
+  { name: { uz: "Jasur K.", ru: "Жасур К." }, city: { uz: "Namangan", ru: "Наманган" }, product: "Omega-3 Premium" },
+  { name: { uz: "Nilufar A.", ru: "Нилуфар А." }, city: { uz: "Toshkent", ru: "Ташкент" }, product: "Zinc + Selenium" },
+  { name: { uz: "Sardor M.", ru: "Сардор М." }, city: { uz: "Andijon", ru: "Андижан" }, product: "Multivitamin Complex" },
+  { name: { uz: "Feruza B.", ru: "Феруза Б." }, city: { uz: "Qoʻqon", ru: "Коканд" }, product: "Vitamin D3+K2" },
+  { name: { uz: "Ulugʻbek H.", ru: "Улугбек Х." }, city: { uz: "Toshkent", ru: "Ташкент" }, product: "Omega-3 Premium" },
+  { name: { uz: "Zulfiya I.", ru: "Зульфия И." }, city: { uz: "Qarshi", ru: "Карши" }, product: "Magnesium B6" },
 ];
 
 export function LivePurchaseToast() {
   const t = useTranslations("socialProof");
+  const locale = useLocale() as Locale;
   const [current, setCurrent] = useState<(typeof PURCHASES)[0] | null>(null);
   const [index, setIndex] = useState(0);
 
@@ -61,7 +64,7 @@ export function LivePurchaseToast() {
           <div className="flex items-center gap-3">
             <span className="text-xl">🛒</span>
             <p className="text-xs text-ink-2 leading-relaxed">
-              <span className="font-semibold text-ink">{current.name}</span> — {current.city}
+              <span className="font-semibold text-ink">{current.name[locale]}</span> — {current.city[locale]}
               <br />
               <span className="text-ink">{current.product}</span> {t("bought")}
             </p>

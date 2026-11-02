@@ -83,7 +83,7 @@ export default async function BrandsPage({
             <>
               {b.country && <span className="text-sm font-semibold text-ink-2">{b.country}</span>}
               <span className="text-[28px] font-bold leading-[34px] tracking-[-0.02em] lg:text-[34px] lg:leading-[38px]">{b.name}</span>
-              {b.text && <span className="max-w-[230px] text-[15px] leading-[22px] text-[#2E3236] lg:text-base lg:leading-[23px]">{b.text}</span>}
+              {b.text && <span className="max-w-[230px] text-[15px] leading-[22px] text-ink-1 lg:text-base lg:leading-[23px]">{b.text}</span>}
             </>
           );
           return b.products.length > 0 ? (

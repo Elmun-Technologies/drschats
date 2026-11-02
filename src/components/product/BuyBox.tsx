@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Product } from "@/lib/shopflow/types";
-import { cn, formatMoney, formatNumber } from "@/lib/utils";
-import { DiscountBadge, discountPercent } from "@/components/ui/Price";
+import { cn, formatMoney } from "@/lib/utils";
+import { DiscountBadge, Price, discountPercent } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/store";
 import { itemOf, trackViewProduct } from "@/lib/analytics/events";
@@ -69,11 +69,8 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
     <div className="flex flex-col gap-4 lg:rounded-[20px] lg:border lg:border-line lg:bg-bg lg:p-6 lg:shadow-buybox">
       <div className="flex flex-col gap-1">
         <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-          <span className="text-[30px] font-bold leading-9 lg:text-price-l lg:leading-10">{formatMoney(product.price, locale)}</span>
-          {product.oldPrice && product.oldPrice > product.price && (
-            <span className="text-[17px] text-muted line-through lg:text-lg">{formatNumber(product.oldPrice)}</span>
-          )}
-          <DiscountBadge percent={discount} className="h-[26px] px-2.5 text-sm" />
+          <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="pdp" layout="inline" className="gap-x-2.5" />
+          <DiscountBadge percent={discount} />
         </div>
         {(perUnit || discount > 0) && (
           <span className="text-sm text-ink-2">
@@ -94,7 +91,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
       {product.inStock ? (
         <div id="buybox-cta" className="hidden scroll-mt-40 flex-col gap-2 lg:flex">
           <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-2">
-            <div role="group" aria-label={t("quantity")} className="flex h-14 items-center justify-between rounded-[14px] bg-tile">
+            <div role="group" aria-label={t("quantity")} className="flex h-14 items-center justify-between rounded-input bg-tile">
               <button
                 type="button"
                 onClick={() => setQty(qty - 1)}
@@ -119,7 +116,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
             </div>
             <Button
               size="lg"
-              className="h-14 rounded-[14px] px-4"
+              className="h-14 rounded-input px-4"
               onClick={() => {
                 addToCart();
               }}
@@ -218,15 +215,10 @@ function MobileBuyBar({ product: listed }: { product: Product }) {
       data-buy-bar
       className="fixed inset-x-0 bottom-[var(--tab-bar)] z-40 flex h-[var(--buy-bar)] items-center gap-2.5 border-t border-line bg-bg px-4 lg:hidden"
     >
-      <div className="flex shrink-0 flex-col">
-        <span className="text-[19px] font-bold leading-[23px]">{formatMoney(product.price, locale)}</span>
-        {product.oldPrice && product.oldPrice > product.price && (
-          <span className="text-[13px] text-muted line-through">{formatNumber(product.oldPrice)}</span>
-        )}
-      </div>
+      <Price amount={product.price} oldAmount={product.oldPrice} locale={locale} size="bar" className="shrink-0" />
       <Button
         size="lg"
-        className="min-w-0 flex-1 rounded-[14px]"
+        className="min-w-0 flex-1 rounded-input"
         disabled={!product.inStock}
         onClick={() => {
           addToCart();
@@ -248,7 +240,7 @@ export function MiniBuyCard({ product: listed, image }: { product: Product; imag
   return (
     <div className="flex items-center gap-3.5 rounded-[20px] border border-line bg-bg p-3.5">
       {image && (
-        <span className="relative h-[72px] w-[72px] shrink-0 rounded-[14px] bg-tile">
+        <span className="relative h-[72px] w-[72px] shrink-0 rounded-input bg-tile">
           <Image src={image} alt="" fill sizes="72px" className="object-contain p-1.5" />
         </span>
       )}

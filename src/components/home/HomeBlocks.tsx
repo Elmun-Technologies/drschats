@@ -189,7 +189,7 @@ export async function PromoBanner({ promo }: { promo: Promotion | undefined }) {
           <span className="text-lg font-bold lg:text-h-section">{promo.title}</span>
           <span className="text-sm leading-[19px] text-ink-2 lg:text-[17px] lg:leading-[25px]">{promo.description}</span>
         </span>
-        <span className="hidden h-14 shrink-0 items-center rounded-[14px] bg-ink px-8 text-[17px] font-semibold text-white lg:inline-flex">
+        <span className="hidden h-14 shrink-0 items-center rounded-input bg-ink px-8 text-[17px] font-semibold text-white lg:inline-flex">
           {t("cta")}
         </span>
       </Link>
@@ -273,7 +273,7 @@ export async function HomeServices() {
             className="relative flex min-h-[168px] flex-col gap-1.5 overflow-hidden rounded-[20px] bg-tile p-4 transition-colors hover:bg-tile-hover lg:min-h-[280px] lg:gap-3 lg:rounded-3xl lg:p-7"
           >
             <span className="relative z-10 text-[17px] font-bold leading-[21px] lg:text-[26px] lg:leading-[31px]">{c.title}</span>
-            <span className="relative z-10 text-[13px] leading-[17px] text-ink-2 lg:hidden">{fill(c.short)}</span>
+            <span className="relative z-10 text-caption text-ink-2 lg:hidden">{fill(c.short)}</span>
             <span className="relative z-10 hidden max-w-[260px] text-base leading-[23px] text-ink-2 lg:block">{fill(c.text)}</span>
             {/* Picture in the flow, under the text: an absolutely placed one sat on top of a long description. */}
             <span className="mt-auto flex items-end justify-between gap-2">
@@ -373,13 +373,13 @@ export async function HomeFaqHelp() {
             href={BRAND.social.telegram}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex h-12 flex-1 items-center justify-center rounded-[14px] bg-bg px-6 text-base font-semibold text-ink lg:h-[52px] lg:flex-none lg:text-[17px]"
+            className="inline-flex h-12 flex-1 items-center justify-center rounded-input bg-bg px-6 text-base font-semibold text-ink lg:h-[52px] lg:flex-none lg:text-[17px]"
           >
             {footer("writeTelegram")}
           </a>
           <Link
             href="/quiz"
-            className="hidden h-[52px] items-center justify-center rounded-[14px] bg-ink-2 px-6 text-[17px] font-semibold text-white lg:inline-flex"
+            className="hidden h-[52px] items-center justify-center rounded-input bg-ink-2 px-6 text-[17px] font-semibold text-white lg:inline-flex"
           >
             {t("v3.help.quiz")}
           </Link>

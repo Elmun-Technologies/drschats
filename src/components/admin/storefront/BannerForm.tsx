@@ -194,7 +194,7 @@ function Preview({ v, lang }: { v: BannerFormValues; lang: "uz" | "ru" }) {
 
   if (v.placement === "strip") {
     return (
-      <div className={cn("flex min-h-11 flex-wrap items-center justify-center gap-x-3 rounded-[12px] px-4 py-2 text-center text-[13px]", dark ? "bg-dark-panel text-white" : "bg-yellow-banner text-ink")}>
+      <div className={cn("flex min-h-11 flex-wrap items-center justify-center gap-x-3 rounded-[12px] px-4 py-2 text-center text-[13px]", dark ? "bg-dark-panel text-white" : countdown ? "bg-yellow-banner text-ink" : "bg-tile text-ink")}>
         <span className="font-semibold">{title}</span>
         {subtitle && <span className={dark ? "text-on-dark-2" : "text-ink-2"}>{subtitle}</span>}
         {countdown && <span className="font-bold tabular-nums">05:12:33</span>}

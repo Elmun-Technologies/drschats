@@ -13,12 +13,7 @@ import { DEFAULT_COMMERCE_SETTINGS } from "./settings";
 
   ALLOWED lists strings no page renders today; each says why.
 */
-const ALLOWED = new Set([
-  // Not read by any component (keys-used.test.ts would list it). Kept verbatim
-  // because the announcement bar being built in parallel may adopt it with its
-  // own, admin-managed text.
-  "topbar.announcement",
-]);
+const ALLOWED = new Set<string>([]);
 
 function walk(value: unknown, path: string[], out: [string, string][]) {
   if (typeof value === "string") out.push([path.join("."), value]);

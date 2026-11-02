@@ -84,10 +84,10 @@ export function SubscribeToSave({ product }: { product: Product }) {
 
 function optionClass(on: boolean) {
   return cn(
-    "flex cursor-pointer items-start gap-3 rounded-[14px] border-[1.5px] bg-bg p-4 transition-colors",
+    "flex cursor-pointer items-start gap-3 rounded-input border-[1.5px] bg-bg p-4 transition-colors",
     on ? "border-ink" : "border-line hover:border-line-strong",
   );
 }
 
 const RADIO =
-  "mt-px h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-full border-[1.5px] border-[#8A8F95] transition-[border] checked:border-[6px] checked:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";
+  "mt-px h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-full border-[1.5px] border-control transition-[border] checked:border-[6px] checked:border-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink";

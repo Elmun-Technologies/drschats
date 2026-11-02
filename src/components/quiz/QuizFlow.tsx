@@ -298,7 +298,7 @@ function Indicator({ selected, multi, photo }: { selected: boolean; multi: boole
         className={cn(
           "flex h-6 w-6 shrink-0 items-center justify-center border-2",
           multi ? "rounded-[7px]" : "rounded-full",
-          selected ? "border-ink" : "border-[#8A8F95]",
+          selected ? "border-ink" : "border-control",
           multi && selected && "bg-ink text-white",
           photo && "lg:hidden",
         )}

@@ -145,7 +145,7 @@ function Detail({ orderId, catalogue }: { orderId: string; catalogue: Product[] 
             <span className="text-ink-2">{tv("itemsSum")}</span>
             <span>{formatMoney(itemsSum, locale)}</span>
           </span>
-          <span className="flex justify-between gap-3 border-t border-[#DCDFDB] pt-2.5 text-[22px] font-bold">
+          <span className="flex justify-between gap-3 border-t border-line-strong pt-2.5 text-[22px] font-bold">
             <span>{tv("total")}</span>
             <span>{formatMoney(order.total, locale)}</span>
           </span>

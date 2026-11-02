@@ -5,6 +5,7 @@ import { AB_COOKIE, AB_COOKIE_RE } from "@/lib/merch/ab";
 import { ADMIN_PATH_HEADER, SESSION_COOKIE, isPublicAdminPath } from "@/lib/admin/cookie";
 import { SESSION_IDLE_MS, refreshedSessionToken } from "@/lib/admin/session-edge";
 import { REQUEST_ID_HEADER, requestIdFrom } from "@/lib/request-id";
+import { shelfRoute } from "@/lib/shop/shelf-rewrite";
 
 const intl = createMiddleware(routing);
 
@@ -30,13 +31,20 @@ export default async function middleware(request: NextRequest) {
     return response;
   }
   if (pathname === "/admin" || pathname.startsWith("/admin/")) return adminGate(request, requestId);
+  const shelf = shelfRoute(pathname, request.nextUrl.searchParams);
+  if (shelf?.kind === "redirect") {
+    const url = request.nextUrl.clone();
+    url.pathname = shelf.pathname;
+    return NextResponse.redirect(url, 308);
+  }
   // next-intl copies the request headers into its rewrite, so the id reaches the page and its actions.
   try {
     request.headers.set(REQUEST_ID_HEADER, requestId);
   } catch {
     // Immutable headers on some runtime: the response still carries the id.
   }
-  const response = intl(request);
+  let response = intl(request);
+  if (shelf && response.headers.has("x-middleware-rewrite")) response = rewriteShelf(request, response, shelf.pathname, requestId);
   response.headers.set(REQUEST_ID_HEADER, requestId);
   if (!AB_COOKIE_RE.test(request.cookies.get(AB_COOKIE)?.value ?? "")) {
     response.cookies.set(AB_COOKIE, crypto.randomUUID().replace(/-/g, ""), {
@@ -47,6 +55,27 @@ export default async function middleware(request: NextRequest) {
       httpOnly: false,
     });
   }
+  return response;
+}
+
+/*
+  A sorted or filtered catalogue URL renders per request on an internal
+  route (lib/shop/shelf-rewrite.ts), so the clean shelf can stay static. The
+  locale middleware has already decided this is a rewrite; this points it at
+  the other page and keeps what it set — the locale request header, the
+  hreflang Link header for the public URL, the locale cookie.
+*/
+function rewriteShelf(request: NextRequest, intlResponse: NextResponse, pathname: string, requestId: string) {
+  const url = request.nextUrl.clone();
+  url.pathname = pathname;
+  const headers = new Headers(request.headers);
+  headers.set(REQUEST_ID_HEADER, requestId);
+  const locale = pathname.split("/")[1];
+  headers.set("X-NEXT-INTL-LOCALE", locale);
+  const response = NextResponse.rewrite(url, { request: { headers } });
+  const link = intlResponse.headers.get("Link");
+  if (link) response.headers.set("Link", link);
+  for (const cookie of intlResponse.cookies.getAll()) response.cookies.set(cookie);
   return response;
 }
 
