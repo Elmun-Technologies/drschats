@@ -130,8 +130,12 @@ const nextConfig: NextConfig = {
     // Product shots are served from the catalogue for a year — they are
     // immutable once published.
     minimumCacheTTL: 31536000,
-    // Allow our own on-brand gradient placeholder SVGs (same-origin, /public).
-    dangerouslyAllowSVG: true,
+    /*
+      SVGs bypass the optimiser: next/image serves an .svg src as-is
+      (unoptimized) while this stays off. Keeping it off closes the optimiser's
+      SVG path entirely (GHSA-2464-fhr4-w9xw: RCE through SVG on next<=15.5.27).
+      The two lines below still harden anything the optimiser does serve.
+    */
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     /*

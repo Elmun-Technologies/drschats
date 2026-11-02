@@ -52,19 +52,13 @@ const BASELINE = new Map(
     "@architect/utils": "pulled in by @sanity/runtime-cli — closed by sanity@6",
     "adm-zip": "pulled in by the Sanity CLI chain — closed by sanity@6",
     decompress: "pulled in by the Sanity CLI chain — closed by sanity@6",
-    braces: "pulled in by the Sanity CLI chain — closed by sanity@6",
-    chokidar: "pulled in by the Sanity CLI chain — closed by sanity@6",
-    "fast-glob": "pulled in by the Sanity CLI chain — closed by sanity@6",
-    "find-yarn-workspace-root2": "pulled in by the Sanity CLI chain — closed by sanity@6",
     glob: "pulled in by the Sanity CLI chain — closed by sanity@6",
-    globby: "pulled in by the Sanity CLI chain — closed by sanity@6",
-    micromatch: "pulled in by the Sanity CLI chain — closed by sanity@6",
-    "preferred-pm": "pulled in by the Sanity CLI chain — closed by sanity@6",
-    // vite@5 under @sanity/cli and @vitejs/plugin-react (Studio build tooling, never in the
-    // site bundle). The lockfile had it flagged dev-only until an npm install recomputed the
-    // flags; `npm audit fix` cannot move it — sanity pins the range.
-    vite: "Sanity Studio build tooling (vite@5) — closed by sanity@6",
     postcss: "only fix is next@16 — major framework upgrade",
+    // GHSA-mrhx-c7xc-m3w5 (memory on oversized bounded arrays) has no zod@3 fix. Every schema
+    // runs on a body Next has already capped (serverActions.bodySizeLimit, next.config.ts), so
+    // the array zod is handed is bounded before it sees it. zod@4 touches 33 files and needs
+    // @hookform/resolvers@5 — its own migration, not a patch.
+    zod: "only fix is zod@4 — major; schema + @hookform/resolvers@5 migration",
   }),
 );
 
