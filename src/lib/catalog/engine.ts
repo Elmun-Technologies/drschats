@@ -14,7 +14,7 @@ import type {
   OrderResult,
 } from "@/lib/shopflow/types";
 import type { RawCategory, RawProduct, RawPromotion } from "@/lib/shopflow/mock";
-import { fold } from "@/lib/search/fold";
+import { matchesQuery } from "@/lib/search/match";
 import { audienceOf } from "@/lib/quiz/audience-fit";
 import { livePrice, saleOver } from "@/lib/shop/sale";
 import { DEFAULT_LOW_STOCK_AT } from "./stock-rules";
@@ -206,16 +206,13 @@ export class CatalogEngine implements ShopflowClient {
     if (minPrice != null) items = items.filter((p) => p.price >= minPrice);
     if (maxPrice != null) items = items.filter((p) => p.price <= maxPrice);
     if (search) {
-      const q = fold(search);
       const aliasesFor = (slug: string) => {
         const raw = data.products.find((r) => r.slug === slug);
         return raw?.searchAliases ? Object.values(raw.searchAliases).flat() : [];
       };
-      items = items.filter(
-        (p) =>
-          fold(p.name).includes(q) ||
-          fold(p.tagline).includes(q) ||
-          aliasesFor(p.slug).some((alias) => fold(alias).includes(q)),
+      // Name, tagline, brand, ingredients and aliases (both languages); words in any order, one typo forgiven.
+      items = items.filter((p) =>
+        matchesQuery([p.name, p.tagline, p.brand?.name ?? "", ...p.ingredients.map((i) => i.name), ...aliasesFor(p.slug)], search),
       );
     }
     items = sortProducts(items, sort);

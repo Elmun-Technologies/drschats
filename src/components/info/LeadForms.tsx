@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState, type FormEvent, type ReactNode } from "react";
+import { useId, useState, type FormEvent, type ReactNode, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { submitContactMessage, submitPartnerLead, type LeadResult } from "@/app/actions/leads";
 import { REGION_KEYS, type RegionKey } from "@/lib/checkout/regions";
@@ -124,6 +124,12 @@ export function ContactForm() {
   const t = useTranslations("pages.v3.contact");
   const id = useId();
   const [status, setStatus] = useState<Status>({ phase: "idle" });
+  const [message, setMessage] = useState("");
+  // A product page's "request the certificate" link arrives as ?about=<name>: the request is already written.
+  useEffect(() => {
+    const about = new URLSearchParams(window.location.search).get("about")?.trim().slice(0, 160);
+    if (about) setMessage(t("certRequest", { product: about }));
+  }, [t]);
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -139,6 +145,7 @@ export function ContactForm() {
     if (result.ok) {
       track("contact_message", {});
       form.reset();
+      setMessage("");
     }
   }
 
@@ -152,7 +159,7 @@ export function ContactForm() {
       </Field>
       <div className="sm:col-span-2">
         <Field label={t("message")} htmlFor={`${id}-message`}>
-          <textarea id={`${id}-message`} name="message" required minLength={5} maxLength={2000} rows={4} placeholder={t("messagePh")} className={cn(inputClass, "h-auto min-h-[110px] py-3.5")} />
+          <textarea id={`${id}-message`} name="message" required minLength={5} maxLength={2000} rows={4} value={message} onChange={(e) => setMessage(e.target.value)} placeholder={t("messagePh")} className={cn(inputClass, "h-auto min-h-[110px] py-3.5")} />
         </Field>
       </div>
       <div className="flex flex-col gap-3 sm:col-span-2">

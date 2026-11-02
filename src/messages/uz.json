@@ -250,7 +250,7 @@
         },
         {
           "question": "Mahsulotlar original ekaniga qanday ishonch hosil qilaman?",
-          "answer": "Har bir mahsulot rasmiy yetkazib beruvchidan keladi. Sertifikatlar va litsenziyalar «Litsenziya va sertifikatlar» sahifasida joylashtirilgan."
+          "answer": "Har bir mahsulot rasmiy yetkazib beruvchidan keladi. Mahsulot sertifikati va litsenziya nusxasini soʻrov boʻyicha yuboramiz — «Litsenziya va sertifikatlar» sahifasida qanday soʻrash yozilgan."
         },
         {
           "question": "Vitaminlarni shifokorsiz ichsa boʻladimi?",
@@ -1913,7 +1913,8 @@
         "messagePh": "Savolingizni yozing",
         "submit": "Yuborish",
         "sent": "Xabaringiz qabul qilindi. Operator ish vaqtida javob beradi.",
-        "phoneField": "Telefon raqami"
+        "phoneField": "Telefon raqami",
+        "certRequest": "«{product}» uchun sertifikat nusxasini yuboring."
       },
       "offerPending": "Ommaviy oferta matni yurist tomonidan tayyorlanmoqda. Ungacha savdo shartlari quyidagi sahifalarda — ular saytda amalda ishlaydigan qoidalar:",
       "offerLinks": "Shartlar"
@@ -1930,7 +1931,8 @@
     "seconds": "soniya",
     "daysLeft": "Aksiya tugashiga {count} kun",
     "hoursLeft": "Aksiya tugashiga {count} soat",
-    "cutoff": "Bugun soat {time} gacha buyurtma bering — ertaga yetkazamiz. Qoldi: <b>{hours} soat {minutes} daqiqa</b>"
+    "cutoff": "Bugun soat {time} gacha buyurtma bering — ertaga yetkazamiz. Qoldi: <b>{hours} soat {minutes} daqiqa</b>",
+    "cutoffMonday": "Bugun soat {time} gacha buyurtma bering — dushanba kuni yetkazamiz. Qoldi: <b>{hours} soat {minutes} daqiqa</b>"
   },
   "wishlist": {
     "add": "Sevimlilarga",
@@ -1944,11 +1946,11 @@
   },
   "exit": {
     "title": "Doʻkondan ketmoqchimisiz?",
-    "body": "Buyurtma holati, qabul eslatmalari va klub takliflari Telegram kanalimizda. Telefon raqamingizni soʻramaymiz.",
+    "body": "Yangi mahsulotlar, aksiyalar va qabul boʻyicha maslahatlar Telegram kanalimizda. Telefon raqamingizni soʻramaymiz.",
     "cta": "Telegram kanalga oʻtish",
     "dismiss": "Yopish",
     "badge": "Go Vita Telegram",
-    "perk1": "Buyurtma holati va yetkazib berish kuzatuvi",
+    "perk1": "Aksiyalar haqida birinchi boʻlib bilish",
     "perk2": "Qabul eslatmalari",
     "perk3": "Klub takliflari va yangi mahsulotlar",
     "promise": "Kanalga oʻtish bepul. Istalgan vaqtda chiqib ketishingiz mumkin.",

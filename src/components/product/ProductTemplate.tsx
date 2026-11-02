@@ -349,7 +349,7 @@ export async function ProductTemplate({
                   <span className="text-base leading-6 text-ink-2">{tv("docsText")}</span>
                 </div>
               </div>
-              <Link href="/licenses" className={buttonVariants("secondary")}>
+              <Link href={{ pathname: "/contact", query: { about: product.name }, hash: "contact-form" }} className={buttonVariants("secondary")}>
                 {tv("docsCta")}
               </Link>
             </div>
