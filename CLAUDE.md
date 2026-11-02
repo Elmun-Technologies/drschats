@@ -32,7 +32,10 @@ qadamlari: **[`docs/QOLGAN-ISHLAR.md`](docs/QOLGAN-ISHLAR.md)**.
 Qisqacha (ishlab turgan saytdan sanaldi): `/vitamins` **10**, `/symptoms` **7**,
 `/goals` **10** mavzu; `/programs` 7, `/blog` 3, `/ingredients` 12,
 `/where-to-buy` 11 ta dorixona tarmog'i. Mahsulot rasmlari **haqiqiy** — har bir SKU
-o'z fotosiga ega (`photos-coverage.test.ts`), AI-generatsiya rasm loyihada yo'q.
+o'z fotosiga ega (`photos-coverage.test.ts`). **Istisno (2026-11 auditi):** 4 ta SKU'ning
+birinchi rasmi generatsiya qilingan packshot — `delical-vanil-200ml`, `dr-frei-turbo-base-ingalyator`,
+`swiss-energy-neuroforce-30`, `swiss-energy-hair-nail-skin-30` (`product-photos.ts` izohlari);
+haqiqiy foto kelishi bilan almashtiriladi.
 `/experts` va `/news` — **bo'sh, shuning uchun 404** (menyu, footer va sitemap'da yo'q):
 demo ekspertlar va o'ylab topilgan yangiliklar olib tashlangan; birinchi haqiqiy yozuv
 qo'shilishi bilan bo'lim o'zi qaytadi. `BRAND.contact` va `BRAND.social` Go Vita
@@ -291,7 +294,11 @@ GTM ID: `NEXT_PUBLIC_GTM_ID` · GA4: `NEXT_PUBLIC_GA4_ID`
 ## Checkout va Buyurtmalar
 
 **Server Action** (`src/app/[locale]/checkout/actions.ts`):
-- Zod validation (server-side), chegaralar bilan (miqdor ≤ 99, ≤ 50 qator)
+- Zod validation (server-side), chegaralar bilan (miqdor ≤ 99, ≤ 50 qator). Telefon — faqat
+  O'zbekiston raqami (`lib/phone.ts`: 998 + 9 raqam), server `+998XXXXXXXXX` ga normallashtiradi
+- Buyurtma saqlangandan keyingi qadamlar (visitor, kvitansiya, email) yiqilsa ham mijozga
+  "failed" qaytmaydi — aks holda u qayta yuborib, buyurtma ikki marta tushardi. Operator xabari
+  3 marta qayta uriniladi (`notifyOperator`); kuzatuv uchun `/api/health` (baza o'lsa 503)
 - Rate limiting: 10 ta / IP / 10 daqiqa
 - **Narx va jami serverda qayta hisoblanadi** (`lib/cart/reprice.ts`): brauzer
   yuborgan `unitPrice`/`totals` ishlatilmaydi; mahsulot katalogdan olinadi, taklif
