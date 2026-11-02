@@ -95,6 +95,10 @@ export function AnnouncementBar({ items, variant }: { items: StoreAnnouncement[]
 /*
   The thin promo strip under the header (banners placed "strip"). The first
   one running is shown; it leaves at its end.
+
+  Yellow is the design's colour for a sale banner, not for every notice: a
+  light strip is tile, and turns yellow only when it counts down to a real
+  sale end (the admin's «show countdown» on a dated banner).
 */
 export function PromoStrip({ banners }: { banners: StoreBanner[] }) {
   const live = useUnexpired(banners);
@@ -115,6 +119,7 @@ export function PromoStrip({ banners }: { banners: StoreBanner[] }) {
 
 function StripLink({ b }: { b: StoreBanner }) {
   const dark = b.theme === "dark";
+  const promo = Boolean(b.countdownTo);
   return (
     <BannerLink
       href={b.href}
@@ -122,7 +127,7 @@ function StripLink({ b }: { b: StoreBanner }) {
       banner={{ id: b.id, title: b.title }}
       className={cn(
         "flex min-h-11 items-center justify-center gap-x-3 px-4 py-2 text-center text-[13px] lg:text-sm",
-        dark ? "bg-dark-panel text-white hover:bg-ink" : "bg-yellow-banner text-ink",
+        dark ? "bg-dark-panel text-white hover:bg-ink" : promo ? "bg-yellow-banner text-ink" : "bg-tile text-ink hover:bg-tile-hover",
       )}
     >
       <span className="font-semibold">{b.title}</span>
