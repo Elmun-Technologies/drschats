@@ -147,6 +147,9 @@ export function ProductCard({
           </svg>
           {t("stockLeft", { count: left })}
         </span>
+      ) : !product.inStock ? (
+        // Nothing can be delivered from an empty shelf; the badge already says so. Kept for the card height.
+        <span aria-hidden className="block h-4" />
       ) : (
         <span className="flex items-center gap-1.5 px-0.5 text-caption text-muted">
           <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">

@@ -84,7 +84,7 @@ export async function ProgramTemplate({
           </header>
 
           {/* Price panel — sticky so the bundle price follows the reader. */}
-          <aside className="rounded-2xl border border-line bg-bg p-6 lg:sticky lg:top-24">
+          <aside className="rounded-2xl border border-line bg-bg p-6 lg:sticky lg:top-[calc(var(--header-sticky)+16px)]">
             <p className="text-sm text-ink-2">{t("bundlePrice")}</p>
             <div className="mt-2 flex flex-wrap items-baseline gap-3">
               <span className="text-3xl font-extrabold text-ink">

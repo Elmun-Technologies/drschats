@@ -179,7 +179,7 @@ chaqirilgandan **keyin** chizing.
 | `social-proof/` | LivePurchaseToast (har 35s, Framer Motion) |
 | `exit-intent/` | ExitIntentPopup (mouseleave + visibilitychange, sessionStorage once) |
 | `pwa/` | ServiceWorkerRegistration |
-| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), Skeleton, StarRating, ScrollProgress, BackToTop |
+| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), StarRating, ScrollProgress, BackToTop |
 | `analytics/` | Analytics (GTM Script) |
 
 ## State Management

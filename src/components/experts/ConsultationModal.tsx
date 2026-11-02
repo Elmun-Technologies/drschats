@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { submitConsultationRequest, type LeadResult } from "@/app/actions/leads";
+import { useDialog } from "@/lib/ui/useDialog";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { Expert } from "@/lib/content/experts.sanity";
@@ -9,19 +11,11 @@ import { buttonVariants } from "@/components/ui/Button";
 import { BRAND } from "@/lib/brand";
 
 /*
-  Booking a consultation with an expert.
-
-  Two things to know before this can be shown to a customer:
-
-  1. It is reachable only from an expert page, and there are no expert pages
-     while `rawExperts` in src/lib/content/experts.ts is empty.
-  2. The form below does not yet post anywhere — `handleSubmit` only flips a
-     local flag. Publishing the first real expert therefore also means wiring
-     this to a channel that a human actually reads, and rewriting the success
-     message to match whatever that channel really does.
-
-  Until then it is dead code, kept so the plumbing does not have to be rebuilt.
-  Contact links point at the public Go Vita channel, never the corporate one.
+  Booking a consultation with an expert. Reachable only from an expert page,
+  and there are none while `rawExperts` is empty. The request goes to the
+  operator's Telegram group (app/actions/leads.ts); when that channel is not
+  configured or does not take it, the form says so and gives the phone number
+  instead of a "sent" nobody will act on.
 */
 
 export function ConsultationModal({
@@ -37,19 +31,31 @@ export function ConsultationModal({
   const [method, setMethod] = useState<"telegram" | "phone">("telegram");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const tp = useTranslations("pages.v3.partners");
   const [submitted, setSubmitted] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [failure, setFailure] = useState<Exclude<LeadResult, { ok: true }>["error"] | null>(null);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setSubmitted(true);
+    setSending(true);
+    setFailure(null);
+    const result = await submitConsultationRequest({ expert: expert.name, name, phone, method }).catch(
+      (): LeadResult => ({ ok: false, error: "unavailable" }),
+    );
+    setSending(false);
+    if (result.ok) setSubmitted(true);
+    else setFailure(result.error);
   }
 
   function handleClose() {
     setIsOpen(false);
     setSubmitted(false);
+    setFailure(null);
     setName("");
     setPhone("");
   }
+  const dialogRef = useDialog<HTMLDivElement>(isOpen, handleClose);
 
   return (
     <>
@@ -69,13 +75,23 @@ export function ConsultationModal({
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-fade-in">
-          <div className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-line bg-bg p-6 sm:p-8 shadow-pop">
+          <div
+            ref={dialogRef}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="consult-title"
+            tabIndex={-1}
+            className="relative w-full max-w-lg overflow-hidden rounded-3xl border border-line bg-bg p-6 sm:p-8 shadow-pop"
+          >
             <button
               type="button"
               onClick={handleClose}
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full bg-tile text-ink-2 hover:text-ink"
+              aria-label={t("close")}
+              className="absolute right-3 top-3 flex h-11 w-11 items-center justify-center rounded-full bg-tile text-ink-2 hover:text-ink"
             >
-              ✕
+              <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
+              </svg>
             </button>
 
             <div className="flex items-center gap-4 border-b border-line pb-5">
@@ -86,7 +102,7 @@ export function ConsultationModal({
                 <span className="text-xs font-semibold uppercase tracking-widest text-ink">
                   {t("consultModalTitle")}
                 </span>
-                <h3 className="text-lg font-bold">{expert.name}</h3>
+                <h3 id="consult-title" className="text-lg font-bold">{expert.name}</h3>
                 <p className="text-xs text-ink-2 truncate">{expert.title}</p>
               </div>
             </div>
@@ -179,8 +195,14 @@ export function ConsultationModal({
                   />
                 </div>
 
+                {failure && (
+                  <p role="alert" className="rounded-sm bg-red/10 px-4 py-3 text-[15px] font-medium text-red">
+                    {failure === "invalid" ? tp("errorInvalid") : failure === "rate_limited" ? tp("errorLimit") : tp("errorUnavailable", { phone: BRAND.contact.phone })}
+                  </p>
+                )}
                 <button
                   type="submit"
+                  disabled={sending}
                   className={cn(buttonVariants("secondary"), "w-full justify-center py-3")}
                 >
                   {t("submitBooking")}

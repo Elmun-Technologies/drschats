@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { MotionConfig } from "framer-motion";
 
 /**
  * Whoop-style smooth inertia scrolling. Automatically disabled for users who
@@ -39,5 +40,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <>{children}</>;
+  // Framer Motion animations follow the visitor's reduced-motion setting too;
+  // the CSS rule in globals.css only reaches CSS animations.
+  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
 }

@@ -37,6 +37,13 @@ const partnerSchema = z.object({
   note: z.string().trim().max(1000).optional(),
 });
 
+const consultationSchema = z.object({
+  expert: z.string().trim().min(2).max(160),
+  name: z.string().trim().min(2).max(120),
+  phone,
+  method: z.enum(["telegram", "phone"]),
+});
+
 const contactSchema = z.object({
   name: z.string().trim().min(2).max(120),
   phone,
@@ -45,6 +52,7 @@ const contactSchema = z.object({
 
 export type PartnerLead = z.input<typeof partnerSchema>;
 export type ContactMessage = z.input<typeof contactSchema>;
+export type ConsultationRequest = z.input<typeof consultationSchema>;
 export type LeadResult = { ok: true } | { ok: false; error: "invalid" | "rate_limited" | "unavailable" };
 
 async function deliver(scope: string, phoneNumber: string, lines: string[]): Promise<LeadResult> {
@@ -83,4 +91,18 @@ export async function submitContactMessage(input: ContactMessage): Promise<LeadR
   if (!parsed.success) return { ok: false, error: "invalid" };
   const d = parsed.data;
   return deliver("contact-message", d.phone, ["✉️ Saytdan xabar", `👤 ${d.name}`, `📞 ${d.phone}`, `💬 ${d.message}`]);
+}
+
+/** A consultation request from an expert's page — to the same operator group, which then calls or writes back. */
+export async function submitConsultationRequest(input: ConsultationRequest): Promise<LeadResult> {
+  const parsed = consultationSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: "invalid" };
+  const d = parsed.data;
+  return deliver("consultation", d.phone, [
+    "🩺 Konsultatsiya soʻrovi",
+    `👨‍⚕️ ${d.expert}`,
+    `👤 ${d.name}`,
+    `📞 ${d.phone}`,
+    `💬 ${d.method === "telegram" ? "Telegram orqali" : "Telefon qoʻngʻirogʻi"}`,
+  ]);
 }

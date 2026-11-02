@@ -31,7 +31,7 @@ import { gapFillers } from "@/lib/cart/gap";
 import { FreeShippingFillers } from "@/components/cart/FreeShippingFillers";
 import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
-import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
+import { ONLINE_PAYMENT_MARKS, ONLINE_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 import { telegramInitData } from "@/lib/telegram/mini-app";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
@@ -160,7 +160,7 @@ export function CheckoutForm({
     defaultValues: {
       method: "courier",
       payment: onlinePaymentAvailable() ? "online" : "cod",
-      provider: onlinePaymentAvailable() ? PAYMENT_PROVIDERS.find((p) => p.configured)?.id : undefined,
+      provider: ONLINE_PROVIDERS[0]?.id,
       subscribe: false,
     },
   });
@@ -489,25 +489,24 @@ export function CheckoutForm({
           </Step>
 
           {/*
-            A provider is selectable only when its end-to-end payment flow is
-            implemented. A merchant ID by itself is not enough to accept a
-            payment, so incomplete providers remain disabled.
+            Only providers that can take a payment are drawn. Three greyed-out
+            "not yet" cards ahead of the one working option (cash) made the
+            step look broken and sent card payers to another shop.
           */}
           <Step n={3} title={t("paymentTitle")}>
             <div role="radiogroup" aria-label={t("paymentTitle")} className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-2.5">
-              {PAYMENT_PROVIDERS.map((p) => (
+              {ONLINE_PROVIDERS.map((p) => (
                 <RadioCard
                   key={p.id}
                   name="pay-choice"
                   value={p.id}
                   checked={payChoice === p.id}
-                  disabled={!p.configured}
                   onChange={() => choosePay(p.id)}
-                  className={cn("p-3.5 lg:p-4", !p.configured && "cursor-not-allowed opacity-60")}
+                  className="p-3.5 lg:p-4"
                 >
                   <span className="flex flex-col items-start gap-0.5">
                     <PaymentMark id={p.id} size="sm" className="h-6 justify-start bg-transparent px-0 text-base" />
-                    <span className="text-[13px] text-ink-2 lg:text-sm">{p.configured ? tv("online") : t("paySoon")}</span>
+                    <span className="text-[13px] text-ink-2 lg:text-sm">{tv("online")}</span>
                   </span>
                 </RadioCard>
               ))}

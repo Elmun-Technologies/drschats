@@ -22,7 +22,7 @@ export default function NotFound() {
         <p aria-hidden className="text-[110px] font-bold leading-none tracking-[-0.04em] lg:text-[160px]">404</p>
         <h1 className="text-[28px] font-bold leading-[34px] lg:text-[36px] lg:leading-[42px]">{t("notFoundTitle")}</h1>
         <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("notFoundLead")}</p>
-        <form action={`/${locale}/search`} role="search" className="mt-2 flex h-14 w-full items-center gap-2 rounded-[14px] bg-tile pl-5 pr-1.5">
+        <form action={`/${locale}/search`} role="search" className="mt-2 flex h-14 w-full items-center gap-2 rounded-[14px] bg-tile pl-5 pr-1.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
           <label htmlFor="nf-search" className="sr-only">{header("searchShort")}</label>
           <input
             id="nf-search"

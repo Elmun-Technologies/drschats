@@ -53,19 +53,32 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
   const [active, setActive] = useState(0);
   const count = slides.length;
   const go = useCallback((step: number) => setActive((i) => (i + step + count) % count), [count]);
+  // WCAG 2.2.2: moving content can be paused, and it waits while it is being read or used.
+  const [paused, setPaused] = useState(false);
+  const [held, setHeld] = useState(false);
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => setReduced(window.matchMedia("(prefers-reduced-motion: reduce)").matches), []);
 
   useEffect(() => {
-    if (count < 2 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (count < 2 || reduced || paused || held) return;
     const id = window.setInterval(() => go(1), 7000);
     return () => window.clearInterval(id);
-  }, [count, go, active]);
+  }, [count, go, active, reduced, paused, held]);
 
   const slide = slides[active] ?? slides[0];
   if (!slide) return null;
   const index = slides.indexOf(slide);
 
   return (
-    <div className="flex min-w-0 flex-col gap-3 lg:gap-3.5">
+    <div
+      className="flex min-w-0 flex-col gap-3 lg:gap-3.5"
+      onMouseEnter={() => setHeld(true)}
+      onMouseLeave={() => setHeld(false)}
+      onFocus={() => setHeld(true)}
+      onBlur={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node | null)) setHeld(false);
+      }}
+    >
       {/*
         The entering slide is animated from translateX(30px), and for those
         0.5 s it stuck 14 px out of a 390 px screen — the page could be dragged
@@ -92,7 +105,20 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
         )}
       </div>
       {count > 1 && (
-        <div className="flex justify-center" role="group" aria-label={t("v3.slides")}>
+        <div className="flex items-center justify-center" role="group" aria-label={t("v3.slides")}>
+          {!reduced && (
+            <button
+              type="button"
+              onClick={() => setPaused(!paused)}
+              aria-label={paused ? t("v3.brand.play") : t("v3.brand.pause")}
+              aria-pressed={paused}
+              className="mr-1 flex h-6 w-6 items-center justify-center rounded-full text-ink-2 hover:text-ink"
+            >
+              <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="currentColor" aria-hidden>
+                <path d={paused ? "M8 5v14l11-7z" : "M7 5h4v14H7zM13 5h4v14h-4z"} />
+              </svg>
+            </button>
+          )}
           {slides.map((s, i) => (
             <button
               key={s.key}
