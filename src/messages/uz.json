@@ -84,7 +84,13 @@
     "notFoundLead": "Havola eskirgan yoki sahifa koʻchirilgan boʻlishi mumkin. Qidiruvdan foydalaning yoki katalogga oʻting.",
     "notFoundPopular": "Mashhur kategoriyalar",
     "linkCopied": "Havola nusxalandi",
-    "stockLeft": "Omborda {count} ta qoldi"
+    "stockLeft": "Omborda {count} ta qoldi",
+    "support": {
+      "cta": "Savol berish",
+      "label": "Savol berish — operatorga Telegramda yozish",
+      "labelAbout": "Savol berish — {name} haqida operatorga Telegramda yozish",
+      "hours": "Operator ish vaqtida javob beradi: {hours}"
+    }
   },
   "home": {
     "hero": {
@@ -504,7 +510,33 @@
       "regionsNote": "{days} · {amount}dan bepul",
       "payment": "Toʻlov",
       "paymentOnline": "{providers} yoki yetkazishda naqd pul",
-      "paymentCod": "Yetkazishda naqd pul"
+      "paymentCod": "Yetkazishda naqd pul",
+      "specShelfLife": "Yaroqlilik muddati",
+      "specStorage": "Saqlash sharoiti",
+      "specRegistration": "Roʻyxatdan oʻtish raqami",
+      "contraindications": "Qarshi koʻrsatmalar",
+      "reviewForm": {
+        "rating": "Bahoingiz",
+        "stars": "{count, plural, one {# yulduz} other {# yulduz}}",
+        "name": "Ismingiz",
+        "phone": "Telefon",
+        "phoneHint": "Saytda koʻrsatilmaydi. Shu raqamga mahsulot yetkazilgan boʻlsa, sharhda «Tasdiqlangan xarid» belgisi chiqadi.",
+        "text": "Sharh",
+        "submit": "Yuborish",
+        "sending": "Yuborilmoqda…",
+        "moderation": "Sharh tekshiruvdan keyin chiqadi.",
+        "sent": "Rahmat! Sharhingiz qabul qilindi va tekshiruvdan keyin shu sahifada chiqadi.",
+        "errorRating": "Baho tanlang (1–5 yulduz).",
+        "errorName": "Ismingizni yozing.",
+        "errorPhone": "Oʻzbekiston telefon raqamini kiriting.",
+        "errorText": "Sharh kamida 10 belgidan iborat boʻlsin.",
+        "error": {
+          "invalid": "Maʼlumotlarni tekshiring.",
+          "rate_limited": "Juda koʻp urinish. Birozdan keyin qayta yuboring.",
+          "unavailable": "Hozir sharhni qabul qilib boʻlmadi. Keyinroq urinib koʻring.",
+          "duplicate": "Bu mahsulotga sharhingiz tekshiruvda turibdi."
+        }
+      }
     }
   },
   "shop": {
@@ -1271,9 +1303,11 @@
     "offerReason": "Buyurtmangizga qoʻshimcha taklif"
   },
   "cookie": {
-    "text": "Biz saytdan foydalanishni yaxshilash uchun cookie fayllardan foydalanamiz.",
-    "accept": "Qabul qilaman",
-    "more": "Batafsil"
+    "text": "Tashriflarni tahlil qilish uchun cookie va analitika teglaridan foydalanamiz — faqat ruxsatingiz bilan.",
+    "accept": "Qabul qilish",
+    "more": "Batafsil",
+    "reject": "Rad etish",
+    "label": "Cookie roziligi"
   },
   "topbar": {
     "announcement": "300 000 soʻmdan ortiq xaridga bepul yetkazib berish 🚀"
@@ -1305,7 +1339,8 @@
     "compare": "Taqqoslash",
     "announcementPause": "Eʼlonlarni toʻxtatish",
     "announcementPlay": "Eʼlonlarni davom ettirish",
-    "cartCount": "{label}: {count, plural, =0 {boʻsh} other {# ta mahsulot}}"
+    "cartCount": "{label}: {count, plural, =0 {boʻsh} other {# ta mahsulot}}",
+    "myOrders": "Buyurtmalar"
   },
   "badges": {
     "hot": "YANGI",
@@ -2499,6 +2534,33 @@
     "payPending": "Toʻlov kutilmoqda",
     "payPendingHint": "Toʻlagan boʻlsangiz, bir daqiqadan keyin sahifani yangilang — holat toʻlov tizimi tasdiqlashi bilan oʻzgaradi.",
     "payNow": "{provider} orqali toʻlash",
-    "refunded": "Toʻlov qaytarildi"
+    "refunded": "Toʻlov qaytarildi",
+    "reorder": "Takrorlash",
+    "myOrders": "Buyurtmalarim",
+    "loyaltyTitle": "Ballar va tavsiya kodi",
+    "balance": "Hisobingizda: {points} ball",
+    "cancel": {
+      "title": "Buyurtmani bekor qilish",
+      "hint": "Buyurtma hali joʻnatilmagan — uni shu yerda bekor qilishingiz mumkin.",
+      "cta": "Bekor qilish",
+      "confirm": "Buyurtma bekor qilinsinmi?",
+      "yes": "Ha, bekor qilinsin",
+      "no": "Yoʻq",
+      "sending": "Bekor qilinmoqda…",
+      "paid": "Buyurtma onlayn toʻlangan — bekor qilish va pulni qaytarish uchun operatorga qoʻngʻiroq qiling: {phone}.",
+      "tooLate": "Buyurtma joʻnatilgan, endi uni bu yerda bekor qilib boʻlmaydi. Operator: {phone}.",
+      "failed": "Bekor qilib boʻlmadi. Qayta urinib koʻring yoki qoʻngʻiroq qiling: {phone}."
+    },
+    "orders": {
+      "title": "Buyurtmalarim",
+      "lead": "Shu brauzerda berilgan yoki havola orqali ochilgan buyurtmalar. Boshqa qurilmadagi buyurtmani raqam va telefon bilan toping.",
+      "empty": "Bu brauzerda hali buyurtma yoʻq.",
+      "find": "Buyurtmani topish",
+      "shop": "Katalogga oʻtish",
+      "open": "Holati va takrorlash",
+      "forget": "Roʻyxatdan olish",
+      "forgetLabel": "№{order} buyurtmani roʻyxatdan olish",
+      "profile": "Sogʻliq profilingiz va eslatmalar — <link>Profil</link> sahifasida."
+    }
   }
 }

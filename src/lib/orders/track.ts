@@ -4,6 +4,10 @@ import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { ORDERS_IN_DB } from "@/lib/shopflow";
 import { lineTotal } from "@/lib/cart/pricing";
+import { getLoyaltyRules } from "@/lib/loyalty/settings";
+import { ledgerState } from "@/lib/loyalty/server";
+import { existingReferralCode } from "@/lib/referral/server";
+import type { LoyaltyRules } from "@/lib/loyalty/model";
 
 /*
   What the public tracking page may show about an order: status, the dates,
@@ -16,7 +20,7 @@ export interface TrackedOrder {
   createdAt: string;
   updatedAt: string;
   method: "courier" | "pickup";
-  items: { slug: string; name: string; quantity: number; total: number }[];
+  items: { productId: string; slug: string; name: string; quantity: number; total: number }[];
   subtotal: number;
   discount: number;
   shipping: number;
@@ -37,7 +41,7 @@ type Row = {
   created_at: string | Date;
   updated_at: string | Date;
   delivery: { method?: string } | null;
-  items: { slug: string; name: string; quantity: number; unitPrice: number; upsellDiscountPercent?: number }[];
+  items: { productId: string; slug: string; name: string; quantity: number; unitPrice: number; upsellDiscountPercent?: number }[];
   totals: { subtotal: number; discount: number; shipping: number; total: number };
   payment: { method?: string; provider?: string } | null;
   payment_status: TrackedOrder["paymentStatus"] | null;
@@ -59,6 +63,7 @@ export async function trackedOrder(number: string): Promise<TrackedOrder | null>
     updatedAt: iso(o.updated_at),
     method: o.delivery?.method === "pickup" ? "pickup" : "courier",
     items: (o.items ?? []).map((i) => ({
+      productId: i.productId,
       slug: i.slug,
       name: i.name,
       quantity: i.quantity,
@@ -73,6 +78,26 @@ export async function trackedOrder(number: string): Promise<TrackedOrder | null>
     paymentStatus: o.payment_status ?? "unpaid",
     locale: o.locale,
   };
+}
+
+/**
+ * The cashback balance and referral code of the phone behind a tracked
+ * order, for its signed page — only what the loyalty settings switch on.
+ * The phone itself never leaves the server. The code is read, not created:
+ * a code exists once the phone has a delivered order.
+ */
+export async function trackedLoyalty(number: string): Promise<{ balance: number | null; code: string | null; rules: LoyaltyRules } | null> {
+  if (!trackingAvailable) return null;
+  const rules = await getLoyaltyRules();
+  if (!rules.enabled && !rules.referral.enabled) return null;
+  const [row] = (await getDb().execute(sql`
+    select right(regexp_replace(customer->>'phone', '\\D', '', 'g'), 9) as phone9 from orders where number = ${number} limit 1`)) as unknown as { phone9: string }[];
+  if (!row || row.phone9?.length !== 9) return null;
+  const [state, code] = await Promise.all([
+    rules.enabled ? ledgerState(getDb(), row.phone9) : null,
+    rules.referral.enabled ? existingReferralCode(row.phone9) : null,
+  ]);
+  return { balance: state ? Math.max(0, state.balance) : null, code, rules };
 }
 
 /** True when the order exists and was placed with this phone (last nine digits). */

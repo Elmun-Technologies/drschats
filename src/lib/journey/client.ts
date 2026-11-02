@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from "@/lib/storage-keys";
+import { analyticsAllowed } from "@/lib/analytics/consent";
 import type { VisitorEventType } from "@/lib/db/schema";
 
 /*
@@ -22,7 +23,8 @@ let timer: ReturnType<typeof setTimeout> | null = null;
 let listening = false;
 
 function disabled(): boolean {
-  return typeof window === "undefined" || typeof document === "undefined" || navigator.webdriver === true;
+  // Nothing is recorded about a visit until the cookie bar was answered «Qabul qilish» (lib/analytics/consent.ts).
+  return typeof window === "undefined" || typeof document === "undefined" || navigator.webdriver === true || !analyticsAllowed();
 }
 
 type Session = { sid: string; at: number; entry?: { landing: string; referrer: string } };

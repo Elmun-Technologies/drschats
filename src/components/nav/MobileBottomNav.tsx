@@ -46,7 +46,13 @@ export function MobileBottomNav({
   useEffect(() => setMounted(true), []);
   useEffect(() => setMenuOpen(false), [pathname]);
 
-  const cabinetHref = accountAreaAvailable(isApiConfigured()) ? "/account" : "/profile";
+  /*
+    With customer accounts the tab is the cabinet. Without them it used to be
+    labelled «Kabinet» and open the health profile; it now says what it opens:
+    the orders this browser placed (/orders → signed tracking links).
+  */
+  const accounts = accountAreaAvailable(isApiConfigured());
+  const cabinetHref = accounts ? "/account" : "/orders";
 
   return (
     <>
@@ -86,9 +92,9 @@ export function MobileBottomNav({
           />
           <Tab
             href={cabinetHref}
-            label={t("cabinet")}
+            label={accounts ? t("cabinet") : t("myOrders")}
             icon={ICONS.user}
-            active={!menuOpen && pathname.startsWith(cabinetHref)}
+            active={!menuOpen && (pathname.startsWith(cabinetHref) || (!accounts && pathname.startsWith("/track")))}
           />
         </div>
       </nav>

@@ -57,6 +57,8 @@ const PATHS: [string, Permission][] = [
   ["/admin/orders", "orders"],
   ["/admin/customers", "customers"],
   ["/admin/waitlist", "waitlist"],
+  ["/admin/subscriptions", "orders"],
+  ["/admin/reviews", "marketing"],
   ["/admin/bot/tickets", "support"],
   ["/admin/bot", "marketing"],
   ["/admin/messages", "marketing"],

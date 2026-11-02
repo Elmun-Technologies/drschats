@@ -72,12 +72,15 @@ export function ProductReviews({
                 <blockquote className="mt-4 flex-1 text-ink-2">&ldquo;{r.text}&rdquo;</blockquote>
                 <figcaption className="mt-4 flex items-center gap-2 text-sm font-medium text-ink">
                   {r.author}
-                  <span className="inline-flex items-center gap-1 text-xs font-medium text-ink">
-                    <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                    {t("verifiedBuyer")}
-                  </span>
+                  {/* Only where an order of this product was delivered to the reviewer's phone (lib/reviews). */}
+                  {r.verified && (
+                    <span className="inline-flex items-center gap-1 text-xs font-medium text-ink">
+                      <svg viewBox="0 0 20 20" aria-hidden className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M5 10l3 3 7-7" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                      {t("verifiedBuyer")}
+                    </span>
+                  )}
                 </figcaption>
               </figure>
             </li>

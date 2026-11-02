@@ -40,6 +40,8 @@ export interface Review {
   rating: number;
   date: string;
   text: string;
+  /** A customer review whose phone has a delivered order of this product (lib/reviews). */
+  verified?: boolean;
 }
 
 /**
@@ -101,6 +103,8 @@ export interface Product {
    * quantity is ever shown. Read through lib/catalog/stock-rules.
    */
   stock?: { qty: number; lowAt: number };
+  /** Package facts (admin form, 0018): absent when none is filled; each field only when filled. */
+  facts?: { contraindications?: string; shelfLife?: string; storage?: string; registrationNumber?: string };
 }
 
 export type PromotionType =

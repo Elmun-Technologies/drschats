@@ -20,6 +20,7 @@ export const NAV_GROUPS = [
     items: [
       { href: "/admin/orders", label: "Buyurtmalar", icon: "orders" },
       { href: "/admin/customers", label: "Mijozlar", icon: "users" },
+      { href: "/admin/subscriptions", label: "Obunalar", icon: "bell" },
       { href: "/admin/visitors", label: "Mijozlar yoʻli", icon: "route" },
       { href: "/admin/funnel", label: "Voronka", icon: "funnel" },
     ],
@@ -32,6 +33,7 @@ export const NAV_GROUPS = [
       { href: "/admin/promotions", label: "Aksiyalar", icon: "percent" },
       { href: "/admin/promocodes", label: "Promokodlar", icon: "ticket" },
       { href: "/admin/loyalty", label: "Sodiqlik", icon: "gift" },
+      { href: "/admin/reviews", label: "Sharhlar", icon: "message" },
       { href: "/admin/campaigns", label: "Kampaniyalar", icon: "megaphone" },
       { href: "/admin/flows", label: "Avtomatlashtirish", icon: "flow" },
       { href: "/admin/messages", label: "Xabarlar", icon: "inbox" },

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { isAllowedImageUrl } from "@/lib/security/csp";
 import type { Locale } from "@/lib/i18n/routing";
 import { locales } from "@/lib/i18n/routing";
-import type { ProductContent } from "@/lib/db/schema";
+import type { ProductContent, ProductFacts } from "@/lib/db/schema";
 import type { FaqItem, IngredientRow, ProductBenefit } from "@/lib/shopflow/types";
 
 /*
@@ -107,6 +107,29 @@ export function formToContent(form: Record<string, string>): ProductContent {
 }
 
 /*
+  Package facts (0018): contraindications, shelf life and storage per
+  language, from the packaging. Empty fields are not stored, and a product
+  with none keeps `facts` null — the page prints only what was filled.
+*/
+export const FACT_FIELDS = ["contraindications", "shelfLife", "storage"] as const;
+const FACT_MAX = 2000;
+
+export function factsToForm(facts: ProductFacts | null | undefined): Record<string, string> {
+  const out: Record<string, string> = {};
+  for (const l of locales) for (const f of FACT_FIELDS) out[`${l}.${f}`] = facts?.[f]?.[l] ?? "";
+  return out;
+}
+
+export function formToFacts(form: Record<string, string | undefined>): ProductFacts | null {
+  const facts: ProductFacts = {};
+  for (const f of FACT_FIELDS) {
+    const value = perLocale((l) => (form[`${l}.${f}`] ?? "").trim().slice(0, FACT_MAX));
+    if (Object.values(value).some(Boolean)) facts[f] = value;
+  }
+  return Object.keys(facts).length > 0 ? facts : null;
+}
+
+/*
   The sale end is entered and shown in Tashkent time (UTC+5, no daylight
   saving), whatever the admin's browser or the server's clock says.
 */
@@ -141,6 +164,7 @@ export const productFieldsSchema = z
     // Fiscal receipt (Payme): the MXIK/IKPU code is 17 digits (tasnif.soliq.uz), the package code digits only.
     mxikCode: z.string().trim().regex(/^$|^[0-9]{17}$/, "MXIK (IKPU) kodi 17 ta raqamdan iborat").optional(),
     packageCode: z.string().trim().regex(/^$|^[0-9]{1,20}$/, "Qadoq kodi faqat raqamlardan iborat").optional(),
+    registrationNumber: z.string().trim().max(80, "Roʻyxatdan oʻtish raqami 80 belgidan oshmasin").optional(),
     kind: z.enum(["core", "addon", "unlisted"]),
     sort: z.coerce.number().int().min(-10000).max(10000).default(0),
     images: z.string().optional(),

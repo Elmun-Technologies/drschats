@@ -110,6 +110,38 @@ export function candidateQuery(trigger: FlowTrigger, window: TriggerWindow, opti
         where a.anchor between ${iso(from)} and ${iso(to)}
           and exists (select 1 from orders o where o.status <> 'cancelled' and ${ORDER_PHONE} = b.phone9)`;
     }
+    case "subscription_due":
+      /*
+        Active subscriptions (0017) three days before the next delivery is
+        due; once per subscription and due date. Not when the order it came
+        from was cancelled — nothing was delivered to repeat.
+      */
+      return sql`
+        select s.phone9 as subject,
+               s.id::text || ':' || to_char(s.next_due_at at time zone 'UTC', 'YYYYMMDD') as cycle,
+               s.next_due_at - interval '3 days' as anchor,
+               jsonb_build_object('name', s.customer_name, 'locale', s.locale, 'productName', s.product_name,
+                                  'link', '/product/' || s.product_slug) as context
+        from subscriptions s
+        left join orders o on o.id = s.last_order_id
+        where s.status = 'active' and coalesce(o.status, '') <> 'cancelled'
+          and s.next_due_at - interval '3 days' between ${iso(from)} and ${iso(to)}`;
+    case "review_request": {
+      /*
+        Every delivered order (not only the first), anchored at the delivery;
+        the link opens the first product's reviews. One request per order.
+      */
+      return sql`
+        select p.phone9 as subject, p.id::text as cycle, d.at as anchor,
+               jsonb_build_object('name', p.customer->>'name', 'locale', p.locale, 'orderId', p.id, 'orderNumber', p.number,
+                                  'productName', p.items->0->>'name',
+                                  'link', '/product/' || (p.items->0->>'slug') || '#sharhlar') as context
+        from (select o.*, ${ORDER_PHONE} as phone9 from orders o where o.status = 'delivered') p
+        cross join lateral (
+          select coalesce((select max(created_at) from bot_order_events b where b.order_id = p.id and b.status = 'delivered'), p.updated_at) as at
+        ) d
+        where length(p.phone9) = 9 and d.at between ${iso(from)} and ${iso(to)}`;
+    }
     case "restock":
       // restock: enrolled by enqueueRestockMessage() (lib/flows/restock.ts).
       return null;
