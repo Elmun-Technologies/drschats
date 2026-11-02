@@ -3,6 +3,7 @@ import "server-only";
 import { and, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { phone9Sql } from "@/lib/db/phone";
+import { regionName } from "@/lib/checkout/regions";
 import {
   botConfig,
   botJobs,
@@ -125,7 +126,7 @@ function orderOut(o: OrderRow, locale: Locale, chatId: number) {
     total: o.total,
     shipping: o.totals.shipping,
     unverified: !verified,
-    delivery: { region: o.delivery.region, address: verified ? (o.delivery.address ?? "") : "", method: o.delivery.method },
+    delivery: { region: regionName(o.delivery.region, locale === "ru" ? "ru" : "uz"), address: verified ? (o.delivery.address ?? "") : "", method: o.delivery.method },
     items: o.items.map((i) => ({ productId: i.productId, slug: i.slug, name: i.name, qty: i.quantity, unitPrice: i.unitPrice })),
   };
 }

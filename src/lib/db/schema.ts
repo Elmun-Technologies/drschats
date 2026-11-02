@@ -14,6 +14,9 @@ export type ProductContent = Pick<
   | "howToUse" | "faq" | "badges" | "servings" | "origin" | "searchAliases"
 >;
 
+/** Package facts (0018): contraindications, shelf life and storage, per language. */
+export type ProductFacts = Partial<Record<"contraindications" | "shelfLife" | "storage", L>>;
+
 export const categories = pgTable("categories", {
   id: text("id").primaryKey(),
   slug: text("slug").notNull().unique(),
@@ -48,6 +51,9 @@ export const products = pgTable("products", {
   /** 0015: MXIK (IKPU) and package code for the fiscal receipt Payme prints. */
   mxikCode: text("mxik_code"),
   packageCode: text("package_code"),
+  /** 0018: package facts shown on the product page only when filled. */
+  facts: jsonb("facts").$type<ProductFacts | null>(),
+  registrationNumber: text("registration_number"),
   kind: text("kind").$type<"core" | "addon" | "unlisted">().notNull().default("core"),
   sort: integer("sort").notNull().default(0),
   images: jsonb("images").$type<string[]>().notNull().default([]),
@@ -89,6 +95,8 @@ export const orders = pgTable("orders", {
   /** 0020: the operator's Telegram ping; null = not delivered yet (the worker retries). */
   operatorNotifiedAt: timestamp("operator_notified_at", { withTimezone: true }),
   operatorNotifyAttempts: smallint("operator_notify_attempts").notNull().default(0),
+  /** 0018: one order per checkout form session (a retry returns the first order). */
+  idempotencyKey: text("idempotency_key"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -671,5 +679,46 @@ export const cspReports = pgTable("csp_reports", {
 export const opsState = pgTable("ops_state", {
   key: text("key").primaryKey(),
   value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Reviews and subscriptions — db/migrations/0017_reviews_subscriptions.sql */
+
+export const REVIEW_STATUSES = ["pending", "approved", "rejected"] as const;
+export type ReviewStatus = (typeof REVIEW_STATUSES)[number];
+
+export const reviews = pgTable("reviews", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productSlug: text("product_slug").notNull(),
+  rating: smallint("rating").notNull(),
+  author: text("author").notNull(),
+  text: text("text").notNull(),
+  phone9: text("phone9"),
+  verified: boolean("verified").notNull().default(false),
+  locale: text("locale").notNull().default("uz"),
+  status: text("status").$type<ReviewStatus>().notNull().default("pending"),
+  moderatedBy: text("moderated_by"),
+  moderatedAt: timestamp("moderated_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const SUBSCRIPTION_STATUSES = ["active", "cancelled"] as const;
+export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
+
+export const subscriptions = pgTable("subscriptions", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  phone9: text("phone9").notNull(),
+  productSlug: text("product_slug").notNull(),
+  productName: text("product_name").notNull(),
+  quantity: integer("quantity").notNull(),
+  intervalDays: integer("interval_days").notNull(),
+  locale: text("locale").notNull().default("uz"),
+  customerName: text("customer_name"),
+  firstOrderId: bigint("first_order_id", { mode: "number" }),
+  lastOrderId: bigint("last_order_id", { mode: "number" }),
+  lastOrderNumber: text("last_order_number"),
+  status: text("status").$type<SubscriptionStatus>().notNull().default("active"),
+  nextDueAt: timestamp("next_due_at", { withTimezone: true }).notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

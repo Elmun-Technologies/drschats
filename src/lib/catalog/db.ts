@@ -10,6 +10,7 @@ import type { CatalogData } from "./engine";
 import { createCircuit } from "./circuit";
 import { StockShortage, readLowStockDefault, takeStock } from "./stock";
 import type { RawDeal } from "./deals";
+import { approvedReviewSummaries } from "@/lib/reviews/server";
 
 export const CATALOG_TAG = "catalog";
 
@@ -67,13 +68,17 @@ async function readDeals(): Promise<RawDeal[]> {
 
 async function readCatalog(): Promise<CatalogData> {
   const db = getDb();
-  const [cats, brandRows, rows, promos, lowStockDefault, dealRows] = await Promise.all([
+  const [cats, brandRows, rows, promos, lowStockDefault, dealRows, reviewSummaries] = await Promise.all([
     db.select().from(categories).orderBy(asc(categories.sort), asc(categories.slug)),
     db.select().from(brands).orderBy(asc(brands.sort), asc(brands.name)),
     db.select().from(products).orderBy(asc(products.sort), asc(products.createdAt)),
     readPromotions(),
     readLowStockDefault(db),
     readDeals(),
+    approvedReviewSummaries().catch((err: Error) => {
+      console.error("[catalog] reviews read failed — products show none:", err.message);
+      return new Map();
+    }),
   ]);
   const categoryId = new Map(cats.map((c) => [c.slug, c.id]));
   return {
@@ -109,6 +114,9 @@ async function readCatalog(): Promise<CatalogData> {
         brandSlug: p.brandSlug,
         stockQty: p.stockQty,
         lowStockAt: p.lowStockAt ?? lowStockDefault,
+        customerReviews: reviewSummaries.get(p.slug),
+        facts: p.facts,
+        registrationNumber: p.registrationNumber,
       }),
     ),
     promotions: promos,
@@ -189,6 +197,7 @@ export function orderValues(payload: OrderRequest, promoCode: string | null = nu
     source: payload.source ?? "site",
     // Sent to a gateway: waiting for its callback (lib/payments). Cash stays unpaid until delivery.
     paymentStatus: payload.payment?.method === "online" ? "pending" : "unpaid",
+    idempotencyKey: payload.idempotencyKey ?? null,
   };
 }
 

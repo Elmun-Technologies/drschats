@@ -76,7 +76,7 @@
     "unitTablet": "tabletka",
     "unitCapsule": "kapsula",
     "perUnit": "{price} / {unit}",
-    "delivery24": "24 soatda yetkazish",
+    "delivery24": "{hours} soatda yetkazish",
     "hit": "Xit",
     "decrease": "Kamaytirish",
     "increase": "Koʻpaytirish",
@@ -84,7 +84,13 @@
     "notFoundLead": "Havola eskirgan yoki sahifa koʻchirilgan boʻlishi mumkin. Qidiruvdan foydalaning yoki katalogga oʻting.",
     "notFoundPopular": "Mashhur kategoriyalar",
     "linkCopied": "Havola nusxalandi",
-    "stockLeft": "Omborda {count} ta qoldi"
+    "stockLeft": "Omborda {count} ta qoldi",
+    "support": {
+      "cta": "Savol berish",
+      "label": "Savol berish — operatorga Telegramda yozish",
+      "labelAbout": "Savol berish — {name} haqida operatorga Telegramda yozish",
+      "hours": "Operator ish vaqtida javob beradi: {hours}"
+    }
   },
   "home": {
     "cta": {
@@ -388,12 +394,38 @@
       "courierNote": "{hours} soat ichida · {amount}dan bepul",
       "pickup": "Oʻzi olib ketish",
       "free": "Bepul",
-      "pickupNote": "Toshkent shahridagi omborimizdan",
+      "pickupNote": "{address}, vaqtni operator bilan kelishasiz",
       "regions": "Viloyatlarga, BTS",
       "regionsNote": "{days} · {amount}dan bepul",
       "payment": "Toʻlov",
       "paymentOnline": "{providers} yoki yetkazishda naqd pul",
-      "paymentCod": "Yetkazishda naqd pul"
+      "paymentCod": "Yetkazishda naqd pul",
+      "specShelfLife": "Yaroqlilik muddati",
+      "specStorage": "Saqlash sharoiti",
+      "specRegistration": "Roʻyxatdan oʻtish raqami",
+      "contraindications": "Qarshi koʻrsatmalar",
+      "reviewForm": {
+        "rating": "Bahoingiz",
+        "stars": "{count, plural, one {# yulduz} other {# yulduz}}",
+        "name": "Ismingiz",
+        "phone": "Telefon",
+        "phoneHint": "Saytda koʻrsatilmaydi. Shu raqamga mahsulot yetkazilgan boʻlsa, sharhda «Tasdiqlangan xarid» belgisi chiqadi.",
+        "text": "Sharh",
+        "submit": "Yuborish",
+        "sending": "Yuborilmoqda…",
+        "moderation": "Sharh tekshiruvdan keyin chiqadi.",
+        "sent": "Rahmat! Sharhingiz qabul qilindi va tekshiruvdan keyin shu sahifada chiqadi.",
+        "errorRating": "Baho tanlang (1–5 yulduz).",
+        "errorName": "Ismingizni yozing.",
+        "errorPhone": "Oʻzbekiston telefon raqamini kiriting.",
+        "errorText": "Sharh kamida 10 belgidan iborat boʻlsin.",
+        "error": {
+          "invalid": "Maʼlumotlarni tekshiring.",
+          "rate_limited": "Juda koʻp urinish. Birozdan keyin qayta yuboring.",
+          "unavailable": "Hozir sharhni qabul qilib boʻlmadi. Keyinroq urinib koʻring.",
+          "duplicate": "Bu mahsulotga sharhingiz tekshiruvda turibdi."
+        }
+      }
     }
   },
   "shop": {
@@ -484,7 +516,8 @@
       "notifySubmit": "Xabar bering",
       "orTelegram": "Yoki Telegramda yozing",
       "maybe": "Balki sizga kerakdir",
-      "back": "Orqaga"
+      "back": "Orqaga",
+      "didYouMean": "Balki siz qidirgan:"
     },
     "sale": {
       "title": "Aksiyalar va chegirmalar",
@@ -576,13 +609,13 @@
       "addFor": "Qoʻshish: {name}",
       "favoriteFor": "Sevimlilarga: {name}",
       "guestNote": "Hisobsiz ham buyurtma berishingiz mumkin.",
-      "courierNote": "Toshkent — Yandex Dostavka, {hours} soat ichida · viloyatlar — BTS, 1–3 kun · {fee}",
+      "courierNote": "Toshkent — Yandex Dostavka, {hours} soat ichida · viloyatlar — BTS, {days} · {fee}",
       "online": "Onlayn",
       "codTitle": "Naqd pul",
       "codSub": "Yetkazishda",
       "gatewayNote": "Onlayn toʻlov provayder tomonidan tasdiqlanadi; karta maʼlumotlari Go Vita saytida saqlanmaydi.",
       "itemsRow": "Mahsulotlar, {count} ta",
-      "consent": "Buyurtmani yuborish orqali <offer>ommaviy oferta</offer> va <privacy>maxfiylik siyosati</privacy> shartlariga rozilik bildirasiz.",
+      "consent": "Buyurtmani yuborish orqali <delivery>yetkazish</delivery>, <payment>toʻlov</payment> va <guarantee>qaytarish</guarantee> shartlari hamda <privacy>maxfiylik siyosati</privacy> bilan tanishganingizni tasdiqlaysiz.",
       "emptyTitle": "Savatchangiz boʻsh",
       "emptyText": "Mahsulotlarni koʻrib chiqing va keraklilarini savatga qoʻshing.",
       "emptyShop": "Doʻkonga oʻtish",
@@ -657,7 +690,21 @@
           "rate_limited": "Juda koʻp urinish. Birozdan keyin qayta urinib koʻring.",
           "failed": "Kod yuborilmadi. Birozdan keyin qayta urinib koʻring."
         }
-      }
+      },
+      "supportHours": "Savol boʻlsa, operator ish vaqtida javob beradi ({hours}):",
+      "priceChanged": "Savatga qoʻshilgandan beri narx oʻzgardi:",
+      "addEmail": "+ Email qoʻshish (ixtiyoriy)",
+      "district": "Tuman",
+      "districtPlaceholder": "Tumanni tanlang",
+      "town": "Shahar yoki tuman",
+      "townHint": "BTS filiali boʻlsa, uni ham yozing",
+      "townPlaceholder": "Masalan: Samarqand shahri",
+      "street": "Koʻcha, mahalla",
+      "streetPlaceholder": "Koʻcha nomi",
+      "house": "Uy",
+      "apartment": "Xonadon",
+      "landmark": "Moʻljal (ixtiyoriy)",
+      "landmarkPlaceholder": "Masalan: maktab yonida, 2-podyezd"
     }
   },
   "checkout": {
@@ -669,8 +716,6 @@
     "deliverySection": "Yetkazib berish",
     "region": "Viloyat / shahar",
     "regionPlaceholder": "Viloyatni tanlang",
-    "address": "Manzil",
-    "addressPlaceholder": "Koʻcha, uy, kvartira",
     "note": "Izoh (ixtiyoriy)",
     "notePlaceholder": "Qoʻshimcha maʼlumot",
     "method": "Yetkazib berish usuli",
@@ -747,7 +792,8 @@
       "promoRemoved": "Promokod endi amal qilmaydi va olib tashlandi: {reason} Yangi jamini tekshirib, buyurtmani qayta yuboring.",
       "insufficient_stock": "Savatdagi mahsulotlardan biri omborda yetarli emas. Sonini kamaytirib, qayta urinib koʻring.",
       "onlyLeft": "«{name}»: omborda faqat {count} ta qoldi — savatdagi soni shunga tushirildi. Buyurtmani qayta yuboring.",
-      "points_invalid": "Ballar tasdigʻi eskirdi yoki balans oʻzgardi — ballar olib tashlandi. Kodni qayta tasdiqlang yoki ballarsiz yuboring."
+      "points_invalid": "Ballar tasdigʻi eskirdi yoki balans oʻzgardi — ballar olib tashlandi. Kodni qayta tasdiqlang yoki ballarsiz yuboring.",
+      "soldOutLines": "Sotuvda qolmagan: {names}. Ularni savatdan olib tashlang va buyurtmani qayta yuboring."
     },
     "pickupPoint": "Olib ketish manzili",
     "pickupPointNote": "Buyurtma tayyor boʻlgach, shu manzildan olib ketasiz. Operator qoʻngʻiroq qilganda vaqtni kelishamiz."
@@ -999,9 +1045,11 @@
     "offerReason": "Buyurtmangizga qoʻshimcha taklif"
   },
   "cookie": {
-    "text": "Biz saytdan foydalanishni yaxshilash uchun cookie fayllardan foydalanamiz.",
-    "accept": "Qabul qilaman",
-    "more": "Batafsil"
+    "text": "Tashriflarni tahlil qilish uchun cookie va analitika teglaridan foydalanamiz — faqat ruxsatingiz bilan.",
+    "accept": "Qabul qilish",
+    "more": "Batafsil",
+    "reject": "Rad etish",
+    "label": "Cookie roziligi"
   },
   "header": {
     "catalog": "Katalog",
@@ -1028,7 +1076,8 @@
     "compare": "Taqqoslash",
     "announcementPause": "Eʼlonlarni toʻxtatish",
     "announcementPlay": "Eʼlonlarni davom ettirish",
-    "cartCount": "{label}: {count, plural, =0 {boʻsh} other {# ta mahsulot}}"
+    "cartCount": "{label}: {count, plural, =0 {boʻsh} other {# ta mahsulot}}",
+    "myOrders": "Buyurtmalar"
   },
   "pages": {
     "brands": {
@@ -1110,7 +1159,7 @@
     "deliveryFaq": [
       {
         "question": "Yetkazib berish qancha vaqt oladi?",
-        "answer": "Toshkent boʻylab Yandex Dostavka orqali 24 soat ichida, viloyatlarga BTS orqali 1–3 kun. Aniq muddatni operator tasdiqlashda aytadi."
+        "answer": "Toshkent boʻylab Yandex Dostavka orqali {hours} soat ichida, viloyatlarga BTS orqali {days}. Aniq muddatni operator tasdiqlashda aytadi."
       },
       {
         "question": "Yetkazib berish bepulmi?",
@@ -1281,7 +1330,7 @@
         "rulesTitle": "Bir xil qoidalar",
         "rules": [
           "Bepul yetkazish chegarasi butun saytda bir xil: {amount} soʻm.",
-          "Yetkazib berish muddati: Toshkent boʻylab {hours} soat, viloyatlarga 1–3 kun.",
+          "Yetkazib berish muddati: Toshkent boʻylab {hours} soat, viloyatlarga {days}.",
           "Chegirmalar qoʻshilmaydi — eng kattasi qoʻllanadi.",
           "Chizilgan «eski narx» faqat real pasaytirilgan narx uchun koʻrsatiladi."
         ],
@@ -1482,7 +1531,9 @@
         "submit": "Yuborish",
         "sent": "Xabaringiz qabul qilindi. Operator ish vaqtida javob beradi.",
         "phoneField": "Telefon raqami",
-        "certRequest": "«{product}» uchun sertifikat nusxasini yuboring."
+        "certRequest": "«{product}» uchun sertifikat nusxasini yuboring.",
+        "pickupAddress": "Olib ketish manzili",
+        "pickupHint": "Olib ketish vaqtini operator qoʻngʻiroqda kelishadi · {hours}"
       },
       "offerPending": "Ommaviy oferta matni yurist tomonidan tayyorlanmoqda. Ungacha savdo shartlari quyidagi sahifalarda — ular saytda amalda ishlaydigan qoidalar:",
       "offerLinks": "Shartlar"
@@ -1646,7 +1697,7 @@
       "planLabel": "Tavsiya etilgan toʻplam · {count} ta mahsulot",
       "planNote": "Obuna bilan: birinchi yetkazish −{first}%, keyingilari −{next}%. {free}dan yuqori buyurtma bepul yetkaziladi.",
       "doctorGeneral": "Doimiy dori qabul qilish, homiladorlik yoki uzoq davom etgan charchoq boʻlsa — vitamin qabul qilishdan oldin mutaxassisga murojaat qiling.",
-      "doctorContact": "Mutaxassis bilan bogʻlanish"
+      "doctorContact": "Operator bilan bogʻlanish"
     }
   },
   "programs": {
@@ -1772,7 +1823,7 @@
       "perkReminders": "Kurs tugashi va tugʻilgan kunlar haqida.",
       "reminders": "Eslatmalar",
       "codeHelpTitle": "Kod kelmadimi?",
-      "subsLead": "Bugun −{first}%, keyingi har bir yetkazishda −{recurring}%. Istalgan vaqtda oʻzgartirish, toʻxtatish yoki bekor qilish mumkin.",
+      "subsLead": "Bugun −{first}%, keyingi har bir yetkazishda −{recurring}%. Keyingi yetkazish vaqti kelganda operator bogʻlanadi; oʻzgartirish yoki bekor qilish — operator orqali.",
       "discount": "Chegirma",
       "changeInterval": "Oraliqni oʻzgartirish",
       "pausedNote": "Siz toʻxtatgansiz. Davom ettirsangiz, keyingi yetkazish rejalashtiriladi.",
@@ -1933,7 +1984,7 @@
     "benefitControl": "Oʻzgartirish, toʻxtatish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling",
     "intervalLabel": "Yetkazib berish oraligʻi",
     "everyDays": "Har {days} kunda",
-    "recurringSummary": "Keyingi yetkazib berish: {amount}.",
+    "recurringSummary": "Keyingi yetkazish: {amount}. Vaqti kelganda operator bogʻlanib, buyurtmani tasdiqlaydi.",
     "addSubscription": "Obunani savatga qoʻshish",
     "manage": {
       "title": "Obunalarim",
@@ -1978,7 +2029,7 @@
       "title": "Birinchi buyurtmangizga −{percent}%",
       "body": "Go Vitaʼda birinchi marta buyurtma berayapsizmi? Chegirmani operator buyurtmani tasdiqlashda qoʻllaydi — kod kerak emas.",
       "perk1": "Rasmiy import, ishlab chiqaruvchi hujjatlari bilan",
-      "perk2": "Toshkent boʻylab 24 soatda yetkazib berish",
+      "perk2": "Toshkent boʻylab {hours} soatda yetkazib berish",
       "perk3": "Yetkazib berishda naqd pul bilan toʻlov",
       "cta": "Katalogni koʻrish",
       "quiz": "2 daqiqalik vitamin testi",
@@ -2026,6 +2077,33 @@
     "payPending": "Toʻlov kutilmoqda",
     "payPendingHint": "Toʻlagan boʻlsangiz, bir daqiqadan keyin sahifani yangilang — holat toʻlov tizimi tasdiqlashi bilan oʻzgaradi.",
     "payNow": "{provider} orqali toʻlash",
-    "refunded": "Toʻlov qaytarildi"
+    "refunded": "Toʻlov qaytarildi",
+    "reorder": "Takrorlash",
+    "myOrders": "Buyurtmalarim",
+    "loyaltyTitle": "Ballar va tavsiya kodi",
+    "balance": "Hisobingizda: {points} ball",
+    "cancel": {
+      "title": "Buyurtmani bekor qilish",
+      "hint": "Buyurtma hali joʻnatilmagan — uni shu yerda bekor qilishingiz mumkin.",
+      "cta": "Bekor qilish",
+      "confirm": "Buyurtma bekor qilinsinmi?",
+      "yes": "Ha, bekor qilinsin",
+      "no": "Yoʻq",
+      "sending": "Bekor qilinmoqda…",
+      "paid": "Buyurtma onlayn toʻlangan — bekor qilish va pulni qaytarish uchun operatorga qoʻngʻiroq qiling: {phone}.",
+      "tooLate": "Buyurtma joʻnatilgan, endi uni bu yerda bekor qilib boʻlmaydi. Operator: {phone}.",
+      "failed": "Bekor qilib boʻlmadi. Qayta urinib koʻring yoki qoʻngʻiroq qiling: {phone}."
+    },
+    "orders": {
+      "title": "Buyurtmalarim",
+      "lead": "Shu brauzerda berilgan yoki havola orqali ochilgan buyurtmalar. Boshqa qurilmadagi buyurtmani raqam va telefon bilan toping.",
+      "empty": "Bu brauzerda hali buyurtma yoʻq.",
+      "find": "Buyurtmani topish",
+      "shop": "Katalogga oʻtish",
+      "open": "Holati va takrorlash",
+      "forget": "Roʻyxatdan olish",
+      "forgetLabel": "№{order} buyurtmani roʻyxatdan olish",
+      "profile": "Sogʻliq profilingiz va eslatmalar — <link>Profil</link> sahifasida."
+    }
   }
 }

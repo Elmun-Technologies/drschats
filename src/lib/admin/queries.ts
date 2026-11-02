@@ -3,7 +3,7 @@ import "server-only";
 import { and, asc, count, desc, eq, gte, ilike, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, orders, products, type OrderStatus } from "@/lib/db/schema";
-import { contentToForm, toTashkentInput } from "./product-form";
+import { contentToForm, factsToForm, toTashkentInput } from "./product-form";
 import { readLowStockDefault } from "@/lib/catalog/stock";
 import type { ProductFormValues } from "@/components/admin/ProductForm";
 
@@ -84,13 +84,14 @@ export async function productFormValues(id: string): Promise<ProductFormValues |
     lowStockAt: p.lowStockAt != null ? String(p.lowStockAt) : "",
     mxikCode: p.mxikCode ?? "",
     packageCode: p.packageCode ?? "",
+    registrationNumber: p.registrationNumber ?? "",
     kind: p.kind,
     sort: String(p.sort),
     images: p.images.join("\n"),
     cutout: p.cutout ?? "",
     unitCount: p.unit ? String(p.unit.count) : "",
     unitKind: p.unit?.unit ?? "",
-    content: contentToForm(p.content),
+    content: { ...contentToForm(p.content), ...factsToForm(p.facts) },
   };
 }
 
@@ -106,6 +107,7 @@ export const EMPTY_PRODUCT: ProductFormValues = {
   lowStockAt: "",
   mxikCode: "",
   packageCode: "",
+  registrationNumber: "",
   kind: "core",
   sort: "0",
   images: "",

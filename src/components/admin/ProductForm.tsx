@@ -26,6 +26,8 @@ export interface ProductFormValues {
   lowStockAt: string;
   mxikCode: string;
   packageCode: string;
+  /** 0018: the state registration number from the package; empty — not shown. */
+  registrationNumber: string;
   kind: "core" | "addon" | "unlisted";
   sort: string;
   images: string;
@@ -105,6 +107,12 @@ export function ProductForm({
             <input name="packageCode" inputMode="numeric" maxLength={20} pattern="[0-9]{1,20}" defaultValue={values.packageCode} className={inputClass} />
           </Field>
         </Panel>
+        <Panel title="Qadoqdagi maʼlumot">
+          <p className="text-[13px] leading-[17px] text-muted">Mahsulot sahifasida faqat toʻldirilgan qatorlar chiqadi. Matnni qadoqdan aynan koʻchiring — tibbiy vaʼda qoʻshmang. Tilga bogʻliq maydonlar pastdagi «Oʻzbekcha / Русский» boʻlimida.</p>
+          <Field label="Roʻyxatdan oʻtish raqami" hint="Davlat roʻyxatidagi raqam, qadoqda yozilgan">
+            <input name="registrationNumber" maxLength={80} defaultValue={values.registrationNumber} className={inputClass} />
+          </Field>
+        </Panel>
         <Panel title="Kesma rasm (fonsiz PNG)">
           <SingleImageField
             name="cutout"
@@ -168,6 +176,15 @@ export function ProductForm({
             </Field>
             <Field label="Savol-javob" hint="Savol | Javob — har qatorda bittasi" className="lg:col-span-2">
               <textarea name={`${l.code}.faq`} defaultValue={c(`${l.code}.faq`)} rows={4} className={textareaClass} />
+            </Field>
+            <Field label="Qarshi koʻrsatmalar (qadoqdan)" className="lg:col-span-2">
+              <textarea name={`${l.code}.contraindications`} defaultValue={c(`${l.code}.contraindications`)} rows={3} className={textareaClass} />
+            </Field>
+            <Field label="Yaroqlilik muddati" hint="Masalan: 24 oy">
+              <input name={`${l.code}.shelfLife`} defaultValue={c(`${l.code}.shelfLife`)} className={inputClass} />
+            </Field>
+            <Field label="Saqlash sharoiti" hint="Masalan: 25 °C dan past, quruq joyda">
+              <input name={`${l.code}.storage`} defaultValue={c(`${l.code}.storage`)} className={inputClass} />
             </Field>
             <Field label="Qoʻshimcha qidiruv soʻzlari" hint="Kartada koʻrinmaydi; har qatorda bittasi" className="lg:col-span-2">
               <textarea name={`${l.code}.searchAliases`} defaultValue={c(`${l.code}.searchAliases`)} rows={2} className={textareaClass} />

@@ -116,8 +116,9 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     saleEndsAt,
     ...(p.updatedAt ? { updatedAt: p.updatedAt } : {}),
     currency: "UZS",
-    rating: SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
-    reviewCount: SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,
+    // Approved customer reviews win; sample copy only behind its flag.
+    rating: p.customerReviews?.count ? p.customerReviews.rating : SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
+    reviewCount: p.customerReviews?.count ? p.customerReviews.count : SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,
     inStock: p.inStock,
     images: photos.map((url) => ({ url, alt: localized(p.name, locale, p.slug) })),
     highlights: localized(p.highlights, locale, []),
@@ -125,7 +126,7 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     ingredients: localized(p.ingredients, locale, []),
     howToUse: localized(p.howToUse, locale, ""),
     faq: localized(p.faq, locale, []),
-    reviews: SHOW_SAMPLE_SOCIAL_PROOF ? localized(p.reviews, locale, []) : [],
+    reviews: p.customerReviews?.count ? p.customerReviews.items : SHOW_SAMPLE_SOCIAL_PROOF ? localized(p.reviews, locale, []) : [],
     badges: localized(p.badges, locale, []),
     servings: localized(p.servings, locale, ""),
     origin: localized(p.origin, locale, ""),
@@ -139,8 +140,21 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     cutout: p.cutout,
     unit: p.unit,
     brand,
+    ...(packageFacts(p, locale) ?? {}),
     ...(p.stockQty != null ? { stock: { qty: p.stockQty, lowAt: p.lowStockAt ?? DEFAULT_LOW_STOCK_AT } } : {}),
   };
+}
+
+/** The package facts a product page prints — each only when the admin filled it for this language. */
+function packageFacts(p: RawProduct, locale: Locale): Pick<Product, "facts"> | null {
+  const pick = (k: "contraindications" | "shelfLife" | "storage") => p.facts?.[k]?.[locale]?.trim() || undefined;
+  const facts = {
+    contraindications: pick("contraindications"),
+    shelfLife: pick("shelfLife"),
+    storage: pick("storage"),
+    registrationNumber: p.registrationNumber?.trim() || undefined,
+  };
+  return Object.values(facts).some(Boolean) ? { facts } : null;
 }
 
 function sortProducts(items: Product[], sort?: ProductListParams["sort"]): Product[] {

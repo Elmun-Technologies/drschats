@@ -325,6 +325,35 @@ mijozni imzolangan `/track/<raqam>.<imzo>` sahifasiga qaytaradi: holat, kerak bo
   (Payme `-31008`, Click `-4`) va pul yechilmaydi.
 - Qaytarish (refund) — toʻlov tizimi kabinetidan; Payme uni `CancelTransaction` bilan bizga aytadi.
 
+## Sharhlar, obunalar, mijoz yoʻli (0017, 0018)
+
+- **Sharhlar** — `/admin/reviews` (huquq `marketing`). PDP dagi «Sharh yozish»
+  (`ReviewForm` → `app/actions/reviews.ts`) `reviews` jadvaliga `pending` yozadi;
+  faqat tasdiqlangani saytda chiqadi va reytingga qoʻshiladi (`lib/reviews/`,
+  katalog oʻqishida). «Tasdiqlangan xarid» — telefon shu mahsulotli yetkazilgan
+  buyurtmada boʻlsa. Oqim «Sharh soʻrash» (`review_request`, sukut: oʻchiq) —
+  yetkazilgandan 7 kun keyin.
+- **Obunalar** — `/admin/subscriptions` (huquq `orders`). «Obuna» qatori
+  buyurtmadan keyin `subscriptions` ga yoziladi (telefon + mahsulot boʻyicha
+  bitta faol). Avtomatik toʻlov/joʻnatish yoʻq: operator navbatni koʻradi,
+  qoʻngʻiroq qiladi va «Yetkazildi» — keyingi sana bir oraliqqa suriladi. Oqim
+  «Obuna: keyingi yetkazish» (`subscription_due`, sukut: oʻchiq) mijozga 3 kun
+  oldin `queueMessage` orqali eslatadi.
+- **Kuzatish sahifasi** `/track/<imzo>`: `new`/`confirmed` va onlayn toʻlanmagan
+  buyurtmani mijoz oʻzi bekor qiladi (`lib/orders/cancel.ts`: qator qulflanadi,
+  ombor qaytadi, `afterOrderStatus`, mijoz va operatorga xabar); toʻlangan —
+  operatorga yoʻnaltiriladi. Ballar va tavsiya kodi, «Takrorlash». Brauzer
+  koʻrgan buyurtmalar `/orders` («Buyurtmalarim», `lib/orders/last-order.ts`).
+- **Checkout**: manzil qismlarga boʻlingan (`delivery.district/street/house/
+  apartment/landmark`), `region` — kalit (`lib/checkout/regions.ts`, eski
+  buyurtmalarda nomi saqlangan — `regionName()` ikkalasini oʻqiydi);
+  `orders.idempotency_key` — bir forma sessiyasi = bitta buyurtma.
+- **Mahsulot formasi**: qarshi koʻrsatmalar, yaroqlilik muddati, saqlash
+  (uz/ru) va roʻyxatdan oʻtish raqami (`products.facts`, `registration_number`);
+  PDP faqat toʻldirilganini chiqaradi.
+- **Cookie**: «Rad etish» / «Qabul qilish» (`lib/analytics/consent.ts`); rozilikgacha
+  GTM/GA4/Pixel/Metrika yuklanmaydi va `/api/t` ga hech narsa yuborilmaydi.
+
 ## Xavfsizlik
 
 - Parol — scrypt (`node:crypto`), sessiya — HMAC imzolangan cookie

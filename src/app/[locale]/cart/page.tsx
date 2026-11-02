@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { buildPageMetadata } from "@/lib/seo/metadata";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
+import { SupportButton } from "@/components/product/SupportButton";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { upsellPool } from "@/lib/upsell/pool";
 import { PROMO_CODES_ENABLED, firstOrderOffer } from "@/lib/promo/offer";
@@ -52,6 +53,7 @@ export default async function CartPage({
   return (
     <div className="wrap pb-9 pt-1 lg:pb-[72px] lg:pt-5">
       <CheckoutForm recommended={recommended} prices={prices} promoCodes={PROMO_CODES_ENABLED} firstOrder={firstOrder} loyalty={loyalty} onlineProviders={onlineProviders} />
+      <SupportButton />
     </div>
   );
 }

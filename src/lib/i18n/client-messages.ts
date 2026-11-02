@@ -20,6 +20,7 @@ export const CLIENT_MESSAGE_PATHS = [
   "contact",
   "cookie",
   "countdown",
+  "delivery",
   "emailPreferences",
   "exit",
   "experts",

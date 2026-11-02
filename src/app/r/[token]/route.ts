@@ -50,6 +50,8 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       url.searchParams.set("utm_campaign", key);
     }
     if (row.flow_step != null) url.searchParams.set("utm_content", `step-${Number(row.flow_step) + 1}`);
+    // A cart link carries its own signed token on, so /cart can put the cart back in a browser that never had it.
+    if (/^\/(?:(?:uz|ru)\/)?cart(?:[/?#]|$)/.test(row.link || "") && row.flow_id) url.searchParams.set("restore", token);
     return redirect(url.toString());
   } catch (err) {
     console.error("[messages] click not recorded:", (err as Error).message);

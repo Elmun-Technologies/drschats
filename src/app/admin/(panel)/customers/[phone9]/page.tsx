@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { regionName } from "@/lib/checkout/regions";
 import { notFound } from "next/navigation";
 import { desc, inArray } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
@@ -78,7 +79,7 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-2 text-[13px] text-muted">{order.delivery.region} · {order.delivery.method}{describeAttribution(order.attribution ?? undefined) ? ` · manba: ${describeAttribution(order.attribution ?? undefined)}` : ""}</p>
+                  <p className="mt-2 text-[13px] text-muted">{regionName(order.delivery.region)} · {order.delivery.method}{describeAttribution(order.attribution ?? undefined) ? ` · manba: ${describeAttribution(order.attribution ?? undefined)}` : ""}</p>
                   {(historyByOrder.get(order.id)?.length ?? 0) > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {[...(historyByOrder.get(order.id) ?? [])].reverse().map((event, index) => <Pill key={index} tone="muted">{STATUS_LABEL[event.status]} · {formatDateTime(event.createdAt)}</Pill>)}
@@ -98,7 +99,7 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
           <Card title="Mijoz haqida">
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2.5 text-[14px]">
               <dt className="text-muted">Birinchi buyurtma</dt><dd className="font-semibold">{formatDate(customer.firstOrderAt)}</dd>
-              <dt className="text-muted">Hudud</dt><dd className="font-semibold">{customer.orders[0]?.delivery.region || "—"}</dd>
+              <dt className="text-muted">Hudud</dt><dd className="font-semibold">{regionName(customer.orders[0]?.delivery.region) || "—"}</dd>
               <dt className="text-muted">Birinchi kelgan</dt><dd className="font-semibold">{firstTouch ?? (describeAttribution(customer.orders[customer.orders.length - 1]?.attribution ?? undefined) || "Bevosita")}</dd>
             </dl>
             {visitors.length > 0 && (

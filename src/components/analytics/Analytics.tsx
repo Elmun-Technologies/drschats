@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect, useState } from "react";
 import { analyticsIdsFromEnvironment, sanitizeAnalyticsIds, type AnalyticsIds } from "@/lib/analytics/config";
+import { useConsent } from "@/lib/analytics/consent";
 
 /*
   Analytics IDs may be set in the deployment environment or managed at runtime
@@ -21,6 +22,8 @@ export function Analytics() {
   const [ids, setIds] = useState<AnalyticsIds>(BUILD_IDS);
   const [webvisor, setWebvisor] = useState(false);
   const [resolved, setResolved] = useState(false);
+  // No vendor tag before the visitor accepts cookies; accepting later loads them on the spot.
+  const consent = useConsent();
 
   useEffect(() => {
     let active = true;
@@ -45,7 +48,7 @@ export function Analytics() {
     if (resolved) window.__GOVITA_ANALYTICS__ = ids;
   }, [ids, resolved]);
 
-  if (!resolved) return null;
+  if (!resolved || consent !== "granted") return null;
   const { gtm, ga4, metaPixel: pixel, yandexMetrika: ym } = ids;
 
   return (

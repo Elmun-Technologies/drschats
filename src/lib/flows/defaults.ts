@@ -166,6 +166,40 @@ export const DEFAULT_FLOWS: DefaultFlow[] = [
     ],
   },
   {
+    id: "subscription-due",
+    name: "Obuna: keyingi yetkazish",
+    trigger: "subscription_due",
+    steps: [
+      {
+        delayMinutes: 0,
+        channel: "telegram_then_sms",
+        link: "",
+        promo: null,
+        text: {
+          uz: "{ism}, {mahsulot} obunangiz boʻyicha keyingi yetkazish vaqti yaqinlashdi. Takroriy buyurtma: {havola}. Operator ham siz bilan bogʻlanadi.",
+          ru: "{ism}, по подписке на {mahsulot} приближается следующая доставка. Повторить заказ: {havola}. Оператор также свяжется с вами.",
+        },
+      },
+    ],
+  },
+  {
+    id: "review-request",
+    name: "Sharh soʻrash",
+    trigger: "review_request",
+    steps: [
+      {
+        delayMinutes: 7 * D,
+        channel: "telegram_then_sms",
+        link: "",
+        promo: null,
+        text: {
+          uz: "{ism}, {mahsulot} haqida fikringiz boshqa xaridorlarga yordam beradi. Sharh qoldirish: {havola}",
+          ru: "{ism}, ваш отзыв о {mahsulot} поможет другим покупателям. Оставить отзыв: {havola}",
+        },
+      },
+    ],
+  },
+  {
     id: "restock",
     name: "Omborga keldi",
     trigger: "restock",

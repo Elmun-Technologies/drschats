@@ -5,7 +5,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { getAllProducts } from "@/lib/shop/all-products";
-import { COMMERCE } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { listingMetadata } from "@/lib/seo/page-meta";
 import { BRAND_VARIANT_PARAMS, isVariantQuery } from "@/lib/seo/query-params";
@@ -110,7 +110,7 @@ export default async function BrandPage({ params, searchParams }: { params: Para
               <span className="text-sm text-on-dark-2">{tb("inCatalog")}</span>
             </span>
             <span className="flex flex-col">
-              <span className="text-[28px] font-bold lg:text-[32px]">{tb("hours", { hours: COMMERCE.delivery.tashkent.hours })}</span>
+              <span className="text-[28px] font-bold lg:text-[32px]">{tb("hours", { hours: (await getCommerceSettings()).delivery.tashkentHours })}</span>
               <span className="text-sm text-on-dark-2">{tb("delivery")}</span>
             </span>
           </div>

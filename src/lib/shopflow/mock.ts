@@ -197,6 +197,11 @@ export interface RawProduct {
   stockQty?: number | null;
   /** The resolved "kam qoldi" threshold for a tracked count. */
   lowStockAt?: number;
+  /** Approved customer reviews (database only, lib/reviews) — they replace any sample copy. */
+  customerReviews?: { rating: number; count: number; items: Review[] };
+  /** Package facts from the admin form (0018); shown only when filled. */
+  facts?: Partial<Record<"contraindications" | "shelfLife" | "storage", L>> | null;
+  registrationNumber?: string | null;
 }
 
 export const rawProducts: RawProduct[] = [

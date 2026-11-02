@@ -20,6 +20,8 @@ export const ENROLL_WINDOW_MINUTES: Record<FlowTrigger, number> = {
   lapsed: 7 * 24 * 60,
   restock: 0,
   birthday: 2 * 24 * 60,
+  subscription_due: 2 * 24 * 60,
+  review_request: 3 * 24 * 60,
 };
 
 export function stepDueAt(step: Pick<FlowStep, "delayMinutes">, anchor: Date): Date {

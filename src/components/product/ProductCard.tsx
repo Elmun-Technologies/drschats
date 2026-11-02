@@ -11,6 +11,7 @@ import { cn, formatMoney } from "@/lib/utils";
 import { DiscountBadge, Price, discountPercent } from "@/components/ui/Price";
 import { Badge } from "@/components/ui/Badge";
 import { useCart } from "@/lib/cart/store";
+import { useCommerce } from "@/lib/commerce/context";
 import { cartLineId, lineQtyCap } from "@/lib/cart/pricing";
 import { lowStockLeft } from "@/lib/catalog/stock-rules";
 import { WishlistButton } from "@/components/product/WishlistButton";
@@ -44,6 +45,7 @@ export function ProductCard({
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
+  const tashkentHours = useCommerce().delivery.tashkentHours;
   // Stepper labels name the product: a grid of 24 identical "Increase" buttons tells a screen reader nothing.
   const tco = useTranslations("checkout");
   const product = useLiveProduct(listed);
@@ -159,7 +161,7 @@ export function ProductCard({
           <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
             <path d="M3 7h11v9H3zM14 10h4l3 3v3h-7M7 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4zM17 19a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" />
           </svg>
-          {t("delivery24")}
+          {t("delivery24", { hours: tashkentHours })}
         </span>
       )}
 

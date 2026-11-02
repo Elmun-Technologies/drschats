@@ -13,7 +13,7 @@ import { CATALOG_TAG } from "@/lib/catalog/db";
 import { builtInCatalogStatus, dismissBuiltInImport, insertBuiltInCatalog } from "@/lib/admin/seed";
 import { dismissKeysOf } from "@/lib/admin/catalog-sync";
 import { slugify } from "@/lib/admin/slugify";
-import { SLUG_RE, formToContent, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
+import { SLUG_RE, formToContent, formToFacts, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
 import { isAllowedImageUrl } from "@/lib/security/csp";
 import { recordManualMovement } from "@/lib/catalog/stock";
 import { afterProductChange } from "@/lib/notify/waitlist";
@@ -112,6 +112,8 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     lowStockAt: d.lowStockAt === "" || d.lowStockAt == null ? null : Number(d.lowStockAt),
     mxikCode: d.mxikCode || null,
     packageCode: d.packageCode || null,
+    facts: formToFacts(data),
+    registrationNumber: d.registrationNumber || null,
     kind: d.kind,
     sort: d.sort,
     images: parseImages(d.images),

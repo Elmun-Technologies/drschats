@@ -51,6 +51,7 @@ function delivery(form: Form): CommerceSettings["delivery"] {
     freeShippingOver: whole(form, "freeShippingOver", "Bepul yetkazish chegarasi", LIMITS.freeShippingOver),
     courierFee: whole(form, "courierFee", "Kuryer narxi", LIMITS.courierFee),
     regionsNote: text(form, "regionsNote", "Viloyatlar muddati"),
+    tashkentHours: whole(form, "tashkentHours", "Toshkent boʻylab yetkazish, soat", LIMITS.tashkentHours),
     cutoff,
   };
 }

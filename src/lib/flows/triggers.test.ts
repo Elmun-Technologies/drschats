@@ -31,7 +31,7 @@ describe("candidateQuery", () => {
   });
 
   it("binds the window bounds as parameters, never as SQL text", () => {
-    for (const trigger of ["cart_abandoned", "checkout_dropped", "first_order_delivered", "course_ending", "lapsed"] as const) {
+    for (const trigger of ["cart_abandoned", "checkout_dropped", "first_order_delivered", "course_ending", "lapsed", "subscription_due", "review_request"] as const) {
       const { sql, params } = render(candidateQuery(trigger, window)!);
       expect(params).toEqual(expect.arrayContaining([window.from.toISOString(), window.to.toISOString()]));
       expect(sql).not.toContain("2026-10");

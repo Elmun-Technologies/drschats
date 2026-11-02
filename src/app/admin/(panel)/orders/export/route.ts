@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/admin/session";
+import { regionName } from "@/lib/checkout/regions";
 import { auditLog } from "@/lib/admin/audit";
 import { ORDER_PERIODS, listOrders, periodStart, type OrderPeriod } from "@/lib/admin/queries";
 import { ORDER_STATUSES, type OrderStatus } from "@/lib/db/schema";
@@ -31,7 +32,7 @@ export async function GET(req: Request) {
         o.customer.name,
         o.customer.phone,
         o.customer.email ?? "",
-        o.delivery.region,
+        regionName(o.delivery.region),
         o.delivery.address,
         DELIVERY_LABEL[o.delivery.method] ?? o.delivery.method,
         o.items.map((i) => `${i.name} × ${i.quantity}`).join("; "),

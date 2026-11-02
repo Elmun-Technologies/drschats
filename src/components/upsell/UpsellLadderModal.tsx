@@ -83,7 +83,7 @@ export function UpsellLadderModal() {
             exit={{ opacity: 0 }}
             onClick={closeLadder}
             aria-hidden
-            className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-black/70 sm:backdrop-blur-sm"
           />
 
           {/* Modal. The dialog role sits on a stable wrapper because the inner

@@ -7,10 +7,10 @@ import { Link } from "@/lib/i18n/navigation";
 import { bonusUnitsNeeded, lineListTotal, lineQtyCap, lineTotal, type CartLine } from "@/lib/cart/pricing";
 import type { UpsellStep } from "@/lib/upsell/ladder";
 import { useCart } from "@/lib/cart/store";
+import { useCommerce } from "@/lib/commerce/context";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { useWishlist } from "@/lib/wishlist/store";
 import { track, trackAddToWishlist } from "@/lib/analytics/events";
-import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { productBrand } from "@/lib/content/product-brands";
 import { productCutout } from "@/lib/content/product-cutouts";
@@ -65,6 +65,7 @@ export function CartLines({
 
 function Line({ line: l, compact, onNavigate }: { line: CartLine; compact: boolean; onNavigate?: () => void }) {
   const locale = useLocale() as Locale;
+  const tashkentHours = useCommerce().delivery.tashkentHours;
   const t = useTranslations("cart.v3");
   const tc = useTranslations("checkout");
   const ts = useTranslations("subscription");
@@ -125,7 +126,7 @@ function Line({ line: l, compact, onNavigate }: { line: CartLine; compact: boole
         {!compact && (
           <span className="hidden items-center gap-1.5 text-sm text-ink-2 lg:flex">
             <Icon d={ICON.truck} className="h-4 w-4" />
-            {t("deliveryEta", { hours: COMMERCE.delivery.tashkent.hours })}
+            {t("deliveryEta", { hours: tashkentHours })}
           </span>
         )}
 

@@ -1,6 +1,7 @@
 import "server-only";
 
 import { sql } from "drizzle-orm";
+import { regionName } from "@/lib/checkout/regions";
 import { notifyOperator } from "@/lib/notifications/operator";
 import { ordersFromPhone } from "@/lib/catalog/db";
 import { getDb, isDbConfigured } from "@/lib/db/client";
@@ -73,7 +74,7 @@ export function operatorOrderText(order: OrderRequest, orderId: string): Promise
       `🛒 Yangi buyurtma #${orderId}`,
       `👤 ${order.customer.name} — ${order.customer.phone}`,
       order.customer.email ? `✉️ ${order.customer.email}` : "",
-      `📍 ${order.delivery.region}, ${order.delivery.address}`,
+      `📍 ${regionName(order.delivery.region)}, ${order.delivery.address}`,
       `🚚 ${order.delivery.method}`,
       order.payment
         ? `💳 ${order.payment.method === "online" ? `Onlayn toʻlov: ${order.payment.provider === "click" ? "Click" : "Payme"} — kutilmoqda (toʻlansa alohida xabar keladi)` : "Yetkazishda toʻlov, naqd"}`
