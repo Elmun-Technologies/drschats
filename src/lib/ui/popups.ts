@@ -25,10 +25,17 @@ const SESSION_KEY = "govita-popup-shown";
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Paths (without locale) where no marketing popup may interrupt. */
-const QUIET_PATHS = ["/cart", "/checkout", "/quiz", "/account", "/profile"];
+const QUIET_PATHS = ["/cart", "/checkout", "/quiz", "/account", "/profile", "/track", "/orders"];
+/*
+  The welcome sheet's CTA leads to the catalogue: on a product page it pulled
+  a shopper away from the product they were deciding on. The page carries the
+  first-order offer in its own buy box instead.
+*/
+const POPUP_QUIET_PATHS: Partial<Record<MarketingPopup, string[]>> = { welcome: ["/product"] };
 
-export function isQuietPath(pathname: string): boolean {
-  return QUIET_PATHS.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+export function isQuietPath(pathname: string, popup?: MarketingPopup): boolean {
+  const quiet = [...QUIET_PATHS, ...((popup && POPUP_QUIET_PATHS[popup]) ?? [])];
+  return quiet.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 }
 
 function readSeen(): Partial<Record<MarketingPopup, number>> {

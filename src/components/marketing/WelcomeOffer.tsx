@@ -24,12 +24,14 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
   const tc = useTranslations("common");
   const locale = useLocale();
   const pathname = usePathname();
-  const rule = useCommerce().popups.welcome;
+  const commerce = useCommerce();
+  const rule = commerce.popups.welcome;
+  const hours = commerce.delivery.tashkentHours;
   const active = usePopups((s) => s.active === "welcome");
   const close = usePopups((s) => s.close);
 
   useEffect(() => {
-    if (!rule.enabled || isQuietPath(pathname)) return;
+    if (!rule.enabled || isQuietPath(pathname, "welcome")) return;
     let done = false;
     const fire = () => {
       if (done) return;
@@ -63,7 +65,7 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
         {(["perk1", "perk2", "perk3"] as const).map((k) => (
           <li key={k} className="flex gap-2.5">
             <span aria-hidden className="mt-0.5 font-bold text-ink">✓</span>
-            {t(k)}
+            {t(k, { hours })}
           </li>
         ))}
       </ul>

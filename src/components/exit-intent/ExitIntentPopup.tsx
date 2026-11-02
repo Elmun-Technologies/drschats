@@ -16,7 +16,8 @@ import { buttonVariants } from "@/components/ui/Button";
 import { PopupShell } from "@/components/marketing/PopupShell";
 
 /*
-  The leaving-visitor card, on desktop (the pointer heading for the tab bar).
+  The leaving-visitor card: on desktop when the pointer heads for the tab
+  bar, on phones when a shopper with a cart comes back to the tab.
 
   With something in the cart it is a reminder of that cart — the products and
   the total, one click from the order form. With an empty cart it offers the
@@ -41,11 +42,27 @@ export function ExitIntentPopup() {
     const onLeave = (e: MouseEvent) => {
       if (e.clientY <= 10) usePopups.getState().request("exit", rule);
     };
+    /*
+      Phones have no pointer to leave with. There the moment is a return: the
+      shopper with a cart switched to another app (a messenger, a price check)
+      and came back — the card reminds them of the cart once. Never with an
+      empty cart: on a phone that would be an interruption with nothing in it.
+    */
+    const touch = window.matchMedia("(hover: none)").matches;
+    let hiddenAt = 0;
+    const onVisibility = () => {
+      if (document.visibilityState === "hidden") hiddenAt = Date.now();
+      else if (hiddenAt && Date.now() - hiddenAt > 15_000 && useCart.getState().lines.length > 0) usePopups.getState().request("exit", rule);
+    };
     // Not in the first seconds: a pointer passing the tab bar on arrival is not leaving.
-    const timer = window.setTimeout(() => document.addEventListener("mouseleave", onLeave), rule.delaySeconds * 1000);
+    const timer = window.setTimeout(() => {
+      if (touch) document.addEventListener("visibilitychange", onVisibility);
+      else document.addEventListener("mouseleave", onLeave);
+    }, rule.delaySeconds * 1000);
     return () => {
       window.clearTimeout(timer);
       document.removeEventListener("mouseleave", onLeave);
+      document.removeEventListener("visibilitychange", onVisibility);
     };
   }, [pathname, rule]);
 

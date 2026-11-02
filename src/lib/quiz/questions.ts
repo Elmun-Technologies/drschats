@@ -104,9 +104,9 @@ const raw: RawQuestion[] = [
       the result loosely. The doors are the question, so the question has to
       offer them.
 
-      The "for myself or as a gift" distinction, which the home page used to ask
-      with its own pair of buttons, is now the question right after this one —
-      one place instead of two.
+      A "for myself or as a gift" question and a "taken vitamins before?"
+      question used to follow; neither changed the result (the gift one
+      promised wrapping the shop does not offer), so both were removed.
     */
     options: [
       {
@@ -150,29 +150,13 @@ const raw: RawQuestion[] = [
     ],
   },
   {
-    /*
-      "For yourself, or as a gift" — lifted off the home page, where it was a
-      second, competing way to ask the audience question. It changes only the
-      wording of the result, so it carries no scoring weights.
-    */
-    id: "recipient",
-    question: { uz: "Oʻzingiz uchunmi yoki sovgʻa?", ru: "Для себя или в подарок?" },
-    guidance: {
-      uz: "Nima uchun bu muhim? Sovgʻa uchun natijada taklifnoma va qadoqlash haqidagi maʼlumot koʻrsatiladi.",
-      ru: "Почему это важно? Для подарка в результате появятся подсказки об упаковке.",
-    },
-    multiSelect: false,
-    options: [
-      { id: "self", label: { uz: "Oʻzim uchun", ru: "Для себя" }, topics: {} },
-      { id: "gift", label: { uz: "Sovgʻa uchun", ru: "В подарок" }, topics: {} },
-    ],
-  },
-  {
     id: "age",
     question: { uz: "Yosh guruhi", ru: "Возрастная группа" },
+    // A child is under 18 and a parent is 60+: the answer is already given.
+    showIf: { question: "who", includesAny: ["self-woman", "self-man", "expectant", "recovery"] },
     guidance: {
-      uz: "Nima uchun bu muhim? Yosh ulgʻaygani sari kalsiy, D3 va B12 kabi nutriyentlarning biologik oʻzlashtirilishi oʻzgaradi.",
-      ru: "Почему это важно? С возрастом усвояемость таких нутриентов, как кальций, D3 и B12, существенно меняется.",
+      uz: "Nima uchun bu muhim? Mahsulotlarning tavsiya etilgan yoshi turlicha — tanlov shunga qarab qilinadi.",
+      ru: "Почему это важно? У продуктов разный рекомендованный возраст — подборка это учитывает.",
     },
     multiSelect: false,
     options: [
@@ -190,8 +174,8 @@ const raw: RawQuestion[] = [
     },
     hint: { uz: "Bir nechtasini tanlash mumkin", ru: "Можно выбрать несколько" },
     guidance: {
-      uz: "Nima uchun bu muhim? Charchoq, uyqu buzilishi va soch toʻkilishi muayyan vitamin va minerallar yetishmovchiligining asosiy klinik belgilaridir.",
-      ru: "Почему это важно? Усталость, проблемы со сном и выпадение волос — ключевые клинические признаки дефицита нутриентов.",
+      uz: "Nima uchun bu muhim? Tanlov siz belgilagan mavzular boʻyicha tuziladi.",
+      ru: "Почему это важно? Подборка строится по отмеченным вами темам.",
     },
     multiSelect: true,
     options: [
@@ -289,8 +273,8 @@ const raw: RawQuestion[] = [
     id: "activity",
     question: { uz: "Jismoniy faollik", ru: "Физическая активность" },
     guidance: {
-      uz: "Nima uchun bu muhim? Jismoniy yuklama paytida magniy va aminokislotalar sarfi 2-3 baravarga ortadi.",
-      ru: "Почему это важно? При физических нагрузках расход магния и аминокислот увеличивается в 2-3 раза.",
+      uz: "Nima uchun bu muhim? Faol hayot tarzi uchun moʻljallangan mahsulotlar alohida koʻrsatiladi.",
+      ru: "Почему это важно? Продукты для активного образа жизни показываются отдельно.",
     },
     multiSelect: false,
     options: [
@@ -319,8 +303,8 @@ const raw: RawQuestion[] = [
     id: "screen",
     question: { uz: "Ekran oldida kuniga qancha vaqt?", ru: "Сколько времени за экраном в день?" },
     guidance: {
-      uz: "Nima uchun bu muhim? Koʻk nur (blue light) koʻz toʻr pardasiga taʼsir qilib, lyutein va zeaksantin nutriyentlariga ehtiyojni oshiradi.",
-      ru: "Почему это важно? Синий свет увеличивает потребность глаз в антиоксидантах, лютеине и зеаксантине.",
+      uz: "Nima uchun bu muhim? Koʻz uchun moʻljallangan mahsulotlar shu javobga qarab koʻrsatiladi.",
+      ru: "Почему это важно? Продукты для глаз показываются в зависимости от ответа.",
     },
     multiSelect: false,
     options: [
@@ -331,10 +315,12 @@ const raw: RawQuestion[] = [
   },
   {
     id: "smoking",
-    question: { uz: "Chekasizmi?", ru: "Курите?" },
+    question: { uz: "Chekish odati bormi?", ru: "Есть привычка курить?" },
+    // Not asked about a child.
+    showIf: { question: "who", includesAny: ["self-woman", "self-man", "expectant", "parent", "recovery"] },
     guidance: {
-      uz: "Nima uchun bu muhim? Chekish organizmdagi C vitaminining parchalanishini tezlashtiradi va antioksidantlarga ehtiyojni 50% ga oshiradi.",
-      ru: "Почему это важно? Курение ускоряет расход витамина C и повышает потребность в антиоксидантах на 50%.",
+      uz: "Nima uchun bu muhim? Javob tanlovda C vitaminli mahsulotlarning oʻrniga taʼsir qiladi.",
+      ru: "Почему это важно? Ответ влияет на место продуктов с витамином C в подборке.",
     },
     multiSelect: false,
     options: [
@@ -346,16 +332,16 @@ const raw: RawQuestion[] = [
   {
     id: "medication",
     question: {
-      uz: "Hozir doimiy dori ichyapsizmi?",
-      ru: "Принимаете ли сейчас лекарства постоянно?",
+      uz: "Hozir doimiy dori qabul qilinyaptimi?",
+      ru: "Принимаются ли сейчас лекарства постоянно?",
     },
     hint: {
       uz: "Bu javob tavsiyaga taʼsir qilmaydi — faqat farmatsevt bilan maslahatlashish kerakligini koʻrsatadi",
       ru: "Ответ не влияет на подбор — он лишь показывает, нужна ли консультация фармацевта",
     },
     guidance: {
-      uz: "Nima uchun bu muhim? Baʼzi dori vositalari vitaminlar soʻrilishini bloklaydi va farmatsevt konsultatsiyasini talab qiladi.",
-      ru: "Почему это важно? Некоторые лекарства блокируют всасывание витаминов и требуют консультации фармацевта.",
+      uz: "Nima uchun bu muhim? Dori qabul qilinayotganda qoʻshimchani mutaxassis bilan kelishish kerak.",
+      ru: "Почему это важно? При приёме лекарств добавку нужно согласовать со специалистом.",
     },
     multiSelect: false,
     options: [
@@ -378,23 +364,6 @@ const raw: RawQuestion[] = [
     options: [
       { id: "no", label: { uz: "Yoʻq / tegishli emas", ru: "Нет / не относится" }, topics: {} },
       { id: "yes", label: { uz: "Ha", ru: "Да" }, topics: { pregnancy: 3 }, seeDoctor: true },
-    ],
-  },
-  {
-    id: "experience",
-    question: {
-      uz: "Ilgari vitamin qabul qilganmisiz?",
-      ru: "Принимали ли витамины раньше?",
-    },
-    guidance: {
-      uz: "Nima uchun bu muhim? Vitamin qabul qilish tajribangiz doza va kurs davomiyligini toʻgʻri rejalashtirishga yordam beradi.",
-      ru: "Почему это важно? Ваш опыт приема витаминов помогает правильно рассчитать дозировку и курс.",
-    },
-    multiSelect: false,
-    options: [
-      { id: "never", label: { uz: "Yoʻq, birinchi marta", ru: "Нет, впервые" }, topics: {} },
-      { id: "sometimes", label: { uz: "Baʼzan, tizimsiz", ru: "Иногда, бессистемно" }, topics: {} },
-      { id: "regular", label: { uz: "Ha, muntazam", ru: "Да, регулярно" }, topics: {} },
     ],
   },
 ];
