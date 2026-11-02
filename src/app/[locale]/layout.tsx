@@ -9,15 +9,12 @@ import { routing, isLocale, localeHtmlLang, type Locale } from "@/lib/i18n/routi
 import { shopflow } from "@/lib/shopflow";
 import { PromotionsProvider } from "@/lib/cart/promotions-context";
 import { populatedTopicPaths } from "@/lib/content/nav-sections";
-import { SmoothScroll } from "@/components/animation/SmoothScroll";
+import { MotionPreferences } from "@/components/animation/MotionPreferences";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CookieConsent } from "@/components/layout/CookieConsent";
 import { DeferredUi } from "@/components/layout/DeferredUi";
 import { TelegramMiniApp } from "@/components/telegram/TelegramMiniApp";
-import { Toaster } from "@/components/ui/Toaster";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { BackToTop } from "@/components/ui/BackToTop";
 import { Analytics } from "@/components/analytics/Analytics";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { MobileBottomNav } from "@/components/nav/MobileBottomNav";
@@ -113,8 +110,7 @@ export default async function LocaleLayout({
             >
               {tc("skipToContent")}
             </a>
-            <ScrollProgress />
-            <SmoothScroll>
+            <MotionPreferences>
               <Header categories={categories} topicPaths={topicPaths} deal={weeklyDeal} announcements={announcements} />
               {strips.length > 0 && <PromoStrip banners={strips} />}
               {/* The tab bar is fixed, so its height is reserved twice: here, so
@@ -124,11 +120,9 @@ export default async function LocaleLayout({
               <main id="main-content" className="pb-[var(--bottom-nav)]">{children}</main>
               <Footer categories={categories} topicPaths={topicPaths} onlineProviders={onlineProviders} />
               <CookieConsent />
-              <Toaster />
-              <BackToTop />
               <MobileBottomNav categories={categories} topicPaths={topicPaths} />
               <DeferredUi firstOrder={firstOrder} />
-            </SmoothScroll>
+            </MotionPreferences>
           </CommerceProvider>
           </PromotionsProvider>
         </NextIntlClientProvider>

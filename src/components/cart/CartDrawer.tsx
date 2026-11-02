@@ -96,7 +96,7 @@ export function CartDrawer() {
                   </div>
                 )}
 
-                <div data-lenis-prevent className="flex-1 space-y-4 overflow-y-auto overscroll-contain px-6 py-5">
+                <div className="flex-1 space-y-4 overflow-y-auto overscroll-contain px-6 py-5">
                   {lines.map((l) => (
                     <div key={l.lineId} className="flex gap-3">
                       <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-[16px] bg-tile">

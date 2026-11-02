@@ -23,7 +23,6 @@
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.45.4",
     "framer-motion": "^11.15.0",
-    "lenis": "^1.1.18",
     "next": "^15.5.27",
     "next-intl": "^3.26.3",
     "next-sanity": "^9.12.3",
