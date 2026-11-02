@@ -47,7 +47,7 @@ export function PopupShell({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 32 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="fixed inset-x-0 bottom-0 z-[71] mx-auto max-h-[90dvh] w-full max-w-[440px] overflow-y-auto rounded-t-[24px] bg-bg p-6 pb-[calc(1.5rem+env(safe-area-inset-bottom))] shadow-pop sm:inset-x-4 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-[24px] sm:p-8"
+            className="fixed inset-x-0 bottom-0 z-[71] mx-auto max-h-[90dvh] w-full max-w-[440px] overflow-y-auto rounded-t-[24px] bg-bg p-6 shadow-pop sm:inset-x-4 sm:bottom-auto sm:top-1/2 sm:-translate-y-1/2 sm:rounded-[24px] sm:p-8"
           >
             <button
               type="button"

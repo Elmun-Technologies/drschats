@@ -1,3 +1,5 @@
+import "server-only";
+
 import { and, eq, gt, inArray, lte, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { deals, products, restockRequests, type WaitChannel, type WaitKind } from "@/lib/db/schema";
@@ -9,6 +11,7 @@ import { customerChannels, linkedChat, operatorNotifier } from "./channels";
 import { enqueueRestockMessage } from "@/lib/flows/restock";
 import { waitlistUrl } from "./messages";
 import type { WaitMessage } from "./types";
+import { indexNowKey, pingIndexNow } from "@/lib/seo/indexnow";
 
 /*
   "Tell me when it is back" / "when it is cheaper", stored and acted on.
@@ -202,12 +205,15 @@ export async function notifyWaitlist(productId: string): Promise<DispatchResult>
 /**
  * The hook every stock or price change calls: back in stock or cheaper →
  * the waitlist hears about it. Never throws; the change itself has happened.
+ * Any change of stock or price is also announced to IndexNow (when its key is
+ * set), in the background.
  */
 export async function afterProductChange(
   productId: string,
   before: { inStock: boolean; price: number },
   after: { inStock: boolean; price: number },
 ): Promise<DispatchResult | null> {
+  if (before.inStock !== after.inStock || before.price !== after.price) void announceProduct(productId);
   const backInStock = !before.inStock && after.inStock;
   const cheaper = after.inStock && after.price < before.price;
   if (!backInStock && !cheaper) return null;
@@ -216,6 +222,16 @@ export async function afterProductChange(
   } catch (err) {
     console.error("[notify] waitlist dispatch failed:", (err as Error).message);
     return null;
+  }
+}
+
+async function announceProduct(productId: string): Promise<void> {
+  if (!indexNowKey()) return;
+  try {
+    const [row] = await getDb().select({ slug: products.slug }).from(products).where(eq(products.id, productId)).limit(1);
+    if (row) await pingIndexNow([`/product/${row.slug}`]);
+  } catch (err) {
+    console.warn("[indexnow] product lookup failed:", (err as Error).message);
   }
 }
 

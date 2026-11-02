@@ -8,7 +8,6 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { chipClass } from "@/components/ui/Chip";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
 import { categoryCutout } from "@/lib/content/product-cutouts";
-import { COMMERCE } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
 import {
@@ -106,6 +105,15 @@ export async function ShopView({
     return { pathname: basePath, query };
   }
 
+  /*
+    Every brand × form × origin × price × sort combination is a URL; followed,
+    they are a crawl trap of noindex pages. Only the clean shelf and its plain
+    page numbers are followed (lib/seo/query-params.ts plainPageNumber).
+  */
+  function rel(next: CatalogFilters, nextSort: CatalogSort = sort) {
+    return search || nextSort !== "popular" || activeFilterCount(next) > 0 ? "nofollow" : undefined;
+  }
+
   const priceLabel =
     filters.min != null && filters.max != null
       ? `${formatNumber(filters.min)} – ${formatMoney(filters.max, locale)}`
@@ -128,34 +136,28 @@ export async function ShopView({
   ].filter((c): c is { key: string; label: string; next: CatalogFilters } => Boolean(c));
 
   const activeCount = activeFilterCount(filters);
-  const hours = String(COMMERCE.delivery.tashkent.hours);
   const commerce = await getCommerceSettings();
+  const hours = String(commerce.delivery.tashkentHours);
 
   return (
     <div className="wrap flex flex-col gap-4 pb-9 pt-1 lg:gap-6 lg:pb-[72px] lg:pt-5">
       {!search && <ShelfJsonLd />}
       <div className="flex flex-col gap-1 lg:gap-4">
-        <nav aria-label={prod("breadcrumbHome")} className="hidden flex-wrap gap-2 text-sm text-muted lg:flex">
-          <Link href="/" className="hover:text-ink">{prod("breadcrumbHome")}</Link>
+        <nav aria-label={prod("breadcrumb")} className="flex flex-wrap items-center gap-x-2 text-[13px] text-muted lg:text-sm">
+          <Link href="/" className="inline-flex min-h-6 items-center hover:text-ink">{prod("breadcrumbHome")}</Link>
           <span aria-hidden>/</span>
           {active || search ? (
-            <Link href="/products" className="hover:text-ink">{header("catalog")}</Link>
+            <Link href="/products" className="inline-flex min-h-6 items-center hover:text-ink">{header("catalog")}</Link>
           ) : (
-            <span className="text-ink">{header("catalog")}</span>
+            <span aria-current="page" className="text-ink">{header("catalog")}</span>
           )}
           {active && (
             <>
               <span aria-hidden>/</span>
-              <span className="text-ink">{active.name}</span>
+              <span aria-current="page" className="text-ink">{active.name}</span>
             </>
           )}
         </nav>
-        {(active || search) && (
-          <Link href="/products" className="inline-flex items-center gap-1 self-start text-sm text-ink-2 lg:hidden">
-            <Icon d="M15 6l-6 6 6 6" className="h-4 w-4" />
-            {header("catalog")}
-          </Link>
-        )}
         <div className="flex flex-col gap-1 lg:-mt-1.5 lg:flex-row lg:flex-wrap lg:items-baseline lg:gap-3.5">
           <h1 className="text-[26px] font-bold leading-8 lg:text-h-page">{heading}</h1>
           <span className="text-[15px] text-muted lg:text-[17px]">{v3("count", { count: matched.length })}</span>
@@ -213,6 +215,7 @@ export async function ShopView({
                 <Link
                   key={s}
                   href={href(filters, s)}
+                  rel={rel(filters, s)}
                   aria-current={s === sort ? "true" : undefined}
                   className={cn(
                     "rounded-[10px] px-3.5 py-2 text-[15px]",
@@ -233,15 +236,16 @@ export async function ShopView({
                 <Link
                   key={c.key}
                   href={href(c.next)}
+                  rel={rel(c.next)}
                   aria-label={t("removeFilter", { name: c.label })}
-                  className={cn(chipClass(true), "h-9 text-sm lg:h-10 lg:text-[15px]")}
+                  className={cn(chipClass(true), "text-sm lg:text-[15px]")}
                 >
                   {c.label}
                   <Icon d="M6 6l12 12M18 6L6 18" className="h-3.5 w-3.5 lg:h-4 lg:w-4" />
                 </Link>
               ))}
               {chips.length > 1 && (
-                <Link href={href(EMPTY_FILTERS)} className="inline-flex h-9 shrink-0 items-center px-2 text-sm underline lg:h-10 lg:text-[15px]">
+                <Link href={href(EMPTY_FILTERS)} className="inline-flex h-11 shrink-0 items-center px-2 text-sm underline lg:h-10 lg:text-[15px]">
                   {v3("clearAll")}
                 </Link>
               )}
@@ -278,11 +282,31 @@ export async function ShopView({
               {remaining > 0 && (
                 <Link
                   href={href(filters, sort, page + 1)}
+                  rel={rel(filters)}
                   scroll={false}
                   className="mt-1 flex h-12 w-full max-w-[360px] items-center justify-center rounded-sm bg-tile text-button font-semibold transition-colors hover:bg-tile-hover"
                 >
                   {v3("more", { count: Math.min(remaining, PAGE_SIZE) })}
                 </Link>
+              )}
+            </div>
+          )}
+
+          {!active && !search && (
+            <div className="flex max-w-[820px] flex-col gap-2.5 pt-4">
+              <h2 className="text-title font-bold">{v3("catalogSeoTitle")}</h2>
+              <p className="text-body text-ink-2">
+                {v3("catalogSeoText", {
+                  count: pool.items.length,
+                  hours,
+                  free: formatNumber(commerce.delivery.freeShippingOver),
+                })}
+              </p>
+              {topics.length > 0 && (
+              <Link href="/goals" className="inline-flex min-h-11 items-center gap-1.5 self-start text-body font-semibold hover:underline">
+                {v3("catalogSeoGoals")}
+                <Icon d="M5 12h14M13 6l6 6-6 6" className="h-4 w-4" />
+              </Link>
               )}
             </div>
           )}
@@ -362,7 +386,7 @@ export async function ShopView({
                 {v3("subText", { intervals: SUBSCRIPTION_INTERVALS.join(", ") })}
               </span>
             </span>
-            <span className="inline-flex h-12 items-center self-start rounded-[14px] bg-bg px-7 text-[17px] font-semibold text-ink md:self-auto">
+            <span className="inline-flex h-12 items-center self-start rounded-input bg-bg px-7 text-[17px] font-semibold text-ink md:self-auto">
               {v3("subCta")}
             </span>
           </Link>

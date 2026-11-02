@@ -6,10 +6,10 @@ import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import type { Product } from "@/lib/shopflow/types";
-import { cn, formatMoney, formatNumber } from "@/lib/utils";
+import { cn, formatMoney } from "@/lib/utils";
 import { COMPARE_LIMIT, useCompare } from "@/lib/compare/store";
 import { useCart } from "@/lib/cart/store";
-import { discountPercent } from "@/components/ui/Price";
+import { Price, discountPercent } from "@/components/ui/Price";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { Chip } from "@/components/ui/Chip";
 import { cutoutOf, unitOf, unitPriceOf, brandOf } from "@/lib/catalog/product-facts";
@@ -129,10 +129,7 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
                     <Link href={`/product/${p.slug}`} className="min-h-[42px] text-base leading-[21px] hover:underline">
                       {p.name}
                     </Link>
-                    <div className="flex flex-wrap items-center gap-x-2">
-                      <span className="text-xl font-bold lg:text-[22px]">{formatMoney(p.price, locale)}</span>
-                      {p.oldPrice && p.oldPrice > p.price && <span className="text-sm text-muted line-through">{formatNumber(p.oldPrice)}</span>}
-                    </div>
+                    <Price amount={p.price} oldAmount={p.oldPrice} locale={locale} layout="inline" />
                     <Button
                       className="w-full"
                       disabled={!p.inStock}

@@ -12,7 +12,8 @@ import { buttonVariants } from "@/components/ui/Button";
 import { Chip, chipClass } from "@/components/ui/Chip";
 import { ProductGrid } from "@/components/home/HomeBlocks";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
-import { cutoutOf } from "@/lib/catalog/product-facts";
+import { brandOf, cutoutOf } from "@/lib/catalog/product-facts";
+import { suggestTerms } from "@/lib/search/suggest";
 import { TrackSearch } from "@/components/analytics/TrackSearch";
 import { firstParam, type RawSearchParams } from "@/lib/search-params";
 
@@ -68,6 +69,11 @@ export default async function SearchPage({ params, searchParams }: { params: Par
     .slice(0, 6);
   const haystack = pool.items.map((p) => `${p.name} ${p.tagline}`.toLowerCase());
   const tryTerms = TRY_TERMS.filter((term) => haystack.some((h) => h.includes(term.toLowerCase()))).slice(0, 6);
+  // «Balki …?» on a search that found nothing: the closest of the catalogue's own words (lib/search/suggest.ts).
+  const suggestions =
+    q && results.length === 0
+      ? suggestTerms(q, [...new Set(pool.items.map((p) => brandOf(p)?.name).filter((n): n is string => Boolean(n))), ...TRY_TERMS, ...pool.items.map((p) => p.name)])
+      : [];
 
   const crumbs = (
     <nav aria-label={tp("breadcrumbHome")} className="hidden gap-2 text-sm text-muted lg:flex">
@@ -109,6 +115,19 @@ export default async function SearchPage({ params, searchParams }: { params: Par
               {q ? t("emptyTitle", { query: q }) : t("startTitle")}
             </h1>
             <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{q ? t("emptyText") : t("startText")}</p>
+            {suggestions.length > 0 && (
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-base">
+                <span className="text-ink-2">{t("didYouMean")}</span>
+                {suggestions.map((term, i) => (
+                  <span key={term}>
+                    <Link href={{ pathname: "/search", query: { q: term } }} className="inline-flex min-h-11 items-center font-semibold underline underline-offset-4 hover:no-underline">
+                      {term}
+                    </Link>
+                    {i < suggestions.length - 1 ? "," : "?"}
+                  </span>
+                ))}
+              </p>
+            )}
             <div className="mt-2">{tryChips}</div>
           </div>
           {q && (

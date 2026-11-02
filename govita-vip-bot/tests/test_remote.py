@@ -179,3 +179,14 @@ def test_split_text_never_leaves_a_tag_open():
     assert all(part.count('<b>') == part.count('</b>') for part in parts)
     assert remote.split_text('') == []
     assert remote.split_text('qisqa') == ['qisqa']
+
+
+@pytest.mark.asyncio
+async def test_first_message_reaches_operator_right_after_boot(monkeypatch):
+    # time.monotonic() counts from boot: on a machine up for 5 s the first message must not look like a repeat.
+    remote._last_ticket.clear()
+    monkeypatch.setattr(remote.time, 'monotonic', lambda: 5.0)
+    api = SimpleNamespace(request=AsyncMock(return_value={'id': 1}))
+    await remote.text(message(text='salom'), api)
+    tickets = [c for c in api.request.await_args_list if c.args[:2] == ('POST', '/customers/7/tickets')]
+    assert len(tickets) == 1

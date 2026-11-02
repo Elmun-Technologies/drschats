@@ -4,6 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { canOpen } from "@/lib/admin/roles";
+import type { AdminRole } from "@/lib/db/schema";
 
 export const NAV_GROUPS = [
   {
@@ -11,6 +13,7 @@ export const NAV_GROUPS = [
     items: [
       { href: "/admin", label: "Bosh sahifa", icon: "home", exact: true },
       { href: "/admin/analytics", label: "Analitika", icon: "chart" },
+      { href: "/admin/keywords", label: "Talab tahlili", icon: "target" },
     ],
   },
   {
@@ -18,6 +21,7 @@ export const NAV_GROUPS = [
     items: [
       { href: "/admin/orders", label: "Buyurtmalar", icon: "orders" },
       { href: "/admin/customers", label: "Mijozlar", icon: "users" },
+      { href: "/admin/subscriptions", label: "Obunalar", icon: "bell" },
       { href: "/admin/visitors", label: "Mijozlar yoʻli", icon: "route" },
       { href: "/admin/funnel", label: "Voronka", icon: "funnel" },
     ],
@@ -30,6 +34,7 @@ export const NAV_GROUPS = [
       { href: "/admin/promotions", label: "Aksiyalar", icon: "percent" },
       { href: "/admin/promocodes", label: "Promokodlar", icon: "ticket" },
       { href: "/admin/loyalty", label: "Sodiqlik", icon: "gift" },
+      { href: "/admin/reviews", label: "Sharhlar", icon: "message" },
       { href: "/admin/campaigns", label: "Kampaniyalar", icon: "megaphone" },
       { href: "/admin/flows", label: "Avtomatlashtirish", icon: "flow" },
       { href: "/admin/messages", label: "Xabarlar", icon: "inbox" },
@@ -58,6 +63,8 @@ export const NAV_GROUPS = [
       { href: "/admin/commerce", label: "Savdo qoidalari", icon: "sliders" },
       { href: "/admin/integrations", label: "Integratsiyalar", icon: "plug" },
       { href: "/admin/users", label: "Administratorlar", icon: "settings" },
+      { href: "/admin/audit", label: "Audit jurnali", icon: "file" },
+      { href: "/admin/security", label: "Xavfsizlik", icon: "lock" },
     ],
   },
 ] as const;
@@ -87,6 +94,7 @@ export function NavIcon({ name, className }: { name: string; className?: string 
     file: <><path d="M6 3h8l4 4v14H6z" /><path d="M14 3v5h5M9 12h6M9 16h6" /></>,
     plug: <><path d="M8 4v5M16 4v5M6 9h12v2a6 6 0 0 1-6 6v4" /></>,
     sliders: <><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></>,
+    lock: <><rect x="5" y="10.5" width="14" height="10" rx="2" /><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" /></>,
     settings: <><circle cx="12" cy="12" r="3" /><path d="M12 3v2.5M12 18.5V21M3 12h2.5M18.5 12H21M5.6 5.6l1.8 1.8M16.6 16.6l1.8 1.8M5.6 18.4l1.8-1.8M16.6 7.4l1.8-1.8" /></>,
   };
   return (
@@ -102,16 +110,30 @@ export function isActive(path: string, href: string, exact?: boolean) {
 
 export type NavBadges = Partial<Record<string, number>>;
 
-export function AdminNav({ onNavigate, badges = {} }: { onNavigate?: () => void; badges?: NavBadges }) {
+type NavItem = { href: string; label: string; icon: string; exact?: boolean };
+
+/** The menu a role may use (lib/admin/roles.ts). An operator sees the club's support tickets, not the club. */
+export function navFor(role: AdminRole) {
+  return NAV_GROUPS.map((group) => ({
+    label: group.label,
+    items: (group.items as readonly NavItem[]).flatMap((item): NavItem[] => {
+      if (canOpen(role, item.href)) return [item];
+      if (item.href === "/admin/bot" && canOpen(role, "/admin/bot/tickets")) return [{ ...item, href: "/admin/bot/tickets", label: "Murojaatlar" }];
+      return [];
+    }),
+  })).filter((group) => group.items.length > 0);
+}
+
+export function AdminNav({ onNavigate, badges = {}, role }: { onNavigate?: () => void; badges?: NavBadges; role: AdminRole }) {
   const path = usePathname();
   return (
     <nav aria-label="Boshqaruv menyusi" className="flex flex-col gap-5">
-      {NAV_GROUPS.map((group) => (
+      {navFor(role).map((group) => (
         <div key={group.label}>
           <p className="mb-1.5 px-3 text-[13px] font-semibold text-muted">{group.label}</p>
           <ul className="flex flex-col gap-0.5">
             {group.items.map((item) => {
-              const active = isActive(path, item.href, "exact" in item && item.exact);
+              const active = isActive(path, item.href, item.exact);
               return (
                 <li key={item.href}>
                   <Link
@@ -125,7 +147,7 @@ export function AdminNav({ onNavigate, badges = {} }: { onNavigate?: () => void;
                   >
                     <NavIcon name={item.icon} className={active ? "text-ink" : "text-muted"} />
                     <span>{item.label}</span>
-                    {(badges[item.href] ?? 0) > 0 && (
+                    {(badges[item.href === "/admin/bot/tickets" ? "/admin/bot" : item.href] ?? 0) > 0 && (
                       <span className="ml-auto grid h-6 min-w-6 place-items-center rounded-full bg-ink px-1.5 text-[12px] font-bold tabular-nums text-white" aria-label={`${badges[item.href]} ta yangi`}>
                         {badges[item.href]! > 99 ? "99+" : badges[item.href]}
                       </span>

@@ -17,7 +17,7 @@ const saveSchema = z.object({
 });
 
 export async function saveFlow(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const parsed = saveSchema.safeParse({ id: form.get("id"), name: form.get("name"), steps: form.get("steps") });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   let raw: unknown;
@@ -45,7 +45,7 @@ export async function saveFlow(_: FormState, form: FormData): Promise<FormState>
 }
 
 export async function toggleFlow(form: FormData): Promise<void> {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const id = String(form.get("id") ?? "");
   if (id) await getDb().update(flows).set({ active: sql`not ${flows.active}`, updatedAt: new Date() }).where(eq(flows.id, id));
   revalidatePath("/admin/flows");
@@ -54,7 +54,7 @@ export async function toggleFlow(form: FormData): Promise<void> {
 
 /** Runs one worker tick now (flows + outbox) instead of waiting for the next minute. */
 export async function runMessagingNow(_: FormState, _form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("marketing");
   try {
     const { runMessagingTick } = await import("@/lib/messaging/worker");
     const result = await runMessagingTick({ flows: true });
@@ -74,7 +74,7 @@ export async function runMessagingNow(_: FormState, _form: FormData): Promise<Fo
 
 /* Order SMS (lib/sms/transactional.ts): two switches, nothing else is editable — the texts are Eskiz-moderated templates. */
 export async function saveOrderSmsSettings(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   await saveTransactionalSms({ orderPlaced: form.get("orderPlaced") === "on", statusChanged: form.get("statusChanged") === "on" }, admin.id);
   revalidatePath("/admin/flows");
   return { ok: "Saqlandi." };

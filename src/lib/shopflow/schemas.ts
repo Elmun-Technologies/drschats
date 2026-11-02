@@ -117,6 +117,11 @@ export const orderRequestSchema = z.object({
     address: z.string().min(3).max(300),
     note: z.string().max(1000).optional(),
     method: z.enum(["courier", "pickup"]),
+    district: z.string().trim().max(80).optional(),
+    street: z.string().trim().max(160).optional(),
+    house: z.string().trim().max(40).optional(),
+    apartment: z.string().trim().max(40).optional(),
+    landmark: z.string().trim().max(200).optional(),
   }),
   payment: z
     .object({
@@ -150,6 +155,7 @@ export const orderRequestSchema = z.object({
   }),
   promoCode: z.string().trim().max(40).optional(),
   pointsToken: z.string().max(400).optional(),
+  phoneToken: z.string().max(400).optional(),
   locale: z.enum(["ru", "uz"]),
   // Only the checkout action and the bot API set this; a request that sends
   // it is overwritten server-side.
@@ -168,6 +174,7 @@ export const orderRequestSchema = z.object({
     })
     .optional(),
   telegram: z.string().max(4096).optional(),
+  idempotencyKey: z.string().regex(/^[A-Za-z0-9-]{16,64}$/).optional(),
 });
 
 export const orderResultSchema = z.object({

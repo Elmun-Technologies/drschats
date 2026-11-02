@@ -35,6 +35,7 @@ const SHOULD_BE_404 = [
   "/blog/category/yoq-turkum-xyz",
   "/experts/yoq-mutaxassis-xyz",
   "/programs/yoq-dastur-xyz",
+  "/lp/yoq-kampaniya-xyz",
   "/sahifa-umuman-yoq-xyz",
 ];
 

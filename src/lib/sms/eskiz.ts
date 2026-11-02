@@ -106,7 +106,13 @@ export class EskizProvider implements SmsProvider {
     return cached ? { token: cached } : this.login();
   }
 
-  private async post(token: string, phone: string, text: string): Promise<Response | null> {
+  /*
+    A timeout is not a failure to send: the request may have reached Eskiz and
+    the SMS may be on its way, so sending it again could deliver it twice.
+    "timeout" is reported as final (the outbox marks it failed); only a
+    connection that never opened ("network") is retried.
+  */
+  private async post(token: string, phone: string, text: string): Promise<Response | "timeout" | "network"> {
     const form = new FormData();
     form.set("mobile_phone", phone);
     form.set("message", text);
@@ -118,8 +124,9 @@ export class EskizProvider implements SmsProvider {
         body: form,
         signal: AbortSignal.timeout(this.timeout),
       });
-    } catch {
-      return null;
+    } catch (err) {
+      const name = (err as Error)?.name;
+      return name === "TimeoutError" || name === "AbortError" ? "timeout" : "network";
     }
   }
 
@@ -132,13 +139,14 @@ export class EskizProvider implements SmsProvider {
     if ("error" in auth) return { ok: false, retryable: auth.retryable, error: auth.error };
 
     let response = await this.post(auth.token, phone, text);
-    if (response?.status === 401) {
+    if (typeof response !== "string" && response.status === 401) {
       tokens.delete(this.cacheKey());
       auth = await this.login();
       if ("error" in auth) return { ok: false, retryable: auth.retryable, error: auth.error };
       response = await this.post(auth.token, phone, text);
     }
-    if (!response) return { ok: false, retryable: true, error: "eskiz_unreachable" };
+    if (response === "timeout") return { ok: false, retryable: false, error: "eskiz_timeout: delivery unknown, not resent" };
+    if (response === "network") return { ok: false, retryable: true, error: "eskiz_unreachable" };
 
     const body = await readJson(response);
     if (!response.ok || body?.status === "error") {

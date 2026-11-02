@@ -1,5 +1,13 @@
 import { ensureDefaultFlows, runFlows, type FlowRunResult } from "@/lib/flows/engine";
-import { drainOutbox, stopDraining, type DrainResult } from "./outbox";
+import { drainOutboxFor, stopDraining, type DrainResult } from "./outbox";
+import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
+import { retryOperatorPings } from "@/lib/orders/notify";
+import { releaseUnpaidOrders } from "@/lib/orders/release";
+import { runAlerts } from "@/lib/ops/alerts";
+import { refreshOnClockEvents } from "@/lib/ops/clock-events";
+import { runRetention } from "@/lib/ops/retention";
+import { writeOps } from "@/lib/ops/state";
+import { WORKER_TICK_KEY } from "@/lib/ops/health";
 import { expirePoints } from "@/lib/loyalty/server";
 import { notifyStartedDeals } from "@/lib/merch/deal-notify";
 import { sweepBotCarts } from "@/lib/bot/abandoned";
@@ -10,8 +18,12 @@ import { sweepBotCarts } from "@/lib/bot/abandoned";
   in-process timer is the simplest thing that works, with no extra service.
   POST /api/cron/messages runs the same tick for an external cron or by hand.
 
-  Every minute: drain the outbox (due SMS, Telegram hand-offs to bot_jobs).
-  Every 5 minutes: flows — enroll and advance. Every hour: cashback expiry rows.
+  Every minute: drain the outbox (due SMS, Telegram hand-offs to bot_jobs) in
+  parallel batches for up to DRAIN_BUDGET_MS, refresh pages whose deal or
+  sale window just opened or closed, write the heartbeat /api/health reads.
+  Every 5 minutes: flows — enroll and advance; retry operator pings Telegram
+  did not take; cancel unpaid online orders past their time (stock comes
+  back); operator alerts. Every hour: cashback expiry rows, retention.
 
   It must never take the server down: every tick is wrapped, errors are
   logged (without phone numbers or texts) and the next tick tries again.
@@ -23,6 +35,8 @@ import { sweepBotCarts } from "@/lib/bot/abandoned";
 */
 
 const TICK_MS = 60_000;
+/* Most of the minute: the next tick must not start while this one still sends. */
+const DRAIN_BUDGET_MS = 40_000;
 const FLOWS_EVERY_MS = 5 * 60_000;
 /* Cashback expiry is evaluated lazily on every read; this only writes the 'expire' rows. */
 const EXPIRE_EVERY_MS = 60 * 60_000;
@@ -42,6 +56,16 @@ export interface TickResult {
 let running = false;
 let lastFlows = 0;
 let lastExpire = 0;
+
+/** One background job; a failure is logged and never stops the rest of the tick. */
+async function job<T>(name: string, run: () => Promise<T>): Promise<T | undefined> {
+  try {
+    return await run();
+  } catch (err) {
+    console.error(`[worker] ${name} failed:`, (err as Error).message);
+    return undefined;
+  }
+}
 
 export async function runMessagingTick(options: { now?: Date; flows?: boolean } = {}): Promise<TickResult> {
   if (running) return { flows: null, outbox: null, busy: true };
@@ -65,13 +89,19 @@ export async function runMessagingTick(options: { now?: Date; flows?: boolean } 
         return undefined;
       });
       flows = await runFlows(now);
+      if (await isOperatorChannelConfigured().catch(() => false)) await job("operator pings", retryOperatorPings);
+      await job("unpaid orders", releaseUnpaidOrders);
+      await job("alerts", runAlerts);
     }
     if (options.flows || Date.now() - lastExpire >= EXPIRE_EVERY_MS) {
       lastExpire = Date.now();
       await expirePoints(now).catch((err: Error) => console.error("[loyalty] expiry job failed:", err.message));
+      await job("retention", runRetention);
     }
+    await job("clock events", () => refreshOnClockEvents(options.now ?? new Date()));
     // Messages the flows just queued go out in the same tick.
-    const outbox = await drainOutbox(options.now ?? new Date());
+    const outbox = options.now ? await drainOutboxFor(0, () => options.now!) : await drainOutboxFor(DRAIN_BUDGET_MS);
+    await job("heartbeat", () => writeOps(WORKER_TICK_KEY, { at: new Date().toISOString() }));
     return { flows, outbox, deals, carts };
   } finally {
     running = false;

@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
   DEFAULT_LOW_STOCK_AT,
+  DEFAULT_RELEASE_UNPAID_HOURS,
+  parseReleaseHours,
   adjustedQty,
   cancelRestores,
   dueRequests,
@@ -133,5 +135,15 @@ describe("phone9Of", () => {
     expect(phone9Of("+998 90 123 45 67")).toBe("901234567");
     expect(phone9Of("90 123-45-67")).toBe("901234567");
     expect(phone9Of("12345")).toBeNull();
+  });
+});
+
+describe("unpaid order release hours", () => {
+  it("accepts 0..168 and falls back to the standard", () => {
+    expect(parseReleaseHours("0")).toBe(0);
+    expect(parseReleaseHours("48")).toBe(48);
+    expect(parseReleaseHours(null)).toBe(DEFAULT_RELEASE_UNPAID_HOURS);
+    expect(parseReleaseHours("500")).toBe(DEFAULT_RELEASE_UNPAID_HOURS);
+    expect(parseReleaseHours("1.5")).toBe(DEFAULT_RELEASE_UNPAID_HOURS);
   });
 });

@@ -30,15 +30,47 @@ Qilingan ishlar va sababi:
 - **Sitemap** — ru URL'lar ham `<loc>` (avval faqat uz yuborilardi, ru faqat
   hreflang orqali ma'lum edi), mahsulot rasmlari (image sitemap), `lastmod`
   faqat haqiqiy sana bo'lganda (blog). Bo'sh kategoriya sitemap'da yo'q va 404.
-- **Filtr/saralash/sahifa URL'lari** (`?sort=`, `?brand=`, `?page=`) —
-  `noindex, follow`: havolalar kuzatiladi, nusxa sahifalar indeksga tushmaydi.
+- **Filtr/saralash/qidiruv URL'lari** (`?sort=`, `?brand=`, `?q=`…) —
+  `noindex, follow`, canonical va hreflang **yo'q** (noindex bilan zid
+  bo'lmasin); ShopView'dagi bunday havolalarda `rel="nofollow"` — filtr
+  kombinatsiyalari crawl tuzog'i bo'lmaydi. **Faqat `?page=N`** (boshqa
+  parametrsiz) — indekslanadi, o'z canonical'i va "— N-sahifa" title bilan
+  (`plainPageNumber`), aks holda 24-dan keyingi mahsulotlarga faqat noindex
+  sahifalar orqali yetilardi.
+- **Bir sakrash**: `/` → `/uz` va `/en/...` → `/uz/...` — `next.config.ts`
+  da 308 (next-intl'ning 307 aniqlashi o'chiq, `localeDetection: false`);
+  next-intl'ning `Link:` hreflang sarlavhasi ham o'chiq (`alternateLinks:
+  false`) — hreflang faqat HTML'da, `buildAlternates` dan.
+- **`*.fly.dev`** — `X-Robots-Tag: noindex, nofollow` (`/admin` dan tashqari):
+  bitta indekslanadigan host.
+- **Kontentsiz sahifalar** — `/reviews` (sharh yo'q), `/licenses` (raqam yo'q),
+  `/offer` (yurist matni yo'q), `/loyalty` (ball/tavsiya/tug'ilgan kun o'chiq)
+  `noindex` va sitemap'da yo'q; ikkalasi bitta predikatdan
+  (`src/lib/seo/indexable.ts`). `/privacy` sitemap'da.
+- **Title shabloni** — `[locale]/layout.tsx`: `%s — Go Vita`; `page-meta`
+  title'lari allaqachon brendli va `absolute`, qo'lda brend qo'shilmaydi.
+- **Mahsulot `lastmod`** — baza katalogida `products.updated_at` dan.
+- **Feed'lar** — `/feeds/google.xml` (Merchant Center, uz) va
+  `/feeds/yandex.yml` (YML, ru; `?lang=` almashtiradi): faqat sotuvdagi va
+  ro'yxatdagi mahsulotlar, engine narxi (aksiya/kun taklifi bilan), haqiqiy
+  eski narx, UZS, brend; GTIN yo'q — `identifier_exists=no`.
+- **IndexNow** — `INDEXNOW_KEY` o'rnatilsa (faqat live), `afterProductChange()`
+  narx yoki ombor o'zgarganda mahsulotning uz/ru URL'larini yuboradi; kalit
+  fayli `/indexnow-key.txt`.
+- **404 analitikasi** — `NotFoundView` `page_not_found` (yo'l + referrer,
+  querysiz) hodisasini `lib/analytics/events.ts` orqali yuboradi.
 - **JSON-LD**:
   - Product `brand` — ishlab chiqaruvchi (avval hamma mahsulotda "Go Vita");
   - o'ylab topilgan `datePublished`/`dateModified` va `priceValidUntil` olib tashlandi;
   - yetkazish narxi haqiqiy (chegaradan past — `shippingFee`);
   - `PharmacyOrDrugstore` → `Store` (litsenziya raqami hali yo'q);
   - WebSite + Store faqat bosh sahifada (Store kontaktda ham), har sahifada emas;
-  - kategoriyada `CollectionPage` + `ItemList` + `BreadcrumbList`.
+    `SearchAction` va `speakable` yo'q (Google ularni o'qimaydi);
+  - kategoriya, brend va dastur sahifasida `CollectionPage` + `ItemList`
+    (`isPartOf` — ichki WebSite tuguni); `BreadcrumbList` har doim bosh
+    sahifadan boshlanadi;
+  - yetkazish ikki va'da: Toshkent (`UZ-TK`, 0–1 kun) va viloyatlar (1–3 kun);
+  - Organization va Store `sameAs` — bitta ro'yxat (`SAME_AS`).
 - **og:locale** — `uz_UZ` / `ru_RU` + `og:locale:alternate`.
 - **Verifikatsiya** — `GOOGLE_SITE_VERIFICATION`, `YANDEX_VERIFICATION` env.
 - **Kategoriya matnlari** — `src/lib/content/category-seo.ts`, 15 ta javon ×
@@ -52,10 +84,15 @@ Qilingan ishlar va sababi:
 1. Metadata `buildPageMetadata` yoki `page-meta.ts` dagi helper orqali — qo'lda
    `title: \`${x} — Go Vita\`` yozilmaydi.
 2. Title ≤ 70 belgi, so'rov so'zi oldinda, brend oxirida. Description 70–160.
-3. Query-param varianti bo'lsa — `noindex: true`.
+3. Query-param varianti bo'lsa — `noindex: true` (canonical o'zi tushadi).
 4. Bo'sh sahifa (0 mahsulot, 0 maqola) — 404 va sitemap'dan tashqarida.
+   Ochiq qolishi kerak, lekin hali kontentsiz sahifa — `indexable.ts` dagi
+   predikat bilan `noindex` + sitemap'dan chiqarish (ikkalasi bitta manbadan).
 5. JSON-LD'da faqat haqiqiy ma'lumot: o'ylab topilgan sana, reyting, sharh,
    litsenziya yo'q (Google manual action xavfi, YMYL).
+6. Reklama landing'i `/lp/<slug>` — slug katalogdagi javon, brend, mahsulot
+   yoki `sale` bo'lsa ko'rsatiladi (`lib/marketing/campaign.ts`), aks holda 404;
+   doim `noindex`.
 
 ## 2. Ishga tushirishda — sizdan (1-hafta)
 

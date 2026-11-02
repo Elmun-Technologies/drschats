@@ -5,7 +5,6 @@ import { Link } from "@/lib/i18n/navigation";
 import { shopflow } from "@/lib/shopflow";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { BRAND } from "@/lib/brand";
-import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney } from "@/lib/utils";
 import { byDeepestDiscount } from "@/lib/shop/discounts";
 import { getCommerceSettings } from "@/lib/commerce/server";
@@ -50,8 +49,8 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
 
   const offers = [
     { big: `−${recurringPercent}%`, title: t("subTitle"), text: t("subText", { first: firstPercent, recurring: recurringPercent }), href: "/products", tone: "bg-dark-panel text-white", sub: "text-on-dark-2" },
-    ...(bundle ? [{ big: "2+1", title: bundle.title, text: bundle.description, href: "/products", tone: "bg-yellow-banner", sub: "text-[#2E3236]" }] : []),
-    { big: formatMoney(0, locale), title: t("freeTitle"), text: t("freeText", { amount: free }), href: "/delivery", tone: "bg-tile", sub: "text-[#2E3236]", small: true },
+    ...(bundle ? [{ big: "2+1", title: bundle.title, text: bundle.description, href: "/products", tone: "bg-yellow-banner", sub: "text-ink-1" }] : []),
+    { big: formatMoney(0, locale), title: t("freeTitle"), text: t("freeText", { amount: free }), href: "/delivery", tone: "bg-tile", sub: "text-ink-1", small: true },
   ];
 
   return (
@@ -105,7 +104,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
           <h2 className="text-2xl font-bold">{t("rulesTitle")}</h2>
           {[
             t("rule1", { amount: free }),
-            t("rule2", { hours: COMMERCE.delivery.tashkent.hours, days: localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime")) }),
+            t("rule2", { hours: commerce.delivery.tashkentHours, days: localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime")) }),
             t("rule3"),
           ].map((rule) => (
             <p key={rule} className="flex gap-3 text-base leading-[23px]">
@@ -125,7 +124,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
           <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-on-dark-2">{t("clubEyebrow")}</span>
           <span className="text-[26px] font-bold leading-8">{t("clubTitle")}</span>
           <span className="text-base leading-6 text-on-dark-2">{t("clubText")}</span>
-          <span className="mt-auto inline-flex h-[52px] items-center self-start rounded-[14px] bg-bg px-7 text-[17px] font-semibold text-ink">
+          <span className="mt-auto inline-flex h-[52px] items-center self-start rounded-input bg-bg px-7 text-[17px] font-semibold text-ink">
             {t("clubCta")}
           </span>
         </a>

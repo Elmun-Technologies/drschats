@@ -2,9 +2,9 @@
 
 import Image from "next/image";
 import { useRef, useState } from "react";
-import { uploadProductImage, type FormState } from "@/app/admin/_actions/catalog";
+import type { FormState } from "@/app/admin/_actions/catalog";
 import type { RepoImage, RepoImageKind } from "@/lib/admin/repo-images";
-import { Field, inputClass, secondaryButtonClass, smallButtonClass } from "@/components/admin/ui";
+import { Field, inputClass, secondaryButtonClass, smallButtonClass, smallDangerButtonClass } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
 import { ImagePicker } from "./ImagePicker";
 
@@ -165,7 +165,7 @@ export function SingleImageField({
         </span>
         <div className="flex flex-wrap gap-2">
           <button type="button" onClick={() => setPickerOpen(true)} className={smallButtonClass}>{src ? "Almashtirish" : "Tanlash"}</button>
-          {src && <button type="button" onClick={() => onChange("")} className="inline-flex h-11 items-center rounded-[12px] px-3.5 text-[14px] font-semibold text-red hover:bg-tile">Olib tashlash</button>}
+          {src && <button type="button" onClick={() => onChange("")} className={smallDangerButtonClass}>Olib tashlash</button>}
         </div>
       </div>
       <Field label={label} hint={hint}>
@@ -207,7 +207,9 @@ export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded:
     const fd = new FormData();
     fd.set("file", file);
     try {
-      const result = await uploadProductImage(undefined, fd);
+      // A route handler, not an action: only this request may carry 5 MB (products/upload/route.ts).
+      const response = await fetch("/admin/products/upload", { method: "POST", body: fd });
+      const result = (await response.json().catch(() => ({ error: "Yuklab boʻlmadi." }))) as FormState & { url?: string };
       setState(result);
       if (result?.url) onUploaded(result.url);
     } catch {

@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog } from "@/lib/admin/audit";
 import { listWaitRequests } from "@/lib/admin/waitlist";
 import { csvResponse, toCsv } from "@/lib/admin/csv";
 import { WAIT_KINDS, WAIT_STATUSES, type WaitKind, type WaitStatus } from "@/lib/db/schema";
@@ -7,7 +8,9 @@ export const dynamic = "force-dynamic";
 
 /* The waitlist as a spreadsheet — for the team that calls. Full numbers: it is the call list. */
 export async function GET(req: Request) {
-  await requireAdmin();
+  const admin = await requireAdmin("waitlist");
+  // Bulk personal data leaving the panel: always in the audit log.
+  await auditLog(admin, "export.waitlist");
   const params = new URL(req.url).searchParams;
   const s = params.get("status") ?? "waiting";
   const k = params.get("kind") ?? "";

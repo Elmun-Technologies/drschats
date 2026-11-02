@@ -8,12 +8,12 @@ import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { brands, categories, products } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { CATALOG_TAG } from "@/lib/catalog/db";
 import { builtInCatalogStatus, dismissBuiltInImport, insertBuiltInCatalog } from "@/lib/admin/seed";
 import { dismissKeysOf } from "@/lib/admin/catalog-sync";
 import { slugify } from "@/lib/admin/slugify";
-import { SLUG_RE, formToContent, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
-import { isStorageConfigured, uploadImage } from "@/lib/admin/storage";
+import { SLUG_RE, formToContent, formToFacts, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
 import { isAllowedImageUrl } from "@/lib/security/csp";
 import { recordManualMovement } from "@/lib/catalog/stock";
 import { afterProductChange } from "@/lib/notify/waitlist";
@@ -49,7 +49,7 @@ function firstIssue(err: z.ZodError) {
   the button disappears once nothing is missing.
 */
 export async function importBuiltInCatalog(_form?: FormData) {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const r = await getDb().transaction((tx) => insertBuiltInCatalog(tx));
   refresh();
   const counts = [r.products, r.categories, r.brands, r.imagesFilled, r.categoryImagesFilled].join(".");
@@ -58,7 +58,7 @@ export async function importBuiltInCatalog(_form?: FormData) {
 
 /* "Kerak emas": what is missing now stops being offered (a product the team deleted on purpose). */
 export async function dismissBuiltInImportAction(_form?: FormData) {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const { diff } = await builtInCatalogStatus();
   await dismissBuiltInImport(dismissKeysOf(diff));
   revalidatePath("/admin/products");
@@ -68,7 +68,7 @@ export async function dismissBuiltInImportAction(_form?: FormData) {
 /* ─── Products ───────────────────────────────────────────────────────────── */
 
 export async function saveProduct(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  const admin = await requireAdmin("catalog");
   const data = formObject(form);
   // Brand names rarely differ between languages; an empty Russian name takes the Uzbek one.
   if (!data["ru.name"]?.trim() && data["uz.name"]?.trim()) data["ru.name"] = data["uz.name"];
@@ -112,6 +112,8 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     lowStockAt: d.lowStockAt === "" || d.lowStockAt == null ? null : Number(d.lowStockAt),
     mxikCode: d.mxikCode || null,
     packageCode: d.packageCode || null,
+    facts: formToFacts(data),
+    registrationNumber: d.registrationNumber || null,
     kind: d.kind,
     sort: d.sort,
     images: parseImages(d.images),
@@ -130,6 +132,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     if (qtyTouched) await recordManualMovement(editingId, before?.stockQty ?? null, stockQty, "Mahsulot formasi");
     refresh();
     const sent = before ? await afterProductChange(editingId, before, { inStock, price: d.price }) : null;
+    await auditLog(admin, "product.save", auditTarget(form));
     return { ok: `Saqlandi. Saytda darhol yangilanadi.${sent && sent.due > 0 ? ` Kutayotgan ${sent.due} kishiga xabar yuborildi.` : ""}` };
   }
 
@@ -147,16 +150,19 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
 }
 
 export async function deleteProduct(form: FormData) {
-  await requireAdmin();
+  const admin = await requireAdmin("catalog");
   const id = String(form.get("id") ?? "");
-  if (id) await getDb().delete(products).where(eq(products.id, id));
+  if (id) {
+    await getDb().delete(products).where(eq(products.id, id));
+    await auditLog(admin, "product.delete", id);
+  }
   refresh();
   redirect("/admin/products?deleted=1");
 }
 
 /* A copy to start a similar product from; hidden until the team edits and publishes it. */
 export async function duplicateProduct(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const id = String(form.get("id") ?? "");
   const db = getDb();
   const [source] = await db.select().from(products).where(eq(products.id, id)).limit(1);
@@ -178,7 +184,7 @@ export async function duplicateProduct(form: FormData) {
 }
 
 export async function toggleProductStock(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const id = String(form.get("id") ?? "");
   const db = getDb();
   const [row] = await db.select({ inStock: products.inStock, price: products.price, stockQty: products.stockQty }).from(products).where(eq(products.id, id)).limit(1);
@@ -187,23 +193,6 @@ export async function toggleProductStock(form: FormData) {
   await db.update(products).set({ inStock: !row.inStock, updatedAt: new Date() }).where(eq(products.id, id));
   refresh();
   await afterProductChange(id, row, { inStock: !row.inStock, price: row.price });
-}
-
-export async function uploadProductImage(_: FormState, form: FormData): Promise<FormState & { url?: string }> {
-  await requireAdmin();
-  if (!isStorageConfigured) return { error: "Rasm saqlash (Tigris) sozlanmagan — URL manzilini qoʻlda kiriting." };
-  const file = form.get("file");
-  if (!(file instanceof File) || file.size === 0) return { error: "Fayl tanlanmagan." };
-  try {
-    const url = await uploadImage(file, "products");
-    return { ok: "Yuklandi.", url };
-  } catch (err) {
-    const code = (err as Error).message;
-    return {
-      error:
-        code === "too-large" ? "Fayl 5 MB dan katta." : code === "unsupported-type" ? "Faqat JPG, PNG, WebP yoki AVIF." : "Yuklab boʻlmadi.",
-    };
-  }
 }
 
 /* ─── Categories ─────────────────────────────────────────────────────────── */
@@ -255,7 +244,7 @@ async function insertCategory(d: CategoryInput): Promise<string | null> {
 }
 
 export async function saveCategory(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const data = formObject(form);
   const parsed = parseCategory(data);
   if ("error" in parsed) return { error: parsed.error };
@@ -284,7 +273,7 @@ export async function saveCategory(_: FormState, form: FormData): Promise<FormSt
 
 /* The product form's "+ Yangi kategoriya": creates it and hands back the slug to select. */
 export async function quickCreateCategory(form: FormData): Promise<{ error?: string; slug?: string; name?: string }> {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const parsed = parseCategory(formObject(form));
   if ("error" in parsed) return { error: parsed.error };
   const clash = await insertCategory(parsed.data);
@@ -294,7 +283,7 @@ export async function quickCreateCategory(form: FormData): Promise<{ error?: str
 }
 
 export async function deleteCategory(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const slug = String(form.get("slug") ?? "");
   const db = getDb();
   const [{ n }] = await db.select({ n: count() }).from(products).where(eq(products.categorySlug, slug));
@@ -312,7 +301,7 @@ const brandSchema = z.object({
 });
 
 export async function saveBrand(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const data = formObject(form);
   const parsed = brandSchema.safeParse({ ...data, slug: data.slug?.trim() || slugify(data.name ?? "") });
   if (!parsed.success) return { error: firstIssue(parsed.error) };
@@ -325,7 +314,7 @@ export async function saveBrand(_: FormState, form: FormData): Promise<FormState
 }
 
 export async function deleteBrand(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("catalog");
   const slug = String(form.get("slug") ?? "");
   // Products keep existing; their brand is cleared (on delete set null).
   await getDb().delete(brands).where(eq(brands.slug, slug));

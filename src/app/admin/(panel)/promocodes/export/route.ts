@@ -1,4 +1,5 @@
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog } from "@/lib/admin/audit";
 import { csvResponse, toCsv } from "@/lib/admin/csv";
 import { SOURCE_LABEL, listPromoCodes, parsePromoFilter, promoValueLabel } from "@/lib/admin/promocodes";
 import { PROMO_SOURCES, type PromoSource } from "@/lib/db/schema";
@@ -7,7 +8,9 @@ export const dynamic = "force-dynamic";
 
 /** The codes on screen (or one generated batch) as CSV — the input for an SMS or Telegram send-out. */
 export async function GET(req: Request) {
-  await requireAdmin();
+  const admin = await requireAdmin("marketing");
+  // Bulk personal data leaving the panel: always in the audit log.
+  await auditLog(admin, "export.promocodes");
   const params = new URL(req.url).searchParams;
   const sourceParam = params.get("source") ?? "";
   const source = (PROMO_SOURCES as readonly string[]).includes(sourceParam) ? (sourceParam as PromoSource) : null;

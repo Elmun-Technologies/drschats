@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import { regionName } from "@/lib/checkout/regions";
 import { requireAdmin } from "@/lib/admin/session";
 import { getOrder } from "@/lib/admin/queries";
 import { DELIVERY_LABEL, PAYMENT_LABEL, formatDateTime } from "@/lib/admin/order-labels";
@@ -41,7 +42,7 @@ export default async function PrintOrderPage({ params }: { params: Promise<{ num
         </div>
         <div>
           <p className="text-[12px] font-semibold text-muted">{DELIVERY_LABEL[o.delivery.method] ?? o.delivery.method}</p>
-          <p className="mt-1 font-semibold">{o.delivery.region}</p>
+          <p className="mt-1 font-semibold">{regionName(o.delivery.region)}</p>
           <p>{o.delivery.address}</p>
           {o.delivery.note && <p className="mt-1 text-ink-2">Izoh: {o.delivery.note}</p>}
         </div>

@@ -1,3 +1,5 @@
+import "server-only";
+
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import type { PromoSource } from "@/lib/db/schema";

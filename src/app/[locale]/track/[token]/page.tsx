@@ -5,13 +5,20 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { verifyOrderTrackToken } from "@/lib/messaging/tokens";
-import { trackedOrder } from "@/lib/orders/track";
+import { trackedLoyalty, trackedOrder } from "@/lib/orders/track";
+import { selfCancelVerdict } from "@/lib/orders/cancel-rules";
+import { CancelOrder } from "@/components/track/CancelOrder";
+import { RememberOrder, ReorderButton, type ReorderLine } from "@/components/track/ReorderButton";
+import { ShareCode } from "@/components/checkout/ShareCode";
+import { referralLink } from "@/lib/referral/rules";
+import { referralRewardKind } from "@/lib/loyalty/model";
+import { SITE_URL } from "@/lib/config/site";
 import { ORDER_STEPS, orderStepIndex } from "@/lib/account/orders";
 import { shopflow } from "@/lib/shopflow";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 import { BRAND } from "@/lib/brand";
 import { buttonVariants } from "@/components/ui/Button";
-import { cn, formatDate, formatMoney } from "@/lib/utils";
+import { cn, formatDate, formatMoney, formatNumber } from "@/lib/utils";
 import { ONLINE_PROVIDER_LABELS, isOnlineProviderId } from "@/lib/config/payments";
 import { paymentUrl } from "@/lib/payments/links";
 
@@ -37,13 +44,27 @@ export default async function TrackedOrderPage({ params }: { params: Promise<{ l
   if (!order) notFound();
   setRequestLocale(locale);
 
-  const [t, tv, ts, tc] = await Promise.all([
+  const [t, tv, ts, tc, tl] = await Promise.all([
     getTranslations("track"),
     getTranslations("account.v3"),
     getTranslations("account.status"),
     getTranslations("contact"),
+    getTranslations("checkout.success.loyalty"),
   ]);
-  const products = await Promise.all(order.items.map((i) => shopflow.getProduct(i.slug, locale).catch(() => null)));
+  const [products, loyalty] = await Promise.all([
+    Promise.all(order.items.map((i) => shopflow.getProduct(i.slug, locale).catch(() => null))),
+    trackedLoyalty(order.number).catch(() => null),
+  ]);
+  const signed = decodeURIComponent(token);
+  const canCancel = selfCancelVerdict(order.status, order.paymentStatus) === "ok";
+  // «Takrorlash» at today's catalogue prices, only what is still sold; the same product once.
+  const reorder: ReorderLine[] = [];
+  order.items.forEach((line, i) => {
+    const p = products[i];
+    if (!p || !p.inStock || p.assortment === "unlisted" || reorder.some((r) => r.productId === p.id)) return;
+    reorder.push({ productId: p.id, slug: p.slug, name: p.name, image: cutoutOf(p) ?? p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt, quantity: line.quantity });
+  });
+  const referralUrl = loyalty?.code ? referralLink(SITE_URL, locale, loyalty.code) : null;
   const step = orderStepIndex(order.status);
   const cancelled = order.status === "cancelled";
   const known = KNOWN.has(order.status) ? (order.status as (typeof ORDER_STEPS)[number] | "cancelled") : null;
@@ -170,7 +191,36 @@ export default async function TrackedOrderPage({ params }: { params: Promise<{ l
         </div>
       </div>
 
+      {canCancel && <CancelOrder token={signed} />}
+
+      {loyalty && (loyalty.balance != null || (loyalty.code && referralUrl)) && (
+        <section aria-labelledby="track-loyalty" className="flex flex-col gap-3 rounded-[20px] bg-tile p-5 lg:p-6">
+          <h2 id="track-loyalty" className="text-[19px] font-bold lg:text-[22px]">{t("loyaltyTitle")}</h2>
+          {loyalty.balance != null && <p className="text-base font-semibold">{t("balance", { points: formatNumber(loyalty.balance) })}</p>}
+          {loyalty.code && referralUrl && (
+            <>
+              <p className="text-base leading-6 text-ink-2">
+                {tl("shareText", { code: loyalty.code, percent: loyalty.rules.referral.friendPercent })}{" "}
+                {referralRewardKind(loyalty.rules) === "points"
+                  ? tl("rewardPoints", { points: formatNumber(loyalty.rules.referral.rewardPoints) })
+                  : tl("rewardPromo", { percent: loyalty.rules.referral.rewardPercent })}
+              </p>
+              <ShareCode
+                code={loyalty.code}
+                link={referralUrl}
+                message={tl("shareMessage", { percent: loyalty.rules.referral.friendPercent, code: loyalty.code, link: referralUrl })}
+              />
+            </>
+          )}
+        </section>
+      )}
+
+      <RememberOrder
+        entry={{ order: order.number, track: signed, total: order.total, at: order.createdAt, items: order.items.map((i) => ({ name: i.name, quantity: i.quantity })) }}
+      />
+
       <div className="flex flex-wrap gap-2.5">
+        <ReorderButton lines={reorder} />
         <a href={BRAND.social.telegram} target="_blank" rel="noopener noreferrer" className={buttonVariants("primary")}>
           {tv("telegram")}
         </a>
@@ -178,6 +228,7 @@ export default async function TrackedOrderPage({ params }: { params: Promise<{ l
           {BRAND.contact.phone}
         </a>
         <Link href="/guarantee" className={buttonVariants("secondary")}>{tv("returns")}</Link>
+        <Link href="/orders" className={cn(buttonVariants("ghost"), "bg-transparent")}>{t("myOrders")}</Link>
         <Link href="/track" className={cn(buttonVariants("ghost"), "bg-transparent")}>{t("another")}</Link>
       </div>
     </div>

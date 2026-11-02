@@ -70,6 +70,8 @@ describe("redemption token", () => {
 describe("loyaltySecret", () => {
   it("prefers LOYALTY_SECRET, derives from the session secret, refuses none in production", () => {
     expect(loyaltySecret({ LOYALTY_SECRET: "a" })).toBe("a");
+    expect(loyaltySecret({ LOYALTY_SECRET: "a", GOVITA_PRODUCTION: "1" })).toBe("a");
+    expect(() => loyaltySecret({ ADMIN_SESSION_SECRET: "s".repeat(40), GOVITA_PRODUCTION: "1" })).toThrow(/LOYALTY_SECRET/);
     const derived = loyaltySecret({ ADMIN_SESSION_SECRET: "s".repeat(40) });
     expect(derived).not.toContain("sss");
     expect(derived).toBe(loyaltySecret({ ADMIN_SESSION_SECRET: "s".repeat(40) }));

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createSessionToken, readSessionToken } from "./session";
+import { createPendingToken, createSessionToken, readPendingToken, readSessionToken } from "./session";
 import { hashPassword, verifyPassword } from "./password";
 
 describe("admin session token", () => {
@@ -12,12 +12,20 @@ describe("admin session token", () => {
     const [payload, mac] = createSessionToken(42).split(".");
     const forged = Buffer.from(JSON.stringify({ uid: 1, exp: Date.now() + 1e9 })).toString("base64url");
     expect(readSessionToken(`${forged}.${mac}`)).toBeNull();
-    expect(readSessionToken(`${payload}.x${mac.slice(1)}`)).toBeNull();
+    expect(readSessionToken(`${payload}.${mac[0] === "x" ? "y" : "x"}${mac.slice(1)}`)).toBeNull();
   });
 
   it("rejects an expired token", () => {
     const old = createSessionToken(42, 0, Date.now() - 8 * 864e5);
     expect(readSessionToken(old)).toBeNull();
+  });
+
+  it("never takes a half-finished two-factor sign-in for a session, and the other way round", () => {
+    const pending = createPendingToken(42, 2);
+    expect(readSessionToken(pending)).toBeNull();
+    expect(readPendingToken(pending)).toEqual({ uid: 42, epoch: 2 });
+    expect(readPendingToken(createSessionToken(42, 2))).toBeNull();
+    expect(readPendingToken(createPendingToken(42, 2, Date.now() - 6 * 60_000))).toBeNull();
   });
 
   it("rejects garbage", () => {

@@ -8,12 +8,13 @@ import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { hasLicence } from "@/lib/seo/indexable";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  return staticPageMetadata(locale, "licenses", "/licenses");
+  return staticPageMetadata(locale, "licenses", "/licenses", { noindex: !hasLicence() });
 }
 
 export default async function LicensesPage({ params }: { params: Promise<{ locale: Locale }> }) {
@@ -34,7 +35,7 @@ export default async function LicensesPage({ params }: { params: Promise<{ local
       <ul className="grid gap-3 lg:grid-cols-2 lg:gap-4">
         {items.map((item, i) => (
           <li key={item.title} className="flex gap-4 rounded-[20px] border border-line p-5 lg:gap-5 lg:p-6">
-            <span aria-hidden className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[14px] bg-tile">
+            <span aria-hidden className="flex h-12 w-12 shrink-0 items-center justify-center rounded-input bg-tile">
               <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5zM14 3v5h5M9 14l2 2 4-4" />
               </svg>

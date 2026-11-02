@@ -1,11 +1,13 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { categoryCutout } from "@/lib/content/product-cutouts";
 import { buttonVariants } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { trackPageNotFound } from "@/lib/analytics/events";
 
 /* Design: NotFoundV3 — the one page every wrong URL lands on. */
 const POPULAR = ["vitamins", "immunity", "beauty", "kids", "effervescent"] as const;
@@ -16,13 +18,17 @@ export function NotFoundView() {
   const names = useTranslations("categoryNames");
   const locale = useLocale();
 
+  useEffect(() => {
+    trackPageNotFound();
+  }, []);
+
   return (
     <div className="wrap flex flex-col gap-10 pb-12 pt-10 lg:gap-14 lg:pb-20 lg:pt-16">
       <div className="mx-auto flex max-w-[600px] flex-col items-center gap-4 text-center">
         <p aria-hidden className="text-[110px] font-bold leading-none tracking-[-0.04em] lg:text-[160px]">404</p>
         <h1 className="text-[28px] font-bold leading-[34px] lg:text-[36px] lg:leading-[42px]">{t("notFoundTitle")}</h1>
         <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("notFoundLead")}</p>
-        <form action={`/${locale}/search`} role="search" className="mt-2 flex h-14 w-full items-center gap-2 rounded-[14px] bg-tile pl-5 pr-1.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
+        <form action={`/${locale}/search`} role="search" className="mt-2 flex h-14 w-full items-center gap-2 rounded-input bg-tile pl-5 pr-1.5 focus-within:outline focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-ink">
           <label htmlFor="nf-search" className="sr-only">{header("searchShort")}</label>
           <input
             id="nf-search"

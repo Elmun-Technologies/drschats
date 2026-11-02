@@ -30,7 +30,14 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
   const cards = [
     { label: t("contact.phone"), value: BRAND.contact.phone, href: `tel:${BRAND.contact.phoneHref}`, hint: t("contact.hours"), dark: true },
     { label: t("contact.email"), value: BRAND.contact.email, href: `mailto:${BRAND.contact.email}`, hint: t("contact.emailHint"), dark: false },
-    { label: t("contact.address"), value: t("contact.city"), href: null, hint: t("contact.country"), dark: false },
+    // The pickup point is the shop's registered address (lib/brand.ts) — the same one the checkout names.
+    {
+      label: t("contact.pickupAddress"),
+      value: locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address,
+      href: null,
+      hint: t("contact.pickupHint", { hours: t("contact.hours") }),
+      dark: false,
+    },
   ];
   const topics = [
     { key: "orders", href: BRAND.social.telegram, cta: t("contact.telegram"), external: true },
@@ -54,7 +61,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
             {c.href ? (
               <a href={c.href} className="break-words text-[22px] font-bold leading-7 hover:underline lg:text-[26px] lg:leading-8">{c.value}</a>
             ) : (
-              <span className="text-[22px] font-bold leading-7 lg:text-[26px] lg:leading-8">{c.value}</span>
+              <span className="text-[19px] font-bold leading-6 lg:text-[21px] lg:leading-7">{c.value}</span>
             )}
             <span className={cn("mt-auto pt-3 text-[15px]", c.dark ? "text-on-dark-2" : "text-ink-2")}>{c.hint}</span>
           </div>

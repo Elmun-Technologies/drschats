@@ -1,3 +1,5 @@
+import "server-only";
+
 import { revalidatePath, revalidateTag, unstable_cache } from "next/cache";
 import { asc, count, gt, sql } from "drizzle-orm";
 import { getDb, isDbConfigured } from "@/lib/db/client";
@@ -8,6 +10,7 @@ import type { CatalogData } from "./engine";
 import { createCircuit } from "./circuit";
 import { StockShortage, readLowStockDefault, takeStock } from "./stock";
 import type { RawDeal } from "./deals";
+import { approvedReviewSummaries } from "@/lib/reviews/server";
 
 export const CATALOG_TAG = "catalog";
 
@@ -65,13 +68,17 @@ async function readDeals(): Promise<RawDeal[]> {
 
 async function readCatalog(): Promise<CatalogData> {
   const db = getDb();
-  const [cats, brandRows, rows, promos, lowStockDefault, dealRows] = await Promise.all([
+  const [cats, brandRows, rows, promos, lowStockDefault, dealRows, reviewSummaries] = await Promise.all([
     db.select().from(categories).orderBy(asc(categories.sort), asc(categories.slug)),
     db.select().from(brands).orderBy(asc(brands.sort), asc(brands.name)),
     db.select().from(products).orderBy(asc(products.sort), asc(products.createdAt)),
     readPromotions(),
     readLowStockDefault(db),
     readDeals(),
+    approvedReviewSummaries().catch((err: Error) => {
+      console.error("[catalog] reviews read failed — products show none:", err.message);
+      return new Map();
+    }),
   ]);
   const categoryId = new Map(cats.map((c) => [c.slug, c.id]));
   return {
@@ -93,6 +100,7 @@ async function readCatalog(): Promise<CatalogData> {
         price: p.price,
         oldPrice: p.oldPrice ?? undefined,
         saleEndsAt: p.saleEndsAt ? p.saleEndsAt.toISOString() : undefined,
+        updatedAt: p.updatedAt.toISOString(),
         rating: 0,
         reviewCount: 0,
         inStock: p.inStock,
@@ -106,6 +114,9 @@ async function readCatalog(): Promise<CatalogData> {
         brandSlug: p.brandSlug,
         stockQty: p.stockQty,
         lowStockAt: p.lowStockAt ?? lowStockDefault,
+        customerReviews: reviewSummaries.get(p.slug),
+        facts: p.facts,
+        registrationNumber: p.registrationNumber,
       }),
     ),
     promotions: promos,
@@ -127,18 +138,40 @@ const cachedCatalog = unstable_cache(readCatalog, ["catalog-v3"], { tags: [CATAL
 */
 const dbCircuit = createCircuit(30_000);
 
+/*
+  When this process last served the built-in catalogue instead of the
+  database, and why — read by /api/health ("degraded") and by the operator
+  alert (lib/ops/alerts.ts). In memory: it describes this machine.
+*/
+const fallback = { at: 0, reason: "" as "" | "error" | "empty", count: 0 };
+
+function usedFallback(reason: "error" | "empty") {
+  fallback.at = Date.now();
+  fallback.reason = reason;
+  fallback.count += 1;
+}
+
+export function catalogFallbackState(): { lastAt: number | null; reason: string | null; count: number; circuitOpen: boolean } {
+  return { lastAt: fallback.at || null, reason: fallback.reason || null, count: fallback.count, circuitOpen: dbCircuit.isOpen() };
+}
+
 export async function loadDbCatalog(): Promise<CatalogData> {
-  if (dbCircuit.isOpen()) return builtInCatalog;
+  if (dbCircuit.isOpen()) {
+    usedFallback("error");
+    return builtInCatalog;
+  }
   try {
     const data = await cachedCatalog();
     dbCircuit.succeed();
     if (data.products.length === 0) {
+      usedFallback("empty");
       console.warn("[catalog] database has no products yet — serving the built-in catalogue");
       return builtInCatalog;
     }
     return data;
   } catch (err) {
     dbCircuit.fail();
+    usedFallback("error");
     console.error("[catalog] database read failed — serving the built-in catalogue:", (err as Error).message);
     return builtInCatalog;
   }
@@ -164,6 +197,7 @@ export function orderValues(payload: OrderRequest, promoCode: string | null = nu
     source: payload.source ?? "site",
     // Sent to a gateway: waiting for its callback (lib/payments). Cash stays unpaid until delivery.
     paymentStatus: payload.payment?.method === "online" ? "pending" : "unpaid",
+    idempotencyKey: payload.idempotencyKey ?? null,
   };
 }
 

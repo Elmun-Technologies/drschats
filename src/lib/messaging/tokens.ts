@@ -1,4 +1,5 @@
 import { createHmac, timingSafeEqual } from "node:crypto";
+import { isLiveDeployment } from "@/lib/config/live";
 
 /*
   The two links every marketing message carries, both short enough for an SMS
@@ -24,6 +25,9 @@ import { createHmac, timingSafeEqual } from "node:crypto";
 */
 
 function secret(): string {
+  // On the live shop the key is its own (scripts/fly/ci-prepare.sh sets it once): borrowing another key
+  // ties every STOP and click link to that key's rotation.
+  if (isLiveDeployment() && !process.env.MESSAGE_LINK_SECRET) throw new Error("MESSAGE_LINK_SECRET must be set on the live deployment");
   const value = process.env.MESSAGE_LINK_SECRET || process.env.EMAIL_TOKEN_SECRET || process.env.ADMIN_SESSION_SECRET || "";
   if (value) return value;
   if (process.env.NODE_ENV === "production") throw new Error("MESSAGE_LINK_SECRET (or ADMIN_SESSION_SECRET) must be set");

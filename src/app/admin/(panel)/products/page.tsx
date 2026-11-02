@@ -7,8 +7,8 @@ import { Card, ChipNav, EmptyState, Notice, PageHeader, Pill, buttonClass, input
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { CatalogTabs } from "@/components/admin/catalog/CatalogTabs";
 import { BuiltInSyncCard } from "@/components/admin/catalog/BuiltInSyncCard";
-import { LowStockDefaultForm, StockButton } from "@/components/admin/catalog/StockControls";
-import { readLowStockDefault } from "@/lib/catalog/stock";
+import { LowStockDefaultForm, ReleaseHoursForm, StockButton } from "@/components/admin/catalog/StockControls";
+import { readLowStockDefault, readReleaseHours } from "@/lib/catalog/stock";
 import { isLowStock, stockLabel } from "@/lib/catalog/stock-rules";
 import { requireAdmin } from "@/lib/admin/session";
 
@@ -74,7 +74,7 @@ export default async function AdminProductsPage({
   const sort: Sort = sortParam in SORTS ? (sortParam as Sort) : "order";
   const category = first(params.category) ?? "";
   const brand = first(params.brand) ?? "";
-  const [rawRows, cats, status, lowStockDefault] = await Promise.all([listProducts(q), listCategories(), builtInCatalogStatus(), readLowStockDefault()]);
+  const [rawRows, cats, status, lowStockDefault, releaseHours] = await Promise.all([listProducts(q), listCategories(), builtInCatalogStatus(), readLowStockDefault(), readReleaseHours()]);
   const all: Row[] = rawRows.map((p) => ({ ...p, lowAt: p.lowStockAt ?? lowStockDefault }));
   const anyTracked = all.some((p) => p.stockQty != null);
   const catName = new Map(cats.map((c) => [c.slug, c.name.uz]));
@@ -201,7 +201,10 @@ export default async function AdminProductsPage({
         )}
       </Card>
       <Card title="Ombor" lead="«Ombordagi soni» kiritilgan mahsulotlarda buyurtma sonni kamaytiradi, bekor qilish qaytaradi; 0 boʻlsa mahsulot «tugagan» boʻladi. Soni kiritilmagan mahsulot avvalgidek ishlaydi." className="mt-5">
-        <LowStockDefaultForm value={lowStockDefault} />
+        <div className="flex flex-col gap-4">
+          <LowStockDefaultForm value={lowStockDefault} />
+          <ReleaseHoursForm value={releaseHours} />
+        </div>
       </Card>
     </>
   );

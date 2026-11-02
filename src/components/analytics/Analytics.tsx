@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useEffect, useState } from "react";
 import { analyticsIdsFromEnvironment, sanitizeAnalyticsIds, type AnalyticsIds } from "@/lib/analytics/config";
+import { useConsent } from "@/lib/analytics/consent";
 
 /*
   Analytics IDs may be set in the deployment environment or managed at runtime
@@ -19,18 +20,21 @@ const BUILD_IDS = analyticsIdsFromEnvironment();
 
 export function Analytics() {
   const [ids, setIds] = useState<AnalyticsIds>(BUILD_IDS);
-  const [webvisor, setWebvisor] = useState(true);
+  const [webvisor, setWebvisor] = useState(false);
   const [resolved, setResolved] = useState(false);
+  // No vendor tag before the visitor accepts cookies; accepting later loads them on the spot.
+  const consent = useConsent();
 
   useEffect(() => {
     let active = true;
-    fetch("/api/public/analytics", { cache: "no-store", credentials: "same-origin" })
+    // Cached for a minute by the browser and in the server (api/public/analytics): one DB read per page view was the cost.
+    fetch("/api/public/analytics", { credentials: "same-origin" })
       .then((response) => response.ok ? response.json() : null)
       .then((value) => {
         if (!active) return;
         if (value && typeof value === "object") {
           setIds(sanitizeAnalyticsIds(value as Partial<Record<keyof AnalyticsIds, unknown>>));
-          setWebvisor((value as { webvisor?: unknown }).webvisor !== false);
+          setWebvisor((value as { webvisor?: unknown }).webvisor === true);
         }
         setResolved(true);
       })
@@ -44,7 +48,7 @@ export function Analytics() {
     if (resolved) window.__GOVITA_ANALYTICS__ = ids;
   }, [ids, resolved]);
 
-  if (!resolved) return null;
+  if (!resolved || consent !== "granted") return null;
   const { gtm, ga4, metaPixel: pixel, yandexMetrika: ym } = ids;
 
   return (
@@ -65,13 +69,14 @@ export function Analytics() {
       )}
 
       {pixel && (
-        <Script id="meta-pixel" strategy="afterInteractive">
+        // Pixel and Metrika wait for the browser to be idle: they are not needed for the page to work.
+        <Script id="meta-pixel" strategy="lazyOnload">
           {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${pixel}');fbq('track','PageView');`}
         </Script>
       )}
 
       {ym && (
-        <Script id="yandex-metrika" strategy="afterInteractive">
+        <Script id="yandex-metrika" strategy="lazyOnload">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym(${ym},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:${webvisor ? "true" : "false"}});`}
         </Script>
       )}

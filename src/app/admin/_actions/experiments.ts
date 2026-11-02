@@ -17,7 +17,7 @@ const winnerSchema = z.object({ experiment: z.string().regex(EXPERIMENT_RE), var
  * record (the rows and their exposures are kept).
  */
 export async function keepWinner(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const parsed = winnerSchema.safeParse({ experiment: form.get("experiment"), variant: form.get("variant") });
   if (!parsed.success) return;
   const { experiment, variant } = parsed.data;

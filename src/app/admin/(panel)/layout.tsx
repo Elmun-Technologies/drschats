@@ -11,8 +11,14 @@ async function navBadges(): Promise<Record<string, number>> {
     const [row] = (await getDb().execute(sql`
       select (select count(*) from orders where status = 'new') as orders,
              (select count(*) from bot_tickets where status = 'open') as tickets,
-             (select count(*) from restock_requests where status = 'waiting') as waitlist`)) as unknown as { orders: string; tickets: string; waitlist: string }[];
-    return { "/admin/orders": Number(row?.orders ?? 0), "/admin/bot": Number(row?.tickets ?? 0), "/admin/waitlist": Number(row?.waitlist ?? 0) };
+             (select count(*) from restock_requests where status = 'waiting') as waitlist,
+             (select count(*) from reviews where status = 'pending') as reviews`)) as unknown as { orders: string; tickets: string; waitlist: string; reviews: string }[];
+    return {
+      "/admin/orders": Number(row?.orders ?? 0),
+      "/admin/bot": Number(row?.tickets ?? 0),
+      "/admin/waitlist": Number(row?.waitlist ?? 0),
+      "/admin/reviews": Number(row?.reviews ?? 0),
+    };
   } catch {
     return {};
   }
@@ -23,7 +29,7 @@ export default async function AdminPanelLayout({ children }: { children: ReactNo
   const badges = await navBadges();
   return (
     <AdminShell
-      admin={{ name: admin.name, email: admin.email }}
+      admin={{ name: admin.name, email: admin.email, role: admin.role }}
       badges={badges}
       logout={
         <form action={logout}>

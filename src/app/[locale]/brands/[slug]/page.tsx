@@ -5,12 +5,12 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { getAllProducts } from "@/lib/shop/all-products";
-import { COMMERCE } from "@/lib/config/commerce";
+import { getCommerceSettings } from "@/lib/commerce/server";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { listingMetadata } from "@/lib/seo/page-meta";
 import { BRAND_VARIANT_PARAMS, isVariantQuery } from "@/lib/seo/query-params";
 import type { RawSearchParams } from "@/lib/search-params";
-import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
+import { JsonLd, breadcrumbLd, collectionLd } from "@/lib/seo/jsonld";
 import { brandBySlug } from "@/lib/content/product-brands";
 import { getBrandInfos } from "@/lib/content/brand-info";
 import { type DoseUnit } from "@/lib/content/product-units";
@@ -86,6 +86,7 @@ export default async function BrandPage({ params, searchParams }: { params: Para
           { name: brand.name, url: `${SITE_URL}/${locale}/brands/${slug}` },
         ])}
       />
+      <JsonLd data={collectionLd({ name: brand.name, url: `${SITE_URL}/${locale}/brands/${slug}`, products })} />
       <nav aria-label={tp("breadcrumbHome")} className="hidden gap-2 text-sm text-muted lg:flex">
         <Link href="/" className="hover:text-ink">{tp("breadcrumbHome")}</Link>
         <span aria-hidden>/</span>
@@ -109,7 +110,7 @@ export default async function BrandPage({ params, searchParams }: { params: Para
               <span className="text-sm text-on-dark-2">{tb("inCatalog")}</span>
             </span>
             <span className="flex flex-col">
-              <span className="text-[28px] font-bold lg:text-[32px]">{tb("hours", { hours: COMMERCE.delivery.tashkent.hours })}</span>
+              <span className="text-[28px] font-bold lg:text-[32px]">{tb("hours", { hours: (await getCommerceSettings()).delivery.tashkentHours })}</span>
               <span className="text-sm text-on-dark-2">{tb("delivery")}</span>
             </span>
           </div>

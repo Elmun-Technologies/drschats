@@ -1,5 +1,8 @@
+import "server-only";
+
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
+import { ORDER_PHONE9, phone9Sql } from "@/lib/db/phone";
 import { telegramLinks } from "@/lib/db/schema";
 import { enqueue, getClubConfig } from "@/lib/bot/store";
 import { escapeHtml } from "@/lib/bot/messages";
@@ -15,9 +18,31 @@ export async function linkedChat(phone9: string): Promise<number | null> {
   const [link] = await getDb()
     .select({ chatId: telegramLinks.chatId })
     .from(telegramLinks)
-    .where(sql`right(${telegramLinks.phone}, 9) = ${phone9}`)
+    .where(sql`${phone9Sql(sql`${telegramLinks.phone}`)} = ${phone9}`)
     .limit(1);
   return link?.chatId ?? null;
+}
+
+/*
+  The waitlist form is public and takes any number, so an SMS goes only to a
+  phone that is already a customer (an order that was not cancelled), and no
+  more than WAITLIST_SMS_PER_DAY of them a day in total — otherwise the form
+  could be used to send the shop's paid SMS to strangers. Everyone else is on
+  the operator's call list, as before SMS existed.
+*/
+export const WAITLIST_SMS_PER_DAY = 300;
+
+async function isKnownCustomer(phone9: string): Promise<boolean> {
+  const rows = (await getDb().execute(sql`
+    select 1 from orders where status <> 'cancelled' and ${ORDER_PHONE9} = ${phone9} limit 1`)) as unknown as unknown[];
+  return rows.length > 0;
+}
+
+async function waitlistSmsToday(): Promise<number> {
+  const rows = (await getDb().execute(sql`
+    select count(*)::int as n from outbound_messages
+    where channel = 'sms' and dedupe_key like 'waitlist:%' and created_at > now() - interval '24 hours'`)) as unknown as { n: number }[];
+  return Number(rows[0]?.n ?? 0);
 }
 
 /*
@@ -62,6 +87,8 @@ export const smsNotifier: Notifier = {
       if (!provider) return { ok: false, reason: "not_configured" };
       if (m.phone9.length !== 9) return { ok: false, reason: "no_recipient" };
       if (await isOptedOut(getDb(), m.phone9, "sms")) return { ok: false, reason: "no_recipient" };
+      if (!(await isKnownCustomer(m.phone9))) return { ok: false, reason: "no_recipient" };
+      if ((await waitlistSmsToday()) >= WAITLIST_SMS_PER_DAY) return { ok: false, reason: "not_configured" };
       // The short /r/ link sets utm_source itself; the path keeps medium and campaign.
       const target = new URL(m.url);
       target.searchParams.delete("utm_source");

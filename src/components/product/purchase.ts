@@ -40,7 +40,7 @@ export const usePurchase = create<PurchaseState>((set) => ({
 
 export function useAddToCart(product: Product) {
   const add = useCart((s) => s.add);
-  return useCallback(() => {
+  return useCallback((options?: { silent?: boolean }) => {
     const { mode, intervalDays, qty } = usePurchase.getState();
     const subscribing = mode === "subscription";
     add(
@@ -56,6 +56,7 @@ export function useAddToCart(product: Product) {
         subscription: subscribing ? { intervalDays } : undefined,
       },
       qty,
+      options,
     );
     if (subscribing) {
       track("subscription_add_to_cart", { slug: product.slug, intervalDays });

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { assertAccountAreaExists } from "@/lib/account/gate";
 import { OrderDetail } from "@/components/account/OrderDetail";
@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Params }): Promise<
   const { locale, id } = await params;
   const t = await getTranslations({ locale, namespace: "account.v3" });
   return {
-    ...buildPageMetadata({ locale, path: `/account/orders/${id}`, title: `${t("orderNo", { id: decodeURIComponent(id) })} — ${SITE_NAME}`, description: t("details") }),
+    ...buildPageMetadata({ locale, noindex: true, path: `/account/orders/${id}`, title: t("orderNo", { id: decodeURIComponent(id) }), description: t("details") }),
     robots: { index: false, follow: false },
   };
 }

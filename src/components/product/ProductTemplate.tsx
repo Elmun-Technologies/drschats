@@ -7,7 +7,6 @@ import type { Locale } from "@/lib/i18n/routing";
 import type { Category, Product, UpsellOffer } from "@/lib/shopflow/types";
 import type { Expert } from "@/lib/content/experts";
 import type { HealthTopic } from "@/lib/content/health-topics";
-import { COMMERCE } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { localizedOr } from "@/lib/commerce/settings";
 import { ONLINE_PROVIDER_LABELS, paymentMarks } from "@/lib/config/payments";
@@ -24,11 +23,15 @@ import { ShareButton } from "@/components/product/ShareButton";
 import { CompareButton } from "@/components/product/CompareButton";
 import { Collapsible, SectionNav } from "@/components/product/ProductSections";
 import { ProductReviews } from "@/components/product/ProductReviews";
+import { ReviewForm } from "@/components/product/ReviewForm";
+import { SupportButton } from "@/components/product/SupportButton";
 import { HealthContext } from "@/components/product/HealthContext";
 import { DoctorVideo } from "@/components/product/DoctorVideo";
 import { UpsellRail } from "@/components/product/UpsellRail";
 import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
 import { cutoutOf, unitOf, brandOf } from "@/lib/catalog/product-facts";
+import { BRAND } from "@/lib/brand";
+import { reviewsAvailable } from "@/lib/reviews/server";
 
 /*
   Design: ProductV3 (desktop), ProductMobileV3 (phones).
@@ -82,6 +85,10 @@ export async function ProductTemplate({
     pack && { k: tv("specForm"), v: tv(pack.unit === "tablet" ? "formTablet" : "formCapsule") },
     product.servings != null && { k: tv("specPack"), v: String(product.servings) },
     pack && { k: tv("specType"), v: tv("typeSupplement") },
+    // Package facts (admin form, 0018) — a row only when the admin filled it.
+    product.facts?.shelfLife && { k: tv("specShelfLife"), v: product.facts.shelfLife },
+    product.facts?.storage && { k: tv("specStorage"), v: product.facts.storage },
+    product.facts?.registrationNumber && { k: tv("specRegistration"), v: product.facts.registrationNumber },
   ].filter((s): s is { k: string; short?: string; v: string } => Boolean(s));
   const keySpecs = specs.slice(0, 4);
 
@@ -90,8 +97,8 @@ export async function ProductTemplate({
   const regionsTime = localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime"));
   const onlineProviders = await getOnlineProviders().catch(() => []);
   const delivery = [
-    { icon: ICON.truck, title: tv("courier"), price: fee, note: tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, amount: free }) },
-    { icon: ICON.home, title: tv("pickup"), price: tv("free"), note: tv("pickupNote") },
+    { icon: ICON.truck, title: tv("courier"), price: fee, note: tv("courierNote", { hours: commerce.delivery.tashkentHours, amount: free }) },
+    { icon: ICON.home, title: tv("pickup"), price: tv("free"), note: tv("pickupNote", { address: locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address }) },
     { icon: ICON.box, title: tv("regions"), price: fee, note: tv("regionsNote", { days: regionsTime, amount: free }) },
     {
       icon: ICON.card,
@@ -107,7 +114,7 @@ export async function ProductTemplate({
   const sections = [
     { id: "tavsif", label: tv("description") },
     product.ingredients.length > 0 && { id: "tarkib", label: tv("composition") },
-    product.howToUse && { id: "qabul", label: tv("usage") },
+    (product.howToUse || product.facts?.contraindications) && { id: "qabul", label: tv("usage") },
     specs.length > 0 && { id: "xususiyatlar", label: tv("specs") },
     { id: "savollar", label: product.faq.length ? `${tv("qa")} · ${product.faq.length}` : tv("qa") },
     { id: "sharhlar", label: `${tv("reviews")} · ${product.reviewCount}` },
@@ -204,7 +211,7 @@ export async function ProductTemplate({
           {product.ingredients.length > 0 && (
             <div className="hidden flex-col gap-2 rounded-[20px] bg-tile px-5 py-[18px] lg:flex">
               <span className="text-[15px] font-bold">{tv("inDose", { dose })}</span>
-              <span className="text-[15px] leading-[23px] text-ink-2">
+              <span className="text-body text-ink-2">
                 {product.ingredients.map((i) => `${i.name} ${i.amount}`).join(" · ")}
               </span>
             </div>
@@ -213,9 +220,13 @@ export async function ProductTemplate({
 
         <div className="order-3 flex flex-col gap-3 lg:order-none lg:col-start-2 lg:row-span-2 lg:row-start-2 xl:col-auto xl:row-auto">
           <BuyBox product={product} reviewer={reviewer} />
+          {/* The supplement notice belongs next to the buy button on every product, not only beside the dosage text. */}
+          <p role="note" className="px-1 text-[13px] leading-[18px] text-muted">
+            {legal("warning")}
+          </p>
           <div className="rounded-[20px] bg-tile px-[18px] py-1 lg:px-[22px] lg:py-1.5">
             {delivery.map((d, i) => (
-              <div key={d.title} className={cn("flex gap-3 py-3.5 lg:gap-3.5 lg:py-4", i < delivery.length - 1 && "border-b border-[#DCDFDB]")}>
+              <div key={d.title} className={cn("flex gap-3 py-3.5 lg:gap-3.5 lg:py-4", i < delivery.length - 1 && "border-b border-line-strong")}>
                 <Icon d={d.icon} className="mt-px h-[22px] w-[22px] shrink-0" />
                 <div className="flex flex-1 flex-col gap-0.5">
                   <div className="flex justify-between gap-2 text-[15px] font-semibold">
@@ -285,15 +296,20 @@ export async function ProductTemplate({
             </Section>
           )}
 
-          {product.howToUse && (
+          {(product.howToUse || product.facts?.contraindications) && (
             <Section id="qabul" className="order-2 lg:order-none">
               <h2 className={H2}>{tv("usage")}</h2>
-              <p className="rounded-[20px] bg-tile px-[18px] py-4 text-base leading-[23px] lg:p-5 lg:text-[17px] lg:leading-[26px]">
-                {product.howToUse}
-              </p>
-              <p role="note" className="text-[13px] leading-[18px] text-muted lg:text-sm">
-                {legal("warning")}
-              </p>
+              {product.howToUse && (
+                <p className="rounded-[20px] bg-tile px-[18px] py-4 text-base leading-[23px] lg:p-5 lg:text-[17px] lg:leading-[26px]">
+                  {product.howToUse}
+                </p>
+              )}
+              {product.facts?.contraindications && (
+                <div className="flex flex-col gap-1.5 rounded-[20px] border border-line px-[18px] py-4 lg:p-5">
+                  <h3 className="text-[17px] font-bold">{tv("contraindications")}</h3>
+                  <p className="text-base leading-[23px] text-ink-2 lg:text-[17px] lg:leading-[26px]">{product.facts.contraindications}</p>
+                </div>
+              )}
             </Section>
           )}
 
@@ -326,6 +342,11 @@ export async function ProductTemplate({
               <>
                 <h2 className={H2}>{tv("reviews")}</h2>
                 <ProductReviews reviews={product.reviews} rating={product.rating} reviewCount={product.reviewCount} />
+                {reviewsAvailable && (
+                  <div className="flex">
+                    <ReviewForm slug={product.slug} cta={tv("writeReview")} />
+                  </div>
+                )}
               </>
             ) : (
               <div className="flex flex-wrap items-center justify-between gap-5 rounded-[20px] bg-tile p-5 lg:p-7">
@@ -333,9 +354,14 @@ export async function ProductTemplate({
                   <h2 className="text-[19px] font-bold lg:text-[22px]">{tv("reviews")}</h2>
                   <p className="text-base leading-6 text-ink-2">{tv("reviewsEmpty")}</p>
                 </div>
-                <Link href="/contact" className={cn(buttonVariants("primary"), "h-11 lg:h-12")}>
-                  {tv("writeReview")}
-                </Link>
+                {/* Reviews are stored for moderation (lib/reviews); without a database there is nowhere to keep one. */}
+                {reviewsAvailable ? (
+                  <ReviewForm slug={product.slug} cta={tv("writeReview")} />
+                ) : (
+                  <Link href="/contact" className={cn(buttonVariants("primary"), "h-11 lg:h-12")}>
+                    {tv("writeReview")}
+                  </Link>
+                )}
               </div>
             )}
           </Section>
@@ -375,6 +401,7 @@ export async function ProductTemplate({
       )}
 
       <RecentlyViewed allProducts={allProducts} title={tv("seen")} excludeSlug={product.slug} />
+      <SupportButton about={product.name} />
     </div>
   );
 }

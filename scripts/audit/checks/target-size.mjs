@@ -8,9 +8,17 @@ import { context, MOBILE, routesFor } from "../lib.mjs";
   an undersized target passes if a 24px-diameter circle centred on it doesn't
   intersect another target's circle — so that is what gets measured, and the
   number it produces is one worth acting on.
+
+  The design rule is stricter — every control ≥ 44px on touch layouts.
+  `TARGET_SIZE=44 npm run audit` measures that instead: any control under
+  44px in either direction that is not inline text fails, spacing or not.
+  It is opt-in while the remaining small controls are worked through.
 */
 
-const AUDIT = `(() => {
+const STRICT = process.env.TARGET_SIZE === "44";
+
+const AUDIT = (strict) => `(() => {
+  const strict = ${strict};
   const visible = (el) => {
     const cs = getComputedStyle(el);
     if (cs.display === 'none' || cs.visibility === 'hidden') return false;
@@ -40,14 +48,15 @@ const AUDIT = `(() => {
 
   const fails = [];
   for (const t of targets) {
-    if (t.w >= 24 && t.h >= 24) continue;
+    const min = strict ? 44 : 24;
+    if (t.w >= min && t.h >= min) continue;
 
     // Inline text inside a sentence is exempt.
     const p = t.el.closest('p');
     if (p && p.textContent.trim().length > t.name.length + 12) continue;
 
-    let crowdedBy = null;
-    for (const o of targets) {
+    let crowdedBy = strict ? '(under 44px)' : null;
+    if (!strict) for (const o of targets) {
       if (o === t) continue;
       if (o.layer !== t.layer) continue;
       if (Math.hypot(t.x - o.x, t.y - o.y) < 24) { crowdedBy = o.name; break; }
@@ -73,7 +82,7 @@ export async function run(browser, locale) {
     try {
       await page.goto(process.env.BASE_URL + route, { waitUntil: "networkidle", timeout: 30000 });
       await page.waitForTimeout(400);
-      for (const f of await page.evaluate(AUDIT)) {
+      for (const f of await page.evaluate(AUDIT(STRICT))) {
         const key = `${f.name}|${f.cls}`;
         if (!seen.has(key)) seen.set(key, { ...f, route });
       }

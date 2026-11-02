@@ -15,7 +15,9 @@ import { readOnlineProviders } from "@/lib/payments/availability";
 import { paymentUrl } from "@/lib/payments/links";
 import { isOnlineProviderId } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
-import { clientIp, withinRateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/rate-limit";
+import { hitRateLimit } from "@/lib/rate-limit-store";
+import { logServerError } from "@/lib/request-id-server";
 import { siteOrigin } from "@/lib/email/config";
 import { sendCampaign } from "@/lib/email/send";
 import { requestEmailOptIn } from "@/app/actions/emailOptIn";
@@ -32,8 +34,19 @@ import { signReceipt } from "@/lib/loyalty/receipt";
 import { both, earnLaterLine, joinLines, spentLine } from "@/lib/loyalty/messages";
 import { ensureReferralCode } from "@/lib/referral/server";
 import { orderTrackToken } from "@/lib/messaging/tokens";
+import { getDb } from "@/lib/db/client";
+import { sql } from "drizzle-orm";
+import { composeAddress, hasAddressParts } from "@/lib/checkout/address";
+import { isRegionKey } from "@/lib/checkout/regions";
+import { recordSubscriptions } from "@/lib/subscription/server";
 
-const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
+/*
+  Shared across machines and deploys (lib/rate-limit-store.ts). Per address
+  with a high ceiling — a mobile operator puts a whole district behind one
+  address — and per phone, which is what one shopper actually is.
+*/
+const IP_RATE = { limit: 30, windowMs: 10 * 60 * 1000 };
+const PHONE_RATE = { limit: 8, windowMs: 10 * 60 * 1000 };
 
 /**
  * The customer's copy of the order.
@@ -56,7 +69,6 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
     campaign: {
       type: "order",
       orderId,
-      customerName: order.customer.name,
       items: order.items.map((item) => ({
         name: `${item.name} × ${item.quantity}`,
         url: `${siteOrigin()}/${order.locale}/product/${item.slug}`,
@@ -131,11 +143,12 @@ async function clubBotReceipt(
   customer's referral code (lib/loyalty/receipt.ts). A code exists only for a
   phone with a delivered order — a first-time customer gets theirs after delivery.
 */
-async function loyaltyReceipt(orderId: string, order: OrderRequest, earn: number): Promise<string | undefined> {
+async function loyaltyReceipt(orderId: string, order: OrderRequest, earn: number, phoneProven: boolean): Promise<string | undefined> {
   try {
     const rules = await readLoyaltyRules();
     const phone9 = phone9Of(order.customer.phone);
-    const code = rules.referral.enabled && phone9 ? await ensureReferralCode(phone9) : null;
+    // Someone else's number typed into the form must not reveal that person's referral code.
+    const code = rules.referral.enabled && phone9 && phoneProven ? await ensureReferralCode(phone9) : null;
     const spent = pointsSpent(order.totals.adjustments);
     if (!earn && !spent && !code) return undefined;
     return signReceipt({ o: orderId, e: earn, s: spent, ...(code ? { r: code } : {}) });
@@ -143,6 +156,31 @@ async function loyaltyReceipt(orderId: string, order: OrderRequest, earn: number
     console.error("[checkout] loyalty receipt skipped:", (err as Error).message);
     return undefined;
   }
+}
+
+/*
+  A retry of an order that already exists (same form-session key): the first
+  order's answer again, and nothing is sent twice.
+*/
+async function orderForKey(key: string | undefined): Promise<{ number: string; total: number; payment: OrderRequest["payment"] | null; paymentStatus: string } | null> {
+  if (!ORDERS_IN_DB || !key) return null;
+  const [row] = (await getDb().execute(sql`
+    select number, total, payment, payment_status from orders where idempotency_key = ${key} limit 1`)) as unknown as {
+    number: string;
+    total: number;
+    payment: OrderRequest["payment"] | null;
+    payment_status: string;
+  }[];
+  return row ? { number: row.number, total: Number(row.total), payment: row.payment, paymentStatus: row.payment_status } : null;
+}
+
+async function replay(existing: NonNullable<Awaited<ReturnType<typeof orderForKey>>>, locale: OrderRequest["locale"]) {
+  const provider = existing.payment?.provider;
+  const payUrl =
+    existing.payment?.method === "online" && existing.paymentStatus !== "paid" && isOnlineProviderId(provider)
+      ? await paymentUrl(provider, { number: existing.number, total: existing.total, locale }).catch(() => null)
+      : null;
+  return { ok: true as const, orderId: existing.number, total: existing.total, payUrl: payUrl ?? undefined, track: orderTrackToken(existing.number) };
 }
 
 export type OrderError =
@@ -162,7 +200,10 @@ export async function submitOrder(
     return { ok: false, error: "invalid" };
   }
   const hdrs = await headers();
-  if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
+  if (
+    !(await hitRateLimit("checkout", clientIp(hdrs), IP_RATE)) ||
+    !(await hitRateLimit("checkout-phone", phone9Of(parsed.data.customer.phone) ?? "none", PHONE_RATE))
+  ) {
     return { ok: false, error: "rate_limited" };
   }
   const { telegram, ...request } = parsed.data as OrderRequest;
@@ -182,6 +223,21 @@ export async function submitOrder(
       utmMedium: request.attribution?.utmMedium || "mini_app",
     };
   }
+
+  /*
+    The courier address arrives in parts; the readable line every older
+    reader shows is composed here, so it does not depend on the browser. A
+    region is a key (translated on display), never the name in one language.
+  */
+  if (request.delivery.method === "courier") {
+    if (hasAddressParts(request.delivery)) request.delivery.address = composeAddress(request.delivery);
+    if (!isRegionKey(request.delivery.region) || request.delivery.address.trim().length < 3) return { ok: false, error: "invalid" };
+  } else {
+    request.delivery = { region: "tashkentCity", address: request.delivery.address, method: "pickup", ...(request.delivery.note ? { note: request.delivery.note } : {}) };
+  }
+
+  const earlier = await orderForKey(request.idempotencyKey).catch(() => null);
+  if (earlier) return replay(earlier, request.locale);
 
   // Reject online payment unless the provider has a complete, verified flow.
   const provider = request.payment?.provider;
@@ -230,19 +286,24 @@ export async function submitOrder(
     */
     let result: OrderResult;
     let pointsEarn = 0;
+    let phoneProven = false;
     if (ORDERS_IN_DB) {
       const placed = await placeOrder(order, promotions);
       if (!placed.ok) {
         if (placed.error === "points_invalid") return { ok: false, error: "points_invalid" };
         if (placed.error === "promo_invalid") return { ok: false, error: "promo_invalid", promoReason: placed.rejection.reason };
         if (placed.error === "insufficient_stock") return { ok: false, error: "insufficient_stock", slug: placed.slug, shortage: { slug: placed.slug, available: placed.available } };
+        // Two submits raced: the unique key refused the second insert, and the first order is the answer.
+        const raced = await orderForKey(request.idempotencyKey).catch(() => null);
+        if (raced) return replay(raced, request.locale);
         return { ok: false, error: "failed" };
       }
       order = placed.order;
       pointsEarn = placed.pointsEarn;
+      phoneProven = placed.phoneProven;
       result = { ok: true, orderId: placed.orderId };
     } else {
-      order = { ...order, promoCode: undefined, pointsToken: undefined };
+      order = { ...order, promoCode: undefined, pointsToken: undefined, phoneToken: undefined };
       result = await shopflow.createOrder(order);
     }
     if (result.ok && result.orderId) {
@@ -283,6 +344,7 @@ export async function submitOrder(
           : Promise.resolve(),
         clubBotReceipt(result.orderId, telegramUser, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
         emailOrderConfirmation(order, result.orderId),
+        ORDERS_IN_DB ? recordSubscriptions(result.orderId, order) : Promise.resolve(0),
         order.customer.email && order.customer.marketingOptIn
           ? requestEmailOptIn({
               email: order.customer.email,
@@ -299,7 +361,7 @@ export async function submitOrder(
       }
       const adjustment = discountAdjustment(order.totals.adjustments);
       const receipt = ORDERS_IN_DB
-        ? await loyaltyReceipt(result.orderId, order, pointsEarn).catch((err) => {
+        ? await loyaltyReceipt(result.orderId, order, pointsEarn, phoneProven).catch((err) => {
             console.error(`[checkout] order ${result.orderId}: loyalty receipt failed`, err instanceof Error ? err.message : "unknown error");
             return undefined;
           })
@@ -325,7 +387,7 @@ export async function submitOrder(
     }
     return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };
   } catch (err) {
-    console.error("[checkout] createOrder failed", err instanceof Error ? err.message : "unknown error");
+    await logServerError("checkout", err, "createOrder failed");
     return { ok: false, error: "failed" };
   }
 }

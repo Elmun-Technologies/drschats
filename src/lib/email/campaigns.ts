@@ -24,7 +24,6 @@ export type Campaign =
   | {
       type: "order";
       orderId: string;
-      customerName: string;
       items: EmailProduct[];
       total: string;
       orderUrl: string;
@@ -116,7 +115,8 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
             : "Наш оператор скоро свяжется с вами.",
           heading: uz ? `Buyurtma №${campaign.orderId} qabul qilindi` : `Заказ №${campaign.orderId} принят`,
           paragraphs: [
-            greeting(locale, campaign.customerName),
+            // No name: the address is typed, never verified, so the order form would let anyone put a name into mail to any inbox.
+            greeting(locale),
             uz
               ? "Rahmat! Buyurtmangiz qabul qilindi. Operatorimiz manzilni va yetkazib berish vaqtini tasdiqlash uchun tez orada qoʻngʻiroq qiladi."
               : "Спасибо! Заказ принят. Оператор позвонит вам, чтобы подтвердить адрес и время доставки.",

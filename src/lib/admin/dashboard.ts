@@ -146,7 +146,7 @@ export async function customerMix(days: Range): Promise<CustomerMix> {
   const [row] = await query(sql`
     with o as (
       select id, total, created_at,
-             right(regexp_replace(customer->>'phone', '[^0-9]', '', 'g'), 9) as phone9
+             right(regexp_replace(customer->>'phone', '\\D', '', 'g'), 9) as phone9
       from orders where status <> 'cancelled'
     ),
     period as (
@@ -244,9 +244,9 @@ export interface CustomerStats {
 export async function customerStats(): Promise<CustomerStats> {
   const [row] = await query(sql`
     with o as (
-      select right(regexp_replace(customer->>'phone', '[^0-9]', '', 'g'), 9) as phone9, total, created_at
+      select right(regexp_replace(customer->>'phone', '\\D', '', 'g'), 9) as phone9, total, created_at
       from orders
-      where status <> 'cancelled' and length(regexp_replace(customer->>'phone', '[^0-9]', '', 'g')) >= 9
+      where status <> 'cancelled' and length(regexp_replace(customer->>'phone', '\\D', '', 'g')) >= 9
     ),
     c as (
       select phone9, count(*) as n, sum(total) as value, min(created_at) as first_at, max(created_at) as last_at

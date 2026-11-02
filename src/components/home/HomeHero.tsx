@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import { isAllowedImageUrl } from "@/lib/security/csp";
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -8,6 +8,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import type { Locale } from "@/lib/i18n/routing";
 import { discountPercent, type MenuDeal } from "@/components/layout/menu-deal";
+import { DiscountBadge } from "@/components/ui/Price";
 import { BannerLink, useUnexpired } from "@/components/marketing/BannerLink";
 import { SaleCountdown } from "@/components/marketing/SaleCountdown";
 import { AbSlot } from "@/components/marketing/AbSlot";
@@ -169,7 +170,7 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
         {slide.cta && (
           <span
             className={cn(
-              "mt-0.5 inline-flex h-11 items-center rounded-sm px-[18px] text-[15px] font-semibold lg:mt-1.5 lg:h-14 lg:rounded-[14px] lg:px-8 lg:text-[17px]",
+              "mt-0.5 inline-flex h-11 items-center rounded-sm px-[18px] text-[15px] font-semibold lg:mt-1.5 lg:h-14 lg:rounded-input lg:px-8 lg:text-[17px]",
               dark ? "bg-bg text-ink" : "bg-ink text-white",
             )}
           >
@@ -178,29 +179,48 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
         )}
       </span>
       {slide.image && (
-        <span
-          className={cn(
-            "relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]",
-            slide.imageMobile && "max-md:hidden",
+        <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]">
+          {slide.imageMobile ? (
+            <ArtDirected desktop={slide.image} mobile={slide.imageMobile} priority={priority} />
+          ) : (
+            <Image
+              src={slide.image}
+              alt=""
+              fill
+              priority={priority}
+              unoptimized={!isLocal(slide.image)}
+              sizes="(max-width: 767px) 176px, 330px"
+              className="object-contain"
+            />
           )}
-        >
-          <Image
-            src={slide.image}
-            alt=""
-            fill
-            priority={priority}
-            unoptimized={!isLocal(slide.image)}
-            sizes="(max-width: 767px) 176px, 330px"
-            className="object-contain"
-          />
         </span>
       )}
-      {slide.imageMobile && (
+      {!slide.image && slide.imageMobile && (
         <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:hidden">
           <Image src={slide.imageMobile} alt="" fill priority={priority} unoptimized={!isLocal(slide.imageMobile)} sizes="176px" className="object-contain" />
         </span>
       )}
     </BannerLink>
+  );
+}
+
+/*
+  A banner with its own phone picture: one <picture>, so the browser fetches
+  only the file for its viewport. Two <Image priority> used to preload both on
+  every visit. getImageProps does not preload; the chosen file still gets
+  fetchpriority=high when the slide is the first one.
+*/
+function ArtDirected({ desktop, mobile, priority }: { desktop: string; mobile: string; priority: boolean }) {
+  const common = { alt: "", fill: true, className: "object-contain", ...(priority ? { fetchPriority: "high" as const, loading: "eager" as const } : {}) };
+  const {
+    props: { srcSet: phone },
+  } = getImageProps({ ...common, src: mobile, sizes: "176px", unoptimized: !isLocal(mobile) });
+  const { props } = getImageProps({ ...common, src: desktop, sizes: "330px", unoptimized: !isLocal(desktop) });
+  return (
+    <picture>
+      <source media="(max-width: 767px)" srcSet={phone ?? mobile} />
+      <img {...props} alt="" />
+    </picture>
   );
 }
 
@@ -231,7 +251,7 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
       <Link href={href} className="grid grid-cols-[minmax(0,1fr)_120px] items-center gap-2 rounded-3xl bg-tile p-[18px]">
         <span className="flex flex-col items-start gap-1.5">
           <span className="text-lg font-bold">{header("weekOffer")}</span>
-          <SalePill percent={discountPercent(deal)} />
+          <DiscountBadge percent={discountPercent(deal)} />
           <span className="flex flex-wrap items-baseline gap-x-2">
             <span className="text-[22px] font-bold">{formatMoney(deal.price, locale)}</span>
             <span className="text-sm text-muted line-through">{formatNumber(deal.oldPrice)}</span>
@@ -252,7 +272,7 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
   return (
     <div className="relative flex h-[420px] flex-col items-start gap-2.5 overflow-hidden rounded-[28px] bg-tile p-7">
       <span className="text-[26px] font-bold leading-8">{header("weekOffer")}</span>
-      <SalePill percent={discountPercent(deal)} className="mt-1.5" />
+      <DiscountBadge percent={discountPercent(deal)} className="mt-1.5" />
       <span className="flex flex-wrap items-baseline gap-x-2.5">
         <span className="text-[30px] font-bold leading-9">{formatMoney(deal.price, locale)}</span>
         <span className="text-[17px] text-muted line-through">{formatNumber(deal.oldPrice)}</span>
@@ -262,7 +282,7 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
       </Link>
       {deal.image && (
         <span className="absolute bottom-3 right-3 h-[180px] w-[clamp(100px,calc(100%-172px),180px)]">
-          <Image src={deal.image} alt="" fill sizes="180px" className="object-contain" />
+          <Image src={deal.image} alt={deal.name} fill sizes="180px" className="object-contain" />
         </span>
       )}
       {deals.length > 1 && (
@@ -272,14 +292,6 @@ export function WeeklyDeal({ deals, variant }: { deals: MenuDeal[]; variant: "de
         </div>
       )}
     </div>
-  );
-}
-
-export function SalePill({ percent, className }: { percent: number; className?: string }) {
-  return (
-    <span className={cn("inline-flex h-[26px] items-center rounded-pill bg-red px-2.5 text-sm font-bold text-white", className)}>
-      −{percent}%
-    </span>
   );
 }
 

@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import { REMOTE_IMAGE_HOSTS, cspHeaders, cspMode, framingHeaders } from "./src/lib/security/csp";
+import { REMOTE_IMAGE_HOSTS, adminCspHeader, cspHeaders, cspMode, framingHeaders, reportingHeaders } from "./src/lib/security/csp";
 
 const withNextIntl = createNextIntlPlugin("./src/lib/i18n/request.ts");
 
@@ -21,7 +21,8 @@ if (process.env.VERCEL_ENV === "production" || process.env.GOVITA_PRODUCTION ===
   One host for search engines: the bare domain answers with a permanent
   redirect to the www host the canonical tags already name. Derived from
   NEXT_PUBLIC_SITE_URL, so a deploy without a www host gets no rule at all.
-  *.fly.dev is left alone — the team opens /admin/setup there.
+  *.fly.dev is not redirected — the team opens /admin/setup there — but it is
+  kept out of the index by the X-Robots-Tag rule in headers() below.
 */
 function apexRedirects() {
   const site = new URL(process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.govita.uz");
@@ -35,6 +36,33 @@ function apexRedirects() {
     },
   ];
 }
+
+/*
+  One permanent hop for the two URLs a crawler meets without a locale:
+  - `/` → `/uz`: next-intl answered with a 307 picked per visitor, which search
+    engines treat as temporary and keep `/` as the indexed URL;
+  - `/en/...`: there is no English site, and next-intl prefixed it to
+    `/uz/en/...` (a 307 into a 404). Old or mistyped links land on the same
+    path in Uzbek instead.
+*/
+function localeRedirects() {
+  return [
+    { source: "/", destination: "/uz", permanent: true },
+    { source: "/en", destination: "/uz", permanent: true },
+    { source: "/en/:path*", destination: "/uz/:path*", permanent: true },
+  ];
+}
+
+/*
+  The Fly app host (govita.fly.dev) serves the whole shop and stays reachable
+  for /admin/setup. Search engines get noindex there for everything but the
+  admin (which is not crawlable anyway), so the shop has one indexed host.
+*/
+const FLY_HOST_NOINDEX = {
+  source: "/((?!admin).*)",
+  has: [{ type: "host" as const, value: ".*\\.fly\\.dev" }],
+  headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+};
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -59,14 +87,15 @@ const nextConfig: NextConfig = {
       still renders that segment's page.
     */
     globalNotFound: true,
-    // The admin uploads product photos up to 5 MB through a server action; the default limit is 1 MB.
-    serverActions: { bodySizeLimit: "6mb" },
+    // Every server action keeps Next's 1 MB body limit; product photos (5 MB) go to a route handler
+    // (app/admin/(panel)/products/upload/route.ts).
+    serverActions: { bodySizeLimit: "1mb" },
   },
   async redirects() {
-    return apexRedirects();
+    return [...apexRedirects(), ...localeRedirects()];
   },
   async headers() {
-    const routes = [
+    const routes: { source: string; has?: typeof FLY_HOST_NOINDEX.has; headers: { key: string; value: string }[] }[] = [
       {
         source: "/((?!studio|admin/content/studio).*)",
         headers: [
@@ -99,7 +128,11 @@ const nextConfig: NextConfig = {
       security headers below and is protected by `requireAdmin()`.
     */
     const csp = cspHeaders(process.env);
-    if (csp) routes[0].headers.push(csp);
+    if (csp) routes[0].headers.push(csp, ...reportingHeaders(process.env));
+
+    // The admin panel's own, enforced policy (stricter than the storefront's; see csp.ts adminCspHeader).
+    routes.push({ source: "/admin", headers: [adminCspHeader(process.env)] });
+    routes.push({ source: "/admin/((?!content/studio).*)", headers: [adminCspHeader(process.env)] });
 
     // Sanity needs to own its CSP, but the admin-mounted Studio still gets the
     // non-CSP baseline headers. X-Frame-Options permits same-origin embedding
@@ -121,6 +154,8 @@ const nextConfig: NextConfig = {
       source: "/fonts/:path*",
       headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
     });
+
+    routes.push(FLY_HOST_NOINDEX);
 
     return routes;
   },

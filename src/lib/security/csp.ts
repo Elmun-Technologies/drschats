@@ -78,13 +78,26 @@ function storageCdnHost(): string[] {
   }
 }
 
+/*
+  Admin-uploaded product photos (Tigris on Fly.io): this deployment's own
+  bucket. "**.fly.storage.tigris.dev" let the image optimiser fetch from
+  anyone's bucket — an open image proxy on our bandwidth. The bucket name is
+  a build argument (Dockerfile, fly-deploy.yml) because next.config.ts is
+  resolved at build time; a build without it keeps the wildcard rather than
+  breaking every uploaded photo.
+*/
+function tigrisHosts(): string[] {
+  const bucket = process.env.BUCKET_NAME?.trim().toLowerCase();
+  if (!bucket || !/^[a-z0-9][a-z0-9.-]{1,62}$/.test(bucket)) return ["**.fly.storage.tigris.dev"];
+  return [`${bucket}.fly.storage.tigris.dev`];
+}
+
 export const REMOTE_IMAGE_HOSTS: readonly string[] = [
   "**.uzum.uz",
   "cdn.sanity.io",
   "shop-flow.uz",
   "**.shop-flow.uz",
-  // Admin-uploaded product photos (Tigris object storage on Fly.io).
-  "**.fly.storage.tigris.dev",
+  ...tigrisHosts(),
   // …or the CDN in front of it, when one is configured.
   ...storageCdnHost(),
 ];
@@ -341,16 +354,59 @@ export function cspHeaders(
   const value = buildContentSecurityPolicy(env);
 
   /*
-    A report endpoint is only wired when one is given. Browsers surface
-    violations in the DevTools console regardless, which is enough to watch a
-    report-only policy; CSP_REPORT_URI exists for deployments that collect them
-    server-side (Sentry, a logging endpoint) and is left unset by default
-    because an endpoint that receives unauthenticated POSTs from every visitor
-    is not something to enable casually.
+    Violations go to the site's own collector, /api/csp-report (a daily count
+    per directive and blocked origin, rate-limited — see the route), so the
+    report-only policy can be judged on real traffic before it is enforced.
+    `report-uri` for Firefox and older browsers, `report-to` (with the
+    Reporting-Endpoints header, reportingHeaders) for the rest.
+    CSP_REPORT_URI=off turns reporting off; any other value replaces the URL.
   */
-  const reportUri = env.CSP_REPORT_URI?.trim();
+  const reportUri = cspReportUri(env);
   return {
     key: cspHeaderName(mode),
-    value: reportUri ? `${value}; report-uri ${reportUri}` : value,
+    value: reportUri ? `${value}; report-uri ${reportUri}; report-to ${REPORT_GROUP}` : value,
   };
+}
+
+const REPORT_GROUP = "csp";
+
+export function cspReportUri(env: Record<string, string | undefined> = process.env): string | null {
+  const raw = env.CSP_REPORT_URI?.trim();
+  if (raw === "off") return null;
+  return raw || "/api/csp-report";
+}
+
+/** The Reporting API endpoint `report-to` names; empty when reporting is off. */
+export function reportingHeaders(env: Record<string, string | undefined> = process.env): { key: string; value: string }[] {
+  if (cspMode(env.CSP_MODE) === "off") return [];
+  const uri = cspReportUri(env);
+  return uri ? [{ key: "Reporting-Endpoints", value: `${REPORT_GROUP}="${uri}"` }] : [];
+}
+
+/*
+  The admin panel's own policy, always enforced, whatever CSP_MODE says for
+  the storefront. The panel loads no third-party script, font or beacon, so
+  it can be strict: scripts and fetches from this origin only, no framing by
+  other sites, forms post here only. 'unsafe-inline' stays for Next's inline
+  RSC payload. A second, enforced policy narrows the storefront's (browsers
+  apply every CSP header they get), so analytics origins never reach /admin.
+*/
+export function adminCspHeader(env: Record<string, string | undefined> = process.env): { key: string; value: string } {
+  const dev = env.NODE_ENV === "development";
+  const directives = [
+    "default-src 'self'",
+    `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""}`,
+    "style-src 'self' 'unsafe-inline'",
+    `img-src 'self' data: blob: ${REMOTE_IMAGE_HOSTS.map(toCspSource).join(" ")}`,
+    "font-src 'self' data:",
+    `connect-src 'self'${dev ? " ws: wss:" : ""}`,
+    "frame-src 'self'",
+    "frame-ancestors 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ];
+  const uri = cspReportUri(env);
+  if (uri) directives.push(`report-uri ${uri}`);
+  return { key: "Content-Security-Policy", value: directives.join("; ") };
 }

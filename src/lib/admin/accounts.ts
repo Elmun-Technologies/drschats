@@ -1,3 +1,5 @@
+import "server-only";
+
 import { count } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { adminUsers } from "@/lib/db/schema";

@@ -234,7 +234,9 @@ async def text(m, api):
     if data.get('items'):
         return await shop_ui.send_list(m, api, locale, None, 1, m.text.strip()[:60], edit=False)
     now = time.monotonic()
-    if now - _last_ticket.get(m.chat.id, 0) < TICKET_WINDOW_S:
+    # No entry means no ticket yet; a 0 default read as "just now" on a machine up for under 30 s.
+    last = _last_ticket.get(m.chat.id)
+    if last is not None and now - last < TICKET_WINDOW_S:
         return await m.answer('Xabaringiz operatorda. Javobni shu yerga yozamiz.')
     await api.request('POST', f'/customers/{m.from_user.id}/tickets', body={'category': 'operator', 'text': m.text[:3000]})
     _last_ticket[m.chat.id] = now

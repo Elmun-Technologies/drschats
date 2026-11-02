@@ -36,6 +36,37 @@ const eslintConfig = [
     ignores: [".next/**", "out/**", "build/**", "coverage/**", "dist/**", "design/**", ".claude/**"],
   },
   ...compat.extends("next/core-web-vitals"),
+  /*
+    Architecture. `import/no-cycle`: a cycle (lib/promo/server ↔
+    lib/referral/server, until lib/promo/issue.ts) makes module order decide
+    what is undefined at load time. The plugin comes with eslint-config-next.
+  */
+  {
+    files: ["src/lib/**/*.ts"],
+    rules: {
+      "import/no-cycle": ["error", { maxDepth: 3, ignoreExternal: true }],
+    },
+  },
+  /*
+    Components never reach the database directly: a client component that
+    does breaks the build with "Can't resolve 'net'" (CLAUDE.md), and a server
+    component should go through lib/. Type-only imports of the schema are fine.
+  */
+  {
+    files: ["src/components/**/*.{ts,tsx}"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        {
+          paths: [
+            { name: "@/lib/db/client", message: "Read the database in src/lib (a server module), not in a component." },
+            { name: "postgres", message: "Read the database in src/lib (a server module), not in a component." },
+            { name: "drizzle-orm", message: "Read the database in src/lib (a server module), not in a component." },
+          ],
+        },
+      ],
+    },
+  },
 ];
 
 export default eslintConfig;

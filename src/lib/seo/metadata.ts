@@ -46,6 +46,13 @@ interface PageMetaArgs {
   type?: "website" | "article" | "product";
   /** A sorted/filtered/paged variant: crawlable for its links, kept out of the index. */
   noindex?: boolean;
+  /** An article's real publication date (ISO), for article:published_time. */
+  publishedTime?: string;
+}
+
+/** The brand suffix every title carries once; titles from page-meta already name it. */
+export function brandedTitle(title: string): string {
+  return title.includes(SITE_NAME) ? title : `${title} — ${SITE_NAME}`;
 }
 
 /** og:locale wants language_TERRITORY, not the bare route segment. */
@@ -59,29 +66,41 @@ export function buildPageMetadata({
   image,
   type = "website",
   noindex = false,
+  publishedTime,
 }: PageMetaArgs): Metadata {
   const url = absoluteUrl(`/${locale}${path === "/" ? "" : path}`);
-  const ogImage = image ? image : absoluteUrl(DEFAULT_OG_IMAGE);
+  const full = brandedTitle(title);
+  // Only the shared card has known dimensions; a product or article photo is whatever size it was uploaded.
+  const ogImage = image
+    ? { url: image, alt: full }
+    : { url: absoluteUrl(DEFAULT_OG_IMAGE), width: 1200, height: 630, alt: full };
 
   return {
-    title,
+    // Absolute: the [locale] layout's "%s — Go Vita" template is for pages that write a bare title.
+    title: { absolute: full },
     description,
-    alternates: buildAlternates(locale, path),
+    /*
+      A noindex variant names no canonical and no alternates: "do not index
+      me" next to "the real page is X" is two instructions, and hreflang on a
+      page that is not indexed is never reciprocated.
+    */
+    ...(noindex ? {} : { alternates: buildAlternates(locale, path) }),
     openGraph: {
-      title,
+      title: full,
       description,
       siteName: SITE_NAME,
       url,
       type: type === "product" ? "website" : type,
       locale: OG_LOCALE[locale],
       alternateLocale: locales.filter((l) => l !== locale).map((l) => OG_LOCALE[l]),
-      images: [{ url: ogImage, width: 1200, height: 630, alt: title }],
+      images: [ogImage],
+      ...(type === "article" && publishedTime ? { publishedTime } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: full,
       description,
-      images: [ogImage],
+      images: [ogImage.url],
     },
     ...(noindex ? { robots: { index: false, follow: true } } : {}),
   };

@@ -8,10 +8,11 @@ import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { promoCodes, promoRedemptions } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/admin/session";
+import { auditLog, auditTarget } from "@/lib/admin/audit";
 import { SLUG_RE, fromTashkentInput } from "@/lib/admin/product-form";
 import { SITE_SETTINGS_TAG } from "@/lib/integrations/site-settings";
 import { normalizePromoCode, phone9Of } from "@/lib/promo/rules";
-import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/server";
+import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/issue";
 import { saveFirstOrderSetting } from "@/lib/promo/settings";
 import type { FormState } from "./catalog";
 
@@ -53,7 +54,7 @@ function refresh(code?: string) {
 
 /** Create (code typed or generated) or edit a code. The code itself is fixed once created. */
 export async function savePromoCode(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const data = Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")) as Record<string, string>;
   const parsed = codeSchema.safeParse(data);
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
@@ -81,6 +82,7 @@ export async function savePromoCode(_: FormState, form: FormData): Promise<FormS
     const updated = await db.update(promoCodes).set(row).where(eq(promoCodes.code, editing)).returning({ code: promoCodes.code });
     if (updated.length === 0) return { error: "Promokod topilmadi." };
     refresh(editing);
+    await auditLog(admin, "promocode.save", auditTarget(form));
     return { ok: "Saqlandi. Savatda darhol amal qiladi." };
   }
 
@@ -109,7 +111,7 @@ export async function savePromoCode(_: FormState, form: FormData): Promise<FormS
 }
 
 export async function togglePromoCode(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const code = String(form.get("code") ?? "");
   if (code) await getDb().update(promoCodes).set({ active: sql`not ${promoCodes.active}` }).where(eq(promoCodes.code, code));
   refresh(code);
@@ -117,7 +119,7 @@ export async function togglePromoCode(form: FormData) {
 
 /** Only an unused code can be deleted; a used one is part of order history — deactivate it instead. */
 export async function deletePromoCode(form: FormData) {
-  await requireAdmin();
+  await requireAdmin("marketing");
   const code = String(form.get("code") ?? "");
   if (!code) return;
   const db = getDb();
@@ -141,7 +143,7 @@ const batchSchema = z
 
 /** N personal single-use codes under one campaign id, then the CSV link. */
 export async function generatePromoBatch(_: FormState, form: FormData): Promise<FormState> {
-  await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const parsed = batchSchema.safeParse(Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const d = parsed.data;
@@ -157,6 +159,7 @@ export async function generatePromoBatch(_: FormState, form: FormData): Promise<
     note: d.label || null,
   });
   refresh();
+  await auditLog(admin, "promocode.save", auditTarget(form));
   redirect(`/admin/promocodes?batch=${encodeURIComponent(campaignId)}&made=${codes.length}`);
 }
 
@@ -165,12 +168,13 @@ const firstOrderSchema = z.object({
 });
 
 export async function saveFirstOrderDiscount(_: FormState, form: FormData): Promise<FormState> {
-  const admin = await requireAdmin();
+  const admin = await requireAdmin("marketing");
   const parsed = firstOrderSchema.safeParse({ percent: form.get("percent") });
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Foizni tekshiring." };
   await saveFirstOrderSetting({ enabled: form.get("enabled") === "on", percent: parsed.data.percent }, admin.id);
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/", "layout");
   revalidatePath("/admin/promocodes");
+  await auditLog(admin, "promocode.save", auditTarget(form));
   return { ok: "Saqlandi. Saytda va savatda darhol amal qiladi." };
 }

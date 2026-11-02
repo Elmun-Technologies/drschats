@@ -40,6 +40,8 @@ export interface Review {
   rating: number;
   date: string;
   text: string;
+  /** A customer review whose phone has a delivered order of this product (lib/reviews). */
+  verified?: boolean;
 }
 
 /**
@@ -66,6 +68,8 @@ export interface Product {
   oldPrice?: Money;
   /** ISO time a running sale ends (the countdown); absent when the sale has no end date. */
   saleEndsAt?: string;
+  /** ISO time the row last changed (database catalogue only) — the sitemap's lastmod. */
+  updatedAt?: string;
   currency: Currency;
   rating: number;
   reviewCount: number;
@@ -101,6 +105,8 @@ export interface Product {
    * quantity is ever shown. Read through lib/catalog/stock-rules.
    */
   stock?: { qty: number; lowAt: number };
+  /** Package facts (admin form, 0018): absent when none is filled; each field only when filled. */
+  facts?: { contraindications?: string; shelfLife?: string; storage?: string; registrationNumber?: string };
 }
 
 export type PromotionType =
@@ -188,10 +194,18 @@ export interface OrderRequest {
     marketingOptIn?: boolean;
   };
   delivery: {
+    /** A region key (lib/checkout/regions.ts) on site orders since 2026-11; older orders hold the name. */
     region: string;
+    /** One readable line; on site orders composed on the server from the parts below. */
     address: string;
     note?: string;
     method: string;
+    /** Courier address parts (lib/checkout/address.ts); absent on older orders and pickup. */
+    district?: string;
+    street?: string;
+    house?: string;
+    apartment?: string;
+    landmark?: string;
   };
   /**
    * The customer's requested payment method, not proof that payment was made
@@ -221,6 +235,8 @@ export interface OrderRequest {
   promoCode?: string;
   /** Proof (from the SMS code) that this phone may spend its points; verified and re-priced on the server. */
   pointsToken?: string;
+  /** Proof (from the SMS code) that the customer owns this phone — needed for the first-order and referral discounts. */
+  phoneToken?: string;
   locale: Locale;
   /**
    * Which channel placed the order. The checkout decides this itself from
@@ -233,6 +249,11 @@ export interface OrderRequest {
    * and never stored: only the chat id it proves is kept on the order.
    */
   telegram?: string;
+  /**
+   * One per checkout form session: a double tap or a retried request with the
+   * same key returns the first order instead of placing a second (0018).
+   */
+  idempotencyKey?: string;
 }
 
 export type OrderAdjustment =

@@ -1,7 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
-import { login, setupFirstAdmin, type AuthState } from "@/app/admin/_actions/auth";
+import { login, setupFirstAdmin, verifySecondFactor, type AuthState } from "@/app/admin/_actions/auth";
 import { Field, Notice, inputClass } from "./ui";
 import { SubmitButton } from "./SubmitButton";
 
@@ -39,6 +39,19 @@ export function SetupForm({ minPassword }: { minPassword: number }) {
         <input name="password" type="password" autoComplete="new-password" minLength={minPassword} required className={inputClass} />
       </Field>
       <SubmitButton pendingLabel="Yaratilmoqda…">Administratorni yaratish</SubmitButton>
+    </form>
+  );
+}
+
+export function VerifyForm() {
+  const [state, action] = useActionState<AuthState, FormData>(verifySecondFactor, undefined);
+  return (
+    <form action={action} className="flex flex-col gap-4">
+      {state?.error && <Notice tone="error">{state.error}</Notice>}
+      <Field label="Kod" hint="6 raqam yoki xxxxx-xxxxx tiklash kodi">
+        <input name="code" inputMode="text" autoComplete="one-time-code" autoFocus required maxLength={20} spellCheck={false} className={inputClass} />
+      </Field>
+      <SubmitButton pendingLabel="Tekshirilmoqda…">Kirish</SubmitButton>
     </form>
   );
 }

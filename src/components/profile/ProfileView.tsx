@@ -136,7 +136,7 @@ export function ProfileView({ birthdayGift = false }: { birthdayGift?: boolean }
                 reset();
                 setConfirmingReset(false);
               }}
-              className={cn(buttonVariants("primary"), "h-11 bg-red hover:bg-red")}
+              className={cn(buttonVariants("primary"), "h-11")}
             >
               {t("data.confirmYes")}
             </button>

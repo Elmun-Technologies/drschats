@@ -1,6 +1,6 @@
 /*
   Applies db/migrations/*.sql in name order, each once, inside a transaction.
-  Runs before `next build` (Vercel) or as Fly's release_command; without
+  Runs as Fly's release_command (and before `next build` when DATABASE_URL is set); without
   DATABASE_URL it does nothing, so CI and a database-less build are unchanged.
 */
 import { createHash } from "node:crypto";
@@ -13,7 +13,7 @@ if (!url) {
   console.log("[db:migrate] DATABASE_URL not set — skipped");
   process.exit(0);
 }
-// A Vercel preview build must not change the production schema before the PR is merged.
+// A preview build (VERCEL_ENV, kept until the domain leaves Vercel) must not change the production schema.
 if (process.env.VERCEL_ENV && process.env.VERCEL_ENV !== "production") {
   console.log(`[db:migrate] VERCEL_ENV=${process.env.VERCEL_ENV} — skipped`);
   process.exit(0);
@@ -39,6 +39,8 @@ const LOCK_ID = 7_340_001;
 try {
   const applied = await sql.begin(async (tx) => {
     await tx`select pg_advisory_xact_lock(${LOCK_ID})`;
+    // The app role's 30 s statement timeout (0021) is for requests, not for a migration building an index.
+    await tx`set local statement_timeout = 0`;
     await tx`create table if not exists schema_migrations (name text primary key, applied_at timestamptz not null default now())`;
     await tx`alter table schema_migrations add column if not exists checksum text`;
     const done = new Map((await tx`select name, checksum from schema_migrations`).map((r) => [r.name, r.checksum]));

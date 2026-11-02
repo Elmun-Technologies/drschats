@@ -13,6 +13,7 @@ import { StarRating } from "@/components/ui/StarRating";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { buttonVariants } from "@/components/ui/Button";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { hasReviews } from "@/lib/seo/indexable";
 
 export const revalidate = 3600;
 
@@ -20,7 +21,11 @@ const MAX_PRODUCT_REVIEWS = 24;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  return staticPageMetadata(locale, "reviews", "/reviews");
+  const [pool, stories] = await Promise.all([
+    shopflow.getProducts({ locale, pageSize: 100 }),
+    getCustomerStories(locale).catch(() => []),
+  ]);
+  return staticPageMetadata(locale, "reviews", "/reviews", { noindex: !hasReviews(pool.items, stories.length) });
 }
 
 interface ProductReview extends Review {

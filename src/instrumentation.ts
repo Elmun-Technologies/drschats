@@ -44,6 +44,18 @@ export async function register() {
     import("@/lib/messaging/worker")
       .then(({ startMessageWorker }) => startMessageWorker())
       .catch((err: Error) => console.error("[messages] worker not started:", err.message));
+    /*
+      The image is built without a database, so the pages prerendered at
+      build time hold the built-in catalogue. Once the server listens, the
+      cache is marked stale and the next visit renders from Postgres
+      (lib/ops/clock-events.ts → refreshAfterBoot).
+    */
+    setTimeout(() => {
+      import("@/lib/ops/clock-events")
+        .then(({ refreshAfterBoot }) => refreshAfterBoot())
+        .then((ok) => console.log(ok ? "[catalog] prerendered pages marked stale after boot" : "[catalog] boot refresh did not run"))
+        .catch((err: Error) => console.error("[catalog] boot refresh failed:", err.message));
+    }, 15_000).unref?.();
   }
   if (process.env.NEXT_RUNTIME === "nodejs") warnMissingSecrets();
   if (process.env.NEXT_RUNTIME === "nodejs" && process.env.SMS_FAKE === "1" && (process.env.GOVITA_PRODUCTION === "1" || process.env.VERCEL_ENV === "production")) {
@@ -103,7 +115,9 @@ function warnMissingSecrets() {
   if (process.env.DATABASE_URL) {
     need("ADMIN_SESSION_SECRET (≥ 32 characters)", (process.env.ADMIN_SESSION_SECRET?.trim().length ?? 0) >= 32);
     need("INTEGRATION_ENCRYPTION_KEY", Boolean(process.env.INTEGRATION_ENCRYPTION_KEY?.trim()));
-    need("MESSAGE_LINK_SECRET (now borrowed from another key)", Boolean(process.env.MESSAGE_LINK_SECRET?.trim()));
+    // These two are refused on a live deploy when the first message link or points code needs them.
+    need("MESSAGE_LINK_SECRET", Boolean(process.env.MESSAGE_LINK_SECRET?.trim()));
+    need("LOYALTY_SECRET", Boolean(process.env.LOYALTY_SECRET?.trim()));
   }
   if (process.env.RESEND_API_KEY) need("EMAIL_TOKEN_SECRET", Boolean(process.env.EMAIL_TOKEN_SECRET?.trim()));
   if (missing.length) console.warn(`[config] missing on a live deploy: ${missing.join(", ")} — see .env.example`);

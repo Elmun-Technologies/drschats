@@ -53,6 +53,9 @@ const BASELINE = new Map(
     "adm-zip": "pulled in by the Sanity CLI chain — closed by sanity@6",
     decompress: "pulled in by the Sanity CLI chain — closed by sanity@6",
     glob: "pulled in by the Sanity CLI chain — closed by sanity@6",
+    // vite@5 is pinned by sanity's Studio bundler and @vitejs/plugin-react; the advisories are
+    // in its dev server and launch-editor (Windows), which a production Next server never runs.
+    vite: "Sanity Studio bundler (dev server only) — closed by sanity@6",
     postcss: "only fix is next@16 — major framework upgrade",
     // GHSA-mrhx-c7xc-m3w5 (memory on oversized bounded arrays) has no zod@3 fix. Every schema
     // runs on a body Next has already capped (serverActions.bodySizeLimit, next.config.ts), so

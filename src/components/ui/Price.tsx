@@ -7,17 +7,28 @@ import type { Locale } from "@/lib/i18n/routing";
   in muted).
 
   `layout="inline"` is the card form: price and old price on one baseline,
-  wrapping as a pair, the old one without the currency as in the design.
+  wrapping as a pair. The old one is written without the currency, as in
+  the design, in both layouts.
   No tabular-nums: Onest's tabular figures are visibly wider than the design. `stack` keeps the old price on its own line for the
   narrow places (cart lines, drawers) where a wrap would split the two numbers
   into what reads as two prices.
 */
+export type PriceSize = "sm" | "card" | "bar" | "pdp";
+
+/* Price and struck-through reference price per place: cart row, product card, phone buy bar, product page. */
+const SIZES: Record<PriceSize, { now: string; was: string }> = {
+  sm: { now: "text-lg", was: "text-[13px]" },
+  card: { now: "text-lg sm:text-price", was: "text-sm" },
+  bar: { now: "text-[19px] leading-[23px]", was: "text-[13px]" },
+  pdp: { now: "text-[30px] leading-9 lg:text-price-l lg:leading-10", was: "text-[17px] lg:text-lg" },
+};
+
 export function Price({
   amount,
   oldAmount,
   locale,
   className,
-  size = "md",
+  size = "card",
   align = "start",
   layout = "stack",
 }: {
@@ -25,16 +36,11 @@ export function Price({
   oldAmount?: number;
   locale: Locale;
   className?: string;
-  size?: "sm" | "md" | "lg";
+  size?: PriceSize;
   align?: "start" | "center";
   layout?: "stack" | "inline";
 }) {
-  const sizes = {
-    sm: "text-base",
-    md: "text-lg sm:text-price",
-    lg: "text-[28px] leading-9 sm:text-price-l",
-  }[size];
-
+  const { now, was } = SIZES[size];
   const discounted = Boolean(oldAmount && oldAmount > amount);
 
   return (
@@ -46,12 +52,12 @@ export function Price({
         className,
       )}
     >
-      <span className={cn("whitespace-nowrap font-bold text-ink", sizes)}>
+      <span className={cn("whitespace-nowrap font-bold text-ink", now)}>
         {formatMoney(amount, locale)}
       </span>
       {discounted && (
-        <span className="whitespace-nowrap text-sm text-muted line-through">
-          {layout === "inline" ? formatNumber(oldAmount as number) : formatMoney(oldAmount as number, locale)}
+        <span className={cn("whitespace-nowrap text-muted line-through", was)}>
+          {formatNumber(oldAmount as number)}
         </span>
       )}
     </div>
@@ -62,13 +68,13 @@ export function discountPercent(price: number, oldPrice?: number): number {
   return oldPrice && oldPrice > price ? Math.round((1 - price / oldPrice) * 100) : 0;
 }
 
-/** "−11%" — the red pill, the only place the sale colour is allowed. */
+/** "−11%" — the red pill, the only place the sale colour is allowed. Kit size (26px, 14px bold) everywhere. */
 export function DiscountBadge({ percent, className }: { percent: number; className?: string }) {
   if (percent <= 0) return null;
   return (
     <span
       className={cn(
-        "inline-flex h-6 items-center whitespace-nowrap rounded-pill bg-red px-[9px] text-[13px] font-bold text-white",
+        "inline-flex h-[26px] items-center whitespace-nowrap rounded-pill bg-red px-2.5 text-sm font-bold text-white",
         className,
       )}
     >

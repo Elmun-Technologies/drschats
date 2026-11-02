@@ -44,11 +44,19 @@ interface CartState {
    */
   /** Reprice lines whose sale has ended (called at the deadline). */
   expireSales: () => void;
-  syncPrices: (current: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean; stockQty?: number }>) => void;
+  /** Returns the lines whose price changed, so the cart can say so instead of changing totals silently. */
+  syncPrices: (current: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean; stockQty?: number }>) => PriceChange[];
   clear: () => void;
   open: () => void;
   close: () => void;
   toggle: () => void;
+}
+
+export interface PriceChange {
+  lineId: string;
+  name: string;
+  from: number;
+  to: number;
 }
 
 export const useCart = create<CartState>()(
@@ -101,7 +109,8 @@ export const useCart = create<CartState>()(
             _savedAt: Date.now(),
           };
         }),
-      syncPrices: (current) =>
+      syncPrices: (current) => {
+        const changes: PriceChange[] = [];
         set((state) => {
           let changed = false;
           // A product missing from the map is left alone: an empty or partial
@@ -122,12 +131,15 @@ export const useCart = create<CartState>()(
             )
               return l;
             changed = true;
+            if (now.price !== l.price) changes.push({ lineId: l.lineId, name: l.name, from: l.price, to: now.price });
             return { ...l, price: now.price, oldPrice: now.oldPrice, saleEndsAt: now.saleEndsAt, soldOut: soldOut || undefined, stockQty: now.stockQty };
           });
           // Opening the cart is activity: the thirty days count from here.
           const _savedAt = state.lines.length > 0 ? Date.now() : state._savedAt;
           return changed ? { lines: settle(lines), _savedAt } : { _savedAt };
-        }),
+        });
+        return changes;
+      },
       expireSales: () =>
         set((state) => {
           const lines = state.lines.map(priced);

@@ -2,7 +2,7 @@
   "name": "Go Vita",
   "short_name": "Go Vita",
   "description": "Vitaminlar, BAD va med-kosmetika onlayn platformasi",
-  "start_url": "/",
+  "start_url": "/uz",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#ffffff",

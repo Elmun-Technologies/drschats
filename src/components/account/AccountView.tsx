@@ -50,7 +50,7 @@ function SignedOut({ pending = false }: { pending?: boolean }) {
       )}
       <div className="flex flex-col gap-5 lg:pt-3">
         <h2 className="hidden text-h-section leading-9 font-bold lg:block">{tv("perksTitle")}</h2>
-        <p className="hidden text-[17px] leading-[26px] text-ink-2 lg:block">{t("subtitle")}</p>
+        <p className="hidden text-lead text-ink-2 lg:block">{t("subtitle")}</p>
         <div className="hidden grid-cols-2 gap-3 lg:grid">
           {perks.map((p) => (
             <div key={p.title} className="flex flex-col gap-2 rounded-[20px] bg-tile p-[22px]">

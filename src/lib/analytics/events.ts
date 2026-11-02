@@ -221,6 +221,25 @@ export function trackExperimentView(banner: { id: number; title: string }, exper
   }
 }
 
+/**
+ * A visitor landed on the 404 page: the broken link they followed (path and
+ * referrer, query dropped — it can carry a token or a phone) shows up in
+ * GA4/GTM as `page_not_found`, so dead inbound links can be found and fixed.
+ */
+export function trackPageNotFound() {
+  if (typeof window === "undefined") return;
+  let referrer = "";
+  try {
+    if (document.referrer) {
+      const r = new URL(document.referrer);
+      referrer = `${r.origin}${r.pathname}`;
+    }
+  } catch {
+    /* an unparsable referrer is left out */
+  }
+  track("page_not_found", { page_path: location.pathname, ...(referrer ? { page_referrer: referrer } : {}) });
+}
+
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */
 export function trackPageView(url: string) {
   journeyPage(url);

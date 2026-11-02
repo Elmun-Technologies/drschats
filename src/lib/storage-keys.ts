@@ -37,6 +37,8 @@ export const STORAGE_KEYS = {
   journey: `${PREFIX}journey`,
   /** sessionStorage: what the success page shows of the order just placed (lib/orders/last-order.ts). */
   lastOrder: `${PREFIX}last-order`,
+  /** localStorage: signed tracking links of orders placed in this browser — «Buyurtmalarim» (lib/orders/last-order.ts). */
+  orders: `${PREFIX}orders`,
 } as const;
 
 let migrated = false;

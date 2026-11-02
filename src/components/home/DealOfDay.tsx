@@ -10,7 +10,7 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { SaleCountdown } from "@/components/marketing/SaleCountdown";
 import { useUnexpired } from "@/components/marketing/BannerLink";
 import { discountPercent } from "@/components/layout/menu-deal";
-import { SalePill } from "./HomeHero";
+import { DiscountBadge } from "@/components/ui/Price";
 
 /*
   "Bugungi taklif": the deal of the day the team schedules in admin → Vitrina.
@@ -42,7 +42,7 @@ export function DealOfDay({ product, endsAt }: { product: Product; endsAt: strin
             <span className="text-[17px] text-on-dark-2 line-through">{formatMoney(deal.oldPrice, locale)}</span>
           </span>
           <div className="flex flex-wrap items-center gap-2.5">
-            <SalePill percent={discountPercent(deal)} />
+            <DiscountBadge percent={discountPercent(deal)} />
             <span className="text-[15px] font-semibold">{t("save", { amount: formatMoney(deal.oldPrice - deal.price, locale) })}</span>
           </div>
           <SaleCountdown endsAt={endsAt} onDark className="text-[15px] lg:text-[17px]" />

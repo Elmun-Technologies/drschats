@@ -1,4 +1,4 @@
-import { bigint, bigserial, boolean, integer, jsonb, pgTable, serial, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, bigserial, boolean, integer, jsonb, numeric, pgTable, serial, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import type { L, RawProduct } from "@/lib/shopflow/mock";
 import type { OrderRequest } from "@/lib/shopflow/types";
 
@@ -13,6 +13,9 @@ export type ProductContent = Pick<
   | "name" | "tagline" | "description" | "highlights" | "benefits" | "ingredients"
   | "howToUse" | "faq" | "badges" | "servings" | "origin" | "searchAliases"
 >;
+
+/** Package facts (0018): contraindications, shelf life and storage, per language. */
+export type ProductFacts = Partial<Record<"contraindications" | "shelfLife" | "storage", L>>;
 
 export const categories = pgTable("categories", {
   id: text("id").primaryKey(),
@@ -48,6 +51,9 @@ export const products = pgTable("products", {
   /** 0015: MXIK (IKPU) and package code for the fiscal receipt Payme prints. */
   mxikCode: text("mxik_code"),
   packageCode: text("package_code"),
+  /** 0018: package facts shown on the product page only when filled. */
+  facts: jsonb("facts").$type<ProductFacts | null>(),
+  registrationNumber: text("registration_number"),
   kind: text("kind").$type<"core" | "addon" | "unlisted">().notNull().default("core"),
   sort: integer("sort").notNull().default(0),
   images: jsonb("images").$type<string[]>().notNull().default([]),
@@ -86,6 +92,11 @@ export const orders = pgTable("orders", {
   /** 0015: unpaid (cash, or not yet), pending (at a gateway), paid, refunded. */
   paymentStatus: text("payment_status").$type<PaymentStatus>().notNull().default("unpaid"),
   paidAt: timestamp("paid_at", { withTimezone: true }),
+  /** 0020: the operator's Telegram ping; null = not delivered yet (the worker retries). */
+  operatorNotifiedAt: timestamp("operator_notified_at", { withTimezone: true }),
+  operatorNotifyAttempts: smallint("operator_notify_attempts").notNull().default(0),
+  /** 0018: one order per checkout form session (a retry returns the first order). */
+  idempotencyKey: text("idempotency_key"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -133,6 +144,26 @@ export const adminUsers = pgTable("admin_users", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   lastLoginAt: timestamp("last_login_at", { withTimezone: true }),
   sessionEpoch: integer("session_epoch").notNull().default(0),
+  /** 0016: owner / manager / operator (lib/admin/roles.ts). */
+  role: text("role").$type<AdminRole>().notNull().default("operator"),
+  totpSecret: text("totp_secret"),
+  totpEnabledAt: timestamp("totp_enabled_at", { withTimezone: true }),
+  totpLastStep: bigint("totp_last_step", { mode: "number" }),
+  recoveryCodes: text("recovery_codes").array(),
+});
+
+export const ADMIN_ROLES = ["owner", "manager", "operator"] as const;
+export type AdminRole = (typeof ADMIN_ROLES)[number];
+
+export const adminAuditLog = pgTable("admin_audit_log", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  adminUserId: integer("admin_user_id").references(() => adminUsers.id, { onDelete: "set null" }),
+  adminEmail: text("admin_email"),
+  action: text("action").notNull(),
+  target: text("target"),
+  detail: jsonb("detail"),
+  ip: text("ip"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 /** Internal service notes; never store health or payment-card data here. */
@@ -591,6 +622,103 @@ export const payments = pgTable("payments", {
   cancelTime: bigint("cancel_time", { mode: "number" }),
   providerTime: bigint("provider_time", { mode: "number" }),
   raw: jsonb("raw"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Keyword research — db/migrations/0030_keyword_research.sql */
+export const keywordImports = pgTable("keyword_imports", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  fileName: text("file_name"),
+  rows: integer("rows").notNull(),
+  matched: integer("matched").notNull(),
+  currency: text("currency"),
+  ranged: boolean("ranged").notNull().default(false),
+  adminUserId: integer("admin_user_id").references(() => adminUsers.id, { onDelete: "set null" }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const keywordStats = pgTable("keyword_stats", {
+  keyword: text("keyword").primaryKey(),
+  lang: text("lang").$type<"ru" | "uz" | "uz-cyrl">().notNull(),
+  subject: text("subject"),
+  kind: text("kind"),
+  intent: text("intent"),
+  avgMonthly: integer("avg_monthly"),
+  avgLow: integer("avg_low"),
+  avgHigh: integer("avg_high"),
+  ranged: boolean("ranged").notNull().default(false),
+  competition: text("competition").$type<"low" | "medium" | "high">(),
+  competitionIndex: smallint("competition_index"),
+  bidLow: numeric("bid_low", { precision: 14, scale: 2 }),
+  bidHigh: numeric("bid_high", { precision: 14, scale: 2 }),
+  threeMonthChange: text("three_month_change"),
+  yoyChange: text("yoy_change"),
+  monthly: jsonb("monthly").$type<Record<string, number>>().notNull().default({}),
+  importId: bigint("import_id", { mode: "number" }),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Operations — db/migrations/0020_ops.sql */
+
+export const rateLimitHits = pgTable("rate_limit_hits", {
+  scope: text("scope").notNull(),
+  key: text("key").notNull(),
+  count: integer("count").notNull().default(1),
+  resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+});
+
+export const cspReports = pgTable("csp_reports", {
+  day: text("day").notNull(),
+  directive: text("directive").notNull(),
+  blocked: text("blocked").notNull(),
+  count: integer("count").notNull().default(0),
+  lastAt: timestamp("last_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const opsState = pgTable("ops_state", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Reviews and subscriptions — db/migrations/0017_reviews_subscriptions.sql */
+
+export const REVIEW_STATUSES = ["pending", "approved", "rejected"] as const;
+export type ReviewStatus = (typeof REVIEW_STATUSES)[number];
+
+export const reviews = pgTable("reviews", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  productSlug: text("product_slug").notNull(),
+  rating: smallint("rating").notNull(),
+  author: text("author").notNull(),
+  text: text("text").notNull(),
+  phone9: text("phone9"),
+  verified: boolean("verified").notNull().default(false),
+  locale: text("locale").notNull().default("uz"),
+  status: text("status").$type<ReviewStatus>().notNull().default("pending"),
+  moderatedBy: text("moderated_by"),
+  moderatedAt: timestamp("moderated_at", { withTimezone: true }),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const SUBSCRIPTION_STATUSES = ["active", "cancelled"] as const;
+export type SubscriptionStatus = (typeof SUBSCRIPTION_STATUSES)[number];
+
+export const subscriptions = pgTable("subscriptions", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  phone9: text("phone9").notNull(),
+  productSlug: text("product_slug").notNull(),
+  productName: text("product_name").notNull(),
+  quantity: integer("quantity").notNull(),
+  intervalDays: integer("interval_days").notNull(),
+  locale: text("locale").notNull().default("uz"),
+  customerName: text("customer_name"),
+  firstOrderId: bigint("first_order_id", { mode: "number" }),
+  lastOrderId: bigint("last_order_id", { mode: "number" }),
+  lastOrderNumber: text("last_order_number"),
+  status: text("status").$type<SubscriptionStatus>().notNull().default("active"),
+  nextDueAt: timestamp("next_due_at", { withTimezone: true }).notNull(),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

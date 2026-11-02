@@ -98,6 +98,8 @@ export function verifyRedeemToken(raw: string | null | undefined, secret: string
 /** The key: LOYALTY_SECRET, else derived from ADMIN_SESSION_SECRET under its own label (always set where the database is). */
 export function loyaltySecret(env: Record<string, string | undefined> = process.env): string {
   if (env.LOYALTY_SECRET) return env.LOYALTY_SECRET;
+  // The live shop has its own key (scripts/fly/ci-prepare.sh); deriving it there would tie it to the session key's rotation.
+  if (env.GOVITA_PRODUCTION === "1" || env.VERCEL_ENV === "production") throw new Error("LOYALTY_SECRET must be set on the live deployment");
   if (env.ADMIN_SESSION_SECRET) return createHmac("sha256", env.ADMIN_SESSION_SECRET).update("govita:loyalty-secret:v1").digest("base64url");
   if (env.NODE_ENV === "production") throw new Error("LOYALTY_SECRET (or ADMIN_SESSION_SECRET) must be set");
   return "dev-only-loyalty-secret";

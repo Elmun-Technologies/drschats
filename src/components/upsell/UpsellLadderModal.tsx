@@ -12,6 +12,7 @@ import { buildUpsellLadder } from "@/lib/upsell/ladder";
 import { useCommerce } from "@/lib/commerce/context";
 import { getUpsellProducts } from "@/app/actions/getUpsellProducts";
 import { formatMoney } from "@/lib/utils";
+import { DiscountBadge } from "@/components/ui/Price";
 import { trackUpsellView, trackUpsellAccept, trackUpsellSkip } from "@/lib/analytics/events";
 
 export function UpsellLadderModal() {
@@ -82,7 +83,7 @@ export function UpsellLadderModal() {
             exit={{ opacity: 0 }}
             onClick={closeLadder}
             aria-hidden
-            className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-black/70 sm:backdrop-blur-sm"
           />
 
           {/* Modal. The dialog role sits on a stable wrapper because the inner
@@ -191,9 +192,7 @@ export function UpsellLadderModal() {
                         <span className="whitespace-nowrap text-base font-bold text-ink">
                           {formatMoney(step.discountedPrice, locale)}
                         </span>
-                        <span className="rounded border border-line bg-tile px-1.5 py-0.5 text-xs font-bold text-ink-2">
-                          −{step.discountPercent}%
-                        </span>
+                        <DiscountBadge percent={step.discountPercent} />
                       </>
                     )}
                   </div>

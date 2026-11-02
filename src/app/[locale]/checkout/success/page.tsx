@@ -16,7 +16,12 @@ import { verifyOrderTrackToken } from "@/lib/messaging/tokens";
 import { ShareCode } from "@/components/checkout/ShareCode";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 
-export const metadata: Metadata = { robots: { index: false } };
+export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "checkout.success" });
+  // The layout's template adds "— Go Vita".
+  return { title: t("title"), robots: { index: false } };
+}
 
 /*
   Design: OrderSuccessV3 / OrderSuccessMobileV3.

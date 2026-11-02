@@ -9,9 +9,10 @@ import { isMiniApp } from "@/lib/telegram/mini-app";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
 
 /*
-  Three widgets sit in the layout but none of them can be seen on first paint:
-  the cart drawer waits for a click, the exit-intent popup for the pointer to
-  leave the window, the purchase toast for a 35-second timer. Shipping their
+  These widgets sit in the layout but none of them can be seen on first paint:
+  the cart drawer waits for a click, the add-to-cart toast for an add, the
+  back-to-top button for two screens of scrolling, the exit-intent popup for
+  the pointer to leave the window, the purchase toast for a 35-second timer. Shipping their
   code in the initial chunk costs every visitor bytes they will mostly never
   execute.
 
@@ -35,6 +36,14 @@ const WelcomeOffer = dynamic(
 );
 const QuizNudge = dynamic(
   () => import("@/components/marketing/QuizNudge").then((m) => m.QuizNudge),
+  { ssr: false },
+);
+const Toaster = dynamic(
+  () => import("@/components/ui/Toaster").then((m) => m.Toaster),
+  { ssr: false },
+);
+const BackToTop = dynamic(
+  () => import("@/components/ui/BackToTop").then((m) => m.BackToTop),
   { ssr: false },
 );
 const LivePurchaseToast = dynamic(
@@ -72,6 +81,8 @@ export function DeferredUi({ firstOrder }: { firstOrder: FirstOrderOffer }) {
   return (
     <>
       <CartDrawer />
+      <Toaster />
+      <BackToTop />
       {!miniApp && popups.exit.enabled && <ExitIntentPopup />}
       {!miniApp && popups.welcome.enabled && firstOrder.mode !== "off" && <WelcomeOffer offer={firstOrder} />}
       {!miniApp && popups.quiz.enabled && <QuizNudge />}

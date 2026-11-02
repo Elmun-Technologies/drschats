@@ -3,13 +3,14 @@ import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { OFFER_PUBLISHED } from "@/lib/seo/indexable";
 import type { Metadata } from "next";
 
 export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  return staticPageMetadata(locale, "offer", "/offer");
+  return staticPageMetadata(locale, "offer", "/offer", { noindex: !OFFER_PUBLISHED });
 }
 
 /*

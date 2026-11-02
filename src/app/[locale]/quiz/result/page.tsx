@@ -4,7 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { buildQuizPlan, decodeAnswers } from "@/lib/quiz/recommend";
 import { getQuizQuestions } from "@/lib/quiz/questions";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
+import { buildPageMetadata } from "@/lib/seo/metadata";
 import { QuizPlanView } from "@/components/quiz/QuizPlanView";
 import { firstParam } from "@/lib/search-params";
 
@@ -20,8 +20,9 @@ export async function generateMetadata({
   return {
     ...buildPageMetadata({
       locale,
+      noindex: true,
       path: "/quiz/result",
-      title: `${t("resultTitle")} — ${SITE_NAME}`,
+      title: t("resultTitle"),
       description: t("resultSubtitle"),
     }),
     // A personal plan is not a search result — keep it out of the index.

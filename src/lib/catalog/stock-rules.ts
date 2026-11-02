@@ -12,6 +12,23 @@
 export const DEFAULT_LOW_STOCK_AT = 5;
 export const LOW_STOCK_SETTING_KEY = "stock.lowStockAt";
 
+/*
+  Holding stock. An order takes tracked units at once, paid or not, so one
+  order may take at most MAX_TRACKED_LINE_QTY of a tracked product (a shelf
+  of 40 cannot be emptied by one unpaid order), and an online order still
+  `new` and unpaid after `orders.releaseUnpaidHours` is cancelled by the
+  worker, which gives its units back (lib/orders/release.ts). 0 = never.
+*/
+export const MAX_TRACKED_LINE_QTY = 10;
+export const RELEASE_UNPAID_KEY = "orders.releaseUnpaidHours";
+export const DEFAULT_RELEASE_UNPAID_HOURS = 24;
+
+export function parseReleaseHours(raw: string | null | undefined): number {
+  if (raw == null || raw === "") return DEFAULT_RELEASE_UNPAID_HOURS;
+  const n = Number(raw);
+  return Number.isInteger(n) && n >= 0 && n <= 168 ? n : DEFAULT_RELEASE_UNPAID_HOURS;
+}
+
 export interface StockInfo {
   qty: number;
   lowAt: number;
@@ -122,8 +139,4 @@ export function dueRequests<T extends WaitingRequest>(requests: T[], product: { 
   );
 }
 
-/** Last nine digits — how a phone is matched across orders, links and requests. */
-export function phone9Of(raw: string): string | null {
-  const digits = raw.replace(/\D/g, "");
-  return digits.length >= 9 ? digits.slice(-9) : null;
-}
+export { phone9Of } from "@/lib/phone9";

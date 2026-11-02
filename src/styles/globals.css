@@ -51,7 +51,10 @@
   --color-chip-strong: #e3e6e9;
   --color-line: #e4e6e8;
   --color-line-strong: #d9dcdf;
+  --color-line-soft: #eef0f1;
+  --color-control: #8a8f95;
   --color-ink: #17191b;
+  --color-ink-1: #2e3236;
   --color-ink-2: #44494e;
   --color-muted: #63686e;
   --color-dark-panel: #1c1f22;
@@ -94,6 +97,7 @@
   --text-button--line-height: 20px;
 
   --radius-pill: 9999px;
+  --radius-input: 14px;
   --radius-sm: 12px;
 
   --shadow-arrow: 0 2px 10px rgba(23, 25, 27, 0.12);
@@ -193,12 +197,10 @@
 
 @keyframes pagein {
   from {
-    opacity: 0;
-    transform: translateY(8px);
+    opacity: 0.6;
   }
   to {
     opacity: 1;
-    transform: none;
   }
 }
 
@@ -260,6 +262,13 @@
   `--tab-bar` is the tab bar alone; `--bottom-nav` adds the product page's
   fixed buy bar, which sits on top of it. A page opts in by rendering an
   element with `data-buy-bar`, so the offset exists exactly while the bar does.
+
+  No `env(safe-area-inset-*)` on the site's own furniture: the viewport is not `viewport-fit=cover`,
+  so the browser already keeps the page out of the notch and the home
+  indicator and every inset reads 0. Opting into `cover` means adding the
+  insets back here, on the tab bar, the bottom sheets and the drawer footer,
+  and padding the containers for landscape. (The Mini App body below keeps
+  its inset: Telegram's own webview decides that one.)
 */
 :root {
   --tab-bar: 0px;
@@ -268,7 +277,7 @@
 }
 @media (max-width: 1023.98px) {
   :root {
-    --tab-bar: calc(4.25rem + env(safe-area-inset-bottom, 0px));
+    --tab-bar: 4.25rem;
   }
   :root:has([data-buy-bar]) {
     --buy-bar: 4.5rem;
@@ -360,11 +369,14 @@ html[data-miniapp] body {
 }
 
 /* CSS-only route transition (no JS dependency → never hides content).
-   `backwards` (not `both`): a filled-forwards transform leaves an identity
-   matrix on the wrapper, which turns it into the containing block for every
-   `position: fixed` descendant (sticky buy bar, drawers, popups). */
-.page-in {
-  animation: pagein 0.42s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+   Opacity only, from 0.6 and for 0.2s: the old 0.42s slide from opacity 0
+   held every page's first paint (and LCP) back, and its transform made the
+   wrapper the containing block of every `position: fixed` descendant (buy
+   bar, drawers, popups) while it ran. Off for reduced motion. */
+@media (prefers-reduced-motion: no-preference) {
+  .page-in {
+    animation: pagein 0.2s ease-out backwards;
+  }
 }
 
 :root {
@@ -443,18 +455,6 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
-}
-
-/* Lenis smooth scroll */
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-.lenis.lenis-smooth {
-  scroll-behavior: auto !important;
-}
-.lenis.lenis-stopped {
-  overflow: hidden;
 }
 
 /* Utility layer */

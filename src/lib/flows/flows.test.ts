@@ -56,8 +56,8 @@ describe("steps", () => {
     expect(stepsSchema.safeParse([{ ...valid[0], promo: { kind: "percent", value: 95, ttlHours: 24 } }]).success).toBe(false);
   });
 
-  it("seeds six valid playbook flows whose promo steps mention the code", () => {
-    expect(DEFAULT_FLOWS.map((f) => f.id)).toEqual(["cart-abandoned", "first-purchase", "course-ending", "lapsed", "birthday", "restock"]);
+  it("seeds eight valid playbook flows whose promo steps mention the code", () => {
+    expect(DEFAULT_FLOWS.map((f) => f.id)).toEqual(["cart-abandoned", "first-purchase", "course-ending", "lapsed", "birthday", "subscription-due", "review-request", "restock"]);
     for (const flow of DEFAULT_FLOWS) {
       expect(stepsSchema.safeParse(flow.steps).success).toBe(true);
       for (const step of flow.steps) {

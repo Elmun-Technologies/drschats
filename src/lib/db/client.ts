@@ -1,3 +1,5 @@
+import "server-only";
+
 import postgres from "postgres";
 import { drizzle, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
 import * as schema from "./schema";
@@ -25,6 +27,9 @@ export function getDb(): Db {
       prepare: false,
       idle_timeout: 20,
       connect_timeout: 10,
+      // Recycled every 30 minutes: a pooler or failover change is picked up without a restart.
+      // The per-query limit is on the role (0021): a startup parameter would be refused by PgBouncer.
+      max_lifetime: 30 * 60,
       onnotice: () => {},
     });
     holder.__govitaDb = drizzle(sql, { schema });

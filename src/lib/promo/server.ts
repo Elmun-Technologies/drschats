@@ -1,9 +1,8 @@
 import "server-only";
 
-import { randomInt } from "node:crypto";
 import { and, count, eq, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { orders, promoCodes, promoRedemptions, type PromoSource } from "@/lib/db/schema";
+import { orders, promoCodes, promoRedemptions } from "@/lib/db/schema";
 import { orderValues, refreshStockPages } from "@/lib/catalog/db";
 import { StockShortage, takeStock } from "@/lib/catalog/stock";
 import type { OrderAdjustment, OrderRequest, Promotion } from "@/lib/shopflow/types";
@@ -13,7 +12,6 @@ import {
   chooseAdjustment,
   evaluatePromo,
   firstOrderDiscount,
-  generatePromoCode,
   normalizePromoCode,
   phone9Of,
   type PromoCheck,
@@ -30,6 +28,7 @@ import { readLoyaltyRules } from "@/lib/loyalty/settings";
 import { earnFor, maxRedeemable, paidGoods } from "@/lib/loyalty/model";
 import { ledgerState, writeRedemption } from "@/lib/loyalty/server";
 import { readRedeemToken } from "@/lib/loyalty/otp-server";
+import { previousOrders } from "./issue";
 
 /*
   Promo codes and the first-order discount against the database.
@@ -81,13 +80,20 @@ async function phoneUses(exec: Exec, code: string, phone9: string): Promise<numb
   return row?.n ?? 0;
 }
 
-/** Orders already placed from this phone that were not cancelled. */
-export async function previousOrders(exec: Exec, phone9: string): Promise<number> {
-  const [row] = await exec
-    .select({ n: count() })
-    .from(orders)
-    .where(and(sql`${orders.status} <> 'cancelled'`, sql`right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9) = ${phone9}`));
-  return row?.n ?? 0;
+/*
+  The first-order and referral discounts are "one per phone", and anyone can
+  type any number into the cart. So they are applied automatically only to a
+  phone that is proven: the SMS code (lib/loyalty/otp-server.ts — the token the
+  cart gets after typing it, `phoneToken`, or the points token that proves the
+  same thing), or a number Telegram itself verified (the bot's shop passes
+  `phoneVerified`). An unproven number gets no automatic discount; the
+  operator's message says a new customer may be due one, and the operator
+  applies it after the call (lib/orders/notify.ts) — the old operator mode.
+*/
+export function phoneProven(order: Pick<OrderRequest, "phoneToken" | "pointsToken">, phone9: string | null, verified = false): boolean {
+  if (verified) return Boolean(phone9);
+  if (!phone9) return false;
+  return Boolean(readRedeemToken(order.phoneToken, phone9) ?? readRedeemToken(order.pointsToken, phone9));
 }
 
 /** A referral code's rejection, in the promo field's vocabulary. */
@@ -122,14 +128,21 @@ export async function quoteDiscounts({
   promotions,
   code: rawCode,
   phone,
+  phoneToken,
+  phoneVerified = false,
 }: {
   lines: PromoLine[];
   promotions: Promotion[];
   code?: string | null;
   phone?: string | null;
+  /** The cart's proof of the phone (SMS code); see phoneProven. */
+  phoneToken?: string | null;
+  /** The number came from Telegram's own contact share (the bot's shop). */
+  phoneVerified?: boolean;
 }): Promise<DiscountQuote> {
   const db = getDb();
   const phone9 = phone9Of(phone);
+  const proven = phoneProven({ phoneToken: phoneToken ?? undefined }, phone9, phoneVerified);
   const [setting, commerce, loyalty] = await Promise.all([readFirstOrderSetting(), getCommerceSettings(), readLoyaltyRules()]);
   const pricing = pricingRulesOf(commerce);
 
@@ -140,7 +153,9 @@ export async function quoteDiscounts({
     if (!code) promo = { ok: false, reason: "invalid_format" };
     else if (await isLiveReferral(db, code)) {
       const q = await quoteReferral(db, { code, phone9, lines, promotions, rules: loyalty });
-      if (q.ok && q.discount > 0) {
+      // Before the phone is proven the friend's discount is not promised (the operator applies it).
+      if (q.ok && q.discount > 0 && phone9 && !proven) promo = { ok: false, code, reason: "not_applicable" };
+      else if (q.ok && q.discount > 0) {
         promo = { ok: true, code, discount: q.discount, eligibleSubtotal: q.discount };
         referralPercent = q.percent;
       } else promo = { ok: false, code, reason: q.ok ? "not_applicable" : referralReason(q.reason) };
@@ -153,7 +168,11 @@ export async function quoteDiscounts({
 
   const amount = firstOrderDiscount(lines, promotions, setting.percent);
   let state: FirstOrderState = "off";
-  if (setting.enabled) state = !phone9 ? "needs_phone" : (await previousOrders(db, phone9)) === 0 ? "applies" : "returning";
+  /*
+    An unproven number gets "off", not "returning": telling a stranger whether
+    a number has ordered here before would make the cart a lookup service.
+  */
+  if (setting.enabled) state = !phone9 ? "needs_phone" : !proven ? "off" : (await previousOrders(db, phone9)) === 0 ? "applies" : "returning";
 
   const applied = chooseAdjustment(
     promo?.ok ? { code: promo.code, discount: promo.discount, referralPercent } : null,
@@ -163,7 +182,7 @@ export async function quoteDiscounts({
 }
 
 export type PlaceOrderResult =
-  | { ok: true; orderId: string; order: OrderRequest; pointsEarn: number }
+  | { ok: true; orderId: string; order: OrderRequest; pointsEarn: number; phoneProven: boolean }
   | { ok: false; error: "points_invalid" }
   | { ok: false; error: "promo_invalid"; code: string; rejection: PromoRejection }
   | { ok: false; error: "insufficient_stock"; slug?: string; available: number }
@@ -192,8 +211,13 @@ class PromoRejected extends Error {
  * rolls everything back and is reported, so the cart can drop it and the
  * customer resubmits knowingly.
  */
-export async function placeOrder(order: OrderRequest, promotions: Promotion[]): Promise<PlaceOrderResult> {
+export async function placeOrder(
+  order: OrderRequest,
+  promotions: Promotion[],
+  options: { phoneVerified?: boolean } = {},
+): Promise<PlaceOrderResult> {
   const phone9 = phone9Of(order.customer.phone);
+  const proven = phoneProven(order, phone9, options.phoneVerified);
   const code = order.promoCode ? normalizePromoCode(order.promoCode) : null;
   if (order.promoCode && !code) return { ok: false, error: "promo_invalid", code: order.promoCode, rejection: { reason: "invalid_format" } };
   const lines = promoLinesOf(order.items);
@@ -215,7 +239,8 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
         const q = await quoteReferral(tx, { code, phone9, lines, promotions, rules: loyalty });
         if (!q.ok) throw new PromoRejected(code, { reason: referralReason(q.reason) } as PromoRejection);
         if (q.discount <= 0) throw new PromoRejected(code, { reason: "not_applicable" });
-        promo = { code, discount: q.discount, referralPercent: q.percent };
+        // An unproven phone keeps the referral (the friend came with the code) but not the discount.
+        if (proven) promo = { code, discount: q.discount, referralPercent: q.percent };
         referral = { code, referrer: q.referrer };
       } else if (code) {
         const [row] = await tx.select().from(promoCodes).where(eq(promoCodes.code, code)).for("update");
@@ -231,7 +256,7 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
       }
 
       const firstOrder =
-        setting.enabled && phone9 && (await previousOrders(tx, phone9)) === 0
+        setting.enabled && phone9 && proven && (await previousOrders(tx, phone9)) === 0
           ? { percent: setting.percent, amount: firstOrderDiscount(lines, promotions, setting.percent) }
           : null;
       const adjustment = chooseAdjustment(promo, firstOrder);
@@ -248,7 +273,7 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
         if (points <= 0) throw new PointsRejected();
         totals = applyPoints(totals, points);
       }
-      const final: OrderRequest = { ...order, promoCode: undefined, pointsToken: undefined, totals };
+      const final: OrderRequest = { ...order, promoCode: undefined, pointsToken: undefined, phoneToken: undefined, totals };
       const usedCode = adjustment?.kind === "promo" || adjustment?.kind === "referral" ? adjustment.code : null;
 
       const [saved] = await tx.insert(orders).values(orderValues(final, usedCode)).returning({ id: orders.id, number: orders.number });
@@ -269,7 +294,7 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
           discount: adjustment?.kind === "referral" ? adjustment.amount : 0,
         });
       }
-      return { ok: true as const, orderId: saved.number ?? String(saved.id), order: final, pointsEarn: earnFor(final.totals, loyalty) };
+      return { ok: true as const, orderId: saved.number ?? String(saved.id), order: final, pointsEarn: earnFor(final.totals, loyalty), phoneProven: proven };
     });
     if (stockChanged.length > 0) refreshStockPages(order.items.filter((i) => stockChanged.includes(i.productId)).map((i) => i.slug));
     return placed;
@@ -283,102 +308,4 @@ export async function placeOrder(order: OrderRequest, promotions: Promotion[]): 
     console.error("[orders] insert failed:", (err as Error).message);
     return { ok: false, error: "failed" };
   }
-}
-
-export interface IssuePromoCodeOptions {
-  kind: "percent" | "fixed";
-  /** Percent (1–90) or a sum in soʻm. */
-  value: number;
-  /** Bind the code to one customer (any phone format; the last 9 digits are kept). */
-  phone?: string | null;
-  /** Lifetime from now; omitted or 0 — no end date. */
-  ttlHours?: number;
-  source: PromoSource;
-  campaignId?: string | null;
-  minSubtotal?: number | null;
-  /** Total redemptions; default 1 — a personal, single-use code. */
-  maxUses?: number | null;
-  productSlugs?: string[] | null;
-  note?: string | null;
-  /** Code prefix, default "GV". */
-  prefix?: string;
-}
-
-/**
- * Create a readable unique code (`GV-7K3P9Q`) and return it.
- *
- * The entry point for every automated flow — SMS/Telegram campaigns, the
- * referral and birthday flows: they call this, then send the code. It
- * retries on the (rare) collision with an existing code.
- */
-export async function issuePromoCode(opts: IssuePromoCodeOptions): Promise<string> {
-  if (!Number.isInteger(opts.value) || opts.value <= 0 || (opts.kind === "percent" && opts.value > 90)) {
-    throw new Error("issuePromoCode: value out of range");
-  }
-  const phone9 = opts.phone ? phone9Of(opts.phone) : null;
-  if (opts.phone && !phone9) throw new Error("issuePromoCode: phone must have 9+ digits");
-  const endsAt = opts.ttlHours && opts.ttlHours > 0 ? new Date(Date.now() + opts.ttlHours * 3_600_000) : null;
-  const db = getDb();
-  for (let attempt = 0; attempt < 8; attempt++) {
-    const code = generatePromoCode(randomInt, opts.prefix ?? "GV");
-    const inserted = await db
-      .insert(promoCodes)
-      .values({
-        code,
-        kind: opts.kind,
-        value: opts.value,
-        minSubtotal: opts.minSubtotal ?? null,
-        maxUses: opts.maxUses === undefined ? 1 : opts.maxUses,
-        perPhoneLimit: 1,
-        phone9,
-        productSlugs: opts.productSlugs && opts.productSlugs.length > 0 ? opts.productSlugs : null,
-        endsAt,
-        source: opts.source,
-        campaignId: opts.campaignId ?? null,
-        note: opts.note ?? null,
-      })
-      .onConflictDoNothing()
-      .returning({ code: promoCodes.code });
-    if (inserted.length > 0) return inserted[0].code;
-  }
-  throw new Error("issuePromoCode: could not find a free code");
-}
-
-/**
- * `count` single-use codes sharing one campaign id, for an SMS or Telegram
- * send-out (exported as CSV from /admin/promocodes). Returns the codes.
- */
-export async function issuePromoCodeBatch(
-  count: number,
-  opts: Omit<IssuePromoCodeOptions, "phone" | "maxUses"> & { campaignId: string },
-): Promise<string[]> {
-  if (!Number.isInteger(count) || count < 1 || count > 2000) throw new Error("issuePromoCodeBatch: 1–2000 codes");
-  if (!Number.isInteger(opts.value) || opts.value <= 0 || (opts.kind === "percent" && opts.value > 90)) {
-    throw new Error("issuePromoCodeBatch: value out of range");
-  }
-  const endsAt = opts.ttlHours && opts.ttlHours > 0 ? new Date(Date.now() + opts.ttlHours * 3_600_000) : null;
-  const db = getDb();
-  const issued: string[] = [];
-  for (let round = 0; round < 8 && issued.length < count; round++) {
-    const fresh = new Set<string>();
-    while (fresh.size < count - issued.length) fresh.add(generatePromoCode(randomInt, opts.prefix ?? "GV"));
-    const values = [...fresh].map((code) => ({
-      code,
-      kind: opts.kind,
-      value: opts.value,
-      minSubtotal: opts.minSubtotal ?? null,
-      maxUses: 1,
-      perPhoneLimit: 1,
-      productSlugs: opts.productSlugs && opts.productSlugs.length > 0 ? opts.productSlugs : null,
-      endsAt,
-      source: opts.source,
-      campaignId: opts.campaignId,
-      note: opts.note ?? null,
-    }));
-    for (let i = 0; i < values.length; i += 500) {
-      const rows = await db.insert(promoCodes).values(values.slice(i, i + 500)).onConflictDoNothing().returning({ code: promoCodes.code });
-      issued.push(...rows.map((r) => r.code));
-    }
-  }
-  return issued;
 }

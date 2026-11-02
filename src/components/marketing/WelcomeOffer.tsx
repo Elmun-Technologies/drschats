@@ -7,6 +7,7 @@ import { localizedOr } from "@/lib/commerce/settings";
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { isQuietPath, usePopups } from "@/lib/ui/popups";
 import { buttonVariants } from "@/components/ui/Button";
+import { DiscountBadge } from "@/components/ui/Price";
 import { PopupShell } from "./PopupShell";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
 
@@ -24,12 +25,14 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
   const tc = useTranslations("common");
   const locale = useLocale();
   const pathname = usePathname();
-  const rule = useCommerce().popups.welcome;
+  const commerce = useCommerce();
+  const rule = commerce.popups.welcome;
+  const hours = commerce.delivery.tashkentHours;
   const active = usePopups((s) => s.active === "welcome");
   const close = usePopups((s) => s.close);
 
   useEffect(() => {
-    if (!rule.enabled || isQuietPath(pathname)) return;
+    if (!rule.enabled || isQuietPath(pathname, "welcome")) return;
     let done = false;
     const fire = () => {
       if (done) return;
@@ -50,9 +53,7 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
 
   return (
     <PopupShell open={active} onClose={close} labelledBy="welcome-title" closeLabel={tc("close")}>
-      <span className="inline-flex rounded-full bg-red px-3 py-1 text-sm font-bold text-white">
-        −{offer.percent}%
-      </span>
+      <DiscountBadge percent={offer.percent} />
       <h2 id="welcome-title" className="mt-4 pr-8 text-[26px] font-bold leading-8">
         {localizedOr(rule.title, locale, t("title", { percent: offer.percent })).replaceAll("{percent}", String(offer.percent))}
       </h2>
@@ -63,7 +64,7 @@ export function WelcomeOffer({ offer }: { offer: FirstOrderOffer }) {
         {(["perk1", "perk2", "perk3"] as const).map((k) => (
           <li key={k} className="flex gap-2.5">
             <span aria-hidden className="mt-0.5 font-bold text-ink">✓</span>
-            {t(k)}
+            {t(k, { hours })}
           </li>
         ))}
       </ul>

@@ -148,7 +148,7 @@ function FilterSheet({ ctx, onClose }: { ctx: PanelContext; onClose: () => void 
           <Group title={t("sort")} sheet>
             <div className="flex flex-wrap gap-1.5">
               {SORT_ORDER.map((s) => (
-                <button key={s} type="button" aria-pressed={s === sort} onClick={() => setSort(s)} className={cn(chipClass(s === sort), "h-9")}>
+                <button key={s} type="button" aria-pressed={s === sort} onClick={() => setSort(s)} className={chipClass(s === sort)}>
                   {t(sortKey(s))}
                 </button>
               ))}
@@ -163,7 +163,7 @@ function FilterSheet({ ctx, onClose }: { ctx: PanelContext; onClose: () => void 
               go(draft, sort);
               close();
             }}
-            className="flex h-[52px] w-full items-center justify-center rounded-[14px] bg-ink text-button font-semibold text-white"
+            className="flex h-[52px] w-full items-center justify-center rounded-input bg-ink text-button font-semibold text-white"
           >
             {v3("show", { count: shown })}
           </button>
@@ -286,7 +286,7 @@ function Check({
         aria-hidden
         className={cn(
           "flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-[1.5px] peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-ink",
-          checked ? "border-ink bg-ink" : "border-[#8A8F95]",
+          checked ? "border-ink bg-ink" : "border-control",
         )}
       >
         {checked && <Icon d="M5 12l5 5 9-10" className="h-3.5 w-3.5 text-white" strokeWidth={3} />}

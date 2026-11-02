@@ -13,6 +13,8 @@ export const FLOW_TRIGGERS = [
   "lapsed",
   "restock",
   "birthday",
+  "subscription_due",
+  "review_request",
 ] as const;
 export type FlowTrigger = (typeof FLOW_TRIGGERS)[number];
 
@@ -30,6 +32,8 @@ export const TRIGGER_INFO: Record<FlowTrigger, { title: string; anchor: string; 
   */
   restock: { title: "Mahsulot omborga keldi", anchor: "mahsulot kelgan vaqtdan", ready: false },
   birthday: { title: "Tugʻilgan kun", anchor: "tugʻilgan kundan N kun oldin (Sodiqlik sozlamasi)", ready: true },
+  subscription_due: { title: "Obuna: keyingi yetkazish yaqin", anchor: "obunadagi keyingi yetkazishdan 3 kun oldin", ready: true },
+  review_request: { title: "Sharh soʻrash", anchor: "buyurtma yetkazilgan kundan", ready: true },
 };
 
 export const STEP_CHANNELS = ["telegram_then_sms", "telegram", "sms"] as const;

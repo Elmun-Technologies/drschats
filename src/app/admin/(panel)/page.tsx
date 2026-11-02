@@ -1,7 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { sql } from "drizzle-orm";
+import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/admin/session";
+import { can } from "@/lib/admin/roles";
 import { getDb } from "@/lib/db/client";
 import { catalogCounts, lowStockCount } from "@/lib/admin/queries";
 import { waitingCount } from "@/lib/admin/waitlist";
@@ -41,9 +43,12 @@ function Attention({ href, value, label, hint }: { href: string; value: number; 
   );
 }
 
-export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
+export default async function AdminDashboard({ searchParams }: { searchParams: Promise<{ range?: string | string[]; denied?: string }> }) {
   const admin = await requireAdmin();
-  const range = parseRange((await searchParams).range, 7);
+  const params = await searchParams;
+  // Revenue and traffic are the analytics permission; an operator starts at the orders.
+  if (!can(admin.role, "analytics")) redirect(params.denied === "1" ? "/admin/orders?denied=1" : "/admin/orders");
+  const range = parseRange(params.range, 7);
   const [metrics, funnel, series, channelRows, deviceRows, mix, heat, cats, top, live, segments, counts, tickets, lowStock, waiting] = await Promise.all([
     getOrderMetrics(range),
     siteFunnel(range),

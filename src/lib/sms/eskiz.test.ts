@@ -74,6 +74,18 @@ describe("EskizProvider", () => {
     expect(await new EskizProvider({ email: "a@b.uz", password: "p", fetch: b.impl }).send("+998901234567", "x")).toEqual({ ok: false, retryable: true, error: "eskiz_unreachable" });
   });
 
+  it("does not resend after a timeout: the SMS may already be on its way", async () => {
+    const timeout = () => {
+      const err = new Error("The operation was aborted due to timeout");
+      err.name = "TimeoutError";
+      throw err;
+    };
+    const { impl } = fakeFetch([login("T"), timeout]);
+    const result = await new EskizProvider({ email: "a@b.uz", password: "p", fetch: impl }).send("+998901234567", "x");
+    expect(result).toMatchObject({ ok: false, retryable: false });
+    expect(result.ok ? "" : result.error).toContain("eskiz_timeout");
+  });
+
   it("refuses a non-Uzbek number without a request", async () => {
     const { impl, calls } = fakeFetch([]);
     expect(await new EskizProvider({ email: "a@b.uz", password: "p", fetch: impl }).send("+7 916 123 45 67", "x")).toMatchObject({ ok: false, error: "invalid_phone" });
