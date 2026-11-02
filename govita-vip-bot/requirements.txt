@@ -1,5 +1,8 @@
+# Runtime dependencies of the bot image — exact versions, so a rebuild is the
+# same bot. Tests: requirements-dev.txt.
 aiogram==3.13.1
-aiosqlite>=0.20
-pytest>=8
-pytest-asyncio>=0.23
-python-dotenv>=1.0,<2
+aiosqlite==0.20.0
+python-dotenv==1.0.1
+# Kept here only because CI installs `requirements.txt pytest` for the bot
+# job; move it to requirements-dev.txt once CI installs that file instead.
+pytest-asyncio==0.24.0

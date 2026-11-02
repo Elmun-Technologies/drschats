@@ -14,7 +14,6 @@ import { builtInCatalogStatus, dismissBuiltInImport, insertBuiltInCatalog } from
 import { dismissKeysOf } from "@/lib/admin/catalog-sync";
 import { slugify } from "@/lib/admin/slugify";
 import { SLUG_RE, formToContent, fromTashkentInput, parseImages, productFieldsSchema } from "@/lib/admin/product-form";
-import { isStorageConfigured, uploadImage } from "@/lib/admin/storage";
 import { isAllowedImageUrl } from "@/lib/security/csp";
 import { recordManualMovement } from "@/lib/catalog/stock";
 import { afterProductChange } from "@/lib/notify/waitlist";
@@ -192,23 +191,6 @@ export async function toggleProductStock(form: FormData) {
   await db.update(products).set({ inStock: !row.inStock, updatedAt: new Date() }).where(eq(products.id, id));
   refresh();
   await afterProductChange(id, row, { inStock: !row.inStock, price: row.price });
-}
-
-export async function uploadProductImage(_: FormState, form: FormData): Promise<FormState & { url?: string }> {
-  await requireAdmin("catalog");
-  if (!isStorageConfigured) return { error: "Rasm saqlash (Tigris) sozlanmagan — URL manzilini qoʻlda kiriting." };
-  const file = form.get("file");
-  if (!(file instanceof File) || file.size === 0) return { error: "Fayl tanlanmagan." };
-  try {
-    const url = await uploadImage(file, "products");
-    return { ok: "Yuklandi.", url };
-  } catch (err) {
-    const code = (err as Error).message;
-    return {
-      error:
-        code === "too-large" ? "Fayl 5 MB dan katta." : code === "unsupported-type" ? "Faqat JPG, PNG, WebP yoki AVIF." : "Yuklab boʻlmadi.",
-    };
-  }
 }
 
 /* ─── Categories ─────────────────────────────────────────────────────────── */

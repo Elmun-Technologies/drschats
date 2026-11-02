@@ -32,6 +32,9 @@ ARG CSP_MODE=report-only
 # Analytics IDs are managed in /admin/integrations; this lets their vendor hosts through the CSP.
 ARG ADMIN_ANALYTICS_CSP=on
 ARG STORAGE_PUBLIC_URL
+# The Tigris bucket: the image optimiser and img-src allow only this bucket
+# (lib/security/csp.ts). Not secret; fly-deploy.yml passes it. Unset = any bucket.
+ARG BUCKET_NAME
 
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NEXT_PUBLIC_GTM_ID=$NEXT_PUBLIC_GTM_ID \
@@ -67,14 +70,24 @@ ENV NODE_ENV=production \
 
 RUN groupadd --system --gid 1001 app && useradd --system --uid 1001 --gid app app
 
-COPY --from=build --chown=app:app /app/.next/standalone ./
-COPY --from=build --chown=app:app /app/.next/static ./.next/static
-COPY --from=build --chown=app:app /app/public ./public
+# The app's code belongs to root: the process (user app) can read it but not
+# change it, so a bug that lets someone write files cannot rewrite the server.
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/public ./public
 # release_command: `node scripts/db/migrate.mjs`. Next bundles `postgres` into
 # the server chunks, so the migration script gets its own copy (no deps).
-COPY --from=build --chown=app:app /app/scripts/db ./scripts/db
-COPY --from=build --chown=app:app /app/db ./db
-COPY --from=build --chown=app:app /app/node_modules/postgres ./node_modules/postgres
+COPY --from=build /app/scripts/db ./scripts/db
+COPY --from=build /app/db ./db
+COPY --from=build /app/node_modules/postgres ./node_modules/postgres
+
+# What Next writes at runtime, and nothing else: .next/cache (images, fetch
+# cache) and the ISR output under .next/server/app. Its directories are
+# root:app with the sticky bit — the app can add and replace its own page
+# files but cannot delete or replace the root-owned .js beside them.
+RUN mkdir -p .next/cache && chown -R app:app .next/cache \
+ && find .next/server/app -type d -exec chown root:app {} + -exec chmod 1775 {} + \
+ && find .next/server/app -type f ! -name '*.js' ! -name '*.js.map' ! -name '*.json' -exec chown app:app {} +
 
 USER app
 EXPOSE 3000

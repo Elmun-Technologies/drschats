@@ -1,14 +1,16 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
   REMOTE_IMAGE_HOSTS,
+  adminCspHeader,
   buildContentSecurityPolicy,
   cspHeaderName,
   cspHeaders,
   cspMode,
   framingHeaders,
+  reportingHeaders,
 } from "./csp";
 
 /** Parses a policy into directive → sources, the way a browser would. */
@@ -66,15 +68,45 @@ describe("cspHeaders", () => {
     expect(cspHeaders({ CSP_MODE: "enforce" })?.key).toBe("Content-Security-Policy");
   });
 
-  it("adds report-uri only when one is configured", () => {
-    expect(cspHeaders(EMPTY)?.value).not.toContain("report-uri");
+  it("reports to the site's own collector unless told otherwise", () => {
+    expect(cspHeaders(EMPTY)?.value).toMatch(/; report-uri \/api\/csp-report; report-to csp$/);
+    expect(reportingHeaders(EMPTY)).toEqual([{ key: "Reporting-Endpoints", value: 'csp="/api/csp-report"' }]);
 
     const withUri = cspHeaders({ CSP_REPORT_URI: "https://o1.ingest.example/csp" })?.value;
-    expect(withUri).toMatch(/; report-uri https:\/\/o1\.ingest\.example\/csp$/);
+    expect(withUri).toMatch(/; report-uri https:\/\/o1\.ingest\.example\/csp; report-to csp$/);
   });
 
-  it("ignores a blank report-uri", () => {
-    expect(cspHeaders({ CSP_REPORT_URI: "   " })?.value).not.toContain("report-uri");
+  it("turns reporting off on request, and a blank value keeps the default", () => {
+    expect(cspHeaders({ CSP_REPORT_URI: "off" })?.value).not.toContain("report-uri");
+    expect(reportingHeaders({ CSP_REPORT_URI: "off" })).toEqual([]);
+    expect(cspHeaders({ CSP_REPORT_URI: "   " })?.value).toContain("report-uri /api/csp-report");
+  });
+});
+
+describe("adminCspHeader", () => {
+  it("is enforced and allows no third-party script or beacon", () => {
+    const h = adminCspHeader({ ADMIN_ANALYTICS_CSP: "on", NEXT_PUBLIC_GTM_ID: "GTM-X" });
+    expect(h.key).toBe("Content-Security-Policy");
+    const d = parse(h.value);
+    expect(d["script-src"]).toEqual(["'self'", "'unsafe-inline'"]);
+    expect(d["connect-src"]).toEqual(["'self'"]);
+    expect(d["frame-ancestors"]).toEqual(["'self'"]);
+    expect(h.value).not.toContain("googletagmanager");
+  });
+});
+
+describe("Tigris image host", () => {
+  it("names only this deployment's bucket when it is known at build", async () => {
+    const before = process.env.BUCKET_NAME;
+    process.env.BUCKET_NAME = "govita-photos";
+    vi.resetModules();
+    const fresh = await import("./csp");
+    expect(fresh.REMOTE_IMAGE_HOSTS).toContain("govita-photos.fly.storage.tigris.dev");
+    expect(fresh.REMOTE_IMAGE_HOSTS).not.toContain("**.fly.storage.tigris.dev");
+    expect(fresh.isAllowedImageUrl("https://other.fly.storage.tigris.dev/a.webp")).toBe(false);
+    if (before === undefined) delete process.env.BUCKET_NAME;
+    else process.env.BUCKET_NAME = before;
+    vi.resetModules();
   });
 });
 

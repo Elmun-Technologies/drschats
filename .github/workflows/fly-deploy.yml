@@ -85,7 +85,10 @@ jobs:
 
       - name: Deploy
         if: steps.token.outputs.present == 'yes'
-        run: flyctl deploy --remote-only
+        env:
+          # Not secret (it is in every photo URL): narrows the image optimiser to this bucket.
+          BUCKET_NAME: ${{ secrets.BUCKET_NAME }}
+        run: flyctl deploy --remote-only --build-arg "BUCKET_NAME=${BUCKET_NAME}"
 
       - name: Summary
         if: success() && steps.token.outputs.present == 'yes'
