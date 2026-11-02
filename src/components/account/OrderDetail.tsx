@@ -11,6 +11,7 @@ import { cn, formatDate, formatMoney } from "@/lib/utils";
 import { useSession } from "@/lib/auth/store";
 import { useCart } from "@/lib/cart/store";
 import { productCutout } from "@/lib/content/product-cutouts";
+import { cutoutOf } from "@/lib/catalog/product-facts";
 import { ORDER_STEPS, orderStepIndex } from "@/lib/account/orders";
 import { Button, buttonVariants } from "@/components/ui/Button";
 import { AccountShell } from "./AccountShell";
@@ -123,7 +124,8 @@ function Detail({ orderId, catalogue }: { orderId: string; catalogue: Product[] 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_340px]">
         <ul className="rounded-[20px] border border-line px-4 py-1 lg:px-7 lg:py-2">
           {order.items.map((line, i) => {
-            const image = productCutout(line.slug) ?? bySlug.get(line.slug)?.images[0]?.url;
+            const product = bySlug.get(line.slug);
+            const image = (product ? cutoutOf(product) : productCutout(line.slug)) ?? product?.images[0]?.url;
             return (
               <li key={`${line.slug}-${i}`} className={cn("flex items-center gap-4 py-4 lg:py-[18px]", i < order.items.length - 1 && "border-b border-line")}>
                 <span className="relative h-16 w-16 shrink-0 rounded-[16px] bg-tile lg:h-[84px] lg:w-[84px]">
