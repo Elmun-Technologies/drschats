@@ -4,12 +4,12 @@
 # Three stages: install, build the standalone server, run it on a slim base.
 # Debian slim, not Alpine: sharp (image optimisation) ships glibc binaries.
 
-FROM node:22-slim AS deps
+FROM node:26-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --legacy-peer-deps
 
-FROM node:22-slim AS build
+FROM node:26-slim AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
@@ -60,7 +60,7 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
 # built-in catalogue; pages refresh from the database at runtime (ISR).
 RUN npm run build
 
-FROM node:22-slim AS run
+FROM node:26-slim AS run
 WORKDIR /app
 ENV NODE_ENV=production \
     GOVITA_PRODUCTION=1 \
