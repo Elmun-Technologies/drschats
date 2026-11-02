@@ -180,9 +180,9 @@ Qadamlar: **[`BOT-ADMIN.md`](BOT-ADMIN.md) → «Sozlash»** (yangi bot,
 ### 9. Keyinroq (ixtiyoriy)
 Email (Resend + DNS yozuvlari), analytics ID'lari (`fly.toml [build.args]`),
 `CSP_MODE=enforce` — [`QOLGAN-ISHLAR.md`](QOLGAN-ISHLAR.md).
-**Payme/Click/Uzum merchant ID'larini qo'ymang** — gateway handoff va server
-tomondan tasdiqlangan payment callback hali yozilmagan. ID mavjudligi checkout'ni
-yoqmaydi; hozir mijozlar uchun faqat yetkazishda naqd to'lov faol.
+Onlayn to'lov (Payme, Click) deploy sozlamasi emas — `/admin/integrations` →
+«Onlayn toʻlov» da kalitlar kiritilib yoqiladi (`INTEGRATION_ENCRYPTION_KEY` kerak).
+Batafsil: [`ADMIN.md`](ADMIN.md#onlayn-toʻlov-payme-click).
 
 ## Build vaqtidagi qiymatlar
 

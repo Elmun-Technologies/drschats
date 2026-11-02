@@ -7,7 +7,7 @@ import { formatMoney } from "@/lib/utils";
 import { COMMERCE, thousands } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { localizedOr } from "@/lib/commerce/settings";
-import { onlinePaymentAvailable } from "@/lib/config/payments";
+import { getOnlineProviders } from "@/lib/payments/availability";
 import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
 
@@ -113,7 +113,7 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
 
       <InfoFaq title={t("faqTitle")} items={faq} />
 
-      <p className="text-sm text-muted">{onlinePaymentAvailable() ? t("delivery.noteOnline") : t("delivery.noteCall")}</p>
+      <p className="text-sm text-muted">{(await getOnlineProviders().catch(() => [])).length ? t("delivery.noteOnline") : t("delivery.noteCall")}</p>
     </InfoShell>
   );
 }

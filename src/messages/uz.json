@@ -250,7 +250,7 @@
         },
         {
           "question": "Mahsulotlar original ekaniga qanday ishonch hosil qilaman?",
-          "answer": "Har bir mahsulot rasmiy yetkazib beruvchidan keladi. Sertifikatlar va litsenziyalar «Litsenziya va sertifikatlar» sahifasida joylashtirilgan."
+          "answer": "Har bir mahsulot rasmiy yetkazib beruvchidan keladi. Mahsulot sertifikati va litsenziya nusxasini soʻrov boʻyicha yuboramiz — «Litsenziya va sertifikatlar» sahifasida qanday soʻrash yozilgan."
         },
         {
           "question": "Vitaminlarni shifokorsiz ichsa boʻladimi?",
@@ -558,9 +558,9 @@
       "quizTitle": "Qaysi vitamin kerak — bilmaysizmi?",
       "quizText": "Vitamin tanlash testi: bir necha savol, natijada mos mahsulotlar roʻyxati.",
       "quizCta": "Testni boshlash",
-      "subEyebrow": "Subscribe & Save",
+      "subEyebrow": "Obuna va tejash",
       "subTitle": "Obuna: bugun −{first}%, keyin har safar −{recurring}%",
-      "subText": "Oraliqni {intervals} kun qilib tanlaysiz. Istalgan vaqtda bekor qilish mumkin.",
+      "subText": "Oraliqni {intervals} kun qilib tanlaysiz. Bekor qilish — operator orqali.",
       "subCta": "Batafsil",
       "shown": "{total} ta mahsulotdan {shown} tasi koʻrsatildi",
       "more": "Yana {count} ta koʻrsatish",
@@ -703,10 +703,12 @@
       "nextSteps": "Keyingi qadamlar",
       "step1Title": "Buyurtma qabul qilindi",
       "step1": "Buyurtma operator navbatiga tushdi.",
-      "step2Title": "Buyurtma yigʻiladi",
-      "step2": "24–48 soat ichida joʻnatishga tayyorlanadi.",
+      "step2Title": "Operator tasdiqlaydi",
+      "step2": "Qoʻngʻiroq qilib, buyurtma va yetkazish vaqtini kelishib oladi.",
       "step3Title": "Kuryer yetkazib beradi",
       "step3": "Buyurtma manzilingizga yetkaziladi.",
+      "step3PickupTitle": "Oʻzi olib ketasiz",
+      "step3Pickup": "Buyurtma tayyor boʻlgach, operator olib ketish manzili va vaqtini aytadi.",
       "telegram": "Telegramda yozish",
       "bonusNudge": "Yana 1 ta qoʻshing — 3-si sovgʻa",
       "fillersTitle": "Bittasini qoʻshing — yetkazish bepul boʻladi:",
@@ -799,7 +801,7 @@
     "errorPhone": "Toʻgʻri telefon raqamini kiriting",
     "success": {
       "title": "Buyurtmangiz qabul qilindi!",
-      "subtitle": "Tez orada operatorimiz siz bilan bogʻlanadi.",
+      "subtitle": "Operatorimiz ish vaqtida ({hours}) qoʻngʻiroq qilib, buyurtmani tasdiqlaydi.",
       "orderId": "Buyurtma raqami",
       "home": "Bosh sahifaga",
       "whatsNext": "Keyingi qadam",
@@ -809,7 +811,7 @@
       "step3": "Kuryer manzilingizga yetkazib beradi",
       "continueShopping": "Xarid qilishni davom ettirish",
       "trackBot": "Telegram orqali buyurtmani kuzatish",
-      "trackBotDesc": "@drschatsstorebot orqali buyurtma holatini real vaqtda bilib turing",
+      "trackBotDesc": "Go Vita Telegram-boti orqali buyurtma holatini real vaqtda bilib turing",
       "loyalty": {
         "pointsTitle": "Keshbek ballari",
         "earn": "Buyurtma yetkazilgach hisobingizga {points} ball tushadi.",
@@ -822,7 +824,11 @@
         "copied": "Nusxalandi",
         "share": "Havolani ulashish",
         "shareMessage": "Go Vitaʼda birinchi buyurtmangizga −{percent}% chegirma: {code} kodi bilan — {link}"
-      }
+      },
+      "summaryTitle": "Buyurtmangiz",
+      "summaryTotal": "Jami",
+      "summaryPayment": "Buyurtmani olganingizda naqd pul bilan toʻlanadi",
+      "summaryPickup": "Oʻzi olib ketish"
     },
     "upsellAdd": "Qoʻshish",
     "upsellFree": "BEPUL 🎁",
@@ -1001,9 +1007,9 @@
   },
   "meta": {
     "homeTitle": "Vitaminlar va BAD sotib olish Toshkentda — Go Vita internet-doʻkoni",
-    "homeDescription": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — Oʻzbekistonga rasmiy import. Narxlar soʻmda, Toshkent boʻylab 24 soatda, viloyatlarga 1–3 kunda yetkazib berish.",
+    "homeDescription": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — rasmiy import. Narxlar soʻmda, Toshkent boʻylab 24 soatda, viloyatlarga 1–3 kunda yetkazib berish.",
     "shopTitle": "Vitaminlar va BAD katalogi — narxlar, sotib olish | Go Vita",
-    "shopDescription": "Vitaminlar, minerallar, BAD, tibbiy ovqatlanish va jihozlar katalogi: narxlar, tarkib va qoʻllash yoʻriqnomasi. Rasmiy import, Oʻzbekiston boʻylab yetkazib berish.",
+    "shopDescription": "Vitaminlar, minerallar, BAD, tibbiy ovqatlanish va jihozlar katalogi: narxlar, tarkib va qoʻllash yoʻriqnomasi. Rasmiy import, butun Oʻzbekistonga yetkazish.",
     "seo": {
       "product": "{name} narxi, Toshkentda sotib olish | Go Vita",
       "productDescription": "{name}: {tagline}. Narxi — {price}. Toshkent boʻylab {hours} soatda, viloyatlarga {regions}da yetkazib berish. Rasmiy import.",
@@ -1092,6 +1098,18 @@
       "programs": {
         "title": "30 kunlik vitamin dasturlari va toʻplamlar | Go Vita",
         "description": "Bir oylik vitamin dasturlari: immunitet, stressdan tiklanish, teri va soch, ayollar va bolalar uchun tayyor toʻplamlar — tarkib, narx va qabul qilish tartibi."
+      },
+      "quiz": {
+        "title": "Vitamin tanlash testi — sizga mos BAD | Go Vita",
+        "description": "Turmush tarzingiz va ehtiyojlaringiz haqidagi savollarga javob bering — Go Vita katalogidan mos vitaminlar roʻyxatini oling. Tashxis emas, tanlashga yordam."
+      },
+      "ingredients": {
+        "title": "Vitamin va minerallar koʻrsatkichi — tarkib va mahsulotlar | Go Vita",
+        "description": "Faol moddalar koʻrsatkichi: vitaminlar, minerallar, kollagen va probiotiklar nima uchun kerak va Go Vita katalogidagi qaysi mahsulotlar tarkibida bor."
+      },
+      "partners": {
+        "title": "Ulgurji hamkorlik — dorixonalar va distributorlar uchun | Go Vita",
+        "description": "Dorixonalar, distributorlar va korporativ mijozlar uchun Go Vita bilan hamkorlik: ulgurji narx, hudud va toʻlov muddati alohida shartnomada. Ariza qoldiring."
       }
     }
   },
@@ -1187,9 +1205,9 @@
       },
       {
         "badge": "−{first}% → −{recurring}%",
-        "title": "Obuna (Subscribe & Save)",
+        "title": "Obuna va tejash",
         "text": "Bugungi yetkazishda {first}% chegirma, keyingi har bir yetkazishda {recurring}%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.",
-        "note": "Istalgan vaqtda toʻxtatish, oʻtkazib yuborish yoki bekor qilish mumkin."
+        "note": "Toʻxtatish, oʻtkazib yuborish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling."
       },
       {
         "badge": "{free}",
@@ -1271,11 +1289,12 @@
     "switchLocale": "Русский язык",
     "closeSearch": "Qidiruvni yopish",
     "closeCatalog": "Katalogni yopish",
-    "homeLabel": "GoVita bosh sahifa",
+    "homeLabel": "Go Vita bosh sahifa",
     "allProductsPlain": "Barcha mahsulotlar",
     "compare": "Taqqoslash",
     "announcementPause": "Eʼlonlarni toʻxtatish",
-    "announcementPlay": "Eʼlonlarni davom ettirish"
+    "announcementPlay": "Eʼlonlarni davom ettirish",
+    "cartCount": "{label}: {count, plural, =0 {boʻsh} other {# ta mahsulot}}"
   },
   "badges": {
     "hot": "YANGI",
@@ -1671,9 +1690,9 @@
         "firstTitle": "Birinchi buyurtma",
         "firstText": "Birinchi buyurtmangizda {percent}% chegirma. Har bir mijoz uchun bir marta.",
         "firstNote": "Promokod kerak emas — operator buyurtmani tasdiqlashda qoʻllaydi.",
-        "subTitle": "Obuna (Subscribe & Save)",
+        "subTitle": "Obuna va tejash",
         "subText": "Bugungi yetkazishda {first}% chegirma, keyingi har bir yetkazishda {next}%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.",
-        "subNote": "Istalgan vaqtda toʻxtatish, oʻtkazib yuborish yoki bekor qilish mumkin.",
+        "subNote": "Toʻxtatish, oʻtkazib yuborish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling.",
         "clubTitle": "VIP klub (Telegram-bot)",
         "clubText": "{amount} soʻmdan yuqori buyurtmalarga bepul yetkazish, klub takliflari va qabul eslatmalari.",
         "clubNote": "Qoʻshimcha foiz chegirma vaʼda qilinmaydi.",
@@ -1895,7 +1914,8 @@
         "messagePh": "Savolingizni yozing",
         "submit": "Yuborish",
         "sent": "Xabaringiz qabul qilindi. Operator ish vaqtida javob beradi.",
-        "phoneField": "Telefon raqami"
+        "phoneField": "Telefon raqami",
+        "certRequest": "«{product}» uchun sertifikat nusxasini yuboring."
       },
       "offerPending": "Ommaviy oferta matni yurist tomonidan tayyorlanmoqda. Ungacha savdo shartlari quyidagi sahifalarda — ular saytda amalda ishlaydigan qoidalar:",
       "offerLinks": "Shartlar"
@@ -1912,7 +1932,8 @@
     "seconds": "soniya",
     "daysLeft": "Aksiya tugashiga {count} kun",
     "hoursLeft": "Aksiya tugashiga {count} soat",
-    "cutoff": "Bugun soat {time} gacha buyurtma bering — ertaga yetkazamiz. Qoldi: <b>{hours} soat {minutes} daqiqa</b>"
+    "cutoff": "Bugun soat {time} gacha buyurtma bering — ertaga yetkazamiz. Qoldi: <b>{hours} soat {minutes} daqiqa</b>",
+    "cutoffMonday": "Bugun soat {time} gacha buyurtma bering — dushanba kuni yetkazamiz. Qoldi: <b>{hours} soat {minutes} daqiqa</b>"
   },
   "wishlist": {
     "add": "Sevimlilarga",
@@ -1926,11 +1947,11 @@
   },
   "exit": {
     "title": "Doʻkondan ketmoqchimisiz?",
-    "body": "Buyurtma holati, qabul eslatmalari va klub takliflari Telegram kanalimizda. Telefon raqamingizni soʻramaymiz.",
+    "body": "Yangi mahsulotlar, aksiyalar va qabul boʻyicha maslahatlar Telegram kanalimizda. Telefon raqamingizni soʻramaymiz.",
     "cta": "Telegram kanalga oʻtish",
     "dismiss": "Yopish",
     "badge": "Go Vita Telegram",
-    "perk1": "Buyurtma holati va yetkazib berish kuzatuvi",
+    "perk1": "Aksiyalar haqida birinchi boʻlib bilish",
     "perk2": "Qabul eslatmalari",
     "perk3": "Klub takliflari va yangi mahsulotlar",
     "promise": "Kanalga oʻtish bepul. Istalgan vaqtda chiqib ketishingiz mumkin.",
@@ -1954,11 +1975,11 @@
   "privacy": {
     "title": "Maxfiylik siyosati",
     "effective": "Kuchga kirish sanasi: 2026 yil 28 iyun",
-    "intro": "Dr. Schatz Store sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday maʼlumotlarni toʻplashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
+    "intro": "Go Vita («DR SCHATZ» MChJ) sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday maʼlumotlarni toʻplashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
     "sections": [
       {
         "heading": "1. Qanday maʼlumotlarni toʻplaymiz",
-        "body": "Telegram-bot (@drschatsstorebot) orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi.\n\nAgar /profile sahifasida «Tugʻilgan kunimda sovgʻa olishni xohlayman» belgisini qoʻysangiz — ism, tugʻilgan kun (kun va oy, yil ixtiyoriy) va telefon raqami serverga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi; rozilikni oʻsha sahifada bekor qilsangiz, maʼlumot oʻchiriladi. Keshbek ballari va doʻst kodlari telefon raqamingizga bogʻlanadi; ballarni ishlatish uchun shu raqamga bir martalik SMS kod yuboriladi (serverda kodning oʻzi emas, faqat shifrlangan izi 1 kun saqlanadi)."
+        "body": "Go Vita Telegram-boti orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi.\n\nAgar /profile sahifasida «Tugʻilgan kunimda sovgʻa olishni xohlayman» belgisini qoʻysangiz — ism, tugʻilgan kun (kun va oy, yil ixtiyoriy) va telefon raqami serverga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi; rozilikni oʻsha sahifada bekor qilsangiz, maʼlumot oʻchiriladi. Keshbek ballari va doʻst kodlari telefon raqamingizga bogʻlanadi; ballarni ishlatish uchun shu raqamga bir martalik SMS kod yuboriladi (serverda kodning oʻzi emas, faqat shifrlangan izi 1 kun saqlanadi)."
       },
       {
         "heading": "2. Maʼlumotlardan qanday foydalanamiz",
@@ -2360,7 +2381,7 @@
     "perServing": "{price} / porsiya",
     "benefitDiscount": "Bugun −{first}%, keyingi yetkazishlarda −{recurring}%",
     "benefitShipping": "{amount} soʻmdan yuqori obuna buyurtmalari bepul yetkaziladi",
-    "benefitControl": "Istalgan vaqtda oʻzgartirish, toʻxtatish yoki bekor qilish mumkin",
+    "benefitControl": "Oʻzgartirish, toʻxtatish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling",
     "intervalLabel": "Yetkazib berish oraligʻi",
     "everyDays": "Har {days} kunda",
     "recurringNote": "Keyingi yetkazishlar: {price}, har {days} kunda",
@@ -2387,7 +2408,7 @@
     },
     "benefitFirst": "Birinchi buyurtmada {first}% chegirma ({price})",
     "benefitRecurring": "Keyingi har bir buyurtmada {recurring}% doimiy chegirma",
-    "benefitCancel": "Istalgan vaqtda 1 bosish bilan bekor qilish mumkin",
+    "benefitCancel": "Bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling",
     "deliveryInterval": "Yetkazish davriyligi:",
     "oneTimeNote": "Doimiy majburiyatlarsiz standart xarid",
     "autoDelivery": "Har oy avtomatik yetkazish",
@@ -2428,5 +2449,43 @@
       "body": "Bir necha savolga javob bering — maqsadingizga mos toʻplamni tavsiya qilamiz.",
       "cta": "Testni boshlash"
     }
+  },
+  "track": {
+    "title": "Buyurtmani kuzatish",
+    "lead": "Buyurtma raqami va buyurtma bergan telefon raqamingizni kiriting.",
+    "number": "Buyurtma raqami",
+    "numberPh": "GV-000123",
+    "phone": "Telefon raqami",
+    "phonePh": "+998 90 123 45 67",
+    "submit": "Koʻrish",
+    "whereNumber": "Raqam buyurtmadan keyingi sahifada, SMS va Telegram xabarida yozilgan.",
+    "invalid": "Buyurtma raqami va telefonni toʻliq kiriting.",
+    "notFound": "Bu raqam va telefon boʻyicha buyurtma topilmadi. Raqamni tekshiring yoki operatorga qoʻngʻiroq qiling: {phone}",
+    "limited": "Urinishlar juda koʻp. 10 daqiqadan keyin qayta urinib koʻring.",
+    "unavailable": "Hozir tekshirib boʻlmadi. Operatorga qoʻngʻiroq qiling: {phone}",
+    "placed": "Berilgan: {date}",
+    "updated": "Oxirgi oʻzgarish: {date}",
+    "hint": {
+      "new": "Operator ish vaqtida ({hours}) qoʻngʻiroq qilib, buyurtmani tasdiqlaydi.",
+      "confirmed": "Buyurtma tasdiqlandi va yigʻilmoqda.",
+      "shipped": "Buyurtma yoʻlda.",
+      "delivered": "Buyurtma yetkazildi. Xaridingiz uchun rahmat!",
+      "cancelled": "Buyurtma bekor qilingan. Savol boʻlsa, operatorga yozing."
+    },
+    "courier": "Kuryer orqali yetkazish",
+    "pickup": "Oʻzi olib ketish",
+    "payCod": "Toʻlov buyurtmani olganda, naqd pul bilan",
+    "payOnline": "Onlayn toʻlov",
+    "shipping": "Yetkazib berish",
+    "discount": "Chegirma",
+    "free": "Bepul",
+    "another": "Boshqa buyurtmani koʻrish",
+    "cta": "Buyurtmani kuzatish",
+    "byOperator": "Buyurtma holatini operatordan bilishingiz mumkin: telefon yoki Telegram orqali ({hours}). Buyurtma raqamini ayting.",
+    "paid": "Toʻlandi — {provider}",
+    "payPending": "Toʻlov kutilmoqda",
+    "payPendingHint": "Toʻlagan boʻlsangiz, bir daqiqadan keyin sahifani yangilang — holat toʻlov tizimi tasdiqlashi bilan oʻzgaradi.",
+    "payNow": "{provider} orqali toʻlash",
+    "refunded": "Toʻlov qaytarildi"
   }
 }

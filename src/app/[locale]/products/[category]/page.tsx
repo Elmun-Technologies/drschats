@@ -11,6 +11,7 @@ import { ShopView } from "@/components/shop/ShopView";
 import { isCatalogSort } from "@/lib/shop/catalog-sort";
 import { parseFilters, type FilterParams } from "@/lib/shop/catalog-filters";
 import { firstParam } from "@/lib/search-params";
+import { CATALOG_VARIANT_PARAMS, isVariantQuery } from "@/lib/seo/query-params";
 
 export const revalidate = 300;
 export const dynamicParams = true;
@@ -46,7 +47,7 @@ export async function generateMetadata({
     path: `/products/${category}`,
     products: products.items,
     fallbackDescription: cat.description ?? cat.name,
-    filtered: Object.keys(query).length > 0,
+    filtered: isVariantQuery(query, CATALOG_VARIANT_PARAMS),
   });
 }
 

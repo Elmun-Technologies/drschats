@@ -83,31 +83,31 @@ const raw: RawHealthTopic[] = [
     slug: "immunity",
     name: { uz: "Immunitet", ru: "Иммунитет" },
     headline: {
-      uz: "Immun tizimini mustahkamlovchi isbotlangan nutriyentlar",
-      ru: "Доказанные нутриенты для укрепления иммунной системы",
+      uz: "Immun tizimining normal ishlashi uchun muhim nutriyentlar",
+      ru: "Нутриенты, важные для нормальной работы иммунной системы",
     },
     intro: {
       uz: "Immun tizimi kundalik ovqatlanish, uyqu sifati va mikroelementlar balansiga tayanadi. Quyida immunitetni qoʻllab-quvvatlash uchun zarur asosiy moddalar keltirilgan.",
-      ru: "Иммунная система напрямую зависит от питания, качества сна и баланса микроэлементов. Ниже — ключевые нутриенты для надежной защиты организма.",
+      ru: "Иммунная система напрямую зависит от питания, качества сна и баланса микроэлементов. Ниже — ключевые нутриенты для поддержки нормальной работы иммунной системы.",
     },
     sections: {
       uz: [
         {
           title: "Immunitet qanday ishlaydi?",
-          body: "Immun tizimi organizmga kiruvchi virus va bakteriyalardan himoya qiluvchi murakkab mexanizmdir. Vitamin D3, Sink va Vitamin C bu tizimning toʻgʻri ishlashi uchun asosiy qurilish gʻishtlari sanaladi.",
+          body: "Immun tizimi — organizmning murakkab hujayraviy mexanizmi. Vitamin D3, sink va vitamin C immun tizimining normal ishlashiga hissa qoʻshadi va immun hujayralari faoliyatida ishtirok etadi.",
         },
         {
-          title: "Profilaktika va qabul tartibi",
-          body: "Mavsumiy shamollashlar davrida yoki intensiv aqliy/jismoniy yuklamalarda profilaktik kurslar oʻtkazish tavsiya etiladi. Yogʻda eriydigan vitaminlar (D3) yogʻli taom bilan yaxshi soʻriladi.",
+          title: "Mavsumiy kurs va qabul tartibi",
+          body: "Kuz-qish mavsumida yoki intensiv aqliy/jismoniy yuklamalarda nutriyentlarni kurs shaklida qabul qilish mumkin. Yogʻda eriydigan vitaminlar (D3) yogʻli taom bilan yaxshi soʻriladi.",
         },
       ],
       ru: [
         {
           title: "Как работает иммунная защита?",
-          body: "Иммунитет — сложный клеточный барьер. Витамин D3, цинк и витамин C служат ключевыми элементами для созревания и активности иммунных клеток (Т- и B-лимфоцитов).",
+          body: "Иммунитет — сложный клеточный механизм. Витамин D3, цинк и витамин C способствуют нормальной работе иммунной системы и участвуют в работе иммунных клеток (Т- и B-лимфоцитов).",
         },
         {
-          title: "Профилактический курс",
+          title: "Сезонный курс приема",
           body: "В межсезонье и периоды высоких нагрузок рекомендуется курсовой прием нутриентов. Жирорастворимый витамин D3 лучше принимать с пищей, содержащей полезные жиры.",
         },
       ],
@@ -116,13 +116,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         "Vitamin D3 — immun hujayralari faolligi",
         "Vitamin C — antioksidant himoya va fagotsitoz",
-        "Sink — shilliq qavatlar butunligi va antiviral toʻsiq",
+        "Sink — immun tizimining normal ishlashiga hissa",
         "Sifatli uyqu va toʻlaqonli oqsil ratsioni",
       ],
       ru: [
         "Витамин D3 — регуляция иммунного ответа",
         "Витамин C — антиоксидантная защита мембран",
-        "Цинк — барьерная функция слизистых оболочек",
+        "Цинк — вклад в нормальную работу иммунной системы",
         "Полноценный сон и достаточное количество белка",
       ],
     },
@@ -134,7 +134,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Immunitet uchun vitaminlarni qachon ichish kerak?",
-          answer: "Profilaktika maqsadida kuz-qish mavsumida yoki holsizlik sezilganda 1–2 oylik kurs shaklida qabul qilish maqsadga muvofiq.",
+          answer: "Odatda kuz-qish mavsumida yoki yuklamalar ortgan davrda 1–2 oylik kurs shaklida qabul qilinadi. Kurs muddatini shifokor bilan kelishing.",
         },
         {
           question: "Bolalar uchun kattalar vitaminlari toʻgʻri keladimi?",
@@ -144,7 +144,7 @@ const raw: RawHealthTopic[] = [
       ru: [
         {
           question: "Как часто нужно проходить курс для иммунитета?",
-          answer: "Обычно профилактический курс составляет 1–2 месяца в осенне-зимний период или при повышенных стрессовых нагрузках.",
+          answer: "Обычно курс составляет 1–2 месяца в осенне-зимний период или при повышенных нагрузках. Длительность курса согласуйте с врачом.",
         },
         {
           question: "Подходят ли взрослые дозировки детям?",
@@ -158,43 +158,43 @@ const raw: RawHealthTopic[] = [
     slug: "sleep",
     name: { uz: "Sifatli uyqu", ru: "Качественный сон" },
     headline: {
-      uz: "Chuqur uyqu va asab tizimi relaksatsiyasi",
-      ru: "Глубокий сон и восстановление нервной системы",
+      uz: "Chuqur uyqu va asab tizimining normal ishlashi",
+      ru: "Глубокий сон и нормальная работа нервной системы",
     },
     intro: {
-      uz: "Uyqu sifatining buzilishi stress, magniy yetishmovchiligi va asab qoʻzgʻaluvchanligi bilan bevosita bogʻliq. Toʻgʻri nutriyentlar chuqur uyqu fazasini tiklashga yordam beradi.",
-      ru: "Нарушения сна связаны с дефицитом магния, перегрузкой нервной системы и вечерним экраном. Нутрицевтики помогают восстановить фазу глубокого сна.",
+      uz: "Uyqu sifatining buzilishi stress, magniy yetishmovchiligi va asab qoʻzgʻaluvchanligi bilan bogʻliq boʻlishi mumkin. Magniy va B6 asab tizimining normal ishlashiga hissa qoʻshadi.",
+      ru: "Нарушения сна могут быть связаны с дефицитом магния, перегрузкой нервной системы и вечерним экраном. Магний и B6 способствуют нормальной работе нервной системы.",
     },
     sections: {
       uz: [
         {
           title: "Magniy va melatonin oʻzaro taʼsiri",
-          body: "Magniy GABA (GAMK) retseptorlarini faollashtirib, miyani tinchlantiradi va tabiiy uyqu gormoni ishlab chiqarilishiga zamin yaratadi.",
+          body: "Magniy GABA (GAMK) tizimi faoliyatida ishtirok etadi va asab tizimining normal ishlashiga hissa qoʻshadi.",
         },
         {
           title: "Kechki tartib",
-          body: "Magniyni yotishdan 30-60 daqiqa oldin qabul qilish mushak spazmlarini yozadi va xotirjam uyquga ketishni osonlashtiradi.",
+          body: "Magniyni kechqurun, yotishdan 30–60 daqiqa oldin qabul qilish qulay: u mushaklarning normal ishlashiga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
           title: "Роль магния и ГАМК",
-          body: "Магний активирует рецепторы гамма-аминомасляной кислоты (ГАМК), снижая возбудимость нейронов и способствуя плавному погружению в сон.",
+          body: "Магний участвует в работе системы гамма-аминомасляной кислоты (ГАМК) и способствует нормальной работе нервной системы.",
         },
         {
           title: "Вечерний протокол",
-          body: "Принимайте магний за 30–60 минут до сна для снятия мышечного тонуса и легкого засыпания.",
+          body: "Магний удобно принимать вечером, за 30–60 минут до сна: он способствует нормальной работе мышц.",
         },
       ],
     },
     bullets: {
       uz: [
-        "Magniy xelat / sitrat — mushaklar boʻshashishi",
+        "Magniy xelat / sitrat — mushaklarning normal ishlashi",
         "Vitamin B6 — asab impulslarini tartibga solish",
         "Yotishdan 1 soat oldin ekranlarni cheklash",
       ],
       ru: [
-        "Хелат/цитрат магния — расслабление мускулатуры",
+        "Хелат/цитрат магния — нормальная работа мышц",
         "Витамин B6 — регуляция метаболизма нейромедиаторов",
         "Ограничение яркого синего света за час до сна",
       ],
@@ -223,12 +223,12 @@ const raw: RawHealthTopic[] = [
     slug: "energy",
     name: { uz: "Energiya va tetiklik", ru: "Энергия и бодрость" },
     headline: {
-      uz: "Hujayra darajasida energiya almashinuvi va charchoqni yengish",
-      ru: "Клеточная энергия, тонус и преодоление усталости",
+      uz: "Hujayra darajasida energiya almashinuvi va charchoqni kamaytirishga hissa",
+      ru: "Клеточный энергетический обмен и вклад в снижение усталости",
     },
     intro: {
-      uz: "Surunkali charchoq koʻpincha B guruhi vitaminlari, temir, D3 va magniy yetishmovchiligidan kelib chiqadi. Toʻgʻri formulalar mitoxondriyalarni quvvat bilan taʼminlaydi.",
-      ru: "Упадок сил часто вызван нехваткой витаминов группы B, железа или витамина D3. Сбалансированный комплекс питает митохондрии и возвращает ресурс.",
+      uz: "Charchoq B guruhi vitaminlari, temir, D3 yoki magniy yetishmovchiligi bilan bogʻliq boʻlishi mumkin. B12, temir va magniy normal energiya almashinuviga hissa qoʻshadi.",
+      ru: "Упадок сил может быть связан с нехваткой витаминов группы B, железа, витамина D3 или магния. B12, железо и магний способствуют нормальному энергетическому обмену.",
     },
     sections: {
       uz: [
@@ -238,7 +238,7 @@ const raw: RawHealthTopic[] = [
         },
         {
           title: "Kunduzgi faollik",
-          body: "B guruhi va multivitaminlarni ertalab nonushta paytida qabul qilish kun boʻyi barqaror energiya bilan taʼminlaydi.",
+          body: "B guruhi va multivitaminlarni ertalab nonushta paytida qabul qilish maqsadga muvofiq.",
         },
       ],
       ru: [
@@ -272,13 +272,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Natija qachon seziladi?",
-          answer: "Odatda muntazam qabul boshlanganidan 7–14 kun oʻtgach ertalabki tetiklik va umumiy ish qobiliyati oshishi seziladi.",
+          answer: "Taʼsir har kimda turlicha. Vitaminlar kurs shaklida qabul qilinadi; charchoq uzoq davom etsa, shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
           question: "Через сколько времени ощущается эффект?",
-          answer: "Обычно прилив сил и ясность ума отмечаются через 7–14 дней регулярного приема.",
+          answer: "Эффект индивидуален. Витамины принимают курсом; если усталость сохраняется долго, обратитесь к врачу.",
         },
       ],
     },
@@ -292,35 +292,35 @@ const raw: RawHealthTopic[] = [
       ru: "Поддержка синтеза коллагена, эластичности кожи и густоты волос",
     },
     intro: {
-      uz: "Tashqi goʻzallik ichki toʻqimalar oziqlanishidan boshlanadi. Dengiz kollageni, biotin, sink va vitamin C teri tarangligini va soch oʻsishini taʼminlaydi.",
-      ru: "Здоровье кожи, блеск волос и прочность ногтей формируются изнутри. Пептиды коллагена, биотин и цинк стимулируют обновление клеток дермы.",
+      uz: "Tashqi goʻzallik ichki toʻqimalar oziqlanishidan boshlanadi. Biotin va sink soch va terining normal holatini saqlashga, vitamin C esa normal kollagen hosil boʻlishiga hissa qoʻshadi.",
+      ru: "Здоровье кожи, блеск волос и прочность ногтей формируются изнутри. Биотин и цинк способствуют поддержанию нормального состояния волос и кожи, а витамин C — нормальному образованию коллагена.",
     },
     sections: {
       uz: [
         {
           title: "Kollagen va Keratin sintezi",
-          body: "25 yoshdan soʻng organizmda tabiiy kollagen ishlab chiqarilishi har yili 1-1.5% ga kamayadi. Dengiz kollageni peptidlari terini namlantirish va ajinlarni kamaytirishga yordam beradi.",
+          body: "25 yoshdan soʻng organizmda tabiiy kollagen ishlab chiqarilishi har yili 1-1.5% ga kamayadi. Vitamin C terining normal holati uchun zarur kollagen hosil boʻlishida ishtirok etadi.",
         },
       ],
       ru: [
         {
           title: "Синтез дермального матрикса",
-          body: "После 25 лет естественная выработка коллагена снижается. Прием гидролизованных пептидов с витамином C восстанавливает упругость кожи.",
+          body: "После 25 лет естественная выработка коллагена снижается. Витамин C участвует в образовании коллагена, необходимого для нормального состояния кожи.",
         },
       ],
     },
     bullets: {
       uz: [
         "Gidrolizlangan dengiz kollageni — elastiklik",
-        "Biotin (B7) — soch tolalarini mustahkamlash",
+        "Biotin (B7) — sochning normal holatini saqlash",
         "Vitamin C — kollagen tolalarini bogʻlash",
-        "Sink — toza va sogʻlom teri",
+        "Sink — terining normal holati",
       ],
       ru: [
         "Морские пептиды коллагена — упругость кожи",
-        "Высокодозный биотин — укрепление корней волос",
+        "Биотин — поддержание нормального состояния волос",
         "Витамин C — кофермент синтеза коллагена",
-        "Цинк — себорегуляция и чистота кожи",
+        "Цинк — поддержание нормального состояния кожи",
       ],
     },
     ingredientSlugs: ["collagen", "biotin", "vitamin-c", "zinc"],
@@ -345,32 +345,32 @@ const raw: RawHealthTopic[] = [
   {
     kind: "goal",
     slug: "stress",
-    name: { uz: "Stressdan himoya", ru: "Антистресс и нервная система" },
+    name: { uz: "Stress va asab tizimi", ru: "Стресс и нервная система" },
     headline: {
       uz: "Asab tizimini qoʻllab-quvvatlash va hissiy barqarorlik",
       ru: "Баланс нейромедиаторов и устойчивость к психоэмоциональным перегрузкам",
     },
     intro: {
-      uz: "Doimiy stress magniy va B guruhi vitaminlarini organizmdan tez yuvilib ketishiga olib keladi. Bularni toʻldirish hissiy barqarorlikni tiklaydi.",
-      ru: "Хронический стресс ускоряет выведение магния и истощает запасы витаминов B. Восполнение дефицита возвращает эмоциональный контроль.",
+      uz: "Doimiy stress magniy va B guruhi vitaminlarining organizmdan tezroq sarflanishiga olib kelishi mumkin. Magniy va B6 asab tizimining normal ishlashiga va normal psixologik funksiyaga hissa qoʻshadi.",
+      ru: "Хронический стресс может ускорять расход магния и витаминов группы B. Магний и B6 способствуют нормальной работе нервной системы и нормальной психологической функции.",
     },
     sections: {
       uz: [
         {
           title: "Kortizol va magniy balansi",
-          body: "Stress gormoni kortizol yuqori boʻlganda yurak urishi tezlashadi va mushaklar qisqaradi. Magniy xelati asab qoʻzgʻaluvchanligini meʼyorga keltiradi.",
+          body: "Stress gormoni kortizol yuqori boʻlganda yurak urishi tezlashadi va mushaklar qisqaradi. Magniy asab tizimi va mushaklarning normal ishlashiga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
-          title: "Контроль кортизола",
-          body: "Магний блокирует избыточный выброс адреналина и кортизола, предотвращая вегетативные кризы и спазмы.",
+          title: "Кортизол и магний",
+          body: "При высоком уровне кортизола учащается сердцебиение и напрягаются мышцы. Магний способствует нормальной работе нервной системы и мышц.",
         },
       ],
     },
     bullets: {
-      uz: ["Magniy sitrat / xelat — tezkor tinchlantiruvchi taʼsir", "Vitamin B6 — asab impulslarini yaxshilash"],
-      ru: ["Органический магний — снижение тревожности", "Витамин B6 — синтез серотонина"],
+      uz: ["Magniy sitrat / xelat — asab tizimining normal ishlashi", "Vitamin B6 — normal psixologik funksiya"],
+      ru: ["Органический магний — нормальная работа нервной системы", "Витамин B6 — нормальная психологическая функция"],
     },
     ingredientSlugs: ["magnesium", "vitamin-b12"],
     productSlugs: ["dr-frei-antistress-magniy-20", "swiss-energy-neuroforce-30"],
@@ -380,13 +380,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Kunduzi uyqu chaqiradimi?",
-          answer: "Magniy uyqu dorisi emas, u faqat asab tizimini tinchlantiradi va diqqatni jamlashga xalaqit bermaydi.",
+          answer: "Magniy uyqu dorisi emas: u asab tizimining normal ishlashiga hissa qoʻshadi va odatda diqqatni jamlashga xalaqit bermaydi.",
         },
       ],
       ru: [
         {
           question: "Вызывает ли магний дневную сонливость?",
-          answer: "Нет, магний снимает избыточное напряжение, не нарушая концентрации внимания.",
+          answer: "Нет, магний не снотворное: он способствует нормальной работе нервной системы и обычно не мешает концентрации внимания.",
         },
       ],
     },
@@ -400,26 +400,26 @@ const raw: RawHealthTopic[] = [
       ru: "Баланс микрофлоры, комфорт и усвоение питательных веществ",
     },
     intro: {
-      uz: "Oziq moddalarning soʻrilishi va immunitetning 70% qismi ichak salomatligiga bogʻliq. Probiotiklar va fermentlar hazmni yengillashtiradi.",
-      ru: "Более 70% иммунных клеток сосредоточено в кишечнике. Пробиотические культуры восстанавливают барьер и комфорт пищеварения.",
+      uz: "Oziq moddalarning soʻrilishi ichak holatiga bogʻliq, immun hujayralarining 70% dan ortigʻi esa ichakda joylashgan. Probiotiklar ichak mikrobiotasini qoʻllab-quvvatlaydi.",
+      ru: "Более 70% иммунных клеток сосредоточено в кишечнике. Пробиотические культуры поддерживают кишечную микробиоту и комфорт пищеварения.",
     },
     sections: {
       uz: [
         {
           title: "Mikrobiomaning ahamiyati",
-          body: "Foydali bakteriyalar B guruhi vitaminlarini sintez qiladi va ichak shilliq qavatini patogenlardan himoya qiladi.",
+          body: "Foydali bakteriyalar B guruhi vitaminlarini sintez qiladi va ichak shilliq qavatining normal holatida ishtirok etadi.",
         },
       ],
       ru: [
         {
           title: "Здоровье микробиома",
-          body: "Полезные лакто- и бифидобактерии синтезируют витамины и поддерживают местный иммунитет.",
+          body: "Полезные лакто- и бифидобактерии синтезируют витамины и участвуют в поддержании нормального состояния слизистой кишечника.",
         },
       ],
     },
     bullets: {
-      uz: ["Probiotik shtammlar — mikrofloranı tiklash", "Prebiotik tolalar — foydali bakteriyalar ozuqasi"],
-      ru: ["Мультиштаммовые пробиотики", "Пребиотические волокна для питания флоры"],
+      uz: ["Probiotik shtammlar — mikroflora balansini qoʻllab-quvvatlash", "Prebiotik tolalar — foydali bakteriyalar ozuqasi"],
+      ru: ["Мультиштаммовые пробиотики для баланса микрофлоры", "Пребиотические волокна для питания флоры"],
     },
     ingredientSlugs: ["probiotics", "zinc"],
     productSlugs: [],
@@ -429,13 +429,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Antibiotik qabul qilganda qanday ichiladi?",
-          answer: "Antibiotik ichilgandan 2-3 soat keyin probiotik qabul qilinadi va davolanish tugagach yana 2 hafta davom ettiriladi.",
+          answer: "Odatda probiotik antibiotikdan kamida 2–3 soat keyin qabul qilinadi va antibiotik kursi tugagach yana 2 hafta davom ettiriladi. Qabul tartibini shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
           question: "Как принимать с антибиотиками?",
-          answer: "С интервалом не менее 2–3 часов после антибиотика, продолжая прием еще 2 недели после курса.",
+          answer: "Обычно — с интервалом не менее 2–3 часов после антибиотика, продолжая прием еще 2 недели после курса. Посоветуйтесь с врачом о схеме приема.",
         },
       ],
     },
@@ -445,30 +445,30 @@ const raw: RawHealthTopic[] = [
     slug: "heart",
     name: { uz: "Yurak va qon tomirlar", ru: "Сердце и сосуды" },
     headline: {
-      uz: "Qon bosimi nazorati, tomirlar elastikligi va xolesterin balansi",
-      ru: "Поддержка миокарда, эластичность сосудов и липидный профиль",
+      uz: "Yurak va qon tomirlarning normal ishlashini qoʻllab-quvvatlash",
+      ru: "Поддержка нормальной работы сердца и сосудов",
     },
     intro: {
-      uz: "Omega-3 yog' kislotalari, magniy va K2 vitamini qon tomirlar devorini toza va elastik saqlashda, yurak ritmini meʼyorlashtirishda asosiy rol oʻynaydi.",
-      ru: "Полиненасыщенные жирные кислоты Омега-3, магний и витамин K2 защищают сосуды от кальцификации и поддерживают ритм сердца.",
+      uz: "Omega-3 yogʻ kislotalari (EPA va DHA) yurakning normal ishlashiga hissa qoʻshadi, magniy mushaklarning normal ishlashi uchun muhim, K2 vitamini esa kalsiy almashinuvida ishtirok etadi.",
+      ru: "Полиненасыщенные жирные кислоты Омега-3 (ЭПК и ДГК) способствуют нормальной работе сердца, магний важен для нормальной работы мышц, а витамин K2 участвует в обмене кальция.",
     },
     sections: {
       uz: [
         {
           title: "Omega-3 EPA va DHA kuchi",
-          body: "EPA qon tomir yalligʻlanishini pasaytiradi, DHA esa hujayra membranalarini moslashuvchan qiladi va qon quyilish xavfini kamaytiradi.",
+          body: "EPA va DHA yurakning normal ishlashiga hissa qoʻshadi, DHA esa hujayra membranalarining tarkibiy qismi hisoblanadi.",
         },
       ],
       ru: [
         {
           title: "Действие кислот EPA и DHA",
-          body: "ЭПК снижает уровень триглицеридов и системное воспаление, а ДГК поддерживает эластичность эндотелия.",
+          body: "ЭПК и ДГК способствуют нормальной работе сердца, а ДГК входит в состав клеточных мембран.",
         },
       ],
     },
     bullets: {
-      uz: ["Omega-3 EPA/DHA — xolesterin balansi", "Magniy — qon tomir spazmini oldini olish", "Vitamin K2 — kalsiyning tomirda choʻkishiga yoʻl qoʻymaslik"],
-      ru: ["Омега-3 высокой концентрации", "Органический магний против сосудистого спазма", "Витамин K2 для защиты артерий"],
+      uz: ["Omega-3 EPA/DHA — yurakning normal ishlashi", "Magniy — mushaklarning normal ishlashi", "Vitamin K2 — kalsiy almashinuvida ishtirok"],
+      ru: ["Омега-3 ЭПК/ДГК — нормальная работа сердца", "Магний — нормальная работа мышц", "Витамин K2 — участие в обмене кальция"],
     },
     ingredientSlugs: ["epa-dha", "magnesium", "vitamin-k2"],
     productSlugs: [],
@@ -494,24 +494,24 @@ const raw: RawHealthTopic[] = [
     slug: "joints",
     name: { uz: "Boʻgʻimlar va suyaklar", ru: "Суставы и связки" },
     headline: {
-      uz: "Erkin harakat, togʻay toʻqimasi tiklanishi va suyak mustahkamligi",
-      ru: "Свобода движения, восстановление хрящей и плотность костей",
+      uz: "Erkin harakat, togʻay toʻqimasi va suyaklarning normal holati",
+      ru: "Свобода движения, хрящевая ткань и нормальное состояние костей",
     },
     intro: {
-      uz: "Boʻgʻimlar harakatchanligi kollagen, D3, K2 va kalsiy miqdoriga toʻgʻridan-toʻgʻri bogʻliq. Ular birgalikda sinovial suyuqlik va togʻay toʻqimasini oziqlantiradi.",
-      ru: "Здоровье опорно-двигательного аппарата требует комплексного подхода: пептиды коллагена, витамин D3+K2 и кальций питают хрящевую ткань.",
+      uz: "Boʻgʻimlar va suyaklar uchun kollagen, D3, K2 va kalsiy muhim. Vitamin D3 va kalsiy suyaklarning normal holatini saqlashga hissa qoʻshadi.",
+      ru: "Для опорно-двигательного аппарата важны пептиды коллагена, витамины D3, K2 и кальций. Витамин D3 и кальций способствуют поддержанию нормального состояния костей.",
     },
     sections: {
       uz: [
         {
-          title: "Boʻgʻim togʻaylarini tiklash",
-          body: "Kollagen peptidlari boʻgʻimdagi yalligʻlanishni kamaytiradi va togʻay toʻqimasi elastikligini oshiradi.",
+          title: "Togʻay toʻqimasi va kollagen",
+          body: "Kollagen — togʻay toʻqimasining asosiy oqsili; vitamin C togʻaylarning normal faoliyati uchun zarur kollagen hosil boʻlishiga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
-          title: "Регенерация хрящевой ткани",
-          body: "Пептиды коллагена и минералы стимулируют синтез хондроцитов и улучшают амортизацию суставов.",
+          title: "Хрящевая ткань и коллаген",
+          body: "Коллаген — основной белок хрящевой ткани; витамин C способствует нормальному образованию коллагена, необходимого для работы хрящей.",
         },
       ],
     },
@@ -527,13 +527,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Jismoniy mashqlar qiluvchilarga qaysi biri mos?",
-          answer: "Kollagen va D3+K2 kombinatsiyasi paylar va boʻgʻimlarni jarohatlardan himoya qiladi.",
+          answer: "Faol shugʻullanuvchilar koʻpincha kollagen va D3+K2 kombinatsiyasini tanlaydi: vitamin D3 mushaklar va suyaklarning normal ishlashiga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
           question: "Что рекомендуется при спортивных нагрузках?",
-          answer: "Комбинация коллагена и витамина D3+K2 защищает связки и суставы от перегрузок и микротравм.",
+          answer: "При активных тренировках часто выбирают сочетание коллагена и витамина D3+K2: витамин D3 способствует нормальной работе мышц и костей.",
         },
       ],
     },
@@ -547,8 +547,8 @@ const raw: RawHealthTopic[] = [
       ru: "Когнитивная продуктивность, ясность мышления и память",
     },
     intro: {
-      uz: "Omega-3 DHA, B guruhi vitaminlari va magniy miya neyronlari orasidagi signallarni tezlashtiradi, xotirani mustahkamlaydi.",
-      ru: "ДГК Омега-3, витамины группы B и магний улучшают синаптическую пластичность мозга и защищают нейроны от перегрузок.",
+      uz: "Omega-3 DHA miyaning normal ishlashiga, B guruhi vitaminlari va magniy esa asab tizimining normal ishlashiga hissa qoʻshadi.",
+      ru: "ДГК Омега-3 способствует поддержанию нормальной работы мозга, а витамины группы B и магний — нормальной работе нервной системы.",
     },
     sections: {
       uz: [
@@ -565,8 +565,8 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Omega-3 DHA — kognitiv oʻtkirlik", "Vitamin B12 — nerv tolalari himoyasi", "Magniy — aqliy charchoqni kamaytirish"],
-      ru: ["Высокая концентрация ДГК Омега-3", "Витамин B12 для проводимости нервных волокон", "Магний для устойчивости к нагрузкам"],
+      uz: ["Omega-3 DHA — miyaning normal ishlashi", "Vitamin B12 — asab tizimining normal ishlashi", "Magniy — charchoqni kamaytirishga hissa"],
+      ru: ["ДГК Омега-3 — нормальная работа мозга", "Витамин B12 — нормальная работа нервной системы", "Магний — вклад в снижение усталости"],
     },
     ingredientSlugs: ["epa-dha", "vitamin-b12", "magnesium"],
     productSlugs: ["swiss-energy-neuroforce-30"],
@@ -576,13 +576,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Imtihonlar yoki ogʻir loyihalar davrida nima ichish kerak?",
-          answer: "Omega-3 va B-kompleks kombinatsiyasi aqliy charchoqni yengishga yordam beradi.",
+          answer: "Koʻpincha Omega-3 va B-kompleks tanlanadi: DHA miyaning normal ishlashiga, B vitaminlari va magniy charchoqni kamaytirishga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
           question: "Что принимать в периоды экзаменов и дедлайнов?",
-          answer: "Комплекс Омега-3 и витаминов группы B с магнием повышает концентрацию и снимает умственное истощение.",
+          answer: "Часто выбирают Омега-3 и витамины группы B с магнием: ДГК способствует нормальной работе мозга, а витамины B и магний — снижению усталости.",
         },
       ],
     },
@@ -592,29 +592,29 @@ const raw: RawHealthTopic[] = [
     slug: "weight",
     name: { uz: "Metabolizm va vazn nazorati", ru: "Метаболизм и контроль веса" },
     headline: {
-      uz: "Moddalar almashinuvini tezlashtirish va ishtaha balansi",
-      ru: "Оптимизация обмена веществ и контроль аппетита",
+      uz: "Normal moddalar almashinuvini qoʻllab-quvvatlash",
+      ru: "Поддержка нормального обмена веществ",
     },
     intro: {
-      uz: "Metabolizm sekinlashishi koʻpincha D vitamini, xrom, magniy va B vitaminlari tanqisligi bilan bogʻliq. Balansni tiklash sogʻlom vaznga erishishni tezlashtiradi.",
-      ru: "Нарушения метаболизма часто сопряжены с дефицитом витамина D и микроэлементов. Коррекция нутриентного статуса помогает нормализовать обмен веществ.",
+      uz: "Metabolizm sekinlashishi D vitamini, xrom, magniy va B vitaminlari tanqisligi bilan bogʻliq boʻlishi mumkin. Magniy va B vitaminlari normal energiya almashinuviga hissa qoʻshadi; vazn uchun asosiysi — ovqatlanish va faollik.",
+      ru: "Замедление метаболизма может быть связано с дефицитом витамина D и микроэлементов. Магний и витамины группы B способствуют нормальному энергетическому обмену; для веса главное — питание и активность.",
     },
     sections: {
       uz: [
         {
-          title: "Insulin sezgirligi va metabolizm",
-          body: "D3 vitamini va magniy hujayralarning insulinga sezgirligini oshirib, ortiqcha shirinlikka boʻlgan ehtiyojni kamaytiradi.",
+          title: "Magniy, D3 va metabolizm",
+          body: "Magniy normal energiya almashinuviga hissa qoʻshadi, D3 vitamini esa moddalar almashinuvi jarayonlarida ishtirok etadi.",
         },
       ],
       ru: [
         {
-          title: "Чувствительность к инсулину",
-          body: "Витамин D3 и магний участвуют в регуляции углеводного обмена, снижая тягу к простым сахарам.",
+          title: "Магний, D3 и метаболизм",
+          body: "Магний способствует нормальному энергетическому обмену, а витамин D3 участвует в процессах обмена веществ.",
         },
       ],
     },
     bullets: {
-      uz: ["Vitamin D3 — metabolik faollik", "Magniy — glyukoza utilizatsiyasi", "Probiotiklar — ichak metabolik balansi"],
+      uz: ["Vitamin D3 — metabolik faollik", "Magniy — normal energiya almashinuvi", "Probiotiklar — ichak metabolik balansi"],
       ru: ["Витамин D3 для регуляции метаболизма", "Магний для энергетического обмена", "Пробиотики для кишечной микробиоты"],
     },
     ingredientSlugs: ["vitamin-d3", "magnesium", "probiotics"],
@@ -625,13 +625,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Vitaminlar vazn toʻplashga olib kelmaydimi?",
-          answer: "Yoʻq, sifatli vitaminlar kaloriyasiz boʻlib, faqat metabolizmni meʼyorga soladi.",
+          answer: "Yoʻq, vitaminlar deyarli kaloriyasiz va vazn ortishiga sabab boʻlmaydi.",
         },
       ],
       ru: [
         {
           question: "Могут ли витамины вызвать набор веса?",
-          answer: "Нет, нутрицевтики не содержат калорий и лишь нормализуют физиологические процессы обмена веществ.",
+          answer: "Нет, витамины практически не содержат калорий и не вызывают набора веса.",
         },
       ],
     },
@@ -644,11 +644,11 @@ const raw: RawHealthTopic[] = [
     name: { uz: "Vitamin D3", ru: "Витамин D3" },
     headline: {
       uz: "Quyosh vitamini — suyak, immunitet va gormonal balans",
-      ru: "Солнечный прогормон для костей, иммунитета и долголетия",
+      ru: "Солнечный витамин для костей, иммунитета и гормонального баланса",
     },
     intro: {
-      uz: "Vitamin D3 (xolekalsiferol) organizmda yuzlab genlar faoliyatini boshqaradi. U kalsiy soʻrilishi, immun hujayralar va yaxshi kayfiyat uchun muhimdir.",
-      ru: "Витамин D3 выполняет роль прогормона, регулируя работу иммунной, костной и эндокринной систем.",
+      uz: "Vitamin D3 (xolekalsiferol) organizmda yuzlab genlar faoliyatini boshqaradi. U kalsiy soʻrilishi va immun tizimining normal ishlashi uchun muhimdir.",
+      ru: "Витамин D3 участвует в регуляции работы сотен генов и важен для усвоения кальция и нормальной работы иммунной системы.",
     },
     sections: {
       uz: [
@@ -658,7 +658,7 @@ const raw: RawHealthTopic[] = [
         },
         {
           title: "D3 va K2 sinergiyasi",
-          body: "D3 kalsiyning ichakda soʻrilishini taʼminlasa, K2 vitamini kalsiyni qon tomirlariga emas, aynan suyaklarga yoʻnaltiradi.",
+          body: "D3 kalsiyning ichakda normal soʻrilishiga hissa qoʻshadi, K2 vitamini esa kalsiyning suyak toʻqimasiga yoʻnaltirilishida ishtirok etadi.",
         },
       ],
       ru: [
@@ -668,18 +668,18 @@ const raw: RawHealthTopic[] = [
         },
         {
           title: "Синергия с K2",
-          body: "Витамин D3 обеспечивает всасывание кальция, а витамин K2 направляет его в костную ткань, защищая сосуды.",
+          body: "Витамин D3 способствует нормальному всасыванию кальция, а витамин K2 участвует в его направлении в костную ткань.",
         },
       ],
     },
     bullets: {
       uz: [
-        "Profilaktik doza: 2000–5000 IU",
+        "Odatiy doza: 2000–5000 IU (shifokor bilan kelishib)",
         "Yogʻli taom bilan nonushtada qabul qilinadi",
-        "K2 (MK-7) bilan birga ichish eng xavfsiz va samarali",
+        "K2 (MK-7) bilan birga qabul qilish maqsadga muvofiq",
       ],
       ru: [
-        "Профилактическая дозировка: 2000–5000 ME",
+        "Обычная дозировка: 2000–5000 МЕ (по согласованию с врачом)",
         "Прием утром с жиросодержащей пищей",
         "Оптимально в паре с витамином K2 (MK-7)",
       ],
@@ -692,13 +692,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "D vitaminini yozda ham ichish kerakmi?",
-          answer: "Agar kunning koʻp qismini binoda oʻtkazsangiz, yozda ham minimal profilaktik doza (1000–2000 IU) tavsiya etiladi.",
+          answer: "Agar kunning koʻp qismini binoda oʻtkazsangiz, yozda ham kichik doza (1000–2000 IU) qabul qilish mumkin. Dozani shifokor bilan kelishing.",
         },
       ],
       ru: [
         {
           question: "Нужно ли принимать летом?",
-          answer: "При работе в помещении умеренные профилактические дозировки рекомендованы круглый год.",
+          answer: "При работе в помещении умеренные дозировки (1000–2000 МЕ) можно принимать круглый год. Дозировку согласуйте с врачом.",
         },
       ],
     },
@@ -708,8 +708,8 @@ const raw: RawHealthTopic[] = [
     slug: "vitamin-c",
     name: { uz: "Vitamin C", ru: "Витамин C" },
     headline: {
-      uz: "Bosh antioksidant — kollagen sintezi va kuchli immunitet",
-      ru: "Главный водорастворимый антиоксидант и защитник сосудов",
+      uz: "Bosh antioksidant — kollagen hosil boʻlishi va immunitet",
+      ru: "Главный водорастворимый антиоксидант для коллагена и иммунитета",
     },
     intro: {
       uz: "Inson organizmi vitamin C ni oʻzi ishlab chiqara olmaydi. U har kuni oziq-ovqat va sifatli qoʻshimchalar orqali tushishi shart.",
@@ -719,19 +719,19 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           title: "Asosiy vazifalari",
-          body: "Oksidlovchi stressdan himoya qiladi, qon tomirlar devorini mustahkamlaydi, kollagen tolalarini hosil qiladi va temir soʻrilishini 3 baravargacha oshiradi.",
+          body: "Hujayralarni oksidlovchi stressdan himoyalashga hissa qoʻshadi, qon tomirlarning normal faoliyati uchun zarur kollagen hosil boʻlishida ishtirok etadi va temir soʻrilishini oshiradi.",
         },
       ],
       ru: [
         {
           title: "Ключевые функции",
-          body: "Нейтрализует свободные радикалы, участвует в гидроксилировании пролина в коллагене и усиливает биодоступность железа.",
+          body: "Способствует защите клеток от окислительного стресса, участвует в образовании коллагена для нормальной работы сосудов и повышает усвоение железа.",
         },
       ],
     },
     bullets: {
-      uz: ["Antioksidant va viruslarga qarshi toʻsiq", "Kollagen va elastiklik", "Temir soʻrilishini kuchaytirish"],
-      ru: ["Антиоксидантная защита", "Кофактор выработки коллагена", "Усиление всасывания железа"],
+      uz: ["Antioksidant va immun tizimining normal ishlashi", "Kollagen va elastiklik", "Temir soʻrilishini oshirish"],
+      ru: ["Антиоксидант и нормальная работа иммунитета", "Кофактор выработки коллагена", "Повышение усвоения железа"],
     },
     ingredientSlugs: ["vitamin-c"],
     productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-vitamin-c-20", "dr-frei-gold-vitamins-20"],
@@ -741,13 +741,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Katta dozada vitamin C buyrakka zarar emasmi?",
-          answer: "Kunlik profilaktik meʼyor 500–1000 mg ni tashkil etadi. Koʻp suv ichish buyraklar salomatligini taʼminlaydi.",
+          answer: "Odatiy kunlik doza 500–1000 mg ni tashkil etadi. Yetarli suv iching; buyrak kasalliklarida avval shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
           question: "Безопасны ли дозировки 1000 мг?",
-          answer: "Дозировки 500–1000 мг безопасны при соблюдении питьевого режима.",
+          answer: "Обычная суточная дозировка — 500–1000 мг. Соблюдайте питьевой режим, а при заболеваниях почек посоветуйтесь с врачом.",
         },
       ],
     },
@@ -757,8 +757,8 @@ const raw: RawHealthTopic[] = [
     slug: "magnesium",
     name: { uz: "Magniy", ru: "Магний" },
     headline: {
-      uz: "Tinch asablar, boʻshashgan mushaklar va chuqur uyqu",
-      ru: "Антистресс-минерал, мышечный релаксант и поддержка сердца",
+      uz: "Asab tizimi, mushaklar va sifatli uyqu uchun",
+      ru: "Минерал для нервной системы, мышц и сна",
     },
     intro: {
       uz: "Magniy — organizmdagi 300 dan ortiq ferment tizimlarining kofaktori. U yetishmaganda asabiylashish, uyqusizlik va tomir tortishishlari kuzatiladi.",
@@ -779,8 +779,8 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Mushaklar spazmi va tortishishiga qarshi", "Stress va xavotirni kamaytirish", "Yurak ritmini qoʻllab-quvvatlash"],
-      ru: ["Снятие мышечных судорог", "Снижение тревожности и стресса", "Поддержка сердечного ритма"],
+      uz: ["Mushaklarning normal ishlashi", "Asab tizimining normal ishlashini qoʻllab-quvvatlash", "Charchoqni kamaytirishga hissa"],
+      ru: ["Нормальная работа мышц", "Поддержка нормальной работы нервной системы", "Вклад в снижение усталости"],
     },
     ingredientSlugs: ["magnesium"],
     productSlugs: ["dr-frei-antistress-magniy-20"],
@@ -790,7 +790,7 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Magniyni kunning qaysi vaqtida ichish yaxshiroq?",
-          answer: "Tinchlantiruvchi va uyquni yaxshilovchi xususiyati tufayli magniyni kechki ovqatdan keyin yoki yotishdan oldin ichish maqsadga muvofiq.",
+          answer: "Magniyni kechki ovqatdan keyin yoki yotishdan oldin ichish qulay.",
         },
       ],
       ru: [
@@ -806,30 +806,30 @@ const raw: RawHealthTopic[] = [
     slug: "zinc",
     name: { uz: "Sink", ru: "Цинк" },
     headline: {
-      uz: "Immun toʻsiq, toza teri va gormonlar balansi",
-      ru: "Микроэлемент для иммунитета, регенерации кожи и синтеза тестостерона",
+      uz: "Immunitet, terining normal holati va gormonlar balansi",
+      ru: "Микроэлемент для иммунитета, кожи и нормального уровня тестостерона",
     },
     intro: {
-      uz: "Sink — immun hujayralarining boʻlinishi, oqsil sintezi va yaralarning tez bitishi uchun masʼul boʻlgan muhim mineral.",
-      ru: "Цинк необходим для работы ферментов антиоксидантной защиты, заживления тканей и поддержания гормонального баланса.",
+      uz: "Sink — hujayralar boʻlinishi, oqsil sintezi, antioksidant fermentlar ishi va gormonal balansda ishtirok etuvchi muhim mineral.",
+      ru: "Цинк участвует в делении клеток, синтезе белка, работе антиоксидантных ферментов и поддержании гормонального баланса.",
     },
     sections: {
       uz: [
         {
-          title: "Shamollash vaqtida sinkning roli",
-          body: "Shamollashning dastlabki kunlarida sink qabul qilish viruslarning koʻpayishini toʻxtatib, kasallik muddatini qisqartiradi.",
+          title: "Sink va immun tizimi",
+          body: "Sink immun tizimining normal ishlashiga hissa qoʻshadi. Shamollash belgilari paydo boʻlsa, shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
-          title: "Роль цинка при ОРВИ",
-          body: "Ионы цинка блокируют репликацию вирусов в эпителиальных клетках носоглотки.",
+          title: "Цинк и иммунная система",
+          body: "Цинк способствует нормальной работе иммунной системы. При симптомах простуды обратитесь к врачу.",
         },
       ],
     },
     bullets: {
-      uz: ["Immun tizimini tezkor kuchaytirish", "Akne va teri yalligʻlanishlariga qarshi", "Soch oʻsishini qoʻllab-quvvatlash"],
-      ru: ["Усиление иммунной защиты", "Противовоспалительный эффект при акне", "Стимуляция роста волос"],
+      uz: ["Immun tizimining normal ishlashini qoʻllab-quvvatlash", "Terining normal holatini saqlash", "Sochning normal holatini saqlash"],
+      ru: ["Поддержка нормальной работы иммунитета", "Поддержание нормального состояния кожи", "Поддержание нормального состояния волос"],
     },
     ingredientSlugs: ["zinc"],
     productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-hair-nail-skin-30", "dr-frei-gold-vitamins-20"],
@@ -860,7 +860,7 @@ const raw: RawHealthTopic[] = [
     },
     intro: {
       uz: "Tozalangan chuqur dengiz baliq yogʻidan olingan Omega-3 triglitserid shaklida eng yuqori bio-mavjudlikka ega.",
-      ru: "Высокоочищенные жирные кислоты EPA и DHA в форме триглицеридов защищают сосуды и питают клетки головного мозга.",
+      ru: "Высокоочищенные жирные кислоты EPA и DHA в форме триглицеридов способствуют нормальной работе сердца и мозга.",
     },
     sections: {
       uz: [
@@ -877,8 +877,8 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Yuqori EPA/DHA konsentratsiyasi", "Yurak ritmi va qon tomirlar elastikligi", "Miya va koʻrish oʻtkirligi"],
-      ru: ["Высокая концентрация EPA/DHA", "Поддержка липидного профиля", "Когнитивные функции и зрение"],
+      uz: ["Yuqori EPA/DHA konsentratsiyasi", "Yurakning normal ishlashi", "Miyaning normal ishlashi va koʻrish"],
+      ru: ["Высокая концентрация EPA/DHA", "Нормальная работа сердца", "Нормальная работа мозга и зрение"],
     },
     ingredientSlugs: ["epa-dha"],
     productSlugs: [],
@@ -904,12 +904,12 @@ const raw: RawHealthTopic[] = [
     slug: "collagen",
     name: { uz: "Dengiz Kollageni", ru: "Морской Коллаген" },
     headline: {
-      uz: "Teri tarangligi, ajinlarga qarshi kurash va boʻgʻimlar elastikligi",
+      uz: "Teri tarangligi, soch va boʻgʻimlar elastikligi uchun",
       ru: "Пептиды коллагена для плотности кожи, блеска волос и гибкости суставов",
     },
     intro: {
-      uz: "Gidrolizlangan kichik molekulyar dengiz kollageni organizm tomonidan darhol oʻzlashtirilib, terining tabiiy karkasini tiklaydi.",
-      ru: "Низкомолекулярные пептиды рыбного коллагена проникают в глубокие слои дермы, стимулируя синтез собственного фибриллярного белка.",
+      uz: "Gidrolizlangan kichik molekulyar dengiz kollageni yaxshi oʻzlashtiriladi; kollagen terining tabiiy karkasining asosiy oqsili.",
+      ru: "Низкомолекулярные пептиды рыбного коллагена хорошо усваиваются; коллаген — основной белок естественного каркаса кожи.",
     },
     sections: {
       uz: [
@@ -953,8 +953,8 @@ const raw: RawHealthTopic[] = [
     slug: "vitamin-b12",
     name: { uz: "Vitamin B12", ru: "Витамин B12" },
     headline: {
-      uz: "Qon hosil boʻlishi, asab tolalari himoyasi va charchoqqa qarshi kurash",
-      ru: "Кроветворение, защита нервных волокон и преодоление слабости",
+      uz: "Qon hosil boʻlishi, asab tizimi va charchoqni kamaytirishga hissa",
+      ru: "Кроветворение, нервная система и вклад в снижение усталости",
     },
     intro: {
       uz: "Metilkobalamin — B12 vitaminining faol koferment shakli. U eritrotsitlar ishlab chiqarilishi va energiya almashinuvi uchun zarur.",
@@ -975,8 +975,8 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Biofaol metilkobalamin shakli", "Gemoglobin va qon tarkibini yaxshilash", "Asab tizimini himoya qilish"],
-      ru: ["Биоактивная коферментная форма", "Поддержка уровня гемоглобина", "Защита миелиновых оболочек нервов"],
+      uz: ["Biofaol metilkobalamin shakli", "Normal qon hosil boʻlishiga hissa", "Asab tizimining normal ishlashi"],
+      ru: ["Биоактивная коферментная форма", "Вклад в нормальное кроветворение", "Нормальная работа нервной системы"],
     },
     ingredientSlugs: ["vitamin-b12"],
     productSlugs: ["swiss-energy-neuroforce-30", "dr-frei-multivitamins-biotin-20"],
@@ -1002,12 +1002,12 @@ const raw: RawHealthTopic[] = [
     slug: "iron",
     name: { uz: "Temir (Xelat)", ru: "Хелат Железа" },
     headline: {
-      uz: "Gemoglobin va ferritin darajasini oshirish, toʻqimalarga kislorod",
-      ru: "Восстановление ферритина и гемоглобина без раздражения желудка",
+      uz: "Normal gemoglobin hosil boʻlishi va toʻqimalarga kislorod tashilishi",
+      ru: "Нормальное образование гемоглобина и мягкая для желудка форма",
     },
     intro: {
-      uz: "Temir bisglisinat xelati oshqozonda noqulaylik chaqirmaydigan eng xavfsiz va tez oʻzlashtiriladigan temir shaklidir.",
-      ru: "Бисглицинат железа обладает высочайшей биодоступностью и не вызывает тошноты или запоров со стороны ЖКТ.",
+      uz: "Temir bisglisinat xelati oshqozon uchun yumshoq va yaxshi oʻzlashtiriladigan temir shaklidir.",
+      ru: "Бисглицинат железа обладает высокой биодоступностью и мягко переносится желудком.",
     },
     sections: {
       uz: [
@@ -1024,8 +1024,8 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Oshqozonni bezovta qilmaydigan bisglisinat shakli", "Vitamin C bilan birga yuqori soʻrilish", "Kislorod tashilishi va tetiklik"],
-      ru: ["Хелатная форма без побочных эффектов", "Максимальное усвоение с витамином C", "Устранение гипоксии и слабости"],
+      uz: ["Oshqozon uchun yumshoq bisglisinat shakli", "Vitamin C bilan birga yuqori soʻrilish", "Kislorod tashilishi va charchoqni kamaytirishga hissa"],
+      ru: ["Хелатная форма, мягкая для желудка", "Максимальное усвоение с витамином C", "Транспорт кислорода и вклад в снижение усталости"],
     },
     ingredientSlugs: ["iron", "vitamin-c"],
     productSlugs: [],
@@ -1062,19 +1062,19 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           title: "Kalsiy sitratining afzalligi",
-          body: "Kalsiy sitrati oshqozon kislotaliligi past boʻlganda ham toʻliq soʻriladi va buyraklarda tosh hosil qilish xavfi eng kamdir.",
+          body: "Kalsiy sitrati oshqozon kislotaliligi past boʻlganda ham yaxshi soʻriladi.",
         },
       ],
       ru: [
         {
           title: "Форма цитрата",
-          body: "Цитрат кальция усваивается независимо от кислотности желудочного сока и безопасен для почек.",
+          body: "Цитрат кальция хорошо усваивается независимо от кислотности желудочного сока.",
         },
       ],
     },
     bullets: {
-      uz: ["Suyak sinishi va osteoporoz profilaktikasi", "D3 va K2 bilan toʻgʻri birikish", "Tish emali mustahkamligi"],
-      ru: ["Профилактика остеопении и остеопороза", "Синергия с D3 и K2", "Крепость зубной эмали"],
+      uz: ["Suyaklarning normal holatini saqlashga hissa", "D3 va K2 bilan toʻgʻri birikish", "Tishlarning normal holati"],
+      ru: ["Поддержание нормального состояния костей", "Синергия с D3 и K2", "Нормальное состояние зубов"],
     },
     ingredientSlugs: ["calcium", "vitamin-d3", "vitamin-k2"],
     productSlugs: ["swiss-energy-calcivit-30"],
@@ -1104,8 +1104,8 @@ const raw: RawHealthTopic[] = [
       ru: "Живые бактерии для микрофлоры, комфортного пищеварения и иммунитета",
     },
     intro: {
-      uz: "Mikroorganizmlarning foydali shtammlari ichak devorlarini himoya qiladi va yalligʻlanishni kamaytiradi.",
-      ru: "Комплекс лакто- и бифидобактерий восстанавливает микробиом после стрессов, неправильного питания и антибиотикотерапии.",
+      uz: "Mikroorganizmlarning foydali shtammlari ichak mikrobiotasi balansini qoʻllab-quvvatlaydi.",
+      ru: "Комплекс лакто- и бифидобактерий поддерживает баланс кишечной микробиоты.",
     },
     sections: {
       uz: [
@@ -1122,8 +1122,8 @@ const raw: RawHealthTopic[] = [
       ],
     },
     bullets: {
-      uz: ["Milliardlab jonli probiotik bakteriyalar", "Qorin dam boʻlishini bartaraf etish", "Hazm va immunitet balansi"],
-      ru: ["Миллиарды КОЕ живых бактерий", "Устранение вздутия и дискомфорта", "Поддержка иммунитета"],
+      uz: ["Milliardlab jonli probiotik bakteriyalar", "Qulay hazm qilish", "Hazm va immunitet balansi"],
+      ru: ["Миллиарды КОЕ живых бактерий", "Комфортное пищеварение", "Поддержка иммунитета"],
     },
     ingredientSlugs: ["probiotics"],
     productSlugs: [],
@@ -1151,8 +1151,8 @@ const raw: RawHealthTopic[] = [
     slug: "fatigue",
     name: { uz: "Doimiy charchoq va quvvatsizlik", ru: "Хроническая усталость и упадок сил" },
     headline: {
-      uz: "Ertalabdan quvvatsizlik sabablari va energiyani tiklash yoʻllari",
-      ru: "Причины нехватки сил и пошаговый план восстановления энергии",
+      uz: "Ertalabdan quvvatsizlik sabablari va nimaga eʼtibor berish kerak",
+      ru: "Причины нехватки сил и на что обратить внимание",
     },
     intro: {
       uz: "Doimiy charchoq — organizmning signalidir. Uning ortida temir tanqisligi (anemiya), B12, D3 yoki magniy yetishmovchiligi turishi mumkin.",
@@ -1162,19 +1162,19 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           title: "Keng tarqalgan sabablar",
-          body: "Kam uyqu, surunkali stress, temir va B12 yetishmovchiligi, qalqonsimon bez gipofunksiyasi. Nutriyentlar balansini tiklash energiya almashinuvini jonlantiradi.",
+          body: "Kam uyqu, surunkali stress, temir va B12 yetishmovchiligi, qalqonsimon bez gipofunksiyasi. Charchoq uzoq davom etsa, shifokor bilan maslahatlashing. B12, temir va magniy normal energiya almashinuviga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
           title: "Основные факторы истощения",
-          body: "Дефицит ферритина, недостаток витамина B12, хронический недосып и гипотиреоз — главные причины отсутствия бодрости.",
+          body: "Дефицит ферритина, недостаток витамина B12, хронический недосып и гипотиреоз — частые причины отсутствия бодрости. При длительной усталости посоветуйтесь с врачом. B12, железо и магний способствуют нормальному энергетическому обмену.",
         },
       ],
     },
     bullets: {
-      uz: ["Temir va ferritin darajasini tekshirish", "Vitamin D3 va B12 qabul qilish", "Magniy bilan uyquni tiklash"],
-      ru: ["Проверка ферритина и гемоглобина", "Восполнение D3 и B-комплекса", "Нормализация сна с магнием"],
+      uz: ["Temir va ferritin darajasini tekshirish", "Vitamin D3 va B12 qabul qilish", "Uyqu tartibi va magniy"],
+      ru: ["Проверка ферритина и гемоглобина", "Восполнение D3 и B-комплекса", "Режим сна и магний"],
     },
     ingredientSlugs: ["iron", "vitamin-b12", "magnesium", "vitamin-d3"],
     productSlugs: ["swiss-energy-neuroforce-30", "dr-frei-multivitamins-biotin-20", "dr-frei-antistress-magniy-20"],
@@ -1184,13 +1184,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Charchoq qachon oʻtib ketadi?",
-          answer: "Toʻgʻri tanlangan vitaminlar va temir qabul qilinganda dastlabki 2 haftada kuch-quvvat tiklanishi boshlanadi.",
+          answer: "Bu charchoq sababiga bogʻliq. Sababni aniqlash uchun tahlil topshiring va shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
           question: "Как быстро проходит слабость?",
-          answer: "При коррекции ключевых дефицитов улучшение наступает в течение 10–14 дней.",
+          answer: "Это зависит от причины усталости. Чтобы её выяснить, сдайте анализы и посоветуйтесь с врачом.",
         },
       ],
     },
@@ -1200,8 +1200,8 @@ const raw: RawHealthTopic[] = [
     slug: "hair-loss",
     name: { uz: "Soch toʻkilishi va sinishi", ru: "Выпадение и ломкость волос" },
     headline: {
-      uz: "Soch ildizlarini oziqlantirish, zichlik va oʻsishni ragʻbatlantirish",
-      ru: "Укрепление волосяных фолликулов, густота и блеск",
+      uz: "Soch ildizlarini oziqlantirish, zichlik va sochning normal holati",
+      ru: "Питание волосяных фолликулов, густота и нормальное состояние волос",
     },
     intro: {
       uz: "Soch toʻkilishi koʻpincha temir tanqisligi, biotin, sink va oqsil (kollagen) yetishmovchiligidan kelib chiqadi.",
@@ -1211,13 +1211,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           title: "Soch follikulasi nima bilan oziqlanadi?",
-          body: "Soch 90% keratin oqsilidan iborat. Biotin, sink va aminokislotalar soch ildizini mustahkamlaydi va yangi sochlar oʻsishini faollashtiradi.",
+          body: "Soch 90% keratin oqsilidan iborat. Biotin va sink sochning normal holatini saqlashga hissa qoʻshadi, aminokislotalar esa keratin uchun qurilish materiali.",
         },
       ],
       ru: [
         {
           title: "Питание фолликула",
-          body: "Биотин и цинк участвуют в синтезе кератина, а коллаген улучшает микроциркуляцию в коже головы.",
+          body: "Волос на 90% состоит из кератина. Биотин и цинк способствуют поддержанию нормального состояния волос, а аминокислоты служат строительным материалом для кератина.",
         },
       ],
     },
@@ -1233,13 +1233,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Natija qachon koʻrinadi?",
-          answer: "Sochning oʻsish sikli sababli yangi sochlar paydo boʻlishi va toʻkilish toʻxtashi 1–2 oylik kursdan keyin yaqqol seziladi.",
+          answer: "Sochning oʻsish sikli sekin, shuning uchun vitaminlar kamida 2 oy kurs bilan qabul qilinadi. Soch kuchli toʻkilsa, trixolog yoki shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
-          question: "Когда ждать уменьшения выпадения?",
-          answer: "Учитывая цикл роста волос, видимый эффект наступает через 4–8 недель регулярного приема.",
+          question: "Когда будет заметен результат?",
+          answer: "Цикл роста волос медленный, поэтому витамины принимают курсом не менее 2 месяцев. При сильном выпадении обратитесь к трихологу или врачу.",
         },
       ],
     },
@@ -1253,20 +1253,20 @@ const raw: RawHealthTopic[] = [
       ru: "Легкое засыпание, непрерывный сон и бодрое пробуждение",
     },
     intro: {
-      uz: "Kechqurun uxlashga qiynalish va tez-tez uygʻonish asab tizimida magniy va B vitaminlari yetishmovchiligidan darak beradi.",
-      ru: "Трудности с засыпанием и ночные пробуждения указывают на истощение запасов магния и повышенную возбудимость нервной системы.",
+      uz: "Kechqurun uxlashga qiynalish va tez-tez uygʻonish magniy va B vitaminlari yetishmovchiligidan darak berishi mumkin.",
+      ru: "Трудности с засыпанием и ночные пробуждения могут указывать на нехватку магния и повышенную возбудимость нервной системы.",
     },
     sections: {
       uz: [
         {
           title: "Asab impulslarini tartibga solish",
-          body: "Magniy mushaklar tonusini pasaytiradi, miyani kundalik axborot yuklamasidan tinchlantiradi.",
+          body: "Magniy asab tizimi va mushaklarning normal ishlashiga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
-          title: "Восстановление фаз сна",
-          body: "Хелат магния мягко тормозит нервную передачу, подготавливая организм к естественному засыпанию.",
+          title: "Регуляция нервных импульсов",
+          body: "Магний способствует нормальной работе нервной системы и мышц.",
         },
       ],
     },
@@ -1282,13 +1282,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Uyqu dorilariga qaraganda magniyning farqi nima?",
-          answer: "Magniy sunʼiy sedativ emas, u tabiiy minerallarni toʻldirib, tabiiy uyqu ritmini qaytaradi.",
+          answer: "Magniy uyqu dorisi yoki sedativ emas: u asab tizimining normal ishlashiga hissa qoʻshadigan mineral. Uyqusizlik uzoq davom etsa, shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
           question: "В чем отличие от снотворных?",
-          answer: "Магний не угнетает ЦНС искусственно, а физиологически нормализует естественные биоритмы.",
+          answer: "Магний не снотворное и не седативное средство, а минерал, который способствует нормальной работе нервной системы. При длительной бессоннице обратитесь к врачу.",
         },
       ],
     },
@@ -1298,24 +1298,24 @@ const raw: RawHealthTopic[] = [
     slug: "frequent-colds",
     name: { uz: "Tez-tez shamollash", ru: "Частые простуды и слабый иммунитет" },
     headline: {
-      uz: "Tizimli immunitetni kuchaytirish va viruslarga qarshi toʻsiq",
-      ru: "Активация противовирусной защиты и укрепление барьеров",
+      uz: "Immun tizimining normal ishlashini qoʻllab-quvvatlash",
+      ru: "Поддержка нормальной работы иммунной системы",
     },
     intro: {
-      uz: "Yiliga 3-4 martadan koʻp shamollash immun tizimi resurslari tugaganini bildiradi. D3, Sink va C vitamini himoyani qayta tiklaydi.",
-      ru: "Частые ОРВИ свидетельствуют о снижении местного и системного иммунитета. Протокол D3 + Цинк + Витамин C восстанавливает защиту.",
+      uz: "Yiliga 3–4 martadan koʻp shamollash immun tizimiga eʼtibor berish kerakligini bildirishi mumkin. D3, sink va C vitamini immun tizimining normal ishlashiga hissa qoʻshadi; tez-tez kasallansangiz, shifokorga murojaat qiling.",
+      ru: "Частые ОРВИ — повод обратить внимание на иммунную систему. Витамины D3, C и цинк способствуют нормальной работе иммунной системы; при частых простудах обратитесь к врачу.",
     },
     sections: {
       uz: [
         {
-          title: "Antiviral himoya zanjiri",
-          body: "Sink viruslarning koʻpayishiga toʻsqinlik qiladi, D3 makrofaglarni faollashtiradi, C vitamini esa erkin radikallarni neytrallaydi.",
+          title: "Immunitet uchun nutriyentlar",
+          body: "Sink, D3 va C vitamini immun tizimining normal ishlashiga hissa qoʻshadi, C vitamini esa hujayralarni oksidlovchi stressdan himoyalashga yordam beradi.",
         },
       ],
       ru: [
         {
-          title: "Иммунный протокол",
-          body: "Комплекс цинка, витамина C и D3 повышает синтез интерферонов и защищает слизистые оболочки дыхательных путей.",
+          title: "Нутриенты для иммунитета",
+          body: "Цинк, витамины D3 и C способствуют нормальной работе иммунной системы, а витамин C помогает защищать клетки от окислительного стресса.",
         },
       ],
     },
@@ -1331,13 +1331,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Shamollash boshlanganda nima qilish kerak?",
-          answer: "Dastlabki 3 kunda Sink va Vitamin C ni qabul qilish kasallikni yengil oʻtishiga yordam beradi.",
+          answer: "Sink va C vitamini immun tizimining normal ishlashiga hissa qoʻshadi, lekin ular dori emas. Kasallik belgilari paydo boʻlsa, shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
           question: "Что принимать при первых признаках простуды?",
-          answer: "Прием цинка и витамина C в первые 48 часов значительно снижает продолжительность симптомов.",
+          answer: "Цинк и витамин C способствуют нормальной работе иммунной системы, но не являются лекарством. При симптомах болезни обратитесь к врачу.",
         },
       ],
     },
@@ -1348,11 +1348,11 @@ const raw: RawHealthTopic[] = [
     name: { uz: "Xavotir va asabiylik", ru: "Тревожность и раздражительность" },
     headline: {
       uz: "Hissiy muvozanat, ichki xotirjamlik va stressga chidamlilik",
-      ru: "Снижение тревожности, внутреннее спокойствие и стрессоустойчивость",
+      ru: "Эмоциональный баланс, внутреннее спокойствие и стрессоустойчивость",
     },
     intro: {
-      uz: "Ichki bezovtalik va stress magniy va B guruhi vitaminlari zaxirasini kamaytiradi. Ularni toʻldirish asab tizimini barqarorlashtiradi.",
-      ru: "Повышенная раздражительность часто связана с гипервозбудимостью нейронов из-за дефицита магния.",
+      uz: "Ichki bezovtalik va stress magniy va B guruhi vitaminlari zaxirasini kamaytirishi mumkin. Magniy va B6 asab tizimining normal ishlashiga hissa qoʻshadi.",
+      ru: "Внутреннее напряжение и стресс могут истощать запасы магния и витаминов группы B. Магний и B6 способствуют нормальной работе нервной системы.",
     },
     sections: {
       uz: [
@@ -1370,7 +1370,7 @@ const raw: RawHealthTopic[] = [
     },
     bullets: {
       uz: ["Magniy bisglisinat / B6", "Kunduzgi tinchlik va diqqat", "Kechki sifatli uyqu"],
-      ru: ["Хелат магния с витамином B6", "Эмоциональный баланс", "Защита сердца от стресса"],
+      ru: ["Хелат магния с витамином B6", "Спокойствие и внимание днём", "Качественный сон вечером"],
     },
     ingredientSlugs: ["magnesium", "vitamin-b12"],
     productSlugs: ["dr-frei-antistress-magniy-20"],
@@ -1380,13 +1380,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Magniy qancha vaqt ichiladi?",
-          answer: "Stressli vaziyatlarda 1–2 oylik kurs tavsiya etiladi.",
+          answer: "Odatda 1–2 oylik kurs shaklida qabul qilinadi.",
         },
       ],
       ru: [
         {
           question: "Сколько длится курс?",
-          answer: "Рекомендуемый курс антистресс-терапии магнием — от 1 до 2 месяцев.",
+          answer: "Обычно магний принимают курсом от 1 до 2 месяцев.",
         },
       ],
     },
@@ -1396,24 +1396,24 @@ const raw: RawHealthTopic[] = [
     slug: "digestive-bloat",
     name: { uz: "Qorin dam boʻlishi va ogʻirlik", ru: "Вздутие и тяжесть в животе" },
     headline: {
-      uz: "Yengil hazm, toʻgʻri mikroflora va qorin damini bartaraf etish",
-      ru: "Устранение метеоризма, комфортное пищеварение и легкость",
+      uz: "Yengil hazm, mikroflora balansi va qorindagi qulaylik",
+      ru: "Баланс микрофлоры, комфортное пищеварение и легкость",
     },
     intro: {
-      uz: "Qorindagi noqulaylik va gazlar ichakda foydali bakteriyalar kamayganidan va fermentlar yetishmasligidan yuzaga keladi.",
-      ru: "Вздутие живота и ощущение тяжести после еды — признаки дисбиоза и замедленного пищеварения.",
+      uz: "Qorindagi noqulaylik va gazlar ichakda foydali bakteriyalar kamayganidan va fermentlar yetishmasligidan yuzaga kelishi mumkin.",
+      ru: "Вздутие живота и ощущение тяжести после еды могут быть связаны с нарушением баланса микрофлоры и замедленным пищеварением.",
     },
     sections: {
       uz: [
         {
-          title: "Mikroflorani qayta tiklash",
-          body: "Probiotik shtammlar patogen bakteriyalarni siqib chiqarib, ovqatning toʻliq parchalanishini taʼminlaydi.",
+          title: "Mikroflora balansi",
+          body: "Probiotik shtammlar ichak mikroflorasi balansini qoʻllab-quvvatlaydi va qulay hazm qilishga yordam beradi.",
         },
       ],
       ru: [
         {
-          title: "Нормализация флоры",
-          body: "Живые культуры лакто- и бифидобактерий уменьшают бродильные процессы в кишечнике.",
+          title: "Баланс микрофлоры",
+          body: "Живые культуры лакто- и бифидобактерий поддерживают баланс кишечной микрофлоры и комфортное пищеварение.",
         },
       ],
     },
@@ -1429,13 +1429,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Probiotik qachon taʼsir qiladi?",
-          answer: "Dastlabki 3–5 kunda hazm yengillashishi va dam boʻlish kamayishi seziladi.",
+          answer: "Taʼsir har kimda turlicha, probiotiklar odatda kurs bilan qabul qilinadi. Noqulaylik uzoq davom etsa, shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
-          question: "Как быстро наступает облегчение?",
-          answer: "Снижение вздутия и нормализация стула обычно отмечаются на 3–5 день приема.",
+          question: "Когда пробиотик начинает действовать?",
+          answer: "Эффект индивидуален, пробиотики обычно принимают курсом. Если дискомфорт сохраняется, обратитесь к врачу.",
         },
       ],
     },
@@ -1450,19 +1450,19 @@ const raw: RawHealthTopic[] = [
     },
     intro: {
       uz: "Boʻgʻimlardagi qisirlash va noqulaylik sinovial suyuqlik kamayishi va kollagen tolalari eskirishi bilan bogʻliq.",
-      ru: "Дискомфорт при ходьбе и хруст в коленях вызваны истончением суставного хряща и дефицитом коллагена.",
+      ru: "Дискомфорт при ходьбе и хруст в коленях связаны с уменьшением суставной жидкости и износом коллагеновых волокон.",
     },
     sections: {
       uz: [
         {
           title: "Boʻgʻimlar uchun nutriyentlar",
-          body: "Gidrolizlangan kollagen, D3, K2 va kalsiy birgalikda boʻgʻim togʻaylarini tiklashda kuchli sinergiya beradi.",
+          body: "Gidrolizlangan kollagen, D3, K2 va kalsiy koʻpincha birga qabul qilinadi: D3 va kalsiy suyaklarning normal holatini saqlashga hissa qoʻshadi.",
         },
       ],
       ru: [
         {
-          title: "Хондропротективное действие",
-          body: "Коллаген в сочетании с кальцием и витамином D3 восстанавливает матрикс суставов и снижает воспаление.",
+          title: "Нутриенты для суставов",
+          body: "Коллаген, витамины D3, K2 и кальций часто принимают вместе: витамин D3 и кальций способствуют поддержанию нормального состояния костей.",
         },
       ],
     },
@@ -1478,13 +1478,13 @@ const raw: RawHealthTopic[] = [
       uz: [
         {
           question: "Kollagen boʻgʻimlarga qanchada yordam beradi?",
-          answer: "Boʻgʻim togʻaylarining yangilanishi sekin kechadi, shuning uchun minimal kurs 2–3 oyni tashkil etadi.",
+          answer: "Togʻay toʻqimasi sekin yangilanadi, shuning uchun kurs odatda 2–3 oy davom etadi. Boʻgʻimlarda ogʻriq boʻlsa, shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
           question: "Сколько длится курс для суставов?",
-          answer: "Восстановление хрящевой ткани требует курсового приема от 2 до 3 месяцев.",
+          answer: "Хрящевая ткань обновляется медленно, поэтому курс обычно длится 2–3 месяца. При боли в суставах обратитесь к врачу.",
         },
       ],
     },

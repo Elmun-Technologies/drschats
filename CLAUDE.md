@@ -17,6 +17,8 @@ katalog o'sha yo'lning oxirida turadi.
 - **Aksiyalar bazada** (`promotions`): qator bo'lsa jadval to'liq haqiqat, bo'lmasa `mock.ts` dagi `rawPromotions`. **Integratsiya ID'lari** (GA4/GTM/Metrika/Pixel, tasdiqlash kodlari) — `site_settings`, shifrlashsiz; maxfiylar — `integration_settings`
 - **Katalog manbai**: `DATABASE_URL` bo'lsa — baza (bo'sh yoki ishlamasa o'rnatilgan katalogga qaytadi, **hech qachon bo'sh do'kon emas**); bo'lmasa — o'rnatilgan katalog. Tashqi Shopflow faqat `CATALOG_SOURCE=shopflow` bilan — `SHOPFLOW_MODE` endi **o'qilmaydi**: production'da eski `SHOPFLOW_MODE=http` qolib, katalog butunlay bo'shab qolgan edi (2026-10)
 - **SMS va avtomatlashtirish** (0010): har marketing xabari `outbound_messages` navbatidan o'tadi (`lib/messaging/`) — Telegram `bot_jobs` ga beriladi, SMS Eskiz orqali (`lib/sms/`, sozlash `/admin/integrations`). Ishchi sayt jarayonida (`instrumentation.ts`, har 60 s; `/api/cron/messages`). **Qoidalar kodda**: 21:00–09:00 Toshkent yuborilmaydi (09:00 ga suriladi), `marketing_optouts` har yuborishdan oldin, har SMS oxirida STOP havolasi (`/s/<token>`), promokod yuborish paytida, havolalar `/r/<id>` (bosish + `utm_campaign=flow-…|campaign-…`). Oqimlar `/admin/flows` (sukut: o'chiq), jurnal `/admin/messages`. Yangi marketing xabarini **faqat `queueMessage` orqali** yuboring. To'liq: **[`docs/MARKETING.md`](docs/MARKETING.md#5e-sms-avtomatlashtirish-va-atributsiya-adminflows-adminmessages)**
+- **Onlayn toʻlov — Payme va Click** (0015, `lib/payments/`): kalitlar faqat `/admin/integrations` da (shifrlangan; env — zaxira), yoqilgan + kalit + `ORDERS_IN_DB` boʻlsa checkoutʼda chiqadi (`readOnlineProviders()` — server, `getOnlineProviders()` — keshlangan sahifalar). Callbacklar `/api/payments/payme` (JSON-RPC, har doim HTTP 200), `/api/payments/click/{prepare,complete}`; protokol sof (`payme.ts`, `click.ts`, testli), baza `store.ts` — toʻlov va `orders.payment_status` bitta tranzaksiyada, buyurtma qatori qulflangan. Toʻlov havolasi faqat serverda, saqlangan jamidan (`links.ts`); qaytish — imzolangan `/track`. Fiskal chek MXIK kodlaridan (`fiscal.ts`, Σ = jami, boʻlmasa yuborilmaydi). To'liq: [`docs/ADMIN.md`](docs/ADMIN.md#onlayn-toʻlov-payme-click)
+- **Buyurtmani kuzatish va buyurtma SMS'lari** (0014): `/track` (raqam + telefon) → imzolangan `/track/<raqam>.<imzo>` (`orderTrackToken`), shaxsiy maʼlumotsiz. Holat xabari faqat `notifyCustomerOfOrder` orqali — Telegram klubda boʻlsa bot, aks holda SMS (`kind='transactional'`: opt-out/STOP/tungi soat qoidalari yoʻq), `/admin/flows` da yoqiladi (sukut: oʻchiq), matnlar Eskiz shablonlari sifatida kodda. To'liq: [`docs/MARKETING.md`](docs/MARKETING.md#5g-buyurtma-smslari-va-buyurtmani-kuzatish-track)
 - **Telegram klub** (bot + Mini App): Python bot (`govita-vip-bot/`, Fly app `govita-bot`) hech narsa saqlamaydi — saytning `/api/bot` iga murojaat qiladi; ma'lumot Postgres'da (`0003_telegram_club.sql`), boshqaruv `/admin/bot`. Mini App buyurtmasi Telegram imzosi bilan serverda tekshiriladi va chat id buyurtmaga yoziladi. To'liq: **[`docs/BOT-ADMIN.md`](docs/BOT-ADMIN.md)**. `backend/app/bot_*` (FastAPI) endi ishlatilmaydi
 - **Ombor soni va kutayotganlar** (`0009_stock_waitlist.sql`): `products.stock_qty` — `null` = kuzatilmaydi (avvalgidek, faqat `in_stock`). Kuzatilsa buyurtma sonni **buyurtma bilan bitta tranzaksiyada** shartli `UPDATE … WHERE stock_qty >= n` bilan kamaytiradi (yetmasa butun buyurtma rad, «Faqat N ta qoldi»), 0 da `in_stock=false`; bekor qilish **bir marta** qaytaradi (buyurtmaning `stock_movements` netosi). Saytda «Omborda N ta qoldi» faqat haqiqiy son ≤ chegara (`low_stock_at`, standart `site_settings.stock.lowStockAt`=5) va > 0 bo'lsa. Qoidalar sof: `lib/catalog/stock-rules.ts`; baza: `stock.ts`. «Xabar ber» / «Narxi tushsa xabar bering» — `restock_requests`; qaytganda/arzonlashganda `lib/notify/` (`Notifier`: telegram → `bot_jobs` `restock:<id>`, sms — keyingi bosqich uchun stub, qolgani operatorga qo'ng'iroq ro'yxati). Admin: `/admin/waitlist`. Narx yoki ombor holatini o'zgartiradigan yangi yo'l `afterProductChange()` ni chaqirsin
 - **Sodiqlik** (`/admin/loyalty`, `0011`, hammasi sukut boʻyicha **oʻchiq**): keshbek ballari (`lib/loyalty/` — balans saqlanmaydi, `loyalty_ledger` yigʻindisi, muddat dangasa; «Yetkazildi» da beriladi, bekor qilinsa qaytadi; **ishlatish faqat SMS kod bilan**, ball — toʻlov, `adjustments` oxirida `points`), tavsiya kodlari `GV` + 6 belgi (`lib/referral/`, promokod maydonida, faqat birinchi buyurtma), tugʻilgan kun roziligi (`/profile` → `customer_birthdays`, `birthday` oqimi), bannerlar A/B (`lib/merch/ab.ts`: `gv_ab` cookie + `<head>` skripti, ISR va nol CLS). Holat oʻzgarishi — `afterOrderStatus` (ikkala admin yoʻli). To'liq: [`docs/MARKETING.md`](docs/MARKETING.md#5f-sodiqlik-keshbek-tavsiya-tugʻilgan-kun-bannerlar-ab-adminloyalty)
@@ -32,7 +34,10 @@ qadamlari: **[`docs/QOLGAN-ISHLAR.md`](docs/QOLGAN-ISHLAR.md)**.
 Qisqacha (ishlab turgan saytdan sanaldi): `/vitamins` **10**, `/symptoms` **7**,
 `/goals` **10** mavzu; `/programs` 7, `/blog` 3, `/ingredients` 12,
 `/where-to-buy` 11 ta dorixona tarmog'i. Mahsulot rasmlari **haqiqiy** — har bir SKU
-o'z fotosiga ega (`photos-coverage.test.ts`), AI-generatsiya rasm loyihada yo'q.
+o'z fotosiga ega (`photos-coverage.test.ts`). **Istisno (2026-11 auditi):** 4 ta SKU'ning
+birinchi rasmi generatsiya qilingan packshot — `delical-vanil-200ml`, `dr-frei-turbo-base-ingalyator`,
+`swiss-energy-neuroforce-30`, `swiss-energy-hair-nail-skin-30` (`product-photos.ts` izohlari);
+haqiqiy foto kelishi bilan almashtiriladi.
 `/experts` va `/news` — **bo'sh, shuning uchun 404** (menyu, footer va sitemap'da yo'q):
 demo ekspertlar va o'ylab topilgan yangiliklar olib tashlangan; birinchi haqiqiy yozuv
 qo'shilishi bilan bo'lim o'zi qaytadi. `BRAND.contact` va `BRAND.social` Go Vita
@@ -176,7 +181,7 @@ chaqirilgandan **keyin** chizing.
 | `social-proof/` | LivePurchaseToast (har 35s, Framer Motion) |
 | `exit-intent/` | ExitIntentPopup (mouseleave + visibilitychange, sessionStorage once) |
 | `pwa/` | ServiceWorkerRegistration |
-| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), Skeleton, StarRating, ScrollProgress, BackToTop |
+| `ui/` | Button (`primary`/`light`/`secondary`/`ghost`), Badge (`sale`/`hit`/…), Price (+ `DiscountBadge`, `layout="inline"`), Chip, Field/Input, Choice (Checkbox, RadioCard), StarRating, ScrollProgress, BackToTop |
 | `analytics/` | Analytics (GTM Script) |
 
 ## State Management
@@ -232,14 +237,14 @@ src/messages/ru.json
 ```
 
 **`en.json` yo'q** — sayt ikki tilli (`locales = ["ru", "uz"]`). Ikkala faylda
-ham 1633 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
+ham 1684 ta kalit va ular teng: bitta tarjima qo'shilsa, ikkinchisiga ham
 qo'shiladi.
 
 Kodda o'qiladigan har bir kalit ikkala faylda borligini
 `src/messages/keys-used.test.ts` tekshiradi: yo'q kalit next-intl'da xato emas,
 sahifada kalit nomining o'zi (`common.savings`) chiqadi.
 
-**Namespace-lar** (38 ta, ikkala faylda bir xil): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
+**Namespace-lar** (ikkala faylda bir xil; `track` — kuzatish sahifasi): `about`, `account`, `badges`, `blog`, `cart`, `categoryNames`, `checkout`, `common`, `contact`, `cookie`, `countdown`, `delivery`, `emailPreferences`, `exit`, `experts`, `footer`, `header`, `health`, `home`, `ingredients_page`, `legal`, `loyalty`, `meta`, `nav`, `outOfStock`, `pages`, `privacy`, `product`, `profile`, `programs`, `quiz`, `reviews`, `shop`, `socialProof`, `subscription`, `topbar`, `upsell`, `wishlist`
 
 ## SEO
 
@@ -291,7 +296,11 @@ GTM ID: `NEXT_PUBLIC_GTM_ID` · GA4: `NEXT_PUBLIC_GA4_ID`
 ## Checkout va Buyurtmalar
 
 **Server Action** (`src/app/[locale]/checkout/actions.ts`):
-- Zod validation (server-side), chegaralar bilan (miqdor ≤ 99, ≤ 50 qator)
+- Zod validation (server-side), chegaralar bilan (miqdor ≤ 99, ≤ 50 qator). Telefon — faqat
+  O'zbekiston raqami (`lib/phone.ts`: 998 + 9 raqam), server `+998XXXXXXXXX` ga normallashtiradi
+- Buyurtma saqlangandan keyingi qadamlar (visitor, kvitansiya, email) yiqilsa ham mijozga
+  "failed" qaytmaydi — aks holda u qayta yuborib, buyurtma ikki marta tushardi. Operator xabari
+  3 marta qayta uriniladi (`notifyOperator`); kuzatuv uchun `/api/health` (baza o'lsa 503)
 - Rate limiting: 10 ta / IP / 10 daqiqa
 - **Narx va jami serverda qayta hisoblanadi** (`lib/cart/reprice.ts`): brauzer
   yuborgan `unitPrice`/`totals` ishlatilmaydi; mahsulot katalogdan olinadi, taklif
@@ -315,7 +324,7 @@ TELEGRAM_CHAT_ID=your_chat_id
 
 ## PWA
 
-- `public/manifest.json` — name, icons (192/512), theme `#0ea5e9`, display `standalone`
+- `public/manifest.json` — name, icons (192/512), theme `#ffffff` (bilan `<meta name="theme-color">` bir xil), display `standalone`
 - `public/sw.js` — cache-first static, network-first API/data
 - `public/icons/icon-192.png`, `icon-512.png`
 - `ServiceWorkerRegistration` — layout-da, faqat client-side
@@ -654,7 +663,7 @@ Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa
 - **Tibbiy vaʼda yoʻq:** «davolaydi», «stressni kamaytiradi», «100% natija» kabi soʻzlar ishlatilmaydi.
 - **Oʻzbek apostrofi** — `ʻ` (U+02BB): oʻ, gʻ, soʻm. Oddiy `'` emas. `uz.json` va kontent fayllari normallashtirilgan (oʻ/gʻ → `ʻ`, tutuq → `ʼ`). Qidiruv `lib/search/fold.ts` orqali barcha apostrof shakllarini bitta deb hisoblaydi — mijoz `go'zallik` yozsa ham topadi
 - **Narx formati:** `79 000 soʻm` (minglik boʻsh joy bilan). Birlik narxi kartada: `3 950 soʻm / tabletka`.
-- **Toʻlov logotiplari** — faqat `PaymentMark`/`PaymentMarks` (`components/ui/PaymentMarks.tsx`), roʻyxat `lib/config/payment-brands.ts`. Uzcard, Humo, Visa, Mastercard — rasmiy belgilar (`public/images/payments/`), onlayn toʻlov (Payme/Click/Uzum) orqali qabul qilinadi. **Yetkazib berishda toʻlov faqat naqd pul** (2026-10 qaror) — kuryer karta qabul qilmaydi. Payme/Click/Uzum — hozircha nom (rasmiy fayl yoʻq); brend-kit SVG qoʻyilib `src` yozilsa hamma joy oʻzi almashadi. Provayder va karta belgilari (`ONLINE_PAYMENT_MARKS`, `lib/config/payments.ts`) faqat merchant ID sozlanganda chiqadi — undan oldin faqat «Naqd pul»
+- **Toʻlov logotiplari** — faqat `PaymentMark`/`PaymentMarks` (`components/ui/PaymentMarks.tsx`), roʻyxat `lib/config/payment-brands.ts`. Uzcard, Humo, Visa, Mastercard — rasmiy belgilar (`public/images/payments/`), onlayn toʻlov (Payme/Click/Uzum) orqali qabul qilinadi. **Yetkazib berishda toʻlov faqat naqd pul** (2026-10 qaror) — kuryer karta qabul qilmaydi. Payme/Click/Uzum — hozircha nom (rasmiy fayl yoʻq); brend-kit SVG qoʻyilib `src` yozilsa hamma joy oʻzi almashadi. Provayder va karta belgilari (`paymentMarks(providers)`, `lib/config/payments.ts`) faqat provayder `/admin/integrations` da yoqilib, kalitlari kiritilganda chiqadi — undan oldin faqat «Naqd pul»
 
 ### Tokenlar (`design/tokens.json` → `src/styles/globals.css` ikkinchi `@theme` bloki)
 - Ranglar: `bg #FFFFFF`, `tile #F1F3F0`, `tile-hover #E6E8E5`, `chip-strong #E3E6E9`, `line #E4E6E8`, `line-strong #D9DCDF`, `ink #17191B`, `ink-2 #44494E`, `muted #63686E`, `dark-panel #1C1F22`, `on-dark-2 #C9CDD1`, `red #C8161D`, `yellow #FFD43B`, `yellow-banner #FFE58A`, `forest #0F2D24`, `gold #B8954F`.

@@ -3,14 +3,17 @@
 import { cookies, headers } from "next/headers";
 import { ORDERS_IN_DB, SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
 import { verifyInitData } from "@/lib/bot/webapp";
-import { announceOrderStatus, attachOrderChat } from "@/lib/bot/store";
+import { attachOrderChat } from "@/lib/bot/store";
+import { notifyCustomerOfOrder } from "@/lib/sms/transactional-server";
 import { isLiveDeployment } from "@/lib/config/live";
 import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
 import { repriceOrder, type OfferContext } from "@/lib/cart/reprice";
 import { lineTotal } from "@/lib/cart/pricing";
 import { getPrograms } from "@/lib/content/programs";
-import { isOnlineProviderAvailable } from "@/lib/config/payments";
+import { readOnlineProviders } from "@/lib/payments/availability";
+import { paymentUrl } from "@/lib/payments/links";
+import { isOnlineProviderId } from "@/lib/config/payments";
 import type { OrderRequest, OrderResult, Product } from "@/lib/shopflow/types";
 import { clientIp, withinRateLimit } from "@/lib/rate-limit";
 import { siteOrigin } from "@/lib/email/config";
@@ -28,6 +31,7 @@ import { readLoyaltyRules } from "@/lib/loyalty/settings";
 import { signReceipt } from "@/lib/loyalty/receipt";
 import { both, earnLaterLine, joinLines, spentLine } from "@/lib/loyalty/messages";
 import { ensureReferralCode } from "@/lib/referral/server";
+import { orderTrackToken } from "@/lib/messaging/tokens";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
@@ -38,6 +42,10 @@ const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
  * not consult any marketing consent — and carries no unsubscribe link, because
  * there is nothing here to unsubscribe from.
  */
+function trackUrl(locale: string, orderId: string): string {
+  return `${siteOrigin()}/${locale}/track/${orderTrackToken(orderId)}`;
+}
+
 async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
   const email = order.customer.email;
   if (!email) return;
@@ -55,7 +63,10 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
         price: formatMoney(lineTotal({ price: item.unitPrice, quantity: item.quantity, upsellDiscountPercent: item.upsellDiscountPercent }), order.locale),
       })),
       total: formatMoney(order.totals.total, order.locale),
-      orderUrl: `${siteOrigin()}/${order.locale}/checkout/success?order=${encodeURIComponent(orderId)}`,
+      // The tracking page when orders are ours (signed link); otherwise the success page as before.
+      orderUrl: ORDERS_IN_DB
+        ? trackUrl(order.locale, orderId)
+        : `${siteOrigin()}/${order.locale}/checkout/success?order=${encodeURIComponent(orderId)}`,
     },
   });
 }
@@ -109,7 +120,7 @@ async function clubBotReceipt(
       loyalty.spent > 0 ? both((l) => spentLine(loyalty.spent, l)) : null,
       loyalty.earn > 0 ? both((l) => earnLaterLine(loyalty.earn, l)) : null,
     );
-    await announceOrderStatus(orderId, "new", extra);
+    await notifyCustomerOfOrder(orderId, "new", extra);
   } catch (err) {
     console.error("[checkout] club bot receipt failed:", (err as Error).message);
   }
@@ -139,15 +150,20 @@ export type OrderError =
 
 export async function submitOrder(
   payload: OrderRequest,
-): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string }> {
-  const hdrs = await headers();
-  if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
-    return { ok: false, error: "rate_limited" };
-  }
-
+): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string; track?: string; payUrl?: string }> {
+  /*
+    Validation first: a form sent back for a typo costs nothing, so it must not
+    use up one of the ten orders an address may place. Mobile operators put
+    many customers behind one address, and a few corrected typos used to lock
+    the whole block out for ten minutes.
+  */
   const parsed = orderRequestSchema.safeParse(payload);
   if (!parsed.success) {
     return { ok: false, error: "invalid" };
+  }
+  const hdrs = await headers();
+  if (!withinRateLimit("checkout", clientIp(hdrs), RATE)) {
+    return { ok: false, error: "rate_limited" };
   }
   const { telegram, ...request } = parsed.data as OrderRequest;
   /*
@@ -168,7 +184,8 @@ export async function submitOrder(
   }
 
   // Reject online payment unless the provider has a complete, verified flow.
-  if (request.payment?.method === "online" && !isOnlineProviderAvailable(request.payment.provider)) {
+  const provider = request.payment?.provider;
+  if (request.payment?.method === "online" && !(isOnlineProviderId(provider) && (await readOnlineProviders()).includes(provider))) {
     return { ok: false, error: "payment_unavailable" };
   }
 
@@ -245,7 +262,16 @@ export async function submitOrder(
         console.error(`[checkout] order ${result.orderId} not delivered to the operator channel`);
         return { ok: false, error: "failed" };
       }
-      await Promise.all([
+      if (!delivered) {
+        // The order is saved and listed in /admin/orders; only the Telegram ping is missing.
+        console.error(`[checkout] order ${result.orderId} saved, but the operator channel did not take the notification`);
+      }
+      /*
+        From here the order exists. A side step that fails (visitor link,
+        receipt, email) is logged, never returned as "failed": the customer
+        would submit again and the shop would get the same order twice.
+      */
+      const sideSteps = await Promise.allSettled([
         ORDERS_IN_DB
           ? linkOrderToVisitor(visitorIdFrom((await cookies()).get(VISITOR_COOKIE)?.value), {
               number: result.orderId,
@@ -266,12 +292,35 @@ export async function submitOrder(
             })
           : Promise.resolve(),
       ]);
+      for (const step of sideSteps) {
+        if (step.status === "rejected") {
+          console.error(`[checkout] order ${result.orderId}: a post-order step failed`, step.reason instanceof Error ? step.reason.message : "unknown error");
+        }
+      }
       const adjustment = discountAdjustment(order.totals.adjustments);
+      const receipt = ORDERS_IN_DB
+        ? await loyaltyReceipt(result.orderId, order, pointsEarn).catch((err) => {
+            console.error(`[checkout] order ${result.orderId}: loyalty receipt failed`, err instanceof Error ? err.message : "unknown error");
+            return undefined;
+          })
+        : undefined;
+      /*
+        Online payment: the gateway page for exactly this order and its saved
+        total. If the link cannot be built now the order still stands — the
+        tracking page offers "To'lash" again, and the operator sees it unpaid.
+      */
+      const payUrl =
+        ORDERS_IN_DB && order.payment?.method === "online" && isOnlineProviderId(order.payment.provider)
+          ? await paymentUrl(order.payment.provider, { number: result.orderId, total: order.totals.total, locale: order.locale }).catch(() => null)
+          : null;
       return {
         ...result,
         total: order.totals.total,
+        payUrl: payUrl ?? undefined,
         coupon: adjustment?.kind === "promo" || adjustment?.kind === "referral" ? adjustment.code : undefined,
-        receipt: ORDERS_IN_DB ? await loyaltyReceipt(result.orderId, order, pointsEarn) : undefined,
+        receipt,
+        // Signed: the success page links to tracking only for the order this response is about.
+        track: ORDERS_IN_DB ? orderTrackToken(result.orderId) : undefined,
       };
     }
     return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };

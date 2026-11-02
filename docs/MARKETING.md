@@ -402,6 +402,30 @@ Baza boʻlmasa (`ORDERS_IN_DB` yoʻq) — dastur oʻchiq, nima boʻlishidan qat�
   «Hali yetarli maʼlumot yoʻq». «Gʻolibni qoldirish» ikkinchisini oʻchiradi.
   Ro'yxatda «A/B test» tugmasi bannerdan B variantni boshlaydi.
 
+## 5g. Buyurtma SMS'lari va buyurtmani kuzatish (`/track`)
+
+**Kuzatish sahifasi.** `/{locale}/track` — mijoz buyurtma raqami (`GV-000123`, `123` ham boʻladi) va
+buyurtma bergan telefonini kiritadi; ikkalasi mos kelsagina ochiladi (`app/actions/trackOrder.ts`,
+10 urinish / IP / 10 daqiqa, «topilmadi» javobi raqam borligini oshkor qilmaydi). Natija —
+`/{locale}/track/<raqam>.<imzo>`: imzo `MESSAGE_LINK_SECRET` bilan HMAC (`orderTrackToken`,
+`lib/messaging/tokens.ts`), raqamlar ketma-ket boʻlgani uchun imzosiz raqam hech narsa ochmaydi.
+Sahifa holat, sanalar, mahsulotlar va jamini koʻrsatadi — ism, telefon, manzil **yoʻq**; `noindex`,
+`no-referrer`. Havola beriladigan joylar: checkout javobi (`track`, muvaffaqiyat sahifasidagi tugma
+faqat oʻsha buyurtma imzosi bilan), buyurtma email'i, SMS. Bazasiz deploy'da sahifa forma oʻrniga
+operator telefoni va Telegram'ni koʻrsatadi (footer havolasi hech qachon 404 emas).
+
+**Buyurtma SMS'lari** (`lib/sms/transactional.ts`, `transactional-server.ts`). Holat oʻzgarishining
+yagona yoʻli — `notifyCustomerOfOrder` (checkout, bot buyurtmasi va ikkala admin yoʻli): mijoz
+Telegram klubda boʻlsa — bot yozadi, aks holda SMS; **hech qachon ikkalasi emas**.
+`outbound_messages.kind = 'transactional'` (0014): opt-out tekshirilmaydi, STOP qatori yoʻq,
+tungi soatda ham ketadi, havola `/r/` emas — kuzatish havolasining oʻzi. `dedupe_key`
+`order-sms:<raqam>:<holat>` — bir holat uchun bitta SMS.
+
+Yoqish: `/admin/flows` → «Buyurtma SMS'lari» (ikki belgi: qabul qilinganda / holat oʻzgarganda),
+sukut — **oʻchiq**. Matnlar kodda qotirilgan, chunki Eskiz har shablonni oldindan tasdiqlaydi:
+yoqishdan oldin oʻsha kartadagi 10 ta matnni (5 holat × uz/ru) my.eskiz.uz → SMS → Shablonlar ga
+yuboring. Matnni oʻzgartirsangiz — avval Eskiz'da tasdiqlating, keyin deploy.
+
 ## 6. Tekshirish ro'yxati
 
 Deploy qilgandan keyin:

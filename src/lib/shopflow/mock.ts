@@ -142,11 +142,11 @@ export const rawCategories: RawCategory[] = [
     },
     image: img("cat-skin", "Skin").url,
   },
-  catSimple("cat-herbal", "herbal", "O'simlik vositalari", "Растительные средства"),
+  catSimple("cat-herbal", "herbal", "Oʻsimlik vositalari", "Растительные средства"),
   catSimple("cat-collagen", "collagen", "Kollagen", "Коллаген"),
-  catSimple("cat-omega", "omega", "Omega va baliq yog'i", "Омега и рыбий жир"),
+  catSimple("cat-omega", "omega", "Omega va baliq yogʻi", "Омега и рыбий жир"),
   catSimple("cat-sport", "sport", "Sport va fitnes", "Спорт и фитнес"),
-  catSimple("cat-joints", "joints", "Bo'g'imlar", "Суставы"),
+  catSimple("cat-joints", "joints", "Boʻgʻimlar", "Суставы"),
 ];
 
 export interface RawProduct {
@@ -927,7 +927,7 @@ export const rawProducts: RawProduct[] = [
     },
     faq: {
       uz: [
-        { question: "Kompyutерda ko'p ishlaydiganlarga mosmi?", answer: "Ha, raqamli qurilmalar ko'z toliqishida juda foydali." },
+        { question: "Kompyuterda koʻp ishlaydiganlarga mosmi?", answer: "Ha, raqamli qurilmalar koʻz toliqishida juda foydali." },
       ],
       ru: [
         { question: "Подходит ли для тех, кто много работает за компьютером?", answer: "Да, очень полезен при усталости глаз от цифровых устройств." },

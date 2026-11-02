@@ -1,16 +1,28 @@
 import Link from "next/link";
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { PAYMENT_PROVIDERS } from "@/lib/config/payments";
+import { ORDERS_IN_DB } from "@/lib/shopflow";
+import { readOnlineProviders } from "@/lib/payments/availability";
 import { getIntegrationAdminOverview } from "@/lib/integrations/settings";
 import { SITE_URL } from "@/lib/config/site";
-import { AnalyticsForm, MessagingForms, SmsForm, Status, VerificationForm } from "@/components/admin/IntegrationSettingsForms";
+import { AnalyticsForm, MessagingForms, PaymentForms, SmsForm, Status, VerificationForm } from "@/components/admin/IntegrationSettingsForms";
 import { Card, Notice, PageHeader, SectionTitle, linkClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
 
 export const metadata = { title: "Integratsiyalar" };
 export const dynamic = "force-dynamic";
+
+/** Products on sale without the fiscal codes Payme's receipt needs. */
+async function missingFiscal(): Promise<number> {
+  try {
+    const rows = (await getDb().execute(sql`
+      select count(*) as n from products where in_stock and (mxik_code is null or package_code is null)`)) as unknown as { n: string }[];
+    return Number(rows[0]?.n ?? 0);
+  } catch {
+    return 0;
+  }
+}
 
 async function journeyHealth() {
   try {
@@ -35,11 +47,12 @@ function Row({ name, detail, on, label }: { name: string; detail: string; on: bo
 
 export default async function AdminIntegrationsPage() {
   await requireAdmin();
-  const [overview, health] = await Promise.all([getIntegrationAdminOverview(), journeyHealth()]);
+  const [overview, health, online, noFiscal] = await Promise.all([getIntegrationAdminOverview(), journeyHealth(), readOnlineProviders(), missingFiscal()]);
+  const ready = { payme: online.includes("payme"), click: online.includes("click") };
   const a = overview.analytics;
   const telegramClub = Boolean(process.env.BOT_API_KEY && process.env.TELEGRAM_CLUB_BOT_TOKEN);
   const sanity = Boolean(process.env.NEXT_PUBLIC_SANITY_PROJECT_ID && process.env.NEXT_PUBLIC_SANITY_PROJECT_ID !== "placeholder");
-  const items = [a.ga4, a.gtm, a.yandexMetrika, a.metaPixel, overview.verification.google, overview.verification.yandex, overview.operator.configured, overview.email.configured, overview.sms.configured];
+  const items = [a.ga4, a.gtm, a.yandexMetrika, a.metaPixel, overview.verification.google, overview.verification.yandex, overview.operator.configured, overview.email.configured, overview.sms.configured, ready.payme, ready.click];
   const connected = items.filter(Boolean).length;
 
   return (
@@ -56,6 +69,10 @@ export default async function AdminIntegrationsPage() {
         <AnalyticsForm overview={overview} />
         <VerificationForm overview={overview} siteUrl={SITE_URL} />
       </div>
+
+      <SectionTitle>Onlayn toʻlov</SectionTitle>
+      {ready.payme && noFiscal > 0 && <div className="mb-4"><Notice>{formatNumber(noFiscal)} ta sotuvdagi mahsulotda MXIK yoki qadoq kodi yoʻq — ular bor buyurtmada Payme chekni maʼlumotsiz chiqaradi. Kodlarni <Link href="/admin/products" className={linkClass}>mahsulotlarda</Link> kiriting.</Notice></div>}
+      <PaymentForms overview={overview} siteUrl={SITE_URL} ready={ready} ordersInDb={ORDERS_IN_DB} />
 
       <SectionTitle>Xabar kanallari</SectionTitle>
       <MessagingForms overview={overview} />
@@ -85,12 +102,10 @@ export default async function AdminIntegrationsPage() {
           </ul>
           <p className="mt-3 text-[13px] text-muted">Klub boti sozlamalari: <Link href="/admin/bot" className={linkClass}>Telegram klub</Link>.</p>
         </Card>
-        <Card title="Toʻlov va yetkazish" lead="Deploy sozlamalarida boshqariladi">
+        <Card title="Yetkazish" lead="Kuryer xizmatlari">
           <ul className="divide-y divide-line">
-            {PAYMENT_PROVIDERS.map((p) => (
-              <Row key={p.id} name={p.label} detail={p.configured ? "Onlayn toʻlov oqimi yoqilgan" : p.merchantIdConfigured ? "Merchant ID bor, toʻlov oqimi hali ulanmagan" : "Ulanmagan — checkoutʼda faqat naqd pul"} on={p.configured} />
-            ))}
-            <Row name="BTS / Yandex Dostavka" detail="Operator qoʻlda boshqaradi, API ulanmagan" on={false} label="Qoʻlda" />
+            <Row name="BTS Express" detail="Operator qoʻlda boshqaradi — API ulanmagan" on={false} label="Qoʻlda" />
+            <Row name="Yandex Dostavka" detail="Operator qoʻlda boshqaradi — API ulanmagan" on={false} label="Qoʻlda" />
           </ul>
         </Card>
       </div>

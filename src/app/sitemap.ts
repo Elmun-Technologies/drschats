@@ -14,6 +14,16 @@ import { isStocked } from "@/lib/shop/categories";
 import { getAllProducts } from "@/lib/shop/all-products";
 import type { Product } from "@/lib/shopflow/types";
 import { brandOf } from "@/lib/catalog/product-facts";
+import { getCustomerStories } from "@/lib/content/stories.sanity";
+import { BRAND } from "@/lib/brand";
+
+/*
+  Built per request, not at build time: the Docker build has no database, so a
+  prerendered sitemap listed the built-in catalogue forever and never the
+  products, categories and brands added in the admin. The catalogue reads
+  underneath are cached, so this costs a cache hit, not a full query.
+*/
+export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, allProducts] = await Promise.all([
@@ -28,11 +38,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   // An empty shelf is a page with nothing on it — listed once it has a product.
   const categoryPaths = categories.filter(isStocked).map((c) => `/products/${c.slug}`);
-  const [blogSlugs, expertSlugs, healthTopics, programSlugs] = await Promise.all([
+  const [blogSlugs, expertSlugs, healthTopics, programSlugs, stories] = await Promise.all([
     listArticleSlugs(),
     listExpertSlugs(),
     getHealthTopicIndex(),
     getProgramSlugs(),
+    getCustomerStories("uz").catch(() => []),
   ]);
 
   // A topic family with nothing published is an empty page; submitting it is
@@ -41,13 +52,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const news = await getTranslations({ locale: "uz", namespace: "pages.news" });
   const hasNews = (news.raw("items") as unknown[]).length > 0;
 
+  /*
+    Two pages that only show their honest empty state today. /reviews renders
+    "no reviews yet" until a product carries a real review or a customer story
+    is published (the same two lists the page renders); /licenses is a list of
+    "on request" lines until BRAND.legal.licence holds the actual number.
+    Both stay linked in the footer — they are just not worth a crawl yet.
+  */
+  const hasReviews = stories.length > 0 || allProducts.items.some((p) => (p.reviews?.length ?? 0) > 0);
+  const hasLicence = Boolean(BRAND.legal.licence);
+
   const populatedFamilies = new Set(healthTopics.map((t) => TOPIC_BASE_PATH[t.kind]));
 
   const staticPaths = [
     "", "/products", "/about", "/blog", "/contact", "/delivery",
     "/loyalty", "/ingredients", "/brands", "/payment", "/guarantee",
-    "/requisites", "/licenses", "/quiz", "/programs", "/where-to-buy", "/partners",
-    "/reviews", "/sale",
+    "/requisites", "/quiz", "/programs", "/where-to-buy", "/partners", "/sale",
+    ...(hasLicence ? ["/licenses"] : []),
+    ...(hasReviews ? ["/reviews"] : []),
     ...(hasNews ? ["/news"] : []),
     ...(expertSlugs.length > 0 ? ["/experts"] : []),
     ...TOPIC_KINDS.map((kind) => TOPIC_BASE_PATH[kind]).filter((p) => populatedFamilies.has(p)),

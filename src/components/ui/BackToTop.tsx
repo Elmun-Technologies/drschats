@@ -40,7 +40,9 @@ export function BackToTop() {
           initial={{ opacity: 0, scale: 0.6 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0, scale: 0.6 }}
-          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          onClick={() =>
+            window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" })
+          }
           aria-label={t("backToTop")}
           data-miniapp-hide
           className="fixed right-3 bottom-[calc(var(--bottom-nav)+0.75rem)] z-30 flex h-9 w-9 items-center justify-center rounded-full border border-line-strong bg-bg/90 text-ink shadow-md backdrop-blur-sm transition-colors hover:border-line-strong hover:text-ink"

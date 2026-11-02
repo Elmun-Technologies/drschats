@@ -74,7 +74,7 @@ export const BRAND = {
      */
     stir: "307895851",
     /** Registered address, as recorded in the registry (Latin, official form). */
-    address: "Toshkent shahri, Yakkasaroy tumani, Bobur ko‘chasi, 77-uy",
+    address: "Toshkent shahri, Yakkasaroy tumani, Bobur koʻchasi, 77-uy",
     /** The same address in Cyrillic, for the Russian pages. */
     addressRu: "г. Ташкент, Яккасарайский район, ул. Бабура, 77",
     /** Registered director and sole founder. */
@@ -82,9 +82,9 @@ export const BRAND = {
     /** Date of state registration. */
     registeredAt: "11.11.2020",
     /** Registry activity code and its wording. */
-    activity: "OKED 46490 — boshqa uy-ro‘zg‘or tovarlari ulgurji savdosi",
+    activity: "OKED 46490 — boshqa uy-roʻzgʻor tovarlari ulgurji savdosi",
     /** Where these facts were read from, and when — printed on /requisites. */
-    source: "orginfo.uz (INN 307895851), ma’lumot sanasi: 25.06.2024",
+    source: "orginfo.uz (INN 307895851), maʼlumot sanasi: 25.06.2024",
   },
 
   social: {

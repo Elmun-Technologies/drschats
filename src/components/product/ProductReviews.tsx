@@ -35,7 +35,7 @@ export function ProductReviews({
 
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,280px)_1fr] lg:items-start">
-      <div className="rounded-2xl border border-line bg-bg p-6 lg:sticky lg:top-24">
+      <div className="rounded-2xl border border-line bg-bg p-6 lg:sticky lg:top-[calc(var(--header-sticky)+16px)]">
         <p className="text-4xl font-bold leading-none text-ink">{rating.toFixed(1)}</p>
         <StarRating rating={rating} className="mt-3" />
         <p className="mt-2 text-sm text-ink-2">{tc("reviews", { count: reviewCount })}</p>

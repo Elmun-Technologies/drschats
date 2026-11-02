@@ -25,6 +25,14 @@ export const PUBLIC_SETTING_KEYS = [
   "verify.yandex",
   "verify.bing",
   "sms.transliterate",
+  // Online payments: switches and non-secret options (keys are in integration_settings).
+  "payments.payme",
+  "payments.payme.test",
+  "payments.payme.account",
+  "payments.click",
+  "payments.shippingMxik",
+  "payments.shippingPackage",
+  "payments.vatPercent",
 ] as const;
 
 export type PublicSettingKey = (typeof PUBLIC_SETTING_KEYS)[number];

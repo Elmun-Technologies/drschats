@@ -28,3 +28,26 @@ describe("segment export", () => {
     expect(csv.startsWith("﻿")).toBe(true);
   });
 });
+
+describe("opted-out customers", () => {
+  const stopped = new Set(["901234567"]);
+  const list = [
+    { key: "a", name: "A", phone: "+998901234567", email: null, orders: 1, value: 1, lastAt: null, telegramChatId: null },
+    { key: "b", name: "B", phone: "+998911112233", email: null, orders: 1, value: 1, lastAt: null, telegramChatId: null },
+  ];
+
+  it("are left out of the ad audiences", () => {
+    for (const format of ["meta", "google"] as const) {
+      const csv = segmentCsv(list, format, stopped);
+      expect(csv).not.toContain(sha256(format === "meta" ? "998901234567" : "+998901234567"));
+      expect(csv.trim().split("\n")).toHaveLength(2);
+    }
+  });
+
+  it("stay on the team's list, marked", () => {
+    const rows = segmentCsv(list, "crm", stopped).trim().split("\n");
+    expect(rows).toHaveLength(3);
+    expect(rows[1].endsWith(",ha")).toBe(true);
+    expect(rows[2].endsWith(",")).toBe(true);
+  });
+});

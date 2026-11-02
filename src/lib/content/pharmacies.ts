@@ -52,7 +52,7 @@ export const PHARMACIES_VERIFIED_AT = "2026-10-04";
 const D = {
   yakkasaroy: { uz: "Yakkasaroy", ru: "Яккасарайский" },
   chilonzor: { uz: "Chilonzor", ru: "Чиланзарский" },
-  mirzoUlugbek: { uz: "Mirzo Ulug‘bek", ru: "Мирзо-Улугбекский" },
+  mirzoUlugbek: { uz: "Mirzo Ulugʻbek", ru: "Мирзо-Улугбекский" },
   sergeli: { uz: "Sergeli", ru: "Сергелийский" },
   yunusobod: { uz: "Yunusobod", ru: "Юнусабадский" },
   olmazor: { uz: "Olmazor", ru: "Алмазарский" },
@@ -71,16 +71,16 @@ export const PHARMACY_CHAINS: PharmacyChain[] = [
     addresses: [
       {
         district: D.yakkasaroy,
-        address: { uz: "Sh. Rustaveli ko‘chasi, 53/27", ru: "ул. Ш. Руставели, 53/27" },
+        address: { uz: "Sh. Rustaveli koʻchasi, 53/27", ru: "ул. Ш. Руставели, 53/27" },
       },
       {
         district: D.chilonzor,
-        address: { uz: "Kichik Halka Yo‘li ko‘chasi, 1/1", ru: "ул. Малая Кольцевая дорога, 1/1" },
+        address: { uz: "Kichik Halka Yoʻli koʻchasi, 1/1", ru: "ул. Малая Кольцевая дорога, 1/1" },
       },
-      { district: D.mirzoUlugbek, address: { uz: "Osiyo ko‘chasi, 17", ru: "ул. Осиё, 17" } },
+      { district: D.mirzoUlugbek, address: { uz: "Osiyo koʻchasi, 17", ru: "ул. Осиё, 17" } },
       {
         district: D.sergeli,
-        address: { uz: "Sergeli-2, Yangi Sergeli Yo‘li, 1/83", ru: "Сергели-2, ул. Янги Сергели йули, 1/83" },
+        address: { uz: "Sergeli-2, Yangi Sergeli Yoʻli, 1/83", ru: "Сергели-2, ул. Янги Сергели йули, 1/83" },
       },
     ],
     mapUrl: map2gis("City pharm"),
@@ -92,21 +92,21 @@ export const PHARMACY_CHAINS: PharmacyChain[] = [
     addresses: [
       { district: D.yunusobod, address: { uz: "Yunusobod 7-kvartal, 1", ru: "Юнусабад, 7-й квартал, 1" } },
       { district: D.sergeli, address: { uz: "Sergeli-2 mavzesi, 1", ru: "массив Сергели-2, 1" } },
-      { district: D.olmazor, address: { uz: "Ziyo ko‘chasi, 12", ru: "ул. Зиё, 12" } },
-      { district: D.mirobod, address: { uz: "Nukus ko‘chasi, 83A", ru: "ул. Нукус, 83А" } },
+      { district: D.olmazor, address: { uz: "Ziyo koʻchasi, 12", ru: "ул. Зиё, 12" } },
+      { district: D.mirobod, address: { uz: "Nukus koʻchasi, 83A", ru: "ул. Нукус, 83А" } },
     ],
     mapUrl: map2gis("Grandpharm"),
   },
   { name: "Effekt pharm", mapUrl: map2gis("Effekt pharm") },
   {
     name: "Vaksina",
-    note: { uz: "Dorixonalar tarmog‘i", ru: "Аптечная сеть" },
+    note: { uz: "Dorixonalar tarmogʻi", ru: "Аптечная сеть" },
     mapUrl: map2gis("Vaksina dorixona"),
   },
   {
     name: "Eko pharm",
     note: {
-      uz: "Toshkent bo‘ylab 20 ta filial, tel: +998 71 207 73 00",
+      uz: "Toshkent boʻylab 20 ta filial, tel: +998 71 207 73 00",
       ru: "20 филиалов по Ташкенту, тел: +998 71 207 73 00",
     },
     branches: 20,
@@ -115,7 +115,7 @@ export const PHARMACY_CHAINS: PharmacyChain[] = [
         district: D.olmazor,
         address: { uz: "Qoraqamish 2/4-massiv, 20/37-uy", ru: "массив Каракамыш 2/4, д. 20/37" },
       },
-      { district: D.bektemir, address: { uz: "Suvsoz ko‘chasi, 29", ru: "ул. Сувсоз, 29" } },
+      { district: D.bektemir, address: { uz: "Suvsoz koʻchasi, 29", ru: "ул. Сувсоз, 29" } },
     ],
     mapUrl: map2gis("Eco pharma"),
   },
@@ -127,14 +127,14 @@ export const PHARMACY_CHAINS: PharmacyChain[] = [
     addresses: [
       {
         district: D.yakkasaroy,
-        address: { uz: "Sh. Rustaveli ko‘chasi, 11/14", ru: "ул. Ш. Руставели, 11/14" },
+        address: { uz: "Sh. Rustaveli koʻchasi, 11/14", ru: "ул. Ш. Руставели, 11/14" },
       },
       { district: D.yunusobod, address: { uz: "Yunusobod-9 mavzesi", ru: "массив Юнусабад-9" } },
       {
         district: D.chilonzor,
-        address: { uz: "Chilonzor-7, Lutfi ko‘chasi, 33", ru: "Чиланзар-7, ул. Лутфи, 33" },
+        address: { uz: "Chilonzor-7, Lutfi koʻchasi, 33", ru: "Чиланзар-7, ул. Лутфи, 33" },
       },
-      { district: D.mirzoUlugbek, address: { uz: "Ziyolilar ko‘chasi, 4G", ru: "ул. Зиёлилар, 4Г" } },
+      { district: D.mirzoUlugbek, address: { uz: "Ziyolilar koʻchasi, 4G", ru: "ул. Зиёлилар, 4Г" } },
     ],
     mapUrl: map2gis("Pharma Cosmos"),
   },
@@ -142,14 +142,14 @@ export const PHARMACY_CHAINS: PharmacyChain[] = [
     name: "Anvar pharm",
     note: { uz: "Anvar Farm Servis", ru: "Anvar Farm Servis" },
     addresses: [
-      { district: D.mirzoUlugbek, address: { uz: "Osiyo ko‘chasi, 17A", ru: "ул. Осиё, 17А" } },
+      { district: D.mirzoUlugbek, address: { uz: "Osiyo koʻchasi, 17A", ru: "ул. Осиё, 17А" } },
       {
         district: D.yakkasaroy,
-        address: { uz: "A. Qahhor 7-o‘tish yo‘li, 3-uy", ru: "проезд А. Каххора 7-й, д. 3" },
+        address: { uz: "A. Qahhor 7-oʻtish yoʻli, 3-uy", ru: "проезд А. Каххора 7-й, д. 3" },
       },
     ],
     mapUrl: map2gis("Anvar farm"),
   },
   { name: "Mega pharm", mapUrl: map2gis("Mega pharm") },
-  { name: "Shavkat o‘g‘li", mapUrl: map2gis("Shavkat o‘g‘li dorixona") },
+  { name: "Shavkat oʻgʻli", mapUrl: map2gis("Shavkat oʻgʻli dorixona") },
 ];

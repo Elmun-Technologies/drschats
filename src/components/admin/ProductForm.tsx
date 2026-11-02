@@ -24,6 +24,8 @@ export interface ProductFormValues {
   stockQty: string;
   /** Empty = the site default. */
   lowStockAt: string;
+  mxikCode: string;
+  packageCode: string;
   kind: "core" | "addon" | "unlisted";
   sort: string;
   images: string;
@@ -93,6 +95,15 @@ export function ProductForm({
         <Panel title="Rasmlar">
           <p className="-mt-2 text-[14px] leading-5 text-ink-2">Birinchi rasm — asosiy: mahsulot sahifasida birinchi chiqadi. Strelkalar bilan tartibini oʻzgartiring.</p>
           <ImageListField name="images" value={images} onChange={setImages} repoImages={repoImages} slug={slug} storageReady={storageReady} />
+        </Panel>
+        <Panel title="Fiskal chek (Payme)">
+          <p className="text-[13px] leading-[17px] text-muted">Onlayn toʻlovda chek shu kodlar bilan chiqadi. Kodni tasnif.soliq.uz dan oling; boʻsh boʻlsa Payme chekni maʼlumotsiz qabul qiladi.</p>
+          <Field label="MXIK (IKPU) kodi" hint="17 ta raqam">
+            <input name="mxikCode" inputMode="numeric" maxLength={17} pattern="[0-9]{17}" defaultValue={values.mxikCode} className={inputClass} />
+          </Field>
+          <Field label="Qadoq kodi" hint="Tasnifdagi oʻlchov birligi kodi">
+            <input name="packageCode" inputMode="numeric" maxLength={20} pattern="[0-9]{1,20}" defaultValue={values.packageCode} className={inputClass} />
+          </Field>
         </Panel>
         <Panel title="Kesma rasm (fonsiz PNG)">
           <SingleImageField

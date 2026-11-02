@@ -17,6 +17,25 @@ if (process.env.VERCEL_ENV === "production" || process.env.GOVITA_PRODUCTION ===
   }
 }
 
+/*
+  One host for search engines: the bare domain answers with a permanent
+  redirect to the www host the canonical tags already name. Derived from
+  NEXT_PUBLIC_SITE_URL, so a deploy without a www host gets no rule at all.
+  *.fly.dev is left alone — the team opens /admin/setup there.
+*/
+function apexRedirects() {
+  const site = new URL(process.env.NEXT_PUBLIC_SITE_URL?.trim() || "https://www.govita.uz");
+  if (!site.hostname.startsWith("www.")) return [];
+  return [
+    {
+      source: "/:path*",
+      has: [{ type: "host" as const, value: site.hostname.slice(4) }],
+      destination: `${site.origin}/:path*`,
+      permanent: true,
+    },
+  ];
+}
+
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   /*
@@ -42,6 +61,9 @@ const nextConfig: NextConfig = {
     globalNotFound: true,
     // The admin uploads product photos up to 5 MB through a server action; the default limit is 1 MB.
     serverActions: { bodySizeLimit: "6mb" },
+  },
+  async redirects() {
+    return apexRedirects();
   },
   async headers() {
     const routes = [

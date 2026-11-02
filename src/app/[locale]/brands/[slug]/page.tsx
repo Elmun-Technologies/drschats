@@ -8,6 +8,8 @@ import { getAllProducts } from "@/lib/shop/all-products";
 import { COMMERCE } from "@/lib/config/commerce";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { listingMetadata } from "@/lib/seo/page-meta";
+import { BRAND_VARIANT_PARAMS, isVariantQuery } from "@/lib/seo/query-params";
+import type { RawSearchParams } from "@/lib/search-params";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { brandBySlug } from "@/lib/content/product-brands";
 import { getBrandInfos } from "@/lib/content/brand-info";
@@ -20,7 +22,7 @@ export const revalidate = 300;
 
 type Params = Promise<{ locale: Locale; slug: string }>;
 
-export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: Promise<{ form?: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { params: Params; searchParams: Promise<RawSearchParams> }): Promise<Metadata> {
   const [{ locale, slug }, query] = await Promise.all([params, searchParams]);
   const [t, listing] = await Promise.all([
     getTranslations({ locale, namespace: "shop.brands" }),
@@ -36,7 +38,7 @@ export async function generateMetadata({ params, searchParams }: { params: Param
     path: `/brands/${slug}`,
     products: info?.products ?? [],
     fallbackDescription: t("products", { brand: brand.name }),
-    filtered: Object.keys(query).length > 0,
+    filtered: isVariantQuery(query, BRAND_VARIANT_PARAMS),
   });
 }
 

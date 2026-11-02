@@ -74,9 +74,16 @@ export function bucketCount(name: string): number {
  * Best-effort client address. The first X-Forwarded-For entry is whatever the
  * client sent, so it is never trusted: the edge's own header wins, and failing
  * that the entry appended by the nearest proxy (the last one).
+ *
+ * An edge header is trusted only on the platform that writes it. Fly's proxy
+ * sets Fly-Client-IP; anywhere else (Vercel, a plain server) that header is
+ * just text the client chose, and trusting it let every request pick a fresh
+ * address and walk past every limit.
  */
-export function clientIp(headers: Headers): string {
-  const direct = headers.get("fly-client-ip")?.trim() || headers.get("x-real-ip")?.trim();
+export function clientIp(headers: Headers, platform: Platform = currentPlatform()): string {
+  const edge =
+    platform === "fly" ? headers.get("fly-client-ip") : platform === "vercel" ? headers.get("x-real-ip") : null;
+  const direct = edge?.trim();
   if (direct) return direct;
   const forwarded = headers
     .get("x-forwarded-for")
@@ -84,4 +91,12 @@ export function clientIp(headers: Headers): string {
     .map((part) => part.trim())
     .filter(Boolean);
   return forwarded?.at(-1) || "unknown";
+}
+
+export type Platform = "fly" | "vercel" | "other";
+
+function currentPlatform(): Platform {
+  if (process.env.FLY_APP_NAME) return "fly";
+  if (process.env.VERCEL) return "vercel";
+  return "other";
 }

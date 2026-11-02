@@ -25,3 +25,16 @@ export function msUntilCutoff(cutoff: { hour: number; minute: number }, now: Dat
 export function formatCutoff(cutoff: { hour: number; minute: number }): string {
   return `${String(cutoff.hour).padStart(2, "0")}:${String(cutoff.minute).padStart(2, "0")}`;
 }
+
+/**
+ * Which day an order placed before today's cut-off arrives. The operator works
+ * Monday to Saturday, so Saturday's orders arrive on Monday, and on Sunday
+ * there is no same-day cut-off to race at all (null: show no timer). The
+ * timer used to say "tomorrow" every day of the week.
+ */
+export function cutoffDelivery(now: Date): "tomorrow" | "monday" | null {
+  const tashkent = new Date(now.getTime() + TASHKENT_OFFSET_MIN * 60_000);
+  const day = tashkent.getUTCDay();
+  if (day === 0) return null;
+  return day === 6 ? "monday" : "tomorrow";
+}

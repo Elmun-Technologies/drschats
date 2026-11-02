@@ -103,7 +103,7 @@ export async function HealthTopicTemplate({
             </article>
 
             {ingredients.length > 0 && (
-              <aside className="rounded-2xl border border-line bg-bg p-6 lg:sticky lg:top-24">
+              <aside className="rounded-2xl border border-line bg-bg p-6 lg:sticky lg:top-[calc(var(--header-sticky)+16px)]">
                 <h2 className="text-lg font-bold">{t("keyIngredients")}</h2>
                 <ul className="mt-4 space-y-4">
                   {ingredients.map((ing) => (

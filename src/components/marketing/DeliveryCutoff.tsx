@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import { formatCutoff, msUntilCutoff, parseCutoff } from "@/lib/config/delivery-cutoff";
+import { cutoffDelivery, formatCutoff, msUntilCutoff, parseCutoff } from "@/lib/config/delivery-cutoff";
 import { useCommerce } from "@/lib/commerce/context";
 import { cn } from "@/lib/utils";
 
@@ -17,21 +17,27 @@ export function DeliveryCutoff({ className }: { className?: string }) {
   const raw = useCommerce().delivery.cutoff;
   const cutoff = parseCutoff(raw);
   const [left, setLeft] = useState<number | null>(null);
+  const [arrives, setArrives] = useState<"tomorrow" | "monday" | null>(null);
 
   useEffect(() => {
     const parsed = parseCutoff(raw);
     if (!parsed) return;
-    const update = () => setLeft(msUntilCutoff(parsed, new Date()));
+    const update = () => {
+      const now = new Date();
+      const day = cutoffDelivery(now);
+      setArrives(day);
+      setLeft(day ? msUntilCutoff(parsed, now) : null);
+    };
     update();
     const timer = window.setInterval(update, 30_000);
     return () => window.clearInterval(timer);
   }, [raw]);
 
-  if (!cutoff || left === null) return null;
+  if (!cutoff || left === null || !arrives) return null;
   const minutes = Math.ceil(left / 60_000);
   return (
     <p className={cn("text-sm text-ink-2", className)}>
-      {t.rich("cutoff", {
+      {t.rich(arrives === "monday" ? "cutoffMonday" : "cutoff", {
         time: formatCutoff(cutoff),
         hours: Math.floor(minutes / 60),
         minutes: minutes % 60,

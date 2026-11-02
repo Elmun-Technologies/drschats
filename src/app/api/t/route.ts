@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
   if (!isDbConfigured) return done;
   const userAgent = req.headers.get("user-agent") ?? "";
   if (isBotAgent(userAgent)) return done;
+  if (!sameSite(req)) return done;
   if (!withinRateLimit("journey", clientIp(req.headers), LIMIT)) return done;
 
   const text = await req.text().catch(() => "");
@@ -49,4 +50,21 @@ export async function POST(req: NextRequest) {
     });
   }
   return done;
+}
+
+/*
+  Only the shop's own pages write journeys. Another site could otherwise post
+  events from its visitors' browsers and grow the visitors table at will.
+  sendBeacon sends Origin and Sec-Fetch-Site; a request without either (an
+  old browser) is still taken.
+*/
+function sameSite(req: NextRequest): boolean {
+  if (req.headers.get("sec-fetch-site") === "cross-site") return false;
+  const origin = req.headers.get("origin");
+  if (!origin) return true;
+  try {
+    return new URL(origin).host === req.headers.get("host");
+  } catch {
+    return false;
+  }
 }

@@ -6,6 +6,7 @@ import { ShopView } from "@/components/shop/ShopView";
 import { isCatalogSort } from "@/lib/shop/catalog-sort";
 import { parseFilters, type FilterParams } from "@/lib/shop/catalog-filters";
 import { firstParam } from "@/lib/search-params";
+import { CATALOG_VARIANT_PARAMS, isVariantQuery } from "@/lib/seo/query-params";
 
 export const revalidate = 300;
 
@@ -24,7 +25,7 @@ export async function generateMetadata({
     path: "/products",
     title: t("shopTitle"),
     description: t("shopDescription"),
-    noindex: Object.keys(query).length > 0,
+    noindex: isVariantQuery(query, CATALOG_VARIANT_PARAMS),
   });
 }
 

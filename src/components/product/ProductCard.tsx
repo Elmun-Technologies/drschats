@@ -44,6 +44,8 @@ export function ProductCard({
 }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("common");
+  // Stepper labels name the product: a grid of 24 identical "Increase" buttons tells a screen reader nothing.
+  const tco = useTranslations("checkout");
   const product = useLiveProduct(listed);
   const add = useCart((s) => s.add);
   const setQuantity = useCart((s) => s.setQuantity);
@@ -147,6 +149,9 @@ export function ProductCard({
           </svg>
           {t("stockLeft", { count: left })}
         </span>
+      ) : !product.inStock ? (
+        // Nothing can be delivered from an empty shelf; the badge already says so. Kept for the card height.
+        <span aria-hidden className="block h-4" />
       ) : (
         <span className="flex items-center gap-1.5 px-0.5 text-caption text-muted">
           <svg viewBox="0 0 24 24" aria-hidden className="h-4 w-4 shrink-0" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -162,7 +167,7 @@ export function ProductCard({
             <button
               type="button"
               onClick={() => setQuantity(lineId, qty - 1)}
-              aria-label={t("decrease")}
+              aria-label={tco("decreaseFor", { name: product.name })}
               className="flex h-11 w-11 items-center justify-center text-xl"
             >
               −
@@ -174,7 +179,7 @@ export function ProductCard({
               type="button"
               onClick={() => setQuantity(lineId, qty + 1)}
               disabled={qty >= maxQty}
-              aria-label={t("increase")}
+              aria-label={tco("increaseFor", { name: product.name })}
               className="flex h-11 w-11 items-center justify-center text-xl disabled:opacity-40"
             >
               +

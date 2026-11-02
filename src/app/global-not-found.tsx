@@ -71,7 +71,7 @@ export default function GlobalNotFound() {
 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
               <Link
-                href={`/${defaultLocale}`}
+                href="/ru"
                 lang="ru-RU"
                 className={`${LINK_BASE} bg-ink text-white hover:bg-black hover:text-white`}
               >

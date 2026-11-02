@@ -32,19 +32,38 @@ function csvCell(value: string | number | null | undefined): string {
 
 export type ExportFormat = "crm" | "meta" | "google";
 
+function phone9(phone: string | null): string | null {
+  const digits = (phone ?? "").replace(/\D/g, "");
+  return digits.length >= 9 ? digits.slice(-9) : null;
+}
+
+/**
+ * Customers who pressed STOP (any channel) are not handed to an ad platform:
+ * an ad audience is marketing too. The team's own CRM list keeps them, marked,
+ * so nobody calls them with an offer either.
+ */
+export function withoutOptedOut(members: SegmentMember[], optedOut: ReadonlySet<string>): SegmentMember[] {
+  return members.filter((m) => {
+    const p = phone9(m.phone);
+    return !p || !optedOut.has(p);
+  });
+}
+
 /**
  * crm — readable list for the team; meta / google — the column layouts
  * Meta Custom Audiences and Google Customer Match accept, SHA-256 hashed so
  * no raw contact leaves the shop.
  */
-export function segmentCsv(members: SegmentMember[], format: ExportFormat): string {
+export function segmentCsv(members: SegmentMember[], format: ExportFormat, optedOut: ReadonlySet<string> = new Set()): string {
   const lines: string[] = [];
   if (format === "crm") {
-    lines.push(["Ism", "Telefon", "Email", "Buyurtmalar", "Summa (soʻm)", "Oxirgi faollik", "Telegram"].join(","));
+    lines.push(["Ism", "Telefon", "Email", "Buyurtmalar", "Summa (soʻm)", "Oxirgi faollik", "Telegram", "Reklamadan voz kechgan"].join(","));
     for (const m of members) {
-      lines.push([m.name, m.phone, m.email, m.orders, m.value, m.lastAt?.toISOString().slice(0, 10) ?? "", m.telegramChatId ? "ha" : ""].map(csvCell).join(","));
+      const stopped = optedOut.has(phone9(m.phone) ?? "");
+      lines.push([m.name, m.phone, m.email, m.orders, m.value, m.lastAt?.toISOString().slice(0, 10) ?? "", m.telegramChatId ? "ha" : "", stopped ? "ha" : ""].map(csvCell).join(","));
     }
   } else if (format === "meta") {
+    members = withoutOptedOut(members, optedOut);
     lines.push("phone,email,country");
     for (const m of members) {
       const phone = normalizePhone(m.phone);
@@ -54,7 +73,7 @@ export function segmentCsv(members: SegmentMember[], format: ExportFormat): stri
     }
   } else {
     lines.push("Phone,Email,Country");
-    for (const m of members) {
+    for (const m of withoutOptedOut(members, optedOut)) {
       const phone = normalizePhone(m.phone);
       const email = m.email?.trim().toLowerCase();
       if (!phone && !email) continue;

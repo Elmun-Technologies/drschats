@@ -94,7 +94,7 @@ export function UpsellLadderModal() {
             aria-modal="true"
             aria-labelledby="upsell-offer-title"
             tabIndex={-1}
-            className="fixed inset-x-4 bottom-0 z-[61] mx-auto max-w-sm sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
+            className="fixed inset-x-4 bottom-0 z-[61] mx-auto max-h-[calc(100dvh-16px)] max-w-sm overflow-y-auto overscroll-contain sm:inset-auto sm:left-1/2 sm:top-1/2 sm:-translate-x-1/2 sm:-translate-y-1/2"
           >
           <motion.div
             key={currentStep}
@@ -121,8 +121,8 @@ export function UpsellLadderModal() {
                       </span>
                     )}
                   </div>
-                  <button onClick={closeLadder} aria-label={tc("close")} className="text-muted hover:text-ink">
-                    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
+                  <button type="button" onClick={closeLadder} aria-label={tc("close")} className="-mr-2.5 -mt-2.5 grid h-11 w-11 shrink-0 place-items-center rounded-full text-muted hover:bg-tile hover:text-ink">
+                    <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
                     </svg>
                   </button>

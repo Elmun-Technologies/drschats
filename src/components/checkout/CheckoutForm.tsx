@@ -31,7 +31,7 @@ import { gapFillers } from "@/lib/cart/gap";
 import { FreeShippingFillers } from "@/components/cart/FreeShippingFillers";
 import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { UpsellSavingsBar } from "@/components/upsell/UpsellSavingsBar";
-import { ONLINE_PAYMENT_MARKS, PAYMENT_PROVIDERS, onlinePaymentAvailable } from "@/lib/config/payments";
+import { paymentMarks, type OnlineProviderId } from "@/lib/config/payments";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 import { telegramInitData } from "@/lib/telegram/mini-app";
 import type { FirstOrderOffer } from "@/lib/promo/rules";
@@ -41,6 +41,8 @@ import { PointsField } from "./PointsField";
 import { usePoints } from "@/lib/loyalty/store";
 import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
 import { useMiniAppMainButton } from "@/components/telegram/useMiniAppMainButton";
+import { normalizeUzPhone } from "@/lib/phone";
+import { saveLastOrder } from "@/lib/orders/last-order";
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -63,7 +65,10 @@ export function CheckoutForm({
   promoCodes = false,
   firstOrder = { mode: "operator", percent: COMMERCE.discounts.firstOrderPercent },
   loyalty = LOYALTY_OFF,
+  onlineProviders = [],
 }: {
+  /** Payme / Click when switched on with keys in the admin (lib/payments/availability.ts). */
+  onlineProviders?: OnlineProviderId[];
   recommended: Product[];
   prices: Record<string, { price: number; oldPrice?: number; saleEndsAt?: string; inStock: boolean }>;
   /** Promo codes are counted in our database; without it the field is not offered. */
@@ -116,7 +121,7 @@ export function CheckoutForm({
   */
   const schema = z.object({
     name: z.string().min(2, t("errorRequired")),
-    phone: z.string().min(7, t("errorPhone")),
+    phone: z.string().refine((v) => normalizeUzPhone(v) !== null, t("errorPhone")),
     // Optional: the phone is what an operator calls, and demanding an address
     // as well would cost more orders than the confirmation email is worth.
     email: z.union([z.string().email(t("errorEmail")), z.literal("")]).optional(),
@@ -157,8 +162,8 @@ export function CheckoutForm({
     resolver: zodResolver(schema),
     defaultValues: {
       method: "courier",
-      payment: onlinePaymentAvailable() ? "online" : "cod",
-      provider: onlinePaymentAvailable() ? PAYMENT_PROVIDERS.find((p) => p.configured)?.id : undefined,
+      payment: onlineProviders.length ? "online" : "cod",
+      provider: onlineProviders[0],
       subscribe: false,
     },
   });
@@ -329,9 +334,29 @@ export function CheckoutForm({
       if (res.coupon) discount.remove();
       // Before clear(): the reorder reminders and the "already bought" signal read this history.
       trackPurchase(lines.map((l) => ({ slug: l.slug, name: l.name })));
+      saveLastOrder({
+        order: res.orderId,
+        total: res.total ?? grandTotal,
+        method: values.method,
+        payment: values.payment,
+        items: lines.map((l) => ({ name: l.name, quantity: l.quantity })),
+      });
       clear();
       usePoints.getState().clear();
-      router.push(`/checkout/success?order=${res.orderId}${res.receipt ? `&k=${encodeURIComponent(res.receipt)}` : ""}`);
+      const query = new URLSearchParams({ order: res.orderId });
+      if (res.receipt) query.set("k", res.receipt);
+      if (values.method === "pickup") query.set("m", "pickup");
+      if (res.track) query.set("t", res.track);
+      /*
+        Online payment: straight to the gateway. It brings the customer back to
+        the order's tracking page, which shows whether the payment went through
+        and offers to pay again if it did not.
+      */
+      if (res.payUrl) {
+        window.location.assign(res.payUrl);
+        return;
+      }
+      router.push(`/checkout/success?${query}`);
       return;
     }
     if (res.error === "points_invalid") {
@@ -477,25 +502,24 @@ export function CheckoutForm({
           </Step>
 
           {/*
-            A provider is selectable only when its end-to-end payment flow is
-            implemented. A merchant ID by itself is not enough to accept a
-            payment, so incomplete providers remain disabled.
+            Only providers that can take a payment are drawn. Three greyed-out
+            "not yet" cards ahead of the one working option (cash) made the
+            step look broken and sent card payers to another shop.
           */}
           <Step n={3} title={t("paymentTitle")}>
             <div role="radiogroup" aria-label={t("paymentTitle")} className="grid grid-cols-2 gap-2 lg:grid-cols-4 lg:gap-2.5">
-              {PAYMENT_PROVIDERS.map((p) => (
+              {onlineProviders.map((id) => (
                 <RadioCard
-                  key={p.id}
+                  key={id}
                   name="pay-choice"
-                  value={p.id}
-                  checked={payChoice === p.id}
-                  disabled={!p.configured}
-                  onChange={() => choosePay(p.id)}
-                  className={cn("p-3.5 lg:p-4", !p.configured && "cursor-not-allowed opacity-60")}
+                  value={id}
+                  checked={payChoice === id}
+                  onChange={() => choosePay(id)}
+                  className="p-3.5 lg:p-4"
                 >
                   <span className="flex flex-col items-start gap-0.5">
-                    <PaymentMark id={p.id} size="sm" className="h-6 justify-start bg-transparent px-0 text-base" />
-                    <span className="text-[13px] text-ink-2 lg:text-sm">{p.configured ? tv("online") : t("paySoon")}</span>
+                    <PaymentMark id={id} size="sm" className="h-6 justify-start bg-transparent px-0 text-base" />
+                    <span className="text-[13px] text-ink-2 lg:text-sm">{tv("online")}</span>
                   </span>
                 </RadioCard>
               ))}
@@ -508,7 +532,7 @@ export function CheckoutForm({
                 {errors.provider.message}
               </p>
             )}
-            <p className="text-sm text-muted">{onlinePaymentAvailable() ? tv("gatewayNote") : t("payUnavailable")}</p>
+            <p className="text-sm text-muted">{onlineProviders.length ? tv("gatewayNote") : t("payUnavailable")}</p>
           </Step>
         </div>
 
@@ -594,9 +618,10 @@ export function CheckoutForm({
           </div>
           <div className="hidden flex-col gap-3 rounded-[20px] bg-tile px-5 py-[18px] text-sm leading-[19px] lg:flex">
             <TrustRow d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4">{tc("trustGuarantee")}</TrustRow>
-            <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>
-            <TrustRow d="M4 5h16v11H9l-5 4z">{onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}</TrustRow>
-            <PaymentMarks ids={ONLINE_PAYMENT_MARKS} size="sm" label={t("paymentTitle")} className="pt-1" />
+            {/* "Secure payment" describes an online gateway; with cash only it promised something that does not exist. */}
+            {onlineProviders.length > 0 && <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>}
+            <TrustRow d="M4 5h16v11H9l-5 4z">{onlineProviders.length ? t("operatorNote") : t("payUnavailable")}</TrustRow>
+            <PaymentMarks ids={paymentMarks(onlineProviders)} size="sm" label={t("paymentTitle")} className="pt-1" />
           </div>
         </aside>
       </div>

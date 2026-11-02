@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { getTranslations, setRequestLocale } from "next-intl/server";
+import { setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getQuizQuestions } from "@/lib/quiz/questions";
-import { buildPageMetadata, SITE_NAME } from "@/lib/seo/metadata";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 import { QuizFlow } from "@/components/quiz/QuizFlow";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 
@@ -14,13 +14,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "quiz" });
-  return buildPageMetadata({
-    locale,
-    path: "/quiz",
-    title: `${t("title")} — ${SITE_NAME}`,
-    description: t("subtitle"),
-  });
+  return staticPageMetadata(locale, "quiz", "/quiz");
 }
 
 export default async function QuizPage({

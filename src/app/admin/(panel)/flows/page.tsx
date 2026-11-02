@@ -9,7 +9,9 @@ import { CHANNEL_LABELS, TRIGGER_INFO, formatDelay, isFlowTrigger, parseSteps } 
 import { conversion, flowEnrollmentStats, messageStats } from "@/lib/messaging/stats";
 import { isQuietHours } from "@/lib/messaging/quiet-hours";
 import { reachContext } from "@/lib/messaging/outbox";
-import { toggleFlow, runMessagingNow } from "@/app/admin/_actions/flows";
+import { toggleFlow, runMessagingNow, saveOrderSmsSettings } from "@/app/admin/_actions/flows";
+import { readTransactionalSms } from "@/lib/sms/transactional-server";
+import { orderSmsTemplates } from "@/lib/sms/transactional";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, EmptyState, Metric, Notice, PageHeader, Pill, linkClass, secondaryButtonClass, smallButtonClass, somShort } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
@@ -23,7 +25,7 @@ export default async function AdminFlowsPage() {
   const order = (id: string) => { const i = DEFAULT_FLOWS.findIndex((f) => f.id === id); return i < 0 ? 99 : i; };
   const rows = (await getDb().select().from(flows).orderBy(asc(flows.createdAt), asc(flows.id))).sort((a, b) => order(a.id) - order(b.id));
   const keys = rows.map((f) => `flow-${f.id}`);
-  const [stats30, enrollments, reach] = await Promise.all([messageStats(keys, 30), flowEnrollmentStats(), reachContext()]);
+  const [stats30, enrollments, reach, orderSms] = await Promise.all([messageStats(keys, 30), flowEnrollmentStats(), reachContext(), readTransactionalSms()]);
   const totals = [...stats30.values()].reduce(
     (sum, s) => ({ sent: sum.sent + s.sent, clicked: sum.clicked + s.clicked, orders: sum.orders + s.orders, revenue: sum.revenue + s.revenue }),
     { sent: 0, clicked: 0, orders: 0, revenue: 0 },
@@ -52,6 +54,38 @@ export default async function AdminFlowsPage() {
         <Metric label="Buyurtmalar (30 kun)" value={formatNumber(totals.orders)} hint="kod yoki havola orqali" />
         <Metric label="Tushum (30 kun)" value={somShort(totals.revenue)} hint={`konversiya ${conversion(totals.orders, totals.sent)}`} />
       </div>
+
+      <Card
+        title="Buyurtma SMS'lari"
+        lead="Mijoz buyurtma berganda va operator holatini oʻzgartirganda. Telegram klubga ulangan mijozga bot yozadi, SMS ketmaydi. Marketing emas: STOP havolasi yoʻq, rad etganlarga ham ketadi, tunda ham yuboriladi."
+        className="mt-4"
+      >
+        <ActionForm action={saveOrderSmsSettings} className="flex flex-col gap-3">
+          <label className="flex min-h-11 items-center gap-3 text-[15px] text-ink">
+            <input type="checkbox" name="orderPlaced" defaultChecked={orderSms.orderPlaced} className="h-5 w-5 accent-ink" />
+            Buyurtma qabul qilinganda
+          </label>
+          <label className="flex min-h-11 items-center gap-3 text-[15px] text-ink">
+            <input type="checkbox" name="statusChanged" defaultChecked={orderSms.statusChanged} className="h-5 w-5 accent-ink" />
+            Holat oʻzgarganda (tasdiqlandi, yoʻlda, yetkazildi, bekor qilindi)
+          </label>
+          <Notice>
+            Eskiz har bir SMS matnini oldindan tasdiqlaydi. Yoqishdan oldin quyidagi shablonlarni my.eskiz.uz → SMS → Shablonlar boʻlimiga yuboring; tasdiqlanmagan matn yuborilmaydi va jurnalda «failed» boʻladi.
+          </Notice>
+          <details className="text-[14px] text-ink-2">
+            <summary className="min-h-11 cursor-pointer py-2 font-semibold text-ink">Shablonlar (uz / ru)</summary>
+            <ul className="mt-2 flex flex-col gap-2">
+              {orderSmsTemplates().map((tpl) => (
+                <li key={tpl.status} className="rounded-[12px] bg-tile px-3 py-2">
+                  <span className="block">{tpl.uz}</span>
+                  <span lang="ru" className="block text-muted">{tpl.ru}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-2 text-[13px] text-muted">{"{number}"} — buyurtma raqami, {"{havola}"} — kuzatish havolasi, {"{phone}"} — doʻkon telefoni.</p>
+          </details>
+        </ActionForm>
+      </Card>
 
       <div className="mt-4 flex flex-col gap-4">
         {rows.length === 0 && <EmptyState title="Avtomatlashtirish yoʻq">Bazada migratsiya 0010 qoʻllanganini tekshiring.</EmptyState>}

@@ -19,12 +19,11 @@ export default function LocaleError({
   }, [error]);
 
   return (
-    <div className="flex min-h-[60vh] flex-col items-center justify-center gap-6 text-center px-4">
-      <p className="text-5xl">😕</p>
-      <h1 className="text-2xl font-extrabold">{t("errorTitle")}</h1>
-      <p className="text-ink-2 max-w-md">{t("errorDesc")}</p>
-      <div className="flex gap-3">
-        <button onClick={reset} className={buttonVariants("dark")}>
+    <div className="wrap flex min-h-[60vh] flex-col items-start justify-center gap-4 py-12">
+      <h1 className="text-[28px] font-bold leading-[34px] lg:text-[36px] lg:leading-[42px]">{t("errorTitle")}</h1>
+      <p className="max-w-md text-base leading-6 text-ink-2">{t("errorDesc")}</p>
+      <div className="flex flex-wrap gap-2.5">
+        <button type="button" onClick={reset} className={buttonVariants("primary")}>
           {t("errorRetry")}
         </button>
         <Link href="/" className={buttonVariants("secondary")}>

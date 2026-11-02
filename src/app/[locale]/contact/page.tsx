@@ -41,7 +41,7 @@ export default async function ContactPage({ params }: { params: Promise<{ locale
 
   return (
     <InfoShell active="contact" crumb={t("nav.contact")}>
-      <JsonLd data={localBusinessLd()} />
+      <JsonLd data={localBusinessLd(locale)} />
       <InfoHeader title={t("contact.title")} lead={t("contact.lead")} />
 
       <div className="grid gap-3 lg:grid-cols-3 lg:gap-4">

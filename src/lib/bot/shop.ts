@@ -13,7 +13,8 @@ import { getCommerceSettings } from "@/lib/commerce/server";
 import { pricingRulesOf } from "@/lib/commerce/settings";
 import { applyAdjustment, phone9Of, type PromoReason } from "@/lib/promo/rules";
 import { placeOrder, promoLinesOf, quoteDiscounts, type DiscountQuote } from "@/lib/promo/server";
-import { announceOrderStatus, attachOrderChat, linkOf, memberLocale } from "@/lib/bot/store";
+import { attachOrderChat, linkOf, memberLocale } from "@/lib/bot/store";
+import { notifyCustomerOfOrder } from "@/lib/sms/transactional-server";
 import { earnLaterLine, both, joinLines } from "@/lib/loyalty/messages";
 import { notifyOperatorOfOrder } from "@/lib/orders/notify";
 import { linkBotOrderToVisitor } from "@/lib/journey/collect";
@@ -525,7 +526,7 @@ export async function placeBotOrder(input: BotOrderInput): Promise<BotOrderResul
       const extra = joinLines(
         placed.pointsEarn > 0 ? both((l) => earnLaterLine(placed.pointsEarn, l)) : null,
       );
-      await announceOrderStatus(placed.orderId, "new", extra);
+      await notifyCustomerOfOrder(placed.orderId, "new", extra);
       await notifyOperatorOfOrder(placed.order, placed.orderId);
       await linkBotOrderToVisitor({
         number: placed.orderId,

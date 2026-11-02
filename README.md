@@ -14,16 +14,12 @@ catalog backend behind a single adapter interface — see
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for the platform plan and
 [`docs/SHOPFLOW_API.md`](docs/SHOPFLOW_API.md) for the exact API contract.
 
-## See it live (one-click deploy)
+## Deploy
 
-The fastest way to view the UI on a shareable URL — Next.js runs on Vercel with
-no extra config:
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FElmun-Technologies%2Fdrschats&env=SHOPFLOW_MODE,NEXT_PUBLIC_SITE_URL&envDescription=SHOPFLOW_MODE%3Dmock%20for%20sample%20data%3B%20NEXT_PUBLIC_SITE_URL%3Dyour%20vercel%20url)
-
-Set `SHOPFLOW_MODE=mock` and `NEXT_PUBLIC_SITE_URL=https://<your>.vercel.app`,
-deploy, and open `/uz`. Switch `SHOPFLOW_MODE=http` (+ API url/key) later for the
-real Shopflow data.
+Production runs on Fly.io: every merge to `main` deploys after CI passes
+(`.github/workflows/fly-deploy.yml`, details in [`docs/DEPLOY-FLY.md`](docs/DEPLOY-FLY.md)).
+Without `DATABASE_URL` the site serves the built-in catalogue, so a bare
+`next build && next start` (or any Node host) shows the full storefront.
 
 Two parts of the UI stay hidden on a demo deploy until you ask for them, because
 both show data that is not real — see [Demo flags](#demo-flags).
@@ -47,7 +43,7 @@ both show data that is not real — see [Demo flags](#demo-flags).
 
 ```bash
 npm install
-cp .env.example .env      # defaults to SHOPFLOW_MODE=mock
+cp .env.example .env      # no DATABASE_URL → built-in catalogue
 npm run dev               # http://localhost:3000  -> /uz
 ```
 
@@ -85,11 +81,10 @@ The whole app depends only on the `ShopflowClient` interface
 (`src/lib/shopflow/types.ts`). A factory (`src/lib/shopflow/index.ts`) selects
 the implementation by env:
 
-- `SHOPFLOW_MODE=mock` → built-in sample catalogue (`mock.ts`), works offline.
-- `SHOPFLOW_MODE=http` → real platform (`http.ts`), via `SHOPFLOW_API_URL` /
-  `SHOPFLOW_API_KEY`. Endpoint paths in `http.ts` are placeholders to confirm
-  against the Shopflow API docs; responses are validated with Zod
-  (`schemas.ts`). **Switching to the real API is a change to `http.ts` only.**
+- `DATABASE_URL` set → the catalogue in Postgres (the admin panel at `/admin`
+  edits it); empty or unreachable → the built-in one (`mock.ts`), never an empty shop.
+- `CATALOG_SOURCE=shopflow` → the external Shopflow API (`http.ts`), via
+  `SHOPFLOW_API_URL` / `SHOPFLOW_API_KEY`. `SHOPFLOW_MODE` is no longer read.
 
 Orders (zayavka) are submitted via the `submitOrder` server action
 (`src/app/[locale]/checkout/actions.ts`) → `shopflow.createOrder`. UTM/referrer

@@ -47,14 +47,22 @@ export async function requestEmailOptIn(input: {
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: "invalid" };
 
-  const { email, name, locale, source } = parsed.data;
+  const { email, locale, source } = parsed.data;
+  // At most two confirmation mails a day to one address, whoever asks: this
+  // form is public, and it must not become a way to mail someone repeatedly in
+  // the shop's name. The answer stays the same so it reveals nothing.
+  if (!withinRateLimit("email-opt-in-address", email.toLowerCase(), { limit: 2, windowMs: 24 * 60 * 60 * 1000 })) {
+    return { ok: true };
+  }
   const token = signToken("opt-in", email);
   const confirmUrl = `${siteOrigin()}/api/email/confirm?token=${encodeURIComponent(token)}&locale=${locale}`;
 
+  // No visitor-typed name in the mail: the text is the shop's alone, so the
+  // form cannot be used to send a stranger a message under the shop's name.
   await sendCampaign({
     to: email,
     locale,
-    campaign: { type: "opt-in", confirmUrl, name },
+    campaign: { type: "opt-in", confirmUrl },
   });
 
   // The operator hears about the request, not the confirmation, because an

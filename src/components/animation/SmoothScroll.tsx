@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import Lenis from "lenis";
+import { MotionConfig } from "framer-motion";
 
 /**
  * Whoop-style smooth inertia scrolling. Automatically disabled for users who
@@ -20,6 +21,10 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       duration: 1.1,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
+      // The cart drawer, catalog menu, search list and dialogs scroll on their own;
+      // without these the wheel moved the page behind them instead.
+      allowNestedScroll: true,
+      prevent: (node) => Boolean(node.closest?.('[role="dialog"], [aria-modal="true"], [data-lenis-prevent]')),
     });
 
     let frame = 0;
@@ -35,5 +40,7 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
-  return <>{children}</>;
+  // Framer Motion animations follow the visitor's reduced-motion setting too;
+  // the CSS rule in globals.css only reaches CSS animations.
+  return <MotionConfig reducedMotion="user">{children}</MotionConfig>;
 }

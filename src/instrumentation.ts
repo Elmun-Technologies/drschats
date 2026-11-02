@@ -21,12 +21,9 @@ import { cspMode } from "@/lib/security/csp";
  * analytics or a checkout integration down with nothing in the logs to explain
  * it.
  *
- * In this repository's deployment the two always agree: the storefront is on
- * Vercel, which rebuilds every deploy, and docker-compose.yml holds only
- * postgres, redis, meilisearch and the FastAPI backend — no storefront image.
- * The check exists for whoever self-hosts `next start` or adds one later, where
- * "change CSP_MODE and restart" is the obvious thing to try and would silently
- * do nothing.
+ * On Fly the image is rebuilt on every deploy, so the two normally agree; the
+ * check catches the case where someone changes CSP_MODE with `fly secrets set`
+ * and restarts — the obvious thing to try, which would silently do nothing.
  */
 export async function register() {
   // register() is called for every runtime the app is compiled into. The
@@ -48,6 +45,7 @@ export async function register() {
       .then(({ startMessageWorker }) => startMessageWorker())
       .catch((err: Error) => console.error("[messages] worker not started:", err.message));
   }
+  if (process.env.NEXT_RUNTIME === "nodejs") warnMissingSecrets();
   if (process.env.NEXT_RUNTIME === "nodejs" && process.env.SMS_FAKE === "1" && (process.env.GOVITA_PRODUCTION === "1" || process.env.VERCEL_ENV === "production")) {
     console.warn("[sms] SMS_FAKE=1 is ignored on a live deployment — real SMS settings are used.");
   }
@@ -86,4 +84,27 @@ export async function register() {
     `[csp] CSP_MODE at runtime is "${runtime}" but this build was made with CSP_MODE="${built}", and the build-time value is the one in force. ${detail} ` +
       `The policy is baked in at build time — set CSP_MODE before building, then rebuild.`,
   );
+}
+
+/*
+  Keys the code reads lazily — the first email opt-in, the first SMS link, the
+  first saved integration — fail only when that moment comes, often in the
+  middle of a customer's request. On a live deploy each missing one is named
+  once at boot instead. A warning, not a refusal: the shop still sells
+  without them.
+*/
+function warnMissingSecrets() {
+  const live = Boolean(process.env.FLY_APP_NAME) || process.env.GOVITA_PRODUCTION === "1" || process.env.VERCEL_ENV === "production";
+  if (!live) return;
+  const missing: string[] = [];
+  const need = (name: string, ok: boolean) => {
+    if (!ok) missing.push(name);
+  };
+  if (process.env.DATABASE_URL) {
+    need("ADMIN_SESSION_SECRET (≥ 32 characters)", (process.env.ADMIN_SESSION_SECRET?.trim().length ?? 0) >= 32);
+    need("INTEGRATION_ENCRYPTION_KEY", Boolean(process.env.INTEGRATION_ENCRYPTION_KEY?.trim()));
+    need("MESSAGE_LINK_SECRET (now borrowed from another key)", Boolean(process.env.MESSAGE_LINK_SECRET?.trim()));
+  }
+  if (process.env.RESEND_API_KEY) need("EMAIL_TOKEN_SECRET", Boolean(process.env.EMAIL_TOKEN_SECRET?.trim()));
+  if (missing.length) console.warn(`[config] missing on a live deploy: ${missing.join(", ")} — see .env.example`);
 }

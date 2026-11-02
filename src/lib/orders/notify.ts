@@ -59,7 +59,7 @@ export function operatorOrderText(order: OrderRequest, orderId: string): Promise
       `📍 ${order.delivery.region}, ${order.delivery.address}`,
       `🚚 ${order.delivery.method}`,
       order.payment
-        ? `💳 ${order.payment.method === "online" ? `Onlayn to'lov: ${order.payment.provider}` : "Yetkazishda to'lov"}`
+        ? `💳 ${order.payment.method === "online" ? `Onlayn toʻlov: ${order.payment.provider === "click" ? "Click" : "Payme"} — kutilmoqda (toʻlansa alohida xabar keladi)` : "Yetkazishda toʻlov, naqd"}`
         : "",
       `\n${items}`,
       order.totals.discount > 0 ? `🏷 Chegirma: ${formatMoney(order.totals.discount, "uz")}` : "",

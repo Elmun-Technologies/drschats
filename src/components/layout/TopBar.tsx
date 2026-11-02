@@ -1,7 +1,8 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { Link, usePathname } from "@/lib/i18n/navigation";
+import { Link } from "@/lib/i18n/navigation";
+import { useLocaleSwitchHref } from "@/lib/i18n/use-locale-href";
 import type { Locale } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
 import { cn } from "@/lib/utils";
@@ -61,14 +62,14 @@ const LOCALE_ORDER: readonly Locale[] = ["uz", "ru"];
 /** "UZ | RU" — both locales as plain links to the same page. */
 export function LocaleLinks() {
   const current = useLocale() as Locale;
-  const pathname = usePathname();
+  const switchHref = useLocaleSwitchHref();
   return (
     <span className="inline-flex items-center gap-2 font-semibold">
       {LOCALE_ORDER.map((l, i) => (
         <span key={l} className="inline-flex items-center gap-2">
           {i > 0 && <span aria-hidden className="text-on-dark-2">|</span>}
           <Link
-            href={pathname}
+            href={switchHref}
             locale={l}
             aria-current={l === current ? "true" : undefined}
             className={cn("uppercase", l === current ? "text-ink" : "text-ink-2 hover:text-ink")}

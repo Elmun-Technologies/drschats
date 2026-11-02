@@ -3,7 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
-import { onlinePaymentAvailable, PAYMENT_PROVIDERS } from "@/lib/config/payments";
+import { ONLINE_PROVIDER_LABELS } from "@/lib/config/payments";
+import { getOnlineProviders } from "@/lib/payments/availability";
 import { CARD_BRANDS, PAYMENT_BRANDS } from "@/lib/config/payment-brands";
 import { PaymentMark, PaymentMarks } from "@/components/ui/PaymentMarks";
 import { InfoFaq, InfoHeader, InfoShell } from "@/components/info/InfoShell";
@@ -21,17 +22,18 @@ export default async function PaymentPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations("pages.v3");
-  const hasOnlinePayment = onlinePaymentAvailable();
+  const onlineProviders = await getOnlineProviders().catch(() => []);
+  const hasOnlinePayment = onlineProviders.length > 0;
   const faq = t.raw(hasOnlinePayment ? "payment.faqOnline" : "payment.faq") as { question: string; answer: string }[];
 
   // List only methods customers can actually use. Merchant IDs alone never
   // enable online payment; see lib/config/payments.ts for the readiness gate.
   const methods = [
-    ...PAYMENT_PROVIDERS.filter((provider) => provider.configured).map((provider) => ({
-      id: provider.id,
-      title: provider.label,
+    ...onlineProviders.map((id) => ({
+      id,
+      title: ONLINE_PROVIDER_LABELS[id],
       badge: t("online"),
-      text: t("payment.providerText", { name: provider.label }),
+      text: t("payment.providerText", { name: ONLINE_PROVIDER_LABELS[id] }),
       muted: false,
     })),
     { id: null, title: t("payment.codTitle"), badge: t("onDelivery"), text: t("payment.codText"), muted: false },

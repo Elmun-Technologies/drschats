@@ -279,16 +279,17 @@ export async function receipt(id: number, leaseToken: string, r: Receipt): Promi
  * they can be reached there: the order came from the Mini App, or its phone
  * is linked to a chat. Never throws — the order change itself has happened.
  */
+/** Queues the status for the customer's Telegram; true when it went there (an SMS is then not needed). */
 export async function announceOrderStatus(
   orderNumber: string,
   status: OrderStatus,
   /** Lines appended to the status text (HTML, already escaped) — points, the referral code. */
   extra?: { uz: string; ru: string } | null,
-): Promise<void> {
+): Promise<boolean> {
   try {
     const db = getDb();
     const [o] = await db.select().from(orders).where(eq(orders.number, orderNumber)).limit(1);
-    if (!o) return;
+    if (!o) return false;
     await db.insert(botOrderEvents).values({ orderId: o.id, status });
 
     let chatId = o.telegramChatId;
@@ -299,7 +300,9 @@ export async function announceOrderStatus(
         : [];
       chatId = link?.chatId ?? null;
     }
-    if (!chatId || !(await getClubConfig()).enabled) return;
+    if (!chatId || !(await getClubConfig()).enabled) return false;
+    const [blocked] = await db.select({ at: botMembers.blockedAt }).from(botMembers).where(eq(botMembers.chatId, chatId)).limit(1);
+    if (blocked?.at) return false;
 
     const locale = (await memberLocale(chatId)) ?? (o.locale === "ru" ? "ru" : "uz");
     const message = orderStatusMessage(status, { number: orderNumber, total: o.total }, locale);
@@ -308,8 +311,10 @@ export async function announceOrderStatus(
       kind: "order_status",
       dedupeKey: `order:${o.id}:${status}`,
     });
+    return true;
   } catch (err) {
     console.error("[bot] order status not queued:", (err as Error).message);
+    return false;
   }
 }
 

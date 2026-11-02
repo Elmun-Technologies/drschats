@@ -134,7 +134,7 @@ export default async function HomePage({
     <>
       <JsonLd data={organizationLd(locale)} />
       <JsonLd data={websiteLd(locale)} />
-      <JsonLd data={localBusinessLd()} />
+      <JsonLd data={localBusinessLd(locale)} />
       <h1 className="sr-only">{meta("homeTitle")}</h1>
       <div className="flex flex-col gap-8 pb-9 pt-1 lg:gap-16 lg:pb-[72px] lg:pt-6">
         <QuickChips categories={shelves} saleLabel={nav("topDeals")} label={nav("shopByCategories")} />

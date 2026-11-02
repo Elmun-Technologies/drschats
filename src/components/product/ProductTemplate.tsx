@@ -10,7 +10,8 @@ import type { HealthTopic } from "@/lib/content/health-topics";
 import { COMMERCE } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { localizedOr } from "@/lib/commerce/settings";
-import { ONLINE_PAYMENT_MARKS, ONLINE_PROVIDERS } from "@/lib/config/payments";
+import { ONLINE_PROVIDER_LABELS, paymentMarks } from "@/lib/config/payments";
+import { getOnlineProviders } from "@/lib/payments/availability";
 import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { discountPercent } from "@/components/ui/Price";
 import { buttonVariants } from "@/components/ui/Button";
@@ -87,6 +88,7 @@ export async function ProductTemplate({
   const free = formatMoney(commerce.delivery.freeShippingOver, locale);
   const fee = formatMoney(commerce.delivery.courierFee, locale);
   const regionsTime = localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime"));
+  const onlineProviders = await getOnlineProviders().catch(() => []);
   const delivery = [
     { icon: ICON.truck, title: tv("courier"), price: fee, note: tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, amount: free }) },
     { icon: ICON.home, title: tv("pickup"), price: tv("free"), note: tv("pickupNote") },
@@ -95,10 +97,10 @@ export async function ProductTemplate({
       icon: ICON.card,
       title: tv("payment"),
       price: "",
-      note: ONLINE_PROVIDERS.length
-        ? tv("paymentOnline", { providers: ONLINE_PROVIDERS.map((p) => p.label).join(", ") })
+      note: onlineProviders.length
+        ? tv("paymentOnline", { providers: onlineProviders.map((p) => ONLINE_PROVIDER_LABELS[p]).join(", ") })
         : tv("paymentCod"),
-      marks: ONLINE_PAYMENT_MARKS,
+      marks: paymentMarks(onlineProviders),
     },
   ];
 
@@ -349,7 +351,7 @@ export async function ProductTemplate({
                   <span className="text-base leading-6 text-ink-2">{tv("docsText")}</span>
                 </div>
               </div>
-              <Link href="/licenses" className={buttonVariants("secondary")}>
+              <Link href={{ pathname: "/contact", query: { about: product.name }, hash: "contact-form" }} className={buttonVariants("secondary")}>
                 {tv("docsCta")}
               </Link>
             </div>

@@ -1,4 +1,4 @@
-import { bigint, bigserial, boolean, integer, jsonb, pgTable, serial, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { bigint, bigserial, boolean, integer, jsonb, pgTable, serial, smallint, text, timestamp, uuid } from "drizzle-orm/pg-core";
 import type { L, RawProduct } from "@/lib/shopflow/mock";
 import type { OrderRequest } from "@/lib/shopflow/types";
 
@@ -45,6 +45,9 @@ export const products = pgTable("products", {
   stockQty: integer("stock_qty"),
   /** Per-product "kam qoldi" threshold; null = the site default. */
   lowStockAt: integer("low_stock_at"),
+  /** 0015: MXIK (IKPU) and package code for the fiscal receipt Payme prints. */
+  mxikCode: text("mxik_code"),
+  packageCode: text("package_code"),
   kind: text("kind").$type<"core" | "addon" | "unlisted">().notNull().default("core"),
   sort: integer("sort").notNull().default(0),
   images: jsonb("images").$type<string[]>().notNull().default([]),
@@ -80,6 +83,9 @@ export const orders = pgTable("orders", {
   promoCode: text("promo_code"),
   /** Which channel sold the order (0012). */
   source: text("source").$type<OrderSource>().notNull().default("site"),
+  /** 0015: unpaid (cash, or not yet), pending (at a gateway), paid, refunded. */
+  paymentStatus: text("payment_status").$type<PaymentStatus>().notNull().default("unpaid"),
+  paidAt: timestamp("paid_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -487,8 +493,12 @@ export const outboundMessages = pgTable("outbound_messages", {
   sentAt: timestamp("sent_at", { withTimezone: true }),
   clickedAt: timestamp("clicked_at", { withTimezone: true }),
   clicks: integer("clicks").notNull().default(0),
+  /** 0014: transactional rows skip opt-out, the STOP link and quiet hours. */
+  kind: text("kind").$type<MessageKind>().notNull().default("marketing"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+export type MessageKind = "marketing" | "transactional";
 
 /* Loyalty, referral, birthdays, banner A/B — db/migrations/0011_loyalty_referral_ab.sql */
 
@@ -559,4 +569,28 @@ export const bannerExposures = pgTable("banner_exposures", {
   visitorId: uuid("visitor_id"),
   clickedAt: timestamp("clicked_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Online payments — db/migrations/0015_online_payments.sql, lib/payments/ */
+
+export type PaymentStatus = "unpaid" | "pending" | "paid" | "refunded";
+export type PaymentGateway = "payme" | "click";
+
+export const payments = pgTable("payments", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  provider: text("provider").$type<PaymentGateway>().notNull(),
+  providerTxId: text("provider_tx_id").notNull(),
+  orderNumber: text("order_number").notNull(),
+  /** Tiyin (1/100 so'm). */
+  amount: bigint("amount", { mode: "number" }).notNull(),
+  /** 1 created, 2 performed, -1 cancelled unpaid, -2 cancelled after payment. */
+  state: smallint("state").notNull().default(1),
+  reason: smallint("reason"),
+  createTime: bigint("create_time", { mode: "number" }).notNull(),
+  performTime: bigint("perform_time", { mode: "number" }),
+  cancelTime: bigint("cancel_time", { mode: "number" }),
+  providerTime: bigint("provider_time", { mode: "number" }),
+  raw: jsonb("raw"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
