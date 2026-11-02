@@ -7,6 +7,7 @@ import { getDb } from "@/lib/db/client";
 import { flows } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/admin/session";
 import { stepsSchema } from "@/lib/flows/types";
+import { saveTransactionalSms } from "@/lib/sms/transactional-server";
 import type { FormState } from "./catalog";
 
 const saveSchema = z.object({
@@ -69,4 +70,12 @@ export async function runMessagingNow(_: FormState, _form: FormData): Promise<Fo
     console.error("[messages] manual tick failed:", (err as Error).message);
     return { error: "Ishga tushirib boʻlmadi. Server logini tekshiring." };
   }
+}
+
+/* Order SMS (lib/sms/transactional.ts): two switches, nothing else is editable — the texts are Eskiz-moderated templates. */
+export async function saveOrderSmsSettings(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin();
+  await saveTransactionalSms({ orderPlaced: form.get("orderPlaced") === "on", statusChanged: form.get("statusChanged") === "on" }, admin.id);
+  revalidatePath("/admin/flows");
+  return { ok: "Saqlandi." };
 }

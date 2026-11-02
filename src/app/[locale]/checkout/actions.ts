@@ -3,7 +3,8 @@
 import { cookies, headers } from "next/headers";
 import { ORDERS_IN_DB, SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
 import { verifyInitData } from "@/lib/bot/webapp";
-import { announceOrderStatus, attachOrderChat } from "@/lib/bot/store";
+import { attachOrderChat } from "@/lib/bot/store";
+import { notifyCustomerOfOrder } from "@/lib/sms/transactional-server";
 import { isLiveDeployment } from "@/lib/config/live";
 import { isOperatorChannelConfigured } from "@/lib/notifications/operator";
 import { orderRequestSchema } from "@/lib/shopflow/schemas";
@@ -28,6 +29,7 @@ import { readLoyaltyRules } from "@/lib/loyalty/settings";
 import { signReceipt } from "@/lib/loyalty/receipt";
 import { both, earnLaterLine, joinLines, spentLine } from "@/lib/loyalty/messages";
 import { ensureReferralCode } from "@/lib/referral/server";
+import { orderTrackToken } from "@/lib/messaging/tokens";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
@@ -38,6 +40,10 @@ const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
  * not consult any marketing consent — and carries no unsubscribe link, because
  * there is nothing here to unsubscribe from.
  */
+function trackUrl(locale: string, orderId: string): string {
+  return `${siteOrigin()}/${locale}/track/${orderTrackToken(orderId)}`;
+}
+
 async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
   const email = order.customer.email;
   if (!email) return;
@@ -55,7 +61,10 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
         price: formatMoney(lineTotal({ price: item.unitPrice, quantity: item.quantity, upsellDiscountPercent: item.upsellDiscountPercent }), order.locale),
       })),
       total: formatMoney(order.totals.total, order.locale),
-      orderUrl: `${siteOrigin()}/${order.locale}/checkout/success?order=${encodeURIComponent(orderId)}`,
+      // The tracking page when orders are ours (signed link); otherwise the success page as before.
+      orderUrl: ORDERS_IN_DB
+        ? trackUrl(order.locale, orderId)
+        : `${siteOrigin()}/${order.locale}/checkout/success?order=${encodeURIComponent(orderId)}`,
     },
   });
 }
@@ -109,7 +118,7 @@ async function clubBotReceipt(
       loyalty.spent > 0 ? both((l) => spentLine(loyalty.spent, l)) : null,
       loyalty.earn > 0 ? both((l) => earnLaterLine(loyalty.earn, l)) : null,
     );
-    await announceOrderStatus(orderId, "new", extra);
+    await notifyCustomerOfOrder(orderId, "new", extra);
   } catch (err) {
     console.error("[checkout] club bot receipt failed:", (err as Error).message);
   }
@@ -139,7 +148,7 @@ export type OrderError =
 
 export async function submitOrder(
   payload: OrderRequest,
-): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string }> {
+): Promise<OrderResult & { error?: OrderError; total?: number; slug?: string; coupon?: string; promoReason?: PromoReason; receipt?: string; track?: string }> {
   /*
     Validation first: a form sent back for a typo costs nothing, so it must not
     use up one of the ten orders an address may place. Mobile operators put
@@ -297,6 +306,8 @@ export async function submitOrder(
         total: order.totals.total,
         coupon: adjustment?.kind === "promo" || adjustment?.kind === "referral" ? adjustment.code : undefined,
         receipt,
+        // Signed: the success page links to tracking only for the order this response is about.
+        track: ORDERS_IN_DB ? orderTrackToken(result.orderId) : undefined,
       };
     }
     return { ...result, error: result.ok ? undefined : result.shortage ? "insufficient_stock" : "failed", slug: result.shortage?.slug };

@@ -343,6 +343,7 @@ export function CheckoutForm({
       const query = new URLSearchParams({ order: res.orderId });
       if (res.receipt) query.set("k", res.receipt);
       if (values.method === "pickup") query.set("m", "pickup");
+      if (res.track) query.set("t", res.track);
       router.push(`/checkout/success?${query}`);
       return;
     }

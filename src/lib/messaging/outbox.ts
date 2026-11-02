@@ -1,6 +1,6 @@
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
-import { botJobs, type BotJobPayload, type MessageChannel, type MessagePromo } from "@/lib/db/schema";
+import { botJobs, type BotJobPayload, type MessageChannel, type MessageKind, type MessagePromo } from "@/lib/db/schema";
 import { SITE_HOST, SITE_URL } from "@/lib/config/site";
 import { getClubConfig } from "@/lib/bot/store";
 import { escapeHtml } from "@/lib/bot/messages";
@@ -59,17 +59,23 @@ export interface QueueMessage {
   scheduledAt?: Date;
   /** Recorded as skipped (with this reason) instead of being sent — visible in the log. */
   skip?: string;
+  /**
+   * "transactional" — an order SMS (lib/sms/transactional.ts): no opt-out
+   * check, no STOP line, not held for quiet hours, and `link` is sent as it
+   * is (the signed tracking link) rather than as a click-counting /r/ link.
+   */
+  kind?: MessageKind;
 }
 
 /** Inserts one message; returns its id, or null when the dedupe key was already queued. */
 export async function queueMessage(exec: Exec, m: QueueMessage): Promise<number | null> {
   const rows = (await exec.execute(sql`
     insert into outbound_messages
-      (channel, phone9, chat_id, locale, text, link, promo, flow_id, flow_step, enrollment_id, campaign_id, dedupe_key, scheduled_at, status, error)
+      (channel, phone9, chat_id, locale, text, link, promo, flow_id, flow_step, enrollment_id, campaign_id, dedupe_key, scheduled_at, status, error, kind)
     values (${m.channel}, ${m.phone9}, ${m.chatId ?? null}, ${m.locale}, ${m.text.slice(0, 2000)}, ${m.link || null},
             ${m.promo ? JSON.stringify(m.promo) : null}::jsonb, ${m.flowId ?? null}, ${m.flowStep ?? null}, ${m.enrollmentId ?? null},
             ${m.campaignId ?? null}, ${m.dedupeKey}, ${(m.scheduledAt ?? new Date()).toISOString()}::timestamptz,
-            ${m.skip ? "skipped" : "pending"}, ${m.skip ?? null})
+            ${m.skip ? "skipped" : "pending"}, ${m.skip ?? null}, ${m.kind ?? "marketing"})
     on conflict (dedupe_key) do nothing
     returning id`)) as unknown as { id: string | number }[];
   return rows[0] ? Number(rows[0].id) : null;
@@ -148,6 +154,7 @@ interface Claimed {
   flowStep: number | null;
   campaignId: number | null;
   attempts: number;
+  kind: MessageKind;
 }
 
 function claimedOf(r: Row): Claimed {
@@ -165,6 +172,7 @@ function claimedOf(r: Row): Claimed {
     flowStep: r.flow_step == null ? null : Number(r.flow_step),
     campaignId: r.campaign_id == null ? null : Number(r.campaign_id),
     attempts: Number(r.attempts ?? 0),
+    kind: r.kind === "transactional" ? "transactional" : "marketing",
   };
 }
 
@@ -231,7 +239,9 @@ async function ensurePromo(m: Claimed): Promise<{ code: string; endsAt: Date | n
 
 async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean): Promise<Outcome> {
   const db = getDb();
-  if (await isOptedOut(db, m.phone9, m.channel)) return { status: "skipped", error: "opted_out" };
+  const transactional = m.kind === "transactional";
+  // An order SMS is not marketing: "stop" ends offers, not news about an order the customer placed.
+  if (!transactional && (await isOptedOut(db, m.phone9, m.channel))) return { status: "skipped", error: "opted_out" };
   if (m.channel === "sms" && (!sms?.provider || !m.phone9)) return { status: "skipped", error: "sms_not_configured" };
   if (m.channel === "telegram") {
     if (!clubEnabled) return { status: "skipped", error: "club_disabled" };
@@ -248,7 +258,7 @@ async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean
   }
   if (m.promo && !promo) return { status: "skipped", error: "promo_needs_phone" };
 
-  const linkTarget = m.link ? shortLink(m.id, m.channel === "telegram") : "";
+  const linkTarget = m.link ? (transactional ? m.link : shortLink(m.id, m.channel === "telegram")) : "";
   const vars = {
     kod: promo?.code ?? "",
     muddat: promo?.endsAt ? formatExpiry(promo.endsAt) : "",
@@ -257,7 +267,7 @@ async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean
   const body = finalizeText(m.text, vars);
 
   if (m.channel === "sms") {
-    const text = prepareSmsText(withOptOut(body, "sms", stopLink(m.phone9!, "sms", m.locale), m.locale), { transliterate: sms!.transliterate });
+    const text = prepareSmsText(transactional ? body : withOptOut(body, "sms", stopLink(m.phone9!, "sms", m.locale), m.locale), { transliterate: sms!.transliterate });
     const result = await sms!.provider!.send(`+998${m.phone9}`, text);
     if (result.ok) return { status: "sent", text, providerRef: result.id };
     return { status: result.retryable ? "retry" : "failed", error: result.error };
@@ -314,18 +324,20 @@ export async function drainOutbox(now = new Date(), limit = 30): Promise<DrainRe
     await tx.execute(sql`
       update outbound_messages set status = 'failed', error = 'interrupted: may have been sent, not retried'
       where status = 'sending' and claimed_at < now() - ${CLAIM_TIMEOUT}`);
-    if (isQuietHours(now)) {
+    // At night marketing waits for 09:00; an order SMS answers something the customer just did, so it goes.
+    const quiet = isQuietHours(now);
+    if (quiet) {
       const rows = (await tx.execute(sql`
         update outbound_messages set scheduled_at = ${nextSendWindow(now).toISOString()}::timestamptz
-        where status = 'pending' and scheduled_at <= ${now.toISOString()}::timestamptz
+        where status = 'pending' and kind = 'marketing' and scheduled_at <= ${now.toISOString()}::timestamptz
         returning id`)) as unknown as unknown[];
       result.deferred = rows.length;
-      return [];
     }
     const rows = (await tx.execute(sql`
       with due as (
         select id from outbound_messages
         where status = 'pending' and scheduled_at <= ${now.toISOString()}::timestamptz
+          and ${quiet ? sql`kind = 'transactional'` : sql`true`}
         order by scheduled_at, id
         limit ${limit}
         for update skip locked

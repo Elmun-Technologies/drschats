@@ -40,6 +40,7 @@ export function Footer({
   const hasNews = (news.raw("items") as unknown[]).length > 0;
   const header = useTranslations("header");
   const contact = useTranslations("contact");
+  const track = useTranslations("track");
   const legal = useTranslations("legal");
   // Static year avoids a hydration mismatch at the New Year boundary (server at 23:59, client at 00:00).
   // The legal line is refreshed each deploy; an exact midnight rollover is not worth client JavaScript.
@@ -62,6 +63,7 @@ export function Footer({
       title: t("customers"),
       links: [
         { href: "/delivery", label: t("delivery") },
+        { href: "/track", label: track("cta") },
         { href: "/payment", label: t("paymentMethods") },
         { href: "/guarantee", label: header("guarantee") },
         { href: "/loyalty", label: header("loyalty") },

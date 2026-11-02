@@ -12,6 +12,7 @@ import { getLoyaltyRules } from "@/lib/loyalty/settings";
 import { referralRewardKind } from "@/lib/loyalty/model";
 import { referralLink } from "@/lib/referral/rules";
 import { displayOrderNumber } from "@/lib/orders/number";
+import { verifyOrderTrackToken } from "@/lib/messaging/tokens";
 import { ShareCode } from "@/components/checkout/ShareCode";
 import { OrderSummary } from "@/components/checkout/OrderSummary";
 
@@ -32,7 +33,7 @@ export default async function SuccessPage({
   searchParams,
 }: {
   params: Promise<{ locale: Locale }>;
-  searchParams: Promise<{ order?: string | string[]; k?: string | string[]; m?: string | string[] }>;
+  searchParams: Promise<{ order?: string | string[]; k?: string | string[]; m?: string | string[]; t?: string | string[] }>;
 }) {
   const { locale } = await params;
   const query = await searchParams;
@@ -46,6 +47,10 @@ export default async function SuccessPage({
   const tv = await getTranslations("cart.v3");
   const tc = await getTranslations("contact");
   const pickup = firstParam(query.m) === "pickup";
+  // Only a token signed for this very order: the number alone in the URL proves nothing.
+  const trackToken = firstParam(query.t);
+  const trackable = Boolean(order && trackToken && verifyOrderTrackToken(trackToken) === order);
+  const tt = await getTranslations("track");
 
   const orderLabel = displayOrderNumber(order);
   const steps = [
@@ -136,6 +141,11 @@ export default async function SuccessPage({
             </svg>
             {tv("telegram")}
           </a>
+          {trackable && (
+            <Link href={`/track/${trackToken}`} className={cn(buttonVariants("secondary", "lg"), "h-[52px] rounded-[14px] lg:h-14")}>
+              {tt("cta")}
+            </Link>
+          )}
           <Link href="/products" className={cn(buttonVariants("light", "lg"), "h-[52px] rounded-[14px] lg:h-14")}>
             {t("continueShopping")}
           </Link>

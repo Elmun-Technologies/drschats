@@ -86,3 +86,26 @@ export function verifyStopToken(token: string | null | undefined): StopPayload |
     locale: plain[4] & 2 ? "ru" : "uz",
   };
 }
+
+/*
+  Order tracking link: /<locale>/track/<number>.<sig>. Order numbers are
+  sequential (GV-000123), so the number alone must never open an order — the
+  12-character signature is what makes the link the customer's own. Given out
+  only where the order is already known to be theirs: the checkout response,
+  their SMS, their e-mail.
+*/
+const ORDER_NUMBER = /^[A-Z0-9-]{3,24}$/;
+
+export function orderTrackToken(orderNumber: string): string {
+  if (!ORDER_NUMBER.test(orderNumber)) throw new Error("orderTrackToken: bad order number");
+  return `${orderNumber}.${b64(hmac("track", orderNumber).subarray(0, 9))}`;
+}
+
+/** The order number a tracking token was issued for, or null when it is not one of ours. */
+export function verifyOrderTrackToken(token: string | null | undefined): string | null {
+  const match = /^([A-Z0-9-]{3,24})\.([A-Za-z0-9_-]{12})$/.exec(token ?? "");
+  if (!match) return null;
+  const expected = Buffer.from(b64(hmac("track", match[1]).subarray(0, 9)));
+  const given = Buffer.from(match[2]);
+  return expected.length === given.length && timingSafeEqual(expected, given) ? match[1] : null;
+}

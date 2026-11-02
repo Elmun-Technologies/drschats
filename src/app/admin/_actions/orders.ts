@@ -8,7 +8,7 @@ import { ORDER_STATUSES, adminUsers, orders } from "@/lib/db/schema";
 import { requireAdmin, setSessionCookie } from "@/lib/admin/session";
 import { ADMIN_TABLE_LOCK } from "@/lib/admin/accounts";
 import { hashPassword, MIN_PASSWORD_LENGTH, verifyPassword } from "@/lib/admin/password";
-import { announceOrderStatus } from "@/lib/bot/store";
+import { notifyCustomerOfOrder } from "@/lib/sms/transactional-server";
 import { syncOrderStock } from "@/lib/catalog/order-stock";
 import { afterOrderStatus } from "@/lib/loyalty/order-status";
 import type { FormState } from "./catalog";
@@ -32,8 +32,8 @@ export async function updateOrder(_: FormState, form: FormData): Promise<FormSta
     .where(eq(orders.number, parsed.data.number));
   await syncOrderStock(parsed.data.number, before.status, parsed.data.status);
   const loyaltyLines = await afterOrderStatus(parsed.data.number, before.status, parsed.data.status);
-  // The customer hears about a new status in Telegram, not about a note edit.
-  if (before.status !== parsed.data.status) await announceOrderStatus(parsed.data.number, parsed.data.status, loyaltyLines);
+  // The customer hears about a new status (Telegram, else SMS), not about a note edit.
+  if (before.status !== parsed.data.status) await notifyCustomerOfOrder(parsed.data.number, parsed.data.status, loyaltyLines);
   revalidatePath("/admin/orders");
   return { ok: "Saqlandi." };
 }
@@ -51,7 +51,7 @@ export async function setOrderStatus(form: FormData) {
   await db.update(orders).set({ status: parsed.data.status, updatedAt: new Date() }).where(eq(orders.number, parsed.data.number));
   await syncOrderStock(parsed.data.number, before.status, parsed.data.status);
   const loyaltyLines = await afterOrderStatus(parsed.data.number, before.status, parsed.data.status);
-  await announceOrderStatus(parsed.data.number, parsed.data.status, loyaltyLines);
+  await notifyCustomerOfOrder(parsed.data.number, parsed.data.status, loyaltyLines);
   revalidatePath(`/admin/orders/${parsed.data.number}`);
   revalidatePath("/admin/orders");
 }

@@ -2449,5 +2449,38 @@
       "body": "Bir necha savolga javob bering — maqsadingizga mos toʻplamni tavsiya qilamiz.",
       "cta": "Testni boshlash"
     }
+  },
+  "track": {
+    "title": "Buyurtmani kuzatish",
+    "lead": "Buyurtma raqami va buyurtma bergan telefon raqamingizni kiriting.",
+    "number": "Buyurtma raqami",
+    "numberPh": "GV-000123",
+    "phone": "Telefon raqami",
+    "phonePh": "+998 90 123 45 67",
+    "submit": "Koʻrish",
+    "whereNumber": "Raqam buyurtmadan keyingi sahifada, SMS va Telegram xabarida yozilgan.",
+    "invalid": "Buyurtma raqami va telefonni toʻliq kiriting.",
+    "notFound": "Bu raqam va telefon boʻyicha buyurtma topilmadi. Raqamni tekshiring yoki operatorga qoʻngʻiroq qiling: {phone}",
+    "limited": "Urinishlar juda koʻp. 10 daqiqadan keyin qayta urinib koʻring.",
+    "unavailable": "Hozir tekshirib boʻlmadi. Operatorga qoʻngʻiroq qiling: {phone}",
+    "placed": "Berilgan: {date}",
+    "updated": "Oxirgi oʻzgarish: {date}",
+    "hint": {
+      "new": "Operator ish vaqtida ({hours}) qoʻngʻiroq qilib, buyurtmani tasdiqlaydi.",
+      "confirmed": "Buyurtma tasdiqlandi va yigʻilmoqda.",
+      "shipped": "Buyurtma yoʻlda.",
+      "delivered": "Buyurtma yetkazildi. Xaridingiz uchun rahmat!",
+      "cancelled": "Buyurtma bekor qilingan. Savol boʻlsa, operatorga yozing."
+    },
+    "courier": "Kuryer orqali yetkazish",
+    "pickup": "Oʻzi olib ketish",
+    "payCod": "Toʻlov buyurtmani olganda, naqd pul bilan",
+    "payOnline": "Onlayn toʻlov",
+    "shipping": "Yetkazib berish",
+    "discount": "Chegirma",
+    "free": "Bepul",
+    "another": "Boshqa buyurtmani koʻrish",
+    "cta": "Buyurtmani kuzatish",
+    "byOperator": "Buyurtma holatini operatordan bilishingiz mumkin: telefon yoki Telegram orqali ({hours}). Buyurtma raqamini ayting."
   }
 }

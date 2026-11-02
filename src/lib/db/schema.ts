@@ -487,8 +487,12 @@ export const outboundMessages = pgTable("outbound_messages", {
   sentAt: timestamp("sent_at", { withTimezone: true }),
   clickedAt: timestamp("clicked_at", { withTimezone: true }),
   clicks: integer("clicks").notNull().default(0),
+  /** 0014: transactional rows skip opt-out, the STOP link and quiet hours. */
+  kind: text("kind").$type<MessageKind>().notNull().default("marketing"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+export type MessageKind = "marketing" | "transactional";
 
 /* Loyalty, referral, birthdays, banner A/B — db/migrations/0011_loyalty_referral_ab.sql */
 
