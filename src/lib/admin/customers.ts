@@ -3,7 +3,7 @@ import { getDb } from "@/lib/db/client";
 import { adminCustomerNotes, adminUsers, orders, type OrderStatus } from "@/lib/db/schema";
 import type { OrderAttribution, OrderRequest } from "@/lib/shopflow/types";
 
-const phoneTailSql = sql<string>`right(regexp_replace(${orders.customer}->>'phone', '[^0-9]', '', 'g'), 9)`;
+const phoneTailSql = sql<string>`right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9)`;
 
 export interface CustomerRow {
   phone9: string;
@@ -41,7 +41,7 @@ export async function listCustomers(search?: string, limit = 250): Promise<Custo
   const latestStatus = sql<OrderStatus>`(array_agg(${orders.status} order by ${orders.createdAt} desc))[1]`;
   const lastOrderAt = max(orders.createdAt);
   const where = and(
-    sql`length(regexp_replace(${orders.customer}->>'phone', '[^0-9]', '', 'g')) >= 9`,
+    sql`length(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g')) >= 9`,
     term ? or(ilike(nameExpr, `%${term}%`), ilike(phoneExpr, `%${term}%`), ilike(emailExpr, `%${term}%`)) : undefined,
   );
 

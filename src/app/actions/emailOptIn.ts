@@ -3,7 +3,8 @@
 import { headers } from "next/headers";
 import { z } from "zod";
 import { locales, type Locale } from "@/lib/i18n/routing";
-import { clientIp, withinRateLimit } from "@/lib/rate-limit";
+import { clientIp } from "@/lib/rate-limit";
+import { hitRateLimit } from "@/lib/rate-limit-store";
 import { siteOrigin } from "@/lib/email/config";
 import { sendCampaign } from "@/lib/email/send";
 import { signToken } from "@/lib/email/token";
@@ -40,7 +41,7 @@ export async function requestEmailOptIn(input: {
   source?: string;
 }): Promise<OptInResult> {
   const hdrs = await headers();
-  if (!withinRateLimit("email-opt-in", clientIp(hdrs), RATE)) {
+  if (!(await hitRateLimit("email-opt-in", clientIp(hdrs), RATE))) {
     return { ok: false, error: "rate_limited" };
   }
 
@@ -51,7 +52,7 @@ export async function requestEmailOptIn(input: {
   // At most two confirmation mails a day to one address, whoever asks: this
   // form is public, and it must not become a way to mail someone repeatedly in
   // the shop's name. The answer stays the same so it reveals nothing.
-  if (!withinRateLimit("email-opt-in-address", email.toLowerCase(), { limit: 2, windowMs: 24 * 60 * 60 * 1000 })) {
+  if (!(await hitRateLimit("email-opt-in-address", email.toLowerCase(), { limit: 2, windowMs: 24 * 60 * 60 * 1000 }))) {
     return { ok: true };
   }
   const token = signToken("opt-in", email);

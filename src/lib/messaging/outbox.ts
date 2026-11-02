@@ -4,7 +4,7 @@ import { botJobs, type BotJobPayload, type MessageChannel, type MessageKind, typ
 import { SITE_HOST, SITE_URL } from "@/lib/config/site";
 import { getClubConfig } from "@/lib/bot/store";
 import { escapeHtml } from "@/lib/bot/messages";
-import { issuePromoCode } from "@/lib/promo/server";
+import { issuePromoCode } from "@/lib/promo/issue";
 import { prepareSmsText } from "@/lib/sms/segments";
 import { resolveSmsProvider, type ResolvedSms } from "@/lib/sms";
 import { MAX_SEND_ATTEMPTS, retryDelayMinutes } from "@/lib/flows/schedule";

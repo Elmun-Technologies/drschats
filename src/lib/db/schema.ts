@@ -86,6 +86,9 @@ export const orders = pgTable("orders", {
   /** 0015: unpaid (cash, or not yet), pending (at a gateway), paid, refunded. */
   paymentStatus: text("payment_status").$type<PaymentStatus>().notNull().default("unpaid"),
   paidAt: timestamp("paid_at", { withTimezone: true }),
+  /** 0020: the operator's Telegram ping; null = not delivered yet (the worker retries). */
+  operatorNotifiedAt: timestamp("operator_notified_at", { withTimezone: true }),
+  operatorNotifyAttempts: smallint("operator_notify_attempts").notNull().default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
@@ -612,5 +615,28 @@ export const payments = pgTable("payments", {
   providerTime: bigint("provider_time", { mode: "number" }),
   raw: jsonb("raw"),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/* Operations — db/migrations/0020_ops.sql */
+
+export const rateLimitHits = pgTable("rate_limit_hits", {
+  scope: text("scope").notNull(),
+  key: text("key").notNull(),
+  count: integer("count").notNull().default(1),
+  resetAt: timestamp("reset_at", { withTimezone: true }).notNull(),
+});
+
+export const cspReports = pgTable("csp_reports", {
+  day: text("day").notNull(),
+  directive: text("directive").notNull(),
+  blocked: text("blocked").notNull(),
+  count: integer("count").notNull().default(0),
+  lastAt: timestamp("last_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+export const opsState = pgTable("ops_state", {
+  key: text("key").primaryKey(),
+  value: jsonb("value").notNull(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

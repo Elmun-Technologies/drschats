@@ -343,7 +343,7 @@ export async function getVisitor(id: string) {
     query(sql`
       select id, number, status, total, items, created_at from orders
       where visitor_id = ${id}::uuid
-         ${visitor.phone9 ? sql`or right(regexp_replace(customer->>'phone', '[^0-9]', '', 'g'), 9) = ${visitor.phone9}` : sql``}
+         ${visitor.phone9 ? sql`or right(regexp_replace(customer->>'phone', '\\D', '', 'g'), 9) = ${visitor.phone9}` : sql``}
       order by created_at desc limit 50`),
     visitor.phone9
       ? query(sql`select id, device, last_seen_at from visitors where phone9 = ${visitor.phone9} and id <> ${id}::uuid order by last_seen_at desc limit 10`)

@@ -23,7 +23,7 @@ const num = (value: unknown) => Number(value ?? 0);
 
 const CUSTOMER_STATS = sql`
   with stats as (
-    select right(regexp_replace(customer->>'phone', '[^0-9]', '', 'g'), 9) as phone9,
+    select right(regexp_replace(customer->>'phone', '\\D', '', 'g'), 9) as phone9,
            (array_agg(customer->>'name' order by created_at desc))[1] as name,
            (array_agg(customer->>'phone' order by created_at desc))[1] as phone,
            (array_agg(nullif(customer->>'email', '') order by created_at desc) filter (where nullif(customer->>'email', '') is not null))[1] as email,
@@ -32,7 +32,7 @@ const CUSTOMER_STATS = sql`
            min(created_at) filter (where status <> 'cancelled') as first_at,
            max(created_at) filter (where status <> 'cancelled') as last_at
     from orders
-    where length(regexp_replace(customer->>'phone', '[^0-9]', '', 'g')) >= 9
+    where length(regexp_replace(customer->>'phone', '\\D', '', 'g')) >= 9
     group by 1
   )`;
 
@@ -47,16 +47,16 @@ const BOT_SOURCE = sql`(
     -- A phone link proves a chat; a bot member may not have linked yet. Both
     -- belong to the audience, so neither side may drop the other.
     select coalesce(m.chat_id, l.chat_id) as chat_id, m.blocked_at, l.name, l.phone,
-           right(regexp_replace(coalesce(l.phone, ''), '[^0-9]', '', 'g'), 9) as phone9
+           right(regexp_replace(coalesce(l.phone, ''), '\\D', '', 'g'), 9) as phone9
     from bot_members m
     full join telegram_links l on l.chat_id = m.chat_id
   ), bought as (
-    select right(regexp_replace(customer->>'phone', '[^0-9]', '', 'g'), 9) as phone9,
+    select right(regexp_replace(customer->>'phone', '\\D', '', 'g'), 9) as phone9,
            count(*) filter (where status <> 'cancelled') as orders,
            coalesce(sum(total) filter (where status <> 'cancelled'), 0) as ltv,
            max(created_at) filter (where status <> 'cancelled') as last_at
     from orders
-    where length(regexp_replace(customer->>'phone', '[^0-9]', '', 'g')) >= 9
+    where length(regexp_replace(customer->>'phone', '\\D', '', 'g')) >= 9
     group by 1
   ), carts as (
     select c.chat_id,
@@ -234,7 +234,7 @@ export async function segmentCounts(): Promise<Record<string, { size: number; re
       select ${sql.join(
         customers.flatMap((s) => [
           sql`count(*) filter (where ${s.where}) as ${sql.identifier(`${s.id}:size`)}`,
-          sql`count(*) filter (where (${s.where}) and exists (select 1 from telegram_links t where right(regexp_replace(t.phone, '[^0-9]', '', 'g'), 9) = stats.phone9)) as ${sql.identifier(`${s.id}:reach`)}`,
+          sql`count(*) filter (where (${s.where}) and exists (select 1 from telegram_links t where right(regexp_replace(t.phone, '\\D', '', 'g'), 9) = stats.phone9)) as ${sql.identifier(`${s.id}:reach`)}`,
           sql`coalesce(sum(ltv) filter (where ${s.where}), 0) as ${sql.identifier(`${s.id}:value`)}`,
         ]),
         sql`, `,
@@ -277,7 +277,7 @@ export async function segmentMembers(segment: SegmentDef, limit = 500): Promise<
       from stats
       left join lateral (
         select chat_id from telegram_links t
-        where right(regexp_replace(t.phone, '[^0-9]', '', 'g'), 9) = stats.phone9
+        where right(regexp_replace(t.phone, '\\D', '', 'g'), 9) = stats.phone9
         limit 1
       ) t on true
       where ${segment.where}
@@ -316,7 +316,7 @@ export async function segmentMembers(segment: SegmentDef, limit = 500): Promise<
     from visitors v
     left join lateral (
       select chat_id from telegram_links t
-      where v.phone9 is not null and right(regexp_replace(t.phone, '[^0-9]', '', 'g'), 9) = v.phone9
+      where v.phone9 is not null and right(regexp_replace(t.phone, '\\D', '', 'g'), 9) = v.phone9
       limit 1
     ) t on true
     where ${segment.where}

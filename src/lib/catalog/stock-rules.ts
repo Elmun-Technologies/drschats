@@ -122,8 +122,4 @@ export function dueRequests<T extends WaitingRequest>(requests: T[], product: { 
   );
 }
 
-/** Last nine digits — how a phone is matched across orders, links and requests. */
-export function phone9Of(raw: string): string | null {
-  const digits = raw.replace(/\D/g, "");
-  return digits.length >= 9 ? digits.slice(-9) : null;
-}
+export { phone9Of } from "@/lib/phone9";
