@@ -1,8 +1,8 @@
 import "@/styles/globals.css";
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import Link from "next/link";
 import { localeHtmlLang, defaultLocale } from "@/lib/i18n/routing";
+import { buttonVariants } from "@/components/ui/Button";
 import uz from "@/messages/uz.json";
 import ru from "@/messages/ru.json";
 
@@ -22,67 +22,39 @@ import ru from "@/messages/ru.json";
   one. Because the URL carried no locale, there is nothing to guess from, and
   the page answers in both languages with each line tagged for what it is —
   which is what `lang` is for.
-*/
 
-const exo2 = localFont({
-  src: [
-    { path: "../fonts/exo2/exo2-regular.woff2", weight: "400", style: "normal" },
-    { path: "../fonts/exo2/exo2-medium.woff2", weight: "500", style: "normal" },
-    { path: "../fonts/exo2/exo2-semibold.woff2", weight: "600", style: "normal" },
-    { path: "../fonts/exo2/exo2-bold.woff2", weight: "700", style: "normal" },
-    { path: "../fonts/exo2/exo2-extrabold.woff2", weight: "800", style: "normal" },
-    { path: "../fonts/exo2/exo2-black.woff2", weight: "900", style: "normal" },
-  ],
-  variable: "--font-exo2",
-  display: "swap",
-  preload: false,
-});
+  Styled as NotFoundV3 (NotFoundView): Onest from globals.css, 28/34 → 36/42
+  heading, 12px-radius buttons.
+*/
 
 export const metadata: Metadata = {
   title: `${uz.common.notFoundTitle} · ${ru.common.notFoundTitle}`,
   robots: { index: false, follow: false },
 };
 
-const LINK_BASE =
-  "inline-flex h-11 items-center justify-center rounded-full px-6 text-sm font-semibold transition-colors";
-
 export default function GlobalNotFound() {
   return (
-    <html
-      lang={localeHtmlLang[defaultLocale]}
-      className={exo2.variable}
-    >
+    <html lang={localeHtmlLang[defaultLocale]}>
       <body className="grain min-h-screen antialiased">
-        <main className="flex min-h-svh items-center justify-center px-6 py-16">
-          <div className="text-center">
-            <p
-              aria-hidden
-              className="text-[120px] font-extrabold leading-none tracking-tight text-ink sm:text-[180px]"
-            >
+        <main className="flex min-h-svh items-center justify-center px-4 py-16">
+          <div className="flex max-w-[600px] flex-col items-center gap-4 text-center">
+            <p aria-hidden className="text-[110px] font-bold leading-none tracking-[-0.04em] lg:text-[160px]">
               404
             </p>
 
-            <h1 lang="uz-UZ" className="mt-4 text-2xl font-extrabold text-ink sm:text-3xl">
+            <h1 lang="uz-UZ" className="text-[28px] font-bold leading-[34px] lg:text-h-page">
               {uz.common.notFoundTitle}
             </h1>
-            <p lang="ru-RU" className="mt-2 text-lg font-semibold text-ink-2">
+            <p lang="ru-RU" className="text-lead text-ink-2">
               {ru.common.notFoundTitle}
             </p>
 
-            <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-              <Link
-                href="/ru"
-                lang="ru-RU"
-                className={`${LINK_BASE} bg-ink text-white hover:bg-black hover:text-white`}
-              >
-                {ru.common.notFoundHome}
-              </Link>
-              <Link
-                href="/uz"
-                lang="uz-UZ"
-                className={`${LINK_BASE} border border-line bg-bg text-ink hover:border-line-strong hover:text-ink`}
-              >
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-2.5">
+              <Link href="/uz" lang="uz-UZ" className={buttonVariants("primary")}>
                 {uz.common.notFoundHome}
+              </Link>
+              <Link href="/ru" lang="ru-RU" className={buttonVariants("secondary")}>
+                {ru.common.notFoundHome}
               </Link>
             </div>
           </div>
