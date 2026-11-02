@@ -54,10 +54,13 @@ async function regionsLabel(locale: Locale) {
   return localizedOr(commerce.delivery.regionsNote, locale, t("regions"));
 }
 
-export type StaticPageKey =
-  | "about" | "contact" | "delivery" | "payment" | "guarantee" | "requisites" | "licenses"
-  | "blog" | "brands" | "loyalty" | "reviews" | "whereToBuy" | "offer" | "sale"
-  | "goals" | "symptoms" | "vitamins" | "programs";
+export const STATIC_PAGE_KEYS = [
+  "about", "contact", "delivery", "payment", "guarantee", "requisites", "licenses",
+  "blog", "brands", "loyalty", "reviews", "whereToBuy", "offer", "sale",
+  "goals", "symptoms", "vitamins", "programs", "quiz", "ingredients", "partners",
+] as const;
+
+export type StaticPageKey = (typeof STATIC_PAGE_KEYS)[number];
 
 export async function staticPageMetadata(locale: Locale, key: StaticPageKey, path: string): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta.pages" });

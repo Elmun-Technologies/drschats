@@ -1098,6 +1098,18 @@
       "programs": {
         "title": "30 kunlik vitamin dasturlari va toʻplamlar | Go Vita",
         "description": "Bir oylik vitamin dasturlari: immunitet, stressdan tiklanish, teri va soch, ayollar va bolalar uchun tayyor toʻplamlar — tarkib, narx va qabul qilish tartibi."
+      },
+      "quiz": {
+        "title": "Vitamin tanlash testi — sizga mos BAD | Go Vita",
+        "description": "Turmush tarzingiz va ehtiyojlaringiz haqidagi savollarga javob bering — Go Vita katalogidan mos vitaminlar roʻyxatini oling. Tashxis emas, tanlashga yordam."
+      },
+      "ingredients": {
+        "title": "Vitamin va minerallar koʻrsatkichi — tarkib va mahsulotlar | Go Vita",
+        "description": "Faol moddalar koʻrsatkichi: vitaminlar, minerallar, kollagen va probiotiklar nima uchun kerak va Go Vita katalogidagi qaysi mahsulotlar tarkibida bor."
+      },
+      "partners": {
+        "title": "Ulgurji hamkorlik — dorixonalar va distributorlar uchun | Go Vita",
+        "description": "Dorixonalar, distributorlar va korporativ mijozlar uchun Go Vita bilan hamkorlik: ulgurji narx, hudud va toʻlov muddati alohida shartnomada. Ariza qoldiring."
       }
     }
   },

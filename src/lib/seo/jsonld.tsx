@@ -7,6 +7,7 @@ import { locales } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
 import { DEFAULT_PRICING, type PricingRules } from "@/lib/commerce/settings";
 import { brandOf } from "@/lib/catalog/product-facts";
+import { COMMERCE } from "@/lib/config/commerce";
 
 /*
   Structured-data image URLs, made absolute.
@@ -25,12 +26,31 @@ function structuredDataImage(url: string): string {
   return /^https?:\/\//i.test(url) ? url : absoluteUrl(url);
 }
 
+/*
+  JSON for the inside of a <script> element. JSON.stringify leaves `<`, `>` and
+  `&` alone, so a product name or an article from the admin or Sanity holding
+  "</script>" or "<!--" ended the element early and the rest ran as HTML.
+  Escaped as \u003c etc. the JSON parses to the same value. U+2028/U+2029
+  are escaped too: legal in JSON, line terminators to older JS parsers.
+*/
+const SCRIPT_UNSAFE: Record<string, string> = {
+  "<": "\\u003c",
+  ">": "\\u003e",
+  "&": "\\u0026",
+  "\u2028": "\\u2028",
+  "\u2029": "\\u2029",
+};
+
+export function serializeJsonLd(data: unknown): string {
+  return JSON.stringify(data).replace(/[<>&\u2028\u2029]/g, (c) => SCRIPT_UNSAFE[c]);
+}
+
 /** Renders a JSON-LD <script> for rich results / AI agents. */
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script
       type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }}
+      dangerouslySetInnerHTML={{ __html: serializeJsonLd(data) }}
     />
   );
 }
@@ -117,6 +137,36 @@ export function organizationLd(locale: Locale = "uz") {
   return { "@context": "https://schema.org", ...organizationNode(locale) };
 }
 
+/*
+  The last day a sale price holds, as a Tashkent calendar date — only when the
+  admin set a real end ("Aksiya tugashi" or the deal of the day). A sale with no
+  end, or no sale at all, claims nothing: an invented date is what got
+  priceValidUntil removed before.
+*/
+export function priceValidUntil(product: Pick<Product, "price" | "oldPrice" | "saleEndsAt">, now = Date.now()): string | undefined {
+  if (!product.saleEndsAt || !product.oldPrice || product.oldPrice <= product.price) return undefined;
+  const end = Date.parse(product.saleEndsAt);
+  if (!Number.isFinite(end) || end <= now) return undefined;
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Tashkent" }).format(end);
+}
+
+/*
+  The shop's own return terms, as /guarantee states them: unopened packs within
+  COMMERCE.returns.unopenedWindowDays, money back in full. Return fees and the
+  method are not stated anywhere on the site, so they are not claimed here.
+*/
+export function merchantReturnPolicyNode(locale: Locale) {
+  return {
+    "@type": "MerchantReturnPolicy",
+    applicableCountry: "UZ",
+    returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+    merchantReturnDays: COMMERCE.returns.unopenedWindowDays,
+    itemCondition: "https://schema.org/NewCondition",
+    refundType: "https://schema.org/FullRefund",
+    merchantReturnLink: `${SITE_URL}/${locale}/guarantee`,
+  };
+}
+
 /**
  * Product page graph: MedicalWebPage (with author + reviewedBy) + Product +
  * Organization — the YMYL-grade structured-data model. `reviewer` and `author`
@@ -143,6 +193,7 @@ export function productGraph({
 }) {
   const url = `${SITE_URL}/${locale}/product/${product.slug}`;
   const brand = brandOf(product);
+  const validUntil = priceValidUntil(product);
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -188,12 +239,14 @@ export function productGraph({
           "@type": "Offer",
           priceCurrency: "UZS",
           price: product.price,
+          ...(validUntil ? { priceValidUntil: validUntil } : {}),
           availability: product.inStock
             ? "https://schema.org/InStock"
             : "https://schema.org/OutOfStock",
           itemCondition: "https://schema.org/NewCondition",
           url,
           seller: { "@id": `${SITE_URL}/#organization` },
+          hasMerchantReturnPolicy: merchantReturnPolicyNode(locale),
           shippingDetails: {
             "@type": "OfferShippingDetails",
             shippingRate: {
@@ -236,7 +289,8 @@ export function articleGraph({
   image: string;
   url: string;
   datePublished: string;
-  dateModified: string;
+  /** Only a real edit date; absent when the source keeps none (a copy of datePublished says nothing). */
+  dateModified?: string;
   locale: Locale;
   author: Expert | null;
   reviewer: Expert | null;
@@ -252,10 +306,11 @@ export function articleGraph({
         description,
         image: [structuredDataImage(image)],
         inLanguage: locale,
-        datePublished,
-        dateModified,
+        ...(datePublished ? { datePublished } : {}),
+        ...(dateModified && dateModified !== datePublished ? { dateModified } : {}),
         isPartOf: { "@id": `${SITE_URL}/#organization` },
-        ...(author ? { author: personNode(author) } : {}),
+        // No named expert yet: the shop wrote it, and Google's Article result wants an author.
+        author: author ? personNode(author) : { "@id": `${SITE_URL}/#organization` },
         ...(reviewer ? { reviewedBy: personNode(reviewer) } : {}),
         publisher: { "@id": `${SITE_URL}/#organization` },
         speakable: {

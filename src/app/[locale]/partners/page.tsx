@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
-import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { Link } from "@/lib/i18n/navigation";
 import { PHARMACY_CHAINS } from "@/lib/content/pharmacies";
@@ -15,8 +16,7 @@ export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "pages.v3.partners" });
-  return buildPageMetadata({ locale, path: "/partners", title: `${t("title")} — Go Vita`, description: t("lead") });
+  return staticPageMetadata(locale, "partners", "/partners");
 }
 
 /*

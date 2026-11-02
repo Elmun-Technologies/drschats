@@ -3,7 +3,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getIngredients, getSynergy } from "@/lib/content/ingredients.sanity";
 import { getAllProducts } from "@/lib/shop/all-products";
-import { buildPageMetadata } from "@/lib/seo/metadata";
+import { staticPageMetadata } from "@/lib/seo/page-meta";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { Reveal } from "@/components/animation/Reveal";
@@ -17,8 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: Locale }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "ingredients_page" });
-  return buildPageMetadata({ locale, path: "/ingredients", title: `${t("title")} — Go Vita`, description: t("subtitle") });
+  return staticPageMetadata(locale, "ingredients", "/ingredients");
 }
 
 export default async function IngredientsPage({

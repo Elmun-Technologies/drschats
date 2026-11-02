@@ -1,7 +1,7 @@
 import { existsSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { getArticles } from "./blog";
+import { getArticles, readingMinutes } from "./blog";
 import { listAllSlugs } from "@/lib/shopflow/mock";
 
 /*
@@ -19,5 +19,25 @@ describe("blog articles", () => {
 
   it.each(articles.map((a) => [a.slug, a.image] as const))("%s has an image file in public/", (_slug, src) => {
     expect(existsSync(join(process.cwd(), "public", src))).toBe(true);
+  });
+});
+
+describe("reading time", () => {
+  const words = (n: number) => Array.from({ length: n }, () => "soʻz").join(" ");
+  const article = (n: number) => ({ excerpt: "", sections: [{ heading: "", paragraphs: [words(n)] }] });
+
+  it("is the word count at ~200 words a minute, never under a minute", () => {
+    expect(readingMinutes(article(0))).toBe(1);
+    expect(readingMinutes(article(100))).toBe(1);
+    expect(readingMinutes(article(400))).toBe(2);
+    expect(readingMinutes(article(1000))).toBe(5);
+  });
+
+  it("ignores punctuation-only tokens", () => {
+    expect(readingMinutes({ excerpt: "— — —", sections: [] })).toBe(1);
+  });
+
+  it.each(["uz", "ru"] as const)("%s: shown minutes match the article's own text", (locale) => {
+    for (const a of getArticles(locale)) expect(a.readingMinutes, a.slug).toBe(readingMinutes(a));
   });
 });

@@ -10,7 +10,6 @@ interface ArticleSection {
 interface RawArticle {
   slug: string;
   date: string;
-  readingMinutes: number;
   imageSeed: string;
   category: L;
   categoryKey?: string;
@@ -49,7 +48,6 @@ const rawArticles: RawArticle[] = [
   {
     slug: "omega-3-nima-uchun-kerak",
     date: "2026-05-20",
-    readingMinutes: 6,
     imageSeed: "blog-omega3",
     category: { uz: "Yurak sogʻligʻi", ru: "Здоровье сердца" },
     categoryKey: "nutrition",
@@ -95,7 +93,6 @@ const rawArticles: RawArticle[] = [
   {
     slug: "qishda-vitamin-d",
     date: "2026-05-12",
-    readingMinutes: 5,
     imageSeed: "blog-vitamind",
     category: { uz: "Immunitet", ru: "Иммунитет" },
     categoryKey: "vitamins",
@@ -138,7 +135,6 @@ const rawArticles: RawArticle[] = [
   {
     slug: "magniy-va-uyqu",
     date: "2026-04-28",
-    readingMinutes: 4,
     imageSeed: "blog-magnesium",
     category: { uz: "Uyqu va stress", ru: "Сон и стресс" },
     categoryKey: "lifestyle",
@@ -169,20 +165,38 @@ const rawArticles: RawArticle[] = [
   },
 ];
 
+/*
+  Reading time from the words the reader actually gets, at ~200 words a
+  minute. The hard-coded 6/5/4 minutes promised a long read for articles of
+  about a hundred words.
+*/
+export const WORDS_PER_MINUTE = 200;
+
+export function readingMinutes(
+  article: Pick<Article, "excerpt" | "sections">,
+  wpm = WORDS_PER_MINUTE,
+): number {
+  const text = [article.excerpt, ...article.sections.flatMap((s) => [s.heading, ...s.paragraphs])].join(" ");
+  const words = text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+  return Math.max(1, Math.round(words / wpm));
+}
+
 function resolve(a: RawArticle, locale: Locale): Article {
+  const sections = a.sections.map((s) => ({
+    heading: s.heading[locale],
+    paragraphs: s.paragraphs[locale],
+  }));
+  const excerpt = a.excerpt[locale];
   return {
     slug: a.slug,
     date: a.date,
-    readingMinutes: a.readingMinutes,
+    readingMinutes: readingMinutes({ excerpt, sections }),
     image: img(a.imageSeed),
     category: a.category[locale],
     categoryKey: a.categoryKey,
     title: a.title[locale],
-    excerpt: a.excerpt[locale],
-    sections: a.sections.map((s) => ({
-      heading: s.heading[locale],
-      paragraphs: s.paragraphs[locale],
-    })),
+    excerpt,
+    sections,
     relatedProductSlugs: a.relatedProductSlugs,
   };
 }

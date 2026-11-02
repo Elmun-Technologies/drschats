@@ -6,6 +6,7 @@
 
 import type { Locale } from "@/lib/i18n/routing";
 import { client } from "@/sanity/client";
+import { readingMinutes } from "@/lib/content/blog";
 import { urlFor } from "@/sanity/image";
 import { allArticlesQuery, articleBySlugQuery, allArticleSlugsQuery } from "@/sanity/queries/blog";
 
@@ -53,7 +54,8 @@ function mapArticle(raw: SanityRaw): Article {
   return {
     slug: raw.slug as string,
     date: (raw.date ?? "") as string,
-    readingMinutes: (raw.readingMinutes ?? 5) as number,
+    // An editor's number wins; otherwise the real length, not a flat 5.
+    readingMinutes: typeof raw.readingMinutes === "number" ? raw.readingMinutes : readingMinutes({ excerpt: (raw.excerpt ?? "") as string, sections }),
     image: mapImage(raw),
     category: (raw.category ?? "") as string,
     categoryKey: (raw.categoryKey as string) || undefined,

@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import uz from "@/messages/uz.json";
 import ru from "@/messages/ru.json";
 import { CATEGORY_SEO } from "@/lib/content/category-seo";
-import { clampDescription, DESCRIPTION_MAX } from "./page-meta";
+import { clampDescription, DESCRIPTION_MAX, STATIC_PAGE_KEYS } from "./page-meta";
 
 const MESSAGES = { uz, ru };
 
@@ -47,6 +47,15 @@ describe("search titles", () => {
       }
     });
   }
+
+  // A missing key is not an error in next-intl: the page would ship "meta.pages.quiz.title" as its title.
+  it.each(Object.entries(MESSAGES))("%s: every page that calls staticPageMetadata has its copy", (_locale, m) => {
+    const pages = m.meta.pages as Record<string, { title?: string; description?: string } | undefined>;
+    for (const key of STATIC_PAGE_KEYS) {
+      expect(pages[key]?.title, key).toBeTruthy();
+      expect(pages[key]?.description, key).toBeTruthy();
+    }
+  });
 
   it("uz and ru describe the same static pages", () => {
     expect(Object.keys(uz.meta.pages).sort()).toEqual(Object.keys(ru.meta.pages).sort());

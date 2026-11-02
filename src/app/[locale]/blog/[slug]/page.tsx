@@ -79,7 +79,6 @@ export default async function ArticlePage({
           image: article.image,
           url,
           datePublished: article.date,
-          dateModified: article.date,
           locale,
           author,
           reviewer,
