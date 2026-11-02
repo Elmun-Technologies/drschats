@@ -624,7 +624,8 @@
       "notifySubmit": "Xabar bering",
       "orTelegram": "Yoki Telegramda yozing",
       "maybe": "Balki sizga kerakdir",
-      "back": "Orqaga"
+      "back": "Orqaga",
+      "didYouMean": "Balki siz qidirgan:"
     },
     "sale": {
       "title": "Aksiyalar va chegirmalar",

@@ -8,7 +8,8 @@ import type { Product } from "@/lib/shopflow/types";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { DiscountBadge, discountPercent } from "@/components/ui/Price";
 import { Button } from "@/components/ui/Button";
-import { useCart } from "@/lib/cart/store";
+import { useUpsell } from "@/lib/upsell/store";
+import { useRouter } from "@/lib/i18n/navigation";
 import { itemOf, trackViewProduct } from "@/lib/analytics/events";
 import type { Expert } from "@/lib/content/experts";
 import { ReviewedBy } from "@/components/product/ReviewedBy";
@@ -35,7 +36,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
   const tv = useTranslations("product.v3");
   const tb = useTranslations("product.buyBox");
   const ts = useTranslations("subscription");
-  const openCart = useCart((s) => s.open);
+  const router = useRouter();
   const reset = usePurchase((s) => s.reset);
   const qty = usePurchase((s) => s.qty);
   const setQty = usePurchase((s) => s.setQty);
@@ -132,8 +133,14 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
             size="lg"
             className="w-full"
             onClick={() => {
-              addToCart();
-              openCart();
+              /*
+                «Hozir buyurtma berish» goes straight to the order form: no
+                «added» card, no drawer, and the upsell ladder is not opened on
+                top — the cart page shows its offers inline.
+              */
+              useUpsell.getState().markShown();
+              addToCart({ silent: true });
+              router.push("/cart");
             }}
           >
             {t("buyNow")}

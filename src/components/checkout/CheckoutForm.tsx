@@ -26,6 +26,8 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { productCutout } from "@/lib/content/product-cutouts";
 import { CartLines } from "@/components/cart/CartLines";
 import { submitOrder } from "@/app/[locale]/checkout/actions";
+import { restoreCart } from "@/app/actions/restoreCart";
+import { useUpsell } from "@/lib/upsell/store";
 import { getAttribution, itemOf, trackBeginCheckout, trackOrder, trackViewCart } from "@/lib/analytics/events";
 import { trackPurchase } from "@/lib/personalization/tracker";
 import { buildUpsellLadder } from "@/lib/upsell/ladder";
@@ -113,6 +115,29 @@ export function CheckoutForm({
   const [serverError, setServerError] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
+  /*
+    A cart reminder opened in another browser (Telegram's own, most often)
+    brings `?restore=<signed click token>`: the cart from the message is put
+    back when this browser's cart is empty, then the parameter is dropped.
+  */
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const token = url.searchParams.get("restore");
+    if (!token) return;
+    url.searchParams.delete("restore");
+    window.history.replaceState(window.history.state, "", url.toString());
+    if (useCart.getState().lines.length > 0) return;
+    restoreCart(token, locale === "ru" ? "ru" : "uz")
+      .then((restored) => {
+        if (useCart.getState().lines.length > 0 || restored.length === 0) return;
+        // The cart page shows its offers inline; the ladder must not open over a restored cart.
+        useUpsell.getState().markShown();
+        for (const { quantity, ...line } of restored) useCart.getState().add(line, quantity, { silent: true });
+      })
+      .catch(() => {
+        // The empty cart stays; the message's products are a tap away in the catalogue.
+      });
+  }, [locale]);
   const syncPrices = useCart((s) => s.syncPrices);
   /*
     A price that changed since the product was added is named, old → new,
