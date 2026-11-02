@@ -8,7 +8,6 @@ import { ProductCard } from "@/components/product/ProductCard";
 import { chipClass } from "@/components/ui/Chip";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
 import { categoryCutout } from "@/lib/content/product-cutouts";
-import { COMMERCE } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { SUBSCRIPTION_INTERVALS } from "@/lib/subscription/plans";
 import {
@@ -128,8 +127,8 @@ export async function ShopView({
   ].filter((c): c is { key: string; label: string; next: CatalogFilters } => Boolean(c));
 
   const activeCount = activeFilterCount(filters);
-  const hours = String(COMMERCE.delivery.tashkent.hours);
   const commerce = await getCommerceSettings();
+  const hours = String(commerce.delivery.tashkentHours);
 
   return (
     <div className="wrap flex flex-col gap-4 pb-9 pt-1 lg:gap-6 lg:pb-[72px] lg:pt-5">

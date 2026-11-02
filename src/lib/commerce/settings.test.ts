@@ -49,7 +49,7 @@ describe("parseStoredCommerceSettings", () => {
       meta: { delivery: { by: "Ali", at: "2026-10-17T10:00:00.000Z" }, ladder: { by: 3 } },
     });
     const { settings, meta } = parseStoredCommerceSettings(raw);
-    expect(settings.delivery).toEqual({ freeShippingOver: 250_000, courierFee: 30_000, cutoff: DEFAULT_COMMERCE_SETTINGS.delivery.cutoff, regionsNote: { uz: "2–4 kun", ru: "" } });
+    expect(settings.delivery).toEqual({ freeShippingOver: 250_000, courierFee: 30_000, cutoff: DEFAULT_COMMERCE_SETTINGS.delivery.cutoff, regionsNote: { uz: "2–4 kun", ru: "" }, tashkentHours: 24 });
     expect(settings.ladder).toEqual({ enabled: false, percents: [10, 15, 20], freeGift: true });
     // A later delivery may never cost more than the first.
     expect(settings.subscription).toEqual(DEFAULT_COMMERCE_SETTINGS.subscription);
@@ -89,8 +89,8 @@ describe("helpers", () => {
 
 describe("admin form", () => {
   it("accepts spaced thousands and an empty cut-off", () => {
-    const r = parseCommerceSection("delivery", { freeShippingOver: "250 000", courierFee: "25000", cutoff: "", "regionsNote.uz": "", "regionsNote.ru": "" });
-    expect(r).toEqual({ ok: true, value: { freeShippingOver: 250_000, courierFee: 25_000, cutoff: "", regionsNote: { uz: "", ru: "" } } });
+    const r = parseCommerceSection("delivery", { freeShippingOver: "250 000", courierFee: "25000", tashkentHours: "48", cutoff: "", "regionsNote.uz": "", "regionsNote.ru": "" });
+    expect(r).toEqual({ ok: true, value: { freeShippingOver: 250_000, courierFee: 25_000, cutoff: "", regionsNote: { uz: "", ru: "" }, tashkentHours: 48 } });
   });
 
   it("refuses negative or non-numeric amounts, bad times and out-of-order ladders", () => {

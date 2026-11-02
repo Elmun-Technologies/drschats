@@ -5,7 +5,6 @@ import { Link } from "@/lib/i18n/navigation";
 import { shopflow } from "@/lib/shopflow";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { BRAND } from "@/lib/brand";
-import { COMMERCE } from "@/lib/config/commerce";
 import { cn, formatMoney } from "@/lib/utils";
 import { byDeepestDiscount } from "@/lib/shop/discounts";
 import { getCommerceSettings } from "@/lib/commerce/server";
@@ -105,7 +104,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
           <h2 className="text-2xl font-bold">{t("rulesTitle")}</h2>
           {[
             t("rule1", { amount: free }),
-            t("rule2", { hours: COMMERCE.delivery.tashkent.hours, days: localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime")) }),
+            t("rule2", { hours: commerce.delivery.tashkentHours, days: localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime")) }),
             t("rule3"),
           ].map((rule) => (
             <p key={rule} className="flex gap-3 text-base leading-[23px]">

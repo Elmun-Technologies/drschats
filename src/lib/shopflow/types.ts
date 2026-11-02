@@ -188,10 +188,18 @@ export interface OrderRequest {
     marketingOptIn?: boolean;
   };
   delivery: {
+    /** A region key (lib/checkout/regions.ts) on site orders since 2026-11; older orders hold the name. */
     region: string;
+    /** One readable line; on site orders composed on the server from the parts below. */
     address: string;
     note?: string;
     method: string;
+    /** Courier address parts (lib/checkout/address.ts); absent on older orders and pickup. */
+    district?: string;
+    street?: string;
+    house?: string;
+    apartment?: string;
+    landmark?: string;
   };
   /**
    * The customer's requested payment method, not proof that payment was made
@@ -233,6 +241,11 @@ export interface OrderRequest {
    * and never stored: only the chat id it proves is kept on the order.
    */
   telegram?: string;
+  /**
+   * One per checkout form session: a double tap or a retried request with the
+   * same key returns the first order instead of placing a second (0018).
+   */
+  idempotencyKey?: string;
 }
 
 export type OrderAdjustment =

@@ -7,7 +7,6 @@ import type { Locale } from "@/lib/i18n/routing";
 import type { Category, Product, UpsellOffer } from "@/lib/shopflow/types";
 import type { Expert } from "@/lib/content/experts";
 import type { HealthTopic } from "@/lib/content/health-topics";
-import { COMMERCE } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { localizedOr } from "@/lib/commerce/settings";
 import { ONLINE_PROVIDER_LABELS, paymentMarks } from "@/lib/config/payments";
@@ -29,6 +28,7 @@ import { DoctorVideo } from "@/components/product/DoctorVideo";
 import { UpsellRail } from "@/components/product/UpsellRail";
 import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
 import { cutoutOf, unitOf, brandOf } from "@/lib/catalog/product-facts";
+import { BRAND } from "@/lib/brand";
 
 /*
   Design: ProductV3 (desktop), ProductMobileV3 (phones).
@@ -90,8 +90,8 @@ export async function ProductTemplate({
   const regionsTime = localizedOr(commerce.delivery.regionsNote, locale, td("regionsTime"));
   const onlineProviders = await getOnlineProviders().catch(() => []);
   const delivery = [
-    { icon: ICON.truck, title: tv("courier"), price: fee, note: tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, amount: free }) },
-    { icon: ICON.home, title: tv("pickup"), price: tv("free"), note: tv("pickupNote") },
+    { icon: ICON.truck, title: tv("courier"), price: fee, note: tv("courierNote", { hours: commerce.delivery.tashkentHours, amount: free }) },
+    { icon: ICON.home, title: tv("pickup"), price: tv("free"), note: tv("pickupNote", { address: locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address }) },
     { icon: ICON.box, title: tv("regions"), price: fee, note: tv("regionsNote", { days: regionsTime, amount: free }) },
     {
       icon: ICON.card,

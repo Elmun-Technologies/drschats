@@ -164,6 +164,7 @@ export function orderValues(payload: OrderRequest, promoCode: string | null = nu
     source: payload.source ?? "site",
     // Sent to a gateway: waiting for its callback (lib/payments). Cash stays unpaid until delivery.
     paymentStatus: payload.payment?.method === "online" ? "pending" : "unpaid",
+    idempotencyKey: payload.idempotencyKey ?? null,
   };
 }
 

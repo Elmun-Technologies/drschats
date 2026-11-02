@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { regionName } from "@/lib/checkout/regions";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { desc, eq, inArray } from "drizzle-orm";
@@ -45,7 +46,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
   const phone9 = phoneDigits.slice(-9);
   const next = NEXT_STATUS[o.status];
   const changes = history.filter((event) => event.status !== "new").reverse();
-  const address = [o.delivery.region, o.delivery.address].filter(Boolean).join(", ");
+  const address = [regionName(o.delivery.region), o.delivery.address].filter(Boolean).join(", ");
   const units = o.items.reduce((sum, item) => sum + item.quantity, 0);
   // The order-level discount (promo code or first order) is part of totals.discount; shown as its own line.
   const adjustment = discountAdjustment(o.totals.adjustments);

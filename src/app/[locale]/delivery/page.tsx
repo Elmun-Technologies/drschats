@@ -4,7 +4,7 @@ import type { Locale } from "@/lib/i18n/routing";
 import { JsonLd, faqLd } from "@/lib/seo/jsonld";
 import Image from "next/image";
 import { formatMoney } from "@/lib/utils";
-import { COMMERCE, thousands } from "@/lib/config/commerce";
+import { thousands } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { localizedOr } from "@/lib/commerce/settings";
 import { getOnlineProviders } from "@/lib/payments/availability";
@@ -35,13 +35,13 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
   const vars = {
     amount: thousands(commerce.delivery.freeShippingOver),
     fee: thousands(commerce.delivery.courierFee),
-    hours: COMMERCE.delivery.tashkent.hours,
+    hours: commerce.delivery.tashkentHours,
   };
   const regionsTime = localizedOr(commerce.delivery.regionsNote, locale, t("delivery.postTime"));
   // Raw FAQ copy quotes the threshold as {amount}; filled here like the other strings.
   const faq = (pg.raw("deliveryFaq") as { question: string; answer: string }[]).map((item) => ({
     question: item.question,
-    answer: item.answer.replaceAll("{amount}", vars.amount),
+    answer: item.answer.replaceAll("{amount}", vars.amount).replaceAll("{hours}", String(vars.hours)).replaceAll("{days}", regionsTime),
   }));
   const options = [
     { icon: ICONS.courier, title: t("delivery.courierTitle"), value: t("delivery.courierTime", vars), text: t("delivery.feeNote", vars) },

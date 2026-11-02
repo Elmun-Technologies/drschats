@@ -3,7 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { Link } from "@/lib/i18n/navigation";
 import { buttonVariants } from "@/components/ui/Button";
-import { COMMERCE, thousands } from "@/lib/config/commerce";
+import { thousands } from "@/lib/config/commerce";
+import { localizedOr } from "@/lib/commerce/settings";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { InfoHeader, InfoShell } from "@/components/info/InfoShell";
 import { cn } from "@/lib/utils";
@@ -45,7 +46,7 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
   const birthday = loyalty.birthday.enabled ? await birthdayOffer() : null;
   const { firstPercent, recurringPercent } = commerce.subscription;
   const amount = thousands(commerce.delivery.freeShippingOver);
-  const hours = COMMERCE.delivery.tashkent.hours;
+  const hours = commerce.delivery.tashkentHours;
 
   const programs = [
     ...(firstOrder.mode === "off"
@@ -128,7 +129,7 @@ export default async function LoyaltyPage({ params }: { params: Promise<{ locale
     firstOrder.mode === "auto" && i === all.length - 1 ? { ...step, text: t("loyalty.howAutoText") } : step,
   );
   const rules = (t.raw("loyalty.rules") as string[]).map((r) =>
-    r.replace("{amount}", amount).replace("{hours}", String(hours)),
+    r.replace("{amount}", amount).replace("{hours}", String(hours)).replace("{days}", localizedOr(commerce.delivery.regionsNote, locale, t("delivery.postTime"))),
   );
 
   return (

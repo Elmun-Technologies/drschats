@@ -1,5 +1,6 @@
 import { and, desc, eq, inArray, isNull, or, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
+import { regionName } from "@/lib/checkout/regions";
 import {
   botConfig,
   botJobs,
@@ -113,7 +114,7 @@ function orderOut(o: OrderRow, locale: Locale) {
     createdAt: o.createdAt,
     total: o.total,
     shipping: o.totals.shipping,
-    delivery: { region: o.delivery.region, address: o.delivery.address ?? "", method: o.delivery.method },
+    delivery: { region: regionName(o.delivery.region, locale === "ru" ? "ru" : "uz"), address: o.delivery.address ?? "", method: o.delivery.method },
     items: o.items.map((i) => ({ productId: i.productId, slug: i.slug, name: i.name, qty: i.quantity, unitPrice: i.unitPrice })),
   };
 }

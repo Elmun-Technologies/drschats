@@ -125,7 +125,9 @@ export default async function AdminCommercePage() {
             <Field label="Bugun yetkazish chegarasi (Toshkent vaqti)" hint={`SS:DD, boʻsh — taymer yoʻq.${env ? ` Deploy standarti: ${env}` : ""}`}>
               <input name="cutoff" defaultValue={delivery.cutoff} placeholder="16:00" pattern="\d{1,2}:\d{2}" className={inputClass} />
             </Field>
-            <div className="hidden sm:block" aria-hidden />
+            <Field label="Toshkent boʻylab yetkazish, soatgacha" hint={defaultsNote("delivery", `${defaults.delivery.tashkentHours} soat`) ?? "Mahsulot, savat va «Yetkazish» sahifasidagi «N soatda»"}>
+              <input name="tashkentHours" inputMode="numeric" required defaultValue={delivery.tashkentHours} className={inputClass} />
+            </Field>
             <TextPair name="regionsNote" label="Viloyatlarga muddat" value={delivery.regionsNote} placeholder={{ uz: "1–3 kun", ru: "1–3 дня" }} />
             {lowerPromo && (
               <div className="col-span-full">

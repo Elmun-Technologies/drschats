@@ -1,7 +1,8 @@
 "use client";
 
 import { cloneElement, useEffect, useId, useRef, useState, type ReactNode } from "react";
-import { REGION_KEYS } from "@/lib/checkout/regions";
+import { REGION_KEYS, TASHKENT_DISTRICTS } from "@/lib/checkout/regions";
+import { composeAddress } from "@/lib/checkout/address";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -9,12 +10,13 @@ import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/lib/i18n/navigation";
 import type { Locale } from "@/lib/i18n/routing";
 import type { OrderRequest, Product } from "@/lib/shopflow/types";
-import { useCart } from "@/lib/cart/store";
+import { useCart, type PriceChange } from "@/lib/cart/store";
 import { useSaleClock } from "@/lib/cart/useSaleClock";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { computeTotals } from "@/lib/cart/pricing";
 import { COMMERCE } from "@/lib/config/commerce";
 import { useCommerce, usePricingRules } from "@/lib/commerce/context";
+import { localizedOr } from "@/lib/commerce/settings";
 import { BRAND } from "@/lib/brand";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { Button, buttonVariants } from "@/components/ui/Button";
@@ -42,7 +44,17 @@ import { usePoints } from "@/lib/loyalty/store";
 import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
 import { useMiniAppMainButton } from "@/components/telegram/useMiniAppMainButton";
 import { normalizeUzPhone } from "@/lib/phone";
-import { saveLastOrder } from "@/lib/orders/last-order";
+import { rememberOrder, saveLastOrder } from "@/lib/orders/last-order";
+
+/* One key per form session (0018): a double tap or a retried request returns the first order. */
+function newOrderKey(): string {
+  try {
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
+  } catch {
+    // Older browsers fall through to the random string below.
+  }
+  return `k${Date.now().toString(36)}${Math.random().toString(36).slice(2, 12)}`.padEnd(20, "0");
+}
 
 /*
   Regions are keyed, not hardcoded strings.
@@ -83,10 +95,12 @@ export function CheckoutForm({
   const t = useTranslations("checkout");
   const te = useTranslations("checkout.errors");
   const tr = useTranslations("checkout.regions");
+  const tdl = useTranslations("delivery");
   const tc = useTranslations("cart");
   const ts = useTranslations("subscription");
   const tp = useTranslations("product.v3");
   const tpe = useTranslations("cart.v3.promo.errors");
+  const tcon = useTranslations("contact");
   const router = useRouter();
   const lines = useCart((s) => s.lines);
   useSaleClock();
@@ -100,9 +114,29 @@ export function CheckoutForm({
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
   const syncPrices = useCart((s) => s.syncPrices);
+  /*
+    A price that changed since the product was added is named, old → new,
+    instead of the total quietly moving under the customer's thumb.
+  */
+  const [priceChanges, setPriceChanges] = useState<PriceChange[]>([]);
   useEffect(() => {
-    if (mounted) syncPrices(prices);
+    if (!mounted) return;
+    const changed = syncPrices(prices);
+    if (changed.length > 0) setPriceChanges(changed);
   }, [mounted, prices, syncPrices]);
+  // A refusal is drawn in the summary, below the fold on a phone: it is brought into view and focused.
+  const errorRef = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    if (!serverError) return;
+    errorRef.current?.scrollIntoView({ block: "center", behavior: "smooth" });
+    errorRef.current?.focus({ preventScroll: true });
+  }, [serverError]);
+  const orderKey = useRef("");
+  const lineSignature = lines.map((l) => `${l.lineId}:${l.quantity}`).join("|");
+  useEffect(() => {
+    orderKey.current = "";
+  }, [lineSignature]);
+  const [emailOpen, setEmailOpen] = useState(false);
   const linesRef = useRef(lines);
   linesRef.current = lines;
   const analyticsItems = () => linesRef.current.map((l) => itemOf(l, l.quantity, l.upsellDiscountPercent));
@@ -126,7 +160,11 @@ export function CheckoutForm({
     // as well would cost more orders than the confirmation email is worth.
     email: z.union([z.string().email(t("errorEmail")), z.literal("")]).optional(),
     region: z.string().optional(),
-    address: z.string().optional(),
+    district: z.string().optional(),
+    street: z.string().optional(),
+    house: z.string().optional(),
+    apartment: z.string().optional(),
+    landmark: z.string().optional(),
     note: z.string().optional(),
     method: z.enum(["courier", "pickup"]),
     payment: z.enum(["online", "cod"]),
@@ -136,8 +174,8 @@ export function CheckoutForm({
   }).superRefine((values, ctx) => {
     if (values.method !== "courier") return;
     if (!values.region) ctx.addIssue({ code: "custom", path: ["region"], message: t("errorRequired") });
-    if (!values.address || values.address.trim().length < 3) {
-      ctx.addIssue({ code: "custom", path: ["address"], message: t("errorRequired") });
+    for (const field of ["district", "street", "house"] as const) {
+      if (!values[field]?.trim()) ctx.addIssue({ code: "custom", path: [field], message: t("errorRequired") });
     }
   }).refine(
     /*
@@ -246,6 +284,7 @@ export function CheckoutForm({
     }
   };
   const method = watch("method");
+  const region = watch("region");
   const totals = computeTotals(lines, promotions, { pickup: method === "pickup", rules: pricing });
   /*
     The order-level discount (a promo code or the first-order one) as the
@@ -273,8 +312,14 @@ export function CheckoutForm({
     : 0;
 
   async function onSubmit(values: FormValues) {
+    const soldOut = lines.filter((l) => l.soldOut);
+    if (soldOut.length > 0) {
+      setServerError(te("soldOutLines", { names: soldOut.map((l) => l.name).join(", ") }));
+      return;
+    }
     setSubmitting(true);
     setServerError(null);
+    if (!orderKey.current) orderKey.current = newOrderKey();
     const payload: OrderRequest = {
       customer: {
         name: values.name,
@@ -289,13 +334,22 @@ export function CheckoutForm({
         values.payment === "online" && provider
           ? { method: "online" as const, provider }
           : { method: "cod" as const },
-      delivery: {
-        // A pickup order carries the collection point, never an empty string.
-        region: values.region || (locale === "ru" ? "г. Ташкент" : "Toshkent shahri"),
-        address: values.address || (locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address),
-        note: values.note,
-        method: values.method,
-      },
+      delivery:
+        values.method === "pickup"
+          ? // A pickup order carries the collection point, never an empty string.
+            { region: "tashkentCity", address: locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address, note: values.note, method: "pickup" }
+          : {
+              // The key, not the name: the order reads the same in either language (lib/checkout/regions.ts).
+              region: values.region ?? "",
+              address: composeAddress(values),
+              district: values.district?.trim(),
+              street: values.street?.trim(),
+              house: values.house?.trim(),
+              apartment: values.apartment?.trim() || undefined,
+              landmark: values.landmark?.trim() || undefined,
+              note: values.note,
+              method: "courier",
+            },
       items: lines.map((l) => ({
         productId: l.productId,
         slug: l.slug,
@@ -318,6 +372,7 @@ export function CheckoutForm({
       locale,
       attribution: getAttribution(),
       telegram: telegramInitData(),
+      idempotencyKey: orderKey.current,
     };
 
     let res: Awaited<ReturnType<typeof submitOrder>>;
@@ -341,6 +396,15 @@ export function CheckoutForm({
         payment: values.payment,
         items: lines.map((l) => ({ name: l.name, quantity: l.quantity })),
       });
+      if (res.track) {
+        rememberOrder({
+          order: res.orderId,
+          track: res.track,
+          total: res.total ?? grandTotal,
+          at: new Date().toISOString(),
+          items: lines.map((l) => ({ name: l.name, quantity: l.quantity })),
+        });
+      }
       clear();
       usePoints.getState().clear();
       const query = new URLSearchParams({ order: res.orderId });
@@ -426,33 +490,57 @@ export function CheckoutForm({
               <div className="h-1.5 rounded-full bg-[#DCDFDB] lg:h-2">
                 <div className="h-full rounded-full bg-ink transition-[width] duration-500" style={{ width: `${progress}%` }} />
               </div>
-              {watch("method") !== "pickup" && <DeliveryCutoff />}
+              {/* "Order by 16:00 for today" is a Tashkent courier promise; the regions travel by BTS. */}
+              {method !== "pickup" && region === "tashkentCity" && <DeliveryCutoff />}
               {watch("method") !== "pickup" && (
                 <FreeShippingFillers products={gapFillers(recommended, lines, totals.freeShippingRemaining, { window: commerce.cart.gapWindow })} />
               )}
             </div>
           )}
 
+          {priceChanges.length > 0 && (
+            <div role="status" className="flex flex-col gap-1.5 rounded-[16px] border border-line px-4 py-3.5 text-[15px] lg:px-6">
+              <span className="font-semibold">{tv("priceChanged")}</span>
+              {priceChanges.map((c) => (
+                <span key={c.lineId} className="text-ink-2">
+                  {c.name}: <s>{formatMoney(c.from, locale)}</s> → <b className="text-ink">{formatMoney(c.to, locale)}</b>
+                </span>
+              ))}
+            </div>
+          )}
+
           <CartLines lines={lines} upsells={ladderSteps} />
 
           <Step n={1} title={t("contactSection")}>
-            <div className="grid gap-3.5 lg:grid-cols-3">
+            <div className="grid gap-3.5 lg:grid-cols-2">
               <Field label={t("name")} error={errors.name?.message}>
                 <input className={inputClass} placeholder={t("namePlaceholder")} autoComplete="name" {...register("name")} />
               </Field>
               <Field label={t("phone")} error={errors.phone?.message}>
                 <input className={inputClass} placeholder={t("phonePlaceholder")} inputMode="tel" autoComplete="tel" {...register("phone")} />
               </Field>
-              <Field label={t("email")} error={errors.email?.message} hint={t("emailHint")}>
-                <input
-                  className={inputClass}
-                  placeholder={t("emailPlaceholder")}
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  {...register("email")}
-                />
-              </Field>
+              {/* Optional, so it waits behind a link: three equal fields read as three required ones. */}
+              {emailOpen || emailEntered || errors.email ? (
+                <Field label={t("email")} error={errors.email?.message} hint={t("emailHint")}>
+                  <input
+                    className={inputClass}
+                    placeholder={t("emailPlaceholder")}
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    autoFocus={emailOpen && !emailEntered}
+                    {...register("email")}
+                  />
+                </Field>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => setEmailOpen(true)}
+                  className="inline-flex min-h-11 items-center self-start text-[15px] font-semibold underline underline-offset-4 hover:no-underline"
+                >
+                  {tv("addEmail")}
+                </button>
+              )}
             </div>
             <p className="text-sm text-muted">{tv("guestNote")}</p>
           </Step>
@@ -462,11 +550,11 @@ export function CheckoutForm({
               <RadioCard value="courier" {...register("method")}>
                 <OptionText
                   title={t("methodCourier")}
-                  note={tv("courierNote", { hours: COMMERCE.delivery.tashkent.hours, fee: formatMoney(pricing.shippingFee, locale) })}
+                  note={tv("courierNote", { hours: commerce.delivery.tashkentHours, days: localizedOr(commerce.delivery.regionsNote, locale, tdl("regionsTime")), fee: formatMoney(pricing.shippingFee, locale) })}
                 />
               </RadioCard>
               <RadioCard value="pickup" {...register("method")}>
-                <OptionText title={t("methodPickup")} note={tp("pickupNote")} />
+                <OptionText title={t("methodPickup")} note={tp("pickupNote", { address: locale === "ru" ? BRAND.legal.addressRu : BRAND.legal.address })} />
               </RadioCard>
             </div>
             {method === "pickup" ? (
@@ -482,7 +570,7 @@ export function CheckoutForm({
                   <select className={cn(inputClass, "appearance-none pr-11")} {...register("region")}>
                     <option value="">{t("regionPlaceholder")}</option>
                     {REGION_KEYS.map((key) => (
-                      <option key={key} value={tr(key)}>
+                      <option key={key} value={key}>
                         {tr(key)}
                       </option>
                     ))}
@@ -492,8 +580,42 @@ export function CheckoutForm({
                   </svg>
                 </div>
               </Field>
-              <Field label={t("address")} error={errors.address?.message}>
-                <input className={inputClass} placeholder={t("addressPlaceholder")} autoComplete="street-address" {...register("address")} />
+              {region === "tashkentCity" ? (
+                <Field label={tv("district")} error={errors.district?.message}>
+                  <div className="relative">
+                    <select className={cn(inputClass, "appearance-none pr-11")} {...register("district")}>
+                      <option value="">{tv("districtPlaceholder")}</option>
+                      {TASHKENT_DISTRICTS.map((d) => (
+                        <option key={d.key} value={d.key}>
+                          {d[locale]}
+                        </option>
+                      ))}
+                    </select>
+                    <svg viewBox="0 0 24 24" aria-hidden className="pointer-events-none absolute right-4 top-1/2 h-[18px] w-[18px] -translate-y-1/2" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M6 9l6 6 6-6" />
+                    </svg>
+                  </div>
+                </Field>
+              ) : (
+                <Field label={tv("town")} error={errors.district?.message} hint={region ? tv("townHint") : undefined}>
+                  <input className={inputClass} placeholder={tv("townPlaceholder")} autoComplete="address-level2" {...register("district")} />
+                </Field>
+              )}
+            </div>
+            <div className={cn("grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_120px_120px]", method === "pickup" && "hidden")}>
+              <Field label={tv("street")} error={errors.street?.message}>
+                <input className={inputClass} placeholder={tv("streetPlaceholder")} autoComplete="address-line1" {...register("street")} />
+              </Field>
+              <Field label={tv("house")} error={errors.house?.message}>
+                <input className={inputClass} autoComplete="address-line2" {...register("house")} />
+              </Field>
+              <Field label={tv("apartment")}>
+                <input className={inputClass} {...register("apartment")} />
+              </Field>
+            </div>
+            <div className={cn(method === "pickup" && "hidden")}>
+              <Field label={tv("landmark")}>
+                <input className={inputClass} placeholder={tv("landmarkPlaceholder")} {...register("landmark")} />
               </Field>
             </div>
             <Field label={t("note")}>
@@ -596,7 +718,7 @@ export function CheckoutForm({
               </span>
             )}
             {serverError && (
-              <p role="alert" className="rounded-sm bg-red/10 px-4 py-3 text-sm font-medium text-red">
+              <p ref={errorRef} tabIndex={-1} role="alert" className="scroll-mt-24 rounded-sm bg-red/10 px-4 py-3 text-sm font-medium text-red outline-none">
                 {serverError}
               </p>
             )}
@@ -610,9 +732,17 @@ export function CheckoutForm({
             )}
             <p className="text-[13px] leading-[18px] text-muted">
               {tv.rich("consent", {
-                offer: (chunks) => <Link href="/offer" className="underline">{chunks}</Link>,
+                delivery: (chunks) => <Link href="/delivery" className="underline">{chunks}</Link>,
+                payment: (chunks) => <Link href="/payment" className="underline">{chunks}</Link>,
+                guarantee: (chunks) => <Link href="/guarantee" className="underline">{chunks}</Link>,
                 privacy: (chunks) => <Link href="/privacy" className="underline">{chunks}</Link>,
               })}
+            </p>
+            <p className="text-[13px] leading-[18px] text-muted">
+              {tv("supportHours", { hours: tcon("workHours") })}{" "}
+              <a href={`tel:${BRAND.contact.phoneHref}`} className="font-semibold text-ink underline">
+                {BRAND.contact.phone}
+              </a>
             </p>
             <UpsellSavingsBar />
           </div>

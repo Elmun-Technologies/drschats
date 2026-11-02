@@ -32,6 +32,11 @@ import { signReceipt } from "@/lib/loyalty/receipt";
 import { both, earnLaterLine, joinLines, spentLine } from "@/lib/loyalty/messages";
 import { ensureReferralCode } from "@/lib/referral/server";
 import { orderTrackToken } from "@/lib/messaging/tokens";
+import { getDb } from "@/lib/db/client";
+import { sql } from "drizzle-orm";
+import { composeAddress, hasAddressParts } from "@/lib/checkout/address";
+import { isRegionKey } from "@/lib/checkout/regions";
+import { recordSubscriptions } from "@/lib/subscription/server";
 
 const RATE = { limit: 10, windowMs: 10 * 60 * 1000 };
 
@@ -56,7 +61,6 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
     campaign: {
       type: "order",
       orderId,
-      customerName: order.customer.name,
       items: order.items.map((item) => ({
         name: `${item.name} × ${item.quantity}`,
         url: `${siteOrigin()}/${order.locale}/product/${item.slug}`,
@@ -145,6 +149,31 @@ async function loyaltyReceipt(orderId: string, order: OrderRequest, earn: number
   }
 }
 
+/*
+  A retry of an order that already exists (same form-session key): the first
+  order's answer again, and nothing is sent twice.
+*/
+async function orderForKey(key: string | undefined): Promise<{ number: string; total: number; payment: OrderRequest["payment"] | null; paymentStatus: string } | null> {
+  if (!ORDERS_IN_DB || !key) return null;
+  const [row] = (await getDb().execute(sql`
+    select number, total, payment, payment_status from orders where idempotency_key = ${key} limit 1`)) as unknown as {
+    number: string;
+    total: number;
+    payment: OrderRequest["payment"] | null;
+    payment_status: string;
+  }[];
+  return row ? { number: row.number, total: Number(row.total), payment: row.payment, paymentStatus: row.payment_status } : null;
+}
+
+async function replay(existing: NonNullable<Awaited<ReturnType<typeof orderForKey>>>, locale: OrderRequest["locale"]) {
+  const provider = existing.payment?.provider;
+  const payUrl =
+    existing.payment?.method === "online" && existing.paymentStatus !== "paid" && isOnlineProviderId(provider)
+      ? await paymentUrl(provider, { number: existing.number, total: existing.total, locale }).catch(() => null)
+      : null;
+  return { ok: true as const, orderId: existing.number, total: existing.total, payUrl: payUrl ?? undefined, track: orderTrackToken(existing.number) };
+}
+
 export type OrderError =
   | "rate_limited" | "invalid" | "unknown_product" | "out_of_stock" | "insufficient_stock" | "invalid_offer" | "payment_unavailable" | "promo_invalid" | "points_invalid" | "failed";
 
@@ -182,6 +211,21 @@ export async function submitOrder(
       utmMedium: request.attribution?.utmMedium || "mini_app",
     };
   }
+
+  /*
+    The courier address arrives in parts; the readable line every older
+    reader shows is composed here, so it does not depend on the browser. A
+    region is a key (translated on display), never the name in one language.
+  */
+  if (request.delivery.method === "courier") {
+    if (hasAddressParts(request.delivery)) request.delivery.address = composeAddress(request.delivery);
+    if (!isRegionKey(request.delivery.region) || request.delivery.address.trim().length < 3) return { ok: false, error: "invalid" };
+  } else {
+    request.delivery = { region: "tashkentCity", address: request.delivery.address, method: "pickup", ...(request.delivery.note ? { note: request.delivery.note } : {}) };
+  }
+
+  const earlier = await orderForKey(request.idempotencyKey).catch(() => null);
+  if (earlier) return replay(earlier, request.locale);
 
   // Reject online payment unless the provider has a complete, verified flow.
   const provider = request.payment?.provider;
@@ -236,6 +280,9 @@ export async function submitOrder(
         if (placed.error === "points_invalid") return { ok: false, error: "points_invalid" };
         if (placed.error === "promo_invalid") return { ok: false, error: "promo_invalid", promoReason: placed.rejection.reason };
         if (placed.error === "insufficient_stock") return { ok: false, error: "insufficient_stock", slug: placed.slug, shortage: { slug: placed.slug, available: placed.available } };
+        // Two submits raced: the unique key refused the second insert, and the first order is the answer.
+        const raced = await orderForKey(request.idempotencyKey).catch(() => null);
+        if (raced) return replay(raced, request.locale);
         return { ok: false, error: "failed" };
       }
       order = placed.order;
@@ -283,6 +330,7 @@ export async function submitOrder(
           : Promise.resolve(),
         clubBotReceipt(result.orderId, telegramUser, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
         emailOrderConfirmation(order, result.orderId),
+        ORDERS_IN_DB ? recordSubscriptions(result.orderId, order) : Promise.resolve(0),
         order.customer.email && order.customer.marketingOptIn
           ? requestEmailOptIn({
               email: order.customer.email,

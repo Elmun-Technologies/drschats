@@ -47,6 +47,8 @@ export interface CommerceSettings {
     courierFee: number;
     /** The regions' delivery window ("1–3 kun"); empty = the i18n default. */
     regionsNote: LocalizedText;
+    /** Courier delivery in Tashkent takes up to this many hours — every "N soatda" on the site. */
+    tashkentHours: number;
     /** Same-day cut-off, Tashkent time, "HH:MM"; empty — no timer. */
     cutoff: string;
   };
@@ -83,6 +85,7 @@ export const LADDER_PERCENT_CHOICES = [5, 10, 12, 15, 20, 25, 30] as const;
 export const LIMITS = {
   freeShippingOver: { min: 0, max: 10_000_000 },
   courierFee: { min: 0, max: 500_000 },
+  tashkentHours: { min: 1, max: 168 },
   subscriptionPercent: { min: 0, max: 50 },
   gapWindow: { min: 0, max: 1_000_000 },
   delaySeconds: { min: 0, max: 600 },
@@ -111,6 +114,7 @@ export function defaultCommerceSettings(): CommerceSettings {
       freeShippingOver: COMMERCE.freeShippingOver,
       courierFee: COMMERCE.shippingFee,
       regionsNote: EMPTY_TEXT,
+      tashkentHours: COMMERCE.delivery.tashkent.hours,
       cutoff: envCutoff(),
     },
     ladder: { enabled: true, percents: [10, 15, 20], freeGift: true },
@@ -191,6 +195,7 @@ export function coerceCommerceSettings(raw: unknown, defaults: CommerceSettings 
       freeShippingOver: int(d.freeShippingOver, defaults.delivery.freeShippingOver, LIMITS.freeShippingOver),
       courierFee: int(d.courierFee, defaults.delivery.courierFee, LIMITS.courierFee),
       regionsNote: text(d.regionsNote, defaults.delivery.regionsNote),
+      tashkentHours: int(d.tashkentHours, defaults.delivery.tashkentHours, LIMITS.tashkentHours),
       cutoff: cutoff ?? defaults.delivery.cutoff,
     },
     ladder: {
@@ -269,4 +274,13 @@ export function ladderPercentsAccepted(ladder: LadderRules): Set<number> {
 export function localizedOr(value: LocalizedText, locale: Locale | string, fallback: string): string {
   const own = locale === "ru" ? value.ru : value.uz;
   return own.trim() ? own : fallback;
+}
+
+/**
+ * The delivery promise every page quotes: Tashkent in `hours`, the regions in
+ * `days` (the admin's text, else the page's own default wording). One source,
+ * so the product page, the cart and the delivery page cannot disagree.
+ */
+export function deliveryPromise(settings: CommerceSettings, locale: Locale | string, regionsDefault: string): { hours: number; days: string } {
+  return { hours: settings.delivery.tashkentHours, days: localizedOr(settings.delivery.regionsNote, locale, regionsDefault) };
 }

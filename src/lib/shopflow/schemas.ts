@@ -117,6 +117,11 @@ export const orderRequestSchema = z.object({
     address: z.string().min(3).max(300),
     note: z.string().max(1000).optional(),
     method: z.enum(["courier", "pickup"]),
+    district: z.string().trim().max(80).optional(),
+    street: z.string().trim().max(160).optional(),
+    house: z.string().trim().max(40).optional(),
+    apartment: z.string().trim().max(40).optional(),
+    landmark: z.string().trim().max(200).optional(),
   }),
   payment: z
     .object({
@@ -168,6 +173,7 @@ export const orderRequestSchema = z.object({
     })
     .optional(),
   telegram: z.string().max(4096).optional(),
+  idempotencyKey: z.string().regex(/^[A-Za-z0-9-]{16,64}$/).optional(),
 });
 
 export const orderResultSchema = z.object({
