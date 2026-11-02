@@ -558,7 +558,7 @@
       "quizTitle": "Qaysi vitamin kerak — bilmaysizmi?",
       "quizText": "Vitamin tanlash testi: bir necha savol, natijada mos mahsulotlar roʻyxati.",
       "quizCta": "Testni boshlash",
-      "subEyebrow": "Subscribe & Save",
+      "subEyebrow": "Obuna va tejash",
       "subTitle": "Obuna: bugun −{first}%, keyin har safar −{recurring}%",
       "subText": "Oraliqni {intervals} kun qilib tanlaysiz. Bekor qilish — operator orqali.",
       "subCta": "Batafsil",
@@ -1007,9 +1007,9 @@
   },
   "meta": {
     "homeTitle": "Vitaminlar va BAD sotib olish Toshkentda — Go Vita internet-doʻkoni",
-    "homeDescription": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — Oʻzbekistonga rasmiy import. Narxlar soʻmda, Toshkent boʻylab 24 soatda, viloyatlarga 1–3 kunda yetkazib berish.",
+    "homeDescription": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — rasmiy import. Narxlar soʻmda, Toshkent boʻylab 24 soatda, viloyatlarga 1–3 kunda yetkazib berish.",
     "shopTitle": "Vitaminlar va BAD katalogi — narxlar, sotib olish | Go Vita",
-    "shopDescription": "Vitaminlar, minerallar, BAD, tibbiy ovqatlanish va jihozlar katalogi: narxlar, tarkib va qoʻllash yoʻriqnomasi. Rasmiy import, Oʻzbekiston boʻylab yetkazib berish.",
+    "shopDescription": "Vitaminlar, minerallar, BAD, tibbiy ovqatlanish va jihozlar katalogi: narxlar, tarkib va qoʻllash yoʻriqnomasi. Rasmiy import, butun Oʻzbekistonga yetkazish.",
     "seo": {
       "product": "{name} narxi, Toshkentda sotib olish | Go Vita",
       "productDescription": "{name}: {tagline}. Narxi — {price}. Toshkent boʻylab {hours} soatda, viloyatlarga {regions}da yetkazib berish. Rasmiy import.",
@@ -1205,7 +1205,7 @@
       },
       {
         "badge": "−{first}% → −{recurring}%",
-        "title": "Obuna (Subscribe & Save)",
+        "title": "Obuna va tejash",
         "text": "Bugungi yetkazishda {first}% chegirma, keyingi har bir yetkazishda {recurring}%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.",
         "note": "Toʻxtatish, oʻtkazib yuborish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling."
       },
@@ -1289,11 +1289,12 @@
     "switchLocale": "Русский язык",
     "closeSearch": "Qidiruvni yopish",
     "closeCatalog": "Katalogni yopish",
-    "homeLabel": "GoVita bosh sahifa",
+    "homeLabel": "Go Vita bosh sahifa",
     "allProductsPlain": "Barcha mahsulotlar",
     "compare": "Taqqoslash",
     "announcementPause": "Eʼlonlarni toʻxtatish",
-    "announcementPlay": "Eʼlonlarni davom ettirish"
+    "announcementPlay": "Eʼlonlarni davom ettirish",
+    "cartCount": "{label}: {count, plural, =0 {boʻsh} other {# ta mahsulot}}"
   },
   "badges": {
     "hot": "YANGI",
@@ -1689,7 +1690,7 @@
         "firstTitle": "Birinchi buyurtma",
         "firstText": "Birinchi buyurtmangizda {percent}% chegirma. Har bir mijoz uchun bir marta.",
         "firstNote": "Promokod kerak emas — operator buyurtmani tasdiqlashda qoʻllaydi.",
-        "subTitle": "Obuna (Subscribe & Save)",
+        "subTitle": "Obuna va tejash",
         "subText": "Bugungi yetkazishda {first}% chegirma, keyingi har bir yetkazishda {next}%. Oraliqni 30, 45, 60 yoki 90 kun qilib tanlaysiz.",
         "subNote": "Toʻxtatish, oʻtkazib yuborish yoki bekor qilish uchun operatorga yozing yoki qoʻngʻiroq qiling.",
         "clubTitle": "VIP klub (Telegram-bot)",

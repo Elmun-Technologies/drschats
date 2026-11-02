@@ -4,7 +4,7 @@ import { robotsTxt } from "./robots";
 describe("robots.txt", () => {
   const txt = robotsTxt("https://www.govita.uz");
 
-  it("keeps the rules the Next metadata route used to emit", () => {
+  it("keeps the rules the Next metadata route used to emit, plus /api/", () => {
     expect(txt).toContain(
       [
         "User-Agent: *",
@@ -14,6 +14,7 @@ describe("robots.txt", () => {
         "Disallow: /*/stop/",
         "Disallow: /studio",
         "Disallow: /admin",
+        "Disallow: /api/",
         "Disallow: /r/",
         "Disallow: /s/",
       ].join("\n"),

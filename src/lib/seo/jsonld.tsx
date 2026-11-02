@@ -101,9 +101,20 @@ function personNode(expert: Expert) {
   body text.
 */
 const ORG_DESCRIPTION: Record<string, string> = {
-  uz: "Vitaminlar, biologik faol qo'shimchalar va tibbiy mahsulotlarni O'zbekistonga rasmiy import qiluvchi va yetkazib beruvchi.",
+  uz: "Vitaminlar, biologik faol qoʻshimchalar va tibbiy mahsulotlarni Oʻzbekistonga rasmiy import qiluvchi va yetkazib beruvchi.",
   ru: "Официальный импорт витаминов, биологически активных добавок и медицинских товаров в Узбекистан.",
 };
+
+/** The registered address in the page's language: the Russian pages had it in Latin. */
+function postalAddress(locale: Locale) {
+  const ru = locale === "ru" && BRAND.legal.addressRu;
+  return {
+    "@type": "PostalAddress",
+    streetAddress: ru ? BRAND.legal.addressRu : BRAND.legal.address,
+    addressCountry: "UZ",
+    addressLocality: ru ? "Ташкент" : "Toshkent",
+  };
+}
 
 export function organizationNode(locale: Locale = "uz") {
   return {
@@ -114,13 +125,9 @@ export function organizationNode(locale: Locale = "uz") {
     url: SITE_URL,
     logo: `${SITE_URL}/icons/icon-512.png`,
     description: `${BRAND.name} — ${ORG_DESCRIPTION[locale] ?? ORG_DESCRIPTION.uz}`,
-    ...(BRAND.legal.stir ? { vatID: BRAND.legal.stir } : {}),
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: BRAND.legal.address,
-      addressCountry: "UZ",
-      addressLocality: "Toshkent",
-    },
+    // STIR is a taxpayer number, not a VAT registration: schema.org taxID.
+    ...(BRAND.legal.stir ? { taxID: BRAND.legal.stir } : {}),
+    address: postalAddress(locale),
     contactPoint: {
       "@type": "ContactPoint",
       telephone: BRAND.contact.phone,
@@ -411,7 +418,7 @@ export function websiteLd(locale: Locale) {
 }
 
 /** LocalBusiness node for Google local search and Maps integration. */
-export function localBusinessLd() {
+export function localBusinessLd(locale: Locale = "uz") {
   return {
     "@context": "https://schema.org",
     // A shop, not a pharmacy: PharmacyOrDrugstore claims a licence the site does not show yet.
@@ -424,13 +431,7 @@ export function localBusinessLd() {
     email: BRAND.contact.email,
     priceRange: "$$",
     openingHours: "Mo-Sa 09:00-18:00",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: BRAND.legal.address,
-      addressCountry: "UZ",
-      addressLocality: "Toshkent",
-      addressRegion: "Toshkent",
-    },
+    address: { ...postalAddress(locale), addressRegion: locale === "ru" ? "Ташкент" : "Toshkent" },
     areaServed: {
       "@type": "Country",
       name: "Uzbekistan",

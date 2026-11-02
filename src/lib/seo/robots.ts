@@ -10,7 +10,8 @@ import { SITE_URL } from "./metadata";
   into the clean URL instead of crawling every campaign link as a duplicate.
   It is intersectional, so it may sit in the `*` group.
 */
-export const DISALLOW = ["/*/cart", "/*/checkout", "/*/stop/", "/studio", "/admin", "/r/", "/s/"] as const;
+// /api/: search suggestions, health and trackers are endpoints, not pages.
+export const DISALLOW = ["/*/cart", "/*/checkout", "/*/stop/", "/studio", "/admin", "/api/", "/r/", "/s/"] as const;
 
 export const YANDEX_CLEAN_PARAMS = [
   "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",

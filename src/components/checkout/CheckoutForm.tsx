@@ -605,7 +605,8 @@ export function CheckoutForm({
           </div>
           <div className="hidden flex-col gap-3 rounded-[20px] bg-tile px-5 py-[18px] text-sm leading-[19px] lg:flex">
             <TrustRow d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4">{tc("trustGuarantee")}</TrustRow>
-            <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>
+            {/* "Secure payment" describes an online gateway; with cash only it promised something that does not exist. */}
+            {onlinePaymentAvailable() && <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>}
             <TrustRow d="M4 5h16v11H9l-5 4z">{onlinePaymentAvailable() ? t("operatorNote") : t("payUnavailable")}</TrustRow>
             <PaymentMarks ids={ONLINE_PAYMENT_MARKS} size="sm" label={t("paymentTitle")} className="pt-1" />
           </div>

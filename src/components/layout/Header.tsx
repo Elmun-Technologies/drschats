@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { Link, usePathname } from "@/lib/i18n/navigation";
+import { useLocaleSwitchHref } from "@/lib/i18n/use-locale-href";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/lib/brand";
 import { isApiConfigured } from "@/lib/api/client";
@@ -155,6 +156,7 @@ function MobileHeader({ categories }: { categories: Category[] }) {
   const t = useTranslations("header");
   const locale = useLocale() as Locale;
   const pathname = usePathname();
+  const switchHref = useLocaleSwitchHref();
   const [searchOpen, setSearchOpen] = useState(false);
   const closeSearch = useCallback(() => setSearchOpen(false), []);
   const searchRef = useDialog<HTMLDivElement>(searchOpen, closeSearch);
@@ -176,7 +178,7 @@ function MobileHeader({ categories }: { categories: Category[] }) {
             {t("city")}
           </Link>
           <Link
-            href={pathname}
+            href={switchHref}
             locale={other}
             aria-label={t("switchLocale")}
             className="flex h-11 items-center px-2 text-sm font-semibold uppercase"

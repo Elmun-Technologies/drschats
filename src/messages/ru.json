@@ -48,7 +48,7 @@
     "viewAll": "Смотреть все",
     "learnMore": "Подробнее",
     "from": "от",
-    "reviews": "{count} отзывов",
+    "reviews": "{count, plural, one {# отзыв} few {# отзыва} many {# отзывов} other {# отзыва}}",
     "inStock": "В наличии",
     "outOfStock": "Нет в наличии",
     "search": "Поиск",
@@ -427,7 +427,7 @@
       "total": "Итого"
     },
     "tabsLabel": "Информация о товаре",
-    "showMoreReviews": "Ещё {count} отзывов",
+    "showMoreReviews": "Ещё {count, plural, one {# отзыв} few {# отзыва} many {# отзывов} other {# отзыва}}",
     "showLessReviews": "Свернуть",
     "verifiedBuyer": "Проверенная покупка",
     "gallery": {
@@ -558,7 +558,7 @@
       "quizTitle": "Не знаете, какой витамин нужен?",
       "quizText": "Тест подбора витаминов: несколько вопросов — и список подходящих товаров.",
       "quizCta": "Пройти тест",
-      "subEyebrow": "Subscribe & Save",
+      "subEyebrow": "Подписка с выгодой",
       "subTitle": "Подписка: сегодня −{first}%, потом каждый раз −{recurring}%",
       "subText": "Интервал — {intervals} дней. Отмена — через оператора.",
       "subCta": "Подробнее",
@@ -1205,7 +1205,7 @@
       },
       {
         "badge": "−{first}% → −{recurring}%",
-        "title": "Подписка (Subscribe & Save)",
+        "title": "Подписка с выгодой",
         "text": "Скидка {first}% на сегодняшнюю доставку и {recurring}% на каждую следующую. Интервал — 30, 45, 60 или 90 дней.",
         "note": "Чтобы приостановить, пропустить или отменить доставку, напишите или позвоните оператору."
       },
@@ -1289,11 +1289,12 @@
     "switchLocale": "Oʻzbek tili",
     "closeSearch": "Закрыть поиск",
     "closeCatalog": "Закрыть каталог",
-    "homeLabel": "GoVita — главная",
+    "homeLabel": "Go Vita — главная",
     "allProductsPlain": "Все товары",
     "compare": "Сравнение",
     "announcementPause": "Остановить объявления",
-    "announcementPlay": "Продолжить объявления"
+    "announcementPlay": "Продолжить объявления",
+    "cartCount": "{label}: {count, plural, =0 {пусто} one {# товар} few {# товара} many {# товаров} other {# товара}}"
   },
   "badges": {
     "hot": "НОВОЕ",
@@ -1689,7 +1690,7 @@
         "firstTitle": "Первый заказ",
         "firstText": "Скидка {percent}% на первый заказ. Один раз для каждого покупателя.",
         "firstNote": "Промокод не нужен — оператор применит скидку при подтверждении заказа.",
-        "subTitle": "Подписка (Subscribe & Save)",
+        "subTitle": "Подписка с выгодой",
         "subText": "Скидка {first}% на сегодняшнюю доставку и {next}% на каждую следующую. Интервал — 30, 45, 60 или 90 дней.",
         "subNote": "Чтобы приостановить, пропустить или отменить доставку, напишите или позвоните оператору.",
         "clubTitle": "VIP-клуб (Telegram-бот)",
@@ -1939,7 +1940,7 @@
     "remove": "Убрать из избранного",
     "added": "Добавлено в избранное",
     "title": "Избранное",
-    "count": "{count} товаров",
+    "count": "{count, plural, one {# товар} few {# товара} many {# товаров} other {# товара}}",
     "empty": "В избранном пока пусто.",
     "emptyCta": "Перейти в каталог",
     "metaDescription": "Сохранённые витамины и БАДы."
@@ -2106,7 +2107,7 @@
     "readMore": "Читать подробнее",
     "bundlePrice": "Цена набора",
     "youSave": "Вы экономите {amount}",
-    "includes": "{count} продукта · объём на {days} дней",
+    "includes": "{count, plural, one {# продукт} few {# продукта} many {# продуктов} other {# продукта}} · объём на {days, plural, one {# день} few {# дня} many {# дней} other {# дня}}",
     "addProgram": "Программу в корзину ({count})",
     "cancelNote": "Каждый продукт можно изменить в корзине отдельно",
     "railEyebrow": "Комплексные программы компании",
@@ -2116,7 +2117,7 @@
     "eyebrow": "Опыт клиентов",
     "title": "Отзывы и истории",
     "subtitle": "Не звёздочки — реальный опыт: видеоотзывы, случаи и отзывы о продуктах.",
-    "basedOn": "На основе {count} отзывов",
+    "basedOn": "На основе {count, plural, one {# отзыва} other {# отзывов}}",
     "storiesTitle": "Истории клиентов",
     "productReviewsTitle": "Отзывы о продуктах",
     "empty": "Отзывов пока нет. Оставьте первый.",

@@ -18,6 +18,8 @@ export default function NotFound() {
 
   return (
     <div className="wrap flex flex-col gap-10 pb-12 pt-10 lg:gap-14 lg:pb-20 lg:pt-16">
+      {/* React hoists this into <head>: a 404 had no title at all. */}
+      <title>{`${t("notFoundTitle")} | Go Vita`}</title>
       <div className="mx-auto flex max-w-[600px] flex-col items-center gap-4 text-center">
         <p aria-hidden className="text-[110px] font-bold leading-none tracking-[-0.04em] lg:text-[160px]">404</p>
         <h1 className="text-[28px] font-bold leading-[34px] lg:text-[36px] lg:leading-[42px]">{t("notFoundTitle")}</h1>
