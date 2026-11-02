@@ -24,7 +24,7 @@ export const BRAND = {
    * imports the lines sold here. If a separate company ever fronts the shop,
    * this is the one line to change.
    */
-  legalName: "«DR SCHATZ» mas\u2019uliyati cheklangan jamiyati",
+  legalName: "«DR SCHATZ» mas\u02bculiyati cheklangan jamiyati",
 
   /** Text wordmark "go·v·ita": the "v" takes the gold accent (design: forest + gold). */
   wordmark: { lead: "go", accent: "v", tail: "ita" },
