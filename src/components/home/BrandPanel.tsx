@@ -122,7 +122,7 @@ export function BrandPanel({ products }: { products: Product[] }) {
             </Link>
           </span>
           <span className="mt-auto hidden items-center gap-2 lg:flex">
-            <Link href="/brands" className="inline-flex h-[52px] items-center rounded-[14px] bg-bg px-7 text-[17px] font-semibold text-ink">
+            <Link href="/brands" className="inline-flex h-[52px] items-center rounded-input bg-bg px-7 text-[17px] font-semibold text-ink">
               {t("cta")}
             </Link>
             {!reduced && <PauseButton paused={paused} onToggle={() => setPaused(!paused)} label={paused ? t("play") : t("pause")} />}

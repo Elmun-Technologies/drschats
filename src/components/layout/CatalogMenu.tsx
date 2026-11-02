@@ -224,7 +224,7 @@ const TRIGGER_CLASS =
   "inline-flex h-[52px] items-center gap-2 rounded-sm bg-ink px-[22px] text-button font-semibold text-white transition-colors hover:bg-black";
 
 const ROW_CLASS =
-  "flex items-center gap-3 rounded-[14px] px-3 py-2 text-base font-medium text-ink transition-colors hover:bg-tile";
+  "flex items-center gap-3 rounded-input px-3 py-2 text-base font-medium text-ink transition-colors hover:bg-tile";
 
 const GROUP_LINK_CLASS = "text-[15px] leading-5 text-ink-2 hover:text-black hover:underline";
 

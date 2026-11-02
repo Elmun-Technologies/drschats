@@ -51,7 +51,10 @@
   --color-chip-strong: #e3e6e9;
   --color-line: #e4e6e8;
   --color-line-strong: #d9dcdf;
+  --color-line-soft: #eef0f1;
+  --color-control: #8a8f95;
   --color-ink: #17191b;
+  --color-ink-1: #2e3236;
   --color-ink-2: #44494e;
   --color-muted: #63686e;
   --color-dark-panel: #1c1f22;
@@ -94,6 +97,7 @@
   --text-button--line-height: 20px;
 
   --radius-pill: 9999px;
+  --radius-input: 14px;
   --radius-sm: 12px;
 
   --shadow-arrow: 0 2px 10px rgba(23, 25, 27, 0.12);

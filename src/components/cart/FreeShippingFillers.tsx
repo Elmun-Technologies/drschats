@@ -22,7 +22,7 @@ export function FreeShippingFillers({ products }: { products: Product[] }) {
         {products.map((p) => {
           const image = cutoutOf(p) ?? p.images[0]?.url;
           return (
-            <li key={p.id} className="flex w-60 shrink-0 items-center gap-2.5 rounded-[14px] bg-bg p-2 lg:w-auto">
+            <li key={p.id} className="flex w-60 shrink-0 items-center gap-2.5 rounded-input bg-bg p-2 lg:w-auto">
               <span className="relative h-12 w-12 shrink-0 rounded-[10px] bg-tile">
                 {image && <Image src={image} alt="" fill sizes="48px" className="object-contain p-1" />}
               </span>

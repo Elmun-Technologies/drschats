@@ -78,7 +78,7 @@ export function ProductGallery({
               aria-label={t("thumb", { index: i + 1 })}
               aria-current={i === active}
               className={cn(
-                "relative h-[76px] w-[76px] overflow-hidden rounded-[14px] border-2 bg-tile transition-colors",
+                "relative h-[76px] w-[76px] overflow-hidden rounded-input border-2 bg-tile transition-colors",
                 i === active ? "border-ink" : "border-transparent hover:border-line-strong",
               )}
             >

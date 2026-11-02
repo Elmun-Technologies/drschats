@@ -216,7 +216,7 @@ function ClubCard({
       </span>
       <span className="text-lg font-bold leading-[23px] md:text-[19px] md:leading-6">{title}</span>
       <span className="text-sm leading-5 text-on-dark-2">{text}</span>
-      <span className="mt-1 hidden h-11 items-center self-start whitespace-nowrap rounded-[14px] bg-bg px-[18px] text-[15px] font-semibold text-ink md:inline-flex">
+      <span className="mt-1 hidden h-11 items-center self-start whitespace-nowrap rounded-input bg-bg px-[18px] text-[15px] font-semibold text-ink md:inline-flex">
         {cta}
       </span>
     </a>

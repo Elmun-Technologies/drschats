@@ -21,7 +21,7 @@ export function Checkbox({
       <input type="checkbox" className="peer sr-only" {...input} />
       <span
         aria-hidden
-        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-[1.5px] border-[#8A8F95] text-white peer-checked:border-ink peer-checked:bg-ink peer-focus-visible:ring-2 peer-focus-visible:ring-ink peer-focus-visible:ring-offset-2 [&>svg]:invisible peer-checked:[&>svg]:visible"
+        className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[6px] border-[1.5px] border-control text-white peer-checked:border-ink peer-checked:bg-ink peer-focus-visible:ring-2 peer-focus-visible:ring-ink peer-focus-visible:ring-offset-2 [&>svg]:invisible peer-checked:[&>svg]:visible"
       >
         <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
           <path d="M5 12l5 5 9-10" />
@@ -41,14 +41,14 @@ export function RadioCard({
   return (
     <label
       className={cn(
-        "flex cursor-pointer items-start gap-3 rounded-[14px] border-[1.5px] border-line bg-bg p-4 transition-colors has-[:checked]:border-ink has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ink has-[:focus-visible]:ring-offset-2",
+        "flex cursor-pointer items-start gap-3 rounded-input border-[1.5px] border-line bg-bg p-4 transition-colors has-[:checked]:border-ink has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ink has-[:focus-visible]:ring-offset-2",
         className,
       )}
     >
       <input type="radio" className="peer sr-only" {...input} />
       <span
         aria-hidden
-        className="mt-px h-5 w-5 shrink-0 rounded-full border-[1.5px] border-[#8A8F95] peer-checked:border-[6px] peer-checked:border-ink"
+        className="mt-px h-5 w-5 shrink-0 rounded-full border-[1.5px] border-control peer-checked:border-[6px] peer-checked:border-ink"
       />
       <span className="min-w-0 flex-1">{children}</span>
     </label>

@@ -362,7 +362,7 @@ export async function ShopView({
                 {v3("subText", { intervals: SUBSCRIPTION_INTERVALS.join(", ") })}
               </span>
             </span>
-            <span className="inline-flex h-12 items-center self-start rounded-[14px] bg-bg px-7 text-[17px] font-semibold text-ink md:self-auto">
+            <span className="inline-flex h-12 items-center self-start rounded-input bg-bg px-7 text-[17px] font-semibold text-ink md:self-auto">
               {v3("subCta")}
             </span>
           </Link>

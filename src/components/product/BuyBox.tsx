@@ -94,7 +94,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
       {product.inStock ? (
         <div id="buybox-cta" className="hidden scroll-mt-40 flex-col gap-2 lg:flex">
           <div className="grid grid-cols-[128px_minmax(0,1fr)] gap-2">
-            <div role="group" aria-label={t("quantity")} className="flex h-14 items-center justify-between rounded-[14px] bg-tile">
+            <div role="group" aria-label={t("quantity")} className="flex h-14 items-center justify-between rounded-input bg-tile">
               <button
                 type="button"
                 onClick={() => setQty(qty - 1)}
@@ -119,7 +119,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
             </div>
             <Button
               size="lg"
-              className="h-14 rounded-[14px] px-4"
+              className="h-14 rounded-input px-4"
               onClick={() => {
                 addToCart();
               }}
@@ -226,7 +226,7 @@ function MobileBuyBar({ product: listed }: { product: Product }) {
       </div>
       <Button
         size="lg"
-        className="min-w-0 flex-1 rounded-[14px]"
+        className="min-w-0 flex-1 rounded-input"
         disabled={!product.inStock}
         onClick={() => {
           addToCart();
@@ -248,7 +248,7 @@ export function MiniBuyCard({ product: listed, image }: { product: Product; imag
   return (
     <div className="flex items-center gap-3.5 rounded-[20px] border border-line bg-bg p-3.5">
       {image && (
-        <span className="relative h-[72px] w-[72px] shrink-0 rounded-[14px] bg-tile">
+        <span className="relative h-[72px] w-[72px] shrink-0 rounded-input bg-tile">
           <Image src={image} alt="" fill sizes="72px" className="object-contain p-1.5" />
         </span>
       )}

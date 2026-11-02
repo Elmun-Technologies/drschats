@@ -144,7 +144,7 @@ export function AuthForm() {
             />
           </div>
           {error && <ErrorNote>{error}</ErrorNote>}
-          <Button type="submit" size="lg" disabled={busy} className="h-14 rounded-[14px]">
+          <Button type="submit" size="lg" disabled={busy} className="h-14 rounded-input">
             {busy ? "…" : t("otpCta")}
           </Button>
         </form>
@@ -154,7 +154,7 @@ export function AuthForm() {
         <div className="flex flex-col gap-4">
           <p className="text-base leading-6 text-ink-2">{t("linkIntro")}</p>
           {telegramLink ? (
-            <a href={telegramLink} target="_blank" rel="noopener noreferrer" className={cn(buttonClass, "h-14 rounded-[14px]")}>
+            <a href={telegramLink} target="_blank" rel="noopener noreferrer" className={cn(buttonClass, "h-14 rounded-input")}>
               {t("linkCta")}
             </a>
           ) : (
@@ -178,7 +178,7 @@ export function AuthForm() {
                 <span
                   key={i}
                   className={cn(
-                    "flex h-[60px] w-12 items-center justify-center rounded-[14px] border-[1.5px] text-2xl font-bold sm:h-[72px] sm:w-16 sm:text-[28px]",
+                    "flex h-[60px] w-12 items-center justify-center rounded-input border-[1.5px] text-2xl font-bold sm:h-[72px] sm:w-16 sm:text-[28px]",
                     i < code.length || i === code.length ? "border-ink" : "border-line-strong",
                     i === code.length && "border-2",
                   )}
@@ -198,11 +198,11 @@ export function AuthForm() {
               pattern="[0-9]*"
               maxLength={CODE_LENGTH}
               required
-              className="absolute inset-0 h-full w-full rounded-[14px] bg-transparent text-transparent caret-transparent outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4"
+              className="absolute inset-0 h-full w-full rounded-input bg-transparent text-transparent caret-transparent outline-none focus-visible:ring-2 focus-visible:ring-ink focus-visible:ring-offset-4"
             />
           </div>
           {error && <ErrorNote>{error}</ErrorNote>}
-          <Button type="submit" size="lg" disabled={busy || code.length < CODE_LENGTH} className="h-14 rounded-[14px]">
+          <Button type="submit" size="lg" disabled={busy || code.length < CODE_LENGTH} className="h-14 rounded-input">
             {busy ? "…" : t("codeCta")}
           </Button>
           <div className="flex flex-wrap items-center justify-between gap-2 text-[15px]">
@@ -232,7 +232,7 @@ export function AuthForm() {
       {step !== "link" && (
         <div className="flex flex-col gap-2 rounded-[16px] bg-tile px-[18px] py-4 lg:px-5 lg:py-[18px]">
           <span className="text-[15px] font-bold">{tv("codeHelpTitle")}</span>
-          <span className="text-sm leading-5 text-[#2E3236]">{t("linkIntro")}</span>
+          <span className="text-sm leading-5 text-ink-1">{t("linkIntro")}</span>
           {botUrl && (
             <a
               href={botUrl}

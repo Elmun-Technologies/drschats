@@ -52,7 +52,7 @@ export function AccountNav({ active, variant }: { active: AccountSection; varian
   const sidebar = variant === "sidebar";
 
   return (
-    <nav aria-label={tv("nav")} className={cn("flex flex-col", sidebar ? "gap-1" : "border-t border-[#EEF0F1]")}>
+    <nav aria-label={tv("nav")} className={cn("flex flex-col", sidebar ? "gap-1" : "border-t border-line-soft")}>
       {sidebar && user && <UserBadge name={user.name} phone={user.phone} />}
       {ITEMS.map((item) => {
         const on = item.key === active && (item.href !== "/account" || pathname === "/account" || pathname.startsWith("/account/orders"));
@@ -63,14 +63,14 @@ export function AccountNav({ active, variant }: { active: AccountSection; varian
             aria-current={on ? "page" : undefined}
             className={cn(
               "flex items-center gap-3 text-base",
-              sidebar ? "rounded-sm px-3.5 py-3 hover:bg-tile" : "min-h-14 border-b border-[#EEF0F1] px-4 text-[17px]",
+              sidebar ? "rounded-sm px-3.5 py-3 hover:bg-tile" : "min-h-14 border-b border-line-soft px-4 text-[17px]",
               sidebar && on && "bg-tile font-bold",
             )}
           >
             <Icon d={item.d} />
             {label(item.key)}
             {item.key === "fav" && mounted && favCount > 0 && <span className="ml-auto text-sm text-muted">{favCount}</span>}
-            {!sidebar && <Icon d="M9 6l6 6-6 6" className={cn("h-[18px] w-[18px] text-[#8A8F95]", !(item.key === "fav" && mounted && favCount > 0) && "ml-auto")} />}
+            {!sidebar && <Icon d="M9 6l6 6-6 6" className={cn("h-[18px] w-[18px] text-control", !(item.key === "fav" && mounted && favCount > 0) && "ml-auto")} />}
           </Link>
         );
       })}

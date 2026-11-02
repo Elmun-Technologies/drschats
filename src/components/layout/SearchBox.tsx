@@ -231,7 +231,7 @@ export function SearchBox({
           /* The input clears its own outline, and nothing replaced it — tabbing
              into search gave no visual signal at all. The ring goes on the form
              so it traces the rounded field rather than the bare input. */
-          className="flex h-[52px] min-w-0 flex-1 items-center gap-2.5 rounded-[14px] bg-tile pl-[18px] pr-1.5 focus-within:ring-2 focus-within:ring-ink focus-within:ring-offset-2 focus-within:ring-offset-bg"
+          className="flex h-[52px] min-w-0 flex-1 items-center gap-2.5 rounded-input bg-tile pl-[18px] pr-1.5 focus-within:ring-2 focus-within:ring-ink focus-within:ring-offset-2 focus-within:ring-offset-bg"
         >
           <input
             ref={inputRef}
@@ -333,10 +333,10 @@ export function SearchBox({
                             width={56}
                             height={56}
                             loading="lazy"
-                            className="h-[60px] w-[60px] shrink-0 rounded-[14px] bg-tile object-contain p-1.5 lg:h-14 lg:w-14 lg:rounded-[12px]"
+                            className="h-[60px] w-[60px] shrink-0 rounded-input bg-tile object-contain p-1.5 lg:h-14 lg:w-14 lg:rounded-[12px]"
                           />
                         ) : (
-                          <span className="h-[60px] w-[60px] shrink-0 rounded-[14px] bg-tile lg:h-14 lg:w-14" />
+                          <span className="h-[60px] w-[60px] shrink-0 rounded-input bg-tile lg:h-14 lg:w-14" />
                         )}
                         <span className="flex min-w-0 flex-1 flex-col gap-0.5">
                           <span className="line-clamp-2 text-[15px] leading-[19px] lg:truncate">{opt.label}</span>
@@ -360,7 +360,7 @@ export function SearchBox({
               <button
                 type="button"
                 onClick={goToResults}
-                className="flex h-[52px] w-full items-center justify-center rounded-[14px] bg-ink px-4 text-base font-semibold text-white transition-colors hover:bg-black lg:h-12 lg:rounded-sm"
+                className="flex h-[52px] w-full items-center justify-center rounded-input bg-ink px-4 text-base font-semibold text-white transition-colors hover:bg-black lg:h-12 lg:rounded-sm"
               >
                 {total > 0 ? ts("showAll", { count: total }) : ts("showResults")}
               </button>

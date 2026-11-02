@@ -170,7 +170,7 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
         {slide.cta && (
           <span
             className={cn(
-              "mt-0.5 inline-flex h-11 items-center rounded-sm px-[18px] text-[15px] font-semibold lg:mt-1.5 lg:h-14 lg:rounded-[14px] lg:px-8 lg:text-[17px]",
+              "mt-0.5 inline-flex h-11 items-center rounded-sm px-[18px] text-[15px] font-semibold lg:mt-1.5 lg:h-14 lg:rounded-input lg:px-8 lg:text-[17px]",
               dark ? "bg-bg text-ink" : "bg-ink text-white",
             )}
           >

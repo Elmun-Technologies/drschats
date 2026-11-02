@@ -201,7 +201,7 @@ function MobileHeader({ categories }: { categories: Category[] }) {
           type="button"
           onClick={() => setSearchOpen(true)}
           aria-haspopup="dialog"
-          className="flex h-12 w-full items-center gap-2.5 rounded-[14px] bg-tile px-3.5 text-left text-base text-muted"
+          className="flex h-12 w-full items-center gap-2.5 rounded-input bg-tile px-3.5 text-left text-base text-muted"
         >
           <svg viewBox="0 0 24 24" aria-hidden className="h-5 w-5 shrink-0 text-ink" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
             <path d={ICONS.search} />

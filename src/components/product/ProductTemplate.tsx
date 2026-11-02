@@ -215,7 +215,7 @@ export async function ProductTemplate({
           <BuyBox product={product} reviewer={reviewer} />
           <div className="rounded-[20px] bg-tile px-[18px] py-1 lg:px-[22px] lg:py-1.5">
             {delivery.map((d, i) => (
-              <div key={d.title} className={cn("flex gap-3 py-3.5 lg:gap-3.5 lg:py-4", i < delivery.length - 1 && "border-b border-[#DCDFDB]")}>
+              <div key={d.title} className={cn("flex gap-3 py-3.5 lg:gap-3.5 lg:py-4", i < delivery.length - 1 && "border-b border-line-strong")}>
                 <Icon d={d.icon} className="mt-px h-[22px] w-[22px] shrink-0" />
                 <div className="flex flex-1 flex-col gap-0.5">
                   <div className="flex justify-between gap-2 text-[15px] font-semibold">
