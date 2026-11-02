@@ -50,7 +50,7 @@ jobs:
             echo "::warning title=Fly deploy skipped::FLY_API_TOKEN secret yoʻq — sayt yangilanmadi. GitHub → Settings → Secrets and variables → Actions ga qoʻshing (docs/DEPLOY-FLY.md, «Avtomatik deploy»)"
           fi
 
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.token.outputs.present == 'yes'
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
@@ -115,7 +115,7 @@ jobs:
         id: token
         run: echo "present=$([ -n "$FLY_API_TOKEN" ] && echo yes || echo no)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         if: steps.token.outputs.present == 'yes'
         with:
           ref: ${{ github.event.workflow_run.head_sha || github.sha }}
