@@ -48,6 +48,11 @@ function totp(base32, now = Date.now()) {
 async function page(width = 1440) {
   const ctx = await browser.newContext({ viewport: { width, height: 900 } });
   const p = await ctx.newPage();
+  // E2E_CPU_THROTTLE=6 imitates a slow CI runner locally (hydration races show up there first).
+  if (process.env.E2E_CPU_THROTTLE) {
+    const cdp = await ctx.newCDPSession(p);
+    await cdp.send("Emulation.setCPUThrottlingRate", { rate: Number(process.env.E2E_CPU_THROTTLE) });
+  }
   // Nothing outside the site under test; the gateways are caught, not visited.
   await p.route("**/*", (route) => {
     const url = new URL(route.request().url());
@@ -70,15 +75,37 @@ async function placeOrder({ phone, pay }) {
   p.on("request", (r) => {
     if (/paycom\.uz|click\.uz/.test(r.url())) gateway = r.url();
   });
-  await p.goto(`${BASE}/uz/products`, { waitUntil: "domcontentloaded" });
+  await p.goto(`${BASE}/uz/products`, { waitUntil: "networkidle" });
   await dismissConsent(p);
-  const href = await p.locator('a[href*="/uz/product/"]').first().getAttribute("href");
-  await p.goto(`${BASE}${href}`, { waitUntil: "domcontentloaded" });
-  await dismissConsent(p);
-  await p.getByRole("button", { name: /savatga qoʻshish|savatga qo'shish/i }).first().click();
-  await p.waitForTimeout(800);
+  const hrefs = [...new Set(await p.locator('a[href*="/uz/product/"]').evaluateAll((as) => as.map((a) => a.getAttribute("href"))))].slice(0, 4);
+  /*
+    On a slow runner the button can be clicked before React has hydrated it,
+    and the click does nothing; and after the first order the catalogue is
+    re-read from the database, so the first card may be a product that is not
+    on sale. Click until the cart store really holds a line, product by product.
+  */
+  const cartLines = () =>
+    p.evaluate(() => {
+      try {
+        return JSON.parse(localStorage.getItem("govita-cart") ?? "{}").state?.lines?.length ?? 0;
+      } catch {
+        return 0;
+      }
+    });
+  for (const href of hrefs) {
+    if ((await cartLines()) > 0) break;
+    await p.goto(`${BASE}${href}`, { waitUntil: "networkidle" });
+    await dismissConsent(p);
+    const add = p.getByRole("button", { name: /savatga qoʻshish|savatga qo'shish/i }).first();
+    if (!(await add.isVisible().catch(() => false))) continue;
+    for (let attempt = 0; attempt < 5 && (await cartLines()) === 0; attempt++) {
+      await add.click().catch(() => {});
+      await p.waitForFunction(() => (localStorage.getItem("govita-cart") ?? "").includes('"lines":[{'), null, { timeout: 4000 }).catch(() => {});
+    }
+  }
   await p.goto(`${BASE}/uz/cart`, { waitUntil: "networkidle" });
   await dismissConsent(p);
+  await p.locator('input[autocomplete="name"]').waitFor({ timeout: 30000 });
   await p.locator('input[autocomplete="name"]').fill("E2E Mijoz");
   await p.locator('input[autocomplete="tel"]').fill(phone);
   const pick = async (name, value) => {
