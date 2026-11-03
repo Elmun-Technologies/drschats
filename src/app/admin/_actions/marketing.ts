@@ -30,7 +30,7 @@ const campaignSchema = z
     promoValue: z.coerce.number().int().default(0),
     promoTtl: z.coerce.number().int().default(72),
     promoMin: z.string().trim().default(""),
-    confirm: z.literal("on", { errorMap: () => ({ message: "Yuborishni tasdiqlang." }) }),
+    confirm: z.literal("on", { error: "Yuborishni tasdiqlang." }),
   })
   .superRefine((d, ctx) => {
     if (d.promoKind !== "none") {

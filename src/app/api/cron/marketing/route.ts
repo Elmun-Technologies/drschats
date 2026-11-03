@@ -47,7 +47,7 @@ const dueSchema = z.object({
   email: z.string().email().optional(),
   telegramChatId: z.string().max(64).optional(),
   name: z.string().max(120).optional(),
-  data: z.record(z.unknown()).default({}),
+  data: z.record(z.string(), z.unknown()).default({}),
 });
 
 function authorised(request: NextRequest): boolean {

@@ -11,7 +11,7 @@ import type { FormState } from "./catalog";
 
 const L = RULE_LIMITS;
 const n = (label: string, [min, max]: readonly [number, number]) =>
-  z.coerce.number({ invalid_type_error: `${label}: son kiriting` }).int(`${label}: butun son`).min(min, `${label}: ${min}–${max}`).max(max, `${label}: ${min}–${max}`);
+  z.coerce.number({ error: `${label}: son kiriting` }).int(`${label}: butun son`).min(min, `${label}: ${min}–${max}`).max(max, `${label}: ${min}–${max}`);
 
 const cashbackSchema = z.object({
   earnPercent: n("Keshbek foizi", L.earnPercent),
@@ -68,7 +68,7 @@ export async function saveBirthdayRules(_: FormState, form: FormData): Promise<F
 const adjustSchema = z.object({
   phone9: z.string().regex(/^[0-9]{9}$/),
   delta: z.coerce
-    .number({ invalid_type_error: "Ball miqdorini kiriting" })
+    .number({ error: "Ball miqdorini kiriting" })
     .int("Butun son kiriting")
     .refine((v) => v !== 0, "Nol boʻlmasin")
     .refine((v) => Math.abs(v) <= 10_000_000, "Juda katta miqdor"),
