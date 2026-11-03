@@ -197,6 +197,7 @@ export function CheckoutForm({
     /** Which provider's page will take the money, when paying online. */
     provider: z.enum(["payme", "click", "uzum"]).optional(),
     subscribe: z.boolean().optional(),
+    smsConsent: z.boolean().optional(),
   }).superRefine((values, ctx) => {
     if (values.method !== "courier") return;
     if (!values.region) ctx.addIssue({ code: "custom", path: ["region"], message: t("errorRequired") });
@@ -229,6 +230,7 @@ export function CheckoutForm({
       payment: onlineProviders.length ? "online" : "cod",
       provider: onlineProviders[0],
       subscribe: false,
+      smsConsent: false,
     },
   });
 
@@ -360,6 +362,8 @@ export function CheckoutForm({
         // other, so it starts the same confirmation flow rather than adding
         // the address to a list behind the customer's back.
         marketingOptIn: Boolean(values.email && values.subscribe),
+        // Unticked by default: an advertising SMS needs the customer's prior consent (law in force 2026-11-01).
+        smsOptIn: Boolean(values.smsConsent),
       },
       payment:
         values.payment === "online" && provider
@@ -760,6 +764,9 @@ export function CheckoutForm({
             <Button type="submit" size="lg" className="mt-1 hidden h-14 w-full rounded-[14px] lg:inline-flex" disabled={submitting}>
               {submitting ? t("submitting") : t("submit")}
             </Button>
+            <Checkbox {...register("smsConsent")} className="items-start text-sm leading-[19px] text-ink-2">
+              {t("smsConsentLabel")}
+            </Checkbox>
             {emailEntered && (
               <Checkbox {...register("subscribe")} className="items-start text-sm leading-[19px] text-ink-2">
                 {t("subscribeLabel")}

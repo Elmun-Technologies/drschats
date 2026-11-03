@@ -109,7 +109,7 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
         </Card>
 
         <div className="flex min-w-0 flex-col gap-4">
-          <Card title="Xabar yuborish" lead="Telegram, SMS yoki ikkalasi. {ism} — mijoz ismi, {kod} — har biriga alohida promokod, {havola} — bosishlar va buyurtmalar shu kampaniyaga yoziladi. 21:00–09:00 yuborilmaydi.">
+          <Card title="Xabar yuborish" lead="Telegram, SMS yoki ikkalasi. {ism} — mijoz ismi, {kod} — har biriga alohida promokod, {havola} — bosishlar va buyurtmalar shu kampaniyaga yoziladi. 18:00–09:00 yuborilmaydi; SMS faqat rozilik bergan mijozga.">
             <ActionForm action={sendSegmentCampaign} submitLabel="Xabarni yuborish" className="flex flex-col gap-4">
               <input type="hidden" name="segment" value={segment.id} />
               <Field label="Kampaniya nomi">

@@ -72,7 +72,9 @@ export const telegramNotifier: Notifier = {
 
 /*
   SMS: through the marketing outbox (lib/messaging), so quiet hours, opt-out
-  and the STOP line apply as to every other SMS. Declines when no gateway is
+  and the STOP line apply as to every other SMS. It is queued as `requested`:
+  the customer left the number to be told about this product, and that request
+  is the consent an advertising SMS needs — it is not consent to other offers. Declines when no gateway is
   configured, and the request falls through to the operator. It declines a
   phone that turned SMS off too: the outbox would only skip that message,
   the request would read "notified" and nobody would call — the operator's
@@ -99,6 +101,8 @@ export const smsNotifier: Notifier = {
         text: waitlistSmsText(m),
         link: `${target.pathname}${target.search}`,
         dedupeKey: `waitlist:${m.requestId}`,
+        // The customer asked for exactly this SMS ("let me know when it is back"): the request is its consent.
+        requested: true,
       });
       return { ok: true };
     } catch (err) {

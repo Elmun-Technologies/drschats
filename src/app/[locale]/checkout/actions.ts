@@ -39,6 +39,7 @@ import { sql } from "drizzle-orm";
 import { composeAddress, hasAddressParts } from "@/lib/checkout/address";
 import { isRegionKey } from "@/lib/checkout/regions";
 import { recordSubscriptions } from "@/lib/subscription/server";
+import { recordSmsConsent } from "@/lib/messaging/consent";
 
 /*
   Shared across machines and deploys (lib/rate-limit-store.ts). Per address
@@ -352,6 +353,10 @@ export async function submitOrder(
               locale: order.locale,
               source: "checkout",
             })
+          : Promise.resolve(),
+        // The ticked SMS box is the prior consent an advertising SMS needs; unticked, nothing is recorded.
+        ORDERS_IN_DB && order.customer.smsOptIn && phone9Of(order.customer.phone)
+          ? recordSmsConsent(getDb(), phone9Of(order.customer.phone)!, "checkout")
           : Promise.resolve(),
       ]);
       for (const step of sideSteps) {

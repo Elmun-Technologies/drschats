@@ -24,6 +24,7 @@ const STATUS: Record<MessageStatus, { label: string; tone: PillTone }> = {
 
 const REASONS: Record<string, string> = {
   opted_out: "mijoz obunadan chiqqan",
+  no_consent: "SMS ga rozilik yoʻq",
   sms_not_configured: "SMS ulanmagan",
   no_telegram: "Telegram ulanmagan",
   club_disabled: "Telegram klub oʻchiq",
@@ -166,7 +167,7 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
         )}
       </Card>
       <p className="mt-4 text-[13px] leading-5 text-muted">
-        SMS uchun «Yuborildi» — Eskiz qabul qildi. Telegram uchun — xabar klub botining navbatiga berildi; yetkazilishi <Link href="/admin/bot/outbox" className={linkClass}>Telegram klub → Xabarlar navbati</Link> da. Tungi vaqtda (21:00–09:00) navbat ertalabga suriladi.
+        SMS uchun «Yuborildi» — Eskiz qabul qildi. Telegram uchun — xabar klub botining navbatiga berildi; yetkazilishi <Link href="/admin/bot/outbox" className={linkClass}>Telegram klub → Xabarlar navbati</Link> da. Kechki va tungi vaqtda (18:00–09:00) navbat ertalabga suriladi. Reklama SMS faqat oldindan rozilik bergan mijozga ketadi (2026-11-01 dan qonun talabi); yuboruvchi pd.gov.uz reyestrida roʻyxatdan oʻtgan boʻlishi shart.
       </p>
     </>
   );

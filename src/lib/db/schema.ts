@@ -526,7 +526,17 @@ export const outboundMessages = pgTable("outbound_messages", {
   clicks: integer("clicks").notNull().default(0),
   /** 0014: transactional rows skip opt-out, the STOP link and quiet hours. */
   kind: text("kind").$type<MessageKind>().notNull().default("marketing"),
+  /** 0032: the recipient asked for this very message (restock / price-drop request). */
+  requested: boolean("requested").notNull().default(false),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+});
+
+/** 0032: prior consent to advertising SMS (decree in force 2026-11-01). A STOP still wins. */
+export const smsMarketingConsents = pgTable("sms_marketing_consents", {
+  phone9: text("phone9").primaryKey(),
+  source: text("source").notNull(),
+  consentText: text("consent_text").notNull(),
+  consentedAt: timestamp("consented_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
 export type MessageKind = "marketing" | "transactional";

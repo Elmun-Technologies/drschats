@@ -111,6 +111,7 @@ export const orderRequestSchema = z.object({
       .transform((v) => normalizeUzPhone(v) as string),
     email: z.string().email().max(160).optional(),
     marketingOptIn: z.boolean().optional(),
+    smsOptIn: z.boolean().optional(),
   }),
   delivery: z.object({
     region: z.string().min(1).max(60),

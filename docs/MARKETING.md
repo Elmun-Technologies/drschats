@@ -234,8 +234,21 @@ promo sozlamasi, flow/kampaniya, `dedupe_key` unikal, holat
   Xato: 5 daq, 30 daq, uchinchisi yakuniy. Qulab tushganda `sending` da qolgan qator
   10 daqiqadan keyin `failed` («interrupted») — **qayta yuborilmaydi** (Eskiz allaqachon
   olgan bo'lishi mumkin). `POST /api/cron/messages` (CRON_SECRET) — xuddi shu tik.
-- **Tungi vaqt**: 21:00–09:00 (Toshkent) hech qanday marketing SMS/Telegram ketmaydi —
-  navbat 09:00 ga suriladi (yuborish paytida tekshiriladi, `quiet-hours.ts`).
+- **Tungi vaqt**: 18:00–09:00 (Toshkent) hech qanday marketing SMS/Telegram ketmaydi —
+  navbat 09:00 ga suriladi (yuborish paytida tekshiriladi, `quiet-hours.ts`). 2026-11-01 dan
+  Prezident farmoni (2026-07-15) reklama SMS va qoʻngʻiroqlarini 18:00–09:00 da taqiqlaydi;
+  Telegram ham shu soatlarga amal qiladi.
+- **SMS roziligi** (0032, `lib/messaging/consent.ts`): reklama SMS faqat oldindan yozma yoki
+  elektron rozilik bergan raqamga ketadi. Rozilik — savatdagi «Aksiyalar va eslatmalarni SMS
+  orqali olishga roziman» belgisi (sukut: belgilanmagan), `sms_marketing_consents` ga birinchi
+  rozilik vaqti va matni bilan yoziladi. Rozilik yoʻq boʻlsa xabar navbatga `no_consent` bilan
+  oʻtkazilgan holda tushadi (`resolveReach`) va yuborish paytida ham tekshiriladi (`deliver`).
+  STOP rozilikdan ustun. Buyurtma SMS (`transactional`) va mijoz oʻzi soʻragan «Xabar ber»
+  xabari (`requested`) bunga kirmaydi — soʻrovning oʻzi oʻsha bitta xabar uchun rozilik,
+  boshqa takliflar uchun emas. Telegram mobil tarmoq SMS i emas, unga rozilik talabi qoʻllanmaydi
+  (opt-out amal qiladi).
+- **pd.gov.uz**: reklama SMS yuborishdan oldin kompaniya axborot tizimini Shaxsga doir
+  maʼlumotlar bazalari davlat reyestrida roʻyxatdan oʻtkazishi shart (2026-11-01 dan).
 - **Promokod** yuborish paytida beriladi (`issuePromoCode`, shaxsiy, bir martalik,
   `source` = `flow`/`campaign`, `campaign_id` = `flow-<id>`/`campaign-<id>`), qatorga
   oldin yoziladi — qayta urinish ikkinchi kod bermaydi. `{muddat}` — kod tugash vaqti.

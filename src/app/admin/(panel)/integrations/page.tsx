@@ -81,7 +81,8 @@ export default async function AdminIntegrationsPage() {
         <SmsForm overview={overview} />
         <Card title="Xabar qoidalari" lead="Avtomatlashtirish va kampaniyalar uchun bir xil — kodda yozilgan, oʻchirib boʻlmaydi.">
           <ul className="flex list-disc flex-col gap-2 pl-5 text-[14px] leading-5 text-ink-2">
-            <li>21:00–09:00 (Toshkent) hech qanday marketing xabari ketmaydi — navbat ertalab 09:00 ga suriladi.</li>
+            <li>18:00–09:00 (Toshkent) hech qanday marketing xabari ketmaydi — navbat ertalab 09:00 ga suriladi (2026-11-01 dan reklama SMS va qoʻngʻiroqlari shu vaqtda taqiqlangan).</li>
+            <li>Reklama SMS faqat oldindan rozilik bergan raqamga ketadi (savatdagi belgi); rozilik yoʻq boʻlsa xabar «rozilik yoʻq» bilan oʻtkaziladi. Yuboruvchi pd.gov.uz reyestrida roʻyxatdan oʻtgan boʻlishi kerak.</li>
             <li>Har bir SMS oxirida «STOP» havolasi, Telegram xabarida «oʻchirish» tugmasi. Obunadan chiqqanlarga boshqa yuborilmaydi.</li>
             <li>Telegram ulangan mijozga — Telegram (bepul), boʻlmasa SMS. Telefoni nomaʼlum tashrif buyuruvchi faqat retarget auditoriyasida.</li>
             <li>Shaxsiy promokod xabar ketayotgan paytda beriladi; havola bosilishi va kod orqali buyurtmalar natijalarda koʻrinadi.</li>

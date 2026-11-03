@@ -44,7 +44,7 @@ const campaignSchema = z
 
 /*
   A message to the members of a segment, through the same outbox as the
-  automations: quiet hours (21:00–09:00 Tashkent → 09:00), opt-out, a STOP
+  automations: quiet hours (18:00–09:00 Tashkent → 09:00), SMS consent, opt-out, a STOP
   link on every SMS and an «oʻchirish» button on Telegram, an optional
   personal promo code per recipient (issued when the message leaves) and the
   short click link that ties orders back to the campaign.
@@ -97,7 +97,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
           ? "Bu auditoriyada ochiq Telegram chati yoʻq: hamma botni bloklagan yoki klub oʻchirilgan."
           : d.channel === "telegram"
             ? "Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi."
-            : "Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq yoki obunadan chiqqan).",
+            : "Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq, obunadan chiqqan yoki SMS ga rozilik bermagan).",
     };
   }
 
@@ -124,7 +124,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   revalidatePath("/admin/campaigns");
   revalidatePath("/admin/messages");
   revalidatePath(`/admin/segments/${segment.id}`);
-  const night = isQuietHours(new Date()) ? " Hozir tungi vaqt — xabarlar ertalab 09:00 da ketadi." : "";
+  const night = isQuietHours(new Date()) ? " Hozir kechki/tungi vaqt (18:00–09:00) — xabarlar ertalab 09:00 da ketadi." : "";
   await auditLog(admin, "campaign.send", auditTarget(form));
   return { ok: `${queued} ta mijozga navbatga qoʻyildi${unreachable ? ` (${unreachable} tasiga kanal yoʻq yoki obunadan chiqqan)` : ""}. Ishchi har daqiqada yuboradi.${night}` };
 }

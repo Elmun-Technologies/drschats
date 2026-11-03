@@ -9,8 +9,9 @@ describe("quiet hours (Tashkent, UTC+5)", () => {
     expect(tashkentHour(new Date("2026-10-17T19:30:00Z"))).toBe(0);
   });
 
-  it("is quiet from 21:00 to 09:00", () => {
-    expect(isQuietHours(new Date("2026-10-17T15:59:00Z"))).toBe(false); // 20:59
+  it("is quiet from 18:00 to 09:00 (advertising SMS rule from 2026-11-01)", () => {
+    expect(isQuietHours(new Date("2026-10-17T12:59:00Z"))).toBe(false); // 17:59
+    expect(isQuietHours(new Date("2026-10-17T13:00:00Z"))).toBe(true); // 18:00
     expect(isQuietHours(new Date("2026-10-17T16:00:00Z"))).toBe(true); // 21:00
     expect(isQuietHours(new Date("2026-10-17T03:59:00Z"))).toBe(true); // 08:59
     expect(isQuietHours(new Date("2026-10-17T04:00:00Z"))).toBe(false); // 09:00
@@ -18,6 +19,7 @@ describe("quiet hours (Tashkent, UTC+5)", () => {
 
   it("defers an evening message to 09:00 the next day", () => {
     expect(nextSendWindow(new Date("2026-10-17T17:30:00Z")).toISOString()).toBe("2026-10-18T04:00:00.000Z");
+    expect(nextSendWindow(new Date("2026-10-17T13:30:00Z")).toISOString()).toBe("2026-10-18T04:00:00.000Z"); // 18:30
   });
 
   it("defers a night message to 09:00 the same Tashkent day", () => {
