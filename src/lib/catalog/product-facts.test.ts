@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { brandOf, cutoutOf, unitOf } from "./product-facts";
+import { brandOf, cutoutOf, dailyPriceOf, unitOf } from "./product-facts";
 
 const slug = "swiss-energy-visiovit-30";
 
@@ -27,5 +27,18 @@ describe("search folding", async () => {
   it("treats every Uzbek apostrophe form the same", () => {
     expect(fold("Goʻzallik")).toBe(fold("Go'zallik"));
     expect(fold("BOʻGʻIMLAR")).toBe("bo'g'imlar");
+  });
+});
+
+describe("daily price", () => {
+  it("is the unit price only where the label says one a day", () => {
+    expect(dailyPriceOf({ slug: "swiss-energy-immunovit-30", price: 276_000 })).toBe(9_200);
+    expect(dailyPriceOf({ slug: "dr-frei-multivitamins-biotin-20", price: 66_000 })).toBe(3_300);
+  });
+
+  it("is absent where the dose is left to the label or a doctor", () => {
+    expect(dailyPriceOf({ slug: "swiss-energy-calcivit-30", price: 276_000 })).toBeNull();
+    expect(dailyPriceOf({ slug: "swiss-energy-prenatal-forte-60", price: 470_000 })).toBeNull();
+    expect(dailyPriceOf({ slug: "dr-frei-tonometr-a20", price: 253_000 })).toBeNull();
   });
 });

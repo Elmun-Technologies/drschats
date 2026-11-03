@@ -2,6 +2,7 @@ import type { Product } from "@/lib/shopflow/types";
 import type { UserProfile } from "./types";
 import { getCategoryAffinities, getTypicalPrice } from "./tracker";
 import { audienceOf } from "@/lib/quiz/audience-fit";
+import { productKind } from "@/lib/catalog/kind";
 
 /**
  * Score a product for a given user profile. Higher = more relevant.
@@ -76,8 +77,16 @@ export function getSimilarProducts(
   limit = 6,
 ): Product[] {
   const audience = audienceOf(current);
+  const kind = productKind(current);
   return allProducts
-    .filter((p) => p.slug !== current.slug && p.inStock && p.assortment !== "unlisted" && audienceOf(p) === audience)
+    .filter(
+      (p) =>
+        p.slug !== current.slug &&
+        p.inStock &&
+        p.assortment !== "unlisted" &&
+        audienceOf(p) === audience &&
+        productKind(p) === kind,
+    )
     .map((p) => {
       let score = 0;
 

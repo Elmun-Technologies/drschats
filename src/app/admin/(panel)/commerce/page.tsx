@@ -145,7 +145,7 @@ export default async function AdminCommercePage() {
           </CommerceCardForm>
         </Card>
 
-        <Card id="ladder" title="Upsell zinapoyasi" lead="Savatga birinchi mahsulot qoʻshilganda bir-bir taklif qilinadi; savat sahifasida — pullik qadamlar. Server faqat shu foizlarni qabul qiladi.">
+        <Card id="ladder" title="Upsell zinapoyasi" lead="Savat sahifasida qoʻshimcha mahsulot chegirma bilan taklif qilinadi (savatdagiga mos: vitaminga qahva emas). Server faqat shu foizlarni qabul qiladi.">
           <CommerceCardForm section="ladder" className={grid}>
             <Toggle name="enabled" label="Zinapoya yoqilgan" defaultChecked={ladder.enabled} />
             {(["p1", "p2", "p3"] as const).map((name, i) => (
@@ -162,6 +162,12 @@ export default async function AdminCommercePage() {
               label="3-qadam — bepul sovgʻa"
               hint="1 dona, oldingi ikki qadam tejaganidan qimmat boʻlmagan mahsulot. Oʻchirilsa 3-qadam doim foizli."
               defaultChecked={ladder.freeGift}
+            />
+            <Toggle
+              name="modal"
+              label="Birinchi qoʻshishda oyna"
+              hint="Mahsulot savatga qoʻshilishi bilan ekranni toʻsadigan 3 qadamli oyna. Sukut boʻyicha oʻchiq: mijozni toʻxtatadi. Takliflar savat sahifasida baribir koʻrinadi."
+              defaultChecked={ladder.modal}
             />
             <Preview>
               {ladder.enabled

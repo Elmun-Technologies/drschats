@@ -26,6 +26,17 @@ export function productBrand(productSlug: string): ProductBrand | null {
 /** Every brand the catalogue knows, in display order. */
 export const ALL_BRANDS: ProductBrand[] = BRANDS.map(({ slug, name }) => ({ slug, name }));
 
+/*
+  Brands Go Vita imports as the official distributor (Dr Schatz price list,
+  2026-10). Only these carry the «Rasmiy distribyutordan» line: a claim the
+  shop can back with the import papers, not a badge for every product.
+*/
+const OFFICIAL_BRANDS = new Set(["swiss-energy", "dr-frei", "delical"]);
+
+export function isOfficialBrand(slug: string | null | undefined): boolean {
+  return Boolean(slug && OFFICIAL_BRANDS.has(slug));
+}
+
 export function brandBySlug(slug: string): ProductBrand | null {
   return ALL_BRANDS.find((b) => b.slug === slug) ?? null;
 }

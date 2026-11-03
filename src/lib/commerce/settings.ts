@@ -58,6 +58,12 @@ export interface CommerceSettings {
     percents: [number, number, number];
     /** Step 3 may be a free gift worth no more than steps 1–2 saved. */
     freeGift: boolean;
+    /**
+     * Open the step-by-step dialog on the first add to cart. Off by default: it
+     * covered the page the moment a customer chose a product. The offers stay
+     * on the cart page either way.
+     */
+    modal: boolean;
   };
   subscription: {
     firstPercent: number;
@@ -117,13 +123,15 @@ export function defaultCommerceSettings(): CommerceSettings {
       tashkentHours: COMMERCE.delivery.tashkent.hours,
       cutoff: envCutoff(),
     },
-    ladder: { enabled: true, percents: [10, 15, 20], freeGift: true },
+    ladder: { enabled: true, percents: [10, 15, 20], freeGift: true, modal: false },
     subscription: {
       firstPercent: COMMERCE.discounts.subscriptionFirstPercent,
       recurringPercent: COMMERCE.discounts.subscriptionRecurringPercent,
     },
     cart: { gapWindow: 150_000 },
-    popups: { welcome: popup(20, 30), exit: popup(4, 3), quiz: popup(4, 7) },
+    // Welcome is off by default: 20 s into the first visit it covered the page to
+    // repeat what the cart already says (the first-order discount). The admin can turn it on.
+    popups: { welcome: { ...popup(20, 30), enabled: false }, exit: popup(4, 3), quiz: popup(4, 7) },
   };
 }
 
@@ -202,6 +210,7 @@ export function coerceCommerceSettings(raw: unknown, defaults: CommerceSettings 
       enabled: bool(l.enabled, defaults.ladder.enabled),
       percents: validLadderPercents(l.percents) ? [...l.percents] : defaults.ladder.percents,
       freeGift: bool(l.freeGift, defaults.ladder.freeGift),
+      modal: bool(l.modal, defaults.ladder.modal),
     },
     subscription,
     cart: { gapWindow: int(c.gapWindow, defaults.cart.gapWindow, LIMITS.gapWindow) },

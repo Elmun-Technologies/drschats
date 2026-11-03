@@ -1,6 +1,8 @@
 import type { Product } from "@/lib/shopflow/types";
 import type { CartLine } from "@/lib/cart/pricing";
 import { DEFAULT_LADDER, type LadderRules } from "@/lib/commerce/settings";
+import { audienceOf } from "@/lib/quiz/audience-fit";
+import { productKind } from "@/lib/catalog/kind";
 
 export interface UpsellStep {
   product: Product;
@@ -37,7 +39,8 @@ export function buildUpsellLadder(
 
   const cartSubtotal = cartLines.reduce((s, l) => s + l.price * l.quantity, 0);
   const cartIds = new Set(cartLines.map((l) => l.productId));
-  const eligible = allProducts.filter((p) => !cartIds.has(p.id) && p.inStock);
+  const inCart = allProducts.filter((p) => cartIds.has(p.id));
+  const eligible = allProducts.filter((p) => !cartIds.has(p.id) && p.inStock && relevantTo(p, inCart));
 
   if (eligible.length < 2) return [];
 
@@ -135,4 +138,23 @@ export function buildUpsellLadder(
   }
 
   return steps;
+}
+
+/*
+  What an offer may be, given what is already in the cart.
+
+  The ladder used to pick by price and rating alone, and with ratings withheld
+  that meant whatever fit the price window: a customer who added Calcivit was
+  stopped by a pack of coffee. An offer now keeps to the cart:
+  - supplements may be offered to anyone; coffee, devices and clinical
+    nutrition only when the cart already holds that kind of product;
+  - a product made for one audience (children, expectant mothers, men) only
+    when the cart already holds something for that audience.
+  No relevant offer means no ladder, never an irrelevant one.
+*/
+export function relevantTo(offer: Product, inCart: Product[]): boolean {
+  const kind = productKind(offer);
+  if (kind !== "supplement" && !inCart.some((p) => productKind(p) === kind)) return false;
+  const audience = audienceOf(offer);
+  return audience === null || inCart.some((p) => audienceOf(p) === audience);
 }

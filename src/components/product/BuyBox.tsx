@@ -16,7 +16,8 @@ import { ReviewedBy } from "@/components/product/ReviewedBy";
 import { OutOfStockNotify } from "@/components/product/OutOfStockNotify";
 import { SubscribeToSave } from "@/components/product/SubscribeToSave";
 import { MAX_QTY, useAddToCart, usePurchase } from "@/components/product/purchase";
-import { unitPriceOf } from "@/lib/catalog/product-facts";
+import { brandOf, dailyPriceOf, unitPriceOf } from "@/lib/catalog/product-facts";
+import { isOfficialBrand } from "@/lib/content/product-brands";
 import { SaleCountdown } from "@/components/marketing/SaleCountdown";
 import { DeliveryCutoff } from "@/components/marketing/DeliveryCutoff";
 import { useLiveProduct } from "@/lib/shop/useLiveProduct";
@@ -45,6 +46,7 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
 
   const discount = discountPercent(product.price, product.oldPrice);
   const perUnit = unitPriceOf(product);
+  const perDay = dailyPriceOf(product);
   // A real, tracked count only (lib/catalog/stock-rules); untracked products never show a number.
   const left = product.inStock ? lowStockLeft(product.stock) : null;
   const maxQty = stockCap(MAX_QTY, product.stock?.qty);
@@ -76,7 +78,9 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
         {(perUnit || discount > 0) && (
           <span className="text-sm text-ink-2">
             {[
-              perUnit && t("perUnit", { price: formatMoney(Math.round(perUnit.amount), locale), unit: t(perUnit.unit === "tablet" ? "unitTablet" : "unitCapsule") }),
+              perDay !== null
+                ? t("perDay", { price: formatMoney(Math.round(perDay), locale) })
+                : perUnit && t("perUnit", { price: formatMoney(Math.round(perUnit.amount), locale), unit: t(perUnit.unit === "tablet" ? "unitTablet" : "unitCapsule") }),
               discount > 0 && product.oldPrice && tv("saving", { amount: formatMoney(product.oldPrice - product.price, locale) }),
             ]
               .filter(Boolean)
@@ -158,6 +162,15 @@ export function BuyBox({ product: listed, reviewer }: { product: Product; review
         </svg>
         {left ? t("stockLeft", { count: left }) : product.inStock ? t("inStock") : t("outOfStock")}
       </span>
+
+      {isOfficialBrand(brandOf(product)?.slug) && (
+        <span className="flex items-center gap-2 text-[15px] font-medium">
+          <svg viewBox="0 0 24 24" aria-hidden className="h-[18px] w-[18px]" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5" />
+          </svg>
+          {tb("official")}
+        </span>
+      )}
 
       {product.inStock && <PriceDropNotify product={product} />}
 

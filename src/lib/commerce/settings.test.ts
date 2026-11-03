@@ -21,9 +21,9 @@ describe("commerce settings defaults", () => {
       firstPercent: COMMERCE.discounts.subscriptionFirstPercent,
       recurringPercent: COMMERCE.discounts.subscriptionRecurringPercent,
     });
-    expect(d.ladder).toEqual({ enabled: true, percents: [10, 15, 20], freeGift: true });
+    expect(d.ladder).toEqual({ enabled: true, percents: [10, 15, 20], freeGift: true, modal: false });
     expect(d.cart.gapWindow).toBe(150_000);
-    expect(d.popups.welcome).toMatchObject({ enabled: true, delaySeconds: 20, cooldownDays: 30 });
+    expect(d.popups.welcome).toMatchObject({ enabled: false, delaySeconds: 20, cooldownDays: 30 });
     expect(d.popups.exit).toMatchObject({ enabled: true, delaySeconds: 4, cooldownDays: 3 });
     expect(d.popups.quiz).toMatchObject({ enabled: true, delaySeconds: 4, cooldownDays: 7 });
     expect([...ladderPercentsAccepted(d.ladder)].sort((a, b) => a - b)).toEqual([10, 15, 20, 100]);
@@ -50,7 +50,7 @@ describe("parseStoredCommerceSettings", () => {
     });
     const { settings, meta } = parseStoredCommerceSettings(raw);
     expect(settings.delivery).toEqual({ freeShippingOver: 250_000, courierFee: 30_000, cutoff: DEFAULT_COMMERCE_SETTINGS.delivery.cutoff, regionsNote: { uz: "2–4 kun", ru: "" }, tashkentHours: 24 });
-    expect(settings.ladder).toEqual({ enabled: false, percents: [10, 15, 20], freeGift: true });
+    expect(settings.ladder).toEqual({ enabled: false, percents: [10, 15, 20], freeGift: true, modal: false });
     // A later delivery may never cost more than the first.
     expect(settings.subscription).toEqual(DEFAULT_COMMERCE_SETTINGS.subscription);
     expect(settings.cart.gapWindow).toBe(100_000);
@@ -105,6 +105,6 @@ describe("admin form", () => {
 
   it("reads unchecked boxes as off", () => {
     const r = parseCommerceSection("ladder", { p1: "5", p2: "12", p3: "25" });
-    expect(r).toEqual({ ok: true, value: { enabled: false, percents: [5, 12, 25], freeGift: false } });
+    expect(r).toEqual({ ok: true, value: { enabled: false, percents: [5, 12, 25], freeGift: false, modal: false } });
   });
 });

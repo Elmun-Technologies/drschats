@@ -21,6 +21,25 @@ export const PRODUCT_UNITS: Record<string, { count: number; unit: DoseUnit }> = 
   "swiss-energy-vitamin-c-20": { count: 20, unit: "tablet" },
 };
 
+/*
+  Products whose label says one tablet or capsule a day, quoted in their
+  «Qabul qilish» text (mock.ts howToUse). For these the per-unit price is the
+  price of a day, and the product page says so: «kuniga 9 200 soʻm». Products
+  whose label says "as on the bottle" or that leave the dose to a doctor
+  (Calcivit, NeuroForce, Potenton, Prenatal Forte) are not here: a daily price
+  built on a guessed dose would be an invented number.
+*/
+export const ONE_A_DAY = new Set<string>([
+  "dr-frei-antistress-magniy-20",
+  "dr-frei-gold-vitamins-20",
+  "dr-frei-kids-multivitamins-20",
+  "dr-frei-multivitamins-biotin-20",
+  "swiss-energy-hair-nail-skin-30",
+  "swiss-energy-immunovit-30",
+  "swiss-energy-visiovit-30",
+  "swiss-energy-vitamin-c-20",
+]);
+
 export function unitPrice(slug: string, price: number): { amount: number; unit: DoseUnit } | null {
   const pack = PRODUCT_UNITS[slug];
   return pack ? { amount: price / pack.count, unit: pack.unit } : null;

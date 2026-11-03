@@ -174,7 +174,7 @@ chaqirilgandan **keyin** chizing.
 | `product/` | ProductCard (V3: kesma rasm, birlik narxi, savatda bo'lsa stepper; `onCard` — qora panel uchun), ProductTemplate (PDP V3, server; bitta DOM, telefonda `order-*`), BuyBox (+ `MobileBuyBar`, `MiniBuyCard`), `purchase.ts` (uchala «qo'shish» tugmasining umumiy holati — rejim, oraliq, miqdor), SubscribeToSave, ProductGallery, ProductSections (`SectionNav` scrollspy, `Collapsible` — desktopda ochiq, telefonda akkordeon), WishlistButton, ShareButton, OutOfStockNotify |
 | `shop/` | ShopView (server: kategoriya plitkalari, saralash, faol chiplar, setka, "Yana N ta"), CatalogFilterPanel (client: desktop yon panel + mobil filtr sheet). Filtr logikasi — `lib/shop/catalog-filters.ts` (sof, testli; «Aksiyada» = haqiqiy eski narx yoki mahsulotni nomlagan aksiya, «Tez tugaydi» = haqiqiy tugash ≤ 72 soat, filtr ham saralash ham), saralash — `lib/shop/catalog-sort.ts`, brend — `lib/content/product-brands.ts` |
 | `account/` | AccountShell (AccountNavV3: desktopda yon menyu, telefonda sahifa oxirida ro'yxat), AccountView (kirish yoki bosh sahifa), AuthForm (OTP, 6 katak — bitta input), OrderHistory (+ `useMyOrders`, `StatusBadge`), OrderDetail, MySubscriptions (+ `SubscriptionsView`). Holatlar — `lib/account/orders.ts` |
-| `quiz/` | QuizFlow (V3: savol = `h1`, segmentli progress, «Kim uchun» foto kartalari — `lib/content/audience.ts`; telefonda fixed «Keyingi» paneli), QuizPlanView (natija: qora toʻplam paneli, «Nega»/«Izoh» qatorlari, shifokor ogohlantirishi), QuizPlanActions (+ `QuizAddOne`). Logika — `lib/quiz/` |
+| `quiz/` | QuizFlow (V3: 3–5 savol — kim uchun, yosh, nima bezovta qiladi, dori, homiladorlik; turmush tarzi savollari 2026-11 da olib tashlandi: natijani o'zgartirmasdi, `questions.ts` izohi; savol = `h1`, segmentli progress, «Kim uchun» foto kartalari — `lib/content/audience.ts`; telefonda fixed «Keyingi» paneli), QuizPlanView (natija: qora toʻplam paneli, «Nega»/«Izoh» qatorlari, shifokor ogohlantirishi), QuizPlanActions (+ `QuizAddOne`). Logika — `lib/quiz/` |
 | `info/` | InfoShell (InfoNavV3: desktopda chap menyu + yordam kartasi, telefonda chip qatori; `InfoHeader`, `InfoFaq`), LeadForms (`PartnerForm`, `ContactForm` → `app/actions/leads.ts` → operator Telegram'i) |
 | `blog/` | BlogIndex (blog va kategoriya bitta komponent, `ArticleTile`), ShareRow |
 | `checkout/` | CheckoutForm — `/cart` sahifasining o'zi: savat, 3 qadam, xulosa, mobil fixed panel; bitta `<form>` (react-hook-form + Zod, sxema va payload o'zgarmagan) |
@@ -438,7 +438,11 @@ src/lib/upsell/ladder.ts — buildUpsellLadder(cartLines, allProducts)
 
 Foizlar va yoqish/sovg'a — `/admin/commerce` (`LADDER_PERCENT_CHOICES` dan, o'suvchi).
 
-Modal: bir vaqtda bitta taklif. Faqat birinchi `add()` da ochiladi.
+Modal: bir vaqtda bitta taklif, faqat birinchi `add()` da va faqat `ladder.modal` yoqilgan bo'lsa
+(sukut: **o'chiq** — mahsulot tanlangan zahoti ekranni to'sardi; takliflar savat sahifasida qoladi).
+**Taklif savatga mos** (`relevantTo`, `ladder.ts`): qahva/jihoz/klinik ovqatlanish faqat savatda
+shu turdagi mahsulot bo'lsa, bolalar/homilador/erkak mahsuloti faqat shu auditoriya savatda bo'lsa;
+mos taklif bo'lmasa zinapoya yo'q (Calcivit qo'shgan mijozga qahva taklif qilinardi).
 
 **Taklif qoidalari (klient va server bir xil — `lib/cart/pricing.ts`, `reprice.ts`):**
 - Taklif foizi qator kalitining qismi (`cartLineId(id, sub, percent)`): −15% qo'shish
@@ -487,7 +491,7 @@ To'liq: **[`docs/ADMIN.md`](docs/ADMIN.md#promokodlar)**. Faqat baza bo'lsa
   da chiqmaydi. `navigator.webdriver` (botlar, audit) — umuman chiqmaydi.
 - Har pop-up'ning yoqilishi, kechikishi, cool-down'i va matni — `/admin/commerce`
   (standart 30/3/7 kun); o'chirilgani yuklanmaydi ham (`DeferredUi`).
-- **Welcome** — birinchi buyurtma chegirmasi (`FirstOrderOffer`: baza bo'lsa avtomatik, bo'lmasa operator qo'llaydi, o'chirilsa karta yo'q;
+- **Welcome** (sukut: **o'chiq**, `/admin/commerce` da yoqiladi) — birinchi buyurtma chegirmasi (`FirstOrderOffer`: baza bo'lsa avtomatik, bo'lmasa operator qo'llaydi, o'chirilsa karta yo'q;
   Telegram'da `🎁 Yangi mijoz` / `🔁 Qaytgan mijoz` — baza bo'lsa telefon bo'yicha
   `ordersFromPhone`). **Exit** — savat bo'lsa savat + jami, bo'lmasa Telegram.
   **Quiz** — 3-sahifadan keyin burchak kartasi, quiz o'tilgan bo'lsa yo'q.
