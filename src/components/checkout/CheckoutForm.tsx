@@ -2,6 +2,7 @@
 
 import { cloneElement, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import { REGION_KEYS, TASHKENT_DISTRICTS } from "@/lib/checkout/regions";
+import { isOfficialBrand, productBrand } from "@/lib/content/product-brands";
 import { composeAddress } from "@/lib/checkout/address";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -201,7 +202,8 @@ export function CheckoutForm({
   }).superRefine((values, ctx) => {
     if (values.method !== "courier") return;
     if (!values.region) ctx.addIssue({ code: "custom", path: ["region"], message: t("errorRequired") });
-    for (const field of ["district", "street", "house"] as const) {
+    // Street and house are one line: a courier needs the address, not two boxes for it.
+    for (const field of ["district", "street"] as const) {
       if (!values[field]?.trim()) ctx.addIssue({ code: "custom", path: [field], message: t("errorRequired") });
     }
   }).refine(
@@ -638,12 +640,9 @@ export function CheckoutForm({
                 </Field>
               )}
             </div>
-            <div className={cn("grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_120px_120px]", method === "pickup" && "hidden")}>
+            <div className={cn("grid gap-3.5 lg:grid-cols-[minmax(0,1fr)_200px]", method === "pickup" && "hidden")}>
               <Field label={tv("street")} error={errors.street?.message}>
-                <input className={inputClass} placeholder={tv("streetPlaceholder")} autoComplete="address-line1" {...register("street")} />
-              </Field>
-              <Field label={tv("house")} error={errors.house?.message}>
-                <input className={inputClass} autoComplete="address-line2" {...register("house")} />
+                <input className={inputClass} placeholder={tv("streetPlaceholder")} autoComplete="street-address" {...register("street")} />
               </Field>
               <Field label={tv("apartment")}>
                 <input className={inputClass} {...register("apartment")} />
@@ -789,6 +788,9 @@ export function CheckoutForm({
             <UpsellSavingsBar />
           </div>
           <div className="hidden flex-col gap-3 rounded-[20px] bg-tile px-5 py-[18px] text-sm leading-[19px] lg:flex">
+            {lines.some((l) => isOfficialBrand(productBrand(l.slug)?.slug)) && (
+              <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustOfficial")}</TrustRow>
+            )}
             <TrustRow d="M4 12a8 8 0 1 0 2.3-5.6M4 4v4h4">{tc("trustGuarantee")}</TrustRow>
             {/* "Secure payment" describes an online gateway; with cash only it promised something that does not exist. */}
             {onlineProviders.length > 0 && <TrustRow d="M12 3l8 3v6c0 4.5-3.4 8.3-8 9-4.6-.7-8-4.5-8-9V6zM8.5 12l2.5 2.5 4.5-5">{tc("trustSecure")}</TrustRow>}

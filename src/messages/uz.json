@@ -76,6 +76,7 @@
     "unitTablet": "tabletka",
     "unitCapsule": "kapsula",
     "perUnit": "{price} / {unit}",
+    "perDay": "kuniga {price}",
     "delivery24": "{hours} soatda yetkazish",
     "hit": "Xit",
     "decrease": "Kamaytirish",
@@ -325,6 +326,7 @@
     "faq": "Koʻp soʻraladigan savollar",
     "addUpsell": "Qoʻshish",
     "buyBox": {
+      "official": "Rasmiy distribyutordan — asl mahsulot",
       "decrease": "Miqdorni kamaytirish",
       "increase": "Miqdorni oshirish",
       "total": "Jami"
@@ -598,6 +600,7 @@
     "checkout": "Buyurtmani rasmiylashtirish",
     "freeShippingProgress": "Bepul yetkazib berishgacha {amount}",
     "freeShippingUnlocked": "Bepul yetkazib berish ochildi!",
+    "trustOfficial": "Swiss Energy, Dr.Frei va Delical — rasmiy distribyutordan",
     "trustGuarantee": "14 kunlik qaytarish (ochilmagan qadoq)",
     "trustSecure": "Xavfsiz toʻlov",
     "savings": "Siz jami {amount} tejadingiz",
@@ -699,10 +702,9 @@
       "town": "Shahar yoki tuman",
       "townHint": "BTS filiali boʻlsa, uni ham yozing",
       "townPlaceholder": "Masalan: Samarqand shahri",
-      "street": "Koʻcha, mahalla",
-      "streetPlaceholder": "Koʻcha nomi",
-      "house": "Uy",
-      "apartment": "Xonadon",
+      "street": "Koʻcha va uy",
+      "streetPlaceholder": "Masalan: Amir Temur koʻchasi, 15",
+      "apartment": "Xonadon (ixtiyoriy)",
       "landmark": "Moʻljal (ixtiyoriy)",
       "landmarkPlaceholder": "Masalan: maktab yonida, 2-podyezd",
       "phoneProof": {
@@ -955,7 +957,7 @@
       },
       "quiz": {
         "title": "Vitamin tanlash testi — sizga mos BAD | Go Vita",
-        "description": "Turmush tarzingiz va ehtiyojlaringiz haqidagi savollarga javob bering — Go Vita katalogidan mos vitaminlar roʻyxatini oling. Tashxis emas, tanlashga yordam."
+        "description": "Kim uchun, yosh va nima bezovta qilishi — 3–5 ta savol, natijada Go Vita katalogidan mos vitaminlar roʻyxati. Tashxis emas, tanlashga yordam."
       },
       "ingredients": {
         "title": "Vitamin va minerallar koʻrsatkichi — tarkib va mahsulotlar | Go Vita",

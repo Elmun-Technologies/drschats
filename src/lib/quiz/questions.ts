@@ -229,106 +229,16 @@ const raw: RawQuestion[] = [
       },
     ],
   },
-  {
-    id: "sleep-hours",
-    question: { uz: "Odatda necha soat uxlaysiz?", ru: "Сколько обычно спите?" },
-    guidance: {
-      /*
-        Medical copy belongs to the client's doctor, not to the template — see
-        docs/GOVITA-TAVSIYALAR.md §5. This line used to explain what a sleep
-        deficit does to magnesium, D3 and "hormonal balance"; the mechanism was
-        an unverifiable claim in a shop quiz. Until the doctor writes the
-        replacement, the guidance only says why the question is asked.
-      */
-      uz: "Nima uchun bu muhim? Javobingiz kundalik tanlovga taʼsir qiladi.",
-      ru: "Почему это важно? Ваш ответ влияет на подборку.",
-    },
-    multiSelect: false,
-    options: [
-      { id: "lt5", label: { uz: "5 soatdan kam", ru: "Меньше 5 часов" }, topics: { sleep: 2, fatigue: 2 } },
-      { id: "5-7", label: { uz: "5–7 soat", ru: "5–7 часов" }, topics: { sleep: 1, fatigue: 1 } },
-      { id: "7-9", label: { uz: "7–9 soat", ru: "7–9 часов" }, topics: {} },
-      { id: "gt9", label: { uz: "9 soatdan koʻp, baribir charchoq", ru: "Больше 9, но всё равно усталость" }, topics: { fatigue: 2 }, seeDoctor: true },
-    ],
-  },
-  {
-    id: "sun",
-    question: {
-      uz: "Kuniga qancha vaqt ochiq havoda boʻlasiz?",
-      ru: "Сколько времени в день проводите на улице?",
-    },
-    guidance: {
-      uz: "Nima uchun bu muhim? Quyosh nuri D3 vitaminining terida sintez boʻlishining asosiy manbai hisoblanadi.",
-      ru: "Почему это важно? Солнечный свет — главный источник естественного синтеза витамина D3 в коже.",
-    },
-    multiSelect: false,
-    options: [
-      { id: "almost-none", label: { uz: "Deyarli chiqmayman", ru: "Почти не выхожу" }, ingredients: { "vitamin-d3": 3 }, topics: { fatigue: 1, bones: 1 } },
-      { id: "lt1", label: { uz: "1 soatdan kam", ru: "Меньше часа" }, ingredients: { "vitamin-d3": 2 } },
-      { id: "1-3", label: { uz: "1–3 soat", ru: "1–3 часа" }, ingredients: { "vitamin-d3": 0.5 } },
-      { id: "gt3", label: { uz: "3 soatdan koʻp", ru: "Больше 3 часов" }, ingredients: {} },
-    ],
-  },
-  {
-    id: "activity",
-    question: { uz: "Jismoniy faollik", ru: "Физическая активность" },
-    guidance: {
-      uz: "Nima uchun bu muhim? Faol hayot tarzi uchun moʻljallangan mahsulotlar alohida koʻrsatiladi.",
-      ru: "Почему это важно? Продукты для активного образа жизни показываются отдельно.",
-    },
-    multiSelect: false,
-    options: [
-      { id: "sedentary", label: { uz: "Koʻproq oʻtirib ishlayman", ru: "В основном сидячая работа" }, topics: { energy: 1, heart: 1 } },
-      { id: "light", label: { uz: "Haftada 1–2 marta", ru: "1–2 раза в неделю" }, topics: {} },
-      { id: "regular", label: { uz: "Haftada 3–5 marta", ru: "3–5 раз в неделю" }, topics: { sport: 2 }, ingredients: { magnesium: 1 } },
-      { id: "athlete", label: { uz: "Har kuni, jiddiy yuklama", ru: "Ежедневно, серьёзные нагрузки" }, topics: { sport: 3, energy: 1 }, ingredients: { magnesium: 2 } },
-    ],
-  },
-  {
-    id: "diet",
-    question: { uz: "Ovqatlanishingiz", ru: "Ваше питание" },
-    guidance: {
-      uz: "Nima uchun bu muhim? Ovqatlanish ratsioni Omega-3, B12 va kalsiy yetishmovchiligi xavfini belgilab beradi.",
-      ru: "Почему это важно? Рацион питания определяет риски дефицита Омега-3, B12 и кальция.",
-    },
-    multiSelect: true,
-    options: [
-      { id: "fish", label: { uz: "Haftada 2+ marta baliq yeyman", ru: "Ем рыбу 2+ раза в неделю" }, ingredients: { "epa-dha": -1.5 } },
-      { id: "veg", label: { uz: "Vegetarian yoki vegan", ru: "Вегетарианство или веганство" }, ingredients: { "epa-dha": 2, zinc: 1 }, topics: { energy: 1 } },
-      { id: "no-dairy", label: { uz: "Sut mahsulotlarini isteʼmol qilmayman", ru: "Не употребляю молочные продукты" }, ingredients: { "vitamin-d3": 1, "vitamin-k2": 1 }, topics: { bones: 1 } },
-      { id: "irregular", label: { uz: "Tartibsiz, tez-tez oʻtkazib yuboraman", ru: "Нерегулярное, часто пропускаю" }, topics: { fatigue: 1, energy: 1 } },
-    ],
-  },
-  {
-    id: "screen",
-    question: { uz: "Ekran oldida kuniga qancha vaqt?", ru: "Сколько времени за экраном в день?" },
-    guidance: {
-      uz: "Nima uchun bu muhim? Koʻz uchun moʻljallangan mahsulotlar shu javobga qarab koʻrsatiladi.",
-      ru: "Почему это важно? Продукты для глаз показываются в зависимости от ответа.",
-    },
-    multiSelect: false,
-    options: [
-      { id: "lt4", label: { uz: "4 soatdan kam", ru: "Меньше 4 часов" }, topics: {} },
-      { id: "4-8", label: { uz: "4–8 soat", ru: "4–8 часов" }, topics: { vision: 1 } },
-      { id: "gt8", label: { uz: "8 soatdan koʻp", ru: "Больше 8 часов" }, topics: { vision: 2, sleep: 1 } },
-    ],
-  },
-  {
-    id: "smoking",
-    question: { uz: "Chekish odati bormi?", ru: "Есть привычка курить?" },
-    // Not asked about a child.
-    showIf: { question: "who", includesAny: ["self-woman", "self-man", "expectant", "parent", "recovery"] },
-    guidance: {
-      uz: "Nima uchun bu muhim? Javob tanlovda C vitaminli mahsulotlarning oʻrniga taʼsir qiladi.",
-      ru: "Почему это важно? Ответ влияет на место продуктов с витамином C в подборке.",
-    },
-    multiSelect: false,
-    options: [
-      { id: "no", label: { uz: "Yoʻq", ru: "Нет" }, topics: {} },
-      { id: "sometimes", label: { uz: "Baʼzan", ru: "Иногда" }, ingredients: { "vitamin-c": 1 } },
-      { id: "yes", label: { uz: "Ha, muntazam", ru: "Да, регулярно" }, ingredients: { "vitamin-c": 2 }, topics: { heart: 1 } },
-    ],
-  },
+  /*
+    Six lifestyle questions used to follow here (sleep hours, sun, activity,
+    diet, screen time, smoking): 11 screens and 22 taps before any result.
+    Measured on the catalogue (2026-11) they did not move the top three
+    products in 18 of 18 profiles, and harsh answers pushed a generic
+    multivitamin above what the visitor said bothers them (colds → ImmunoVit
+    fell behind Multi + Biotin). Two of them (screen → "vision", activity →
+    "sport") fed topics that no health topic carries, so they never counted.
+    The test now asks who, age, what bothers you and the two safety questions.
+  */
   {
     id: "medication",
     question: {
@@ -359,7 +269,8 @@ const raw: RawQuestion[] = [
       uz: "Nima uchun bu muhim? Homiladorlikda foliy kislotasi va temir preparatlari faqat shifokor nazorati ostida tayinlanadi.",
       ru: "Почему это важно? При беременности фолиевая кислота и железо назначаются только под контролем врача.",
     },
-    showIf: { question: "who", includesAny: ["self-woman", "expectant"] },
+    // "Boʻlajak onaga" has already answered this; only a woman buying for herself is asked.
+    showIf: { question: "who", includesAny: ["self-woman"] },
     multiSelect: false,
     options: [
       { id: "no", label: { uz: "Yoʻq / tegishli emas", ru: "Нет / не относится" }, topics: {} },

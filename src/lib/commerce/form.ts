@@ -63,7 +63,7 @@ function ladder(form: Form): CommerceSettings["ladder"] {
       `Zinapoya foizlari ${LADDER_PERCENT_CHOICES.join(", ")} dan tanlanadi va har bir qadam oldingisidan katta boʻlsin.`,
     );
   }
-  return { enabled: checked(form, "enabled"), percents, freeGift: checked(form, "freeGift") };
+  return { enabled: checked(form, "enabled"), percents, freeGift: checked(form, "freeGift"), modal: checked(form, "modal") };
 }
 
 function subscription(form: Form): CommerceSettings["subscription"] {

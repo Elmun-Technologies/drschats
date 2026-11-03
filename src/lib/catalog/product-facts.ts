@@ -1,6 +1,6 @@
 import type { Product } from "@/lib/shopflow/types";
 import { productCutout } from "@/lib/content/product-cutouts";
-import { PRODUCT_UNITS, type DoseUnit } from "@/lib/content/product-units";
+import { ONE_A_DAY, PRODUCT_UNITS, type DoseUnit } from "@/lib/content/product-units";
 import { productBrand, type ProductBrand } from "@/lib/content/product-brands";
 
 /*
@@ -22,6 +22,12 @@ export function unitOf(p: Facts): { count: number; unit: DoseUnit } | null {
 export function unitPriceOf(p: Facts & Pick<Product, "price">): { amount: number; unit: DoseUnit } | null {
   const pack = unitOf(p);
   return pack ? { amount: p.price / pack.count, unit: pack.unit } : null;
+}
+
+/** The price of one day, only where the label says one dose a day (ONE_A_DAY). */
+export function dailyPriceOf(p: Facts & Pick<Product, "price">): number | null {
+  const unit = unitPriceOf(p);
+  return unit && ONE_A_DAY.has(p.slug) ? unit.amount : null;
 }
 
 export function brandOf(p: Facts): ProductBrand | null {

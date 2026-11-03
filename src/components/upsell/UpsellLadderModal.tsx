@@ -35,7 +35,7 @@ export function UpsellLadderModal() {
   // Watch for new items added to cart → trigger ladder once per session
   useEffect(() => {
     const current = lines.length;
-    if (ladderRules.enabled && current > prevLength.current && !shown && current === 1) {
+    if (ladderRules.enabled && ladderRules.modal && current > prevLength.current && !shown && current === 1) {
       // First item added — fetch products and build ladder
       getUpsellProducts(locale).then((products) => {
         const ladder = buildUpsellLadder(lines, products, ladderRules);
