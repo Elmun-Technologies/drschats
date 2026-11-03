@@ -45,7 +45,7 @@ export default async function AdminFlowsPage() {
           <Notice>SMS ulanmagan — Telegramga ulanmagan mijozlarga xabar ketmaydi (jurnalda «oʻtkazib yuborildi»). <Link href="/admin/integrations" className={linkClass}>Integratsiyalar → SMS (Eskiz)</Link>.</Notice>
         )}
         {!reach.clubEnabled && <Notice>Telegram klub oʻchiq — barcha xabarlar SMS orqali ketadi. <Link href="/admin/bot" className={linkClass}>Telegram klub</Link>.</Notice>}
-        {isQuietHours(new Date()) && <Notice>Hozir tungi vaqt (21:00–09:00, Toshkent): yangi xabarlar ertalab 09:00 da ketadi.</Notice>}
+        {isQuietHours(new Date()) && <Notice>Hozir kechki/tungi vaqt (18:00–09:00, Toshkent): yangi xabarlar ertalab 09:00 da ketadi.</Notice>}
       </div>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">

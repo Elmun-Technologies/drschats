@@ -781,6 +781,7 @@
     "emailPlaceholder": "siz@example.com",
     "emailHint": "Ixtiyoriy. Buyurtma tasdigʻini shu manzilga yuboramiz.",
     "subscribeLabel": "Aksiya va yangiliklar haqida xat olib turaman",
+    "smsConsentLabel": "Aksiyalar va eslatmalarni SMS orqali olishga roziman",
     "errorEmail": "Pochta manzili notoʻgʻri",
     "paymentTitle": "Toʻlov usuli",
     "payUnavailable": "Onlayn toʻlov hozircha mavjud emas — buyurtmani yetkazganda naqd pul bilan toʻlang.",

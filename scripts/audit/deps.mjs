@@ -57,11 +57,9 @@ const BASELINE = new Map(
     // in its dev server and launch-editor (Windows), which a production Next server never runs.
     vite: "Sanity Studio bundler (dev server only) — closed by sanity@6",
     postcss: "only fix is next@16 — major framework upgrade",
-    // GHSA-mrhx-c7xc-m3w5 (memory on oversized bounded arrays) has no zod@3 fix. Every schema
-    // runs on a body Next has already capped (serverActions.bodySizeLimit, next.config.ts), so
-    // the array zod is handed is bounded before it sees it. zod@4 touches 33 files and needs
-    // @hookform/resolvers@5 — its own migration, not a patch.
-    zod: "only fix is zod@4 — major; schema + @hookform/resolvers@5 migration",
+    // GHSA-mrhx-c7xc-m3w5 (memory on oversized bounded arrays). The site itself runs zod@4.6.7;
+    // the zod@3 left in the tree is @sanity/codegen's, a CLI that never validates a request.
+    zod: "zod@3 only inside @sanity/codegen (Sanity CLI) — closed by sanity@6",
   }),
 );
 

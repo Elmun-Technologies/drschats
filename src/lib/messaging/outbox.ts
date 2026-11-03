@@ -12,6 +12,8 @@ import { resolveSmsProvider, type ResolvedSms } from "@/lib/sms";
 import { MAX_SEND_ATTEMPTS, retryDelayMinutes } from "@/lib/flows/schedule";
 import type { StepChannel } from "@/lib/flows/types";
 import { inOptOuts, isOptedOut, optOutsOf } from "./optout";
+import { hasSmsConsent, smsConsentsOf } from "./consent";
+import { smsConsentAllows } from "./consent-rules";
 import { phone9Sql } from "@/lib/db/phone";
 import { isQuietHours, nextSendWindow } from "./quiet-hours";
 import { finalizeText, formatExpiry, withOptOut, type MessageLocale } from "./template";
@@ -68,17 +70,23 @@ export interface QueueMessage {
    * is (the signed tracking link) rather than as a click-counting /r/ link.
    */
   kind?: MessageKind;
+  /**
+   * The recipient asked for this very message (restock / price-drop request).
+   * Still marketing for quiet hours, opt-out and the STOP line, but the request
+   * itself is the consent an advertising SMS needs (consent.ts).
+   */
+  requested?: boolean;
 }
 
 /** Inserts one message; returns its id, or null when the dedupe key was already queued. */
 export async function queueMessage(exec: Exec, m: QueueMessage): Promise<number | null> {
   const rows = (await exec.execute(sql`
     insert into outbound_messages
-      (channel, phone9, chat_id, locale, text, link, promo, flow_id, flow_step, enrollment_id, campaign_id, dedupe_key, scheduled_at, status, error, kind)
+      (channel, phone9, chat_id, locale, text, link, promo, flow_id, flow_step, enrollment_id, campaign_id, dedupe_key, scheduled_at, status, error, kind, requested)
     values (${m.channel}, ${m.phone9}, ${m.chatId ?? null}, ${m.locale}, ${m.text.slice(0, 2000)}, ${m.link || null},
             ${m.promo ? JSON.stringify(m.promo) : null}::jsonb, ${m.flowId ?? null}, ${m.flowStep ?? null}, ${m.enrollmentId ?? null},
             ${m.campaignId ?? null}, ${m.dedupeKey}, ${(m.scheduledAt ?? new Date()).toISOString()}::timestamptz,
-            ${m.skip ? "skipped" : "pending"}, ${m.skip ?? null}, ${m.kind ?? "marketing"})
+            ${m.skip ? "skipped" : "pending"}, ${m.skip ?? null}, ${m.kind ?? "marketing"}, ${m.requested ?? false})
     on conflict (dedupe_key) do nothing
     returning id`)) as unknown as { id: string | number }[];
   return rows[0] ? Number(rows[0].id) : null;
@@ -112,6 +120,8 @@ export async function resolveReach(exec: Exec, phone9: string, want: StepChannel
   if (want === "telegram") return { channel: null, reason: "no_telegram" };
   if (!ctx.smsAvailable) return { channel: null, reason: "sms_not_configured" };
   if (await isOptedOut(exec, phone9, "sms")) return { channel: null, reason: "opted_out" };
+  // An advertising SMS needs the customer's prior consent (decree in force 2026-11-01).
+  if (!(await hasSmsConsent(exec, phone9))) return { channel: null, reason: "no_consent" };
   return { channel: "sms", phone9 };
 }
 
@@ -158,6 +168,7 @@ interface Claimed {
   campaignId: number | null;
   attempts: number;
   kind: MessageKind;
+  requested: boolean;
 }
 
 function claimedOf(r: Row): Claimed {
@@ -176,6 +187,7 @@ function claimedOf(r: Row): Claimed {
     campaignId: r.campaign_id == null ? null : Number(r.campaign_id),
     attempts: Number(r.attempts ?? 0),
     kind: r.kind === "transactional" ? "transactional" : "marketing",
+    requested: r.requested === true,
   };
 }
 
@@ -242,12 +254,14 @@ async function ensurePromo(m: Claimed): Promise<{ code: string; endsAt: Date | n
   return { code, endsAt };
 }
 
-async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean, optOuts: Set<string>): Promise<Outcome> {
+async function deliver(m: Claimed, sms: ResolvedSms | null, clubEnabled: boolean, optOuts: Set<string>, consents: Set<string>): Promise<Outcome> {
   const db = getDb();
   const transactional = m.kind === "transactional";
   // An order SMS is not marketing: "stop" ends offers, not news about an order the customer placed.
   if (!transactional && inOptOuts(optOuts, m.phone9, m.channel)) return { status: "skipped", error: "opted_out" };
   if (m.channel === "sms" && (!sms?.provider || !m.phone9)) return { status: "skipped", error: "sms_not_configured" };
+  // Checked again at send time: the message may have been queued before the rule, or by a path that skipped resolveReach.
+  if (m.channel === "sms" && !smsConsentAllows(m, consents)) return { status: "skipped", error: "no_consent" };
   if (m.channel === "telegram") {
     if (!clubEnabled) return { status: "skipped", error: "club_disabled" };
     if (!m.chatId) return { status: "skipped", error: "no_telegram" };
@@ -371,11 +385,12 @@ export async function drainOutbox(now = new Date(), limit = BATCH_SIZE): Promise
   const clubEnabled = claimed.some((m) => m.channel === "telegram") ? Boolean((await getClubConfig().catch(() => null))?.enabled) : false;
   // One query for the whole batch, not one per message.
   const optOuts = await optOutsOf(db, claimed.map((m) => m.phone9 ?? ""));
+  const consents = needsSms ? await smsConsentsOf(db, claimed.filter((m) => m.channel === "sms").map((m) => m.phone9)) : new Set<string>();
 
   const sendOne = async (m: Claimed) => {
     let outcome: Outcome;
     try {
-      outcome = await deliver(m, sms, clubEnabled, optOuts);
+      outcome = await deliver(m, sms, clubEnabled, optOuts, consents);
     } catch (err) {
       outcome = { status: "retry", error: (err as Error).message || "error" };
     }

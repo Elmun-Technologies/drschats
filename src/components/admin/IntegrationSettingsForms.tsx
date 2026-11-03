@@ -146,7 +146,7 @@ export function SmsForm({ overview }: { overview: IntegrationAdminOverview }) {
   return (
     <Card
       title="SMS — Eskiz"
-      lead="Avtomatlashtirish va kampaniyalar Telegram ulanmagan mijozga SMS yuboradi. Har bir SMS oxirida «STOP» havolasi, 21:00–09:00 (Toshkent) yuborilmaydi."
+      lead="Avtomatlashtirish va kampaniyalar Telegram ulanmagan mijozga SMS yuboradi. Reklama SMS faqat roziligini bergan mijozga ketadi (savatdagi belgi), oxirida «STOP» havolasi, 18:00–09:00 (Toshkent) yuborilmaydi. Yuboruvchi pd.gov.uz (shaxsga doir maʼlumotlar bazalari reyestri) da roʻyxatdan oʻtgan boʻlishi shart."
       actions={<Status on={sms.configured || sms.fake} label={sms.fake ? "Sinov rejimi" : undefined} />}
     >
       {sms.fake && <div className="mb-4"><Notice>SMS_FAKE=1: SMS haqiqatda yuborilmaydi, faqat «Xabarlar» jurnaliga yoziladi. Live deployʼda bu bayroq eʼtiborga olinmaydi.</Notice></div>}

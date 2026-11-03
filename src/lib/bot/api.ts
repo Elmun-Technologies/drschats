@@ -44,12 +44,14 @@ const ticketSchema = z.object({
 const claimSchema = z.object({ limit: z.number().int().min(1).max(25).default(10) });
 
 const localeSchema = z.enum(["uz", "ru"]).default("uz");
-const cartSchema = z.object({ chatId: chatIdSchema, locale: localeSchema.optional() });
+// Absent means "the member's own language" downstream; zod 4 would fill the default inside .optional().
+const optionalLocale = z.enum(["uz", "ru"]).optional();
+const cartSchema = z.object({ chatId: chatIdSchema, locale: optionalLocale });
 const cartLineSchema = z.object({
   chatId: chatIdSchema,
   slug: z.string().trim().min(1).max(160),
   qty: z.number().int().min(0).max(99),
-  locale: localeSchema.optional(),
+  locale: optionalLocale,
 });
 const addSchema = z.object({
   chatId: chatIdSchema,
@@ -59,11 +61,11 @@ const addSchema = z.object({
 const promoCartSchema = z.object({
   chatId: chatIdSchema,
   code: z.string().trim().max(40),
-  locale: localeSchema.optional(),
+  locale: optionalLocale,
 });
 const quoteSchema = z.object({
   chatId: chatIdSchema,
-  locale: localeSchema.optional(),
+  locale: optionalLocale,
   method: z.enum(["courier", "pickup"]).default("courier"),
   promoCode: z.string().trim().max(40).nullish(),
 });
@@ -82,7 +84,7 @@ const orderSchema = z.object({
 const reorderSchema = z.object({
   chatId: chatIdSchema,
   orderNumber: z.string().regex(/^GV-\d{1,12}$/),
-  locale: localeSchema.optional(),
+  locale: optionalLocale,
 });
 const localeBodySchema = z.object({ chatId: chatIdSchema, locale: z.enum(["uz", "ru"]) });
 

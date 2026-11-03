@@ -192,6 +192,8 @@ export interface OrderRequest {
     email?: string;
     /** True when the customer ticked the newsletter box on the order form. */
     marketingOptIn?: boolean;
+    /** True when the customer ticked the SMS box: prior consent to advertising SMS (lib/messaging/consent.ts). */
+    smsOptIn?: boolean;
   };
   delivery: {
     /** A region key (lib/checkout/regions.ts) on site orders since 2026-11; older orders hold the name. */

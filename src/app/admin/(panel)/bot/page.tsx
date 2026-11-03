@@ -124,7 +124,7 @@ export default async function AdminBotPage() {
       <div className="mt-6">
         <Card
           title="Segmental kampaniyalar"
-          lead="Barcha aʼzolarga emas — tanlangan guruhga Telegramda yozing. Har bir xabar navbat, tungi soat (21:00–09:00) va opt-out qoidalaridan oʻtadi."
+          lead="Barcha aʼzolarga emas — tanlangan guruhga Telegramda yozing. Har bir xabar navbat, kechki va tungi soatlar (18:00–09:00) va opt-out qoidalaridan oʻtadi."
         >
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {botSegments.map((segment) => (
