@@ -171,9 +171,9 @@ function sortProducts(items: Product[], sort?: ProductListParams["sort"]): Produ
       return copy.sort((a, b) => discountPercent(b) - discountPercent(a));
     case "popular":
     default:
-      // With review counts withheld this is a no-op on a stable sort, which
-      // leaves the catalogue in its curated order.
-      return copy.sort((a, b) => b.reviewCount - a.reviewCount);
+      // What can be bought leads; with review counts withheld the rest is a
+      // no-op on a stable sort, which leaves the curated order.
+      return copy.sort((a, b) => Number(b.inStock) - Number(a.inStock) || b.reviewCount - a.reviewCount);
   }
 }
 

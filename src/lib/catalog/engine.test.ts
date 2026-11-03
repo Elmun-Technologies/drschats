@@ -2,7 +2,8 @@ import { describe, expect, it } from "vitest";
 import { CatalogEngine } from "./engine";
 import { builtInCatalog } from "@/lib/shopflow/mock";
 
-const base = builtInCatalog.products.find((p) => p.oldPrice)!;
+const first = builtInCatalog.products.find((p) => p.inStock)!;
+const base = { ...first, oldPrice: first.price + 20_000 };
 
 function engineWith(saleEndsAt: string) {
   return new CatalogEngine(async () => ({
@@ -81,5 +82,17 @@ describe("a catalogue with a half-written row", () => {
     expect(p?.tagline).toBe("");
     expect(p?.highlights).toEqual(["Bor"]);
     expect(p?.faq).toEqual([]);
+  });
+});
+
+describe("popular order", () => {
+  it("lists what can be bought before what is out of stock, keeping the curated order", async () => {
+    const [a, b, c] = builtInCatalog.products.filter((p) => p.inStock);
+    const engine = new CatalogEngine(async () => ({
+      ...builtInCatalog,
+      products: [{ ...a, inStock: false }, b, c],
+    }));
+    const items = (await engine.getProducts({ locale: "uz", pageSize: 200, assortment: "all" })).items;
+    expect(items.map((p) => p.slug)).toEqual([b.slug, c.slug, a.slug]);
   });
 });

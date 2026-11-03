@@ -138,7 +138,13 @@ export default async function HomePage({
       <div className="flex flex-col gap-8 pb-9 pt-1 lg:gap-16 lg:pb-[72px] lg:pt-6">
         <QuickChips categories={shelves} saleLabel={nav("topDeals")} label={nav("shopByCategories")} />
 
-        <section className="wrap -mt-3 grid gap-5 lg:mt-0 lg:grid-cols-[minmax(0,2.55fr)_minmax(300px,1fr)]">
+        <section
+          className={
+            weeklyDeals.length > 0
+              ? "wrap -mt-3 grid gap-5 lg:mt-0 lg:grid-cols-[minmax(0,2.55fr)_minmax(300px,1fr)]"
+              : "wrap -mt-3 grid gap-5 lg:mt-0"
+          }
+        >
           <HeroSlider slides={bannerSlides} fallback={fallbackSlides} />
           {weeklyDeals.length > 0 && (
             <div className="hidden lg:block">
