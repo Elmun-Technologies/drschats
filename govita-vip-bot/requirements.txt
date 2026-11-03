@@ -1,5 +1,5 @@
 # Runtime dependencies of the bot image — exact versions, so a rebuild is the
 # same bot. Tests: requirements-dev.txt.
-aiogram==3.13.1
-aiosqlite==0.20.0
-python-dotenv==1.0.1
+aiogram==3.22.0
+aiosqlite==0.22.1
+python-dotenv==1.2.4
