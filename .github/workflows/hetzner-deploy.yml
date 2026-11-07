@@ -1,0 +1,116 @@
+name: Deploy to Hetzner
+
+# main ga merge → CI yashil → image (ghcr.io) → serverda migrate + up -d → /api/health.
+# Bir martalik sozlash: docs/DEPLOY-HETZNER.md.
+#   Secrets: HETZNER_HOST, HETZNER_SSH_KEY (deploy foydalanuvchisining yopiq kaliti),
+#            HETZNER_KNOWN_HOSTS (ixtiyoriy, `ssh-keyscan <host>` natijasi)
+#   Variables (ixtiyoriy, build'ga yoziladi): NEXT_PUBLIC_GTM_ID, NEXT_PUBLIC_GA4_ID,
+#            NEXT_PUBLIC_META_PIXEL_ID, NEXT_PUBLIC_YANDEX_METRIKA_ID, NEXT_PUBLIC_TELEGRAM_BOT_USERNAME,
+#            NEXT_PUBLIC_TELEGRAM_CLUB_BOT, NEXT_PUBLIC_DELIVERY_CUTOFF, STORAGE_PUBLIC_URL, BUCKET_NAME,
+#            CSP_MODE, SITE_URL
+# HETZNER_HOST bo'lmasa job ogohlantirish bilan o'tkazib yuboriladi.
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: hetzner-deploy
+  cancel-in-progress: false
+
+env:
+  IMAGE: ghcr.io/elmun-technologies/drschats
+  BOT_IMAGE: ghcr.io/elmun-technologies/drschats-bot
+
+jobs:
+  deploy:
+    if: >-
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       github.event.workflow_run.head_branch == 'main')
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      HETZNER_HOST: ${{ secrets.HETZNER_HOST }}
+      SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+    steps:
+      - name: Check server
+        id: server
+        run: |
+          if [ -n "$HETZNER_HOST" ]; then
+            echo "present=yes" >> "$GITHUB_OUTPUT"
+          else
+            echo "present=no" >> "$GITHUB_OUTPUT"
+            echo "::warning title=Hetzner deploy skipped::HETZNER_HOST secret yoʻq (docs/DEPLOY-HETZNER.md)"
+          fi
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        if: steps.server.outputs.present == 'yes'
+        with:
+          ref: ${{ env.SHA }}
+
+      - name: Build and push images
+        if: steps.server.outputs.present == 'yes'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "$GH_TOKEN" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+          docker buildx create --use >/dev/null
+          docker buildx build --push \
+            --cache-from "type=registry,ref=$IMAGE:cache" \
+            --cache-to "type=registry,ref=$IMAGE:cache,mode=max" \
+            --build-arg "NEXT_PUBLIC_SITE_URL=${{ vars.SITE_URL || 'https://www.govita.uz' }}" \
+            --build-arg "NEXT_PUBLIC_GTM_ID=${{ vars.NEXT_PUBLIC_GTM_ID }}" \
+            --build-arg "NEXT_PUBLIC_GA4_ID=${{ vars.NEXT_PUBLIC_GA4_ID }}" \
+            --build-arg "NEXT_PUBLIC_META_PIXEL_ID=${{ vars.NEXT_PUBLIC_META_PIXEL_ID }}" \
+            --build-arg "NEXT_PUBLIC_YANDEX_METRIKA_ID=${{ vars.NEXT_PUBLIC_YANDEX_METRIKA_ID }}" \
+            --build-arg "NEXT_PUBLIC_TELEGRAM_BOT_USERNAME=${{ vars.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME }}" \
+            --build-arg "NEXT_PUBLIC_TELEGRAM_CLUB_BOT=${{ vars.NEXT_PUBLIC_TELEGRAM_CLUB_BOT }}" \
+            --build-arg "NEXT_PUBLIC_DELIVERY_CUTOFF=${{ vars.NEXT_PUBLIC_DELIVERY_CUTOFF }}" \
+            --build-arg "STORAGE_PUBLIC_URL=${{ vars.STORAGE_PUBLIC_URL }}" \
+            --build-arg "BUCKET_NAME=${{ vars.BUCKET_NAME }}" \
+            --build-arg "CSP_MODE=${{ vars.CSP_MODE || 'report-only' }}" \
+            -t "$IMAGE:$SHA" -t "$IMAGE:latest" .
+          docker buildx build --push -t "$BOT_IMAGE:$SHA" -t "$BOT_IMAGE:latest" govita-vip-bot
+
+      - name: Deploy on server
+        if: steps.server.outputs.present == 'yes'
+        env:
+          SSH_KEY: ${{ secrets.HETZNER_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.HETZNER_KNOWN_HOSTS }}
+          HETZNER_USER: ${{ vars.HETZNER_USER || 'deploy' }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_deploy && chmod 600 ~/.ssh/id_deploy
+          if [ -n "$KNOWN_HOSTS" ]; then printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          else ssh-keyscan -T 10 "$HETZNER_HOST" > ~/.ssh/known_hosts 2>/dev/null; fi
+          SSH="ssh -i $HOME/.ssh/id_deploy -o BatchMode=yes $HETZNER_USER@$HETZNER_HOST"
+          scp -i ~/.ssh/id_deploy -o BatchMode=yes deploy/hetzner/compose.yaml deploy/hetzner/Caddyfile \
+            "$HETZNER_USER@$HETZNER_HOST:/opt/govita/"
+          $SSH "echo '$GH_TOKEN' | docker login ghcr.io -u '${{ github.actor }}' --password-stdin >/dev/null"
+          $SSH "cd /opt/govita && export APP_IMAGE=$IMAGE:$SHA BOT_IMAGE=$BOT_IMAGE:$SHA \
+            && docker compose pull -q db app migrate caddy backup \
+            && docker compose run --rm migrate \
+            && docker compose up -d --remove-orphans db app caddy backup \
+            && { [ ! -s bot.env ] || docker compose --profile bot up -d bot; } \
+            && echo 'APP_IMAGE=$IMAGE:$SHA' > .deployed && docker image prune -f >/dev/null"
+          $SSH "docker logout ghcr.io >/dev/null"
+
+      - name: Health check
+        if: steps.server.outputs.present == 'yes'
+        run: |
+          url="${{ vars.SITE_URL || 'https://www.govita.uz' }}/api/health"
+          for i in $(seq 1 20); do
+            if curl -fsS --max-time 10 "$url"; then echo; echo "ok: $SHA"; exit 0; fi
+            sleep 6
+          done
+          echo "::error title=Health check failed::$url javob bermadi — docs/DEPLOY-HETZNER.md §Orqaga qaytarish"
+          exit 1

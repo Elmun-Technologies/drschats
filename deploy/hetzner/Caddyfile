@@ -1,0 +1,13 @@
+# HTTPS sertifikati avtomatik (Let's Encrypt). DNS A/AAAA yozuvlari serverga qarashi shart.
+{$SITE_DOMAIN} {
+	redir https://www.{$SITE_DOMAIN}{uri} permanent
+}
+
+www.{$SITE_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy app:3000
+	log {
+		output stdout
+		format console
+	}
+}
