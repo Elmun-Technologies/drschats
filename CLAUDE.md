@@ -6,6 +6,10 @@ Oddiy internet-magazin emas: navigatsiya mahsulotlarga emas, foydalanuvchining
 sog'liq maqsadlariga quriladi (`/goals`, `/symptoms`, `/vitamins`, `/quiz`), va
 katalog o'sha yo'lning oxirida turadi.
 
+**Yangi sessiya boshida**: bu fayl konventsiyalarni biladi, lekin "hozir nima
+qilindi, nima qolgan, qaysi branch'da ishlanmoqda" — **[`docs/HOLAT.md`](docs/HOLAT.md)**
+da. Katta ish tugagach shu faylni yangilang.
+
 ## Loyiha haqida
 
 - **Stack**: Next.js 15, TypeScript, Tailwind CSS v4, Framer Motion, Zustand, next-intl, Zod, react-hook-form
