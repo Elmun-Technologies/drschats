@@ -3,6 +3,10 @@ import { TICKET_CATEGORIES } from "@/lib/db/schema";
 import * as store from "./store";
 import * as shop from "./shop";
 import { withinRateLimit } from "@/lib/rate-limit";
+import { confirmLogin, denyLogin, openLogin } from "@/lib/customer/telegram-login";
+import { LOGIN_TOKEN_RE } from "@/lib/customer/session";
+import { clubCard } from "@/lib/customer/club";
+import { SITE_URL } from "@/lib/config/site";
 
 /*
   The API the club bot (govita-vip-bot, production mode) calls. Paths and
@@ -87,6 +91,8 @@ const reorderSchema = z.object({
   locale: optionalLocale,
 });
 const localeBodySchema = z.object({ chatId: chatIdSchema, locale: z.enum(["uz", "ru"]) });
+
+const loginSchema = z.object({ chatId: chatIdSchema, token: z.string().regex(LOGIN_TOKEN_RE) });
 
 const receiptSchema = z.discriminatedUnion("result", [
   z.object({ leaseToken: z.string().min(16).max(64), result: z.literal("sent") }),
@@ -174,6 +180,38 @@ export async function handleBotApi(method: string, path: string[], body: unknown
       if (!chat.success || !/^GV-\d{1,12}$/.test(path[3])) return fail(404, "order_not_found");
       const order = await store.orderFor(chat.data, path[3], (await store.memberLocale(chat.data)) ?? "uz");
       return order ? ok(order) : fail(404, "order_not_found");
+    }
+
+    case "GET /customers/:id/club": {
+      const chat = id(1);
+      if (!chat.success) return fail(422, "invalid");
+      const link = await store.linkOf(chat.data);
+      if (!link) return fail(404, "customer_not_linked");
+      const locale = (await store.memberLocale(chat.data)) ?? "uz";
+      return ok({ ...(await clubCard(link.phone.slice(-9))), cabinetUrl: `${SITE_URL}/${locale}/account` });
+    }
+
+    /* ── Website sign-in (lib/customer/telegram-login.ts) ──────────────── */
+
+    case "POST /login/open": {
+      const p = loginSchema.safeParse(body);
+      if (!p.success) return fail(422, "invalid");
+      if (!withinRateLimit("bot-login", String(p.data.chatId), { limit: 20, windowMs: 10 * 60_000 })) return fail(429, "rate_limited");
+      return ok(await openLogin(p.data.token, p.data.chatId));
+    }
+
+    case "POST /login/confirm": {
+      const p = loginSchema.safeParse(body);
+      if (!p.success) return fail(422, "invalid");
+      const r = await confirmLogin(p.data.token, p.data.chatId);
+      if (!r.ok) return fail(r.error === "need_contact" ? 409 : 410, r.error);
+      return ok({ ok: true, returnUrl: `${SITE_URL}/${r.locale}/account` });
+    }
+
+    case "POST /login/deny": {
+      const p = loginSchema.safeParse(body);
+      if (!p.success) return fail(422, "invalid");
+      return ok({ ok: await denyLogin(p.data.token) });
     }
 
     /* ── Shop: read ─────────────────────────────────────────────────────── */

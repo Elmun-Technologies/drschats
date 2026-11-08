@@ -8,6 +8,15 @@ import { quoteDiscounts, type FirstOrderState } from "@/lib/promo/server";
 import type { PromoLine, PromoReason } from "@/lib/promo/rules";
 import type { OrderAdjustment } from "@/lib/shopflow/types";
 import { isIntervalDays } from "@/lib/subscription/plans";
+import { sessionFromCookies } from "@/lib/customer/current";
+import { phone9Of } from "@/lib/phone9";
+
+/** Signed in through the club bot with this very number: the phone is proven (lib/customer). */
+async function sessionVerifies(phone: string | null | undefined): Promise<boolean> {
+  const s = await sessionFromCookies();
+  const p9 = phone9Of(phone);
+  return Boolean(s && p9 && s.p === p9);
+}
 
 /*
   The cart's live discount preview: the entered promo code and the automatic
@@ -78,7 +87,7 @@ export async function checkCartPromo(input: CartPromoInput): Promise<CartPromoQu
       .filter((i) => price.has(i.slug))
       .map((i) => ({ slug: i.slug, price: price.get(i.slug)!, quantity: i.quantity, upsellDiscountPercent: i.upsellDiscountPercent, subscription: i.subscription }));
 
-    const quote = await quoteDiscounts({ lines, promotions, code: code || null, phone: phone || null, phoneToken: phoneToken || null });
+    const quote = await quoteDiscounts({ lines, promotions, code: code || null, phone: phone || null, phoneToken: phoneToken || null, phoneVerified: await sessionVerifies(phone) });
     if (quote.promo && !quote.promo.ok && GUESS_REASONS.has(quote.promo.reason)) withinRateLimit("promo-miss", ip, MISS_RATE);
     const promo = !quote.promo
       ? null
