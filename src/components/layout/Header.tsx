@@ -7,7 +7,7 @@ import { useLocaleSwitchHref } from "@/lib/i18n/use-locale-href";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/lib/brand";
 import { isApiConfigured } from "@/lib/api/client";
-import { accountAreaAvailable } from "@/lib/config/demo";
+import { cabinetAvailable } from "@/lib/config/telegram-login";
 import { useDialog } from "@/lib/ui/useDialog";
 import type { Locale } from "@/lib/i18n/routing";
 import type { Category } from "@/lib/shopflow/types";
@@ -63,7 +63,7 @@ export function Header({
   const shelves = categories.filter(isStocked);
   // Hidden until the account area can answer: the link and the route read the
   // same predicate, so the link can never point at a 404.
-  const showAccount = accountAreaAvailable(isApiConfigured());
+  const showAccount = cabinetAvailable(isApiConfigured());
 
   return (
     <header className="z-50 w-full border-b border-line bg-bg text-ink lg:sticky lg:top-0">

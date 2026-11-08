@@ -374,8 +374,11 @@ async def test_language_is_saved_and_the_menu_is_rebuilt():
     q = callback("lang:ru")
     await shop.cb_lang(q, api, State())
     assert ("POST", "/shop/locale") in api.paths()
-    assert "Язык: русский" in q.message.answer.await_args.args[0]
-    assert_callbacks_fit(q.message.answer.await_args.kwargs["reply_markup"])
+    first, second = q.message.answer.await_args_list
+    assert "Язык: русский" in first.args[0]
+    # The keyboard under the message field switches language too.
+    assert first.kwargs["reply_markup"].keyboard[0][0].text == "🛍 Каталог"
+    assert_callbacks_fit(second.kwargs["reply_markup"])
 
 
 @pytest.mark.asyncio
