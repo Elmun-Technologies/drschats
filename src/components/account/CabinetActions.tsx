@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/lib/i18n/navigation";
 import { signOutCustomer } from "@/app/actions/customer";
 import { cn } from "@/lib/utils";
+import { SESSION_EVENT } from "@/lib/config/telegram-login";
 
 export function SignOutButton({ className }: { className?: string }) {
   const t = useTranslations("account.tg");
@@ -17,6 +18,7 @@ export function SignOutButton({ className }: { className?: string }) {
       onClick={async () => {
         setBusy(true);
         await signOutCustomer().catch(() => null);
+        window.dispatchEvent(new Event(SESSION_EVENT));
         router.refresh();
       }}
       className={cn("flex min-h-11 items-center gap-3 text-left text-base text-ink-2 hover:text-ink", className)}

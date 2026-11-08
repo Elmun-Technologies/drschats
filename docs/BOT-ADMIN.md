@@ -42,7 +42,87 @@ Telegram ──polling──▶ govita-vip-bot (Python, aiogram, Fly: govita-bot
 - **Bloklagan mijoz:** Telegram 403 qaytarsa aʼzo `blocked_at` oladi va unga
   navbat toʻxtaydi; u /start bossa — qayta ochiladi.
 
+## Saytga Telegram orqali kirish (0033)
+
+Parol ham, SMS ham yoʻq — mijoz saytda **«Telegram orqali kirish»** ni bosadi:
+
+```
+/account (sayt)                     @go_vitabot                       /account (sayt)
+ «Telegram orqali kirish» ──t.me/<bot>?start=login_<token>──▶ 🔐 «Saytga kirish soʻraldi:
+  (har 2,5 s soʻraydi)                                            +998 90 *** ** 67, Chrome, Windows»
+                                                                  [✅ Tasdiqlash] [❌ Bu men emas]
+                         ◀──────── POST /api/bot/login/confirm ────────┘
+ kabinet ochiladi (cookie gv_customer, 60 kun)       «✅ Tasdiqlandi» + «🌐 Saytga qaytish»
+```
+
+- Raqam bogʻlanmagan boʻlsa bot avval «📱 Raqamni ulashish» ni soʻraydi, keyin
+  oʻsha tasdiqlash xabari oʻzi chiqadi. Telefon — chat **oʻz kontakti** bilan
+  isbotlagan raqam (`telegram_links`), saytga yozilgani emas.
+- Bazada faqat xeshlar (`telegram_logins`): token Telegram orqali, brauzer
+  nonce'i esa httpOnly `gv_tgl` cookie'da — biri boshqasisiz kirita olmaydi.
+  Soʻrov 10 daqiqa yashaydi va bir marta ishlatiladi; 7 kundan keyin oʻchadi.
+- Xabarda brauzer va masklangan raqam koʻrsatiladi, «❌ Bu men emas» soʻrovni
+  bekor qiladi — begona havolani tasdiqlab yuborishning oldini olish uchun.
+- **Mini App** ichida tugma ham kerak emas: imzolangan `initData` bilan oʻzi kiradi.
+- Kirgan mijoz: kabinetda bot bilan bir xil buyurtmalar (imzolangan `/track`
+  havolalari) va klub kartasi (ballar, doʻst kodi — `/admin/loyalty` yoqqan
+  boʻlsa). Kassada ism va telefon oʻzi toʻladi, raqam **tasdiqlangan**
+  hisoblanadi (birinchi buyurtma/referal chegirmasi SMS kodsiz) va buyurtma
+  holati shu Telegram chatiga keladi.
+- Kod: `lib/customer/` (`session.ts` — imzolangan cookie, `telegram-login.ts`,
+  `club.ts`, `current.ts`), `app/actions/customer.ts`, `components/account/Telegram*.tsx`,
+  bot — `govita-vip-bot/bot/login.py`.
+- Yoqish: `NEXT_PUBLIC_TELEGRAM_CLUB_BOT=go_vitabot` (build arg — sarlavhadagi
+  «Kirish» havolasi shundan paydo boʻladi), `BOT_API_KEY`, `DATABASE_URL`,
+  `LOYALTY_SECRET` (sessiya kaliti undan alohida yorliq bilan olinadi).
+  Mini App ichida avtomatik kirish uchun `TELEGRAM_CLUB_BOT_TOKEN` ham.
+
+### Ishlab turgan serverda yoqish (Hetzner / Docker)
+
+Yangi kod deploy qilingach, bir marta:
+
+1. **Sayt** konteyneri — build argumenti va maxfiylar:
+   ```env
+   # build arg (bundle'ga yoziladi): docker build --build-arg NEXT_PUBLIC_TELEGRAM_CLUB_BOT=go_vitabot …
+   NEXT_PUBLIC_TELEGRAM_CLUB_BOT=go_vitabot
+   # runtime env
+   BOT_API_KEY=<botdagi GOVITA_API_KEY bilan bir xil>
+   TELEGRAM_CLUB_BOT_TOKEN=<@go_vitabot tokeni>   # Mini App ichida avtomatik kirish
+   LOYALTY_SECRET=<allaqachon bor boʻlishi kerak>
+   ```
+   Migratsiya `0033_telegram_login.sql` build oldidan oʻzi yuradi (`npm run build` → `db:migrate`).
+2. **Bot** (`govita-vip-bot/`): yangi kod bilan qayta ishga tushirish
+   (`docker compose up -d --build`). Yangi sozlama kerak emas.
+3. Tekshirish: saytda `/uz/account` → «Telegram orqali kirish» → botda
+   «✅ Tasdiqlash» → sayt kabinetni ochadi. Botda pastki tugmalar `/start` dan
+   keyin paydo boʻladi (eski chatlarda ham — `/start` ni bir marta bosish kifoya).
+
+## Klub — nima va nega
+
+Klub — alohida obuna yoki pullik aʼzolik emas: botda telefonini ulagan har bir
+mijoz klub aʼzosi. Uning qiymati — qaytib xarid qilish uchun sabab va qulaylik:
+
+| Nima | Qayerda koʻrinadi | Qanday yoqiladi |
+|---|---|---|
+| Buyurtma holati chatga | bot | doim (holat xabarlari `/admin/bot`) |
+| Bir bosishda qayta buyurtma | bot «📦 Buyurtmalarim» | doim |
+| Keshbek ballari (balans) | bot «⭐ Klub», sayt kabineti, kassa | `/admin/loyalty` |
+| Doʻst uchun kod + ulashish tugmasi | bot «⭐ Klub», sayt kabineti | `/admin/loyalty` → Tavsiya |
+| Aʼzolar uchun takliflar | bot (klubga xabar, segmentlar) | `/admin/bot` |
+| Kurs tugashi, tugʻilgan kun | bot/SMS | `/admin/flows` |
+| Saytga parolsiz kirish | sayt | yuqorida |
+
+Ekranda faqat yoqilgan narsa chiqadi — oʻchiq dastur haqida vaʼda yozilmaydi.
+Tavsiya: avval keshbekni (3%) va doʻst kodini yoqing — bular eng koʻp qaytaradigan
+ikki mexanika; keyin «Kurs tugashi» oqimini.
+
 ## Mijoz tajribasi
+
+**Pastki tugmalar** (`bot/reply_menu.py`) xabar maydoni ostida doim turadi:
+`🛍 Katalog` · `🛒 Savat` · `📦 Buyurtmalarim` · `⭐ Klub` · `💬 Yordam` · `🌐 Til`.
+Ular checkout qadamidan oldin ushlanadi — ism soʻralayotganda «🛒 Savat» bosilsa,
+bu ism emas, chiqish. `/katalog`, `/savat`, `/klub`, `/buyurtmalar`, `/yordam`
+buyruqlari ham shu ishni qiladi (ilgari `/katalog` faqat menyuni koʻrsatardi).
 
 | Qayerda | Nima boʻladi |
 |---|---|
@@ -78,6 +158,8 @@ boʻyicha rate limit bilan. Narxlar hech qachon klientdan olinmaydi.
 | POST | `/shop/order` | `placeOrder()`; `idempotencyKey` (8–128 belgi) |
 | POST | `/shop/reorder` | Eski buyurtma qatorlarini savatga |
 | GET · POST | `/shop/locale` | Tilni oʻqish/yozish (telefon bogʻlanmagan boʻlsa ham) |
+| GET | `/customers/:id/club` | Klub kartasi: ballar, doʻst kodi, sayt kabineti havolasi |
+| POST | `/login/open` · `/login/confirm` · `/login/deny` | Saytga kirish soʻrovi (`chatId`, `token`) |
 
 Xatolar `{ error, slug?, name?, reason?, available? }`:
 
@@ -215,7 +297,6 @@ reklama kabineti auditoriyasi esa saytdagi «Mijozlar» segmentlaridan olinadi.
 ## Chegaralar (hali yoʻq)
 
 - **Obunalar** — sayt takroriy yetkazishni hali yuritmaydi; bot «Obuna topilmadi» deydi.
-- **Saytga bot orqali kirish (OTP)** — `/account` deploy qilinmagan, shuning uchun yoʻq.
 - **Eslatmalar, kurslar, aksiya lentasi** — demo rejimda bor (`python -m bot --demo`),
   production'da yoʻq. Qoʻshilganda sayt `bot_jobs` ga yozadi — bot oʻzgarmaydi.
 - **Native doʻkon va Mini App — hozircha naqd pul (COD).** Toʻlov provayderi

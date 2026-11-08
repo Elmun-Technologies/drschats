@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter } from "@/lib/i18n/navigation";
 import { telegramInitData } from "@/lib/telegram/mini-app";
+import { SESSION_EVENT } from "@/lib/config/telegram-login";
 import { pollTelegramLogin, signInWithMiniApp, startTelegramLogin, type PollLoginResult } from "@/app/actions/customer";
 
 /*
@@ -41,6 +42,7 @@ export function TelegramLogin({ bot }: { bot: string }) {
   const settle = useCallback(
     (r: PollLoginResult) => {
       if (r.status === "done") {
+        window.dispatchEvent(new Event(SESSION_EVENT));
         router.refresh();
         return true;
       }
@@ -62,7 +64,10 @@ export function TelegramLogin({ bot }: { bot: string }) {
     setState("miniApp");
     signInWithMiniApp(init)
       .then((r) => {
-        if (r.status === "done") router.refresh();
+        if (r.status === "done") {
+          window.dispatchEvent(new Event(SESSION_EVENT));
+          router.refresh();
+        }
         else if (r.status === "need_contact") setState("miniAppContact");
         else void create();
       })

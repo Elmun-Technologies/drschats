@@ -56,7 +56,7 @@ export async function TelegramCabinet({
 
   return (
     <div className="wrap grid items-start gap-6 pb-9 pt-4 lg:grid-cols-[280px_minmax(0,1fr)] lg:gap-10 lg:pb-[72px] lg:pt-8">
-      <aside className="flex flex-col gap-4">
+      <aside className="order-last flex flex-col gap-4 lg:order-first">
         <UserBadge name={name} phone={phone} />
         <nav aria-label={ta("v3.nav")} className="flex flex-col gap-1 border-t border-line pt-3">
           {LINKS.map((l) => (

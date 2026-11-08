@@ -21,3 +21,6 @@ export function cabinetAvailable(isApiConfigured: boolean): boolean {
 export function botDeepLink(payload?: string): string {
   return `https://t.me/${CLUB_BOT_USERNAME}${payload ? `?start=${payload}` : ""}`;
 }
+
+/** Fired on window when the Telegram session starts or ends without a reload. */
+export const SESSION_EVENT = "govita:session";

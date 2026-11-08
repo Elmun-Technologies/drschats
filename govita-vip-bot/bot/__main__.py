@@ -24,6 +24,8 @@ async def main():
         from .backend import GoVitaBackend
         from .remote import router as remote_router, outbox_loop
         from .shop import router as shop_router
+        from .login import router as login_router
+        from .reply_menu import router as reply_menu_router
         from . import settings as settings_store
         api = await GoVitaBackend(cfg.backend_url, cfg.backend_key).open()
         try:
@@ -42,10 +44,15 @@ async def main():
                 BotCommand(command="start", description="Bosh menyu"),
                 BotCommand(command="katalog", description="Katalog"),
                 BotCommand(command="savat", description="Savat"),
+                BotCommand(command="klub", description="Klub: ballar va doʻst kodi"),
             ])
             dp = Dispatcher(api=api)
             # The shop first: it owns the catalogue/cart/checkout callbacks and
             # the FSM text steps; the club menu catches everything else.
+            # Sign-in links and the persistent keyboard come first: a press of
+            # «🛒 Savat» mid-checkout is a way out, not a typed name.
+            dp.include_router(login_router)
+            dp.include_router(reply_menu_router)
             dp.include_router(shop_router)
             dp.include_router(remote_router)
             worker = asyncio.create_task(outbox_loop(bot, api))

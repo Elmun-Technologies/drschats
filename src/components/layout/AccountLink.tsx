@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/lib/i18n/navigation";
 import { useSession } from "@/lib/auth/store";
 import { HEADER_ITEM_CLASS, HeaderIcon, ICONS } from "./header-item";
+import { SESSION_EVENT } from "@/lib/config/telegram-login";
 
 /*
   "Kirish", or the signed-in customer's first name once the session is
@@ -30,6 +31,10 @@ export function AccountLink() {
   useEffect(() => {
     setMounted(true);
     setTelegramName(signedInName());
+    // Sign-in and sign-out happen without a reload (TelegramLogin, CabinetActions).
+    const sync = () => setTelegramName(signedInName());
+    window.addEventListener(SESSION_EVENT, sync);
+    return () => window.removeEventListener(SESSION_EVENT, sync);
   }, []);
 
   const label = mounted && user ? user.name.split(" ")[0] : mounted && telegramName ? telegramName : t("login");
