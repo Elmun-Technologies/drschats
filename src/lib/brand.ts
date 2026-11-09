@@ -15,7 +15,7 @@ import { PRODUCT_PHOTOS } from "@/lib/content/product-photos";
 
 export const BRAND = {
   /** Display name used in copy, metadata and structured data. */
-  name: "Go Vita",
+  name: "govita",
 
   /**
    * Registered company name, exactly as the state registry writes it. Taken
@@ -26,16 +26,16 @@ export const BRAND = {
    */
   legalName: "«DR SCHATZ» mas\u02bculiyati cheklangan jamiyati",
 
-  /** Text wordmark "go·v·ita": the "v" takes the gold accent (design: forest + gold). */
-  wordmark: { lead: "go", accent: "v", tail: "ita" },
-
   /**
-   * Path to a logo image placed in /public/brand (e.g. "/brand/logo.svg").
-   * When set, <Logo> renders the image instead of the text wordmark.
+   * The wordmark (brendbook v1, 2026-11): "govita" in Onest 800, lowercase,
+   * with a yellow dot over the "i". Always drawn from these files — never
+   * retyped (the dot is not a glyph). Ink for light grounds, white for dark.
+   * Width/height only fix the aspect ratio; <Logo> sizes by height.
    */
-  logo: null as string | null,
-  logoWidth: 150,
-  logoHeight: 28,
+  logo: "/brand/govita-logo.png",
+  logoOnDark: "/brand/govita-logo-white.png",
+  logoWidth: 214,
+  logoHeight: 100,
 
   contact: {
     phone: "+998 71 200 70 80",

@@ -49,7 +49,7 @@ export async function ProgramTemplate({
               </span>
               <DiscountBadge percent={program.discountPercent} />
             </div>
-            <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page">{program.name}</h1>
+            <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page">{program.name}</h1>
             <p className="text-[17px] font-semibold leading-[24px] lg:text-[19px] lg:leading-[28px]">{program.headline}</p>
             <p className="text-[15px] leading-[22px] text-ink-2 lg:text-lead">{program.intro}</p>
             {reviewer && <ReviewedBy expert={reviewer} />}

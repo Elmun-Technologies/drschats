@@ -26,7 +26,7 @@ export default async function PrintOrderPage({ params }: { params: Promise<{ num
       </div>
       <header className="flex items-start justify-between gap-6 border-b-2 border-ink pb-4">
         <div>
-          <Logo className="text-[30px]" />
+          <Logo className="h-9" />
           <p className="mt-1 text-[13px] text-ink-2">{BRAND.contact.phone} · govita.uz</p>
         </div>
         <div className="text-right">

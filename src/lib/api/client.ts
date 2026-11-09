@@ -1,5 +1,5 @@
 /*
-  Client for the Go Vita accounts/orders API (see backend/).
+  Client for the govita accounts/orders API (see backend/).
 
   Supports both real HTTP mode (via NEXT_PUBLIC_API_URL) and built-in offline/mock mode
   when the backend is not yet deployed, allowing customers to preview their cabinet,
@@ -198,7 +198,7 @@ export const api = {
     }
     return {
       id: 1,
-      name: "Go Vita Mijoz",
+      name: "govita Mijoz",
       phone: "+998 90 123 45 67",
     };
   },

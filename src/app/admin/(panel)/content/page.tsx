@@ -26,7 +26,7 @@ export default async function AdminContentPage() {
       <PageHeader
         title="Blog va kontent"
         lead="Blog maqolalarining holatini koʻring, saytdagi koʻrinishini tekshiring va CMSʼga oʻting."
-        actions={studioAvailable ? <Link href="/admin/content/studio" className="inline-flex h-11 items-center gap-2 rounded-sm bg-ink px-4 text-[14px] font-semibold text-white hover:bg-black">Go Vita ichida tahrirlash <span aria-hidden="true">↗</span></Link> : undefined}
+        actions={studioAvailable ? <Link href="/admin/content/studio" className="inline-flex h-11 items-center gap-2 rounded-sm bg-ink px-4 text-[14px] font-semibold text-white hover:bg-black">govita ichida tahrirlash <span aria-hidden="true">↗</span></Link> : undefined}
       />
 
       {!sanityConfigured && <div className="mb-4 rounded-sm bg-tile p-4 text-[13px] leading-5 text-ink-2"><span className="font-bold">CMS ulanmagan.</span> Sayt hozir ichki statik maqolalardan foydalanadi. Ularni tahrirlash va draft/publish oqimi uchun Sanity project ID hamda Studioʼni sozlash kerak.</div>}
@@ -59,7 +59,7 @@ export default async function AdminContentPage() {
       <Card title="Kontentni boshqarish" className="mt-4">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-3xl text-[13px] leading-5 text-muted">{sanityConfigured ? "Maqolalarni yaratish, tarjimalar va rasmlarni tahrirlash Sanity Studioʼda amalga oshadi. Sayt maqolalarni shu CMSʼdan oʻqiydi." : "Statik maqolalar roʻyxati faqat koʻrish uchun. Sanity ulanganidan soʻng ushbu paneldan Studioʼga oʻtib maqola yozish va nashr qilish mumkin boʻladi."}</p>
-          {studioAvailable ? <Link href="/admin/content/studio" className="inline-flex h-10 shrink-0 items-center justify-center rounded-sm border border-line bg-white px-4 text-[13px] font-semibold text-ink-2 hover:bg-tile">Go Vita ichida tahrirlash</Link> : <Link href="/admin/integrations" className="inline-flex h-10 shrink-0 items-center justify-center rounded-sm border border-line bg-white px-4 text-[13px] font-semibold text-ink-2 hover:bg-tile">Sanity holatini tekshirish</Link>}
+          {studioAvailable ? <Link href="/admin/content/studio" className="inline-flex h-10 shrink-0 items-center justify-center rounded-sm border border-line bg-white px-4 text-[13px] font-semibold text-ink-2 hover:bg-tile">govita ichida tahrirlash</Link> : <Link href="/admin/integrations" className="inline-flex h-10 shrink-0 items-center justify-center rounded-sm border border-line bg-white px-4 text-[13px] font-semibold text-ink-2 hover:bg-tile">Sanity holatini tekshirish</Link>}
         </div>
       </Card>
     </>

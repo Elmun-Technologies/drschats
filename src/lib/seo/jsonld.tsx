@@ -242,7 +242,7 @@ export function productGraph({
         "@type": "MedicalWebPage",
         "@id": `${url}#webpage`,
         url,
-        name: `${product.name} — Go Vita`,
+        name: `${product.name} — govita`,
         description: product.tagline,
         inLanguage: locale,
         // Only real dates: a fixed placeholder told crawlers every page was edited the same day.
@@ -259,7 +259,7 @@ export function productGraph({
         image: product.images.map((i) => structuredDataImage(i.url)),
         description: product.description || product.tagline,
         sku: product.id,
-        // The maker, not the shop: "Go Vita" as the brand of a Swiss Energy pack was a false claim.
+        // The maker, not the shop: "govita" as the brand of a Swiss Energy pack was a false claim.
         ...(brand ? { brand: { "@type": "Brand", name: brand.name } } : {}),
         /*
           Only claimed when there is something to claim. A product with no

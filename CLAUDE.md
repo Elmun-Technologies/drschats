@@ -51,7 +51,7 @@ demo ekspertlar va o'ylab topilgan yangiliklar olib tashlangan; birinchi haqiqiy
 qo'shilishi bilan bo'lim o'zi qaytadi. `BRAND.contact` va `BRAND.social` Go Vita
 manzillariga o'tkazilgan.
 
-Hali bo'sh: `/reviews` (tasdiqlangan sharh bo'lmaguncha halol bo'sh holat va `noindex`), `BRAND.logo` (matnli wordmark chiziladi) va `BRAND.legal.licence`
+Hali bo'sh: `/reviews` (tasdiqlangan sharh bo'lmaguncha halol bo'sh holat va `noindex`) va `BRAND.legal.licence`
 ("yangilanmoqda" qatori chiziladi). Ikkalasi ham atayin: o'ylab topilgan
 litsenziya raqami yo'q raqamdan yomon.
 
@@ -692,8 +692,9 @@ Stok foto: `public/images/stock/st-*`.
 Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa>.html` va `design/screenshots/<Sahifa>.jpg` ni oʻqing. Dizayndan chetga chiqish faqat kelishilgan holda.
 
 ### Qatʼiy qoidalar
-- **Yashil rang yoʻq.** Asosiy harakat — `ink` (#17191B) tugma, oq matn. Brend ranglari `forest` (#0F2D24) va `gold` (#B8954F) faqat logoda.
-- **Qizil (#C8161D)** faqat chegirma uchun (pill badge «−11%», «Aksiyalar» havolasi). **Istisno:** Swiss Energy brend paneli — `swiss` (#D52B1E) fon + oq xoch (egasi qarori, 2026-10); chegirma qizili bilan aralashtirilmaydi. **Sariq (#FFD43B)** faqat «Xit» / «Arzon narx kafolati».
+- **Brend: govita (brendbook v1, 2026-11).** Nom — har doim `govita`, kichik harf, bitta soʻz, tarjima/skloneniya yoʻq (`BRAND.name`). Logo — faqat fayldan: `public/brand/govita-logo.png` (oq/tile fon) va `govita-logo-white.png` (toʻq fon), `<Logo className="h-*" />`; qayta terilmaydi (sariq nuqta glif emas). Ikonka/favicon — «g•» (`src/app/icon.png`, `public/icons/`). `forest`/`gold` va Playfair olib tashlangan.
+- **Yashil rang yoʻq. Gradient yoʻq.** Asosiy harakat — `ink` (#17191B) tugma, oq matn.
+- **Qizil (#C8161D)** faqat chegirma uchun (pill badge «−11%», «Aksiyalar» havolasi). **Istisno:** Swiss Energy brend paneli — `swiss` (#D52B1E) fon + oq xoch (egasi qarori, 2026-10); chegirma qizili bilan aralashtirilmaydi. **Sariq (#FFD43B)** — brendning yagona aksenti: logo nuqtasi, ikonka, bannerdagi «katta nuqta» (bitta kompozitsiyada bitta), «Xit» / «Arzon narx kafolati»; sahifaning ~5% gacha. Sariq fonda faqat siyoh matn; oq fonda sariq matn yoʻq.
 - **Faqat real maʼlumot.** Taymer, toʻqima sharh/reyting, «N kishi sotib oldi», oʻylab topilgan eski narx — yoʻq. Sharh boʻlmasa: «Hali sharh yoʻq» + «Sharh yozish».
 - **AI-generatsiya rasm ishlatilmaydi.** Mahsulot — haqiqiy packshotning fonidan ajratilgan PNG (`c-*.png`), `tile` (#F1F3F0) fonida `object-fit: contain`. Lifestyle — litsenziyali stok foto.
 - **BAD ogohlantirishi** mahsulot, test va maqola sahifalarida: «Biologik faol qoʻshimcha. Dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing.»
@@ -703,17 +704,17 @@ Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa
 - **Toʻlov logotiplari** — faqat `PaymentMark`/`PaymentMarks` (`components/ui/PaymentMarks.tsx`), roʻyxat `lib/config/payment-brands.ts`. Uzcard, Humo, Visa, Mastercard — rasmiy belgilar (`public/images/payments/`), onlayn toʻlov (Payme/Click/Uzum) orqali qabul qilinadi. **Yetkazib berishda toʻlov faqat naqd pul** (2026-10 qaror) — kuryer karta qabul qilmaydi. Payme/Click/Uzum — hozircha nom (rasmiy fayl yoʻq); brend-kit SVG qoʻyilib `src` yozilsa hamma joy oʻzi almashadi. Provayder va karta belgilari (`paymentMarks(providers)`, `lib/config/payments.ts`) faqat provayder `/admin/integrations` da yoqilib, kalitlari kiritilganda chiqadi — undan oldin faqat «Naqd pul»
 
 ### Tokenlar (`design/tokens.json` → `src/styles/globals.css` ikkinchi `@theme` bloki)
-- Ranglar: `bg #FFFFFF`, `tile #F1F3F0`, `tile-hover #E6E8E5`, `chip-strong #E3E6E9`, `line #E4E6E8`, `line-strong #D9DCDF`, `ink #17191B`, `ink-2 #44494E`, `muted #63686E`, `dark-panel #1C1F22`, `on-dark-2 #C9CDD1`, `red #C8161D`, `yellow #FFD43B`, `yellow-banner #FFE58A`, `forest #0F2D24`, `gold #B8954F`.
-- Shrift: **Onest** (variable, latin + latin-ext + cyrillic + cyrillic-ext) → `font-sans`/`font-onest`; logo — Playfair Display 500 → `font-logo`. **Self-hosted**: fayllar `public/fonts/<nom>-v<versiya>/`, `@font-face` `globals.css` da, preload `[locale]/layout.tsx` da. `next/font/google` ishlatilmaydi — build vaqtidagi Google so'rovi bir marta yiqilib CI'ni sindirdi. Yangi versiya — yangi papka (fayllar `immutable` keshlanadi).
+- Ranglar: `bg #FFFFFF`, `tile #F1F3F0`, `tile-hover #E6E8E5`, `chip-strong #E3E6E9`, `line #E4E6E8`, `line-strong #D9DCDF`, `ink #17191B`, `ink-2 #44494E`, `muted #63686E`, `dark-panel #1C1F22`, `on-dark-2 #C9CDD1`, `red #C8161D`, `yellow #FFD43B`, `yellow-banner #FFE58A`.
+- Shrift: **Onest** (variable, latin + latin-ext + cyrillic + cyrillic-ext) → `font-sans`/`font-onest` (400/500/700/800; logo ham Onest 800, lekin rasm sifatida). **Self-hosted**: fayllar `public/fonts/<nom>-v<versiya>/`, `@font-face` `globals.css` da, preload `[locale]/layout.tsx` da. `next/font/google` ishlatilmaydi — build vaqtidagi Google so'rovi bir marta yiqilib CI'ni sindirdi. Yangi versiya — yangi papka (fayllar `immutable` keshlanadi).
 - Radius: badge `9999px`, tugma/input/chip `12px`, mahsulot rasmi `16px`, karta/panel `20px`, plitka/banner `24–28px`.
 - Soya: faqat strelka tugmalari, xarid bloki va popoverlarda (`tokens.json` → `shadow`).
 - Konteyner: `max-width: 1296px; padding: 0 24px`. Mobil gutter 16px.
 
 ### Tipografiya (desktop / mobil)
-- Sahifa sarlavhasi 36/42 bold · mobil 28/34.
-- Boʻlim sarlavhasi 30/36 bold · mobil 22/28.
+- Sahifa sarlavhasi 36/42 · 800 · mobil 28/34 (`text-h-page` tokenida ogʻirlik bor — `font-bold` qoʻshmang, u 700 ga qaytaradi).
+- Boʻlim sarlavhasi 30/36 · 700 · mobil 22/28.
 - Asosiy matn 15–17px, `ink-2`. Meta 13–14px, `muted`.
-- Narx: kartada 20px bold, PDP'da 34px bold.
+- Narx: kartada 20px, PDP'da 34px — 800 (`Price`).
 
 ### Komponentlar (dizayn fayli → React)
 | Dizayn | React komponenti | Eslatma |

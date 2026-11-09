@@ -154,7 +154,7 @@ export function ProfileView({ birthdayGift = false }: { birthdayGift?: boolean }
   );
 }
 
-const H1 = "text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]";
+const H1 = "text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]";
 
 function Card({ children }: { children: ReactNode }) {
   return <div className="rounded-[20px] border border-line p-5 lg:p-7">{children}</div>;

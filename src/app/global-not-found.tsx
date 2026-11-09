@@ -42,7 +42,7 @@ export default function GlobalNotFound() {
               404
             </p>
 
-            <h1 lang="uz-UZ" className="text-[28px] font-bold leading-[34px] lg:text-h-page">
+            <h1 lang="uz-UZ" className="text-[28px] font-extrabold leading-[34px] lg:text-h-page">
               {uz.common.notFoundTitle}
             </h1>
             <p lang="ru-RU" className="text-lead text-ink-2">

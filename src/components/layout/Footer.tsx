@@ -98,7 +98,7 @@ export function Footer({
         <div className="grid gap-6 md:gap-12 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,2fr)]">
           <div className="flex flex-col gap-5">
             <Link href="/" aria-label={header("homeLabel")} className="self-start">
-              <Logo className="text-[32px] md:text-[40px]" />
+              <Logo className="h-10 md:h-12" />
             </Link>
             <p className="hidden max-w-[340px] text-body text-ink-2 md:block">{t("about")}</p>
             <div className="flex flex-col gap-1">
@@ -160,7 +160,7 @@ export function Footer({
 
         <div className="flex flex-col gap-3 text-[13px] leading-[19px] text-ink-2 md:flex-row md:flex-wrap md:items-start md:justify-between md:gap-x-8 md:text-sm md:leading-5">
           <p suppressHydrationWarning className="max-w-[760px] md:flex-[1_1_520px]">
-            © {year} Go Vita. {t("importer", { name: BRAND.legal.importer })} {legal("footer")}
+            © {year} govita. {t("importer", { name: BRAND.legal.importer })} {legal("footer")}
           </p>
           <span className="flex flex-wrap gap-x-5 gap-y-1">
             <Link href="/offer" className="underline-offset-2 hover:underline">{t("offer")}</Link>

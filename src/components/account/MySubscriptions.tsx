@@ -226,7 +226,7 @@ export function SubscriptionsView() {
   return (
     <AccountShell active="subs">
       <div className="flex flex-col gap-3">
-        <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
+        <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
         <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">
           {tv("subsLead", { first: firstPercent, recurring: recurringPercent })}
         </p>

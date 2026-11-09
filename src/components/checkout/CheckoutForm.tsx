@@ -862,7 +862,7 @@ function Heading({ count, crumbsOnly = false }: { count?: number; crumbsOnly?: b
       </nav>
       {!crumbsOnly && (
         <div className="flex items-baseline gap-2.5 lg:gap-3.5">
-          <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{tc("title")}</h1>
+          <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{tc("title")}</h1>
           {count != null && <span className="text-[15px] text-muted lg:text-[17px]">{tv("itemsCount", { count })}</span>}
         </div>
       )}
@@ -890,7 +890,7 @@ function EmptyCart({ recommended }: { recommended: Product[] }) {
             <path d="M5 8h14l-1 12H6L5 8zM9 8V6a3 3 0 0 1 6 0v2" />
           </svg>
         </span>
-        <h1 className="mt-1.5 text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{tv("emptyTitle")}</h1>
+        <h1 className="mt-1.5 text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{tv("emptyTitle")}</h1>
         <p className="max-w-[520px] text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{tv("emptyText")}</p>
         <div className="mt-2.5 flex flex-wrap justify-center gap-2.5">
           <Link href="/products" className={cn(buttonVariants("primary", "lg"), "h-14 rounded-[14px] px-8")}>

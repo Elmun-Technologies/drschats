@@ -19,7 +19,7 @@ import { OrderSummary } from "@/components/checkout/OrderSummary";
 export async function generateMetadata({ params }: { params: Promise<{ locale: Locale }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "checkout.success" });
-  // The layout's template adds "— Go Vita".
+  // The layout's template adds "— govita".
   return { title: t("title"), robots: { index: false } };
 }
 

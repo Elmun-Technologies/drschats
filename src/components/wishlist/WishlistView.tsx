@@ -76,7 +76,7 @@ export function WishlistView({ allProducts, recommended }: { allProducts: Produc
       </nav>
       <div className="flex flex-wrap items-center justify-between gap-4 lg:-mt-2.5">
         <div className="flex items-baseline gap-2.5 lg:gap-3.5">
-          <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
+          <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
           {saved.length > 0 && <span className="text-[15px] text-muted lg:text-[17px]">{t("count", { count: saved.length })}</span>}
         </div>
         {saved.length > 0 && (

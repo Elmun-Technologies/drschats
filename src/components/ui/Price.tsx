@@ -52,7 +52,7 @@ export function Price({
         className,
       )}
     >
-      <span className={cn("whitespace-nowrap font-bold text-ink", now)}>
+      <span className={cn("whitespace-nowrap font-extrabold tracking-[-0.01em] text-ink", now)}>
         {formatMoney(amount, locale)}
       </span>
       {discounted && (

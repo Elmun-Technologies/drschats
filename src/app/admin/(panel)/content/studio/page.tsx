@@ -16,7 +16,7 @@ export default async function AdminContentStudioPage() {
     <>
       <PageHeader
         title="Kontentni tahrirlash"
-        lead="Maqolalar va tahrirlanadigan kontentni Go Vita admin ichida boshqaring."
+        lead="Maqolalar va tahrirlanadigan kontentni govita admin ichida boshqaring."
         actions={<Link href="/admin/content" className={secondaryButtonClass}>← Kontent roʻyxati</Link>}
       />
       {!ready ? (

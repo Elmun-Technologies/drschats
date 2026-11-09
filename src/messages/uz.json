@@ -144,7 +144,7 @@
       "viewAll": "Barcha kategoriyalar"
     },
     "trust": {
-      "title": "Go Vitaʼga nima uchun ishonishadi",
+      "title": "govitaʼga nima uchun ishonishadi",
       "stats": {
         "customers": "Mamnun mijoz",
         "rating": "Oʻrtacha baho",
@@ -290,8 +290,8 @@
         "quiz": "Testdan oʻtish"
       },
       "seo": {
-        "title": "Go Vita — vitaminlar va BAD onlayn doʻkoni",
-        "text": "Go Vita — Oʻzbekistonga rasmiy import qilinadigan vitaminlar va biologik faol qoʻshimchalar. Katalogda Swiss Energy, Dr. Frei, Delical, Aminomorin va Peano mahsulotlari: vitamin va minerallar, shipuchi tabletkalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Toshkent boʻylab Yandex Dostavka {hours} soat ichida yetkazadi, viloyatlarga BTS orqali 1–3 kunda. {free} soʻmdan ortiq buyurtmalar bepul yetkaziladi."
+        "title": "govita — vitaminlar va BAD onlayn doʻkoni",
+        "text": "govita — Oʻzbekistonga rasmiy import qilinadigan vitaminlar va biologik faol qoʻshimchalar. Katalogda Swiss Energy, Dr. Frei, Delical, Aminomorin va Peano mahsulotlari: vitamin va minerallar, shipuchi tabletkalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Toshkent boʻylab Yandex Dostavka {hours} soat ichida yetkazadi, viloyatlarga BTS orqali 1–3 kunda. {free} soʻmdan ortiq buyurtmalar bepul yetkaziladi."
       },
       "dealOfDay": {
         "title": "Bugungi taklif",
@@ -299,7 +299,7 @@
         "save": "Tejaysiz: {amount}"
       },
       "intro": {
-        "title": "Go Vita — vitaminlar va BAD internet-doʻkoni",
+        "title": "govita — vitaminlar va BAD internet-doʻkoni",
         "lead": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — rasmiy import. Toshkent boʻylab {hours} soatda va butun Oʻzbekiston boʻylab yetkazib beramiz.",
         "goals": "Maqsad boʻyicha tanlang",
         "goalsAll": "Barcha maqsadlar"
@@ -487,9 +487,9 @@
       "shown": "{total} ta mahsulotdan {shown} tasi koʻrsatildi",
       "more": "Yana {count} ta koʻrsatish",
       "seoTitle": "{name} — Toshkentda xarid qilish",
-      "seoText": "Go Vita katalogida «{name}» boʻlimida {count} ta mahsulot. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan. Toshkent boʻylab Yandex Dostavka {hours} soat ichida, viloyatlarga BTS yetkazadi, {free} soʻmdan ortiq buyurtmalar bepul.",
+      "seoText": "govita katalogida «{name}» boʻlimida {count} ta mahsulot. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan. Toshkent boʻylab Yandex Dostavka {hours} soat ichida, viloyatlarga BTS yetkazadi, {free} soʻmdan ortiq buyurtmalar bepul.",
       "catalogSeoTitle": "Vitaminlar va BAD katalogi",
-      "catalogSeoText": "Go Vita katalogida {count} ta mahsulot: vitaminlar, minerallar, biologik faol qoʻshimchalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan, narxlar soʻmda. Toshkent boʻylab {hours} soat ichida yetkazamiz, {free} soʻmdan ortiq buyurtmalar bepul.",
+      "catalogSeoText": "govita katalogida {count} ta mahsulot: vitaminlar, minerallar, biologik faol qoʻshimchalar, tibbiy ovqatlanish va uy uchun tibbiy jihozlar. Barcha mahsulotlar Oʻzbekistonga rasmiy import qilingan, narxlar soʻmda. Toshkent boʻylab {hours} soat ichida yetkazamiz, {free} soʻmdan ortiq buyurtmalar bepul.",
       "catalogSeoGoals": "Nimani tanlashni bilmasangiz, sogʻliq maqsadidan boshlang",
       "categories": "Boʻlimlar",
       "priceMin": "Eng past narx",
@@ -616,7 +616,7 @@
       "online": "Onlayn",
       "codTitle": "Naqd pul",
       "codSub": "Yetkazishda",
-      "gatewayNote": "Onlayn toʻlov provayder tomonidan tasdiqlanadi; karta maʼlumotlari Go Vita saytida saqlanmaydi.",
+      "gatewayNote": "Onlayn toʻlov provayder tomonidan tasdiqlanadi; karta maʼlumotlari govita saytida saqlanmaydi.",
       "itemsRow": "Mahsulotlar, {count} ta",
       "consent": "Buyurtmani yuborish orqali <delivery>yetkazish</delivery>, <payment>toʻlov</payment> va <guarantee>qaytarish</guarantee> shartlari hamda <privacy>maxfiylik siyosati</privacy> bilan tanishganingizni tasdiqlaysiz.",
       "emptyTitle": "Savatchangiz boʻsh",
@@ -751,7 +751,7 @@
         "copy": "Kodni nusxalash",
         "copied": "Nusxalandi",
         "share": "Havolani ulashish",
-        "shareMessage": "Go Vitaʼda birinchi buyurtmangizga −{percent}% chegirma: {code} kodi bilan — {link}"
+        "shareMessage": "govitaʼda birinchi buyurtmangizga −{percent}% chegirma: {code} kodi bilan — {link}"
       },
       "summaryTitle": "Buyurtmangiz",
       "summaryTotal": "Jami",
@@ -861,115 +861,115 @@
     }
   },
   "meta": {
-    "homeTitle": "Vitaminlar va BAD sotib olish Toshkentda — Go Vita internet-doʻkoni",
+    "homeTitle": "Vitaminlar va BAD sotib olish Toshkentda — govita internet-doʻkoni",
     "homeDescription": "Yevropa vitaminlari, BAD va tibbiy mahsulotlar — rasmiy import. Narxlar soʻmda, Toshkent boʻylab 24 soatda, viloyatlarga 1–3 kunda yetkazib berish.",
-    "shopTitle": "Vitaminlar va BAD katalogi — narxlar, sotib olish | Go Vita",
+    "shopTitle": "Vitaminlar va BAD katalogi — narxlar, sotib olish | govita",
     "shopDescription": "Vitaminlar, minerallar, BAD, tibbiy ovqatlanish va jihozlar katalogi: narxlar, tarkib va qoʻllash yoʻriqnomasi. Rasmiy import, butun Oʻzbekistonga yetkazish.",
     "seo": {
-      "product": "{name} narxi, Toshkentda sotib olish | Go Vita",
+      "product": "{name} narxi, Toshkentda sotib olish | govita",
       "productDescription": "{name}: {tagline}. Narxi — {price}. Toshkent boʻylab {hours} soatda, viloyatlarga {regions}da yetkazib berish. Rasmiy import.",
-      "category": "{name} — narxlar, Toshkentda sotib olish | Go Vita",
+      "category": "{name} — narxlar, Toshkentda sotib olish | govita",
       "categoryDescription": "{name}: {count} ta mahsulot, narxi {min}dan. Rasmiy import, Toshkent boʻylab {hours} soatda yetkazib berish, {free} soʻmdan ortiq buyurtmalar bepul.",
-      "brand": "{name} mahsulotlari — narxlar, sotib olish | Go Vita",
-      "brandDescription": "{name} mahsulotlari Go Vita katalogida: {count} ta pozitsiya, narxi {min}dan. Oʻzbekistonga rasmiy import, Toshkent boʻylab {hours} soatda yetkazib berish.",
-      "goal": "{name}: qaysi vitaminlarni tanlash | Go Vita",
-      "symptom": "{name}: qaysi vitaminlar kerak | Go Vita",
-      "vitamin": "{name}: nima uchun kerak va qanday tanlash | Go Vita",
-      "program": "{name} — 30 kunlik toʻplam, narxi | Go Vita",
-      "blogCategory": "{name} — vitaminlar va sogʻliq haqida maqolalar | Go Vita",
+      "brand": "{name} mahsulotlari — narxlar, sotib olish | govita",
+      "brandDescription": "{name} mahsulotlari govita katalogida: {count} ta pozitsiya, narxi {min}dan. Oʻzbekistonga rasmiy import, Toshkent boʻylab {hours} soatda yetkazib berish.",
+      "goal": "{name}: qaysi vitaminlarni tanlash | govita",
+      "symptom": "{name}: qaysi vitaminlar kerak | govita",
+      "vitamin": "{name}: nima uchun kerak va qanday tanlash | govita",
+      "program": "{name} — 30 kunlik toʻplam, narxi | govita",
+      "blogCategory": "{name} — vitaminlar va sogʻliq haqida maqolalar | govita",
       "blogCategoryDescription": "«{name}» boʻlimidagi maqolalar: vitaminlar, minerallar va BAD haqida tushunarli tushuntirishlar, tanlash va qabul qilish boʻyicha maslahatlar.",
-      "blogArticle": "{title} | Go Vita blogi",
+      "blogArticle": "{title} | govita blogi",
       "regions": "1–3 kun",
       "page": "{page}-sahifa"
     },
     "pages": {
       "about": {
-        "title": "Go Vita haqida — vitaminlar va BAD rasmiy importyori",
-        "description": "Go Vita — Yevropa vitaminlari, BAD va tibbiy mahsulotlarni Oʻzbekistonga rasmiy import qiluvchi kompaniya. Brendlar, hujjatlar va yetkazib berish haqida."
+        "title": "govita haqida — vitaminlar va BAD rasmiy importyori",
+        "description": "govita — Yevropa vitaminlari, BAD va tibbiy mahsulotlarni Oʻzbekistonga rasmiy import qiluvchi kompaniya. Brendlar, hujjatlar va yetkazib berish haqida."
       },
       "contact": {
-        "title": "Aloqa — telefon, Telegram va manzil | Go Vita",
-        "description": "Go Vita bilan bogʻlanish: telefon, Telegram, email va ofis manzili. Buyurtma, yetkazib berish va mahsulotlar boʻyicha savollarga operator javob beradi."
+        "title": "Aloqa — telefon, Telegram va manzil | govita",
+        "description": "govita bilan bogʻlanish: telefon, Telegram, email va ofis manzili. Buyurtma, yetkazib berish va mahsulotlar boʻyicha savollarga operator javob beradi."
       },
       "delivery": {
-        "title": "Yetkazib berish — Toshkent va Oʻzbekiston boʻylab | Go Vita",
+        "title": "Yetkazib berish — Toshkent va Oʻzbekiston boʻylab | govita",
         "description": "Toshkent boʻylab {hours} soatda, viloyatlarga {regions}da yetkazib berish. Narxi {fee} soʻm, {free} soʻmdan ortiq buyurtmalar bepul. Oʻzi olib ketish ham mumkin."
       },
       "payment": {
-        "title": "Toʻlov usullari — yetkazishda naqd pul | Go Vita",
-        "description": "Go Vita buyurtmasini yetkazib berishda naqd pul bilan toʻlang. Onlayn toʻlov hozircha mavjud emas. Narxlar soʻmda."
+        "title": "Toʻlov usullari — yetkazishda naqd pul | govita",
+        "description": "govita buyurtmasini yetkazib berishda naqd pul bilan toʻlang. Onlayn toʻlov hozircha mavjud emas. Narxlar soʻmda."
       },
       "guarantee": {
-        "title": "Kafolat, qaytarish va almashtirish shartlari | Go Vita",
+        "title": "Kafolat, qaytarish va almashtirish shartlari | govita",
         "description": "Mahsulot sifati kafolati, qaytarish va almashtirish shartlari: qaysi hollarda pul qaytariladi, qanday murojaat qilinadi va muddatlar qancha."
       },
       "requisites": {
-        "title": "Rekvizitlar — Go Vita yuridik maʼlumotlari",
-        "description": "Go Vita kompaniyasining rekvizitlari: yuridik nomi, STIR, bank hisob raqami va manzili — shartnoma va hisob-faktura rasmiylashtirish uchun."
+        "title": "Rekvizitlar — govita yuridik maʼlumotlari",
+        "description": "govita kompaniyasining rekvizitlari: yuridik nomi, STIR, bank hisob raqami va manzili — shartnoma va hisob-faktura rasmiylashtirish uchun."
       },
       "licenses": {
-        "title": "Litsenziya va sertifikatlar | Go Vita",
-        "description": "Go Vita mahsulotlarining roʻyxatdan oʻtganlik guvohnomalari va sifat sertifikatlari. Hujjatlar nusxasi soʻrov boʻyicha beriladi."
+        "title": "Litsenziya va sertifikatlar | govita",
+        "description": "govita mahsulotlarining roʻyxatdan oʻtganlik guvohnomalari va sifat sertifikatlari. Hujjatlar nusxasi soʻrov boʻyicha beriladi."
       },
       "blog": {
-        "title": "Sogʻliq blogi — vitaminlar va BAD haqida maqolalar | Go Vita",
+        "title": "Sogʻliq blogi — vitaminlar va BAD haqida maqolalar | govita",
         "description": "Vitaminlar, minerallar va BAD haqida tushunarli maqolalar: nima uchun kerak, qanday tanlash va qabul qilish. Ishlab chiqaruvchi yoʻriqnomalari asosida."
       },
       "brands": {
-        "title": "Brendlar — Swiss Energy, Dr. Frei, Delical va boshqalar | Go Vita",
-        "description": "Go Vita katalogidagi brendlar: Swiss Energy, Dr. Frei, Delical, Peano va boshqalar. Rasmiy import, narxlar va Oʻzbekiston boʻylab yetkazib berish."
+        "title": "Brendlar — Swiss Energy, Dr. Frei, Delical va boshqalar | govita",
+        "description": "govita katalogidagi brendlar: Swiss Energy, Dr. Frei, Delical, Peano va boshqalar. Rasmiy import, narxlar va Oʻzbekiston boʻylab yetkazib berish."
       },
       "loyalty": {
-        "title": "Sodiqlik dasturi — chegirmalar va bonuslar | Go Vita",
-        "description": "Go Vita sodiqlik dasturi: doimiy xaridlar uchun chegirmalar, obuna orqali tejash va maxsus takliflar. Qanday qatnashish va qancha tejash mumkin."
+        "title": "Sodiqlik dasturi — chegirmalar va bonuslar | govita",
+        "description": "govita sodiqlik dasturi: doimiy xaridlar uchun chegirmalar, obuna orqali tejash va maxsus takliflar. Qanday qatnashish va qancha tejash mumkin."
       },
       "reviews": {
-        "title": "Mijozlar sharhlari — Go Vita mahsulotlari haqida",
-        "description": "Go Vita mahsulotlari haqidagi haqiqiy mijozlar sharhlari. Xarid qilgan mahsulotingiz haqida fikr qoldiring — u boshqalarga tanlashda yordam beradi."
+        "title": "Mijozlar sharhlari — govita mahsulotlari haqida",
+        "description": "govita mahsulotlari haqidagi haqiqiy mijozlar sharhlari. Xarid qilgan mahsulotingiz haqida fikr qoldiring — u boshqalarga tanlashda yordam beradi."
       },
       "whereToBuy": {
-        "title": "Qayerdan sotib olish — hamkor dorixonalar | Go Vita",
-        "description": "Go Vita mahsulotlarini Toshkent va viloyatlardagi hamkor dorixona tarmoqlaridan ham xarid qilish mumkin. Tarmoqlar roʻyxati va saytdan buyurtma berish."
+        "title": "Qayerdan sotib olish — hamkor dorixonalar | govita",
+        "description": "govita mahsulotlarini Toshkent va viloyatlardagi hamkor dorixona tarmoqlaridan ham xarid qilish mumkin. Tarmoqlar roʻyxati va saytdan buyurtma berish."
       },
       "offer": {
-        "title": "Ommaviy oferta — xarid shartlari | Go Vita",
-        "description": "Go Vita internet-doʻkonida xarid qilish shartlari: buyurtma rasmiylashtirish, toʻlov, yetkazib berish va qaytarish tartibi."
+        "title": "Ommaviy oferta — xarid shartlari | govita",
+        "description": "govita internet-doʻkonida xarid qilish shartlari: buyurtma rasmiylashtirish, toʻlov, yetkazib berish va qaytarish tartibi."
       },
       "sale": {
-        "title": "Aksiyalar va chegirmalar — vitaminlar va BAD | Go Vita",
-        "description": "Go Vita aksiyalari: obuna orqali chegirma, toʻplam takliflari va bepul yetkazib berish. Faqat savatda haqiqatan qoʻllanadigan takliflar."
+        "title": "Aksiyalar va chegirmalar — vitaminlar va BAD | govita",
+        "description": "govita aksiyalari: obuna orqali chegirma, toʻplam takliflari va bepul yetkazib berish. Faqat savatda haqiqatan qoʻllanadigan takliflar."
       },
       "goals": {
-        "title": "Sogʻliq maqsadlari boʻyicha vitamin tanlash | Go Vita",
+        "title": "Sogʻliq maqsadlari boʻyicha vitamin tanlash | govita",
         "description": "Immunitet, energiya, uyqu, goʻzallik va boshqa maqsadlar uchun qaysi vitamin va minerallar kerak — tarkib boʻyicha tushuntirish va mos mahsulotlar."
       },
       "symptoms": {
-        "title": "Belgilar boʻyicha vitaminlar: charchoq, uyqu, soch | Go Vita",
+        "title": "Belgilar boʻyicha vitaminlar: charchoq, uyqu, soch | govita",
         "description": "Charchoq, uyqu buzilishi, soch toʻkilishi kabi belgilarda qaysi moddalar yetishmasligi mumkin, mos mahsulotlar va shifokorga qachon borish kerak."
       },
       "vitamins": {
-        "title": "Vitaminlar va minerallar qoʻllanmasi — nima uchun kerak | Go Vita",
+        "title": "Vitaminlar va minerallar qoʻllanmasi — nima uchun kerak | govita",
         "description": "D3, C, B12, magniy, omega-3, temir va boshqa vitamin hamda minerallar: nima uchun kerak, kunlik meʼyor, qanday tanlash va qaysi mahsulotlarda bor."
       },
       "programs": {
-        "title": "30 kunlik vitamin dasturlari va toʻplamlar | Go Vita",
+        "title": "30 kunlik vitamin dasturlari va toʻplamlar | govita",
         "description": "Bir oylik vitamin dasturlari: immunitet, stressdan tiklanish, teri va soch, ayollar va bolalar uchun tayyor toʻplamlar — tarkib, narx va qabul qilish tartibi."
       },
       "quiz": {
-        "title": "Vitamin tanlash testi — sizga mos BAD | Go Vita",
-        "description": "Kim uchun, yosh va nima bezovta qilishi — 3–5 ta savol, natijada Go Vita katalogidan mos vitaminlar roʻyxati. Tashxis emas, tanlashga yordam."
+        "title": "Vitamin tanlash testi — sizga mos BAD | govita",
+        "description": "Kim uchun, yosh va nima bezovta qilishi — 3–5 ta savol, natijada govita katalogidan mos vitaminlar roʻyxati. Tashxis emas, tanlashga yordam."
       },
       "ingredients": {
-        "title": "Vitamin va minerallar koʻrsatkichi — tarkib va mahsulotlar | Go Vita",
-        "description": "Faol moddalar koʻrsatkichi: vitaminlar, minerallar, kollagen va probiotiklar nima uchun kerak va Go Vita katalogidagi qaysi mahsulotlar tarkibida bor."
+        "title": "Vitamin va minerallar koʻrsatkichi — tarkib va mahsulotlar | govita",
+        "description": "Faol moddalar koʻrsatkichi: vitaminlar, minerallar, kollagen va probiotiklar nima uchun kerak va govita katalogidagi qaysi mahsulotlar tarkibida bor."
       },
       "partners": {
-        "title": "Ulgurji hamkorlik — dorixonalar va distributorlar uchun | Go Vita",
-        "description": "Dorixonalar, distributorlar va korporativ mijozlar uchun Go Vita bilan hamkorlik: ulgurji narx, hudud va toʻlov muddati alohida shartnomada. Ariza qoldiring."
+        "title": "Ulgurji hamkorlik — dorixonalar va distributorlar uchun | govita",
+        "description": "Dorixonalar, distributorlar va korporativ mijozlar uchun govita bilan hamkorlik: ulgurji narx, hudud va toʻlov muddati alohida shartnomada. Ariza qoldiring."
       },
       "privacy": {
-        "title": "Maxfiylik siyosati — shaxsiy maʼlumotlar himoyasi | Go Vita",
-        "description": "Go Vita qanday maʼlumotlarni toʻplaydi, ulardan nima uchun foydalanadi va qanday himoya qiladi: buyurtma, yetkazib berish, analitika va cookie fayllari."
+        "title": "Maxfiylik siyosati — shaxsiy maʼlumotlar himoyasi | govita",
+        "description": "govita qanday maʼlumotlarni toʻplaydi, ulardan nima uchun foydalanadi va qanday himoya qiladi: buyurtma, yetkazib berish, analitika va cookie fayllari."
       }
     }
   },
@@ -1079,7 +1079,7 @@
     "switchLocale": "Русский язык",
     "closeSearch": "Qidiruvni yopish",
     "closeCatalog": "Katalogni yopish",
-    "homeLabel": "Go Vita bosh sahifa",
+    "homeLabel": "govita bosh sahifa",
     "allProductsPlain": "Barcha mahsulotlar",
     "compare": "Taqqoslash",
     "announcementPause": "Eʼlonlarni toʻxtatish",
@@ -1129,7 +1129,7 @@
       "crumb": "Yangiliklar",
       "eyebrow": "Kompaniya yangiliklari",
       "title": "Yangiliklar",
-      "subtitle": "Go Vita hayotidan soʻnggi yangiliklar va eʼlonlar.",
+      "subtitle": "govita hayotidan soʻnggi yangiliklar va eʼlonlar.",
       "items": []
     },
     "guarantee": {
@@ -1180,7 +1180,7 @@
     ],
     "whereToBuy": {
       "crumb": "Qayerdan sotib olish",
-      "title": "Go Vita mahsulotlarini dorixonalardan ham xarid qilishingiz mumkin",
+      "title": "govita mahsulotlarini dorixonalardan ham xarid qilishingiz mumkin",
       "subtitle": "Mahsulotlarimiz Toshkentdagi yirik dorixona tarmoqlarida sotiladi. Quyida tarmoqlar va tekshirilgan manzillardan namunalar keltirilgan — har bir kartochkadagi havola tarmoqning barcha filiallarini xaritada koʻrsatadi.",
       "branchCount": "{count} filial",
       "viewAllBranches": "Barcha filiallar xaritada",
@@ -1256,7 +1256,7 @@
         "codTitle": "Naqd pul",
         "codText": "Yetkazib berishda naqd pul bilan toʻlanadi.",
         "safeTitle": "Xavfsiz toʻlov",
-        "safeText": "Onlayn toʻlov provayder tomonidan qayta ishlanadi; Go Vita karta maʼlumotlarini saqlamaydi.",
+        "safeText": "Onlayn toʻlov provayder tomonidan qayta ishlanadi; govita karta maʼlumotlarini saqlamaydi.",
         "faq": [
           {
             "question": "Hozir qaysi toʻlov usuli mavjud?",
@@ -1575,7 +1575,7 @@
     "body": "Yangi mahsulotlar, aksiyalar va qabul boʻyicha maslahatlar Telegram kanalimizda. Telefon raqamingizni soʻramaymiz.",
     "cta": "Telegram kanalga oʻtish",
     "dismiss": "Yopish",
-    "badge": "Go Vita Telegram",
+    "badge": "govita Telegram",
     "perk1": "Aksiyalar haqida birinchi boʻlib bilish",
     "perk2": "Qabul eslatmalari",
     "perk3": "Klub takliflari va yangi mahsulotlar",
@@ -1600,11 +1600,11 @@
   "privacy": {
     "title": "Maxfiylik siyosati",
     "effective": "Kuchga kirish sanasi: 2026 yil 28 iyun",
-    "intro": "Go Vita («DR SCHATZ» MChJ) sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday maʼlumotlarni toʻplashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
+    "intro": "govita («DR SCHATZ» MChJ) sizning maxfiyligingizni hurmat qiladi. Ushbu siyosat qanday maʼlumotlarni toʻplashimiz, ulardan qanday foydalanishimiz va qanday himoyalashimizni tushuntiradi.",
     "sections": [
       {
         "heading": "1. Qanday maʼlumotlarni toʻplaymiz",
-        "body": "Go Vita Telegram-boti orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi.\n\nAgar /profile sahifasida «Tugʻilgan kunimda sovgʻa olishni xohlayman» belgisini qoʻysangiz — ism, tugʻilgan kun (kun va oy, yil ixtiyoriy) va telefon raqami serverga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi; rozilikni oʻsha sahifada bekor qilsangiz, maʼlumot oʻchiriladi. Keshbek ballari va doʻst kodlari telefon raqamingizga bogʻlanadi; ballarni ishlatish uchun shu raqamga bir martalik SMS kod yuboriladi (serverda kodning oʻzi emas, faqat shifrlangan izi 1 kun saqlanadi)."
+        "body": "govita Telegram-boti orqali foydalanishda: foydalanuvchi nomi, Telegram ID va interfeys tili olinadi.\n\nSayt yoki bot orqali buyurtma berganingizda — ism, telefon raqami, yetkazib berish manzili va buyurtmalar tarixi olinadi.\n\nAgar /profile sahifasida «Tugʻilgan kunimda sovgʻa olishni xohlayman» belgisini qoʻysangiz — ism, tugʻilgan kun (kun va oy, yil ixtiyoriy) va telefon raqami serverga yuboriladi va faqat tabrik hamda shaxsiy promokod uchun ishlatiladi; rozilikni oʻsha sahifada bekor qilsangiz, maʼlumot oʻchiriladi. Keshbek ballari va doʻst kodlari telefon raqamingizga bogʻlanadi; ballarni ishlatish uchun shu raqamga bir martalik SMS kod yuboriladi (serverda kodning oʻzi emas, faqat shifrlangan izi 1 kun saqlanadi)."
       },
       {
         "heading": "2. Maʼlumotlardan qanday foydalanamiz",
@@ -1973,7 +1973,7 @@
     },
     "stop": {
       "title": "Xabarlarni oʻchirish",
-      "lead": "{phone} raqamiga Go Vita {channel} orqali aksiya va eslatmalar yuboradi.",
+      "lead": "{phone} raqamiga govita {channel} orqali aksiya va eslatmalar yuboradi.",
       "channelSms": "SMS",
       "channelTelegram": "Telegram",
       "button": "{channel} xabarlarini oʻchirish",
@@ -2035,14 +2035,14 @@
     },
     "welcome": {
       "title": "Birinchi buyurtmangizga −{percent}%",
-      "body": "Go Vitaʼda birinchi marta buyurtma berayapsizmi? Chegirmani operator buyurtmani tasdiqlashda qoʻllaydi — kod kerak emas.",
+      "body": "govitaʼda birinchi marta buyurtma berayapsizmi? Chegirmani operator buyurtmani tasdiqlashda qoʻllaydi — kod kerak emas.",
       "perk1": "Rasmiy import, ishlab chiqaruvchi hujjatlari bilan",
       "perk2": "Toshkent boʻylab {hours} soatda yetkazib berish",
       "perk3": "Yetkazib berishda naqd pul bilan toʻlov",
       "cta": "Katalogni koʻrish",
       "quiz": "2 daqiqalik vitamin testi",
       "note": "Har bir mijoz uchun bir marta.",
-      "bodyAuto": "Go Vitaʼda birinchi marta buyurtma berayapsizmi? Chegirma savatda telefon raqamingiz boʻyicha avtomatik qoʻllanadi — kod kerak emas."
+      "bodyAuto": "govitaʼda birinchi marta buyurtma berayapsizmi? Chegirma savatda telefon raqamingiz boʻyicha avtomatik qoʻllanadi — kod kerak emas."
     },
     "quiz": {
       "title": "Qaysi vitamin sizga kerak?",

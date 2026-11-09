@@ -101,14 +101,13 @@ export default async function LocaleLayout({
         {/* Picks each running banner test's variant from the gv_ab cookie before the first paint — no layout shift, the page stays cached. */}
         {experiments.length > 0 && <script dangerouslySetInnerHTML={{ __html: abHeadScript(experiments) }} />}
         <link rel="manifest" href="/manifest.json" />
-        {/* Latin Onest and the wordmark face are on every first paint, and
-            Cyrillic Onest on every /ru one; the other subsets load only when
-            a page needs their characters. */}
+        {/* Latin Onest is on every first paint, and Cyrillic Onest on every
+            /ru one; the other subsets load only when a page needs their
+            characters. The wordmark is an image (BRAND.logo), not a font. */}
         <link rel="preload" href="/fonts/onest-v11/onest-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         {locale === "ru" && (
           <link rel="preload" href="/fonts/onest-v11/onest-cyrillic.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         )}
-        <link rel="preload" href="/fonts/playfair-v40/playfair-500-latin.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
         <meta name="theme-color" content="#ffffff" />
       </head>
       <body className="grain min-h-screen antialiased">

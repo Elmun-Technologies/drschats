@@ -76,7 +76,7 @@ export function buildPageMetadata({
     : { url: absoluteUrl(DEFAULT_OG_IMAGE), width: 1200, height: 630, alt: full };
 
   return {
-    // Absolute: the [locale] layout's "%s — Go Vita" template is for pages that write a bare title.
+    // Absolute: the [locale] layout's "%s — govita" template is for pages that write a bare title.
     title: { absolute: full },
     description,
     /*

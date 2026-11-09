@@ -5,8 +5,8 @@ describe("buildPageMetadata", () => {
   const base = { locale: "uz" as const, path: "/products", title: "Katalog", description: "D" };
 
   it("names the brand once, as an absolute title", () => {
-    expect(buildPageMetadata(base).title).toEqual({ absolute: "Katalog — Go Vita" });
-    expect(brandedTitle("Katalog | Go Vita")).toBe("Katalog | Go Vita");
+    expect(buildPageMetadata(base).title).toEqual({ absolute: "Katalog — govita" });
+    expect(brandedTitle("Katalog | govita")).toBe("Katalog | govita");
   });
 
   it("gives an indexable page its canonical and hreflang", () => {

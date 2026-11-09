@@ -83,7 +83,7 @@ export function verifyTotp(secretBase32: string, code: string, options: { now?: 
   return null;
 }
 
-export function otpauthUrl(secretBase32: string, account: string, issuer = "Go Vita admin"): string {
+export function otpauthUrl(secretBase32: string, account: string, issuer = "govita admin"): string {
   const label = encodeURIComponent(`${issuer}:${account}`);
   const q = new URLSearchParams({ secret: secretBase32, issuer, algorithm: "SHA1", digits: String(DIGITS), period: String(TOTP_STEP_SECONDS) });
   return `otpauth://totp/${label}?${q.toString()}`;

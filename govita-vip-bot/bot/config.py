@@ -12,8 +12,8 @@ def _env(k, d=""):
 @dataclass
 class Config:
     bot_token: str = field(default_factory=lambda: _env("BOT_TOKEN"))
-    club_name: str = field(default_factory=lambda: _env("CLUB_NAME", "GoVita VIP Salomatlik Klubi"))
-    store_name: str = field(default_factory=lambda: _env("STORE_NAME", "GoVita"))
+    club_name: str = field(default_factory=lambda: _env("CLUB_NAME", "govita VIP Salomatlik Klubi"))
+    store_name: str = field(default_factory=lambda: _env("STORE_NAME", "govita"))
     shop_url: str = field(default_factory=lambda: _env("SHOP_URL", "https://govita.uz"))
     operator_phone: str = field(default_factory=lambda: _env("OPERATOR_PHONE", "+998 71 200 70 80"))
     support_hours: str = field(default_factory=lambda: _env("SUPPORT_HOURS", "Dushanba–Shanba, 09:00–18:00"))

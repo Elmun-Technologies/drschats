@@ -13,7 +13,7 @@ export default async function AdminSetupPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-tile px-4 py-12">
       <div className="w-full max-w-[460px]">
-        <Link href="/admin/login" aria-label="Go Vita admin" className="inline-flex"><Logo className="text-[34px]" /></Link>
+        <Link href="/admin/login" aria-label="govita admin" className="inline-flex"><Logo className="h-10" priority /></Link>
         <p className="mt-2 text-[14px] text-muted">Xodimlar uchun boshqaruv paneli</p>
         <h1 className="mt-8 text-[28px] font-bold leading-[34px] text-ink">Birinchi administrator</h1>
         <p className="mt-2 text-[15px] leading-[23px] text-ink-2">Bu sozlash sahifasi birinchi administrator yaratilgach avtomatik yopiladi.</p>

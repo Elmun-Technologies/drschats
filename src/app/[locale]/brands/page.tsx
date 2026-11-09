@@ -52,7 +52,7 @@ export default async function BrandsPage({
           <span aria-hidden>/</span>
           <span className="text-ink">{t("crumb")}</span>
         </nav>
-        <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
+        <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("title")}</h1>
         <p className="max-w-[780px] text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{t("subtitle")}</p>
       </div>
 

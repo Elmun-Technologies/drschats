@@ -53,6 +53,6 @@ export function orderStatusMessage(
 }
 
 export function ticketReplyMessage(reply: string, locale: Locale): BotJobPayload {
-  const head = locale === "ru" ? "💬 Ответ оператора GoVita:" : "💬 GoVita operatori javobi:";
+  const head = locale === "ru" ? "💬 Ответ оператора govita:" : "💬 govita operatori javobi:";
   return { text: `${head}\n\n${escapeHtml(reply)}` };
 }

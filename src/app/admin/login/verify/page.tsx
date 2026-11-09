@@ -15,7 +15,7 @@ export default async function AdminVerifyPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-tile px-4 py-12">
       <div className="w-full max-w-[430px]">
-        <Link href="/admin/login" aria-label="Go Vita admin" className="inline-flex"><Logo className="text-[34px]" /></Link>
+        <Link href="/admin/login" aria-label="govita admin" className="inline-flex"><Logo className="h-10" priority /></Link>
         <h1 className="mt-8 text-[28px] font-bold leading-[34px] text-ink">Tasdiqlash kodi</h1>
         <p className="mt-2 text-[15px] leading-[23px] text-ink-2">Autentifikator ilovasidagi 6 xonali kodni kiriting. Telefon yoʻq boʻlsa — tiklash kodlaridan birini.</p>
         <div className="mt-6 rounded-[20px] bg-white p-6 sm:p-7">

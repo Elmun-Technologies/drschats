@@ -27,6 +27,12 @@ hali PR ochilmagan (foydalanuvchi so'rasa och).
   **Diqqat**: ZRU-547 (shaxsiy ma'lumotlar O'zbekistonda saqlanishi) — Hetzner
   Germaniya/Finlyandiyada, yurist tekshiruvi kerak (hujjatda yozilgan).
 
+- **Rebrend «govita» (brendbook v1, 2026-11)**: nom `govita` (kichik harf) — sayt, uz/ru
+  matnlar, SEO, email, SMS, bot matnlari; logo fayldan (`public/brand/`), favicon/ilova ikonkasi
+  «g•», Playfair va forest/gold olib tashlandi, sarlavha/narx Onest 800, hero'da «katta sariq
+  nuqta». Brendbook PDF — foydalanuvchida (repoda yoʻq). **Diqqat**: SMS matnlari «govita:» bilan
+  boshlanadi — Eskiz shablonlarini qayta tasdiqlatish kerak.
+
 ## Bloklangan (davom ettirish uchun nima kerak)
 
 - **BTS yetkazish integratsiyasi**: `docs.bts.uz` / `apitest.bts.uz` sessiya tarmog'iga

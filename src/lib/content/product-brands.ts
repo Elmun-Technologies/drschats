@@ -27,7 +27,7 @@ export function productBrand(productSlug: string): ProductBrand | null {
 export const ALL_BRANDS: ProductBrand[] = BRANDS.map(({ slug, name }) => ({ slug, name }));
 
 /*
-  Brands Go Vita imports as the official distributor (Dr Schatz price list,
+  Brands govita imports as the official distributor (Dr Schatz price list,
   2026-10). Only these carry the «Rasmiy distribyutordan» line: a claim the
   shop can back with the import papers, not a badge for every product.
 */

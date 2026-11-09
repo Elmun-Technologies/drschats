@@ -20,7 +20,7 @@ export const SITE_URL = (RAW || "https://www.govita.uz").replace(/\/+$/, "");
 /** Host used by next/image for remote patterns and by absolute URL builders. */
 export const SITE_HOST = new URL(SITE_URL).host;
 
-export const SITE_NAME = "Go Vita";
+export const SITE_NAME = "govita";
 
 /**
  * Absolute URL for a path, for JSON-LD and og tags that must not be relative.

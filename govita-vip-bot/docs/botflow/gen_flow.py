@@ -26,8 +26,8 @@ screens = [
     {
         "id": "main", "name": "Bosh menyu", "imageUrl": None, "showBack": False,
         "text": L(
-            "<b>GoVita VIP Salomatlik Klubi</b>\n\nBuyurtma holati, qabul eslatmalari, obunalar va klub takliflari — hammasi shu yerda.",
-            "<b>Клуб здоровья GoVita VIP</b>\n\nСтатус заказа, напоминания о приёме, подписки и предложения клуба — всё здесь."),
+            "<b>govita VIP Salomatlik Klubi</b>\n\nBuyurtma holati, qabul eslatmalari, obunalar va klub takliflari — hammasi shu yerda.",
+            "<b>Клуб здоровья govita VIP</b>\n\nСтатус заказа, напоминания о приёме, подписки и предложения клуба — всё здесь."),
         "buttons": [
             btn("shop", "🛍 Doʻkon", "🛍 Магазин", {"type": "webapp"}),
             btn("orders", "📦 Buyurtmalarim", "📦 Мои заказы", {"type": "my_orders"}, False),
@@ -128,8 +128,8 @@ forms = [
 
 settings = {
     "startScreenId": "main",
-    "welcome": L("Assalomu alaykum! <b>GoVita</b> VIP Salomatlik Klubiga xush kelibsiz 👋",
-                 "Здравствуйте! Добро пожаловать в VIP клуб здоровья <b>GoVita</b> 👋"),
+    "welcome": L("Assalomu alaykum! <b>govita</b> VIP Salomatlik Klubiga xush kelibsiz 👋",
+                 "Здравствуйте! Добро пожаловать в VIP клуб здоровья <b>govita</b> 👋"),
     "defaultLang": "uz", "languages": ["uz", "ru"], "askLanguageOnStart": False,
     "showStoreButton": True, "storeButtonLabel": L("🛍 Doʻkon", "🛍 Магазин"),
     "fallback": "operator",

@@ -15,24 +15,25 @@ import type { Locale } from "@/lib/i18n/routing";
 
 const COLORS = {
   ink: "#ffffff",
-  surface: "#f5f6fb",
-  fg: "#131632",
-  muted: "#5a6080",
-  faint: "#6b7194",
-  accent: "#3d4cdb",
-  accentStrong: "#2c39b4",
-  line: "#e1e5f3",
+  surface: "#f1f3f0",
+  fg: "#17191b",
+  muted: "#44494e",
+  faint: "#63686e",
+  accent: "#17191b",
+  accentStrong: "#17191b",
+  line: "#e4e6e8",
+  dot: "#ffd43b",
 };
 
 const FOOTER_COPY: Record<Locale, { why: string; unsubscribe: string; preferences: string; contact: string }> = {
   uz: {
-    why: "Siz Go Vita saytida shu manzilni tasdiqlaganingiz uchun bu xatni oldingiz.",
+    why: "Siz govita saytida shu manzilni tasdiqlaganingiz uchun bu xatni oldingiz.",
     unsubscribe: "Obunani bekor qilish",
     preferences: "Sozlamalar",
     contact: "Savolingiz bormi? Shu xatga javob yozing.",
   },
   ru: {
-    why: "Вы получили это письмо, потому что подтвердили этот адрес на сайте Go Vita.",
+    why: "Вы получили это письмо, потому что подтвердили этот адрес на сайте govita.",
     unsubscribe: "Отписаться",
     preferences: "Настройки",
     contact: "Есть вопрос? Просто ответьте на это письмо.",
@@ -161,8 +162,8 @@ export function renderEmail(
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:${COLORS.ink};border-radius:16px;border:1px solid ${COLORS.line};">
             <tr>
               <td style="padding:28px 28px 0;">
-                <span style="font-size:20px;font-weight:800;letter-spacing:-0.02em;color:${COLORS.fg};">
-                  ${escapeHtml(BRAND.wordmark.lead)}<span style="color:${COLORS.accent};">${escapeHtml(BRAND.wordmark.accent)}</span>${escapeHtml(BRAND.wordmark.tail)}
+                <span style="font-size:22px;font-weight:800;letter-spacing:-0.04em;color:${COLORS.fg};">
+                  ${escapeHtml(BRAND.name)}<span style="color:${COLORS.dot};">&#9679;</span>
                 </span>
               </td>
             </tr>

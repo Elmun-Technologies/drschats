@@ -111,7 +111,7 @@ export default async function SearchPage({ params, searchParams }: { params: Par
         <TrackSearch term={q} />
         <section className="grid items-start gap-6 lg:-mt-4 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:gap-8">
           <div className="flex flex-col gap-4">
-            <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">
+            <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">
               {q ? t("emptyTitle", { query: q }) : t("startTitle")}
             </h1>
             <p className="text-base leading-6 text-ink-2 lg:text-[17px] lg:leading-[26px]">{q ? t("emptyText") : t("startText")}</p>
@@ -158,7 +158,7 @@ export default async function SearchPage({ params, searchParams }: { params: Par
       {crumbs}
       <TrackSearch term={q} />
       <div className="flex flex-wrap items-baseline gap-x-3.5 gap-y-1 lg:-mt-1.5">
-        <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("resultsFor", { query: q })}</h1>
+        <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{t("resultsFor", { query: q })}</h1>
         <span className="text-[15px] text-muted lg:text-[17px]">{t("count", { count: results.length })}</span>
       </div>
       {chips.length > 1 && (
