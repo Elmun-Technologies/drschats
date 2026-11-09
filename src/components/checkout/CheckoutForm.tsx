@@ -48,6 +48,8 @@ import { usePoints } from "@/lib/loyalty/store";
 import { LOYALTY_OFF, earnFor, maxRedeemable, type PublicLoyalty } from "@/lib/loyalty/model";
 import { useMiniAppMainButton } from "@/components/telegram/useMiniAppMainButton";
 import { normalizeUzPhone } from "@/lib/phone";
+import { TELEGRAM_LOGIN_ON } from "@/lib/config/telegram-login";
+import { signedInContact } from "@/app/actions/customer";
 import { rememberOrder, saveLastOrder } from "@/lib/orders/last-order";
 
 /* One key per form session (0018): a double tap or a retried request returns the first order. */
@@ -259,6 +261,31 @@ export function CheckoutForm({
       })
       .catch(() => {
         // The form works exactly as before when Telegram is unreachable.
+      });
+    return () => {
+      alive = false;
+    };
+  }, [getValues, setValue]);
+
+  /*
+    Signed in through the club bot: the name and the proven phone fill
+    themselves, and the server treats that phone as verified (lib/customer).
+    The display cookie only says whether to ask; the action reads the session.
+  */
+  const [sessionPhone9, setSessionPhone9] = useState<string | null>(null);
+  useEffect(() => {
+    if (!TELEGRAM_LOGIN_ON || telegramInitData()) return;
+    if (!document.cookie.split("; ").some((c) => c.startsWith("gv_cn="))) return;
+    let alive = true;
+    signedInContact()
+      .then((contact) => {
+        if (!alive || !contact) return;
+        if (contact.name && !getValues("name")) setValue("name", contact.name);
+        if (!getValues("phone")) setValue("phone", contact.phone);
+        setSessionPhone9(contact.phone.replace(/\D/g, "").slice(-9));
+      })
+      .catch(() => {
+        // Nothing prefilled; the form is the same.
       });
     return () => {
       alive = false;
@@ -711,7 +738,7 @@ export function CheckoutForm({
               <SummaryRow label={tc("discount")} value={`−${formatMoney(totals.discount, locale)}`} sale />
             )}
             {loyalty.redeemable && <PointsField phone={watch("phone") ?? ""} applied={pointsApplied} maxSharePercent={loyalty.maxSharePercent} />}
-            {firstOrder.mode === "auto" && phone9 && !phoneToken && !(pointsToken && pointsPhone === phone9) && (
+            {firstOrder.mode === "auto" && phone9 && !phoneToken && sessionPhone9 !== phone9 && !(pointsToken && pointsPhone === phone9) && (
               <PhoneProofField phone={watch("phone") ?? ""} percent={firstOrder.percent} onProven={(p9, token) => setPhoneProof({ phone9: p9, token })} />
             )}
             {applied && extra > 0 && (

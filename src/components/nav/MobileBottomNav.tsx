@@ -8,7 +8,7 @@ import { BRAND } from "@/lib/brand";
 import { useCart } from "@/lib/cart/store";
 import { useWishlist } from "@/lib/wishlist/store";
 import { isApiConfigured } from "@/lib/api/client";
-import { accountAreaAvailable } from "@/lib/config/demo";
+import { cabinetAvailable } from "@/lib/config/telegram-login";
 import { isNavigable } from "@/lib/content/nav-sections";
 import { useDialog } from "@/lib/ui/useDialog";
 import type { Category } from "@/lib/shopflow/types";
@@ -51,7 +51,7 @@ export function MobileBottomNav({
     labelled «Kabinet» and open the health profile; it now says what it opens:
     the orders this browser placed (/orders → signed tracking links).
   */
-  const accounts = accountAreaAvailable(isApiConfigured());
+  const accounts = cabinetAvailable(isApiConfigured());
   const cabinetHref = accounts ? "/account" : "/orders";
 
   return (

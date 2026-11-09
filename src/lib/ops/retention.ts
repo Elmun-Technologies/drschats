@@ -22,6 +22,7 @@ export const RETENTION: { table: string; where: SQL; label: string }[] = [
   { table: "banner_exposures", label: "banner A/B exposures, 180 days", where: sql`created_at < now() - interval '180 days'` },
   { table: "stock_movements", label: "stock movements, 2 years", where: sql`created_at < now() - interval '730 days'` },
   { table: "loyalty_otps", label: "SMS codes, 7 days", where: sql`created_at < now() - interval '7 days'` },
+  { table: "telegram_logins", label: "website sign-in requests, 7 days", where: sql`created_at < now() - interval '7 days'` },
   { table: "rate_limit_hits", label: "expired rate-limit counters", where: sql`reset_at < now() - interval '1 hour'` },
   { table: "csp_reports", label: "CSP report counts, 90 days", where: sql`day < (now() - interval '90 days')::date` },
 ];

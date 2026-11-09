@@ -16,11 +16,12 @@ from aiogram import F, Router
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramRetryAfter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import CallbackQuery, Message, ReplyKeyboardRemove
+from aiogram.types import CallbackQuery, Message
 
 from .backend import BackendError
 from .config import cfg
 from .ui import DISCLAIMER, contact_kb, kb, b
+from .reply_menu import reply_kb, send_club
 
 router = Router()
 log = logging.getLogger("govita.shop")
@@ -524,8 +525,15 @@ async def on_contact(m: Message, api, state: FSMContext):
             )
         return await reply_error(m, locale, e)
     phone = str(res.get("phone") or "")
-    await m.answer(t(locale, "phone_linked", phone="+" + phone), reply_markup=ReplyKeyboardRemove())
+    # The contact button gives way to the menu that stays under the message field.
+    await m.answer(t(locale, "phone_linked", phone="+" + phone), reply_markup=reply_kb(locale))
     data = await state.get_data()
+    if data.get("login_token"):
+        # The website sign-in was waiting for this number: ask to confirm it now.
+        from .login import resume
+
+        await state.update_data(login_token=None)
+        return await resume(m, api, data["login_token"])
     if data.get("name") or data.get("method"):
         # The customer pressed “change number” mid-checkout.
         await state.update_data(phone=phone)
@@ -1089,7 +1097,8 @@ async def cb_lang(q: CallbackQuery, api, state: FSMContext):
     await state.clear()
     customer = await customer_of(api, q.from_user.id)
     text = "Язык: русский. Каталог, корзина и заказ — на русском." if locale == "ru" else "Til: oʻzbekcha. Katalog, savat va buyurtma oʻzbek tilida."
-    await q.message.answer(text, reply_markup=main_menu(locale, customer))
+    await q.message.answer(text, reply_markup=reply_kb(locale))
+    await q.message.answer(T_MENU_TEXT[0 if locale != "ru" else 1], reply_markup=main_menu(locale, customer))
 
 
 @router.callback_query(F.data.in_({"menu", "m:menu"}))
@@ -1108,10 +1117,7 @@ async def cb_club(q: CallbackQuery, api):
     customer = await customer_of(api, q.from_user.id)
     if not customer:
         return await q.message.answer(t(locale, "not_linked"), reply_markup=contact_kb())
-    await q.message.answer(
-        f"⭐ <b>{escape(cfg.club_name)}</b>\n{escape(customer.get('name') or '')} · +{escape(customer.get('phone') or '')}",
-        reply_markup=main_menu(locale, customer),
-    )
+    await send_club(q.message, api, q.from_user.id, locale)
 
 
 @router.callback_query(F.data == "ticket")

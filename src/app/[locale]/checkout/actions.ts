@@ -3,6 +3,7 @@
 import { cookies, headers } from "next/headers";
 import { ORDERS_IN_DB, SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
 import { verifyInitData } from "@/lib/bot/webapp";
+import { sessionFromCookies } from "@/lib/customer/current";
 import { attachOrderChat } from "@/lib/bot/store";
 import { notifyCustomerOfOrder } from "@/lib/sms/transactional-server";
 import { isLiveDeployment } from "@/lib/config/live";
@@ -123,12 +124,12 @@ async function offerContext(order: OrderRequest, products: Product[]): Promise<O
 */
 async function clubBotReceipt(
   orderId: string,
-  user: ReturnType<typeof verifyInitData>,
+  chatId: number | null,
   loyalty: { earn: number; spent: number },
 ): Promise<void> {
   if (!ORDERS_IN_DB) return;
   try {
-    if (user) await attachOrderChat(orderId, user.id);
+    if (chatId) await attachOrderChat(orderId, chatId);
     const extra = joinLines(
       loyalty.spent > 0 ? both((l) => spentLine(loyalty.spent, l)) : null,
       loyalty.earn > 0 ? both((l) => earnLaterLine(loyalty.earn, l)) : null,
@@ -214,6 +215,13 @@ export async function submitOrder(
     from the payload. An unsigned `telegram` string changes nothing.
   */
   const telegramUser = verifyInitData(telegram);
+  /*
+    Signed in through the club bot (lib/customer) with the same number the
+    form carries: the phone is proven, like an SMS code, and the order's
+    status messages go to that Telegram chat.
+  */
+  const session = ORDERS_IN_DB ? await sessionFromCookies() : null;
+  const sessionChat = session && phone9Of(parsed.data.customer.phone) === session.p ? session.c : null;
   // The channel is decided here, never trusted from the payload: without a
   // signed Mini App launch a browser order is a site order.
   request.source = telegramUser ? "telegram_mini" : "site";
@@ -289,7 +297,7 @@ export async function submitOrder(
     let pointsEarn = 0;
     let phoneProven = false;
     if (ORDERS_IN_DB) {
-      const placed = await placeOrder(order, promotions);
+      const placed = await placeOrder(order, promotions, { phoneVerified: sessionChat !== null });
       if (!placed.ok) {
         if (placed.error === "points_invalid") return { ok: false, error: "points_invalid" };
         if (placed.error === "promo_invalid") return { ok: false, error: "promo_invalid", promoReason: placed.rejection.reason };
@@ -343,7 +351,7 @@ export async function submitOrder(
               items: order.items,
             })
           : Promise.resolve(),
-        clubBotReceipt(result.orderId, telegramUser, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
+        clubBotReceipt(result.orderId, telegramUser?.id ?? sessionChat, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
         emailOrderConfirmation(order, result.orderId),
         ORDERS_IN_DB ? recordSubscriptions(result.orderId, order) : Promise.resolve(0),
         order.customer.email && order.customer.marketingOptIn

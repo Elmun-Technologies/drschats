@@ -16,8 +16,8 @@ T = {
     "joined": "✅ Siz <b>{club}</b>dasiz.\nBuyurtma holati, eslatmalar va klub takliflari shu yerga keladi.",
     "joinedOrders": "Raqamingizga bogʻlangan {n} ta buyurtma topildi.",
     "conflict": "Bu raqam boshqa Telegram hisobiga bogʻlangan. Operator tekshirib, siz bilan bogʻlanadi.",
-    "menu": ("<b>govita VIP Salomatlik Klubi</b>\n\nBuyurtma holati, qabul eslatmalari, obunalar "
-             "va klub takliflari — hammasi shu yerda."),
+    "menu": ("<b>govita VIP Salomatlik Klubi</b>\n\nKatalog, savat, buyurtma holati va klub takliflari — "
+             "hammasi shu yerda. Pastdagi tugmalar har doim ochiq."),
     "loginCode": ("<b>{store}</b> saytiga kirish kodi:\n\n<code>{code}</code>\n\n5 daqiqa amal qiladi. "
                   "Kodni hech kimga aytmang.\n<i>Siz soʻramagan boʻlsangiz — eʼtibor bermang.</i>"),
     "loginNeedContact": "Saytga kirish uchun raqamingizni ulashing — kod shu zahoti keladi.",

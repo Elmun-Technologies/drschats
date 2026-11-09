@@ -22,6 +22,7 @@ from .logic import som
 from . import settings as settings_store
 from . import shop as shop_ui
 from .ui import b, kb, contact_kb, T
+from .reply_menu import reply_kb
 
 router = Router()
 log = logging.getLogger("govita.remote")
@@ -154,7 +155,19 @@ async def start(m, api):
         return await show_order(m, api, m.from_user.id, payload[2:])
     customer = await shop_ui.customer_of(api, m.from_user.id)
     locale = (customer or {}).get('locale') or 'uz'
+    # The keyboard under the message field stays; the inline menu scrolls away.
+    await m.answer(await greeting(api, locale), reply_markup=reply_kb(locale))
     await m.answer(T['menu'], reply_markup=menu(locale, customer))
+
+
+async def send_orders(m, api, chat, locale="uz"):
+    d = await api.request('GET', f'/customers/{chat}/orders', params={'limit': 10})
+    rows = [[b(f"№{o['code']} · {o['stage']} · {som(o['total'])}", f"ord:{o['code']}")] for o in d['items']]
+    if not rows:
+        text = ('Заказов пока нет. Оформите заказ в каталоге — статус придёт сюда.' if locale == 'ru'
+                else 'Buyurtma topilmadi. Katalogdan buyurtma bering — holati shu yerga keladi.')
+        return await m.answer(text, reply_markup=menu(locale))
+    await m.answer('📦 Мои заказы' if locale == 'ru' else '📦 Buyurtmalarim', reply_markup=kb(*rows, [b('⬅️ Menyu', 'm:menu')]))
 
 
 async def show_order(m, api, chat, code):
@@ -186,13 +199,7 @@ async def callback(q, api):
         return
     data = q.data or ''
     if data == 'm:orders':
-        d = await api.request('GET', f'/customers/{chat}/orders', params={'limit': 10})
-        rows = [[b(f"№{o['code']} · {o['stage']} · {som(o['total'])}", f"ord:{o['code']}")] for o in d['items']]
-        if not rows:
-            locale = await shop_ui.locale_of(api, chat)
-            return await q.message.answer('Buyurtma topilmadi. Katalogdan buyurtma bering — holati shu yerga keladi.',
-                                          reply_markup=menu(locale))
-        await q.message.answer('📦 Buyurtmalarim', reply_markup=kb(*rows, [b('⬅️ Menyu', 'm:menu')]))
+        await send_orders(q.message, api, chat, await shop_ui.locale_of(api, chat))
     elif data.startswith('ord:'):
         await show_order(q.message, api, chat, data[4:])
     elif data.startswith('reorder:'):

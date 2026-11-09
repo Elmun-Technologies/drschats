@@ -3,7 +3,7 @@ import { Link } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { BRAND } from "@/lib/brand";
 import { isApiConfigured } from "@/lib/api/client";
-import { accountAreaAvailable } from "@/lib/config/demo";
+import { cabinetAvailable } from "@/lib/config/telegram-login";
 import { paymentMarks, type OnlineProviderId } from "@/lib/config/payments";
 import { PaymentMarks } from "@/components/ui/PaymentMarks";
 import { isNavigable } from "@/lib/content/nav-sections";
@@ -72,7 +72,7 @@ export function Footer({
         { href: "/loyalty", label: header("loyalty") },
         // The design lists the quiz here; the other health journeys follow it.
         ...HEALTH_LINKS.filter((l) => isNavigable(l.href, topicPaths)).map((l) => ({ href: l.href, label: nav(l.key) })),
-        ...(accountAreaAvailable(isApiConfigured()) ? [{ href: "/account", label: nav("account") }] : []),
+        ...(cabinetAvailable(isApiConfigured()) ? [{ href: "/account", label: nav("account") }] : []),
         { href: "/profile", label: nav("profile") },
       ],
     },

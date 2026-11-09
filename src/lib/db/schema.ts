@@ -207,6 +207,23 @@ export const telegramLinks = pgTable("telegram_links", {
   linkedAt: timestamp("linked_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
+/* Website sign-in through the club bot — db/migrations/0033_telegram_login.sql */
+export const TELEGRAM_LOGIN_STATUSES = ["pending", "confirmed", "denied", "used"] as const;
+
+export const telegramLogins = pgTable("telegram_logins", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  tokenHash: text("token_hash").notNull().unique(),
+  browserHash: text("browser_hash").notNull(),
+  status: text("status").$type<(typeof TELEGRAM_LOGIN_STATUSES)[number]>().notNull().default("pending"),
+  chatId: bigint("chat_id", { mode: "number" }),
+  locale: text("locale").$type<"uz" | "ru">().notNull().default("uz"),
+  device: text("device"),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+  confirmedAt: timestamp("confirmed_at", { withTimezone: true }),
+  usedAt: timestamp("used_at", { withTimezone: true }),
+});
+
 export const TICKET_CATEGORIES = ["operator", "consult", "return", "club-conflict"] as const;
 export const TICKET_STATUSES = ["open", "answered", "closed"] as const;
 
