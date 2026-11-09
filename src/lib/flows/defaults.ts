@@ -132,8 +132,8 @@ export const DEFAULT_FLOWS: DefaultFlow[] = [
         link: "/sale",
         promo: null,
         text: {
-          uz: "{ism}, Go Vitaʼda yangi mahsulotlar va aksiyalar bor: {havola}",
-          ru: "{ism}, в Go Vita новые продукты и акции: {havola}",
+          uz: "{ism}, govitaʼda yangi mahsulotlar va aksiyalar bor: {havola}",
+          ru: "{ism}, в govita новые продукты и акции: {havola}",
         },
       },
       {

@@ -110,8 +110,8 @@ def club_kb(locale: str, card: dict):
     rows = []
     code = (card.get("referral") or {}).get("code")
     if code:
-        share_text = (f"Go Vita: −{card['referral']['friendPercent']}% на первый заказ по моему коду {code}"
-                      if ru else f"Go Vita: mening kodim {code} bilan birinchi buyurtmaga −{card['referral']['friendPercent']}%")
+        share_text = (f"govita: −{card['referral']['friendPercent']}% на первый заказ по моему коду {code}"
+                      if ru else f"govita: mening kodim {code} bilan birinchi buyurtmaga −{card['referral']['friendPercent']}%")
         rows.append([b("📤 Поделиться кодом" if ru else "📤 Kodni ulashish",
                        url=f"https://t.me/share/url?url={quote(cfg.shop_url)}&text={quote(share_text)}")])
     cabinet = str(card.get("cabinetUrl") or "")

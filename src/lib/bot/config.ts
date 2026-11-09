@@ -54,13 +54,13 @@ export type ClubConfig = z.infer<typeof clubConfigSchema>;
 
 export const DEFAULT_CLUB: ClubConfig = {
   enabled: true,
-  clubName: "GoVita VIP Salomatlik Klubi",
+  clubName: "govita VIP Salomatlik Klubi",
   shopUrl: process.env.NEXT_PUBLIC_SITE_URL?.startsWith("https://") ? process.env.NEXT_PUBLIC_SITE_URL : "https://govita.uz",
   supportPhone: BRAND.contact.phone,
   supportHours: "Du–Sha, 09:00–18:00",
   greeting: {
-    uz: "Assalomu alaykum! GoVita VIP Salomatlik Klubiga xush kelibsiz 👋",
-    ru: "Здравствуйте! Добро пожаловать в GoVita VIP клуб здоровья 👋",
+    uz: "Assalomu alaykum! govita VIP Salomatlik Klubiga xush kelibsiz 👋",
+    ru: "Здравствуйте! Добро пожаловать в govita VIP клуб здоровья 👋",
   },
   menu: { miniApp: true, catalog: true, search: true, cart: true, orders: true, promo: true, help: true },
 };

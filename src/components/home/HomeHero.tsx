@@ -162,7 +162,7 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
             {slide.eyebrow}
           </span>
         )}
-        <span className="text-[25px] font-bold leading-[30px] tracking-[-0.01em] lg:text-h-hero lg:leading-[46px] lg:tracking-[-0.02em]">{slide.title}</span>
+        <span className="text-[25px] font-extrabold leading-[30px] tracking-[-0.01em] lg:text-h-hero lg:leading-[46px] lg:tracking-[-0.02em]">{slide.title}</span>
         {slide.subtitle && (
           <span className={cn("max-w-[520px] text-[15px] leading-[21px] lg:text-[17px] lg:leading-6", dark ? "text-on-dark-2" : "text-ink-2")}>{slide.subtitle}</span>
         )}
@@ -180,6 +180,8 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
       </span>
       {slide.image && (
         <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]">
+          {/* Brendbook «Grafika»: the logo's dot, grown — one big dot per composition. */}
+          <span aria-hidden className="absolute inset-[7%] rounded-full bg-yellow" />
           {slide.imageMobile ? (
             <ArtDirected desktop={slide.image} mobile={slide.imageMobile} priority={priority} />
           ) : (

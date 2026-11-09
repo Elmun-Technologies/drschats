@@ -3,7 +3,7 @@
 
   `src/lib/api/client.ts` can serve the whole account area from built-in mock
   data: a phone number and any six digits "sign in", and the cabinet then shows
-  two orders, a subscription and a profile belonging to "Go Vita Mijoz". That
+  two orders, a subscription and a profile belonging to "govita Mijoz". That
   fallback exists so the UI can be reviewed before the FastAPI backend is
   deployed, and for that purpose it is the right thing.
 

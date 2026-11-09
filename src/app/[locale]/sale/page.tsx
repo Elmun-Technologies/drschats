@@ -61,7 +61,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
           <span aria-hidden>/</span>
           <span className="text-ink">{t("short")}</span>
         </nav>
-        <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">
+        <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">
           <span className="lg:hidden">{t("short")}</span>
           <span className="hidden lg:inline">{t("title")}</span>
         </h1>

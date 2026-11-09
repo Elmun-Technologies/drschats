@@ -5,7 +5,7 @@ from bot.config import cfg
 
 CONFIG = {
     "enabled": True,
-    "clubName": "GoVita VIP",
+    "clubName": "govita VIP",
     "shopUrl": "https://shop.example/",
     "supportPhone": "+998 71 000 11 22",
     "supportHours": "Du–Sha, 10:00–19:00",
@@ -43,7 +43,7 @@ async def test_panel_values_reach_the_bot():
     changed = await settings_store.refresh(api, now=1000)
     assert api.calls == 1
     assert cfg.shop_url == "https://shop.example"
-    assert cfg.club_name == "GoVita VIP"
+    assert cfg.club_name == "govita VIP"
     assert cfg.operator_phone == "+998 71 000 11 22"
     assert cfg.support_hours == "Du–Sha, 10:00–19:00"
     assert changed == {"shop_url", "club_name", "operator_phone", "support_hours"}

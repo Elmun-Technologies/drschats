@@ -7,7 +7,7 @@ from .config import cfg
 DISCLAIMER = "<i>Biologik faol qoʻshimcha. Dori vositasi emas. Qabul qilishdan oldin mutaxassis bilan maslahatlashing.</i>"
 
 T = {
-    "welcome": "Assalomu alaykum! <b>GoVita</b> VIP Salomatlik Klubiga xush kelibsiz 👋",
+    "welcome": "Assalomu alaykum! <b>govita</b> VIP Salomatlik Klubiga xush kelibsiz 👋",
     "about": ("<b>Klubda nima bor</b>\n• Buyurtma holati va yetkazish xabarlari\n"
               "• Qabul eslatmalari va kurs tugashi haqida ogohlantirish\n"
               "• Obunani shu yerdan boshqarish\n• Klub takliflari\n• 300 000 soʻmdan bepul yetkazish"),
@@ -16,7 +16,7 @@ T = {
     "joined": "✅ Siz <b>{club}</b>dasiz.\nBuyurtma holati, eslatmalar va klub takliflari shu yerga keladi.",
     "joinedOrders": "Raqamingizga bogʻlangan {n} ta buyurtma topildi.",
     "conflict": "Bu raqam boshqa Telegram hisobiga bogʻlangan. Operator tekshirib, siz bilan bogʻlanadi.",
-    "menu": ("<b>GoVita VIP Salomatlik Klubi</b>\n\nKatalog, savat, buyurtma holati va klub takliflari — "
+    "menu": ("<b>govita VIP Salomatlik Klubi</b>\n\nKatalog, savat, buyurtma holati va klub takliflari — "
              "hammasi shu yerda. Pastdagi tugmalar har doim ochiq."),
     "loginCode": ("<b>{store}</b> saytiga kirish kodi:\n\n<code>{code}</code>\n\n5 daqiqa amal qiladi. "
                   "Kodni hech kimga aytmang.\n<i>Siz soʻramagan boʻlsangiz — eʼtibor bermang.</i>"),

@@ -159,7 +159,7 @@ export async function ShopView({
           )}
         </nav>
         <div className="flex flex-col gap-1 lg:-mt-1.5 lg:flex-row lg:flex-wrap lg:items-baseline lg:gap-3.5">
-          <h1 className="text-[26px] font-bold leading-8 lg:text-h-page">{heading}</h1>
+          <h1 className="text-[26px] font-extrabold leading-8 lg:text-h-page">{heading}</h1>
           <span className="text-[15px] text-muted lg:text-[17px]">{v3("count", { count: matched.length })}</span>
         </div>
       </div>

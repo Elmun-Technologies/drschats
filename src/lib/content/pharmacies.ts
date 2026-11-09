@@ -64,8 +64,8 @@ export const PHARMACY_CHAINS: PharmacyChain[] = [
   {
     name: "City Pharm",
     note: {
-      uz: "Go Vita assortimenti barcha filiallarida",
-      ru: "Ассортимент Go Vita во всех филиалах",
+      uz: "govita assortimenti barcha filiallarida",
+      ru: "Ассортимент govita во всех филиалах",
     },
     branches: 64,
     addresses: [

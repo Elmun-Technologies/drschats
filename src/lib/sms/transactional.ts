@@ -56,24 +56,24 @@ export function smsHasLink(status: OrderSmsEvent): boolean {
 
 const TEMPLATES: Record<OrderSmsEvent, Record<MessageLocale, string>> = {
   new: {
-    uz: "Go Vita: buyurtma {number} qabul qilindi. Operator ish vaqtida qoʻngʻiroq qilib tasdiqlaydi. Holati: {havola}",
-    ru: "Go Vita: заказ {number} принят. Оператор позвонит в рабочее время и подтвердит. Статус: {havola}",
+    uz: "govita: buyurtma {number} qabul qilindi. Operator ish vaqtida qoʻngʻiroq qilib tasdiqlaydi. Holati: {havola}",
+    ru: "govita: заказ {number} принят. Оператор позвонит в рабочее время и подтвердит. Статус: {havola}",
   },
   confirmed: {
-    uz: "Go Vita: buyurtma {number} tasdiqlandi va yigʻilmoqda. Holati: {havola}",
-    ru: "Go Vita: заказ {number} подтверждён и собирается. Статус: {havola}",
+    uz: "govita: buyurtma {number} tasdiqlandi va yigʻilmoqda. Holati: {havola}",
+    ru: "govita: заказ {number} подтверждён и собирается. Статус: {havola}",
   },
   shipped: {
-    uz: "Go Vita: buyurtma {number} yoʻlda. Holati: {havola}",
-    ru: "Go Vita: заказ {number} в пути. Статус: {havola}",
+    uz: "govita: buyurtma {number} yoʻlda. Holati: {havola}",
+    ru: "govita: заказ {number} в пути. Статус: {havola}",
   },
   delivered: {
-    uz: "Go Vita: buyurtma {number} yetkazildi. Xaridingiz uchun rahmat!",
-    ru: "Go Vita: заказ {number} доставлен. Спасибо за покупку!",
+    uz: "govita: buyurtma {number} yetkazildi. Xaridingiz uchun rahmat!",
+    ru: "govita: заказ {number} доставлен. Спасибо за покупку!",
   },
   cancelled: {
-    uz: "Go Vita: buyurtma {number} bekor qilindi. Savollar boʻlsa: {phone}",
-    ru: "Go Vita: заказ {number} отменён. Вопросы: {phone}",
+    uz: "govita: buyurtma {number} bekor qilindi. Savollar boʻlsa: {phone}",
+    ru: "govita: заказ {number} отменён. Вопросы: {phone}",
   },
 };
 

@@ -1,0 +1,116 @@
+# Go Vita — Hetzner (bitta server). Qo'llanma: docs/DEPLOY-HETZNER.md
+# Ishga tushirish: docker compose up -d   (migratsiya app'dan oldin o'zi yuradi)
+name: govita
+
+x-app-image: &app-image ${APP_IMAGE:-ghcr.io/elmun-technologies/drschats:latest}
+
+services:
+  db:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: govita
+      POSTGRES_USER: govita
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?.env da POSTGRES_PASSWORD yo'q}
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U govita -d govita"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    shm_size: 256mb
+
+  migrate:
+    image: *app-image
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://govita:${POSTGRES_PASSWORD}@db:5432/govita
+    command: ["node", "scripts/db/migrate.mjs"]
+    depends_on:
+      db: { condition: service_healthy }
+    restart: "no"
+
+  app:
+    image: *app-image
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://govita:${POSTGRES_PASSWORD}@db:5432/govita
+      NODE_ENV: production
+      GOVITA_PRODUCTION: "1"
+      HOSTNAME: 0.0.0.0
+      PORT: "3000"
+    depends_on:
+      db: { condition: service_healthy }
+      migrate: { condition: service_completed_successfully }
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 40s
+    stop_grace_period: 30s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports: ["80:80", "443:443", "443:443/udp"]
+    environment:
+      SITE_DOMAIN: ${SITE_DOMAIN:-govita.uz}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on: [app]
+
+  # Telegram klub boti — ixtiyoriy: docker compose --profile bot up -d
+  bot:
+    profiles: ["bot"]
+    image: ${BOT_IMAGE:-ghcr.io/elmun-technologies/drschats-bot:latest}
+    restart: unless-stopped
+    env_file: bot.env
+    environment:
+      GOVITA_API_URL: http://app:3000/api/bot
+      DB_PATH: /data/govita_bot.sqlite3
+    volumes:
+      - bot-data:/data
+    depends_on: [app]
+    stop_grace_period: 30s
+
+  # Kunlik pg_dump → ./backups (BACKUP_KEEP_DAYS kun saqlanadi). Serverdan tashqariga
+  # nusxa — docs/DEPLOY-HETZNER.md §Zaxira.
+  backup:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      KEEP_DAYS: ${BACKUP_KEEP_DAYS:-14}
+    volumes:
+      - ./backups:/backups
+    entrypoint: ["/bin/sh", "/backup.sh"]
+    configs:
+      - source: backup-script
+        target: /backup.sh
+    depends_on:
+      db: { condition: service_healthy }
+
+configs:
+  backup-script:
+    content: |
+      while true; do
+        f="/backups/govita-$$(date +%F-%H%M).sql.gz"
+        if pg_dump -h db -U govita -d govita --no-owner | gzip > "$$f.part"; then
+          mv "$$f.part" "$$f"; echo "backup ok: $$f"
+        else
+          echo "backup FAILED"; rm -f "$$f.part"
+        fi
+        find /backups -name 'govita-*.sql.gz' -mtime +"$$KEEP_DAYS" -delete
+        sleep 86400
+      done
+
+volumes:
+  pg-data:
+  caddy-data:
+  caddy-config:
+  bot-data:

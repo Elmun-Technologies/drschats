@@ -11,7 +11,7 @@ import { isDbConfigured } from "@/lib/db/client";
   /studio and the demo account area.
 */
 export const metadata: Metadata = {
-  title: { default: "Go Vita — admin", template: "%s · Go Vita admin" },
+  title: { default: "govita — admin", template: "%s · govita admin" },
   robots: { index: false, follow: false },
 };
 

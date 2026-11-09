@@ -167,8 +167,8 @@ PROMO_REASONS = {
 
 
 T_MENU_TEXT = (
-    "<b>GoVita VIP Salomatlik Klubi</b>\n\nKatalog, savat, buyurtma holati va klub takliflari — hammasi shu yerda.",
-    "<b>GoVita VIP Salomatlik Klubi</b>\n\nКаталог, корзина, статус заказа и предложения клуба — всё здесь.",
+    "<b>govita VIP Salomatlik Klubi</b>\n\nKatalog, savat, buyurtma holati va klub takliflari — hammasi shu yerda.",
+    "<b>govita VIP Salomatlik Klubi</b>\n\nКаталог, корзина, статус заказа и предложения клуба — всё здесь.",
 )
 
 

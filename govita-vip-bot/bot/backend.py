@@ -15,7 +15,7 @@ class BackendError(Exception):
         # Only the fields the shop UI can act on; never a full response body.
         self.data = data or {}
         # Never include URL, keys, response bodies or customer data in errors.
-        super().__init__(f"GoVita backend {status}: {code}")
+        super().__init__(f"govita backend {status}: {code}")
 
 
 def _loopback(host: str | None) -> bool:

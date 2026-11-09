@@ -35,12 +35,12 @@ export type OtpRequestResult = { ok: true } | { ok: false; error: "no_sms" | "ph
 
 const OTP_TEXT = {
   redeem: {
-    uz: (code: string) => `Go Vita: ballarni ishlatish kodi ${code}. 5 daqiqa amal qiladi. Kodni hech kimga aytmang.`,
-    ru: (code: string) => `Go Vita: код для списания баллов ${code}. Действует 5 минут. Никому его не сообщайте.`,
+    uz: (code: string) => `govita: ballarni ishlatish kodi ${code}. 5 daqiqa amal qiladi. Kodni hech kimga aytmang.`,
+    ru: (code: string) => `govita: код для списания баллов ${code}. Действует 5 минут. Никому его не сообщайте.`,
   },
   verify: {
-    uz: (code: string) => `Go Vita: telefonni tasdiqlash kodi ${code}. 5 daqiqa amal qiladi. Kodni hech kimga aytmang.`,
-    ru: (code: string) => `Go Vita: код подтверждения телефона ${code}. Действует 5 минут. Никому его не сообщайте.`,
+    uz: (code: string) => `govita: telefonni tasdiqlash kodi ${code}. 5 daqiqa amal qiladi. Kodni hech kimga aytmang.`,
+    ru: (code: string) => `govita: код подтверждения телефона ${code}. Действует 5 минут. Никому его не сообщайте.`,
   },
 };
 

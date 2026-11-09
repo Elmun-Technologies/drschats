@@ -73,8 +73,8 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           paragraphs: [
             greeting(locale, campaign.name),
             uz
-              ? "Go Vita yangiliklariga obuna boʻlish uchun quyidagi tugmani bosing. Tasdiqlamaguningizcha biz sizga hech narsa yubormaymiz."
-              : "Нажмите кнопку ниже, чтобы подписаться на рассылку Go Vita. Пока вы не подтвердите, мы вам ничего не отправим.",
+              ? "govita yangiliklariga obuna boʻlish uchun quyidagi tugmani bosing. Tasdiqlamaguningizcha biz sizga hech narsa yubormaymiz."
+              : "Нажмите кнопку ниже, чтобы подписаться на рассылку govita. Пока вы не подтвердите, мы вам ничего не отправим.",
           ],
           cta: { label: uz ? "Obunani tasdiqlash" : "Подтвердить подписку", url: campaign.confirmUrl },
           note: uz
@@ -274,8 +274,8 @@ export function buildCampaign(campaign: Campaign, locale: Locale): BuiltCampaign
           paragraphs: [
             greeting(locale, campaign.name),
             uz
-              ? "Go Vitaʼda hisob yaratildi. Elektron pochtangizni tasdiqlasangiz, buyurtma holati va eslatmalar shu manzilga keladi."
-              : "Аккаунт в Go Vita создан. Подтвердите почту, и статусы заказов и напоминания будут приходить на этот адрес.",
+              ? "govitaʼda hisob yaratildi. Elektron pochtangizni tasdiqlasangiz, buyurtma holati va eslatmalar shu manzilga keladi."
+              : "Аккаунт в govita создан. Подтвердите почту, и статусы заказов и напоминания будут приходить на этот адрес.",
           ],
           cta: { label: uz ? "Pochtani tasdiqlash" : "Подтвердить почту", url: campaign.verifyUrl },
           note: uz

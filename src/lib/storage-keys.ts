@@ -1,5 +1,5 @@
 /*
-  Browser storage keys, and the rename that came with the Go Vita rebrand.
+  Browser storage keys, and the rename that came with the govita rebrand.
 
   The old `alimkhanov-*` keys hold live data: carts, wishlists, view history,
   quiz results. Simply renaming them would silently empty every returning

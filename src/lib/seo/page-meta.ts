@@ -107,7 +107,7 @@ function listingFacts(products: Product[], locale: Locale) {
   return { count: String(products.length), min: formatMoney(min, locale) };
 }
 
-/** "… | Go Vita" → "… — 2-sahifa | Go Vita": page 2 of a shelf is its own result, not a duplicate title. */
+/** "… | govita" → "… — 2-sahifa | govita": page 2 of a shelf is its own result, not a duplicate title. */
 export async function pagedTitle(locale: Locale, title: string, page: number | null): Promise<string> {
   if (!page) return title;
   const t = await getTranslations({ locale, namespace: "meta.seo" });

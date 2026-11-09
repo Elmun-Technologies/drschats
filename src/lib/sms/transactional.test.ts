@@ -19,9 +19,9 @@ describe("order SMS settings", () => {
 describe("order SMS texts", () => {
   it("fills the number and the phone, leaving {havola} for the outbox", () => {
     expect(orderSmsText("new", { number: "GV-000123", phone: "+998 71 200 70 80" }, "uz")).toBe(
-      "Go Vita: buyurtma GV-000123 qabul qilindi. Operator ish vaqtida qoʻngʻiroq qilib tasdiqlaydi. Holati: {havola}",
+      "govita: buyurtma GV-000123 qabul qilindi. Operator ish vaqtida qoʻngʻiroq qilib tasdiqlaydi. Holati: {havola}",
     );
-    expect(orderSmsText("cancelled", { number: "GV-000123", phone: "+998 71 200 70 80" }, "ru")).toBe("Go Vita: заказ GV-000123 отменён. Вопросы: +998 71 200 70 80");
+    expect(orderSmsText("cancelled", { number: "GV-000123", phone: "+998 71 200 70 80" }, "ru")).toBe("govita: заказ GV-000123 отменён. Вопросы: +998 71 200 70 80");
   });
 
   it("carries a link exactly when the template has one", () => {

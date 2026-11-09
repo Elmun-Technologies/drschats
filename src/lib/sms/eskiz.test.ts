@@ -26,7 +26,7 @@ describe("EskizProvider", () => {
 
   it("logs in, sends with the bearer token and caches it", async () => {
     const { impl, calls } = fakeFetch([login("T1"), json(200, { id: "abc", status: "waiting" }), json(200, { id: "def", status: "waiting" })]);
-    const sms = new EskizProvider({ email: "a@b.uz", password: "p", sender: "GoVita", fetch: impl });
+    const sms = new EskizProvider({ email: "a@b.uz", password: "p", sender: "govita", fetch: impl });
     expect(await sms.send("+998 90 123 45 67", "Salom")).toEqual({ ok: true, id: "abc" });
     expect(await sms.send("901234567", "Salom 2")).toEqual({ ok: true, id: "def" });
     expect(calls.map((c) => c.url)).toEqual([
@@ -36,7 +36,7 @@ describe("EskizProvider", () => {
     ]);
     expect(calls[0].body).toEqual({ email: "a@b.uz", password: "p" });
     expect(calls[1].auth).toBe("Bearer T1");
-    expect(calls[1].body).toEqual({ mobile_phone: "998901234567", message: "Salom", from: "GoVita" });
+    expect(calls[1].body).toEqual({ mobile_phone: "998901234567", message: "Salom", from: "govita" });
   });
 
   it("defaults the sender to 4546", async () => {

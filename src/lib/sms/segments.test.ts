@@ -37,6 +37,6 @@ describe("prepareSmsText", () => {
   });
 
   it("replaces smart quotes and ellipsis", () => {
-    expect(prepareSmsText("«Go Vita»… “ok”", { transliterate: false })).toBe('"Go Vita"... "ok"');
+    expect(prepareSmsText("«govita»… “ok”", { transliterate: false })).toBe('"govita"... "ok"');
   });
 });

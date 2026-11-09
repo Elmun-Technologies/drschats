@@ -51,8 +51,8 @@ type ShellAdmin = { name: string; email: string; role: AdminRole };
 function Sidebar({ admin, logout, onNavigate, badges }: { admin: ShellAdmin; logout: ReactNode; onNavigate?: () => void; badges: NavBadges }) {
   return (
     <>
-      <Link href="/admin" aria-label="Go Vita boshqaruv paneli" onClick={onNavigate} className="mb-6 flex items-end gap-2.5 px-3">
-        <Logo className="text-[30px]" />
+      <Link href="/admin" aria-label="govita boshqaruv paneli" onClick={onNavigate} className="mb-6 flex items-end gap-2.5 px-3">
+        <Logo className="h-9" />
         <span className="mb-1 rounded-full bg-tile px-2 py-0.5 text-[13px] font-semibold text-ink-2">admin</span>
       </Link>
       <SearchBox onNavigate={onNavigate} />
@@ -107,7 +107,7 @@ export function AdminShell({ admin, logout, badges = {}, children }: { admin: Sh
           <button type="button" onClick={() => setOpen(true)} aria-label="Menyuni ochish" className="grid h-11 w-11 place-items-center rounded-[12px] bg-tile text-ink">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true" className="h-5 w-5"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
           </button>
-          <Link href="/admin" aria-label="Go Vita boshqaruv paneli" className="flex items-end gap-2"><Logo className="text-[24px]" /></Link>
+          <Link href="/admin" aria-label="govita boshqaruv paneli" className="flex items-end gap-2"><Logo className="h-7" /></Link>
           <span className="ml-auto truncate text-[14px] font-semibold text-ink-2">{sectionTitle(pathname)}</span>
         </header>
         <main className={cn("mx-auto w-full max-w-[1400px] px-4 pb-16 pt-6 sm:px-6 lg:px-10 lg:pt-10")}>

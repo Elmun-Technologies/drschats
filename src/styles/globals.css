@@ -34,8 +34,10 @@
 }
 
 /*
-  GoVita V3 tokens — design/tokens.json, names kept exactly as the design hands
-  them over. Five of them (ink, line, line-strong, muted, gold, plus shadow-pop)
+  V3 tokens — design/tokens.json, names kept exactly as the design hands
+  them over; brendbook v1 (2026-11) kept them and dropped forest/gold (the old
+  wordmark's colours). Yellow is the one brand accent: logo dot, icons,
+  banners, «Xit» — about 5% of a page. Five of them (ink, line, line-strong, muted, gold, plus shadow-pop)
   already existed with a different meaning — the old `ink` was the light page
   ground, the new one is near-black — so the old ones were renamed to
   `legacy-*` rather than overwritten. Every `legacy-*` utility dies with the
@@ -64,21 +66,21 @@
   --color-swiss: #d52b1e;
   --color-yellow: #ffd43b;
   --color-yellow-banner: #ffe58a;
-  --color-forest: #0f2d24;
-  --color-gold: #b8954f;
 
   --font-onest: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
-  --font-logo: "Playfair Display", "Playfair Display Fallback", Georgia, serif;
 
   --text-h-hero: 40px;
   --text-h-hero--line-height: 46px;
-  --text-h-hero--letter-spacing: -0.02em;
+  --text-h-hero--letter-spacing: -0.03em;
+  --text-h-hero--font-weight: 800;
   --text-h-page: 36px;
   --text-h-page--line-height: 42px;
-  --text-h-page--letter-spacing: -0.015em;
+  --text-h-page--letter-spacing: -0.025em;
+  --text-h-page--font-weight: 800;
   --text-h-section: 30px;
   --text-h-section--line-height: 36px;
-  --text-h-section--letter-spacing: -0.01em;
+  --text-h-section--letter-spacing: -0.015em;
+  --text-h-section--font-weight: 700;
   --text-title: 20px;
   --text-title--line-height: 26px;
   --text-lead: 17px;
@@ -91,8 +93,10 @@
   --text-caption--line-height: 17px;
   --text-price: 20px;
   --text-price--line-height: 26px;
+  --text-price--font-weight: 800;
   --text-price-l: 34px;
   --text-price-l--line-height: 40px;
+  --text-price-l--font-weight: 800;
   --text-button: 16px;
   --text-button--line-height: 20px;
 
@@ -150,22 +154,6 @@
   descent-override: 28.99%;
   line-gap-override: 0%;
   size-adjust: 105.2%;
-}
-@font-face {
-  font-family: "Playfair Display";
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("/fonts/playfair-v40/playfair-500-latin.woff2") format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-@font-face {
-  font-family: "Playfair Display Fallback";
-  src: local("Times New Roman");
-  ascent-override: 97.25%;
-  descent-override: 22.56%;
-  line-gap-override: 0%;
-  size-adjust: 111.26%;
 }
 
 /* The V3 content column: 1296px wide, 24px gutter on desktop, 16px on phones. */

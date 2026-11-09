@@ -56,7 +56,7 @@ function Detail({ orderId, catalogue }: { orderId: string; catalogue: Product[] 
     return (
       <AccountShell active="orders">
         {back}
-        <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{tv("orderNo", { id: orderId })}</h1>
+        <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{tv("orderNo", { id: orderId })}</h1>
         {state.phase === "loading" ? (
           <div aria-busy="true" className="h-64 animate-pulse rounded-[20px] bg-tile" />
         ) : (
@@ -86,7 +86,7 @@ function Detail({ orderId, catalogue }: { orderId: string; catalogue: Product[] 
       {back}
       <div className="-mt-2 flex flex-wrap items-end justify-between gap-4">
         <div className="flex flex-col gap-1.5">
-          <h1 className="text-[28px] font-bold leading-[34px] lg:text-h-page lg:leading-[42px]">{tv("orderNo", { id: order.orderId })}</h1>
+          <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page lg:leading-[42px]">{tv("orderNo", { id: order.orderId })}</h1>
           <span className="text-base text-ink-2">{formatDate(order.createdAt, locale)}</span>
         </div>
         <StatusBadge status={order.status} large />

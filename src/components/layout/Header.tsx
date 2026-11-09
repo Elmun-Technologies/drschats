@@ -81,7 +81,7 @@ export function Header({
 
         <div className="wrap flex h-[76px] items-center gap-5">
           <Link href="/" aria-label={t("homeLabel")} className="shrink-0">
-            <Logo className="text-[34px]" />
+            <Logo className="h-10" priority />
           </Link>
           <CatalogMenu categories={categories} topicPaths={topicPaths} deal={deal} />
           <SearchBox categories={categories} className="min-w-0 flex-1" />
@@ -168,7 +168,7 @@ function MobileHeader({ categories }: { categories: Category[] }) {
     <div className="lg:hidden">
       <div className="flex h-14 items-center justify-between pl-4 pr-2">
         <Link href="/" aria-label={t("homeLabel")}>
-          <Logo className="text-[30px]" />
+          <Logo className="h-9" priority />
         </Link>
         <div className="flex items-center">
           <Link href="/delivery" className="flex h-11 items-center gap-1 px-2 text-sm font-semibold">

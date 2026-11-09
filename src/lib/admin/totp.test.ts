@@ -44,7 +44,7 @@ describe("TOTP", () => {
     const url = new URL(otpauthUrl("ABC", "a@b.uz"));
     expect(url.protocol).toBe("otpauth:");
     expect(url.searchParams.get("secret")).toBe("ABC");
-    expect(url.searchParams.get("issuer")).toBe("Go Vita admin");
+    expect(url.searchParams.get("issuer")).toBe("govita admin");
   });
 });
 

@@ -84,7 +84,7 @@ function Dashboard({ name, phone }: { name: string; phone: string }) {
       </div>
       <div className="hidden flex-col gap-1.5 lg:flex">
         <span className="text-base text-ink-2">{tv("welcome", { name })}</span>
-        <h1 className="text-h-page leading-[42px] font-bold">{t("title")}</h1>
+        <h1 className="text-h-page leading-[42px] font-extrabold">{t("title")}</h1>
       </div>
       <h1 className="sr-only lg:hidden">{t("title")}</h1>
       <nav aria-label={t("shortcuts")} className="hidden grid-cols-4 gap-3 lg:grid">

@@ -27,12 +27,12 @@ TOKEN = re.compile(r"^[A-Za-z0-9_-]{24,48}$")
 
 T = {
     "confirm": (
-        "🔐 <b>Go Vita saytiga kirish</b>\n\n"
+        "🔐 <b>govita saytiga kirish</b>\n\n"
         "Saytda Telegram orqali kirish soʻraldi:\n"
         "📱 {phone}\n{device}"
         "\nBu siz boʻlsangiz, «✅ Tasdiqlash» ni bosing.\n"
         "<i>Siz hozir saytda kirishni bosmagan boʻlsangiz — «❌ Bu men emas».</i>",
-        "🔐 <b>Вход на сайт Go Vita</b>\n\n"
+        "🔐 <b>Вход на сайт govita</b>\n\n"
         "На сайте запрошен вход через Telegram:\n"
         "📱 {phone}\n{device}"
         "\nЕсли это вы, нажмите «✅ Подтвердить».\n"
