@@ -5,7 +5,8 @@ import { sql } from "drizzle-orm";
 import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { orders, visitorEvents, visitors, VISITOR_EVENT_TYPES, type CartSnapshotItem, type Touch } from "@/lib/db/schema";
-import { STAGE_ORDER, deviceOf, furthestStage, safePath, touchOf } from "./model";
+import { RECO_LISTS, MAX_IMPRESSION_SLUGS } from "@/lib/reco/lists";
+import { STAGE_ORDER, deviceOf, furthestStage, metaOf, safePath, touchOf } from "./model";
 
 export const VISITOR_COOKIE = "gv_vid";
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -16,6 +17,11 @@ const eventSchema = z.object({
   slug: z.string().max(120).regex(/^[a-z0-9-]+$/).optional(),
   value: z.number().int().min(0).max(1_000_000_000).optional(),
   term: z.string().max(100).optional(),
+  // Recommendation rails (rec_impression / rec_click): which rail, what it showed, where the click landed.
+  list: z.enum(RECO_LISTS).optional(),
+  slugs: z.array(z.string().max(120).regex(/^[a-z0-9-]+$/)).max(MAX_IMPRESSION_SLUGS).optional(),
+  position: z.number().int().min(0).max(99).optional(),
+  variant: z.string().regex(/^[a-z0-9]{1,8}$/).optional(),
 });
 
 export const batchSchema = z.object({
@@ -100,7 +106,7 @@ export async function recordBatch(visitorId: string, batch: JourneyBatch, contex
       path: event.path ? safePath(event.path) : null,
       productSlug: event.slug ?? null,
       value: event.value ?? null,
-      meta: event.term ? { term: event.term } : null,
+      meta: metaOf(event),
       createdAt: now,
     })),
   );

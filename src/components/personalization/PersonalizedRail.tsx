@@ -11,6 +11,7 @@ import { useProfile } from "@/lib/profile/store";
 import { hasSignal } from "@/lib/profile/types";
 import { getPersonalOffers } from "@/app/actions/personalOffers";
 import { useCart } from "@/lib/cart/store";
+import { useRecoTracking } from "./RecoTracking";
 
 interface Props {
   allProducts: Product[];
@@ -44,6 +45,10 @@ export function PersonalizedRail({ allProducts, excludeSlugs = [] }: Props) {
   const exclude = [...excludeSlugs, ...(inCart ? inCart.split(",") : [])];
   const [entries, setEntries] = useState<Entry[]>([]);
   const [stated, setStated] = useState(false);
+  const tracking = useRecoTracking<HTMLDivElement>(
+    "home_for_you",
+    entries.map((e) => e.product),
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -90,7 +95,7 @@ export function PersonalizedRail({ allProducts, excludeSlugs = [] }: Props) {
         </h2>
         <p className="text-sm text-muted lg:text-base">{stated ? t("subtitleStated") : t("subtitle")}</p>
       </div>
-      <div className="no-scrollbar -mx-4 flex gap-2.5 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-[repeat(auto-fill,minmax(188px,1fr))] md:gap-x-3 md:gap-y-6 md:overflow-visible md:px-0">
+      <div ref={tracking.ref} onClickCapture={tracking.onClickCapture} className="no-scrollbar -mx-4 flex gap-2.5 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-[repeat(auto-fill,minmax(188px,1fr))] md:gap-x-3 md:gap-y-6 md:overflow-visible md:px-0">
         {entries.map((entry, i) => (
           <div key={entry.product.id} className="flex h-full w-40 shrink-0 flex-col gap-2 md:w-auto">
             {/* The card stretches; the reason line keeps its own height, so

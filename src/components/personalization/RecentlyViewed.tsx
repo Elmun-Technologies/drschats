@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ProductCard } from "@/components/product/ProductCard";
 import type { Product } from "@/lib/shopflow/types";
 import { getUserProfile } from "@/lib/personalization/tracker";
+import { useRecoTracking } from "./RecoTracking";
 
 /** Products this browser looked at before, newest first; hidden below two. */
 export function RecentlyViewed({
@@ -16,6 +17,7 @@ export function RecentlyViewed({
   excludeSlug?: string;
 }) {
   const [products, setProducts] = useState<Product[]>([]);
+  const tracking = useRecoTracking<HTMLDivElement>("pdp_recent", products);
 
   useEffect(() => {
     const profile = getUserProfile();
@@ -37,7 +39,7 @@ export function RecentlyViewed({
       <h2 id="recently-viewed" className="text-[22px] font-bold leading-7 lg:text-h-section lg:leading-9">
         {title}
       </h2>
-      <div className="no-scrollbar -mx-4 flex gap-2.5 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-[repeat(auto-fill,minmax(188px,1fr))] md:gap-x-3 md:gap-y-6 md:overflow-visible md:px-0">
+      <div ref={tracking.ref} onClickCapture={tracking.onClickCapture} className="no-scrollbar -mx-4 flex gap-2.5 overflow-x-auto px-4 md:mx-0 md:grid md:grid-cols-[repeat(auto-fill,minmax(188px,1fr))] md:gap-x-3 md:gap-y-6 md:overflow-visible md:px-0">
         {products.map((p, i) => (
           <div key={p.id} className="h-full w-40 shrink-0 md:w-auto">
             <ProductCard product={p} index={i} />

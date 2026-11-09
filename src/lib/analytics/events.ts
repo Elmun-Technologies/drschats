@@ -15,6 +15,7 @@
 */
 
 import { journey, journeyPage } from "@/lib/journey/client";
+import { RECO_VARIANT, impressionSlugs, type RecoList } from "@/lib/reco/lists";
 import { analyticsIdsFromEnvironment, type AnalyticsIds } from "./config";
 
 export { getAttribution } from "./attribution";
@@ -46,6 +47,9 @@ export interface AnalyticsItem {
   /** Unit discount against the catalogue price, when an offer applies. */
   discount?: number;
   item_category?: string;
+  /** Position in a product list (GA4 `index`), list events only. */
+  index?: number;
+  item_list_id?: string;
 }
 
 const CURRENCY = "UZS";
@@ -103,9 +107,22 @@ export function trackViewProduct(item: AnalyticsItem) {
   window.fbq?.("track", "ViewContent", { content_ids: [item.item_id], content_type: "product", value: item.price, currency: CURRENCY });
 }
 
-export function trackViewItemList(listName: string, items: AnalyticsItem[]) {
-  if (items.length === 0) return;
-  send("view_item_list", { item_list_name: listName, items }, true);
+/*
+  Recommendation rails (lib/reco/lists.ts). GA4 gets its own list events with
+  `item_list_id`; the shop's journey gets one compact row per rail shown and
+  one per card chosen, which is what the recommendation report counts.
+*/
+export function trackRecImpression(list: RecoList, items: AnalyticsItem[]) {
+  const slugs = impressionSlugs(items.map((i) => i.item_id));
+  if (slugs.length === 0 || typeof window === "undefined") return;
+  send("view_item_list", { item_list_id: list, item_list_name: list, items: items.map((item, index) => ({ ...item, index, item_list_id: list })) }, true);
+  journey({ type: "rec_impression", path: location.pathname, list, slugs, variant: RECO_VARIANT });
+}
+
+export function trackRecClick(list: RecoList, item: AnalyticsItem, position: number) {
+  if (typeof window === "undefined") return;
+  send("select_item", { item_list_id: list, item_list_name: list, items: [{ ...item, index: position, item_list_id: list }] }, true);
+  journey({ type: "rec_click", path: location.pathname, slug: item.item_id, list, position, variant: RECO_VARIANT });
 }
 
 export function trackAddToCart(item: AnalyticsItem) {

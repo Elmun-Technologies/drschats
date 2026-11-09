@@ -81,6 +81,7 @@ export function ProductCard({
   return (
     <Reveal
       as="article"
+      data-slug={product.slug}
       index={index % 4}
       className={cn(
         "group flex h-full flex-col gap-1.5 text-ink",

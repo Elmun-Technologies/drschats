@@ -14,6 +14,7 @@ import { getUpsellProducts } from "@/app/actions/getUpsellProducts";
 import { getSimilarProducts } from "@/lib/personalization/engine";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 import { formatMoney } from "@/lib/utils";
+import { useRecoTracking } from "@/components/personalization/RecoTracking";
 
 /*
   The add-to-cart confirmation: what was added, the way to the cart, and two
@@ -57,6 +58,7 @@ export function Toaster() {
   const toast = ladderOpen ? undefined : toasts[0];
   const full = !onCart;
   const suggestions = useSuggestions(toast?.kind === "cart" && full ? toast.item : undefined, locale);
+  const tracking = useRecoTracking<HTMLUListElement>("toast_similar", suggestions);
 
   return (
     // The live region is always in the DOM: one added together with its content is missed by some screen readers.
@@ -104,11 +106,11 @@ export function Toaster() {
                 {suggestions.length > 0 && (
                   <div className="mt-3 border-t border-line pt-3">
                     <p className="text-[13px] font-semibold text-ink-2">{tp("withIt")}</p>
-                    <ul className="mt-2 flex flex-col gap-2">
+                    <ul ref={tracking.ref} onClickCapture={tracking.onClickCapture} className="mt-2 flex flex-col gap-2">
                       {suggestions.map((p) => {
                         const image = cutoutOf(p) ?? p.images[0]?.url;
                         return (
-                          <li key={p.id} className="flex items-center gap-2.5">
+                          <li key={p.id} data-slug={p.slug} className="flex items-center gap-2.5">
                             <span className="relative h-11 w-11 shrink-0 rounded-[10px] bg-tile">
                               {image && <Image src={image} alt="" fill sizes="44px" className="object-contain p-1" />}
                             </span>

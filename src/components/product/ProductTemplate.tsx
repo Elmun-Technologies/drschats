@@ -32,6 +32,8 @@ import { RecentlyViewed } from "@/components/personalization/RecentlyViewed";
 import { cutoutOf, unitOf, brandOf } from "@/lib/catalog/product-facts";
 import { BRAND } from "@/lib/brand";
 import { reviewsAvailable } from "@/lib/reviews/server";
+import { TrackedRail } from "@/components/personalization/RecoTracking";
+import { recoItems } from "@/lib/reco/lists";
 
 /*
   Design: ProductV3 (desktop), ProductMobileV3 (phones).
@@ -396,7 +398,9 @@ export async function ProductTemplate({
           <h2 id="pdp-similar" className="text-[22px] font-bold leading-7 lg:text-h-section lg:leading-9">
             {tv("similar")}
           </h2>
-          <ProductRow products={similar} />
+          <TrackedRail list="pdp_similar" items={recoItems(similar)}>
+            <ProductRow products={similar} />
+          </TrackedRail>
         </section>
       )}
 

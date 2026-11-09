@@ -37,6 +37,13 @@ production'ni o'zi yangilaydi. «Deploy to Fly» va «Deploy to Hetzner» secret
   nuqta». Brendbook PDF — foydalanuvchida (repoda yoʻq). **Diqqat**: SMS matnlari «govita:» bilan
   boshlanadi — Eskiz shablonlarini qayta tasdiqlatish kerak.
 
+## Navbatdagi ish (reja tayyor, qurilish foydalanuvchi aytganda)
+
+- **Jalb qilish: animatsiya + tavsiya algoritmi v2** — [`docs/REJA-JALB-QILISH.md`](REJA-JALB-QILISH.md).
+  **D1 qilindi** (o'lchash: `rec_impression`/`rec_click`, 8 ta rail, migratsiya 0034).
+  Tartib: D1 (o'lchash hodisalari) → A (animatsiya auditi) → B (mikro-interaksiyalar) →
+  C1 (server signallari) → C2 (algoritm v2) → C3 (rail'lar) → D2 (A/B + `/admin/reco`).
+
 ## Bloklangan (davom ettirish uchun nima kerak)
 
 - **BTS yetkazish integratsiyasi**: `docs.bts.uz` / `apitest.bts.uz` sessiya tarmog'iga

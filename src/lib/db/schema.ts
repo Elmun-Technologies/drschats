@@ -310,6 +310,7 @@ export const visitors = pgTable("visitors", {
 export const VISITOR_EVENT_TYPES = [
   "page_view", "view_item", "add_to_cart", "remove_from_cart", "view_cart",
   "begin_checkout", "purchase", "search", "add_to_wishlist", "quiz_complete",
+  "rec_impression", "rec_click",
 ] as const;
 export type VisitorEventType = (typeof VISITOR_EVENT_TYPES)[number];
 

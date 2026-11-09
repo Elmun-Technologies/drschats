@@ -124,3 +124,23 @@ export const DAY = 24 * 60 * 60 * 1000;
 export function daysSince(date: Date | null | undefined, now = Date.now()): number | null {
   return date ? Math.max(0, Math.floor((now - date.getTime()) / DAY)) : null;
 }
+
+/** What an event carries beyond its columns (`visitor_events.meta`); null when nothing. */
+export function metaOf(event: {
+  type: VisitorEventType;
+  term?: string;
+  list?: string;
+  slugs?: string[];
+  position?: number;
+  variant?: string;
+}): Record<string, unknown> | null {
+  const meta: Record<string, unknown> = {};
+  if (event.term) meta.term = event.term;
+  if (event.type === "rec_impression" || event.type === "rec_click") {
+    if (event.list) meta.list = event.list;
+    if (event.variant) meta.variant = event.variant;
+    if (event.type === "rec_impression" && event.slugs?.length) meta.slugs = event.slugs;
+    if (event.type === "rec_click" && event.position !== undefined) meta.position = event.position;
+  }
+  return Object.keys(meta).length ? meta : null;
+}
