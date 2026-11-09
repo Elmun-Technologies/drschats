@@ -8,8 +8,12 @@ eski chat tarixini o'qishga harakat qilmang.
 
 ## Branch
 
-Ish branch'i: `claude/dreamy-ride-p434h5` (asosiy: `main`). Hozircha main'dan oldinda —
-hali PR ochilmagan (foydalanuvchi so'rasa och).
+Ish branch'i: `claude/dreamy-ride-p434h5` (asosiy: `main`). Rebrend va Hetzner to'plami
+#140 bilan `main` ga tushgan; branch merge'dan keyin `main` dan qayta boshlanadi.
+
+**Deploy (2026-11-09 tekshirildi): sayt Vercel'da** — `main` ga merge bo'lishi bilan Vercel
+production'ni o'zi yangilaydi. «Deploy to Fly» va «Deploy to Hetzner» secret'siz (`FLY_API_TOKEN`,
+`HETZNER_HOST`) qadamlarni o'tkazib yuborib «success» ko'rsatadi — bu deploy emas.
 
 ## Yaqinda tugagan (main'ga merge qilingan)
 
@@ -18,7 +22,7 @@ hali PR ochilmagan (foydalanuvchi so'rasa och).
 - Friksiyani kamaytirish: 4–5 savolli test, upsell oynasi o'chiq, bitta manzil
   maydoni, rasmiy distribyutor belgisi, kunlik narx, welcome pop-up — #135
 
-## Joriy (branch'da, hali PR emas)
+## Yaqinda tugagan (2026-11, #140)
 
 - **Hetzner deploy tayyorlandi** (commit 28b9051): `deploy/hetzner/` (Compose: Caddy +
   app + Postgres + kunlik backup + bot), `.github/workflows/hetzner-deploy.yml`,
