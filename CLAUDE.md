@@ -291,9 +291,17 @@ trackAddToCart / trackRemoveFromCart     // FAQAT cart store'dan (useCart.add/re
 trackBeginCheckout(value, items)         // /cart formasiga birinchi fokusda
 trackOrder(orderId, totals, items)       // purchase + generate_lead (+ Pixel Purchase/Lead, Metrika goal)
 trackSearch(term) · trackAddToWishlist(item) · trackPageView(url)
+trackRecImpression(list, items) · trackRecClick(list, item, position)   // tavsiya rail'lari
 track(event, payload)                    // custom event
 ```
 
+- **Tavsiya rail'lari o'lchanadi** (0034, `lib/reco/lists.ts`): har rail'ning id'si
+  (`home_for_you`, `pdp_similar`, `toast_similar`, `cart_gap`…) va algoritm varianti (`RECO_VARIANT`).
+  Rail ko'rinishga kirganda `rec_impression` (meta: `list`, `slugs`, `variant`), kartaga bosilganda
+  `rec_click` (`position`) — GA4 da `view_item_list`/`select_item` + `item_list_id`. Yangi rail —
+  `RECO_LISTS` ga id va `useRecoTracking` (client) yoki `<TrackedRail>` (server sahifa) bilan o'rash;
+  karta `data-slug` bilan topiladi (`ProductCard` da bor). `rec_impression` 120 kun saqlanadi.
+  Reja: [`docs/REJA-JALB-QILISH.md`](docs/REJA-JALB-QILISH.md)
 - **`add_to_cart` komponentdan chaqirilmaydi** — store o'zi yuboradi, shuning
   uchun har qanday qo'shish yo'li bir xil narxni (taklif bilan) beradi va
   ikki marta sanalmaydi.

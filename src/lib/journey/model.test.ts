@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { channelOf, deviceOf, furthestStage, isBotAgent, safePath, touchOf } from "./model";
+import { channelOf, deviceOf, furthestStage, isBotAgent, metaOf, safePath, touchOf } from "./model";
 
 describe("journey model", () => {
   it("only moves the stage forward", () => {
@@ -40,5 +40,29 @@ describe("journey model", () => {
     expect(isBotAgent("Googlebot/2.1")).toBe(true);
     expect(isBotAgent("")).toBe(true);
     expect(isBotAgent("Mozilla/5.0 (Windows NT 10.0)")).toBe(false);
+  });
+});
+
+describe("event meta", () => {
+  it("keeps the search term", () => {
+    expect(metaOf({ type: "search", term: "d3" })).toEqual({ term: "d3" });
+    expect(metaOf({ type: "page_view" })).toBeNull();
+  });
+
+  it("stores rail, variant and slugs on an impression, position on a click", () => {
+    expect(metaOf({ type: "rec_impression", list: "pdp_similar", variant: "v1", slugs: ["a", "b"], position: 3 })).toEqual({
+      list: "pdp_similar",
+      variant: "v1",
+      slugs: ["a", "b"],
+    });
+    expect(metaOf({ type: "rec_click", list: "home_for_you", variant: "v1", slugs: ["a"], position: 0 })).toEqual({
+      list: "home_for_you",
+      variant: "v1",
+      position: 0,
+    });
+  });
+
+  it("ignores rail fields on other events", () => {
+    expect(metaOf({ type: "view_item", list: "pdp_similar", slugs: ["a"] })).toBeNull();
   });
 });

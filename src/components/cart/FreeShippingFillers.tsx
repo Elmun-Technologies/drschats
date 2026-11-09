@@ -7,22 +7,24 @@ import type { Product } from "@/lib/shopflow/types";
 import { useCart } from "@/lib/cart/store";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 import { formatMoney } from "@/lib/utils";
+import { useRecoTracking } from "@/components/personalization/RecoTracking";
 
 /** "Add one of these and delivery is free" — under the cart's free-shipping bar. */
 export function FreeShippingFillers({ products }: { products: Product[] }) {
   const locale = useLocale() as Locale;
   const t = useTranslations("cart.v3");
   const add = useCart((s) => s.add);
+  const tracking = useRecoTracking<HTMLUListElement>("cart_gap", products);
   if (products.length === 0) return null;
 
   return (
     <div className="flex flex-col gap-2 pt-1">
       <span className="text-sm font-semibold">{t("fillersTitle")}</span>
-      <ul className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:grid lg:grid-cols-3 lg:px-0">
+      <ul ref={tracking.ref} onClickCapture={tracking.onClickCapture} className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 lg:mx-0 lg:grid lg:grid-cols-3 lg:px-0">
         {products.map((p) => {
           const image = cutoutOf(p) ?? p.images[0]?.url;
           return (
-            <li key={p.id} className="flex w-60 shrink-0 items-center gap-2.5 rounded-input bg-bg p-2 lg:w-auto">
+            <li key={p.id} data-slug={p.slug} className="flex w-60 shrink-0 items-center gap-2.5 rounded-input bg-bg p-2 lg:w-auto">
               <span className="relative h-12 w-12 shrink-0 rounded-[10px] bg-tile">
                 {image && <Image src={image} alt="" fill sizes="48px" className="object-contain p-1" />}
               </span>

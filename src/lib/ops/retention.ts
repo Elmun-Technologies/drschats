@@ -14,6 +14,8 @@ import { getDb } from "@/lib/db/client";
 */
 
 export const RETENTION: { table: string; where: SQL; label: string }[] = [
+  // Rail impressions are the bulkiest event and only feed recommendation reports.
+  { table: "visitor_events", label: "recommendation impressions, 120 days", where: sql`type = 'rec_impression' and created_at < now() - interval '120 days'` },
   { table: "visitor_events", label: "raw site events, 400 days", where: sql`created_at < now() - interval '400 days'` },
   // An anonymous visitor not seen for 13 months; one tied to a phone stays with the customer's record.
   { table: "visitors", label: "anonymous visitors, 400 days", where: sql`last_seen_at < now() - interval '400 days' and phone9 is null and orders_count = 0` },

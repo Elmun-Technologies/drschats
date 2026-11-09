@@ -1,6 +1,7 @@
 import { STORAGE_KEYS } from "@/lib/storage-keys";
 import { analyticsAllowed } from "@/lib/analytics/consent";
 import type { VisitorEventType } from "@/lib/db/schema";
+import type { RecoList } from "@/lib/reco/lists";
 
 /*
   Browser half of the first-party journey (server: app/api/t). Events are
@@ -9,13 +10,23 @@ import type { VisitorEventType } from "@/lib/db/schema";
   server sets; this side only knows its session.
 */
 
-type ClientEvent = { type: Exclude<VisitorEventType, "purchase">; path?: string; slug?: string; value?: number; term?: string };
+type ClientEvent = {
+  type: Exclude<VisitorEventType, "purchase">;
+  path?: string;
+  slug?: string;
+  value?: number;
+  term?: string;
+  list?: RecoList;
+  slugs?: string[];
+  position?: number;
+  variant?: string;
+};
 type Cart = { value: number; items: { slug: string; name: string; quantity: number; price: number }[] };
 
 const SESSION_IDLE_MS = 30 * 60 * 1000;
 const FLUSH_MS = 1200;
 // A click that moves the journey is sent at once: the next tap is often a navigation.
-const URGENT = new Set<ClientEvent["type"]>(["page_view", "add_to_cart", "remove_from_cart", "begin_checkout"]);
+const URGENT = new Set<ClientEvent["type"]>(["page_view", "add_to_cart", "remove_from_cart", "begin_checkout", "rec_click"]);
 
 let queue: ClientEvent[] = [];
 let pendingCart: Cart | null = null;

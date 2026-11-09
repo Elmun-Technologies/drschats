@@ -31,6 +31,8 @@ import {
 import { isStocked } from "@/lib/shop/categories";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
+import { TrackedRail } from "@/components/personalization/RecoTracking";
+import { recoItems } from "@/lib/reco/lists";
 import { DealOfDay } from "@/components/home/DealOfDay";
 import { getBanners, getDealOfDay } from "@/lib/merch/store";
 
@@ -172,16 +174,22 @@ export default async function HomePage({
         {deals.length > 0 && (
           <section aria-labelledby="home-deals" className="wrap flex flex-col gap-3.5 lg:gap-6">
             <SectionHead id="home-deals" title={t("v3.deals.title")} href={SALE_HREF} label={t("v3.deals.all")} shortLabel={t("v3.all")} />
-            <ProductRow products={deals} />
+            <TrackedRail list="home_deals" items={recoItems(deals)}>
+              <ProductRow products={deals} />
+            </TrackedRail>
           </section>
         )}
 
-        <BrandPanel products={swissEnergy} />
+        <TrackedRail list="home_brand" items={recoItems(swissEnergy)}>
+          <BrandPanel products={swissEnergy} />
+        </TrackedRail>
 
         {curated.length > 0 && (
           <section aria-labelledby="home-curated" className="wrap flex flex-col gap-3.5 lg:gap-6">
             <SectionHead id="home-curated" title={t("catalog.title")} href="/products" label={t("v3.popular.all")} shortLabel={t("v3.all")} />
-            <ProductGrid products={curated} mobileLimit={6} />
+            <TrackedRail list="home_popular" items={recoItems(curated)}>
+              <ProductGrid products={curated} mobileLimit={6} />
+            </TrackedRail>
             <Link
               href="/products"
               className="flex h-12 items-center justify-center rounded-sm bg-tile text-base font-semibold transition-colors hover:bg-tile-hover md:hidden"

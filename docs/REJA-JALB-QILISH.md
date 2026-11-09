@@ -223,7 +223,7 @@ Kanallar bo'yicha marketing rejasi alohida (repoda emas — biznes-maxfiy).
 |---|---|---|---|
 | **A** | Animatsiya auditi, motion tokenlari, tuzatishlar | 1 PR | — |
 | **B** | Mikro-interaksiyalar B1–B9 (B10 alohida tajriba) | 1–2 PR | A |
-| **D1** | O'lchash hodisalari (`rec_impression`/`rec_click`) — **oldin**, toki v1 ning boshlang'ich ko'rsatkichi yig'ilsin | kichik PR | — |
+| **D1** ✅ | O'lchash hodisalari (`rec_impression`/`rec_click`) — **oldin**, toki v1 ning boshlang'ich ko'rsatkichi yig'ilsin. Qilindi: migratsiya 0034, `lib/reco/lists.ts`, `RecoTracking.tsx`, 8 ta rail | kichik PR | — |
 | **C1** | Server signallari: migratsiya, ishchi, `/api/reco/signals`, haqiqiy «Mashhur» | 1 PR | D1 |
 | **C2** | Algoritm v2: signal og'irliklari, ingredient/maqsad, juftliklar, qayta buyurtma, xilma-xillik, «Nega?» | 1 PR | C1 |
 | **C3** | Yangi rail'lar va joylashuvi (§4.5) | 1 PR | C2 |

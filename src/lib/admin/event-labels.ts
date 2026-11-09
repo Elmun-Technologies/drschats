@@ -11,6 +11,8 @@ export const EVENT_LABEL: Record<VisitorEventType, string> = {
   search: "Qidirdi",
   add_to_wishlist: "Sevimlilarga qoʻshdi",
   quiz_complete: "Testni yakunladi",
+  rec_impression: "Tavsiya blokini koʻrdi",
+  rec_click: "Tavsiyadan mahsulot tanladi",
 };
 
 /** Events that move the journey, drawn heavier in the timeline. */
