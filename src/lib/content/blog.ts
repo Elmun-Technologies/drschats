@@ -1,3 +1,5 @@
+import { articlesNov2026 } from "./blog-articles-2026-11";
+import { articlesNov2026b } from "./blog-articles-2026-11b";
 import type { Locale } from "@/lib/i18n/routing";
 
 type L<T = string> = Record<Locale, T>;
@@ -7,7 +9,7 @@ interface ArticleSection {
   paragraphs: L<string[]>;
 }
 
-interface RawArticle {
+export interface RawArticle {
   slug: string;
   date: string;
   imageSeed: string;
@@ -41,10 +43,24 @@ const IMAGES: Record<string, string> = {
   "blog-omega3": "/images/stock/st-cat-capsules.webp",
   "blog-vitamind": "/images/stock/st-cat-orange.webp",
   "blog-magnesium": "/images/stock/st-cat-citrus.webp",
+  "blog-calcium": "/images/stock/st-aud-senior.webp",
+  "blog-kids": "/images/stock/st-aud-child.webp",
+  "blog-pregnancy": "/images/stock/st-aud-expectant.webp",
+  "blog-collagen": "/images/stock/st-aud-woman.webp",
+  "blog-tonometer": "/images/stock/st-range-devices.webp",
+  "blog-inhaler": "/images/stock/st-shelf-range.webp",
+  "blog-effervescent": "/images/stock/st-cat-citrus.webp",
+  "blog-vitaminc": "/images/stock/st-cat-orange.webp",
+  "blog-eyes": "/images/stock/st-cat-capsules.webp",
+  "blog-hair": "/images/stock/st-aud-woman.webp",
+  "blog-men": "/images/stock/st-aud-man.webp",
+  "blog-immunity": "/images/stock/st-aud-recovery.webp",
 };
 const img = (seed: string) => IMAGES[seed] ?? "/images/stock/st-cat-capsules.webp";
 
 const rawArticles: RawArticle[] = [
+  ...articlesNov2026,
+  ...articlesNov2026b,
   {
     slug: "omega-3-nima-uchun-kerak",
     date: "2026-05-20",
@@ -56,7 +72,7 @@ const rawArticles: RawArticle[] = [
       ru: "Зачем нужна омега-3 и как её выбрать",
     },
     excerpt: {
-      uz: "EPA va DHA — yurak, miya va koʻz uchun zarur yog' kislotalari. Sifatli omega-3 ni qanday tanlashni oʻrganing.",
+      uz: "EPA va DHA — yurak, miya va koʻz uchun zarur yogʻ kislotalari. Sifatli omega-3 ni qanday tanlashni oʻrganing.",
       ru: "EPA и DHA — жирные кислоты для сердца, мозга и зрения. Узнайте, как выбрать качественную омегу-3.",
     },
     sections: [
@@ -64,7 +80,7 @@ const rawArticles: RawArticle[] = [
         heading: { uz: "EPA va DHA nima?", ru: "Что такое EPA и DHA?" },
         paragraphs: {
           uz: [
-            "Omega-3 — bu organizm oʻzi ishlab chiqara olmaydigan toʻyinmagan yog' kislotalari. Asosiy ikkitasi — EPA va DHA — baliq yogʻida koʻp boʻladi.",
+            "Omega-3 — bu organizm oʻzi ishlab chiqara olmaydigan toʻyinmagan yogʻ kislotalari. Asosiy ikkitasi — EPA va DHA — baliq yogʻida koʻp boʻladi.",
             "DHA miya va toʻr parda hujayralarining qurilish bloki, EPA esa yalligʻlanishni muvozanatlashga yordam beradi.",
           ],
           ru: [

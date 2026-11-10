@@ -268,6 +268,10 @@ To'liq holat, qoidalar va off-page reja: **[`docs/SEO.md`](docs/SEO.md)**.
   `meta.pages`, uz + ru). Qo'lda `${x} — Go Vita` yozilmaydi. Title ≤ 70, so'rov so'zi
   oldinda ("… narxi, Toshkentda sotib olish" / "… купить в Ташкенте, цена");
   description 70–160, haqiqiy narx/son/muddat bilan (`page-meta.test.ts`)
+- **Mahsulot kalit so'zi** (`content/product-keywords.ts`, `Product.keyword`): odamlar qidiradigan
+  tarkib/shakl («Kalsiy D3 K2, kapsula», «Магний B6 шипучий») — title boshida (`firstFitting`: ≤ 70
+  bo'lguncha qisqaroq shablon), H1 ostida, rasm `alt` va saytdagi qidiruvda. Karta nomi o'zgarmaydi.
+  Faqat qadoqdagi tarkib, ta'sir va'dasi yo'q (`product-keywords.test.ts`). Yangi mahsulotga ham yozing
 - **Query-param variantlari** (`?sort`, filtrlar — `sale`, `ending` ham, `?page`) — `noindex, follow`
 - **Bo'sh javon** (0 mahsulot) — 404 va sitemap'da yo'q; `productCount` javon
   ko'rsatgandek (`categorySlug`, sotuvdagilar) sanaladi

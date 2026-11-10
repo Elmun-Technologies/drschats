@@ -80,15 +80,36 @@ export async function staticPageMetadata(
   });
 }
 
+export const TITLE_MAX = 70;
+
+/** The first title that fits a result line; the last one is used whatever its length. */
+export function firstFitting(candidates: string[], max = TITLE_MAX): string {
+  return candidates.find((title) => title.length <= max) ?? candidates[candidates.length - 1];
+}
+
+/*
+  A product with a search keyword (content/product-keywords.ts) leads with it —
+  «Kalsiy D3 K2, kapsula — Swiss Energy Calcivit 30» — because that is what
+  buyers type; the brand name alone matched only people who already knew it.
+*/
 export async function productMetadata(product: Product, locale: Locale): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta.seo" });
+  const keyword = product.keyword;
+  const title = keyword
+    ? firstFitting([
+        t("productKeyword", { keyword, name: product.name }),
+        t("productKeywordPrice", { keyword, name: product.name }),
+        t("productKeywordShort", { keyword, name: product.name }),
+        `${keyword} — ${product.name}`,
+      ])
+    : t("product", { name: product.name });
   return buildPageMetadata({
     locale,
     path: `/product/${product.slug}`,
-    title: t("product", { name: product.name }),
+    title,
     description: clampDescription(
       t("productDescription", {
-        name: product.name,
+        name: keyword ? `${product.name} — ${keyword}` : product.name,
         tagline: sentence(product.tagline),
         price: formatMoney(product.price, locale),
         regions: await regionsLabel(locale),

@@ -1,3 +1,4 @@
+import { productKeyword } from "@/lib/content/product-keywords";
 import type { Locale } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
 import { discountPercent } from "@/lib/shop/discounts";
@@ -108,6 +109,7 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     slug: p.slug,
     name: localized(p.name, locale, p.slug),
     tagline: localized(p.tagline, locale, ""),
+    ...(productKeyword(p.slug, locale) ? { keyword: productKeyword(p.slug, locale) } : {}),
     description: localized(p.description, locale, ""),
     categoryId: p.categoryId,
     categorySlug: p.categorySlug,
@@ -120,7 +122,7 @@ function resolveProduct(p: RawProduct, data: CatalogData, locale: Locale): Produ
     rating: p.customerReviews?.count ? p.customerReviews.rating : SHOW_SAMPLE_SOCIAL_PROOF ? p.rating : 0,
     reviewCount: p.customerReviews?.count ? p.customerReviews.count : SHOW_SAMPLE_SOCIAL_PROOF ? p.reviewCount : 0,
     inStock: p.inStock,
-    images: photos.map((url) => ({ url, alt: localized(p.name, locale, p.slug) })),
+    images: photos.map((url) => ({ url, alt: [localized(p.name, locale, p.slug), productKeyword(p.slug, locale)].filter(Boolean).join(" — ") })),
     highlights: localized(p.highlights, locale, []),
     benefits: localized(p.benefits, locale, []),
     ingredients: localized(p.ingredients, locale, []),
@@ -227,7 +229,7 @@ export class CatalogEngine implements ShopflowClient {
       };
       // Name, tagline, brand, ingredients and aliases (both languages); words in any order, one typo forgiven.
       items = items.filter((p) =>
-        matchesQuery([p.name, p.tagline, p.brand?.name ?? "", ...p.ingredients.map((i) => i.name), ...aliasesFor(p.slug)], search),
+        matchesQuery([p.name, p.keyword ?? "", p.tagline, p.brand?.name ?? "", ...p.ingredients.map((i) => i.name), ...aliasesFor(p.slug)], search),
       );
     }
     items = sortProducts(items, sort);

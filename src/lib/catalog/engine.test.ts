@@ -96,3 +96,21 @@ describe("popular order", () => {
     expect(items.map((p) => p.slug)).toEqual([b.slug, c.slug, a.slug]);
   });
 });
+
+describe("search keywords", () => {
+  const engine = new CatalogEngine(async () => builtInCatalog);
+
+  it("finds a product by the words people search it by, in either language", async () => {
+    const uz = await engine.getProducts({ locale: "uz", search: "nebulayzer" });
+    expect(uz.items.map((p) => p.slug)).toContain("dr-frei-turbo-base-ingalyator");
+    // «градусник» is only in the keyword: the name says «Термометр».
+    const ru = await engine.getProducts({ locale: "ru", search: "градусник" });
+    expect(ru.items.map((p) => p.slug)).toContain("dr-frei-thermometer-t10");
+  });
+
+  it("carries the keyword on the product and into its image alt text", async () => {
+    const p = await engine.getProduct("swiss-energy-calcivit-30", "ru");
+    expect(p?.keyword).toBe("Кальций с D3 и K2, капсулы");
+    expect(p?.images[0]?.alt).toContain("Кальций с D3 и K2");
+  });
+});

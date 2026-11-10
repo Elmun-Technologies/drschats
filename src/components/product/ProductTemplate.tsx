@@ -150,7 +150,14 @@ export async function ProductTemplate({
               </>
             )}
           </nav>
-          <h1 className="max-w-[920px] text-[22px] font-bold leading-7 lg:text-[32px] lg:leading-[38px]">{product.name}</h1>
+          <h1 className="max-w-[920px] text-[22px] font-bold leading-7 lg:text-[32px] lg:leading-[38px]">
+            {product.name}
+            {/* The space keeps «name keyword» two words for search engines and screen readers. */}
+            {product.keyword && " "}
+            {product.keyword && (
+              <span className="mt-1 block text-[15px] font-medium leading-5 text-ink-2 lg:mt-1.5 lg:text-lg lg:leading-6">{product.keyword}</span>
+            )}
+          </h1>
           <div className="flex flex-wrap items-center gap-x-3.5 gap-y-1 text-sm text-ink-2 lg:gap-x-6 lg:text-[15px]">
             <a href="#sharhlar" className={META}>
               <Icon d={ICON.star} className="hidden h-[18px] w-[18px] lg:block" />
