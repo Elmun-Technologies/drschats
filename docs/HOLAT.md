@@ -47,10 +47,11 @@ production'ni o'zi yangilaydi. «Deploy to Fly» va «Deploy to Hetzner» secret
 ## Trafik: mahsulot SEO (2026-11)
 
 - **T1 qilindi**: 30 ta mahsulotga uz/ru kalit so'z (`content/product-keywords.ts`) — title, H1, alt, qidiruv.
-- **T2 — 6/12 qilindi** (`content/blog-articles-2026-11.ts`, uz+ru, FAQ bilan, mos mahsulot havolalari,
-  rasm — litsenziyali stok foto): kalsiy+D3, bolalar vitaminlari, homiladorlik, kollagen, tonometr, nebulayzer.
-  **Qolgan 6**: shipuchi vitaminlar, C vitamini, ko'z/lyutein, soch-tirnoq/biotin, erkaklar, immunitet (sink+C).
+- **T2 qilindi — 12 ta maqola** (`content/blog-articles-2026-11.ts` va `-11b.ts`, uz+ru, FAQ bilan, mos mahsulot
+  havolalari, rasm — litsenziyali stok foto): kalsiy+D3, bolalar vitaminlari, homiladorlik, kollagen, tonometr,
+  nebulayzer, shipuchi vitaminlar, C vitamini, koʻz/lyutein, soch-tirnoq/biotin, erkaklar, immunitet.
   Qoidalar: sarlavha ≤ 55 belgi, tibbiy va'da yo'q (`claims.ts`, `blog.test.ts`). AI-rasm ishlatilmaydi.
+  Keyingi: Search Console'da yangi sahifalarni kuzatish, talab ma'lumoti bo'yicha yangi mavzular.
 - **T3 bloklangan**: prays-listdagi ~30 yangi SKU (Picot, Gummy Monsters, Omega 3 Premium, Fertilex, choylar…) —
   haqiqiy rasm kerak. Dorilar (Nimdol, Rovatineks, Rovaxol, Chervujid) saytga qo'yilmaydi.
   Narxlar (21.10.2026 prays) saytdagi 30 SKU bilan to'liq mos — #133 da qo'yilgan.
