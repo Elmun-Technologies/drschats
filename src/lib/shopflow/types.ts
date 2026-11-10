@@ -61,6 +61,8 @@ export interface Product {
   slug: string;
   name: string;
   tagline: string;
+  /** What people search the product by — composition or form (content/product-keywords.ts). */
+  keyword?: string;
   description: string;
   categoryId?: string | null;
   categorySlug?: string | null;

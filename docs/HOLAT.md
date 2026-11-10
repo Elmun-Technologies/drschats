@@ -44,6 +44,15 @@ production'ni o'zi yangilaydi. «Deploy to Fly» va «Deploy to Hetzner» secret
   Tartib: D1 (o'lchash hodisalari) → A (animatsiya auditi) → B (mikro-interaksiyalar) →
   C1 (server signallari) → C2 (algoritm v2) → C3 (rail'lar) → D2 (A/B + `/admin/reco`).
 
+## Trafik: mahsulot SEO (2026-11)
+
+- **T1 qilindi**: 30 ta mahsulotga uz/ru kalit so'z (`content/product-keywords.ts`) — title, H1, alt, qidiruv.
+- **T2 navbatda**: blog — 12 ta maqola (ro'yxat foydalanuvchi bilan kelishilgan: kalsiy+D3, bolalar vitaminlari,
+  homiladorlik, kollagen, shipuchi, C, ko'z/lyutein, biotin, tonometr, ingalyator, erkaklar, immunitet).
+- **T3 bloklangan**: prays-listdagi ~30 yangi SKU (Picot, Gummy Monsters, Omega 3 Premium, Fertilex, choylar…) —
+  haqiqiy rasm kerak. Dorilar (Nimdol, Rovatineks, Rovaxol, Chervujid) saytga qo'yilmaydi.
+  Narxlar (21.10.2026 prays) saytdagi 30 SKU bilan to'liq mos — #133 da qo'yilgan.
+
 ## Bloklangan (davom ettirish uchun nima kerak)
 
 - **BTS yetkazish integratsiyasi**: `docs.bts.uz` / `apitest.bts.uz` sessiya tarmog'iga

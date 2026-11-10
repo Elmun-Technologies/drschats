@@ -867,6 +867,9 @@
     "shopDescription": "Каталог витаминов, минералов, БАД, специализированного питания и медтехники: цены, состав и инструкции. Официальный импорт, доставка по Узбекистану.",
     "seo": {
       "product": "{name} — купить в Ташкенте, цена | govita",
+      "productKeyword": "{keyword} — {name}, цена в Ташкенте | govita",
+      "productKeywordPrice": "{keyword} — {name}, цена | govita",
+      "productKeywordShort": "{keyword} — {name} | govita",
       "productDescription": "{name}: {tagline}. Цена — {price}. Доставка по Ташкенту за {hours} часа, по регионам Узбекистана — {regions}. Официальный импорт.",
       "category": "{name} — купить в Ташкенте, цены | govita",
       "categoryDescription": "{name}: товаров — {count}, цены от {min}. Официальный импорт, доставка по Ташкенту за {hours} часа, бесплатно при заказе от {free} сум.",

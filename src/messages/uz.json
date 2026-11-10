@@ -867,6 +867,9 @@
     "shopDescription": "Vitaminlar, minerallar, BAD, tibbiy ovqatlanish va jihozlar katalogi: narxlar, tarkib va qoʻllash yoʻriqnomasi. Rasmiy import, butun Oʻzbekistonga yetkazish.",
     "seo": {
       "product": "{name} narxi, Toshkentda sotib olish | govita",
+      "productKeyword": "{keyword} — {name}, narxi Toshkentda | govita",
+      "productKeywordPrice": "{keyword} — {name}, narxi | govita",
+      "productKeywordShort": "{keyword} — {name} | govita",
       "productDescription": "{name}: {tagline}. Narxi — {price}. Toshkent boʻylab {hours} soatda, viloyatlarga {regions}da yetkazib berish. Rasmiy import.",
       "category": "{name} — narxlar, Toshkentda sotib olish | govita",
       "categoryDescription": "{name}: {count} ta mahsulot, narxi {min}dan. Rasmiy import, Toshkent boʻylab {hours} soatda yetkazib berish, {free} soʻmdan ortiq buyurtmalar bepul.",
