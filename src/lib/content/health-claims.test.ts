@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { locales } from "@/lib/i18n/routing";
 import { getHealthTopics } from "./health-topics";
 import { getIngredients, getSynergy } from "./ingredients";
+import { BANNED_CLAIMS } from "./claims";
 
 /*
   These are food supplements, not medicines. Copy may say a nutrient supports
@@ -10,33 +11,7 @@ import { getIngredients, getSynergy } from "./ingredients";
   Every string on /goals, /symptoms, /vitamins and /ingredients is walked.
 */
 
-const NOT_LETTER = "(?<![\\p{L}\\u02BB\\u02BC])";
-const word = (stem: string) => new RegExp(`${NOT_LETTER}${stem}`, "iu");
-
-const BANNED: RegExp[] = [
-  word("davola"),
-  word("profilakti"),
-  word("isbotlan"),
-  word("tezkor"),
-  word("tiklaydi"),
-  word("oldini\\s+ol"),
-  /viruslarga\s+qarshi/iu,
-  /qarshi\s+kurash/iu,
-  /(?:xavotir|stress|yallig[ʻ'‘’]lanish)ni\s+kamaytir/iu,
-  /100% natija/iu,
-  word("лечит"),
-  word("лечени[еяю]"),
-  word("излечива"),
-  word("вылечи"),
-  word("предотвра"),
-  word("блокиру"),
-  word("профилакти"),
-  word("доказан"),
-  word("восстанавлива"),
-  word("против\\s"),
-  /снижает\s+продолжительность/iu,
-  word("борьб"),
-];
+const BANNED = BANNED_CLAIMS;
 
 function strings(value: unknown, path: string, out: [string, string][] = []): [string, string][] {
   if (typeof value === "string") out.push([path, value]);
