@@ -11,8 +11,10 @@
   - CreateTransaction / PerformTransaction / CancelTransaction are sent twice:
     a repeated call must return the first answer.
   - Account errors are -31050…-31099 and carry the account field name in `data`.
-  - A second transaction for an order that is awaiting payment is -31008 (the
-    sandbox checks exactly this code; developer.help.paycom.uz/pesochnitsa).
+  - A second transaction for an order that is awaiting payment is -31099, an
+    account error: the sandbox's CreateTransaction test requires -31050…-31099
+    there, although its guide page says -31008 (checked on test.paycom.uz,
+    2026-11-11).
 */
 
 export const PAYME_TIMEOUT_MS = 43_200_000;
@@ -39,7 +41,7 @@ export const PAYME_ERRORS = {
   cannotPerform: { code: -31008, message: msg("Невозможно выполнить данную операцию", "Bu amalni bajarib boʻlmaydi", "Unable to perform the operation") },
   orderNotFound: { code: -31050, message: msg("Неверный код заказа", "Buyurtma raqami notoʻgʻri", "Order not found") },
   orderClosed: { code: -31051, message: msg("Заказ уже оплачен или отменён", "Buyurtma toʻlangan yoki bekor qilingan", "Order is already paid or cancelled") },
-  orderBusy: { code: -31008, message: msg("Заказ ожидает оплаты другой транзакцией", "Buyurtma boshqa tranzaksiya bilan toʻlanmoqda", "Order is awaiting another transaction") },
+  orderBusy: { code: -31099, message: msg("Заказ ожидает оплаты другой транзакцией", "Buyurtma boshqa tranzaksiya bilan toʻlanmoqda", "Order is awaiting another transaction") },
 } satisfies Record<string, PaymeError>;
 
 export interface PaymeOrder {

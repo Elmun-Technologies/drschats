@@ -108,7 +108,7 @@ describe("Create → Perform → Cancel", () => {
     expect(resultOf(await s.call("CreateTransaction", { id: "p1", time: 1, amount: 15_000_000, account }))).toEqual(create);
     // A second transaction for the same order waits for the first.
     const busy = errorOf(await s.call("CreateTransaction", { id: "p2", time: 2, amount: 15_000_000, account }));
-    expect(busy?.code).toBe(-31008);
+    expect(busy?.code).toBe(-31099);
     expect(busy?.data).toBe("order_id");
 
     s.tick(1000);
@@ -174,7 +174,7 @@ describe("Create → Perform → Cancel", () => {
   it("maps a store fault to its error and anything else to a system error", async () => {
     const s = setup();
     s.mem.store.createTx = async () => { throw new PaymeFault({ ...PAYME_ERRORS.orderBusy, data: "order_id" }); };
-    expect(errorOf(await s.call("CreateTransaction", { id: "p9", time: 1, amount: 15_000_000, account }))?.code).toBe(-31008);
+    expect(errorOf(await s.call("CreateTransaction", { id: "p9", time: 1, amount: 15_000_000, account }))?.code).toBe(-31099);
     s.mem.store.findTx = async () => { throw new Error("db down"); };
     expect(errorOf(await s.call("CheckTransaction", { id: "p9" }))?.code).toBe(-32400);
   });
