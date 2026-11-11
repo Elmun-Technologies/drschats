@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { canOpen } from "@/lib/admin/roles";
+import { useT } from "@/lib/admin/i18n/client";
 import type { AdminRole } from "@/lib/db/schema";
 
 export const NAV_GROUPS = [
@@ -126,11 +127,12 @@ export function navFor(role: AdminRole) {
 
 export function AdminNav({ onNavigate, badges = {}, role }: { onNavigate?: () => void; badges?: NavBadges; role: AdminRole }) {
   const path = usePathname();
+  const t = useT();
   return (
-    <nav aria-label="Boshqaruv menyusi" className="flex flex-col gap-5">
+    <nav aria-label={t("Boshqaruv menyusi")} className="flex flex-col gap-5">
       {navFor(role).map((group) => (
         <div key={group.label}>
-          <p className="mb-1.5 px-3 text-[13px] font-semibold text-muted">{group.label}</p>
+          <p className="mb-1.5 px-3 text-[13px] font-semibold text-muted">{t(group.label)}</p>
           <ul className="flex flex-col gap-0.5">
             {group.items.map((item) => {
               const active = isActive(path, item.href, item.exact);
@@ -146,9 +148,9 @@ export function AdminNav({ onNavigate, badges = {}, role }: { onNavigate?: () =>
                     )}
                   >
                     <NavIcon name={item.icon} className={active ? "text-ink" : "text-muted"} />
-                    <span>{item.label}</span>
+                    <span>{t(item.label)}</span>
                     {(badges[item.href === "/admin/bot/tickets" ? "/admin/bot" : item.href] ?? 0) > 0 && (
-                      <span className="ml-auto grid h-6 min-w-6 place-items-center rounded-full bg-ink px-1.5 text-[12px] font-bold tabular-nums text-white" aria-label={`${badges[item.href]} ta yangi`}>
+                      <span className="ml-auto grid h-6 min-w-6 place-items-center rounded-full bg-ink px-1.5 text-[12px] font-bold tabular-nums text-white" aria-label={t("{n} ta yangi", { n: badges[item.href] ?? 0 })}>
                         {badges[item.href]! > 99 ? "99+" : badges[item.href]}
                       </span>
                     )}

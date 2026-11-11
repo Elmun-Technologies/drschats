@@ -2,6 +2,7 @@
 
 import { useState, type KeyboardEvent } from "react";
 import { cn, formatNumber } from "@/lib/utils";
+import { useT } from "@/lib/admin/i18n/client";
 
 /*
   The dashboard's main chart: one measure at a time (tabs switch it, never a
@@ -41,6 +42,7 @@ function pathOf(values: number[], max: number, close: boolean): string {
 }
 
 export function TrendChart({ current, previous, unit, periodLabel }: { current: TrendPoint[]; previous: TrendPoint[]; unit: "hour" | "day"; periodLabel: string }) {
+  const t = useT();
   const [measure, setMeasure] = useState<Measure>("revenue");
   const [active, setActive] = useState<number | null>(null);
   const meta = MEASURES.find((m) => m.key === measure)!;
@@ -53,7 +55,7 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
   const n = current.length;
   const every = Math.max(1, Math.ceil(n / (unit === "hour" ? 8 : 7)));
   const xPct = (i: number) => (n === 1 ? 50 : (i / (n - 1)) * 100);
-  const format = (v: number) => `${formatNumber(Math.round(v))} ${meta.unit}`;
+  const format = (v: number) => `${formatNumber(Math.round(v))} ${t(meta.unit)}`;
 
   const onKey = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === "ArrowRight") setActive((i) => Math.min(n - 1, (i ?? -1) + 1));
@@ -66,7 +68,7 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
   return (
     <section className="flex h-full min-w-0 flex-col rounded-[20px] border border-line bg-white p-5 sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex gap-1 overflow-x-auto rounded-[14px] bg-tile p-1" role="group" aria-label="Koʻrsatkich">
+        <div className="flex gap-1 overflow-x-auto rounded-[14px] bg-tile p-1" role="group" aria-label={t("Koʻrsatkich")}>
           {MEASURES.map((m) => (
             <button
               key={m.key}
@@ -78,22 +80,22 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
                 measure === m.key ? "bg-white text-ink shadow-[0_1px_2px_rgba(23,25,27,0.08)]" : "text-ink-2 hover:text-ink",
               )}
             >
-              {m.label}
+              {t(m.label)}
             </button>
           ))}
         </div>
         <div className="sm:text-right">
-          <p className="text-[28px] font-bold leading-8 tabular-nums text-ink">{measure === "revenue" ? compact(total) : formatNumber(total)} <span className="text-[15px] font-semibold text-muted">{meta.unit}</span></p>
+          <p className="text-[28px] font-bold leading-8 tabular-nums text-ink">{measure === "revenue" ? compact(total) : formatNumber(total)} <span className="text-[15px] font-semibold text-muted">{t(meta.unit)}</span></p>
           <p className="mt-1 text-[13px] text-muted">
             {change !== null && <span className="mr-1.5 font-semibold tabular-nums text-ink">{change >= 0 ? "↑" : "↓"} {Math.abs(change)}%</span>}
-            oldingi {periodLabel}: {measure === "revenue" ? compact(prevTotal) : formatNumber(prevTotal)}
+            {t("oldingi")} {periodLabel}: {measure === "revenue" ? compact(prevTotal) : formatNumber(prevTotal)}
           </p>
         </div>
       </div>
 
       <div className="mt-3 flex flex-wrap gap-4 text-[13px] text-ink-2" aria-hidden="true">
-        <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 rounded-full bg-ink" />Shu davr</span>
-        <span className="inline-flex items-center gap-2"><span className="w-5 border-t-2 border-dashed border-muted" />Oldingi davr</span>
+        <span className="inline-flex items-center gap-2"><span className="h-0.5 w-5 rounded-full bg-ink" />{t("Shu davr")}</span>
+        <span className="inline-flex items-center gap-2"><span className="w-5 border-t-2 border-dashed border-muted" />{t("Oldingi davr")}</span>
       </div>
 
       <div className="mt-4 flex min-h-[268px] flex-1 gap-3">
@@ -107,7 +109,7 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
             className="relative min-h-[240px] flex-1 rounded-[4px] outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
             tabIndex={0}
             role="img"
-            aria-label={`${meta.label}: jami ${format(total)}. Strelkalar bilan qiymatlarni koʻring.`}
+            aria-label={t("{label}: jami {total}. Strelkalar bilan qiymatlarni koʻring.", { label: t(meta.label), total: format(total) })}
             onKeyDown={onKey}
             onMouseLeave={() => setActive(null)}
             onBlur={() => setActive(null)}
@@ -141,8 +143,8 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
                   style={{ left: `${xPct(active)}%` }}
                 >
                   <p className="font-semibold text-ink">{current[active].label}</p>
-                  <p className="mt-1 flex justify-between gap-4 text-ink"><span className="text-ink-2">Shu davr</span><b className="tabular-nums">{format(values[active])}</b></p>
-                  <p className="mt-0.5 flex justify-between gap-4 text-ink"><span className="text-ink-2">{previous[active]?.label ?? "Oldingi"}</span><span className="tabular-nums">{format(prevValues[active])}</span></p>
+                  <p className="mt-1 flex justify-between gap-4 text-ink"><span className="text-ink-2">{t("Shu davr")}</span><b className="tabular-nums">{format(values[active])}</b></p>
+                  <p className="mt-0.5 flex justify-between gap-4 text-ink"><span className="text-ink-2">{previous[active]?.label ?? t("Oldingi")}</span><span className="tabular-nums">{format(prevValues[active])}</span></p>
                 </div>
               </>
             )}
@@ -165,8 +167,8 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
 
       <div className="sr-only">
       <table>
-        <caption>{meta.label}</caption>
-        <thead><tr><th scope="col">Davr</th><th scope="col">Shu davr</th><th scope="col">Oldingi davr</th></tr></thead>
+        <caption>{t(meta.label)}</caption>
+        <thead><tr><th scope="col">{t("Davr")}</th><th scope="col">{t("Shu davr")}</th><th scope="col">{t("Oldingi davr")}</th></tr></thead>
         <tbody>
           {current.map((p, i) => (
             <tr key={p.key}><th scope="row">{p.label}</th><td>{format(values[i])}</td><td>{format(prevValues[i])}</td></tr>
