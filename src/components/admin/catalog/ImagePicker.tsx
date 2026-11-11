@@ -59,10 +59,10 @@ export function ImagePicker({
       onClose={onClose}
       wide
       title={title}
-      lead={mode === "multi" ? "Bosing — rasm roʻyxatga qoʻshiladi. Bir nechtasini tanlab, «Tayyor»ni bosing." : "Bosing — rasm tanlanadi."}
+      lead={mode === "multi" ? t("Bosing — rasm roʻyxatga qoʻshiladi. Bir nechtasini tanlab, «Tayyor»ni bosing.") : t("Bosing — rasm tanlanadi.")}
       footer={
         <>
-          <span className="mr-auto text-[14px] text-muted">{mode === "multi" ? `Tanlangan: ${selected.length}` : `${hits.length} ta rasm`}</span>
+          <span className="mr-auto text-[14px] text-muted">{mode === "multi" ? t("Tanlangan: {n}", { n: selected.length }) : t("{n} ta rasm", { n: hits.length })}</span>
           <button type="button" onClick={onClose} className={buttonClass}>{t("Tayyor")}</button>
         </>
       }
@@ -88,7 +88,7 @@ export function ImagePicker({
                 kind === k ? "bg-ink text-white" : "bg-tile text-ink hover:bg-tile-hover",
               )}
             >
-              {k ? REPO_IMAGE_KINDS[k] : "Hammasi"}
+              {k ? t(REPO_IMAGE_KINDS[k]) : t("Hammasi")}
               <span className={cn("text-[13px] tabular-nums", kind === k ? "text-on-dark-2" : "text-muted")}>{counts[k ?? "all"] ?? 0}</span>
             </button>
           ))}
@@ -113,7 +113,7 @@ export function ImagePicker({
                     }}
                     disabled={mode === "multi" && isChosen}
                     aria-pressed={isChosen}
-                    aria-label={`${img.name}${isChosen ? " — tanlangan" : ""}`}
+                    aria-label={isChosen ? t("{name} — tanlangan", { name: img.name }) : img.name}
                     className={cn(
                       "group flex w-full flex-col gap-1.5 rounded-[16px] p-1.5 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40",
                       isChosen ? "bg-ink" : "hover:bg-tile",
@@ -133,7 +133,7 @@ export function ImagePicker({
           {hits.length > limit && (
             <div className="mt-4 flex justify-center">
               <button type="button" onClick={() => setLimit((n) => n + PAGE)} className="inline-flex h-11 items-center rounded-[12px] bg-tile px-4 text-[14px] font-semibold text-ink hover:bg-tile-hover">
-                {t("Yana")} {Math.min(PAGE, hits.length - limit)} {t("ta koʻrsatish")}
+                {t("Yana {n} ta koʻrsatish", { n: Math.min(PAGE, hits.length - limit) })}
               </button>
             </div>
           )}

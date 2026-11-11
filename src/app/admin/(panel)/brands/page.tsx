@@ -39,7 +39,7 @@ export default async function AdminBrandsPage({ searchParams }: { searchParams: 
             <Card
               key={b.slug}
               title={b.name}
-              lead={n > 0 ? `${n} ta mahsulot` : "Mahsulot yoʻq — saytda koʻrinmaydi"}
+              lead={n > 0 ? t("{n} ta mahsulot", { n }) : t("Mahsulot yoʻq — saytda koʻrinmaydi")}
               actions={
                 <div className="flex flex-wrap items-center gap-3">
                   {n > 0 && <Link href={`/admin/products?brand=${encodeURIComponent(b.slug)}`} className={`${linkClass} inline-flex h-11 items-center text-[14px]`}>{t("Mahsulotlar")}</Link>}

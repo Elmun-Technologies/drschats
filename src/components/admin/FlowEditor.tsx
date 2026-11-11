@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { saveFlow } from "@/app/admin/_actions/flows";
-import { CHANNEL_LABELS, STEP_CHANNELS, formatDelay, type FlowStep, type StepChannel } from "@/lib/flows/types";
+import { CHANNEL_LABELS, STEP_CHANNELS, type FlowStep, type StepChannel } from "@/lib/flows/types";
 import type { Placeholder } from "@/lib/messaging/template";
 import { ActionForm } from "./ActionForm";
 import { TemplateInput } from "./MessageComposer";
@@ -19,6 +19,14 @@ import { useT } from "@/lib/admin/i18n/client";
 type Unit = "min" | "hour" | "day";
 const UNIT_MINUTES: Record<Unit, number> = { min: 1, hour: 60, day: 1440 };
 const UNIT_LABEL: Record<Unit, string> = { min: "daqiqa", hour: "soat", day: "kun" };
+
+/** formatDelay() (lib/flows/types) in the admin's language. */
+function delayLabel(minutes: number, t: ReturnType<typeof useT>): string {
+  if (minutes === 0) return t("darhol");
+  if (minutes % 1440 === 0) return t("{n} kun", { n: minutes / 1440 });
+  if (minutes % 60 === 0) return t("{n} soat", { n: minutes / 60 });
+  return t("{n} daqiqa", { n: minutes });
+}
 
 function splitDelay(minutes: number): { amount: number; unit: Unit } {
   if (minutes > 0 && minutes % 1440 === 0) return { amount: minutes / 1440, unit: "day" };
@@ -84,8 +92,8 @@ export function FlowEditor({
             <li key={step.key} className="rounded-[20px] bg-tile p-4 sm:p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
                 <p className="flex flex-wrap items-center gap-2 text-[16px] font-bold text-ink">
-                  {index + 1}-qadam <Pill tone="outline">{formatDelay(step.delayMinutes)} — {anchor}</Pill>
-                  {step.promo && <Pill tone="dark">{step.promo.kind === "percent" ? `−${step.promo.value}%` : `−${step.promo.value} soʻm`} kod</Pill>}
+                  {t("{n}-qadam", { n: index + 1 })} <Pill tone="outline">{delayLabel(step.delayMinutes, t)} — {anchor}</Pill>
+                  {step.promo && <Pill tone="dark">{t("{discount} kod", { discount: step.promo.kind === "percent" ? `−${step.promo.value}%` : t("−{n} soʻm", { n: step.promo.value }) })}</Pill>}
                 </p>
                 {steps.length > 1 && (
                   <button type="button" onClick={() => remove(step.key)} className={smallButtonClass}>
@@ -115,13 +123,13 @@ export function FlowEditor({
                       }}
                       className={inputClass}
                     >
-                      {(Object.keys(UNIT_LABEL) as Unit[]).map((u) => <option key={u} value={u}>{UNIT_LABEL[u]}</option>)}
+                      {(Object.keys(UNIT_LABEL) as Unit[]).map((u) => <option key={u} value={u}>{t(UNIT_LABEL[u])}</option>)}
                     </select>
                   </div>
                 </div>
                 <Field label={t("Kanal")}>
                   <select value={step.channel} onChange={(e) => update(step.key, { channel: e.target.value as StepChannel })} className={inputClass}>
-                    {STEP_CHANNELS.map((c) => <option key={c} value={c}>{CHANNEL_LABELS[c]}</option>)}
+                    {STEP_CHANNELS.map((c) => <option key={c} value={c}>{t(CHANNEL_LABELS[c])}</option>)}
                   </select>
                 </Field>
                 <Field label={t("Havola ({havola})")} hint={t("Saytdagi sahifa: /cart, /sale, /products")}>
@@ -145,7 +153,7 @@ export function FlowEditor({
 
               {step.promo && (
                 <div className="mt-3 grid gap-3 sm:grid-cols-3">
-                  <Field label={step.promo.kind === "percent" ? "Chegirma, %" : "Chegirma, soʻm"}>
+                  <Field label={step.promo.kind === "percent" ? t("Chegirma, %") : t("Chegirma, soʻm")}>
                     <input type="number" min={1} max={step.promo.kind === "percent" ? 90 : undefined} value={step.promo.value} onChange={(e) => update(step.key, { promo: { ...step.promo!, value: Math.max(1, Math.round(Number(e.target.value))) } })} className={inputClass} />
                   </Field>
                   <Field label={t("Amal qiladi, soat")} hint={t("{muddat} shu muddatdan hisoblanadi")}>
@@ -172,7 +180,7 @@ export function FlowEditor({
         </button>
       )}
       <p className="text-[13px] leading-5 text-muted">
-        {t("Muddat")} {anchor} {t("hisoblanadi. Oʻtib ketgan qadam keyingisi ham kelgan boʻlsa yuborilmaydi — mijoz bir vaqtda bir nechta xabar olmaydi. SMS oxiriga «STOP» havolasi, Telegram xabariga «oʻchirish» tugmasi oʻzi qoʻshiladi.")}
+        {t("Muddat {anchor} hisoblanadi. Oʻtib ketgan qadam keyingisi ham kelgan boʻlsa yuborilmaydi — mijoz bir vaqtda bir nechta xabar olmaydi. SMS oxiriga «STOP» havolasi, Telegram xabariga «oʻchirish» tugmasi oʻzi qoʻshiladi.", { anchor })}
       </p>
     </ActionForm>
   );

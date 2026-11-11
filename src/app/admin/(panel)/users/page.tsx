@@ -17,7 +17,7 @@ export const dynamic = "force-dynamic";
 function RoleSelect({ name = "role", value }: { name?: string; value: string }) {
   return (
     <select name={name} defaultValue={value} className={inputClass} aria-label={t("Rol")}>
-      {ADMIN_ROLES.map((r) => <option key={r} value={r}>{ROLE_LABEL[r]}</option>)}
+      {ADMIN_ROLES.map((r) => <option key={r} value={r}>{t(ROLE_LABEL[r])}</option>)}
     </select>
   );
 }
@@ -46,9 +46,9 @@ export default async function AdminUsersPage() {
                 <li key={u.id} className="flex flex-col gap-3 py-4 lg:flex-row lg:items-center lg:justify-between">
                   <span className="min-w-0">
                     <span className="flex flex-wrap items-center gap-2 text-[15px] font-semibold">
-                      {u.name}{u.id === me.id && " (siz)"}
-                      <Pill tone={role === "owner" ? "dark" : "neutral"}>{ROLE_LABEL[role]}</Pill>
-                      <Pill tone={u.totpEnabledAt ? "dark" : "outline"}>{u.totpEnabledAt ? "2FA yoqilgan" : "2FA yoʻq"}</Pill>
+                      {u.name}{u.id === me.id && ` (${t("siz")})`}
+                      <Pill tone={role === "owner" ? "dark" : "neutral"}>{t(ROLE_LABEL[role])}</Pill>
+                      <Pill tone={u.totpEnabledAt ? "dark" : "outline"}>{u.totpEnabledAt ? t("2FA yoqilgan") : t("2FA yoʻq")}</Pill>
                     </span>
                     <span className="text-[13px] text-muted">{u.email} {t("· oxirgi kirish:")} {u.lastLoginAt ? formatDateTime(u.lastLoginAt) : "—"}</span>
                   </span>
@@ -78,7 +78,7 @@ export default async function AdminUsersPage() {
 
         <Card title={t("Rollar")}>
           <ul className="flex flex-col gap-2 text-[14px] leading-5 text-ink-2">
-            {ADMIN_ROLES.map((r) => <li key={r}><b className="text-ink">{ROLE_LABEL[r]}</b> — {ROLE_HINT[r]}</li>)}
+            {ADMIN_ROLES.map((r) => <li key={r}><b className="text-ink">{t(ROLE_LABEL[r])}</b> — {t(ROLE_HINT[r])}</li>)}
           </ul>
           <p className="mt-3 text-[13px] text-muted">{t("Rol oʻzgarsa, oʻsha administratorning ochiq sessiyalari yopiladi. Kamida bitta «Egasi» doim qoladi.")}</p>
         </Card>
@@ -96,7 +96,7 @@ export default async function AdminUsersPage() {
           <ActionForm action={addAdmin} className="grid gap-4 lg:grid-cols-4">
             <Field label={t("Ism")}><input name="name" required className={inputClass} /></Field>
             <Field label={t("Email")}><input name="email" type="email" required className={inputClass} /></Field>
-            <Field label={t("Parol")} hint={`Kamida ${MIN_PASSWORD_LENGTH} belgi`}><input name="password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required className={inputClass} /></Field>
+            <Field label={t("Parol")} hint={t("Kamida {n} belgi", { n: MIN_PASSWORD_LENGTH })}><input name="password" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required className={inputClass} /></Field>
             <Field label={t("Rol")}><RoleSelect value="operator" /></Field>
           </ActionForm>
         </Card>

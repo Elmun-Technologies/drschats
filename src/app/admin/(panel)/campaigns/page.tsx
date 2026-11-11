@@ -6,7 +6,7 @@ import { requireAdmin } from "@/lib/admin/session";
 import { segmentById } from "@/lib/admin/segments";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { conversion, messageStats, type MessageStats } from "@/lib/messaging/stats";
-import { Card, EmptyState, PageHeader, Pill, TableWrap, buttonClass, linkClass, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
+import { Card, EmptyState, PageHeader, Pill, TableWrap, buttonClass, linkClass, som, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { adminTitle, t } from "@/lib/admin/i18n/server";
 
@@ -80,12 +80,16 @@ export default async function AdminCampaignsPage() {
                       <td className={tdClass}>
                         <span className="flex flex-wrap items-center gap-2 font-semibold">
                           {c.name} <Pill tone="outline">{CHANNEL[c.channel] ?? c.channel}</Pill>
-                          {c.promo && <Pill tone="dark">{c.promo.kind === "percent" ? `−${c.promo.value}%` : `−${formatNumber(c.promo.value)} soʻm`}</Pill>}
+                          {c.promo && <Pill tone="dark">{c.promo.kind === "percent" ? `−${c.promo.value}%` : `−${som(c.promo.value)}`}</Pill>}
                         </span>
                         <span className="block max-w-[320px] truncate text-[13px] text-muted" title={c.message}>{c.message}</span>
                         {(pending > 0 || failed > 0 || s.skipped > 0) && (
                           <span className="block text-[13px] text-muted">
-                            {pending > 0 && `${formatNumber(pending)} navbatda `}{failed > 0 && `· ${formatNumber(failed)} yetmadi `}{s.skipped > 0 && `· ${formatNumber(s.skipped)} oʻtkazildi`}
+                            {[
+                              pending > 0 && t("{n} navbatda", { n: formatNumber(pending) }),
+                              failed > 0 && t("{n} yetmadi", { n: formatNumber(failed) }),
+                              s.skipped > 0 && t("{n} oʻtkazildi", { n: formatNumber(s.skipped) }),
+                            ].filter(Boolean).join(" · ")}
                           </span>
                         )}
                       </td>

@@ -38,10 +38,10 @@ export async function POST(request: Request) {
   try {
     const url = await uploadImage(file, "products");
     await auditLog(admin, "product.image_upload", null, { bytes: file.size });
-    return Response.json({ ok: "Yuklandi.", url });
+    return Response.json({ ok: t("Yuklandi."), url });
   } catch (err) {
     const code = (err as Error).message;
-    const error = code === "too-large" ? "Fayl 5 MB dan katta." : code === "unsupported-type" ? "Faqat JPG, PNG, WebP yoki AVIF." : "Yuklab boʻlmadi.";
+    const error = code === "too-large" ? t("Fayl 5 MB dan katta.") : code === "unsupported-type" ? t("Faqat JPG, PNG, WebP yoki AVIF.") : t("Yuklab boʻlmadi.");
     return Response.json({ error }, { status: 400 });
   }
 }

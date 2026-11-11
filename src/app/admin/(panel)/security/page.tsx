@@ -30,22 +30,22 @@ export default async function AdminSecurityPage({ searchParams }: { searchParams
 
   return (
     <>
-      <PageHeader title={t("Xavfsizlik")} lead={<span className="inline-flex flex-wrap items-center gap-2"><Pill tone="dark">{ROLE_LABEL[me.role]}</Pill><span className="text-ink-2">{ROLE_HINT[me.role]}</span></span>} />
+      <PageHeader title={t("Xavfsizlik")} lead={<span className="inline-flex flex-wrap items-center gap-2"><Pill tone="dark">{t(ROLE_LABEL[me.role])}</Pill><span className="text-ink-2">{t(ROLE_HINT[me.role])}</span></span>} />
       {required && !me.twoFactor && <div className="mb-4"><Notice tone="error">{t("Doʻkon egasi ikki bosqichli kirishni majburiy qilgan. Uni yoqmaguncha panelning boshqa sahifalari ochilmaydi.")}</Notice></div>}
       <div className="flex flex-col gap-4">
         <Card
           title={t("Ikki bosqichli kirish")}
           lead={t("Parolga qoʻshimcha — telefondagi autentifikator ilovasi (Google Authenticator, Microsoft Authenticator, 1Password) beradigan 6 xonali kod. Parol sizsa ham panelga kirib boʻlmaydi.")}
-          actions={<Pill tone={me.twoFactor ? "dark" : "outline"}>{me.twoFactor ? "Yoqilgan" : "Oʻchiq"}</Pill>}
+          actions={<Pill tone={me.twoFactor ? "dark" : "outline"}>{me.twoFactor ? t("Yoqilgan") : t("Oʻchiq")}</Pill>}
         >
           {me.twoFactor ? (
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="flex flex-col gap-3">
-                <p className="text-[14px] text-ink-2">{t("Ishlatilmagan tiklash kodlari:")} <b className="text-ink">{codesLeft}</b> ta.{codesLeft <= 3 && " Yangilarini yarating."}</p>
+                <p className="text-[14px] text-ink-2">{t("Ishlatilmagan tiklash kodlari: {n} ta.", { n: codesLeft })}{codesLeft <= 3 && ` ${t("Yangilarini yarating.")}`}</p>
                 <RegenerateCodesForm />
               </div>
               <div className="flex flex-col gap-3 border-t border-line pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-                <p className="text-[14px] font-semibold text-ink">{t("Oʻchirish")}</p>
+                <p className="text-[14px] font-semibold text-ink">{t("Oʻchirib qoʻyish")}</p>
                 <ActionForm action={disableTwoFactor} submitLabel={t("Ikki bosqichli kirishni oʻchirish")} className="flex flex-col gap-4">
                   <Field label={t("Parol")}><input name="password" type="password" autoComplete="current-password" required className={inputClass} /></Field>
                   <Field label={t("Ilovadagi kod")}><input name="code" inputMode="numeric" autoComplete="one-time-code" maxLength={8} required className={inputClass} /></Field>
@@ -76,7 +76,7 @@ export default async function AdminSecurityPage({ searchParams }: { searchParams
         <Card title={t("Parol")} lead={t("Parol almashtirilganda boshqa qurilmalardagi sessiyalar yopiladi.")}>
           <ActionForm action={changePassword} submitLabel={t("Parolni almashtirish")} className="grid gap-4 lg:grid-cols-2">
             <Field label={t("Joriy parol")}><input name="current" type="password" autoComplete="current-password" required className={inputClass} /></Field>
-            <Field label={t("Yangi parol")} hint={`Kamida ${MIN_PASSWORD_LENGTH} belgi`}><input name="next" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required className={inputClass} /></Field>
+            <Field label={t("Yangi parol")} hint={t("Kamida {n} belgi", { n: MIN_PASSWORD_LENGTH })}><input name="next" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required className={inputClass} /></Field>
           </ActionForm>
           <form action={logoutEverywhere} className="mt-4 border-t border-line pt-4">
             <button type="submit" className={secondaryButtonClass}>{t("Barcha qurilmalardan chiqish")}</button>

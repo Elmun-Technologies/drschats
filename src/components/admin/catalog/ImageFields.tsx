@@ -65,19 +65,19 @@ export function ImageListField({
           {value.map((src, i) => (
             <li key={src} className="flex min-w-0 flex-col gap-2 rounded-[16px] border border-line p-2">
               <span className="relative block aspect-square overflow-hidden rounded-[12px] bg-tile">
-                <Image src={src} alt={`Rasm ${i + 1}`} fill unoptimized={!isLocal(src)} sizes="200px" className="object-contain p-2" />
+                <Image src={src} alt={t("Rasm {n}", { n: i + 1 })} fill unoptimized={!isLocal(src)} sizes="200px" className="object-contain p-2" />
                 <span className={cn("absolute left-2 top-2 rounded-full px-2 py-0.5 text-[12px] font-semibold", i === 0 ? "bg-ink text-white" : "bg-white text-ink")}>
-                  {i === 0 ? "Asosiy" : i + 1}
+                  {i === 0 ? t("Asosiy") : i + 1}
                 </span>
               </span>
               <span className="truncate px-0.5 text-[12px] text-muted" title={src}>{src.split("/").pop()}</span>
               <span className="flex items-center gap-1.5">
-                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`${i + 1}-rasmni oldinga surish`} className={iconButton}><Arrow dir="left" /></button>
-                <button type="button" onClick={() => move(i, i + 1)} disabled={i === value.length - 1} aria-label={`${i + 1}-rasmni orqaga surish`} className={iconButton}><Arrow dir="right" /></button>
+                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={t("{n}-rasmni oldinga surish", { n: i + 1 })} className={iconButton}><Arrow dir="left" /></button>
+                <button type="button" onClick={() => move(i, i + 1)} disabled={i === value.length - 1} aria-label={t("{n}-rasmni orqaga surish", { n: i + 1 })} className={iconButton}><Arrow dir="right" /></button>
                 <button
                   type="button"
                   onClick={() => onChange(value.filter((_, j) => j !== i))}
-                  aria-label={`${i + 1}-rasmni olib tashlash`}
+                  aria-label={t("{n}-rasmni olib tashlash", { n: i + 1 })}
                   className="ml-auto grid h-11 w-11 place-items-center rounded-[12px] text-red transition-colors hover:bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red/30"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" className="h-5 w-5"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -87,7 +87,7 @@ export function ImageListField({
           ))}
         </ol>
       ) : (
-        <p className="rounded-[16px] bg-tile px-4 py-6 text-center text-[14px] text-muted">{t("Hali rasm yoʻq — saytdagi rasmlardan tanlang")}{storageReady ? ", yuklang" : ""} {t("yoki manzilini kiriting.")}</p>
+        <p className="rounded-[16px] bg-tile px-4 py-6 text-center text-[14px] text-muted">{storageReady ? t("Hali rasm yoʻq — saytdagi rasmlardan tanlang, yuklang yoki manzilini kiriting.") : t("Hali rasm yoʻq — saytdagi rasmlardan tanlang yoki manzilini kiriting.")}</p>
       )}
 
       <div className="flex flex-wrap items-center gap-2">
@@ -167,12 +167,12 @@ export function SingleImageField({
           )}
         </span>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={() => setPickerOpen(true)} className={smallButtonClass}>{src ? "Almashtirish" : "Tanlash"}</button>
+          <button type="button" onClick={() => setPickerOpen(true)} className={smallButtonClass}>{src ? t("Almashtirish") : t("Tanlash")}</button>
           {src && <button type="button" onClick={() => onChange("")} className={smallDangerButtonClass}>{t("Olib tashlash")}</button>}
         </div>
       </div>
       <Field label={label} hint={hint}>
-        <input name={name} value={value} onChange={(e) => onChange(e.target.value)} placeholder={t("/images/products/c-….png")} className={inputClass} />
+        <input name={name} value={value} onChange={(e) => onChange(e.target.value)} placeholder="/images/products/c-….png" className={inputClass} />
       </Field>
       <ImagePicker
         open={pickerOpen}
@@ -227,7 +227,7 @@ export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded:
   return (
     <div className="flex flex-wrap items-center gap-3">
       <label className={cn(secondaryButtonClass, "cursor-pointer focus-within:ring-2 focus-within:ring-ink/30")}>
-        {pending ? "Yuklanmoqda…" : "Kompyuterdan yuklash"}
+        {pending ? t("Yuklanmoqda…") : t("Kompyuterdan yuklash")}
         <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={onChange} className="sr-only" />
       </label>
       {state?.error && <span role="alert" className="text-[14px] text-red">{state.error}</span>}

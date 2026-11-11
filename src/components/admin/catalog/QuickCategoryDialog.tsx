@@ -32,7 +32,7 @@ export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolea
     try {
       const result = await quickCreateCategory(fd);
       if (result.error || !result.slug) {
-        setError(result.error ?? "Saqlab boʻlmadi.");
+        setError(result.error ?? t("Saqlab boʻlmadi."));
         return;
       }
       onCreated({ slug: result.slug, name: result.name ?? uz });
@@ -41,7 +41,7 @@ export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolea
       setSlug("");
       onClose();
     } catch {
-      setError("Saqlab boʻlmadi — internetni tekshirib qayta urinib koʻring.");
+      setError(t("Saqlab boʻlmadi — internetni tekshirib qayta urinib koʻring."));
     } finally {
       setPending(false);
     }
@@ -63,7 +63,7 @@ export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolea
       footer={
         <>
           <button type="button" onClick={onClose} className={secondaryButtonClass}>{t("Bekor qilish")}</button>
-          <button type="button" onClick={() => void submit()} disabled={pending} className={buttonClass}>{pending ? "Saqlanmoqda…" : "Yaratish"}</button>
+          <button type="button" onClick={() => void submit()} disabled={pending} className={buttonClass}>{pending ? t("Saqlanmoqda…") : t("Yaratish")}</button>
         </>
       }
     >
@@ -75,8 +75,8 @@ export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolea
         <Field label={t("Nomi (ru)")}>
           <input value={ru} onChange={(e) => setRu(e.target.value)} onKeyDown={onEnter} required className={inputClass} />
         </Field>
-        <Field label={t("Slug (URL)")} hint={preview ? `govita.uz/uz/products/${preview}` : "Boʻsh qolsa oʻzbekcha nomdan yaratiladi"}>
-          <input value={slug} onChange={(e) => setSlug(e.target.value)} onKeyDown={onEnter} placeholder={slugify(uz) || "masalan: omega-3"} className={inputClass} />
+        <Field label={t("Slug (URL)")} hint={preview ? `govita.uz/uz/products/${preview}` : t("Boʻsh qolsa oʻzbekcha nomdan yaratiladi")}>
+          <input value={slug} onChange={(e) => setSlug(e.target.value)} onKeyDown={onEnter} placeholder={slugify(uz) || t("masalan: omega-3")} className={inputClass} />
         </Field>
       </div>
     </AdminDialog>

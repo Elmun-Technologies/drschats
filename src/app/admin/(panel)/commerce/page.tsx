@@ -105,7 +105,7 @@ export default async function AdminCommercePage() {
     .sort((a, b) => (a.threshold ?? 0) - (b.threshold ?? 0))[0];
   const effectiveFree = lowerPromo?.threshold ?? delivery.freeShippingOver;
   const env = envCutoff();
-  const defaultsNote = (section: CommerceSection, text: string) => (meta[section] ? `Standart: ${text}` : undefined);
+  const defaultsNote = (section: CommerceSection, text: string) => (meta[section] ? t("Standart: {value}", { value: text }) : undefined);
 
   return (
     <>
@@ -117,30 +117,30 @@ export default async function AdminCommercePage() {
       <div className="grid gap-4 xl:grid-cols-2">
         <Card id="delivery" title={t("Yetkazish")} lead={t("Toshkent boʻylab kuryer narxi va bepul yetkazish chegarasi butun saytda bitta: savat, mahsulot sahifasi, «Yetkazish» sahifasi, SEO matnlari.")}>
           <CommerceCardForm section="delivery" className={grid}>
-            <Field label={t("Bepul yetkazish, soʻmdan")} hint={defaultsNote("delivery", som(defaults.delivery.freeShippingOver)) ?? "0 — har doim bepul"}>
+            <Field label={t("Bepul yetkazish, soʻmdan")} hint={defaultsNote("delivery", som(defaults.delivery.freeShippingOver)) ?? t("0 — har doim bepul")}>
               <input name="freeShippingOver" inputMode="numeric" required defaultValue={delivery.freeShippingOver} className={inputClass} />
             </Field>
-            <Field label={t("Kuryer narxi, soʻm")} hint={defaultsNote("delivery", som(defaults.delivery.courierFee)) ?? "Chegaradan past buyurtmaga"}>
+            <Field label={t("Kuryer narxi, soʻm")} hint={defaultsNote("delivery", som(defaults.delivery.courierFee)) ?? t("Chegaradan past buyurtmaga")}>
               <input name="courierFee" inputMode="numeric" required defaultValue={delivery.courierFee} className={inputClass} />
             </Field>
-            <Field label={t("Bugun yetkazish chegarasi (Toshkent vaqti)")} hint={`SS:DD, boʻsh — taymer yoʻq.${env ? ` Deploy standarti: ${env}` : ""}`}>
+            <Field label={t("Bugun yetkazish chegarasi (Toshkent vaqti)")} hint={env ? t("SS:DD, boʻsh — taymer yoʻq. Deploy standarti: {env}", { env }) : t("SS:DD, boʻsh — taymer yoʻq.")}>
               <input name="cutoff" defaultValue={delivery.cutoff} placeholder="16:00" pattern="\d{1,2}:\d{2}" className={inputClass} />
             </Field>
-            <Field label={t("Toshkent boʻylab yetkazish, soatgacha")} hint={defaultsNote("delivery", `${defaults.delivery.tashkentHours} soat`) ?? "Mahsulot, savat va «Yetkazish» sahifasidagi «N soatda»"}>
+            <Field label={t("Toshkent boʻylab yetkazish, soatgacha")} hint={defaultsNote("delivery", t("{n} soat", { n: defaults.delivery.tashkentHours })) ?? t("Mahsulot, savat va «Yetkazish» sahifasidagi «N soatda»")}>
               <input name="tashkentHours" inputMode="numeric" required defaultValue={delivery.tashkentHours} className={inputClass} />
             </Field>
             <TextPair name="regionsNote" label={t("Viloyatlarga muddat")} value={delivery.regionsNote} placeholder={{ uz: "1–3 kun", ru: "1–3 дня" }} />
             {lowerPromo && (
               <div className="col-span-full">
                 <Notice>
-                  «{lowerPromo.title}{t("» aksiyasi faol: bepul yetkazish undan")} {som(lowerPromo.threshold ?? 0)}{t("dan qoʻllanadi (pastrogʻi yutadi).")}{" "}
+                  {t("«{title}» aksiyasi faol: bepul yetkazish {sum}dan qoʻllanadi (pastrogʻi yutadi).", { title: lowerPromo.title, sum: som(lowerPromo.threshold ?? 0) })}{" "}
                   <Link href="/admin/promotions" className={linkClass}>{t("Aksiyalar")}</Link>
                 </Notice>
               </div>
             )}
             <Preview>
-              {effectiveFree === 0 ? "Yetkazish har doim bepul" : <>{t("«Bepul yetkazish")} {som(effectiveFree)}{t("dan» · kuryer")} {som(delivery.courierFee)}</>}
-              {delivery.cutoff ? <> · «{delivery.cutoff} {t("gacha buyurtma bering» taymeri")}</> : " · taymer yoʻq"}
+              {effectiveFree === 0 ? t("Yetkazish har doim bepul") : t("«Bepul yetkazish {free}dan» · kuryer {fee}", { free: som(effectiveFree), fee: som(delivery.courierFee) })}
+              {" · "}{delivery.cutoff ? t("«{cutoff} gacha buyurtma bering» taymeri", { cutoff: delivery.cutoff }) : t("taymer yoʻq")}
             </Preview>
             <Audit meta={meta.delivery} />
           </CommerceCardForm>
@@ -150,7 +150,7 @@ export default async function AdminCommercePage() {
           <CommerceCardForm section="ladder" className={grid}>
             <Toggle name="enabled" label={t("Zinapoya yoqilgan")} defaultChecked={ladder.enabled} />
             {(["p1", "p2", "p3"] as const).map((name, i) => (
-              <Field key={name} label={i === 2 ? "3-qadam (sovgʻa boʻlmasa), %" : `${i + 1}-qadam, %`} hint={i === 2 ? "Har bir qadam oldingisidan katta" : undefined}>
+              <Field key={name} label={i === 2 ? t("3-qadam (sovgʻa boʻlmasa), %") : t("{n}-qadam, %", { n: i + 1 })} hint={i === 2 ? t("Har bir qadam oldingisidan katta") : undefined}>
                 <select name={name} defaultValue={ladder.percents[i]} className={inputClass}>
                   {LADDER_PERCENT_CHOICES.map((p) => (
                     <option key={p} value={p}>−{p}%</option>
@@ -172,8 +172,8 @@ export default async function AdminCommercePage() {
             />
             <Preview>
               {ladder.enabled
-                ? <>−{ladder.percents[0]}% → −{ladder.percents[1]}% → {ladder.freeGift ? `bepul sovgʻa yoki −${ladder.percents[2]}%` : `−${ladder.percents[2]}%`}</>
-                : "Zinapoya koʻrsatilmaydi"}
+                ? <>−{ladder.percents[0]}% → −{ladder.percents[1]}% → {ladder.freeGift ? t("bepul sovgʻa yoki −{p}%", { p: ladder.percents[2] }) : `−${ladder.percents[2]}%`}</>
+                : t("Zinapoya koʻrsatilmaydi")}
             </Preview>
             <Audit meta={meta.ladder} />
           </CommerceCardForm>
@@ -187,7 +187,7 @@ export default async function AdminCommercePage() {
             <Field label={t("Keyingi yetkazishlar, %")} hint={t("Birinchisidan kam emas")}>
               <input name="recurringPercent" inputMode="numeric" required defaultValue={subscription.recurringPercent} className={inputClass} />
             </Field>
-            <Preview>{t("«Obuna: bugun −")}{subscription.firstPercent}{t("%, keyingi yetkazishlarda −")}{subscription.recurringPercent}%»</Preview>
+            <Preview>{t("«Obuna: bugun −{first}%, keyingi yetkazishlarda −{next}%»", { first: subscription.firstPercent, next: subscription.recurringPercent })}</Preview>
             <Audit meta={meta.subscription} />
           </CommerceCardForm>
         </Card>
@@ -198,7 +198,7 @@ export default async function AdminCommercePage() {
               <input name="gapWindow" inputMode="numeric" required defaultValue={cart.gapWindow} className={inputClass} />
             </Field>
             <Preview>
-              {cart.gapWindow > 0 ? <>{t("Bepul yetkazishgacha")} {som(cart.gapWindow)} {t("yoki kamroq qolsa — 3 tagacha mos mahsulot")}</> : "Takliflar koʻrsatilmaydi"}
+              {cart.gapWindow > 0 ? t("Bepul yetkazishgacha {sum} yoki kamroq qolsa — 3 tagacha mos mahsulot", { sum: som(cart.gapWindow) }) : t("Takliflar koʻrsatilmaydi")}
             </Preview>
             <Audit meta={meta.cart} />
           </CommerceCardForm>
@@ -213,26 +213,26 @@ export default async function AdminCommercePage() {
               const copy = POPUP_COPY[id];
               return (
                 <fieldset key={id} className="grid gap-4 rounded-[16px] border border-line p-4 sm:grid-cols-2 sm:p-5">
-                  <legend className="px-1 text-[16px] font-bold text-ink">{copy.title}</legend>
+                  <legend className="px-1 text-[16px] font-bold text-ink">{t(copy.title)}</legend>
                   <div className="col-span-full flex flex-wrap items-center gap-2">
-                    <Pill tone={rule.enabled ? "dark" : "muted"}>{rule.enabled ? "Yoqilgan" : "Oʻchirilgan"}</Pill>
-                    <span className="text-[13px] text-muted">{copy.when}</span>
+                    <Pill tone={rule.enabled ? "dark" : "muted"}>{rule.enabled ? t("Yoqilgan") : t("Oʻchirilgan")}</Pill>
+                    <span className="text-[13px] text-muted">{t(copy.when)}</span>
                   </div>
                   <Toggle name={`${id}.enabled`} label={t("Koʻrsatish")} defaultChecked={rule.enabled} />
-                  <Field label={copy.delayLabel} hint={`Standart: ${defaults.popups[id].delaySeconds}`}>
+                  <Field label={t(copy.delayLabel)} hint={t("Standart: {value}", { value: defaults.popups[id].delaySeconds })}>
                     <input name={`${id}.delaySeconds`} inputMode="numeric" required defaultValue={rule.delaySeconds} className={inputClass} />
                   </Field>
-                  <Field label={t("Qayta koʻrsatish, kun")} hint={`Standart: ${defaults.popups[id].cooldownDays}`}>
+                  <Field label={t("Qayta koʻrsatish, kun")} hint={t("Standart: {value}", { value: defaults.popups[id].cooldownDays })}>
                     <input name={`${id}.cooldownDays`} inputMode="numeric" required defaultValue={rule.cooldownDays} className={inputClass} />
                   </Field>
                   <TextPair name={`${id}.title`} label={t("Sarlavha")} value={rule.title} placeholder={copy.placeholder.title} />
                   <TextPair name={`${id}.body`} label={t("Matn")} value={rule.body} placeholder={copy.placeholder.body} multiline />
-                  {copy.textNote && <p className="col-span-full text-[13px] text-muted">{copy.textNote}</p>}
+                  {copy.textNote && <p className="col-span-full text-[13px] text-muted">{t(copy.textNote)}</p>}
                 </fieldset>
               );
             })}
             <Preview>
-              {POPUP_IDS.map((id) => `${POPUP_COPY[id].title.split(" (")[0]}: ${popups[id].enabled ? `${popups[id].delaySeconds} s, ${popups[id].cooldownDays} kunda bir` : "oʻchirilgan"}`).join(" · ")}
+              {POPUP_IDS.map((id) => `${t(POPUP_COPY[id].title).split(" (")[0]}: ${popups[id].enabled ? t("{s} s, {d} kunda bir", { s: popups[id].delaySeconds, d: popups[id].cooldownDays }) : t("oʻchirilgan")}`).join(" · ")}
             </Preview>
             <Audit meta={meta.popups} />
           </CommerceCardForm>

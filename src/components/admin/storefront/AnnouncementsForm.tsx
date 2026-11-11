@@ -44,10 +44,10 @@ export function AnnouncementsForm({ rows: initial, max }: { rows: AnnouncementRo
           <li key={r.key} className="rounded-[20px] border border-line bg-white p-5 sm:p-6">
             <input type="hidden" name={`a.${i}.id`} value={r.id} />
             <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
-              <h2 className="text-[17px] font-bold text-ink">{i + 1}{t("-eʼlon")}</h2>
+              <h2 className="text-[17px] font-bold text-ink">{t("{n}-eʼlon", { n: i + 1 })}</h2>
               <div className="flex gap-1.5">
-                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`${i + 1}-eʼlonni yuqoriga`} className={cn(smallButtonClass, "w-11 px-0 disabled:opacity-40")}>↑</button>
-                <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={`${i + 1}-eʼlonni pastga`} className={cn(smallButtonClass, "w-11 px-0 disabled:opacity-40")}>↓</button>
+                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={t("{n}-eʼlonni yuqoriga", { n: i + 1 })} className={cn(smallButtonClass, "w-11 px-0 disabled:opacity-40")}>↑</button>
+                <button type="button" onClick={() => move(i, i + 1)} disabled={i === rows.length - 1} aria-label={t("{n}-eʼlonni pastga", { n: i + 1 })} className={cn(smallButtonClass, "w-11 px-0 disabled:opacity-40")}>↓</button>
                 <button type="button" onClick={() => setRows((list) => list.filter((x) => x.key !== r.key))} className={smallDangerButtonClass}>
                   {t("Olib tashlash")}
                 </button>
@@ -55,10 +55,10 @@ export function AnnouncementsForm({ rows: initial, max }: { rows: AnnouncementRo
             </div>
             <div className="grid gap-4 lg:grid-cols-2">
               <Field label={t("Matn (uz)")} hint={t("140 belgigacha")}>
-                <input name={`a.${i}.uz`} value={r.uz} maxLength={140} onChange={(e) => update(r.key, { uz: e.target.value })} className={inputClass} placeholder={t("Masalan: 300 000 soʻmdan bepul yetkazish")} />
+                <input name={`a.${i}.uz`} value={r.uz} maxLength={140} onChange={(e) => update(r.key, { uz: e.target.value })} className={inputClass} placeholder="Masalan: 300 000 soʻmdan bepul yetkazish" />
               </Field>
               <Field label={t("Matn (ru)")} hint={t("140 belgigacha")}>
-                <input name={`a.${i}.ru`} value={r.ru} maxLength={140} onChange={(e) => update(r.key, { ru: e.target.value })} className={inputClass} placeholder={t("Например: бесплатная доставка от 300 000 сум")} />
+                <input name={`a.${i}.ru`} value={r.ru} maxLength={140} onChange={(e) => update(r.key, { ru: e.target.value })} className={inputClass} placeholder="Например: бесплатная доставка от 300 000 сум" />
               </Field>
               <Field label={t("Havola (ixtiyoriy)")} hint={t("/delivery, /sale yoki https://…")}>
                 <input name={`a.${i}.href`} value={r.href} onChange={(e) => update(r.key, { href: e.target.value })} className={inputClass} />

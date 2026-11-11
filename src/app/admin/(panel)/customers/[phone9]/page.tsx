@@ -44,7 +44,7 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
   return (
     <>
       <PageHeader
-        eyebrow={LIFECYCLE_LABEL[lifecycle]}
+        eyebrow={t(LIFECYCLE_LABEL[lifecycle])}
         title={customer.name}
         lead={`${customer.phone}${customer.email ? ` · ${customer.email}` : ""}`}
         actions={<>
@@ -55,11 +55,11 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <Metric label={t("Buyurtmalar")} value={formatNumber(customer.successfulOrderCount)} hint={customer.orderCount > customer.successfulOrderCount ? `+${customer.orderCount - customer.successfulOrderCount} bekor` : "bekor qilinganlarsiz"} />
+        <Metric label={t("Buyurtmalar")} value={formatNumber(customer.successfulOrderCount)} hint={customer.orderCount > customer.successfulOrderCount ? t("+{n} bekor", { n: customer.orderCount - customer.successfulOrderCount }) : t("bekor qilinganlarsiz")} />
         <Metric label={t("Jami xarid")} value={som(customer.lifetimeValue)} />
         <Metric label={t("Oʻrtacha chek")} value={som(average)} />
-        <Metric label={t("Oxirgi xariddan beri")} value={days === 0 ? "bugun" : `${days} kun`} hint={formatDate(customer.lastOrderAt)} />
-        <Metric label={t("Xarid oraligʻi")} value={cadence !== null ? `${cadence} kun` : "—"} hint={cadence !== null ? "oʻrtacha" : "bitta xarid"} />
+        <Metric label={t("Oxirgi xariddan beri")} value={days === 0 ? t("bugun") : t("{n} kun", { n: days })} hint={formatDate(customer.lastOrderAt)} />
+        <Metric label={t("Xarid oraligʻi")} value={cadence !== null ? t("{n} kun", { n: cadence }) : "—"} hint={cadence !== null ? t("oʻrtacha") : t("bitta xarid")} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
@@ -80,7 +80,7 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
                       </li>
                     ))}
                   </ul>
-                  <p className="mt-2 text-[13px] text-muted">{regionName(order.delivery.region)} · {order.delivery.method}{describeAttribution(order.attribution ?? undefined) ? ` · manba: ${describeAttribution(order.attribution ?? undefined)}` : ""}</p>
+                  <p className="mt-2 text-[13px] text-muted">{regionName(order.delivery.region)} · {order.delivery.method}{describeAttribution(order.attribution ?? undefined) ? ` · ${t("manba: {source}", { source: describeAttribution(order.attribution ?? undefined) })}` : ""}</p>
                   {(historyByOrder.get(order.id)?.length ?? 0) > 0 && (
                     <div className="mt-2 flex flex-wrap gap-1.5">
                       {[...(historyByOrder.get(order.id) ?? [])].reverse().map((event, index) => <Pill key={index} tone="muted">{STATUS_LABEL[event.status]} · {formatDateTime(event.createdAt)}</Pill>)}
@@ -101,14 +101,14 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2.5 text-[14px]">
               <dt className="text-muted">{t("Birinchi buyurtma")}</dt><dd className="font-semibold">{formatDate(customer.firstOrderAt)}</dd>
               <dt className="text-muted">{t("Hudud")}</dt><dd className="font-semibold">{regionName(customer.orders[0]?.delivery.region) || "—"}</dd>
-              <dt className="text-muted">{t("Birinchi kelgan")}</dt><dd className="font-semibold">{firstTouch ?? (describeAttribution(customer.orders[customer.orders.length - 1]?.attribution ?? undefined) || "Bevosita")}</dd>
+              <dt className="text-muted">{t("Birinchi kelgan")}</dt><dd className="font-semibold">{firstTouch ? t(firstTouch) : describeAttribution(customer.orders[customer.orders.length - 1]?.attribution ?? undefined) || t("Bevosita")}</dd>
             </dl>
             {visitors.length > 0 && (
               <ul className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-[14px]">
                 {visitors.map((v) => (
                   <li key={v.id} className="flex items-center justify-between gap-2">
-                    <Link href={`/admin/visitors/${v.id}`} className={linkClass}>{v.device ? DEVICE_LABEL[v.device] : "Qurilma"} · {formatNumber(v.sessions)} tashrif</Link>
-                    <span className="text-[13px] text-muted">{STAGE_LABEL[v.stage]} · {timeAgo(v.lastSeenAt)}</span>
+                    <Link href={`/admin/visitors/${v.id}`} className={linkClass}>{t("{device} · {n} tashrif", { device: v.device ? t(DEVICE_LABEL[v.device] ?? v.device) : t("Qurilma"), n: formatNumber(v.sessions) })}</Link>
+                    <span className="text-[13px] text-muted">{t(STAGE_LABEL[v.stage])} · {timeAgo(v.lastSeenAt)}</span>
                   </li>
                 ))}
               </ul>

@@ -4,12 +4,12 @@ import { requireAdmin } from "@/lib/admin/session";
 import { listReviews, reviewCounts } from "@/lib/reviews/server";
 import { moderateReviewAction } from "@/app/admin/_actions/reviews";
 import { Card, ChipNav, EmptyState, PageHeader, Pill, linkClass, secondaryButtonClass, smallButtonClass, timeAgo } from "@/components/admin/ui";
-import { adminTitle, t } from "@/lib/admin/i18n/server";
+import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
 export const generateMetadata = () => adminTitle("Sharhlar");
 export const dynamic = "force-dynamic";
 
-const STATUS_LABEL: Record<ReviewStatus, string> = { pending: "Tekshiruvda", approved: "Chop etilgan", rejected: "Rad etilgan" };
+const STATUS_LABEL: Record<ReviewStatus, string> = labels({ pending: "Tekshiruvda", approved: "Chop etilgan", rejected: "Rad etilgan" });
 
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -43,7 +43,7 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
           ]}
         />
         {reviews.length === 0 ? (
-          <EmptyState title={status === "pending" ? "Tekshiruvni kutayotgan sharh yoʻq" : "Sharh yoʻq"}>
+          <EmptyState title={status === "pending" ? t("Tekshiruvni kutayotgan sharh yoʻq") : t("Sharh yoʻq")}>
             {t("Mijoz mahsulot sahifasidagi «Sharh yozish» orqali yuborgan sharhlar shu yerda chiqadi.")}
           </EmptyState>
         ) : (
@@ -56,7 +56,7 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
                     {r.productSlug}
                   </a>
                   <span>· {r.author}</span>
-                  {r.phone9 && <span>{t("· tel. •••")} {r.phone9.slice(-4)}</span>}
+                  {r.phone9 && <span>· {t("tel. •••{n}", { n: r.phone9.slice(-4) })}</span>}
                   {r.verified ? <Pill tone="dark">{t("xarid qilgan")}</Pill> : <Pill tone="outline">{t("buyurtmasi topilmadi")}</Pill>}
                   <Pill tone="muted">{STATUS_LABEL[r.status]}</Pill>
                   <span title={r.createdAt.toISOString()}>· {timeAgo(r.createdAt)}</span>

@@ -45,23 +45,23 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
   const c = counts[segment.id];
   const isCustomers = segment.kind === "customers";
   const isBot = segment.kind === "bot";
-  const valueHead = segment.id === "bot-cart" ? "Savatda" : isCustomers || isBot ? "Jami xarid" : "Savatda";
+  const valueHead = segment.id === "bot-cart" ? t("Savatda") : isCustomers || isBot ? t("Jami xarid") : t("Savatda");
 
   return (
     <>
       <PageHeader eyebrow={t("Segmentlar va retarget")} title={t(segment.title)} lead={t(segment.description)} actions={<Link href="/admin/segments" className={secondaryButtonClass}>{t("← Barcha segmentlar")}</Link>} />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label={t("Auditoriya")} value={formatNumber(c.size)} hint={isCustomers ? "mijoz" : isBot ? "bot aʼzosi" : "tashrif buyuruvchi"} />
-        <Metric label={isCustomers ? "Telegramga ulangan" : isBot ? "Telegramga ochiq" : "Telefoni maʼlum"} value={formatNumber(c.reachable)} hint={t("toʻgʻridan-toʻgʻri murojaat")} />
-        <Metric label={segment.id === "bot-cart" ? "Savatda qolgan" : isCustomers || isBot ? "Jami xaridi" : "Savatlarda qolgan"} value={som(c.value)} />
-        <Metric label={t("Tavsiya")} value={<span className="text-[17px] leading-6">{segment.action}</span>} />
+        <Metric label={t("Auditoriya")} value={formatNumber(c.size)} hint={isCustomers ? t("mijoz") : isBot ? t("bot aʼzosi") : t("tashrif buyuruvchi")} />
+        <Metric label={isCustomers ? t("Telegramga ulangan") : isBot ? t("Telegramga ochiq") : t("Telefoni maʼlum")} value={formatNumber(c.reachable)} hint={t("toʻgʻridan-toʻgʻri murojaat")} />
+        <Metric label={segment.id === "bot-cart" ? t("Savatda qolgan") : isCustomers || isBot ? t("Jami xaridi") : t("Savatlarda qolgan")} value={som(c.value)} />
+        <Metric label={t("Tavsiya")} value={<span className="text-[17px] leading-6">{t(segment.action)}</span>} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <Card
           title={t("Auditoriya")}
-          lead={isBot ? "Telefon faqat bogʻlanganda maʼlum boʻladi — shuning uchun bu roʻyxat eksport qilinmaydi, xabar bot orqali ketadi." : members.length === 200 ? "Birinchi 200 tasi — toʻliq roʻyxat eksportda" : undefined}
+          lead={isBot ? t("Telefon faqat bogʻlanganda maʼlum boʻladi — shuning uchun bu roʻyxat eksport qilinmaydi, xabar bot orqali ketadi.") : members.length === 200 ? t("Birinchi 200 tasi — toʻliq roʻyxat eksportda") : undefined}
           actions={
             isBot ? undefined : (
               <div className="flex flex-wrap gap-2">
@@ -77,15 +77,15 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
           ) : (
             <TableWrap>
               <table className={cn(tableClass, isBot && "min-w-[560px]")}>
-                <thead><tr><th className={thClass}>{t("Kim")}</th><th className={`${thClass} text-right`}>{t("Buyurtmalar")}</th><th className={`${thClass} text-right`}>{valueHead}</th><th className={thClass}>{isCustomers ? "Oxirgi xarid" : "Oxirgi faollik"}</th><th className={thClass}>{t("Telegram")}</th></tr></thead>
+                <thead><tr><th className={thClass}>{t("Kim")}</th><th className={`${thClass} text-right`}>{t("Buyurtmalar")}</th><th className={`${thClass} text-right`}>{valueHead}</th><th className={thClass}>{isCustomers ? t("Oxirgi xarid") : t("Oxirgi faollik")}</th><th className={thClass}>{t("Telegram")}</th></tr></thead>
                 <tbody>
                   {members.map((m) => (
                     <tr key={m.key}>
                       <td className={tdClass}>
                         {isBot ? (
-                          <span className="font-semibold text-ink">{m.name ?? m.phone ?? `Chat ${m.telegramChatId}`}</span>
+                          <span className="font-semibold text-ink">{m.name ?? m.phone ?? t("Chat {id}", { id: m.telegramChatId ?? "" })}</span>
                         ) : (
-                          <Link href={isCustomers ? `/admin/customers/${m.key}` : `/admin/visitors/${m.key}`} className={linkClass}>{m.name ?? m.phone ?? `Mehmon ${m.key.slice(0, 6)}`}</Link>
+                          <Link href={isCustomers ? `/admin/customers/${m.key}` : `/admin/visitors/${m.key}`} className={linkClass}>{m.name ?? m.phone ?? t("Mehmon {id}", { id: m.key.slice(0, 6) })}</Link>
                         )}
                         {m.phone && m.name && <span className="block whitespace-nowrap text-[13px] text-muted">{phoneLabel(m.phone)}</span>}
                       </td>
@@ -94,9 +94,9 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
                       <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{timeAgo(m.lastAt)}</td>
                       <td className={tdClass}>
                         {isBot ? (
-                          <Pill tone={m.phone ? "dark" : "outline"}>{m.phone ? "telefon" : "bot chati"}</Pill>
+                          <Pill tone={m.phone ? "dark" : "outline"}>{m.phone ? t("telefon") : t("bot chati")}</Pill>
                         ) : m.telegramChatId ? (
-                          <Pill tone="dark">ulangan</Pill>
+                          <Pill tone="dark">{t("ulangan")}</Pill>
                         ) : (
                           <span className="text-muted">—</span>
                         )}
@@ -144,10 +144,10 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
                 </>
               ) : (
                 <>
-                  <li>{t("Sayt")} <b>{t("ViewContent")}</b>, <b>{t("AddToCart")}</b>, <b>{t("InitiateCheckout")}</b>, <b>{t("Purchase")}</b> {t("hodisalarini Meta Pixel va GA4 ga yuboradi.")}</li>
+                  <li>{t("Sayt hodisalarni Meta Pixel va GA4 ga yuboradi:")} <b>ViewContent</b>, <b>AddToCart</b>, <b>InitiateCheckout</b>, <b>Purchase</b>.</li>
                   <li>{t("Meta: Custom Audience → Website → «AddToCart, lekin Purchase emas, 30 kun» — shu segmentning nusxasi.")}</li>
                   <li>{t("Google Ads: GA4 auditoriyasi «add_to_cart, purchase yoʻq» → remarketing kampaniyasi.")}</li>
-                  <li>{t("Pixel IDʼlari")} <Link href="/admin/integrations" className={linkClass}>{t("Integratsiyalar")}</Link> {t("boʻlimida.")}</li>
+                  <li>{t("Pixel IDʼlari:")} <Link href="/admin/integrations" className={linkClass}>{t("Integratsiyalar")}</Link>.</li>
                 </>
               )}
             </ol>

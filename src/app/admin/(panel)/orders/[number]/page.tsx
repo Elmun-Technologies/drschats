@@ -58,8 +58,8 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
     <>
       <PageHeader
         eyebrow={`${formatDateTime(o.createdAt)} · ${timeAgo(o.createdAt)}`}
-        title={`Buyurtma ${o.number}`}
-        lead={<span className="inline-flex items-center gap-2"><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill>{o.paymentStatus !== "unpaid" && <Pill tone={o.paymentStatus === "paid" ? "dark" : "outline"}>{PAYMENT_STATUS_LABEL[o.paymentStatus]}</Pill>}{!o.operatorNotifiedAt && <Pill tone="outline">{t("Telegram xabari yetib bormagan")}</Pill>}<span className="text-ink-2">{units} {t("dona ·")} {som(o.total)}</span></span>}
+        title={t("Buyurtma {number}", { number: o.number ?? "" })}
+        lead={<span className="inline-flex items-center gap-2"><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill>{o.paymentStatus !== "unpaid" && <Pill tone={o.paymentStatus === "paid" ? "dark" : "outline"}>{PAYMENT_STATUS_LABEL[o.paymentStatus]}</Pill>}{!o.operatorNotifiedAt && <Pill tone="outline">{t("Telegram xabari yetib bormagan")}</Pill>}<span className="text-ink-2">{t("{n} dona · {sum}", { n: units, sum: som(o.total) })}</span></span>}
         actions={<>
           <a href={`/admin/print/orders/${o.number}`} target="_blank" rel="noopener noreferrer" className={secondaryButtonClass}>{t("Yuk varagʻi")}</a>
           <Link href="/admin/orders" className={secondaryButtonClass}>{t("← Buyurtmalar")}</Link>
@@ -100,8 +100,8 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
                       {pic ? <Link href={`/admin/products/${encodeURIComponent(pic.id)}`} className="block truncate text-[15px] font-semibold text-ink hover:underline">{it.name}</Link> : <span className="block truncate text-[15px] font-semibold">{it.name}</span>}
                       <span className="mt-0.5 flex flex-wrap gap-1.5 text-[13px] text-muted">
                         {som(it.unitPrice)} × {it.quantity}
-                        {it.upsellDiscountPercent ? <Pill tone="red">{t("taklif −")}{it.upsellDiscountPercent}%</Pill> : null}
-                        {it.subscription ? <Pill tone="outline">{t("obuna · har")} {it.subscription.intervalDays} kun</Pill> : null}
+                        {it.upsellDiscountPercent ? <Pill tone="red">{t("taklif −{p}%", { p: it.upsellDiscountPercent })}</Pill> : null}
+                        {it.subscription ? <Pill tone="outline">{t("obuna · har {n} kun", { n: it.subscription.intervalDays })}</Pill> : null}
                       </span>
                     </span>
                     <span className="shrink-0 text-[15px] font-semibold tabular-nums">{som(lineTotal({ price: it.unitPrice, quantity: it.quantity, upsellDiscountPercent: it.upsellDiscountPercent }))}</span>
@@ -120,14 +120,14 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
                     ) : adjustment.kind === "referral" ? (
                       <>{t("Doʻst kodi")} <Link href="/admin/loyalty#referral" className="font-semibold text-ink underline-offset-4 hover:underline">{adjustment.code}</Link> −{adjustment.percent}%</>
                     ) : (
-                      `Birinchi buyurtma −${adjustment.percent}%`
+                      t("Birinchi buyurtma −{p}%", { p: adjustment.percent })
                     )}
                   </dt>
                   <dd className="tabular-nums">−{som(adjustment.amount)}</dd>
                 </div>
               )}
               {points > 0 && <div className="flex justify-between"><dt className="text-ink-2">{t("Ball bilan toʻlandi")}</dt><dd className="tabular-nums">−{som(points)}</dd></div>}
-              <div className="flex justify-between"><dt className="text-ink-2">{t("Yetkazish")}</dt><dd className="tabular-nums">{o.totals.shipping ? som(o.totals.shipping) : "bepul"}</dd></div>
+              <div className="flex justify-between"><dt className="text-ink-2">{t("Yetkazish")}</dt><dd className="tabular-nums">{o.totals.shipping ? som(o.totals.shipping) : t("bepul")}</dd></div>
               <div className="mt-1 flex justify-between text-[18px] font-bold"><dt>{t("Jami")}</dt><dd className="tabular-nums">{som(o.total)}</dd></div>
             </dl>
           </Card>

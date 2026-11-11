@@ -45,7 +45,7 @@ export function ActivityHeatmap({ visits, orders, days }: { visits: number[][]; 
                 mode === m ? "bg-white text-ink shadow-[0_1px_2px_rgba(23,25,27,0.08)]" : "text-ink-2 hover:text-ink",
               )}
             >
-              {m === "visits" ? "Tashriflar" : "Buyurtmalar"}
+              {m === "visits" ? t("Tashriflar") : t("Buyurtmalar")}
             </button>
           ))}
         </div>

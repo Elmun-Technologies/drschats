@@ -23,7 +23,7 @@ export default async function AdminContentStudioPage() {
       {!ready ? (
         <Card>
           <Notice>
-            {t("CMS hozircha sozlanmagan. Sanity project ID kiriting; productionʼda qoʻshimcha ravishda")} <code className="rounded-sm bg-white px-1.5 py-0.5">{t("SANITY_STUDIO_ENABLED=on")}</code> {t("talab qilinadi.")}
+            {t("CMS hozircha sozlanmagan. Sanity project ID kiriting; productionʼda qoʻshimcha ravishda kerak:")} <code className="rounded-sm bg-white px-1.5 py-0.5">SANITY_STUDIO_ENABLED=on</code>
           </Notice>
           <p className="mt-4 text-[14px] leading-5 text-muted">{t("Kontent sahifasi maʼlumotlarni ichki statik maqolalardan koʻrsatishda davom etadi. Studio sozlanmaguncha bu yerda nashr yoki tahrir amali bajarilmaydi.")}</p>
         </Card>

@@ -20,7 +20,7 @@ const saveSchema = z.object({
 export async function saveFlow(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("marketing");
   const parsed = saveSchema.safeParse({ id: form.get("id"), name: form.get("name"), steps: form.get("steps") });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (!parsed.success) return { error: t(parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring.") };
   let raw: unknown;
   try {
     raw = JSON.parse(parsed.data.steps);
@@ -30,8 +30,8 @@ export async function saveFlow(_: FormState, form: FormData): Promise<FormState>
   const steps = stepsSchema.safeParse(raw);
   if (!steps.success) {
     const issue = steps.error.issues[0];
-    const where = typeof issue?.path[0] === "number" ? `${issue.path[0] + 1}-qadam: ` : "";
-    return { error: `${where}${issue?.message ?? "qadamlarni tekshiring"}` };
+    const message = t(issue?.message ?? "qadamlarni tekshiring");
+    return { error: typeof issue?.path[0] === "number" ? t("{n}-qadam: {error}", { n: issue.path[0] + 1, error: message }) : message };
   }
   const sorted = [...steps.data].sort((a, b) => a.delayMinutes - b.delayMinutes);
   const updated = await getDb()
@@ -42,7 +42,7 @@ export async function saveFlow(_: FormState, form: FormData): Promise<FormState>
   if (updated.length === 0) return { error: t("Avtomatlashtirish topilmadi.") };
   revalidatePath("/admin/flows");
   revalidatePath(`/admin/flows/${parsed.data.id}`);
-  return { ok: "Saqlandi. Yangi matn va muddatlar keyingi qadamlardan amal qiladi." };
+  return { ok: t("Saqlandi. Yangi matn va muddatlar keyingi qadamlardan amal qiladi.") };
 }
 
 export async function toggleFlow(form: FormData): Promise<void> {
@@ -59,13 +59,16 @@ export async function runMessagingNow(_: FormState, _form: FormData): Promise<Fo
   try {
     const { runMessagingTick } = await import("@/lib/messaging/worker");
     const result = await runMessagingTick({ flows: true });
-    if (result.busy) return { ok: "Ishchi hozir band — bir daqiqadan keyin natija shu yerda koʻrinadi." };
+    if (result.busy) return { ok: t("Ishchi hozir band — bir daqiqadan keyin natija shu yerda koʻrinadi.") };
     const f = result.flows;
     const o = result.outbox;
     revalidatePath("/admin/flows");
     revalidatePath("/admin/messages");
+    const counts = { enrolled: f?.enrolled ?? 0, queued: f?.queued ?? 0, sent: o?.sent ?? 0, deferred: o?.deferred ?? 0 };
     return {
-      ok: `Bajarildi: ${f?.enrolled ?? 0} ta yangi ishtirokchi, ${f?.queued ?? 0} ta xabar navbatga, ${o?.sent ?? 0} ta yuborildi${o?.deferred ? `, ${o.deferred} tasi tungi vaqt sabab 09:00 ga qoldirildi` : ""}.`,
+      ok: o?.deferred
+        ? t("Bajarildi: {enrolled} ta yangi ishtirokchi, {queued} ta xabar navbatga, {sent} ta yuborildi, {deferred} tasi tungi vaqt sabab 09:00 ga qoldirildi.", counts)
+        : t("Bajarildi: {enrolled} ta yangi ishtirokchi, {queued} ta xabar navbatga, {sent} ta yuborildi.", counts),
     };
   } catch (err) {
     console.error("[messages] manual tick failed:", (err as Error).message);
@@ -78,5 +81,5 @@ export async function saveOrderSmsSettings(_: FormState, form: FormData): Promis
   const admin = await requireAdmin("marketing");
   await saveTransactionalSms({ orderPlaced: form.get("orderPlaced") === "on", statusChanged: form.get("statusChanged") === "on" }, admin.id);
   revalidatePath("/admin/flows");
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }

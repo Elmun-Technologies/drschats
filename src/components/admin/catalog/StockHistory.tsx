@@ -1,9 +1,9 @@
 import Link from "next/link";
 import type { stockMovements } from "@/lib/db/schema";
 import { Card, TableWrap, tableClass, tdClass, thClass, timeAgo } from "@/components/admin/ui";
-import { t } from "@/lib/admin/i18n/server";
+import { labels, t } from "@/lib/admin/i18n/server";
 
-const REASON: Record<string, string> = { order: "Buyurtma", cancel: "Bekor qilindi", manual: "Qoʻlda", import: "Import" };
+const REASON: Record<string, string> = labels({ order: "Buyurtma", cancel: "Bekor qilindi", manual: "Qoʻlda", import: "Import" });
 
 /* The last movements of a tracked count, on the product's edit page. */
 export function StockHistory({ rows }: { rows: (typeof stockMovements.$inferSelect)[] }) {
@@ -28,10 +28,11 @@ export function StockHistory({ rows }: { rows: (typeof stockMovements.$inferSele
                 <td className={`${tdClass} text-ink-2`}>
                   {m.orderId ? (
                     <Link href={`/admin/orders/GV-${String(m.orderId).padStart(6, "0")}`} className="font-semibold text-ink underline-offset-4 hover:underline">
-                      {t("GV-")}{String(m.orderId).padStart(6, "0")}
+                      GV-{String(m.orderId).padStart(6, "0")}
                     </Link>
                   ) : (
-                    m.adminNote ?? "—"
+                    // System notes (catalog.ts) are Uzbek keys; a note an admin typed comes back unchanged.
+                    m.adminNote ? t(m.adminNote) : "—"
                   )}
                 </td>
               </tr>

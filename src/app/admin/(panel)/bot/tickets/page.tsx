@@ -7,12 +7,12 @@ import { formatDateTime } from "@/lib/admin/order-labels";
 import { listTickets } from "@/lib/bot/store";
 import { cn } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
-import { adminTitle, t } from "@/lib/admin/i18n/server";
+import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
 export const generateMetadata = () => adminTitle("Murojaatlar");
 
-const CATEGORY = { operator: "Savol", consult: "Maslahat", return: "Qaytarish", "club-conflict": "Raqam ziddiyati" } as const;
-const STATUS = { open: "Ochiq", answered: "Javob berilgan", closed: "Yopilgan" } as const;
+const CATEGORY = labels({ operator: "Savol", consult: "Maslahat", return: "Qaytarish", "club-conflict": "Raqam ziddiyati" } as const);
+const STATUS = labels({ open: "Ochiq", answered: "Javob berilgan", closed: "Yopilgan" } as const);
 
 export default async function BotTicketsPage({ searchParams }: { searchParams: Promise<{ all?: string }> }) {
   await requireAdmin();
@@ -45,7 +45,7 @@ export default async function BotTicketsPage({ searchParams }: { searchParams: P
                   <Pill>{CATEGORY[tk.category]}</Pill>
                   <Pill tone={tk.status === "open" ? "dark" : "neutral"}>{STATUS[tk.status]}</Pill>
                   <span>{formatDateTime(tk.createdAt)}</span>
-                  <span>· {name || "Nomaʼlum"}{phone ? ` · +${phone}` : " · raqam bogʻlanmagan"}{username ? ` · @${username}` : ""}</span>
+                  <span>· {name || t("Nomaʼlum")}{phone ? ` · +${phone}` : ` · ${t("raqam bogʻlanmagan")}`}{username ? ` · @${username}` : ""}</span>
                 </div>
                 <p className="whitespace-pre-wrap text-[15px] leading-6">{tk.text}</p>
                 {tk.reply && (
@@ -58,7 +58,7 @@ export default async function BotTicketsPage({ searchParams }: { searchParams: P
                     {!tk.reply && (
                       <ActionForm action={replyTicket} submitLabel={t("Javob yuborish")} className="grid gap-3">
                         <input type="hidden" name="id" value={tk.id} />
-                        <label className="sr-only" htmlFor={`reply-${tk.id}`}>{t("Javob #")}{tk.id}</label>
+                        <label className="sr-only" htmlFor={`reply-${tk.id}`}>{t("Javob #{id}", { id: tk.id })}</label>
                         <textarea id={`reply-${tk.id}`} name="reply" required maxLength={3000} className={textareaClass} />
                       </ActionForm>
                     )}

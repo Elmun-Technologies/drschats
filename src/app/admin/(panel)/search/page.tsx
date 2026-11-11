@@ -34,11 +34,11 @@ export default async function AdminSearchPage({ searchParams }: { searchParams: 
       {q.length < 2 ? (
         <EmptyState title={t("Kamida 2 ta belgi kiriting")} />
       ) : total === 0 ? (
-        <EmptyState title={`«${q}» boʻyicha hech narsa topilmadi`} />
+        <EmptyState title={t("«{q}» boʻyicha hech narsa topilmadi", { q })} />
       ) : (
         <div className="grid gap-4 xl:grid-cols-2">
           {orders.length > 0 && (
-            <Card title={`Buyurtmalar · ${orders.length}`}>
+            <Card title={`${t("Buyurtmalar")} · ${orders.length}`}>
               <ul>{orders.map((o) => (
                 <li key={o.id}><Link href={`/admin/orders/${o.number}`} className={rowClass}>
                   <span className="min-w-0"><span className="block font-semibold">{o.number} · {o.customer.name}</span><span className="block text-[13px] text-muted">{o.customer.phone} · {formatDateTime(o.createdAt)}</span></span>
@@ -48,17 +48,17 @@ export default async function AdminSearchPage({ searchParams }: { searchParams: 
             </Card>
           )}
           {customers.length > 0 && (
-            <Card title={`Mijozlar · ${customers.length}`}>
+            <Card title={`${t("Mijozlar")} · ${customers.length}`}>
               <ul>{customers.map((c) => (
                 <li key={c.phone9}><Link href={`/admin/customers/${c.phone9}`} className={rowClass}>
-                  <span className="min-w-0"><span className="block font-semibold">{c.name}</span><span className="block text-[13px] text-muted">{c.phone} · {c.successfulOrderCount} {t("ta buyurtma")}</span></span>
+                  <span className="min-w-0"><span className="block font-semibold">{c.name}</span><span className="block text-[13px] text-muted">{c.phone} · {t("{n} ta buyurtma", { n: c.successfulOrderCount })}</span></span>
                   <b className="shrink-0 tabular-nums">{som(c.lifetimeValue)}</b>
                 </Link></li>
               ))}</ul>
             </Card>
           )}
           {products.length > 0 && (
-            <Card title={`Mahsulotlar · ${products.length}`}>
+            <Card title={`${t("Mahsulotlar")} · ${products.length}`}>
               <ul>{products.map((p) => (
                 <li key={p.id}><Link href={`/admin/products/${encodeURIComponent(p.id)}`} className={rowClass}>
                   <span className="flex min-w-0 items-center gap-3">
@@ -71,10 +71,10 @@ export default async function AdminSearchPage({ searchParams }: { searchParams: 
             </Card>
           )}
           {visitors.rows.length > 0 && (
-            <Card title={`Tashrif buyuruvchilar · ${visitors.rows.length}`}>
+            <Card title={`${t("Tashrif buyuruvchilar")} · ${visitors.rows.length}`}>
               <ul>{visitors.rows.map((v) => (
                 <li key={v.id}><Link href={`/admin/visitors/${v.id}`} className={rowClass}>
-                  <span className="min-w-0"><span className="block font-semibold">{v.name ?? `+998 ${v.phone9}`}</span><span className="block text-[13px] text-muted">{v.channel} · {v.sessions} tashrif</span></span>
+                  <span className="min-w-0"><span className="block font-semibold">{v.name ?? `+998 ${v.phone9}`}</span><span className="block text-[13px] text-muted">{t(v.channel)} · {t("{n} tashrif", { n: v.sessions })}</span></span>
                   <span className="shrink-0 text-[13px] text-muted">{timeAgo(v.lastSeenAt)}</span>
                 </Link></li>
               ))}</ul>

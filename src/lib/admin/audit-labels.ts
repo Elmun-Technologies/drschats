@@ -1,5 +1,7 @@
+import { labels } from "@/lib/admin/i18n/server";
+
 /** Human names for audit actions (lib/admin/audit.ts); an unknown action shows its key. */
-export const AUDIT_ACTION_LABEL: Record<string, string> = {
+export const AUDIT_ACTION_LABEL: Record<string, string> = labels({
   login: "Kirish",
   "login.recovery_code": "Kirish (tiklash kodi bilan)",
   "account.password": "Parol almashtirildi",
@@ -28,4 +30,4 @@ export const AUDIT_ACTION_LABEL: Record<string, string> = {
   "broadcast.send": "Telegram tarqatma",
   "campaign.send": "Kampaniya yuborildi",
   "keywords.import": "Keyword Planner maʼlumoti yuklandi",
-};
+});

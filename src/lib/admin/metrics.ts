@@ -77,7 +77,7 @@ function identityOf(customer: OrderRequest["customer"]): string | null {
 }
 
 function displaySource(attribution: OrderAttribution | null): string {
-  if (!attribution) return "Bevosita";
+  if (!attribution) return t("Bevosita");
   const raw = attribution.utmSource?.trim();
   if (raw) {
     const value = raw.toLowerCase();
@@ -102,7 +102,7 @@ function displaySource(attribution: OrderAttribution | null): string {
     if (host.includes("t.me") || host.includes("telegram")) return "Telegram";
     return host.slice(0, 40);
   }
-  return "Bevosita";
+  return t("Bevosita");
 }
 
 function zeroStatusCounts(): StatusCounts {

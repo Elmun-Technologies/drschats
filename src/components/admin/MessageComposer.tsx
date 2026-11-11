@@ -29,8 +29,12 @@ export function SmsMeter({ text, transliterate = false, className }: { text: str
   const heavy = c.parts > 3;
   return (
     <p className={cn("text-[13px] tabular-nums", heavy ? "font-semibold text-ink" : "text-muted", className)} aria-live="polite">
-      {t("SMS:")} {c.parts} {t("qism ·")} {c.length} {t("belgi ·")} {c.encoding === "GSM-7" ? "lotin (GSM-7, 160/153)" : "Unicode (UCS-2, 70/67)"}
-      {heavy && " — juda uzun, qisqartiring"}
+      {t("SMS: {parts} qism · {length} belgi · {encoding}", {
+        parts: c.parts,
+        length: c.length,
+        encoding: c.encoding === "GSM-7" ? t("lotin (GSM-7, 160/153)") : "Unicode (UCS-2, 70/67)",
+      })}
+      {heavy && ` — ${t("juda uzun, qisqartiring")}`}
     </p>
   );
 }
@@ -98,7 +102,7 @@ export function TemplateInput({
             key={key}
             type="button"
             onClick={() => insert(key)}
-            title={PLACEHOLDER_LABELS[key]}
+            title={t(PLACEHOLDER_LABELS[key])}
             className="inline-flex min-h-11 items-center rounded-[12px] bg-tile px-3 font-mono text-[13px] font-semibold text-ink transition-colors hover:bg-tile-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
           >
             {`{${key}}`}

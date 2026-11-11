@@ -89,7 +89,7 @@ export function CampaignLinkBuilder({ baseUrl }: { baseUrl: string }) {
             <output className="min-w-0 flex-1 break-all rounded-sm border border-line bg-white px-3 py-2.5 font-mono text-[12px] leading-4 text-ink-2">{url}</output>
             <button type="button" onClick={copyLink} className="inline-flex h-12 shrink-0 items-center justify-center rounded-sm bg-ink px-5 text-[15px] font-semibold text-white hover:bg-black">{t("Nusxalash")}</button>
           </div>
-          <p aria-live="polite" className="mt-2 min-h-4 text-[12px] text-ink">{copyState}</p>
+          <p aria-live="polite" className="mt-2 min-h-4 text-[12px] text-ink">{copyState ? t(copyState) : ""}</p>
         </div>
       ) : (
         <p className="mt-4 rounded-sm bg-tile p-3 text-[12px] leading-4 text-muted">{t("Havolani tuzish uchun kampaniya nomini kiriting.")}</p>

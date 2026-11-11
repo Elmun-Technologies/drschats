@@ -25,7 +25,7 @@ export default async function BotMembersPage() {
                   {name || "—"}
                   {username && <span className="text-muted"> · @{username}</span>}
                 </span>
-                <span className="w-[150px]">{phone ? `+${phone}` : <span className="text-muted">raqamsiz</span>}</span>
+                <span className="w-[150px]">{phone ? `+${phone}` : <span className="text-muted">{t("raqamsiz")}</span>}</span>
                 <span className="w-[60px] uppercase text-muted">{m.locale}</span>
                 <span className="w-[140px] text-[13px] text-muted">{formatDateTime(linkedAt ?? m.createdAt)}</span>
                 {m.source && <Pill>{m.source}</Pill>}

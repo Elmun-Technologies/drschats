@@ -41,13 +41,13 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
         <Metric label={t("Tashrif buyuruvchilar")} value={formatNumber(f.visitors)} delta={{ current: f.visitors, previous: p.visitors }} />
         <Metric label={t("Yangi")} value={formatNumber(funnel.newVisitors)} hint={t("birinchi marta kirgan")} />
         <Metric label={t("Sessiyalar")} value={formatNumber(f.sessions)} delta={{ current: f.sessions, previous: p.sessions }} />
-        <Metric label={t("Sahifa koʻrishlar")} value={formatNumber(f.pageViews)} hint={f.sessions ? `${(f.pageViews / f.sessions).toFixed(1)} sahifa / sessiya` : undefined} />
-        <Metric label={t("Konversiya")} value={`${percent(f.purchased, f.visitors)}%`} hint={`${formatNumber(f.purchased)} ta xaridor`} />
+        <Metric label={t("Sahifa koʻrishlar")} value={formatNumber(f.pageViews)} hint={f.sessions ? t("{n} sahifa / sessiya", { n: (f.pageViews / f.sessions).toFixed(1) }) : undefined} />
+        <Metric label={t("Konversiya")} value={`${percent(f.purchased, f.visitors)}%`} hint={t("{n} ta xaridor", { n: formatNumber(f.purchased) })} />
         <Metric label={t("Savdo")} value={som(metrics.current.revenue)} delta={{ current: metrics.current.revenue, previous: metrics.previous.revenue }} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-        <TrendChart current={series.current} previous={series.previous} unit={series.unit} periodLabel={range === 1 ? "kun" : `${range} kun`} />
+        <TrendChart current={series.current} previous={series.previous} unit={series.unit} periodLabel={range === 1 ? t("kun") : t("{n} kun", { n: range })} />
         <ActivityHeatmap visits={heat.visits} orders={heat.orders} days={heat.days} />
       </div>
 
@@ -61,7 +61,7 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
               <tbody>
                 {channelRows.map((c) => (
                   <tr key={c.channel}>
-                    <td className={`${tdClass} font-semibold`}>{c.channel}</td>
+                    <td className={`${tdClass} font-semibold`}>{t(c.channel)}</td>
                     <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.visitors)}</td>
                     <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.buyers)}</td>
                     <td className={`${tdClass} text-right tabular-nums`}>{percent(c.buyers, c.visitors)}%</td>
@@ -102,7 +102,7 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
           <ShareBar parts={deviceRows.slice(0, 4).map((d) => ({ label: d.device, value: d.visitors }))} />
         </Card>
         <Card title={t("Koʻp ochilgan sahifalar")}>
-          <BarList rows={pages.map((page) => ({ label: page.path, value: page.views, note: `${formatNumber(page.visitors)} kishi` }))} />
+          <BarList rows={pages.map((page) => ({ label: page.path, value: page.views, note: t("{n} kishi", { n: formatNumber(page.visitors) }) }))} />
         </Card>
         <Card title={t("Saytdagi qidiruvlar")} lead={t("Mijozlar nimani izlayapti")}>
           <BarList rows={searches.map((s) => ({ label: s.term, value: s.count, href: `/uz/search?q=${encodeURIComponent(s.term)}` }))} empty={t("Qidiruv hali yozilmagan")} />

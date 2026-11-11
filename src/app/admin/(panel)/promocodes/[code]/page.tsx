@@ -34,12 +34,12 @@ export default async function PromoCodePage({ params, searchParams }: { params: 
   return (
     <>
       <PageHeader
-        eyebrow={`Promokodlar · ${SOURCE_LABEL[promo.source]}${promo.campaignId ? ` · ${promo.campaignId}` : ""}`}
+        eyebrow={`${t("Promokodlar")} · ${SOURCE_LABEL[promo.source]}${promo.campaignId ? ` · ${promo.campaignId}` : ""}`}
         title={promo.code}
         lead={
           <span className="inline-flex flex-wrap items-center gap-2">
-            <Pill tone={promo.active ? "dark" : "muted"}>{promo.active ? "Faol" : "Oʻchirilgan"}</Pill>
-            <span>{promoValueLabel(promo.kind, promo.value)} {t("· ishlatildi")} {formatNumber(promo.uses)}{promo.maxUses != null ? ` / ${formatNumber(promo.maxUses)}` : ""}</span>
+            <Pill tone={promo.active ? "dark" : "muted"}>{promo.active ? t("Faol") : t("Oʻchirilgan")}</Pill>
+            <span>{promoValueLabel(promo.kind, promo.value)} · {t("ishlatildi {n}", { n: promo.maxUses != null ? `${formatNumber(promo.uses)} / ${formatNumber(promo.maxUses)}` : formatNumber(promo.uses) })}</span>
             <CopyButton text={promo.code} />
           </span>
         }
@@ -47,7 +47,7 @@ export default async function PromoCodePage({ params, searchParams }: { params: 
           <>
             <form action={togglePromoCode}>
               <input type="hidden" name="code" value={promo.code} />
-              <button type="submit" className={secondaryButtonClass}>{promo.active ? "Oʻchirish" : "Yoqish"}</button>
+              <button type="submit" className={secondaryButtonClass}>{promo.active ? t("Oʻchirib qoʻyish") : t("Yoqish")}</button>
             </form>
             {promo.uses === 0 && redemptions.length === 0 && (
               <form action={deletePromoCode}>
@@ -65,7 +65,7 @@ export default async function PromoCodePage({ params, searchParams }: { params: 
         <Card title={t("Sozlamalar")}>
           <PromoCodeForm promo={promo} products={products.map((p) => ({ slug: p.slug, name: p.name }))} />
         </Card>
-        <Card title={t("Ishlatilishi")} lead={live.length ? `${formatNumber(live.length)} ta buyurtma · ${som(revenue)} tushum · ${som(given)} chegirma` : undefined}>
+        <Card title={t("Ishlatilishi")} lead={live.length ? t("{n} ta buyurtma · {revenue} tushum · {discount} chegirma", { n: formatNumber(live.length), revenue: som(revenue), discount: som(given) }) : undefined}>
           {redemptions.length === 0 ? (
             <EmptyState title={t("Hali ishlatilmagan")} />
           ) : (

@@ -87,7 +87,7 @@ export function CategoryForm({ values, repoImages, editing }: { values: Category
       </div>
       <aside className="flex min-w-0 flex-col gap-5 xl:sticky xl:top-6 xl:self-start">
         <Panel title={t("Manzil va tartib")}>
-          <Field label={t("Sahifa manzili (slug)")} hint={effectiveSlug ? `govita.uz/uz/products/${effectiveSlug}` : "Oʻzbekcha nomdan avtomatik yaratiladi"}>
+          <Field label={t("Sahifa manzili (slug)")} hint={effectiveSlug ? `govita.uz/uz/products/${effectiveSlug}` : t("Oʻzbekcha nomdan avtomatik yaratiladi")}>
             <input
               name="slug"
               value={slug}
@@ -96,19 +96,19 @@ export function CategoryForm({ values, repoImages, editing }: { values: Category
                 setSlugTouched(true);
               }}
               pattern="[a-z0-9]+(-[a-z0-9]+)*"
-              placeholder={slugify(uzName) || "masalan: omega-3"}
+              placeholder={slugify(uzName) || t("masalan: omega-3")}
               className={inputClass}
             />
           </Field>
           {editing && slug.trim() && slug.trim() !== values.slug && (
-            <p className="text-[13px] leading-5 text-ink-2">{t("Manzil oʻzgarsa, mahsulotlar yangi kategoriyaga oʻzi oʻtadi, lekin eski havola (/products/")}{values.slug}{t(") 404 boʻladi.")}</p>
+            <p className="text-[13px] leading-5 text-ink-2">{t("Manzil oʻzgarsa, mahsulotlar yangi kategoriyaga oʻzi oʻtadi, lekin eski havola (/products/{slug}) 404 boʻladi.", { slug: values.slug })}</p>
           )}
           <Field label={t("Tartib")} hint={t("Kichik raqam — menyuda oldinroq")}>
             <input name="sort" type="number" defaultValue={values.sort} className={inputClass} />
           </Field>
         </Panel>
         <div className="sticky bottom-0 -mx-4 border-t border-line bg-bg px-4 py-3 xl:static xl:mx-0 xl:border-0 xl:bg-transparent xl:p-0">
-          <SubmitButton className="w-full">{editing ? "Saqlash" : "Kategoriyani yaratish"}</SubmitButton>
+          <SubmitButton className="w-full">{editing ? t("Saqlash") : t("Kategoriyani yaratish")}</SubmitButton>
         </div>
       </aside>
     </form>

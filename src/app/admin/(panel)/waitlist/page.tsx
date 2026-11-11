@@ -7,14 +7,14 @@ import { NotifyNowButton, PhoneReveal } from "@/components/admin/catalog/Waitlis
 import { CatalogTabs } from "@/components/admin/catalog/CatalogTabs";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
-import { adminTitle, t } from "@/lib/admin/i18n/server";
+import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
 export const generateMetadata = () => adminTitle("Kutayotganlar");
 export const dynamic = "force-dynamic";
 
-const STATUS_LABEL: Record<WaitStatus, string> = { waiting: "Kutmoqda", notified: "Xabar berildi", cancelled: "Bekor qilingan" };
-const KIND_LABEL: Record<WaitKind, string> = { restock: "Omborga kelishi", price_drop: "Narx tushishi" };
-const VIA_LABEL: Record<string, string> = { telegram: "Telegram", sms: "SMS", operator: "operator qoʻngʻirogʻi", manual: "qoʻlda" };
+const STATUS_LABEL: Record<WaitStatus, string> = labels({ waiting: "Kutmoqda", notified: "Xabar berildi", cancelled: "Bekor qilingan" });
+const KIND_LABEL: Record<WaitKind, string> = labels({ restock: "Omborga kelishi", price_drop: "Narx tushishi" });
+const VIA_LABEL: Record<string, string> = labels({ telegram: "Telegram", sms: "SMS", operator: "operator qoʻngʻirogʻi", manual: "qoʻlda" });
 
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -92,15 +92,15 @@ export default async function WaitlistPage({ searchParams }: { searchParams: Pro
                         {p.unlisted ? (
                           <Pill tone="muted">{t("sotuvdan olingan")}</Pill>
                         ) : p.inStock ? (
-                          <Pill tone="neutral">{p.stockQty != null ? `sotuvda · ${p.stockQty} ta` : "sotuvda"}</Pill>
+                          <Pill tone="neutral">{p.stockQty != null ? t("sotuvda · {n} ta", { n: p.stockQty }) : t("sotuvda")}</Pill>
                         ) : (
-                          <Pill tone="outline">tugagan</Pill>
+                          <Pill tone="outline">{t("tugagan")}</Pill>
                         )}
                       </td>
                       <td className={`${tdClass} text-right font-semibold tabular-nums`}>{p.restock || "—"}</td>
                       <td className={`${tdClass} text-right tabular-nums`}>
                         <span className="font-semibold">{p.priceDrop || "—"}</span>
-                        {p.priceDue > 0 && <span className="block text-[13px] text-muted">{p.priceDue} {t("tasi uchun narx tushgan")}</span>}
+                        {p.priceDue > 0 && <span className="block text-[13px] text-muted">{t("{n} tasi uchun narx tushgan", { n: p.priceDue })}</span>}
                       </td>
                       <td className={`${tdClass} text-ink-2`} title={p.lastAt.toISOString()}>{timeAgo(p.lastAt)}</td>
                       <td className={`${tdClass} text-right`}>
@@ -156,11 +156,11 @@ export default async function WaitlistPage({ searchParams }: { searchParams: Pro
                     </td>
                     <td className={tdClass}>
                       {KIND_LABEL[r.kind]}
-                      {r.kind === "price_drop" && r.targetPrice != null && <span className="block text-[13px] text-muted">{som(r.targetPrice)} {t("dan arzon")}</span>}
+                      {r.kind === "price_drop" && r.targetPrice != null && <span className="block text-[13px] text-muted">{t("{price} dan arzon", { price: som(r.targetPrice) })}</span>}
                     </td>
                     <td className={tdClass}>
                       <PhoneReveal masked={maskPhone(r.phone)} full={r.phone} />
-                      <span className="block text-[13px] text-muted">{r.locale}{r.telegramChatId ? " · Telegram klubda" : ""}</span>
+                      <span className="block text-[13px] text-muted">{r.locale}{r.telegramChatId ? ` · ${t("Telegram klubda")}` : ""}</span>
                     </td>
                     <td className={tdClass}>
                       <Pill tone={r.status === "waiting" ? "dark" : r.status === "notified" ? "neutral" : "muted"}>{STATUS_LABEL[r.status]}</Pill>

@@ -20,10 +20,10 @@ function sentNote(r: DispatchResult | null): string {
   const parts = [
     r.byChannel.telegram && `Telegram: ${r.byChannel.telegram}`,
     r.byChannel.sms && `SMS: ${r.byChannel.sms}`,
-    r.byChannel.operator && `operatorga qoʻngʻiroq roʻyxati: ${r.byChannel.operator}`,
-    r.left && `yetkazilmadi: ${r.left}`,
+    r.byChannel.operator && t("operatorga qoʻngʻiroq roʻyxati: {n}", { n: r.byChannel.operator }),
+    r.left && t("yetkazilmadi: {n}", { n: r.left }),
   ].filter(Boolean);
-  return ` Kutayotganlarga xabar: ${parts.join(", ")}.`;
+  return ` ${t("Kutayotganlarga xabar: {list}.", { list: parts.join(", ") })}`;
 }
 
 const adjustSchema = z.object({
@@ -45,9 +45,9 @@ export async function adjustStockAction(_: FormState, form: FormData): Promise<F
   if (!result) return { error: t("Mahsulot topilmadi.") };
   refresh();
   const sent = await afterProductChange(id, result.before, result.after);
-  const now = result.after.stockQty == null ? "kuzatilmaydi" : `${result.after.stockQty} ta`;
+  const now = result.after.stockQty == null ? t("kuzatilmaydi") : t("{n} ta", { n: result.after.stockQty });
   await auditLog(admin, "stock.adjust", auditTarget(form));
-  return { ok: `Saqlandi: ${now}.${sentNote(sent)}` };
+  return { ok: `${t("Saqlandi: {stock}.", { stock: now })}${sentNote(sent)}` };
 }
 
 const thresholdSchema = z.object({ lowStockAt: z.coerce.number().int().min(1).max(1000) });
@@ -58,7 +58,7 @@ export async function saveLowStockDefaultAction(_: FormState, form: FormData): P
   if (!parsed.success) return { error: t("1 dan 1000 gacha son kiriting.") };
   await saveLowStockDefault(parsed.data.lowStockAt, me.id);
   refresh();
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }
 
 /* "Hozir xabar yuborish": everyone the product's current state answers (back in stock / cheaper). */
@@ -69,7 +69,7 @@ export async function notifyWaitlistNow(_: FormState, form: FormData): Promise<F
   const r = await notifyWaitlist(id);
   revalidatePath("/admin/waitlist");
   if (r.due === 0) return { error: t("Hozir xabar beradigan hech kim yoʻq: mahsulot sotuvda emas yoki narxi kutilgan narxdan tushmagan.") };
-  return { ok: `Yuborildi.${sentNote(r)}` };
+  return { ok: `${t("Yuborildi.")}${sentNote(r)}` };
 }
 
 const releaseSchema = z.object({ hours: z.coerce.number().int().min(0).max(168) });
@@ -80,7 +80,7 @@ export async function saveReleaseHoursAction(_: FormState, form: FormData): Prom
   if (!parsed.success) return { error: t("0 dan 168 gacha son kiriting.") };
   await saveReleaseHours(parsed.data.hours, me.id);
   await auditLog(me, "stock.release_hours", null, { hours: parsed.data.hours });
-  return { ok: parsed.data.hours ? `Saqlandi: ${parsed.data.hours} soat.` : "Saqlandi: avtomatik bekor qilish oʻchiq." };
+  return { ok: parsed.data.hours ? t("Saqlandi: {n} soat.", { n: parsed.data.hours }) : t("Saqlandi: avtomatik bekor qilish oʻchiq.") };
 }
 
 export async function cancelWaitRequestAction(form: FormData) {

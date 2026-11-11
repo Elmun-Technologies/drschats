@@ -71,7 +71,7 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
           <div className="grid gap-4 lg:grid-cols-2">
             <Field label={t("Qayerda chiqadi")}>
               <select name="placement" value={v.placement} onChange={(e) => set("placement")(e.target.value as BannerFormValues["placement"])} className={inputClass}>
-                {Object.entries(PLACEMENT_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                {Object.entries(PLACEMENT_LABEL).map(([value, label]) => <option key={value} value={value}>{t(label)}</option>)}
               </select>
             </Field>
             <fieldset className="flex flex-col gap-1.5">
@@ -80,7 +80,7 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
                 {(["light", "dark"] as const).map((theme) => (
                   <label key={theme} className={cn("flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[12px] border text-[15px] font-semibold", v.theme === theme ? "border-ink bg-ink text-white" : "border-line-strong bg-white text-ink")}>
                     <input type="radio" name="theme" value={theme} checked={v.theme === theme} onChange={() => set("theme")(theme)} className="sr-only" />
-                    {theme === "light" ? "Ochiq" : "Qora"}
+                    {theme === "light" ? t("Ochiq fon") : t("Qora fon")}
                   </label>
                 ))}
               </div>
@@ -95,9 +95,9 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
             <Field label={t("Qoʻshimcha matn (uz)")} hint={t("160 belgigacha")}><input name="uz.subtitle" maxLength={160} {...text("uzSubtitle")} className={inputClass} /></Field>
             <Field label={t("Qoʻshimcha matn (ru)")} hint={t("160 belgigacha")}><input name="ru.subtitle" maxLength={160} {...text("ruSubtitle")} className={inputClass} /></Field>
             <Field label={t("Tugma (uz)")} hint={t("Masalan: «Batafsil»")}><input name="uz.cta" maxLength={30} {...text("uzCta")} className={inputClass} /></Field>
-            <Field label={t("Tugma (ru)")} hint={t("Например: «Подробнее»")}><input name="ru.cta" maxLength={30} {...text("ruCta")} className={inputClass} /></Field>
+            <Field label={t("Tugma (ru)")} hint="Например: «Подробнее»"><input name="ru.cta" maxLength={30} {...text("ruCta")} className={inputClass} /></Field>
             <Field label={t("Havola")} hint={t("Saytdagi yoʻl (/product/omega-3, /sale, /products?sale=1) yoki https:// manzil")} className="lg:col-span-2">
-              <input name="href" required {...text("href")} placeholder={t("/product/…")} className={inputClass} />
+              <input name="href" required {...text("href")} placeholder="/product/…" className={inputClass} />
             </Field>
           </div>
         </Panel>
@@ -159,18 +159,18 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
             <Field label={t("Variant")}>
               <select name="variant" value={v.variant} onChange={(e) => set("variant")(e.target.value as BannerFormValues["variant"])} className={inputClass}>
                 <option value="">{t("Test yoʻq")}</option>
-                <option value="A">{t("A")}</option>
-                <option value="B">{t("B")}</option>
+                <option value="A">A</option>
+                <option value="B">B</option>
               </select>
             </Field>
           </div>
         </Panel>
-        <div><SubmitButton>{v.id ? "Saqlash" : "Bannerni yaratish"}</SubmitButton></div>
+        <div><SubmitButton>{v.id ? t("Saqlash") : t("Bannerni yaratish")}</SubmitButton></div>
       </div>
 
       <aside className="flex min-w-0 flex-col gap-3 xl:sticky xl:top-6 xl:self-start">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-[17px] font-bold text-ink">{t("Koʻrinishi")}</h2>
+          <h2 className="text-[17px] font-bold text-ink">{t("Oldindan koʻrish")}</h2>
           <div role="group" aria-label={t("Koʻrinish tili")} className="flex gap-1">
             {(["uz", "ru"] as const).map((l) => (
               <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)} className={cn("h-11 min-w-11 rounded-[12px] px-3 text-[14px] font-semibold uppercase", lang === l ? "bg-ink text-white" : "bg-tile text-ink hover:bg-tile-hover")}>
@@ -188,7 +188,7 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
 
 function Preview({ v, lang }: { v: BannerFormValues; lang: "uz" | "ru" }) {
   const dark = v.theme === "dark";
-  const title = (lang === "uz" ? v.uzTitle : v.ruTitle) || "Sarlavha";
+  const title = (lang === "uz" ? v.uzTitle : v.ruTitle) || (lang === "uz" ? "Sarlavha" : "Заголовок");
   const subtitle = lang === "uz" ? v.uzSubtitle : v.ruSubtitle;
   const cta = lang === "uz" ? v.uzCta : v.ruCta;
   const image = v.image.trim();

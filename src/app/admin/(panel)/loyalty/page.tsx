@@ -56,10 +56,10 @@ export default async function AdminLoyaltyPage() {
       />
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label={t("Hozirgi majburiyat")} value={somShort(stats.outstanding)} hint={`${formatNumber(stats.holders)} mijozda ball bor`} />
-        <Metric label={t("Berilgan ball")} value={somShort(stats.issued)} hint={`30 kunda: ${som(stats.issued30)}`} />
-        <Metric label={t("Ishlatilgan ball")} value={somShort(stats.redeemed)} hint={`30 kunda: ${som(stats.redeemed30)} · ${formatNumber(stats.ordersWithPoints30)} ta buyurtma`} />
-        <Metric label={t("Muddati tugagan")} value={somShort(stats.expired)} hint={stats.reversed ? `bekor qilish: ${som(stats.reversed)}` : "bekor qilishsiz"} />
+        <Metric label={t("Hozirgi majburiyat")} value={somShort(stats.outstanding)} hint={t("{n} mijozda ball bor", { n: formatNumber(stats.holders) })} />
+        <Metric label={t("Berilgan ball")} value={somShort(stats.issued)} hint={t("30 kunda: {sum}", { sum: som(stats.issued30) })} />
+        <Metric label={t("Ishlatilgan ball")} value={somShort(stats.redeemed)} hint={t("30 kunda: {sum} · {n} ta buyurtma", { sum: som(stats.redeemed30), n: formatNumber(stats.ordersWithPoints30) })} />
+        <Metric label={t("Muddati tugagan")} value={somShort(stats.expired)} hint={stats.reversed ? t("bekor qilish: {sum}", { sum: som(stats.reversed) }) : t("bekor qilishsiz")} />
       </div>
 
       {rules.enabled && !sms && (
@@ -103,7 +103,7 @@ export default async function AdminLoyaltyPage() {
             <Field label={t("Doʻst chegirmasi, %")} hint={t("Faqat birinchi buyurtmaga")}>
               <input name="friendPercent" inputMode="numeric" required defaultValue={rules.referral.friendPercent} className={inputClass} />
             </Field>
-            <Field label={t("Mukofot turi")} hint={rules.enabled ? undefined : "Keshbek oʻchiq — ball oʻrniga promokod beriladi"}>
+            <Field label={t("Mukofot turi")} hint={rules.enabled ? undefined : t("Keshbek oʻchiq — ball oʻrniga promokod beriladi")}>
               <select name="reward" defaultValue={rules.referral.reward} className={inputClass}>
                 <option value="points">{t("Ball")}</option>
                 <option value="promo">{t("Shaxsiy promokod")}</option>
@@ -120,7 +120,7 @@ export default async function AdminLoyaltyPage() {
             </Field>
           </ActionForm>
           <p className="mt-3 text-[13px] text-muted">
-            {t("Hozir mukofot:")} <b className="text-ink">{rewardKind === "points" ? `${formatNumber(rules.referral.rewardPoints)} ball` : `−${rules.referral.rewardPercent}% promokod`}</b>
+            {t("Hozir mukofot:")} <b className="text-ink">{rewardKind === "points" ? t("{n} ball", { n: formatNumber(rules.referral.rewardPoints) }) : t("−{p}% promokod", { p: rules.referral.rewardPercent })}</b>
           </p>
         </Card>
 
@@ -141,7 +141,7 @@ export default async function AdminLoyaltyPage() {
             <span className="text-muted">·</span>
             {flow ? (
               <Link href={`/admin/flows/${flow.id}`} className={linkClass}>
-                {t("Oqim:")} <Pill tone={flow.active ? "dark" : "muted"}>{flow.active ? "yoqilgan" : "oʻchiq"}</Pill>
+                {t("Oqim:")} <Pill tone={flow.active ? "dark" : "muted"}>{flow.active ? t("yoqilgan") : t("oʻchiq")}</Pill>
               </Link>
             ) : (
               <span className="text-muted">{t("Oqim server ishga tushganda yaratiladi")}</span>
@@ -153,9 +153,9 @@ export default async function AdminLoyaltyPage() {
       <SectionTitle>{t("Tavsiyalar")}</SectionTitle>
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Metric label={t("Kodi bor mijozlar")} value={formatNumber(referral.codes)} />
-        <Metric label={t("Doʻst buyurtmalari")} value={formatNumber(referral.referrals - referral.cancelled)} hint={`${formatNumber(referral.pending)} ta yetkazilishi kutilmoqda`} />
-        <Metric label={t("Mukofot berildi")} value={formatNumber(referral.rewarded)} hint={referral.capped ? `${formatNumber(referral.capped)} ta oylik limitdan oshgan` : "limitga yetmagan"} />
-        <Metric label={t("Doʻstlar tushumi")} value={somShort(referral.revenue)} hint={`chegirma: ${som(referral.discount)}`} />
+        <Metric label={t("Doʻst buyurtmalari")} value={formatNumber(referral.referrals - referral.cancelled)} hint={t("{n} ta yetkazilishi kutilmoqda", { n: formatNumber(referral.pending) })} />
+        <Metric label={t("Mukofot berildi")} value={formatNumber(referral.rewarded)} hint={referral.capped ? t("{n} ta oylik limitdan oshgan", { n: formatNumber(referral.capped) }) : t("limitga yetmagan")} />
+        <Metric label={t("Doʻstlar tushumi")} value={somShort(referral.revenue)} hint={t("chegirma: {sum}", { sum: som(referral.discount) })} />
       </div>
       <Card title={t("Eng faol taklif qiluvchilar")}>
         {referral.top.length === 0 ? (

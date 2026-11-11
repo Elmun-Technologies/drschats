@@ -56,12 +56,12 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
             {lost.map((row) => (
               <li key={row.key} className={`rounded-[16px] p-4 ${row === worst && row.value > 0 ? "bg-ink text-white" : "bg-tile"}`}>
                 <div className="flex items-baseline justify-between gap-3">
-                  <span className="text-[15px] font-semibold">{t(row.label)}</span>
+                  <span className="text-[15px] font-semibold">{row.label}</span>
                   <span className="text-[18px] font-bold tabular-nums">{formatNumber(Math.max(0, row.value))}</span>
                 </div>
                 {DROP_LINKS[row.key] && (
                   <Link href={DROP_LINKS[row.key].href} className={`mt-1 inline-block text-[13px] font-semibold underline underline-offset-4 ${row === worst && row.value > 0 ? "text-on-dark-2" : "text-ink-2"}`}>
-                    {t(DROP_LINKS[row.key].label)} {t("→ retarget")}
+                    {t("{label} → retarget", { label: t(DROP_LINKS[row.key].label) })}
                   </Link>
                 )}
               </li>
@@ -73,7 +73,7 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
       <h2 className="mb-3 mt-8 text-[22px] font-bold leading-7 text-ink">{t("Buyurtma bajarilishi")}</h2>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stages.map((stage) => (
-          <Metric key={stage.key} label={t(stage.label)} value={formatNumber(stage.value)} hint={stage.rate !== null ? t("oldingisidan {n}%", { n: stage.rate }) : t("{n} kunda", { n: range })} />
+          <Metric key={stage.key} label={stage.label} value={formatNumber(stage.value)} hint={stage.rate !== null ? t("oldingisidan {n}%", { n: stage.rate }) : t("{n} kunda", { n: range })} />
         ))}
       </div>
       <p className="mt-2 text-[13px] text-muted">{t("Yetkazilganlar summasi:")} <b className="text-ink">{som(current.deliveredRevenue)}</b> {t("· bekor qilinganlar:")} {current.cancelledCount} ({percent(current.cancelledCount, current.orderCount)}%)</p>
@@ -100,7 +100,7 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
                   </Link>
                 ))}
                 {count === 0 && <p className="rounded-[14px] bg-white/70 px-3 py-4 text-center text-[13px] text-muted">{t("Buyurtma yoʻq")}</p>}
-                {count > laneOrders.length && <Link href={`/admin/orders?status=${lane.key}`} className={`${linkClass} px-1 text-[13px]`}>{t("+ yana")} {count - laneOrders.length} ta</Link>}
+                {count > laneOrders.length && <Link href={`/admin/orders?status=${lane.key}`} className={`${linkClass} px-1 text-[13px]`}>{t("+ yana {n} ta", { n: count - laneOrders.length })}</Link>}
               </div>
             </section>
           );

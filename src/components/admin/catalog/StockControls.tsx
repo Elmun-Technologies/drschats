@@ -11,6 +11,13 @@ import { useT } from "@/lib/admin/i18n/client";
 
 type Mode = "delta" | "set" | "untrack";
 
+/* stockLabel() answers in Uzbek; the same four shapes in the admin's language. */
+function stockText(qty: number | null, lowAt: number, t: ReturnType<typeof useT>): string {
+  if (qty == null) return t("kuzatilmaydi");
+  if (qty <= 0) return t("tugagan");
+  return stockLabel(qty, lowAt).low ? t("kam: {n}", { n: qty }) : t("{n} ta", { n: qty });
+}
+
 /*
   The products list's stock cell: the pill is the button. The dialog adds or
   takes units (a delivery, a write-off), sets an exact count (a stocktake) or
@@ -23,6 +30,7 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
   const [state, action, pending] = useActionState<FormState, FormData>(adjustStockAction, undefined);
   const formId = useId();
   const label = stockLabel(qty, lowAt);
+  const shown = stockText(qty, lowAt, t);
 
   return (
     <>
@@ -30,7 +38,7 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
         type="button"
         onClick={() => setOpen(true)}
         title={t("Ombordagi sonini oʻzgartirish")}
-        aria-label={`${name}: ombor — ${label.label}. Oʻzgartirish`}
+        aria-label={t("{name}: ombor — {stock}. Oʻzgartirish", { name, stock: shown })}
         className={cn(
           "inline-flex h-11 w-[132px] items-center justify-center gap-1.5 rounded-[12px] px-3 text-[14px] font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
           label.tone === "dark" && "bg-ink text-white hover:bg-black",
@@ -39,18 +47,18 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
           label.tone === "muted" && "bg-tile text-muted hover:bg-tile-hover hover:text-ink",
         )}
       >
-        {label.label}
+        {shown}
         <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="h-3.5 w-3.5 shrink-0"><path d="M12 5v14M5 12h14" /></svg>
       </button>
       <AdminDialog
         open={open}
         onClose={() => setOpen(false)}
         title={t("Ombordagi soni")}
-        lead={<>{name} {t("· hozir:")} <b className="text-ink">{qty == null ? "kuzatilmaydi" : `${qty} ta`}</b></>}
+        lead={<>{name} · {t("hozir:")} <b className="text-ink">{qty == null ? t("kuzatilmaydi") : t("{n} ta", { n: qty })}</b></>}
         footer={
           <>
-            <button type="button" onClick={() => setOpen(false)} className={secondaryButtonClass}>{state?.ok ? "Yopish" : "Bekor qilish"}</button>
-            <button type="submit" form={formId} disabled={pending} className={buttonClass}>{pending ? "Saqlanmoqda…" : "Saqlash"}</button>
+            <button type="button" onClick={() => setOpen(false)} className={secondaryButtonClass}>{state?.ok ? t("Yopish") : t("Bekor qilish")}</button>
+            <button type="submit" form={formId} disabled={pending} className={buttonClass}>{pending ? t("Saqlanmoqda…") : t("Saqlash")}</button>
           </>
         }
       >
@@ -75,7 +83,7 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
                 onClick={() => setMode(value)}
                 className={cn("h-11 rounded-[12px] px-3 text-[14px] font-semibold", mode === value ? "bg-ink text-white" : "bg-tile text-ink hover:bg-tile-hover")}
               >
-                {text}
+                {t(text)}
               </button>
             ))}
           </div>
@@ -112,7 +120,7 @@ export function LowStockDefaultForm({ value }: { value: number }) {
       <Field label={t("Kam qoldi chegarasi (standart)")} hint={t("Saytda «Omborda N ta qoldi» shu sondan kam yoki teng boʻlganda chiqadi")} className="w-full max-w-[360px]">
         <input name="lowStockAt" type="number" min={1} max={1000} step={1} required defaultValue={value} inputMode="numeric" className={inputClass} />
       </Field>
-      <button type="submit" disabled={pending} className={cn(smallButtonClass, "h-12")}>{pending ? "Saqlanmoqda…" : "Saqlash"}</button>
+      <button type="submit" disabled={pending} className={cn(smallButtonClass, "h-12")}>{pending ? t("Saqlanmoqda…") : t("Saqlash")}</button>
       {state?.error && <Notice tone="error">{state.error}</Notice>}
       {state?.ok && <Notice tone="ok">{state.ok}</Notice>}
     </form>
@@ -132,7 +140,7 @@ export function ReleaseHoursForm({ value }: { value: number }) {
       >
         <input name="hours" type="number" min={0} max={168} step={1} required defaultValue={value} inputMode="numeric" className={inputClass} />
       </Field>
-      <button type="submit" disabled={pending} className={cn(smallButtonClass, "h-12")}>{pending ? "Saqlanmoqda…" : "Saqlash"}</button>
+      <button type="submit" disabled={pending} className={cn(smallButtonClass, "h-12")}>{pending ? t("Saqlanmoqda…") : t("Saqlash")}</button>
       {state?.error && <Notice tone="error">{state.error}</Notice>}
       {state?.ok && <Notice tone="ok">{state.ok}</Notice>}
     </form>

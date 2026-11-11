@@ -81,32 +81,32 @@ export default async function StorefrontBannersPage({ searchParams }: { searchPa
                           <span className="min-w-0">
                             <Link href={`/admin/storefront/banners/${b.id}`} className={linkClass}>{b.title.uz}</Link>
                             <span className="block truncate text-[13px] text-muted">{b.href}</span>
-                            {b.experiment && <span className="mt-1 inline-flex"><Pill tone="outline">{t("A/B:")} {b.experiment} · {b.variant}</Pill></span>}
+                            {b.experiment && <span className="mt-1 inline-flex"><Pill tone="outline">A/B: {b.experiment} · {b.variant}</Pill></span>}
                           </span>
                         </div>
                       </td>
-                      <td className={`${tdClass} text-ink-2`}>{PLACEMENT_LABEL[b.placement]}</td>
+                      <td className={`${tdClass} text-ink-2`}>{t(PLACEMENT_LABEL[b.placement])}</td>
                       <td className={`${tdClass} whitespace-nowrap text-[13px] text-ink-2`}>
-                        {b.startsAt ? formatDateTime(b.startsAt) : "darhol"} — {b.endsAt ? formatDateTime(b.endsAt) : "muddatsiz"}
+                        {b.startsAt ? formatDateTime(b.startsAt) : t("darhol")} — {b.endsAt ? formatDateTime(b.endsAt) : t("muddatsiz")}
                         {b.showCountdown && <span className="block text-muted">{t("taymer bilan")}</span>}
                       </td>
-                      <td className={tdClass}><Pill tone={TONE[status]}>{SCHEDULE_LABEL[status]}</Pill></td>
+                      <td className={tdClass}><Pill tone={TONE[status]}>{t(SCHEDULE_LABEL[status])}</Pill></td>
                       <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(b.clicks)}</td>
                       <td className={tdClass}>
                         <div className="flex justify-end gap-2">
                           <Link href={`/admin/storefront/banners/${b.id}`} className={smallButtonClass}>{t("Tahrirlash")}</Link>
                           {!b.experiment && (
-                            <Link href={`/admin/storefront/banners/new?from=${b.id}`} className={smallButtonClass} aria-label={`«${b.title.uz}» uchun A/B test boshlash`}>
+                            <Link href={`/admin/storefront/banners/new?from=${b.id}`} className={smallButtonClass} aria-label={t("«{title}» uchun A/B test boshlash", { title: b.title.uz })}>
                               {t("A/B test")}
                             </Link>
                           )}
                           <form action={toggleBanner}>
                             <input type="hidden" name="id" value={b.id} />
-                            <button type="submit" className={smallButtonClass}>{b.active ? "Oʻchirish" : "Yoqish"}</button>
+                            <button type="submit" className={smallButtonClass}>{b.active ? t("Oʻchirib qoʻyish") : t("Yoqish")}</button>
                           </form>
                           <form action={deleteBanner}>
                             <input type="hidden" name="id" value={b.id} />
-                            <button type="submit" aria-label={`«${b.title.uz}» bannerini oʻchirib tashlash`} className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-tile">
+                            <button type="submit" aria-label={t("«{title}» bannerini oʻchirib tashlash", { title: b.title.uz })} className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-tile">
                               {t("Oʻchirib tashlash")}
                             </button>
                           </form>

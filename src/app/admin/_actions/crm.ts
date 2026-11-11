@@ -21,7 +21,7 @@ const noteSchema = z.object({
 export async function addCustomerNote(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("customers");
   const parsed = noteSchema.safeParse({ phone9: form.get("phone9"), note: form.get("note") });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (!parsed.success) return { error: t(parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring.") };
 
   const customer = await getCustomerDetails(parsed.data.phone9);
   if (!customer) return { error: t("Mijoz topilmadi.") };
@@ -33,7 +33,7 @@ export async function addCustomerNote(_: FormState, form: FormData): Promise<For
   });
   revalidatePath(`/admin/customers/${parsed.data.phone9}`);
   revalidatePath("/admin/customers");
-  return { ok: "Izoh saqlandi." };
+  return { ok: t("Izoh saqlandi.") };
 }
 
 const ANONYMISE_CONFIRM = "OʻCHIRISH";
@@ -50,8 +50,8 @@ const anonymiseSchema = z.object({
 export async function anonymiseCustomerAction(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("users");
   const parsed = anonymiseSchema.safeParse({ phone9: form.get("phone9"), confirm: form.get("confirm") ?? "" });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
-  if (parsed.data.confirm.toUpperCase().replace(/[ʻ'`’]/g, "ʻ") !== ANONYMISE_CONFIRM) return { error: `Tasdiqlash uchun «${ANONYMISE_CONFIRM}» deb yozing.` };
+  if (!parsed.success) return { error: t(parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring.") };
+  if (parsed.data.confirm.toUpperCase().replace(/[ʻ'`’]/g, "ʻ") !== ANONYMISE_CONFIRM) return { error: t("Tasdiqlash uchun «{word}» deb yozing.", { word: ANONYMISE_CONFIRM }) };
   try {
     const removed = await anonymiseCustomer(parsed.data.phone9);
     await auditLog(admin, "customer.anonymise", redactPhone(parsed.data.phone9), removed);

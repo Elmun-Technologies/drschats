@@ -26,10 +26,10 @@ export default async function AdminCategoriesPage({ searchParams }: { searchPara
       />
       <div className="mb-4 flex flex-col gap-3 empty:hidden">
         {deleted && <Notice tone="ok">{t("Kategoriya oʻchirildi.")}</Notice>}
-        {createdName && <Notice tone="ok">«{createdName}{t("» kategoriyasi yaratildi. Endi unga mahsulot qoʻshing — shunda saytda chiqadi.")}</Notice>}
+        {createdName && <Notice tone="ok">{t("«{name}» kategoriyasi yaratildi. Endi unga mahsulot qoʻshing — shunda saytda chiqadi.", { name: createdName })}</Notice>}
         {orphans > 0 && (
           <Notice>
-            {orphans} {t("ta mahsulot kategoriyasiz — saytning kategoriya sahifalarida chiqmaydi.")}{" "}
+            {t("{n} ta mahsulot kategoriyasiz — saytning kategoriya sahifalarida chiqmaydi.", { n: orphans })}{" "}
             <Link href="/admin/products?category=none" className="font-semibold text-ink underline underline-offset-4">{t("Koʻrish")}</Link>
           </Notice>
         )}
@@ -45,7 +45,7 @@ export default async function AdminCategoriesPage({ searchParams }: { searchPara
             return (
               <li key={c.slug} className="h-full">
                 <article className="flex h-full flex-col overflow-hidden rounded-[20px] border border-line bg-white">
-                  <Link href={edit} aria-label={`${c.name.uz} — tahrirlash`} className="relative block aspect-[2/1] bg-tile sm:aspect-[16/10] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/30">
+                  <Link href={edit} aria-label={t("{name} — tahrirlash", { name: c.name.uz })} className="relative block aspect-[2/1] bg-tile sm:aspect-[16/10] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ink/30">
                     {c.image ? (
                       <Image src={c.image} alt="" fill unoptimized={!c.image.startsWith("/")} sizes="(min-width: 1536px) 300px, (min-width: 1024px) 30vw, (min-width: 640px) 45vw, 90vw" className="object-contain p-4 sm:p-5" />
                     ) : (
@@ -59,8 +59,8 @@ export default async function AdminCategoriesPage({ searchParams }: { searchPara
                       <p className="truncate text-[14px] text-muted">{c.name.ru} · /{c.slug}</p>
                     </div>
                     <p className="text-[14px] text-ink-2">
-                      <span className="font-semibold tabular-nums text-ink">{n.total}</span> {t("ta mahsulot")}
-                      {n.total > 0 && n.live !== n.total && <span className="text-muted"> {t("· sotuvda")} {n.live}</span>}
+                      {t("{n} ta mahsulot", { n: n.total })}
+                      {n.total > 0 && n.live !== n.total && <span className="text-muted"> · {t("sotuvda: {n}", { n: n.live })}</span>}
                     </p>
                     <div className="mt-auto flex gap-2">
                       <Link href={`/admin/products?category=${encodeURIComponent(c.slug)}`} className={`${smallButtonClass} flex-1`}>{t("Mahsulotlar")}</Link>

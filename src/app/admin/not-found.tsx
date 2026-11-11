@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { buttonClass } from "@/components/admin/ui";
-import { t } from "@/lib/admin/i18n/server";
+import { initAdminLocale, t } from "@/lib/admin/i18n/server";
 
-export default function AdminNotFound() {
+export default async function AdminNotFound() {
+  await initAdminLocale();
   return (
     <main className="mx-auto flex min-h-[60vh] max-w-xl flex-col items-start justify-center gap-4 px-6">
       <h1 className="text-[28px] font-bold leading-9">{t("Topilmadi")}</h1>

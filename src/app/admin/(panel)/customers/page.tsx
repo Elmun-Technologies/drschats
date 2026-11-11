@@ -54,8 +54,8 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
       />
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Metric label={t("Xaridorlar")} value={formatNumber(stats.customers)} hint={t("kamida bitta buyurtma")} />
-        <Metric label={t("Qayta xarid qilganlar")} value={`${stats.customers ? Math.round((stats.repeat / stats.customers) * 100) : 0}%`} hint={`${formatNumber(stats.repeat)} ta mijoz`} href="/admin/customers?stage=repeat" />
-        <Metric label={t("Mijozning oʻrtacha qiymati")} value={som(stats.averageValue)} hint={stats.averageGapDays !== null ? `har ${stats.averageGapDays} kunda qayta xarid` : "hali qayta xarid yoʻq"} />
+        <Metric label={t("Qayta xarid qilganlar")} value={`${stats.customers ? Math.round((stats.repeat / stats.customers) * 100) : 0}%`} hint={t("{n} ta mijoz", { n: formatNumber(stats.repeat) })} href="/admin/customers?stage=repeat" />
+        <Metric label={t("Mijozning oʻrtacha qiymati")} value={som(stats.averageValue)} hint={stats.averageGapDays !== null ? t("har {n} kunda qayta xarid", { n: stats.averageGapDays }) : t("hali qayta xarid yoʻq")} />
         <Metric label={t("60 kundan beri xarid qilmagan")} value={formatNumber(stats.lapsed)} hint={t("qaytarish uchun segment")} href="/admin/segments/lapsed-60" />
       </div>
       <form role="search" action="/admin/customers" className="mb-4 flex flex-wrap gap-2">
@@ -97,9 +97,9 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
                         <span className="block text-[13px] text-muted">{phoneMask(c.phone)}{c.email ? ` · ${c.email}` : ""}</span>
                       </td>
                       <td className={tdClass}><Pill tone={LIFECYCLE[c.lifecycle].tone}>{t(LIFECYCLE[c.lifecycle].label)}</Pill></td>
-                      <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.successfulOrderCount)}{c.orderCount > c.successfulOrderCount && <span className="block text-[13px] text-muted">+{c.orderCount - c.successfulOrderCount} bekor</span>}</td>
+                      <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.successfulOrderCount)}{c.orderCount > c.successfulOrderCount && <span className="block text-[13px] text-muted">{t("+{n} bekor", { n: c.orderCount - c.successfulOrderCount })}</span>}</td>
                       <td className={`${tdClass} whitespace-nowrap text-right font-semibold tabular-nums`}>{som(c.lifetimeValue)}</td>
-                      <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{days === 0 ? "bugun" : `${days} kun`}</td>
+                      <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{days === 0 ? t("bugun") : days === null ? "—" : t("{n} kun", { n: days })}</td>
                     </tr>
                   );
                 })}

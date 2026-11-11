@@ -28,7 +28,7 @@ const adminSchema = z.object({
 export async function addAdmin(_: FormState, form: FormData): Promise<FormState> {
   const me = await requireAdmin("users");
   const parsed = adminSchema.safeParse({ ...Object.fromEntries(form), role: form.get("role") || "operator" });
-  if (!parsed.success) return { error: `Maydonlarni tekshiring: parol kamida ${MIN_PASSWORD_LENGTH} belgi.` };
+  if (!parsed.success) return { error: t("Maydonlarni tekshiring: parol kamida {n} belgi.", { n: MIN_PASSWORD_LENGTH }) };
   const db = getDb();
   const [exists] = await db.select({ id: adminUsers.id }).from(adminUsers).where(eq(adminUsers.email, parsed.data.email)).limit(1);
   if (exists) return { error: t("Bu email bilan administrator bor.") };
@@ -38,7 +38,7 @@ export async function addAdmin(_: FormState, form: FormData): Promise<FormState>
     .returning({ id: adminUsers.id });
   await auditLog(me, "admin.add", parsed.data.email, { id: row.id, role: parsed.data.role });
   revalidatePath("/admin/users");
-  return { ok: "Administrator qoʻshildi." };
+  return { ok: t("Administrator qoʻshildi.") };
 }
 
 /** Owners left after removing or demoting `id` — the panel must never be left without one. */
@@ -85,7 +85,7 @@ export async function setAdminRole(_: FormState, form: FormData): Promise<FormSt
   if (!result) return { error: t("Administrator topilmadi.") };
   await auditLog(me, "admin.role", result.email, { id: parsed.data.id, role: parsed.data.role });
   revalidatePath("/admin/users");
-  return { ok: "Rol oʻzgardi. Uning ochiq sessiyalari yopildi." };
+  return { ok: t("Rol oʻzgardi. Uning ochiq sessiyalari yopildi.") };
 }
 
 /** For an admin who lost both the phone and the recovery codes: 2FA off, sessions closed; they enrol again. */
@@ -109,21 +109,24 @@ export async function setRequireTwoFactor(_: FormState, form: FormData): Promise
   await savePublicSettings({ "admin.require2fa": on ? "on" : null }, me.id);
   await auditLog(me, "admin.require2fa", null, { on });
   revalidatePath("/admin/users");
-  return { ok: on ? "Endi har bir administrator ikki bosqichli kirishni yoqmaguncha panelning faqat Xavfsizlik sahifasini koʻradi." : "Majburiy ikki bosqichli kirish oʻchirildi." };
+  return { ok: on ? t("Endi har bir administrator ikki bosqichli kirishni yoqmaguncha panelning faqat Xavfsizlik sahifasini koʻradi.") : t("Majburiy ikki bosqichli kirish oʻchirildi.") };
 }
 
 /* ---------- my account (every role) ---------- */
 
 const passwordSchema = z.object({
   current: z.string().min(1, "Joriy parolni kiriting.").max(200),
-  next: z.string().min(MIN_PASSWORD_LENGTH, `Yangi parol kamida ${MIN_PASSWORD_LENGTH} belgi boʻlsin.`).max(200),
+  next: z.string().min(MIN_PASSWORD_LENGTH, "Yangi parol kamida {n} belgi boʻlsin.").max(200),
 });
 
 /* Changing the password signs out every other session of this admin. */
 export async function changePassword(_: FormState, form: FormData): Promise<FormState> {
   const me = await requireAdmin("dashboard");
   const parsed = passwordSchema.safeParse({ current: form.get("current"), next: form.get("next") });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (!parsed.success) {
+    const message = parsed.error.issues[0]?.message;
+    return { error: message ? t(message, { n: MIN_PASSWORD_LENGTH }) : t("Maydonlarni tekshiring.") };
+  }
   const db = getDb();
   const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, me.id)).limit(1);
   if (!user || !(await verifyPassword(parsed.data.current, user.passwordHash))) return { error: t("Joriy parol notoʻgʻri.") };
@@ -134,7 +137,7 @@ export async function changePassword(_: FormState, form: FormData): Promise<Form
     .returning({ epoch: adminUsers.sessionEpoch });
   await setSessionCookie(me.id, updated.epoch);
   await auditLog(me, "account.password");
-  return { ok: "Parol almashtirildi. Boshqa qurilmalardagi sessiyalar yopildi." };
+  return { ok: t("Parol almashtirildi. Boshqa qurilmalardagi sessiyalar yopildi.") };
 }
 
 export type RecoveryState = { error?: string; ok?: string; codes?: string[] } | undefined;
@@ -163,7 +166,7 @@ export async function confirmTwoFactor(_: RecoveryState, form: FormData): Promis
     .where(eq(adminUsers.id, me.id));
   await auditLog(me, "account.2fa_on");
   // No revalidatePath: re-rendering the page would swap this form out before the codes are seen.
-  return { ok: "Ikki bosqichli kirish yoqildi.", codes };
+  return { ok: t("Ikki bosqichli kirish yoqildi."), codes };
 }
 
 async function checkCode(me: { id: number }, code: string): Promise<boolean> {
@@ -182,7 +185,7 @@ export async function regenerateRecoveryCodes(_: RecoveryState, form: FormData):
   const codes = generateRecoveryCodes();
   await getDb().update(adminUsers).set({ recoveryCodes: codes.map(hashRecoveryCode) }).where(eq(adminUsers.id, me.id));
   await auditLog(me, "account.recovery_codes");
-  return { ok: "Yangi tiklash kodlari. Eskilari endi ishlamaydi.", codes };
+  return { ok: t("Yangi tiklash kodlari. Eskilari endi ishlamaydi."), codes };
 }
 
 export async function disableTwoFactor(_: FormState, form: FormData): Promise<FormState> {
@@ -196,5 +199,5 @@ export async function disableTwoFactor(_: FormState, form: FormData): Promise<Fo
     .where(eq(adminUsers.id, me.id));
   await auditLog(me, "account.2fa_off");
   revalidatePath("/admin/security");
-  return { ok: "Ikki bosqichli kirish oʻchirildi." };
+  return { ok: t("Ikki bosqichli kirish oʻchirildi.") };
 }

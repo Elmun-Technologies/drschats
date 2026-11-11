@@ -40,7 +40,7 @@ export default async function AdminPromotionsPage({ searchParams }: { searchPara
       />
       {params.saved && <div className="mb-4"><Notice tone="ok">{t("Aksiya saqlandi.")}</Notice></div>}
       {params.deleted && <div className="mb-4"><Notice tone="ok">{t("Aksiya oʻchirildi.")}</Notice></div>}
-      {params.imported && <div className="mb-4"><Notice tone="ok">{Number(params.imported) || 0} {t("ta aksiya panelga olindi. Endi ularni tahrirlash yoki oʻchirish mumkin.")}</Notice></div>}
+      {params.imported && <div className="mb-4"><Notice tone="ok">{t("{n} ta aksiya panelga olindi. Endi ularni tahrirlash yoki oʻchirish mumkin.", { n: Number(params.imported) || 0 })}</Notice></div>}
 
       {rows.length === 0 ? (
         <Card title={t("Hozir saytda ishlayotgan aksiyalar")} lead={t("Panelda aksiya yaratilmaguncha sayt quyidagi oʻrnatilgan aksiyalarni qoʻllaydi. Ularni panelga olib, tahrirlash yoki oʻchirish mumkin.")}>
@@ -65,14 +65,14 @@ export default async function AdminPromotionsPage({ searchParams }: { searchPara
                   <h2 className="text-[17px] font-bold leading-6 text-ink">{p.title.uz}</h2>
                   <Pill tone={s.tone}>{s.label}</Pill>
                 </div>
-                <p className="mt-1 text-[14px] text-ink-2">{PROMOTION_TYPE_LABEL[p.type]}{p.percent ? ` · −${p.percent}%` : ""}{p.threshold != null ? ` · ${som(p.threshold)} dan` : ""}</p>
+                <p className="mt-1 text-[14px] text-ink-2">{PROMOTION_TYPE_LABEL[p.type]}{p.percent ? ` · −${p.percent}%` : ""}{p.threshold != null ? ` · ${t("{sum} dan", { sum: som(p.threshold) })}` : ""}</p>
                 <p className="mt-1 flex-1 text-[13px] text-muted">
-                  {p.productSlugs?.length ? `${p.productSlugs.length} ta mahsulot` : p.type === "free_shipping_over" ? "Butun savat" : "Barcha mahsulotlar"}
-                  {p.startsAt ? ` · ${formatDateTime(p.startsAt)} dan` : ""}{p.endsAt ? ` · ${formatDateTime(p.endsAt)} gacha` : ""}
+                  {p.productSlugs?.length ? t("{n} ta mahsulot", { n: p.productSlugs.length }) : p.type === "free_shipping_over" ? t("Butun savat") : t("Barcha mahsulotlar")}
+                  {p.startsAt ? ` · ${t("{date} dan", { date: formatDateTime(p.startsAt) })}` : ""}{p.endsAt ? ` · ${t("{date} gacha", { date: formatDateTime(p.endsAt) })}` : ""}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <Link href={`/admin/promotions/${p.id}`} className={smallButtonClass}>{t("Tahrirlash")}</Link>
-                  <form action={togglePromotion}><input type="hidden" name="id" value={p.id} /><button type="submit" className={smallButtonClass}>{p.active ? "Oʻchirish" : "Yoqish"}</button></form>
+                  <form action={togglePromotion}><input type="hidden" name="id" value={p.id} /><button type="submit" className={smallButtonClass}>{p.active ? t("Oʻchirib qoʻyish") : t("Yoqish")}</button></form>
                   <form action={deletePromotion}><input type="hidden" name="id" value={p.id} /><button type="submit" className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-white">{t("Oʻchirib tashlash")}</button></form>
                 </div>
               </section>
@@ -96,7 +96,7 @@ export default async function AdminPromotionsPage({ searchParams }: { searchPara
                     <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{som(p.price)}</td>
                     <td className={`${tdClass} whitespace-nowrap text-right tabular-nums text-muted line-through`}>{som(p.oldPrice ?? 0)}</td>
                     <td className={`${tdClass} text-right`}>{p.oldPrice ? <Pill tone="red">−{formatNumber(Math.round((1 - p.price / p.oldPrice) * 100))}%</Pill> : null}</td>
-                    <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{p.saleEndsAt ? (p.saleEndsAt.getTime() < now ? "tugagan" : formatDateTime(p.saleEndsAt)) : "muddatsiz"}</td>
+                    <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{p.saleEndsAt ? (p.saleEndsAt.getTime() < now ? t("tugagan") : formatDateTime(p.saleEndsAt)) : t("muddatsiz")}</td>
                   </tr>
                 ))}
               </tbody>

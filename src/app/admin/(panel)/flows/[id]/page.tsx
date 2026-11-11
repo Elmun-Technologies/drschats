@@ -52,37 +52,38 @@ export default async function AdminFlowPage({ params }: { params: Promise<{ id: 
   const info = isFlowTrigger(flow.trigger) ? TRIGGER_INFO[flow.trigger] : null;
   const steps = parseSteps(flow.steps);
   const fallback = DEFAULT_FLOWS.find((f) => f.id === flow.id)?.steps ?? [];
+  const anchor = t(info?.anchor ?? "ishga tushgan vaqtdan");
 
   return (
     <>
       <PageHeader
         eyebrow={t("Avtomatlashtirish")}
         title={flow.name}
-        lead={<>{t("Ishga tushiruvchi:")} <b>{info?.title ?? flow.trigger}</b>. {flow.active ? "Yoqilgan — mos mijozlar oʻzi qoʻshiladi." : "Oʻchiq — hech kimga yuborilmaydi."}</>}
+        lead={<>{t("Ishga tushiruvchi:")} <b>{info ? t(info.title) : flow.trigger}</b>. {flow.active ? t("Yoqilgan — mos mijozlar oʻzi qoʻshiladi.") : t("Oʻchiq — hech kimga yuborilmaydi.")}</>}
         actions={
           <>
             <Link href="/admin/flows" className={secondaryButtonClass}>{t("← Barchasi")}</Link>
             <form action={toggleFlow}>
               <input type="hidden" name="id" value={flow.id} />
-              <button type="submit" className={flow.active ? secondaryButtonClass : buttonClass}>{flow.active ? "Oʻchirish" : "Yoqish"}</button>
+              <button type="submit" className={flow.active ? secondaryButtonClass : buttonClass}>{flow.active ? t("Oʻchirib qoʻyish") : t("Yoqish")}</button>
             </form>
           </>
         }
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label={t("Hozir oqimda")} value={formatNumber(e?.activeNow ?? 0)} hint={`30 kunda ${formatNumber(e?.enrolled30 ?? 0)} ta kirdi`} />
-        <Metric label={t("Yuborildi")} value={formatNumber(s.sent)} hint={`${formatNumber(s.delivered)} yetkazildi · ${formatNumber(s.clicked)} bosildi`} />
-        <Metric label={t("Buyurtma berib qaytdi")} value={formatNumber(e?.converted30 ?? 0)} hint={`30 kun · ${somShort(e?.convertedRevenue30 ?? 0)}`} />
-        <Metric label={t("Kod / havola orqali")} value={formatNumber(s.orders)} hint={`${somShort(s.revenue)} · konversiya ${conversion(s.orders, s.sent)}`} />
+        <Metric label={t("Hozir oqimda")} value={formatNumber(e?.activeNow ?? 0)} hint={t("30 kunda {n} ta kirdi", { n: formatNumber(e?.enrolled30 ?? 0) })} />
+        <Metric label={t("Yuborildi")} value={formatNumber(s.sent)} hint={t("{delivered} yetkazildi · {clicked} bosildi", { delivered: formatNumber(s.delivered), clicked: formatNumber(s.clicked) })} />
+        <Metric label={t("Buyurtma berib qaytdi")} value={formatNumber(e?.converted30 ?? 0)} hint={t("30 kun · {sum}", { sum: somShort(e?.convertedRevenue30 ?? 0) })} />
+        <Metric label={t("Kod / havola orqali")} value={formatNumber(s.orders)} hint={t("{sum} · konversiya {rate}", { sum: somShort(s.revenue), rate: conversion(s.orders, s.sent) })} />
       </div>
 
-      <Card title={t("Qadamlar")} lead={`Muddat ${info?.anchor ?? "ishga tushgan vaqtdan"} hisoblanadi. Mijoz buyurtma bersa yoki obunadan chiqsa, keyingi qadamlar yuborilmaydi.`} className="mt-4">
+      <Card title={t("Qadamlar")} lead={t("Muddat {anchor} hisoblanadi. Mijoz buyurtma bersa yoki obunadan chiqsa, keyingi qadamlar yuborilmaydi.", { anchor })} className="mt-4">
         <FlowEditor
           id={flow.id}
           name={flow.name}
           steps={steps.length ? steps : fallback}
-          anchor={info?.anchor ?? "ishga tushgan vaqtdan"}
+          anchor={anchor}
           placeholders={placeholdersFor(flow.trigger)}
           transliterate={settings.sms.transliterate}
         />
@@ -90,7 +91,7 @@ export default async function AdminFlowPage({ params }: { params: Promise<{ id: 
 
       <Card title={t("Oxirgi ishtirokchilar")} lead={t("Telefon raqamlari yashirilgan")} className="mt-4" actions={<Link href={`/admin/messages?flow=${flow.id}`} className={linkClass}>{t("Xabarlari →")}</Link>}>
         {recent.length === 0 ? (
-          <EmptyState title={t("Hali hech kim kirmagan")}>{flow.active ? "Shartga mos mijoz paydo boʻlishi bilan shu yerda koʻrinadi." : "Avtomatlashtirish yoqilgandan keyin mos mijozlar shu yerda koʻrinadi."}</EmptyState>
+          <EmptyState title={t("Hali hech kim kirmagan")}>{flow.active ? t("Shartga mos mijoz paydo boʻlishi bilan shu yerda koʻrinadi.") : t("Avtomatlashtirish yoqilgandan keyin mos mijozlar shu yerda koʻrinadi.")}</EmptyState>
         ) : (
           <TableWrap>
             <table className={tableClass}>

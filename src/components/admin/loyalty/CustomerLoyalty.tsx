@@ -8,15 +8,15 @@ import { Card, Field, Pill, inputClass, linkClass } from "@/components/admin/ui"
 import { formatDate, formatDateTime } from "@/lib/admin/order-labels";
 import type { LedgerKind } from "@/lib/db/schema";
 import { formatNumber } from "@/lib/utils";
-import { t } from "@/lib/admin/i18n/server";
+import { labels, t } from "@/lib/admin/i18n/server";
 
-const KIND_LABEL: Record<LedgerKind, string> = {
+const KIND_LABEL: Record<LedgerKind, string> = labels({
   earn: "Keshbek",
   redeem: "Ishlatildi",
   expire: "Muddati tugadi",
   adjust: "Qoʻlda / tavsiya",
   reverse: "Bekor qilish",
-};
+});
 
 const MONTHS = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentyabr", "oktyabr", "noyabr", "dekabr"];
 
@@ -29,11 +29,11 @@ export async function CustomerLoyalty({ phone9 }: { phone9: string }) {
       <div className="mb-4 flex flex-wrap items-end gap-x-6 gap-y-2">
         <div>
           <p className="text-[13px] text-muted">{t("Balans")}</p>
-          <p className="text-[26px] font-bold tabular-nums">{formatNumber(state.balance)} ball</p>
+          <p className="text-[26px] font-bold tabular-nums">{t("{n} ball", { n: formatNumber(state.balance) })}</p>
         </div>
         {soon > 0 && (
           <p className="text-[13px] text-ink-2">
-            {t("30 kunda tugaydi:")} <b className="tabular-nums">{formatNumber(soon)}</b> ({formatDate(state.expiringSoon[0].at)} {t("dan)")}
+            {t("30 kunda tugaydi:")} <b className="tabular-nums">{formatNumber(soon)}</b> ({t("{date} dan", { date: formatDate(state.expiringSoon[0].at) })})
           </p>
         )}
       </div>
@@ -44,8 +44,8 @@ export async function CustomerLoyalty({ phone9 }: { phone9: string }) {
         <dd>
           {birthday ? (
             <>
-              {birthday.day} {MONTHS[birthday.month - 1]}
-              {birthday.year ? ` ${birthday.year}` : ""} <span className="text-muted">{t("· rozilik")} {formatDate(birthday.consentAt)}</span>
+              {birthday.day} {t(MONTHS[birthday.month - 1])}
+              {birthday.year ? ` ${birthday.year}` : ""} <span className="text-muted">· {t("rozilik {date}", { date: formatDate(birthday.consentAt) })}</span>
             </>
           ) : (
             <span className="text-muted">{t("rozilik yoʻq")}</span>
@@ -66,7 +66,7 @@ export async function CustomerLoyalty({ phone9 }: { phone9: string }) {
                   {formatDateTime(e.createdAt)}
                   {e.note ? ` · ${e.note}` : ""}
                   {e.adminName ? ` · ${e.adminName}` : ""}
-                  {e.expiresAt && e.delta > 0 ? ` · ${formatDate(e.expiresAt)} gacha` : ""}
+                  {e.expiresAt && e.delta > 0 ? ` · ${t("{date} gacha", { date: formatDate(e.expiresAt) })}` : ""}
                 </span>
               </span>
               <span className={`shrink-0 font-semibold tabular-nums ${e.delta > 0 ? "text-ink" : "text-ink-2"}`}>

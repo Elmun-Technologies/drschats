@@ -26,7 +26,7 @@ export default async function EditBannerPage({ params }: { params: Promise<{ id:
       <PageHeader
         eyebrow={t("Vitrina")}
         title={b.title.uz}
-        lead={`Bosishlar: ${formatNumber(b.clicks)}`}
+        lead={t("Bosishlar: {n}", { n: formatNumber(b.clicks) })}
         actions={<Link href="/admin/storefront" className={secondaryButtonClass}>{t("← Bannerlar")}</Link>}
       />
       <BannerForm

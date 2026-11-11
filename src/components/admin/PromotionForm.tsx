@@ -3,21 +3,21 @@ import { ActionForm } from "@/components/admin/ActionForm";
 import { Field, inputClass, textareaClass } from "@/components/admin/ui";
 import { toTashkentInput } from "@/lib/admin/product-form";
 import type { promotions } from "@/lib/db/schema";
-import { t } from "@/lib/admin/i18n/server";
+import { labels, t } from "@/lib/admin/i18n/server";
 
 type Promotion = typeof promotions.$inferSelect;
 type ProductOption = { slug: string; name: string; categorySlug: string | null };
 
-export const PROMOTION_TYPE_LABEL: Record<Promotion["type"], string> = {
+export const PROMOTION_TYPE_LABEL: Record<Promotion["type"], string> = labels({
   percent_off: "Foizli chegirma",
   buy_x_get_y: "2 ta oling — 3-si sovgʻa",
   free_shipping_over: "Bepul yetkazish (summadan)",
-};
+});
 
 export function PromotionForm({ promotion, products }: { promotion?: Promotion; products: ProductOption[] }) {
   const selected = new Set(promotion?.productSlugs ?? []);
   return (
-    <ActionForm action={savePromotion} submitLabel={promotion ? "Saqlash" : "Aksiyani yaratish"} className="grid gap-5 lg:grid-cols-2">
+    <ActionForm action={savePromotion} submitLabel={promotion ? t("Saqlash") : t("Aksiyani yaratish")} className="grid gap-5 lg:grid-cols-2">
       {promotion && <input type="hidden" name="id" value={promotion.id} />}
       <Field label={t("Turi")} className="lg:col-span-2">
         <select name="type" defaultValue={promotion?.type ?? "percent_off"} className={inputClass}>

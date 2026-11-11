@@ -28,7 +28,7 @@ export default async function PrintOrderPage({ params }: { params: Promise<{ num
       <header className="flex items-start justify-between gap-6 border-b-2 border-ink pb-4">
         <div>
           <Logo className="h-9" />
-          <p className="mt-1 text-[13px] text-ink-2">{BRAND.contact.phone} {t("· govita.uz")}</p>
+          <p className="mt-1 text-[13px] text-ink-2">{BRAND.contact.phone} · govita.uz</p>
         </div>
         <div className="text-right">
           <p className="text-[24px] font-bold">{o.number}</p>
@@ -55,7 +55,7 @@ export default async function PrintOrderPage({ params }: { params: Promise<{ num
         <tbody>
           {o.items.map((it) => (
             <tr key={`${it.productId}-${it.upsellDiscountPercent ?? 0}`} className="border-b border-line">
-              <td className="py-2">{it.name}{it.subscription ? " (obuna)" : ""}</td>
+              <td className="py-2">{it.name}{it.subscription ? ` (${t("obuna")})` : ""}</td>
               <td className="py-2 text-right tabular-nums">{it.quantity}</td>
               <td className="py-2 text-right tabular-nums">{som(lineTotal({ price: it.unitPrice, quantity: it.quantity, upsellDiscountPercent: it.upsellDiscountPercent }))}</td>
               <td className="py-2 text-center"><span className="inline-block h-4 w-4 border border-ink" /></td>
@@ -65,12 +65,12 @@ export default async function PrintOrderPage({ params }: { params: Promise<{ num
       </table>
       <dl className="ml-auto mt-4 w-[300px] text-[14px]">
         <div className="flex justify-between py-0.5"><dt>{t("Mahsulotlar")}</dt><dd className="tabular-nums">{som(o.totals.subtotal)}</dd></div>
-        {o.totals.discount > 0 && <div className="flex justify-between py-0.5"><dt>{t("Chegirma")}{o.totals.adjustments?.[0]?.kind === "promo" ? ` (promokod ${o.totals.adjustments[0].code})` : o.totals.adjustments?.[0]?.kind === "referral" ? ` (doʻst kodi ${o.totals.adjustments[0].code})` : o.totals.adjustments?.[0]?.kind === "first_order" ? " (birinchi buyurtma bilan)" : ""}</dt><dd className="tabular-nums">−{som(o.totals.discount)}</dd></div>}
+        {o.totals.discount > 0 && <div className="flex justify-between py-0.5"><dt>{t("Chegirma")}{o.totals.adjustments?.[0]?.kind === "promo" ? ` ${t("(promokod {code})", { code: o.totals.adjustments[0].code })}` : o.totals.adjustments?.[0]?.kind === "referral" ? ` ${t("(doʻst kodi {code})", { code: o.totals.adjustments[0].code })}` : o.totals.adjustments?.[0]?.kind === "first_order" ? ` ${t("(birinchi buyurtma bilan)")}` : ""}</dt><dd className="tabular-nums">−{som(o.totals.discount)}</dd></div>}
         {(o.totals.adjustments?.find((a) => a.kind === "points")?.amount ?? 0) > 0 && (
           <div className="flex justify-between py-0.5"><dt>{t("Ball bilan toʻlangan")}</dt><dd className="tabular-nums">−{som(o.totals.adjustments!.find((a) => a.kind === "points")!.amount)}</dd></div>
         )}
-        <div className="flex justify-between py-0.5"><dt>{t("Yetkazish")}</dt><dd className="tabular-nums">{o.totals.shipping ? som(o.totals.shipping) : "bepul"}</dd></div>
-        <div className="mt-1 flex justify-between border-t-2 border-ink pt-2 text-[18px] font-bold"><dt>{cash ? "Olinadigan summa" : "Jami"}</dt><dd className="tabular-nums">{som(o.total)}</dd></div>
+        <div className="flex justify-between py-0.5"><dt>{t("Yetkazish")}</dt><dd className="tabular-nums">{o.totals.shipping ? som(o.totals.shipping) : t("bepul")}</dd></div>
+        <div className="mt-1 flex justify-between border-t-2 border-ink pt-2 text-[18px] font-bold"><dt>{cash ? t("Olinadigan summa") : t("Jami")}</dt><dd className="tabular-nums">{som(o.total)}</dd></div>
         <p className="mt-1 text-right text-[12px] text-ink-2">{o.payment ? PAYMENT_LABEL[o.payment.method] ?? o.payment.method : PAYMENT_LABEL.cod}</p>
       </dl>
       <footer className="mt-10 grid grid-cols-2 gap-10 text-[13px] text-ink-2">

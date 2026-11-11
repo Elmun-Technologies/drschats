@@ -62,7 +62,7 @@ export default async function AdminIntegrationsPage() {
       <PageHeader
         title={t("Integratsiyalar")}
         lead={t("Analitika, reklama teglari, qidiruv tizimlari va xabar kanallari — hammasi shu yerda ulanadi. ID kiritib saqlash kifoya: sayt oʻzi yangilanadi.")}
-        actions={<span className="rounded-[12px] bg-tile px-4 py-3 text-[15px] font-semibold text-ink">{connected} / {items.length} ulangan</span>}
+        actions={<span className="rounded-[12px] bg-tile px-4 py-3 text-[15px] font-semibold text-ink">{t("{n} / {total} ulangan", { n: connected, total: items.length })}</span>}
       />
       {overview.storeStatus === "database-error" && <div className="mb-4"><Notice tone="error">{t("Sozlamalar jadvalini oʻqib boʻlmadi — bazada migratsiyalar qoʻllanganini tekshiring.")}</Notice></div>}
       {(overview.storeStatus === "encryption-key-missing" || overview.storeStatus === "decrypt-error") && <div className="mb-4"><Notice tone="error">{t("Shifrlangan sozlamalarni ochib boʻlmadi: INTEGRATION_ENCRYPTION_KEY saqlash paytidagi bilan bir xil emas. Maxfiy kalitlarni qayta kiriting.")}</Notice></div>}
@@ -73,7 +73,7 @@ export default async function AdminIntegrationsPage() {
       </div>
 
       <SectionTitle>{t("Onlayn toʻlov")}</SectionTitle>
-      {ready.payme && noFiscal > 0 && <div className="mb-4"><Notice>{formatNumber(noFiscal)} {t("ta sotuvdagi mahsulotda MXIK yoki qadoq kodi yoʻq — ular bor buyurtmada Payme chekni maʼlumotsiz chiqaradi. Kodlarni")} <Link href="/admin/products" className={linkClass}>mahsulotlarda</Link> kiriting.</Notice></div>}
+      {ready.payme && noFiscal > 0 && <div className="mb-4"><Notice>{t("{n} ta sotuvdagi mahsulotda MXIK yoki qadoq kodi yoʻq — ular bor buyurtmada Payme chekni maʼlumotsiz chiqaradi.", { n: formatNumber(noFiscal) })} <Link href="/admin/products" className={linkClass}>{t("Kodlarni mahsulotlarda kiriting.")}</Link></Notice></div>}
       <PaymentForms overview={overview} siteUrl={SITE_URL} ready={ready} ordersInDb={ORDERS_IN_DB} />
 
       <SectionTitle>{t("Xabar kanallari")}</SectionTitle>
@@ -99,16 +99,16 @@ export default async function AdminIntegrationsPage() {
       <div className="grid gap-4 xl:grid-cols-2">
         <Card title={t("Sozlamalar")} lead={t("Muhit oʻzgaruvchilari va panel birga — nima yoqilgan, nima yoʻq. Qiymatlar koʻrsatilmaydi. Sogʻliq tekshiruvi: /api/health.")}>
           <ul className="divide-y divide-line">
-            {system.items.map((item) => <Row key={item.name} name={item.name} detail={item.detail} on={item.on} />)}
+            {system.items.map((item) => <Row key={item.name} name={t(item.name)} detail={t(item.detail)} on={item.on} />)}
           </ul>
           {system.issues.length > 0 && <div className="mt-3"><Notice tone="error">{t("Notoʻgʻri qiymat:")} {system.issues.join("; ")}</Notice></div>}
         </Card>
         <Card title={t("Fon ishlari va CSP")} lead={t("Xabarlar navbati, buyurtma xabarlari va brauzer xavfsizlik siyosati buzilishlari (soʻnggi 7 kun).")}>
           {system.worker ? (
             <ul className="divide-y divide-line">
-              <Row name="Navbat kechikishi" detail={`${formatNumber(system.worker.lagSec)} s · 10 daqiqadan ortiq kutayotgan: ${formatNumber(system.worker.overdue)}`} on={system.worker.overdue === 0} label={system.worker.overdue === 0 ? "Joyida" : "Orqada"} />
-              <Row name="Soʻnggi soatda yuborilmagan" detail={`${formatNumber(system.worker.failed1h)} ta xabar`} on={system.worker.failed1h === 0} label={system.worker.failed1h === 0 ? "Yoʻq" : "Bor"} />
-              <Row name="Yetib bormagan buyurtma xabarlari" detail={`${formatNumber(system.worker.unsentOperatorPings)} ta (24 soat)`} on={system.worker.unsentOperatorPings === 0} label={system.worker.unsentOperatorPings === 0 ? "Yoʻq" : "Bor"} />
+              <Row name={t("Navbat kechikishi")} detail={t("{sec} s · 10 daqiqadan ortiq kutayotgan: {n}", { sec: formatNumber(system.worker.lagSec), n: formatNumber(system.worker.overdue) })} on={system.worker.overdue === 0} label={system.worker.overdue === 0 ? t("Joyida") : t("Orqada")} />
+              <Row name={t("Soʻnggi soatda yuborilmagan")} detail={t("{n} ta xabar", { n: formatNumber(system.worker.failed1h) })} on={system.worker.failed1h === 0} label={system.worker.failed1h === 0 ? t("Yoʻq") : t("Bor")} />
+              <Row name={t("Yetib bormagan buyurtma xabarlari")} detail={t("{n} ta (24 soat)", { n: formatNumber(system.worker.unsentOperatorPings) })} on={system.worker.unsentOperatorPings === 0} label={system.worker.unsentOperatorPings === 0 ? t("Yoʻq") : t("Bor")} />
             </ul>
           ) : <p className="text-[14px] text-muted">{t("Baza ulanmagan — fon ishlari yoʻq.")}</p>}
           {system.csp.length > 0 ? (
@@ -123,8 +123,8 @@ export default async function AdminIntegrationsPage() {
       <div className="grid gap-4 xl:grid-cols-2">
         <Card title={t("Saytning oʻz kuzatuvi")} lead={t("Mijozlar yoʻli, voronka va segmentlar shu maʼlumotdan quriladi. Sozlash talab qilinmaydi.")}>
           <ul className="divide-y divide-line">
-            <Row name="Birinchi tomon kuzatuv" detail={health.last ? `Oxirgi 24 soatda ${formatNumber(health.day)} ta hodisa` : "Hali hodisa kelmagan — yangi buildʼdan keyin boshlanadi"} on={health.day > 0} label={health.day > 0 ? "Ishlayapti" : "Kutilmoqda"} />
-            <Row name="Telegram klub boti" detail={t("Mini App, aʼzolar, kampaniyalar")} on={telegramClub} />
+            <Row name={t("Birinchi tomon kuzatuv")} detail={health.last ? t("Oxirgi 24 soatda {n} ta hodisa", { n: formatNumber(health.day) }) : t("Hali hodisa kelmagan — yangi buildʼdan keyin boshlanadi")} on={health.day > 0} label={health.day > 0 ? t("Ishlayapti") : t("Kutilmoqda")} />
+            <Row name={t("Telegram klub boti")} detail={t("Mini App, aʼzolar, kampaniyalar")} on={telegramClub} />
             <Row name="Sanity CMS" detail={t("Blog va kontent")} on={sanity} />
           </ul>
           <p className="mt-3 text-[13px] text-muted">{t("Klub boti sozlamalari:")} <Link href="/admin/bot" className={linkClass}>{t("Telegram klub")}</Link>.</p>

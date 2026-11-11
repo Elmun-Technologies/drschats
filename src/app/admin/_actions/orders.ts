@@ -36,7 +36,7 @@ export async function updateOrder(_: FormState, form: FormData): Promise<FormSta
   if (before.status !== parsed.data.status) await notifyCustomerOfOrder(parsed.data.number, parsed.data.status, loyaltyLines);
   await auditLog(admin, "order.update", parsed.data.number, { from: before.status, to: parsed.data.status, note: Boolean(parsed.data.adminNote?.trim()) });
   revalidatePath("/admin/orders");
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }
 
 const quickSchema = z.object({ number: z.string().min(1).max(20), status: z.enum(ORDER_STATUSES) });

@@ -76,7 +76,7 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-5">
         {(["sent", "pending", "failed", "skipped"] as const).map((s) => (
           <Link key={s} href={href(current, { status: s })} className="block min-w-0 rounded-[20px] bg-tile p-4 transition-colors hover:bg-tile-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30">
-            <p className="text-[14px] text-ink-2">{t(STATUS[s].label)}{t(", 30 kun")}</p>
+            <p className="text-[14px] text-ink-2">{t("{label}, 30 kun", { label: t(STATUS[s].label) })}</p>
             <p className="mt-1 text-[22px] font-bold tabular-nums text-ink">{formatNumber(count(s))}</p>
           </Link>
         ))}
@@ -107,7 +107,7 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
           items={[
             { href: href(current, { flow: undefined, campaign: undefined }), label: t("Hammasi"), active: !flow && !campaign },
             ...flowRows.map((f) => ({ href: href({ ...current, campaign: undefined }, { flow: f.id }), label: f.name, active: flow === f.id })),
-            ...(campaign ? [{ href: href(current, {}), label: `Kampaniya #${campaign}`, active: true }] : []),
+            ...(campaign ? [{ href: href(current, {}), label: t("Kampaniya #{id}", { id: campaign }), active: true }] : []),
           ]}
         />
       </div>
@@ -135,7 +135,7 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
                     <tr key={m.id}>
                       <td className={`${tdClass} whitespace-nowrap text-ink-2`}>
                         {formatDateTime(m.sentAt ?? m.scheduledAt)}
-                        {m.status === "pending" && m.scheduledAt > new Date() && <span className="block text-[13px] text-muted">rejada</span>}
+                        {m.status === "pending" && m.scheduledAt > new Date() && <span className="block text-[13px] text-muted">{t("rejada")}</span>}
                       </td>
                       <td className={`${tdClass} whitespace-nowrap`}>
                         <span className="tabular-nums">{maskPhone(m.phone9)}</span>
@@ -145,9 +145,9 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
                         {m.flowId ? (
                           <Link href={`/admin/flows/${m.flowId}`} className={linkClass}>{flowName.get(m.flowId) ?? m.flowId}</Link>
                         ) : m.campaignId ? (
-                          <Link href={`/admin/campaigns`} className={linkClass}>{t("Kampaniya #")}{m.campaignId}</Link>
+                          <Link href={`/admin/campaigns`} className={linkClass}>{t("Kampaniya #{id}", { id: m.campaignId })}</Link>
                         ) : "—"}
-                        {m.flowStep != null && <span className="block text-[13px] text-muted">{m.flowStep + 1}-qadam</span>}
+                        {m.flowStep != null && <span className="block text-[13px] text-muted">{t("{n}-qadam", { n: m.flowStep + 1 })}</span>}
                         {m.promoCode && <span className="block font-mono text-[13px] text-ink-2">{m.promoCode}</span>}
                       </td>
                       <td className={tdClass}>
@@ -156,7 +156,7 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
                       <td className={tdClass}>
                         <Pill tone={st.tone}>{t(st.label)}</Pill>
                         {m.error && <span className="mt-1 block max-w-[200px] text-[13px] leading-[17px] text-muted">{REASONS[m.error] ? t(REASONS[m.error]) : m.error}</span>}
-                        {m.attempts > 1 && <span className="block text-[13px] text-muted">{m.attempts} urinish</span>}
+                        {m.attempts > 1 && <span className="block text-[13px] text-muted">{t("{n} urinish", { n: m.attempts })}</span>}
                       </td>
                       <td className={`${tdClass} text-right tabular-nums`}>{m.clicks > 0 ? formatNumber(m.clicks) : "—"}</td>
                     </tr>
@@ -168,7 +168,7 @@ export default async function AdminMessagesPage({ searchParams }: { searchParams
         )}
       </Card>
       <p className="mt-4 text-[13px] leading-5 text-muted">
-        {t("SMS uchun «Yuborildi» — Eskiz qabul qildi. Telegram uchun — xabar klub botining navbatiga berildi; yetkazilishi")} <Link href="/admin/bot/outbox" className={linkClass}>{t("Telegram klub → Xabarlar navbati")}</Link> {t("da. Kechki va tungi vaqtda (18:00–09:00) navbat ertalabga suriladi. Reklama SMS faqat oldindan rozilik bergan mijozga ketadi (2026-11-01 dan qonun talabi); yuboruvchi pd.gov.uz reyestrida roʻyxatdan oʻtgan boʻlishi shart.")}
+        {t("SMS uchun «Yuborildi» — Eskiz qabul qildi. Telegram uchun — xabar klub botining navbatiga berildi; yetkazilishi")} <Link href="/admin/bot/outbox" className={linkClass}>{t("Telegram klub → Xabarlar navbati")}</Link>{t("da. Kechki va tungi vaqtda (18:00–09:00) navbat ertalabga suriladi. Reklama SMS faqat oldindan rozilik bergan mijozga ketadi (2026-11-01 dan qonun talabi); yuboruvchi pd.gov.uz reyestrida roʻyxatdan oʻtgan boʻlishi shart.")}
       </p>
     </>
   );

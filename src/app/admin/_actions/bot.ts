@@ -24,7 +24,7 @@ export async function saveClub(_: FormState, form: FormData): Promise<FormState>
   if (!parsed.success) return { error: t("Maydonlarni tekshiring: doʻkon manzili https:// bilan boshlansin.") };
   await saveClubConfig(parsed.data);
   revalidatePath("/admin/bot");
-  return { ok: "Saqlandi. Bot yangi sozlamani keyingi soʻrovda oladi." };
+  return { ok: t("Saqlandi. Bot yangi sozlamani keyingi soʻrovda oladi.") };
 }
 
 const replySchema = z.object({ id: z.coerce.number().int().positive(), reply: z.string().trim().min(1).max(3000) });
@@ -35,7 +35,7 @@ export async function replyTicket(_: FormState, form: FormData): Promise<FormSta
   if (!parsed.success) return { error: t("Javob matnini yozing (3000 belgigacha).") };
   if (!(await answerTicket(parsed.data.id, parsed.data.reply))) return { error: t("Murojaat topilmadi.") };
   revalidatePath("/admin/bot/tickets");
-  return { ok: "Javob navbatga qoʻyildi — bot bir necha soniyada yuboradi." };
+  return { ok: t("Javob navbatga qoʻyildi — bot bir necha soniyada yuboradi.") };
 }
 
 export async function closeTicketAction(form: FormData) {
@@ -61,5 +61,5 @@ export async function broadcastAction(_: FormState, form: FormData): Promise<For
   const queued = await broadcast(randomUUID(), { text: escapeHtml(parsed.data.text) });
   revalidatePath("/admin/bot");
   await auditLog(admin, "broadcast.send", auditTarget(form));
-  return { ok: `${queued} ta aʼzoga navbatga qoʻyildi.` };
+  return { ok: t("{n} ta aʼzoga navbatga qoʻyildi.", { n: queued }) };
 }

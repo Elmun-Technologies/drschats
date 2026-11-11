@@ -19,8 +19,8 @@ function verdict(exp: ExperimentResult): { text: string; tone: "dark" | "outline
   if (!zt || !exp.arms.A || !exp.arms.B) return { text: t("Ikkinchi variant yoʻq"), tone: "muted" };
   if (!zt.enough) return { text: t("Hali yetarli maʼlumot yoʻq"), tone: "muted" };
   const p = zt.p < 0.001 ? "p < 0,001" : `p = ${zt.p.toFixed(3).replace(".", ",")}`;
-  if (zt.significant && zt.winner) return { text: `${zt.winner} yaxshiroq (${p})`, tone: "dark" };
-  return { text: `Farq ishonchli emas (${p})`, tone: "outline" };
+  if (zt.significant && zt.winner) return { text: t("{winner} yaxshiroq ({p})", { winner: zt.winner, p }), tone: "dark" };
+  return { text: t("Farq ishonchli emas ({p})", { p }), tone: "outline" };
 }
 
 function ArmRow({ exp, arm, ctr }: { exp: ExperimentResult; arm: ArmResult; ctr: number }) {
@@ -44,12 +44,12 @@ function ArmRow({ exp, arm, ctr }: { exp: ExperimentResult; arm: ArmResult; ctr:
             <form action={keepWinner}>
               <input type="hidden" name="experiment" value={exp.key} />
               <input type="hidden" name="variant" value={arm.variant} />
-              <button type="submit" className={smallButtonClass} aria-label={`${exp.key}: ${arm.variant} variantini gʻolib sifatida qoldirish`}>
+              <button type="submit" className={smallButtonClass} aria-label={t("{key}: {variant} variantini gʻolib sifatida qoldirish", { key: exp.key, variant: arm.variant })}>
                 {t("Gʻolibni qoldirish")}
               </button>
             </form>
           ) : (
-            <span className="text-[13px] text-muted">{arm.active ? "Qoldirilgan" : "Oʻchirilgan"}</span>
+            <span className="text-[13px] text-muted">{arm.active ? t("Qoldirilgan") : t("Oʻchirilgan")}</span>
           )}
         </div>
       </td>
@@ -69,10 +69,10 @@ export function ExperimentsCard({ experiments }: { experiments: ExperimentResult
         {experiments.map((exp) => {
           const v = verdict(exp);
           return (
-            <section key={exp.key} aria-label={`Tajriba ${exp.key}`} className="flex flex-col gap-2">
+            <section key={exp.key} aria-label={t("Tajriba {key}", { key: exp.key })} className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 <h3 className="text-[16px] font-bold text-ink">{exp.key}</h3>
-                <span className="text-[13px] text-muted">{PLACEMENT_LABEL[exp.placement as keyof typeof PLACEMENT_LABEL] ?? exp.placement}</span>
+                <span className="text-[13px] text-muted">{PLACEMENT_LABEL[exp.placement as keyof typeof PLACEMENT_LABEL] ? t(PLACEMENT_LABEL[exp.placement as keyof typeof PLACEMENT_LABEL]) : exp.placement}</span>
                 <Pill tone={v.tone}>{v.text}</Pill>
                 {!exp.running && <Pill tone="muted">{t("Toʻxtatilgan")}</Pill>}
                 {exp.arms.A && !exp.arms.B && (

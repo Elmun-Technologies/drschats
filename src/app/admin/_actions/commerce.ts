@@ -26,7 +26,7 @@ export async function saveCommerceSettings(_: FormState, form: FormData): Promis
   } else {
     const fields = Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")) as Record<string, string>;
     const parsed = parseCommerceSection(section, fields);
-    if (!parsed.ok) return { error: parsed.error };
+    if (!parsed.ok) return { error: t(parsed.error) };
     await saveCommerceSection(section, parsed.value, { id: admin.id, label });
   }
 
@@ -34,5 +34,5 @@ export async function saveCommerceSettings(_: FormState, form: FormData): Promis
   revalidatePath("/", "layout");
   revalidatePath("/admin/commerce");
   await auditLog(admin, "commerce.save", auditTarget(form));
-  return { ok: form.get("intent") === "reset" ? "Standart qiymatlar tiklandi." : "Saqlandi. Saytda va savatda darhol amal qiladi." };
+  return { ok: form.get("intent") === "reset" ? t("Standart qiymatlar tiklandi.") : t("Saqlandi. Saytda va savatda darhol amal qiladi.") };
 }

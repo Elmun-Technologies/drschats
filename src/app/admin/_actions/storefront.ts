@@ -35,23 +35,24 @@ const strings = (form: FormData) =>
 
 /* ─── Banners ───────────────────────────────────────────────────────────── */
 
-const imagePath = z
+/* Schemas are built per request, after requireAdmin has set the language, so their messages answer in it. */
+const imagePath = () => z
   .string()
   .trim()
   .max(500)
-  .refine((v) => v === "" || /^\/[^/\\]/.test(v) || /^https:\/\//i.test(v), "Rasm manzili / yoki https:// bilan boshlansin.");
+  .refine((v) => v === "" || /^\/[^/\\]/.test(v) || /^https:\/\//i.test(v), t("Rasm manzili / yoki https:// bilan boshlansin."));
 
-const bannerSchema = z.object({
+const bannerSchema = () => z.object({
   placement: z.enum(["hero", "strip", "category"]),
-  "uz.title": z.string().trim().min(2, "Sarlavha (uz) majburiy").max(90, "Sarlavha 90 belgidan oshmasin"),
-  "ru.title": z.string().trim().min(2, "Sarlavha (ru) majburiy").max(90, "Sarlavha 90 belgidan oshmasin"),
+  "uz.title": z.string().trim().min(2, t("Sarlavha (uz) majburiy")).max(90, t("Sarlavha 90 belgidan oshmasin")),
+  "ru.title": z.string().trim().min(2, t("Sarlavha (ru) majburiy")).max(90, t("Sarlavha 90 belgidan oshmasin")),
   "uz.subtitle": z.string().trim().max(160).default(""),
   "ru.subtitle": z.string().trim().max(160).default(""),
   "uz.cta": z.string().trim().max(30).default(""),
   "ru.cta": z.string().trim().max(30).default(""),
-  href: z.string().trim().min(1, "Havolani kiriting."),
-  image: imagePath.default(""),
-  imageMobile: imagePath.default(""),
+  href: z.string().trim().min(1, t("Havolani kiriting.")),
+  image: imagePath().default(""),
+  imageMobile: imagePath().default(""),
   theme: z.enum(["light", "dark"]).default("light"),
   startsAt: z.string().optional(),
   endsAt: z.string().optional(),
@@ -62,7 +63,7 @@ const bannerSchema = z.object({
     .trim()
     .toLowerCase()
     .max(40)
-    .refine((v) => v === "" || EXPERIMENT_RE.test(v), "Tajriba kaliti: lotin harflari, raqam va «-» (masalan: hero-oktabr).")
+    .refine((v) => v === "" || EXPERIMENT_RE.test(v), t("Tajriba kaliti: lotin harflari, raqam va «-» (masalan: hero-oktabr)."))
     .default(""),
   variant: z.enum(["", "A", "B"]).default(""),
 });
@@ -70,8 +71,8 @@ const bannerSchema = z.object({
 export async function saveBanner(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("marketing");
   const data = strings(form);
-  const parsed = bannerSchema.safeParse(data);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = bannerSchema().safeParse(data);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const d = parsed.data;
   const href = safeHref(d.href);
   if (!href) return { error: t("Havola saytdagi yoʻl (/product/…) yoki https:// manzil boʻlsin.") };
@@ -89,7 +90,7 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
       .select({ id: banners.id, variant: banners.variant, placement: banners.placement })
       .from(banners)
       .where(and(eq(banners.experiment, experiment), ne(banners.id, Number(data.id) || 0)));
-    if (others.some((o) => o.variant === variant)) return { error: `«${experiment}» tajribasida ${variant} varianti allaqachon bor.` };
+    if (others.some((o) => o.variant === variant)) return { error: t("«{experiment}» tajribasida {variant} varianti allaqachon bor.", { experiment, variant }) };
     if (others.some((o) => o.placement !== d.placement)) return { error: t("Tajribaning ikkala varianti bir joyda (bitta joylashuvda) boʻlsin.") };
   }
   const showCountdown = form.get("showCountdown") === "on";
@@ -132,7 +133,7 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
   }
   refreshStorefront();
   if (!id) redirect("/admin/storefront?saved=1");
-  return { ok: "Saqlandi. Saytda darhol koʻrinadi." };
+  return { ok: t("Saqlandi. Saytda darhol koʻrinadi.") };
 }
 
 export async function toggleBanner(form: FormData) {
@@ -170,15 +171,15 @@ export async function saveAnnouncements(_: FormState, form: FormData): Promise<F
     const uz = (r.uz ?? "").trim();
     const ru = (r.ru ?? "").trim();
     if (!uz && !ru) continue;
-    if (!uz || !ru) return { error: `${items.length + 1}-qator: matnni ikkala tilda yozing.` };
-    if (uz.length > 140 || ru.length > 140) return { error: `${items.length + 1}-qator: matn 140 belgidan oshmasin.` };
+    if (!uz || !ru) return { error: t("{n}-qator: matnni ikkala tilda yozing.", { n: items.length + 1 }) };
+    if (uz.length > 140 || ru.length > 140) return { error: t("{n}-qator: matn 140 belgidan oshmasin.", { n: items.length + 1 }) };
     const rawHref = (r.href ?? "").trim();
     const href = rawHref ? safeHref(rawHref) : null;
-    if (rawHref && !href) return { error: `${items.length + 1}-qator: havola /… yoki https:// bilan boshlansin.` };
+    if (rawHref && !href) return { error: t("{n}-qator: havola /… yoki https:// bilan boshlansin.", { n: items.length + 1 }) };
     const ends = fromTashkentInput(r.endsAt);
-    if (r.endsAt && !ends) return { error: `${items.length + 1}-qator: tugash vaqtini toʻliq kiriting.` };
+    if (r.endsAt && !ends) return { error: t("{n}-qator: tugash vaqtini toʻliq kiriting.", { n: items.length + 1 }) };
     const showCountdown = form.get(`a.${n}.showCountdown`) === "on";
-    if (showCountdown && !ends) return { error: `${items.length + 1}-qator: taymer faqat tugash vaqti bilan.` };
+    if (showCountdown && !ends) return { error: t("{n}-qator: taymer faqat tugash vaqti bilan.", { n: items.length + 1 }) };
     items.push({
       id: /^[a-z0-9]{4,40}$/.test(r.id ?? "") ? r.id : randomBytes(4).toString("hex"),
       text: { uz, ru },
@@ -188,7 +189,7 @@ export async function saveAnnouncements(_: FormState, form: FormData): Promise<F
       active: form.get(`a.${n}.active`) === "on",
     });
   }
-  if (items.length > MAX_ANNOUNCEMENTS) return { error: `Koʻpi bilan ${MAX_ANNOUNCEMENTS} ta eʼlon.` };
+  if (items.length > MAX_ANNOUNCEMENTS) return { error: t("Koʻpi bilan {n} ta eʼlon.", { n: MAX_ANNOUNCEMENTS }) };
 
   const db = getDb();
   if (items.length === 0) {
@@ -201,13 +202,13 @@ export async function saveAnnouncements(_: FormState, form: FormData): Promise<F
       .onConflictDoUpdate({ target: siteSettings.key, set: { value, updatedBy: admin.id, updatedAt: new Date() } });
   }
   refreshStorefront();
-  return { ok: items.length ? "Saqlandi. Eʼlon qatori saytda yangilandi." : "Eʼlonlar olib tashlandi — saytda odatiy qator koʻrinadi." };
+  return { ok: items.length ? t("Saqlandi. Eʼlon qatori saytda yangilandi.") : t("Eʼlonlar olib tashlandi — saytda odatiy qator koʻrinadi.") };
 }
 
 /* ─── Deal of the day ───────────────────────────────────────────────────── */
 
-const dealSchema = z.object({
-  productSlug: z.string().trim().min(1, "Mahsulotni tanlang."),
+const dealSchema = () => z.object({
+  productSlug: z.string().trim().min(1, t("Mahsulotni tanlang.")),
   mode: z.enum(["percent", "price"]),
   percent: z.string().trim().default(""),
   price: z.string().trim().default(""),
@@ -218,8 +219,8 @@ const dealSchema = z.object({
 export async function saveDeal(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
   const data = strings(form);
-  const parsed = dealSchema.safeParse(data);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = dealSchema().safeParse(data);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const d = parsed.data;
   const percent = d.mode === "percent" ? Number(d.percent) : null;
   const price = d.mode === "price" ? Number(d.price.replace(/\s/g, "")) : null;
@@ -243,7 +244,7 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
   // The price it sells at today (an expired product sale already reverted).
   const base = livePrice({ price: product.price, oldPrice: product.oldPrice ?? undefined, saleEndsAt: product.saleEndsAt?.toISOString() }).price;
   if (discounted(base, { percent, price }) == null) {
-    return { error: `Taklif narxi hozirgi narxdan (${base.toLocaleString("ru-RU")} soʻm) past boʻlishi kerak.` };
+    return { error: t("Taklif narxi hozirgi narxdan ({price}) past boʻlishi kerak.", { price: `${base.toLocaleString("ru-RU")} ${t("soʻm")}` }) };
   }
 
   const id = Number(data.id);
@@ -266,7 +267,7 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
   }
   refreshStorefront({ catalog: true });
   if (!id) redirect("/admin/storefront/deal?saved=1");
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }
 
 export async function deleteDeal(form: FormData) {

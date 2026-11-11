@@ -45,10 +45,10 @@ function CodeForm({ action, submit, pending }: { action: (s: RecoveryState, f: F
 
 export function ConfirmTwoFactorForm() {
   const t = useT();
-  return <CodeForm action={confirmTwoFactor} submit={t("Tasdiqlash va yoqish")} pending="Tekshirilmoqda…" />;
+  return <CodeForm action={confirmTwoFactor} submit={t("Tasdiqlash va yoqish")} pending={t("Tekshirilmoqda…")} />;
 }
 
 export function RegenerateCodesForm() {
   const t = useT();
-  return <CodeForm action={regenerateRecoveryCodes} submit={t("Yangi tiklash kodlari")} pending="Yaratilmoqda…" />;
+  return <CodeForm action={regenerateRecoveryCodes} submit={t("Yangi tiklash kodlari")} pending={t("Yaratilmoqda…")} />;
 }

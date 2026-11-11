@@ -6,14 +6,16 @@ import type { FormState } from "@/app/admin/_actions/catalog";
 import { saveCommerceSettings } from "@/app/admin/_actions/commerce";
 import type { CommerceSection } from "@/lib/commerce/settings";
 import { Notice, buttonClass, secondaryButtonClass } from "./ui";
+import { useT } from "@/lib/admin/i18n/client";
 
 function Buttons() {
+  const t = useT();
   const { pending, data } = useFormStatus();
   const resetting = pending && data?.get("intent") === "reset";
   return (
     <div className="col-span-full flex flex-wrap gap-2">
       <button type="submit" name="intent" value="save" disabled={pending} className={buttonClass}>
-        {pending && !resetting ? "Saqlanmoqda…" : "Saqlash"}
+        {pending && !resetting ? t("Saqlanmoqda…") : t("Saqlash")}
       </button>
       <button
         type="submit"
@@ -22,11 +24,11 @@ function Buttons() {
         disabled={pending}
         formNoValidate
         onClick={(e) => {
-          if (!window.confirm("Bu boʻlim standart qiymatlarga qaytarilsinmi?")) e.preventDefault();
+          if (!window.confirm(t("Bu boʻlim standart qiymatlarga qaytarilsinmi?"))) e.preventDefault();
         }}
         className={secondaryButtonClass}
       >
-        {resetting ? "Tiklanmoqda…" : "Standartga qaytarish"}
+        {resetting ? t("Tiklanmoqda…") : t("Standartga qaytarish")}
       </button>
     </div>
   );

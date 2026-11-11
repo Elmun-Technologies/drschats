@@ -139,7 +139,7 @@ export function ProductForm({
                 onClick={() => setTab(l.code)}
                 className={cn("h-11 rounded-[12px] px-4 text-[15px] font-semibold", tab === l.code ? "bg-ink text-white" : "bg-tile text-ink-2")}
               >
-                {l.label}
+                {l.code === "uz" ? t(l.label) : l.label}
               </button>
             ))}
           </div>
@@ -164,10 +164,10 @@ export function ProductForm({
             <Field label={t("Ishlab chiqarilgan joy")}>
               <input name={`${l.code}.origin`} defaultValue={c(`${l.code}.origin`)} className={inputClass} />
             </Field>
-            <Field label={t("Asosiy jihatlar")} hint={LIST_HINT}>
+            <Field label={t("Asosiy jihatlar")} hint={t(LIST_HINT)}>
               <textarea name={`${l.code}.highlights`} defaultValue={c(`${l.code}.highlights`)} rows={4} className={textareaClass} />
             </Field>
-            <Field label={t("Belgilar (badge)")} hint={LIST_HINT}>
+            <Field label={t("Belgilar (badge)")} hint={t(LIST_HINT)}>
               <textarea name={`${l.code}.badges`} defaultValue={c(`${l.code}.badges`)} rows={4} className={textareaClass} />
             </Field>
             <Field label={t("Foydalari")} hint={t("Sarlavha | tavsif | ikonka (ixtiyoriy)")} className="lg:col-span-2">
@@ -210,7 +210,7 @@ export function ProductForm({
             <Field label={t("Ombordagi soni")} hint={t("Boʻsh — kuzatilmaydi")}>
               <input name="stockQty" type="number" min={0} max={1000000} step={1} inputMode="numeric" value={stockQty} onChange={(e) => setStockQty(e.target.value)} className={inputClass} />
             </Field>
-            <Field label={t("Kam qoldi chegarasi")} hint={`Boʻsh — standart (${lowStockDefault})`}>
+            <Field label={t("Kam qoldi chegarasi")} hint={t("Boʻsh — standart ({n})", { n: lowStockDefault })}>
               <input name="lowStockAt" type="number" min={1} max={1000} step={1} inputMode="numeric" defaultValue={values.lowStockAt} placeholder={String(lowStockDefault)} className={inputClass} />
             </Field>
           </div>
@@ -243,8 +243,8 @@ export function ProductForm({
             <Field label={t("Birlik")}>
               <select name="unitKind" defaultValue={values.unitKind} className={inputClass}>
                 <option value="">—</option>
-                <option value="tablet">tabletka</option>
-                <option value="capsule">kapsula</option>
+                <option value="tablet">{t("tabletka")}</option>
+                <option value="capsule">{t("kapsula")}</option>
               </select>
             </Field>
           </div>
@@ -276,7 +276,7 @@ export function ProductForm({
               {brands.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
             </select>
           </Field>
-          <Field label={t("Sahifa manzili (slug)")} hint={slug ? `govita.uz/uz/product/${slug}` : "Oʻzbekcha nomdan avtomatik yaratiladi"}>
+          <Field label={t("Sahifa manzili (slug)")} hint={slug ? `govita.uz/uz/product/${slug}` : t("Oʻzbekcha nomdan avtomatik yaratiladi")}>
             <input name="slug" value={slug} onChange={(e) => { setSlug(e.target.value); setSlugTouched(true); }} required pattern="[a-z0-9]+(-[a-z0-9]+)*" className={inputClass} />
           </Field>
           <Field label={t("Tartib")} hint={t("Kichik raqam — roʻyxatda oldinroq")}>
@@ -284,7 +284,7 @@ export function ProductForm({
           </Field>
         </Panel>
         <div className="sticky bottom-0 -mx-4 border-t border-line bg-bg px-4 py-3 xl:static xl:mx-0 xl:border-0 xl:bg-transparent xl:p-0">
-          <SubmitButton className="w-full">{values.id ? "Saqlash" : "Mahsulotni yaratish"}</SubmitButton>
+          <SubmitButton className="w-full">{values.id ? t("Saqlash") : t("Mahsulotni yaratish")}</SubmitButton>
         </div>
       </aside>
     </form>

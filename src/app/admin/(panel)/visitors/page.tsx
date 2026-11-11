@@ -69,12 +69,12 @@ export default async function AdminVisitorsPage({ searchParams }: { searchParams
                 {rows.map((v) => (
                   <tr key={v.id}>
                     <td className={tdClass}>
-                      <Link href={`/admin/visitors/${v.id}`} className={linkClass}>{v.name ?? (v.phone9 ? `+998 ${v.phone9}` : `Mehmon ${v.id.slice(0, 6)}`)}</Link>
-                      <span className="block text-[13px] text-muted">{v.device ? DEVICE_LABEL[v.device] : ""}{v.locale ? ` · ${v.locale}` : ""}{v.phone9 && v.name ? ` · +998 ${v.phone9}` : ""}</span>
+                      <Link href={`/admin/visitors/${v.id}`} className={linkClass}>{v.name ?? (v.phone9 ? `+998 ${v.phone9}` : t("Mehmon {id}", { id: v.id.slice(0, 6) }))}</Link>
+                      <span className="block text-[13px] text-muted">{v.device ? t(DEVICE_LABEL[v.device] ?? v.device) : ""}{v.locale ? ` · ${v.locale}` : ""}{v.phone9 && v.name ? ` · +998 ${v.phone9}` : ""}</span>
                     </td>
-                    <td className={tdClass}><Pill tone={v.stage === "customer" ? "dark" : v.stage === "checkout" || v.stage === "cart" ? "outline" : "neutral"}>{STAGE_LABEL[v.stage]}</Pill></td>
-                    <td className={`${tdClass} text-ink-2`}>{v.channel}</td>
-                    <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(v.sessions)}<span className="block text-[13px] text-muted">{formatNumber(v.pageViews)} sahifa</span></td>
+                    <td className={tdClass}><Pill tone={v.stage === "customer" ? "dark" : v.stage === "checkout" || v.stage === "cart" ? "outline" : "neutral"}>{t(STAGE_LABEL[v.stage])}</Pill></td>
+                    <td className={`${tdClass} text-ink-2`}>{t(v.channel)}</td>
+                    <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(v.sessions)}<span className="block text-[13px] text-muted">{t("{n} sahifa", { n: formatNumber(v.pageViews) })}</span></td>
                     <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{v.cartValue > 0 ? som(v.cartValue) : "—"}</td>
                     <td className={`${tdClass} whitespace-nowrap text-ink-2`} title={v.lastSeenAt.toISOString()}>{timeAgo(v.lastSeenAt)}</td>
                   </tr>
@@ -86,7 +86,7 @@ export default async function AdminVisitorsPage({ searchParams }: { searchParams
         {(page > 1 || rows.length === PAGE_SIZE) && (
           <div className="mt-4 flex items-center justify-between gap-3">
             {page > 1 ? <Link href={qs({ page: page - 1 })} className={secondaryButtonClass}>{t("← Oldingi")}</Link> : <span />}
-            <span className="text-[14px] text-muted">{page}-sahifa</span>
+            <span className="text-[14px] text-muted">{t("{n}-sahifa", { n: page })}</span>
             {rows.length === PAGE_SIZE ? <Link href={qs({ page: page + 1 })} className={secondaryButtonClass}>{t("Keyingi →")}</Link> : <span />}
           </div>
         )}

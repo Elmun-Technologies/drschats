@@ -67,7 +67,7 @@ export default async function DealOfDayPage({ searchParams }: { searchParams: Pr
     const b = base.get(d.productSlug) ?? 0;
     return { base: b, deal: discounted(b, d) };
   };
-  const terms = (d: DealRow) => (d.percent != null ? `−${d.percent}%` : "Yangi narx");
+  const terms = (d: DealRow) => (d.percent != null ? `−${d.percent}%` : t("Yangi narx"));
 
   return (
     <>
@@ -96,10 +96,10 @@ export default async function DealOfDayPage({ searchParams }: { searchParams: Pr
                         <Pill tone="red">−{Math.round((1 - p.deal / p.base) * 100)}%</Pill>
                       </>
                     ) : (
-                      <span className="text-ink-2">{t("Narx hozirgi narxdan past emas — taklif amal qilmayapti (")}{terms(current)}).</span>
+                      <span className="text-ink-2">{t("Narx hozirgi narxdan past emas — taklif amal qilmayapti ({terms}).", { terms: terms(current) })}</span>
                     )}
                   </p>
-                  <p className="text-[14px] text-ink-2">{formatDateTime(current.startsAt)} — <b className="text-ink">{formatDateTime(current.endsAt)}</b> gacha</p>
+                  <p className="text-[14px] text-ink-2">{t("{start} — {end} gacha", { start: formatDateTime(current.startsAt), end: formatDateTime(current.endsAt) })}</p>
                   <div className="flex flex-wrap gap-2">
                     <Link href={`/admin/storefront/deal?edit=${current.id}`} className={smallButtonClass}>{t("Tahrirlash")}</Link>
                     <form action={endDealNow}>
@@ -115,7 +115,7 @@ export default async function DealOfDayPage({ searchParams }: { searchParams: Pr
           )}
         </Card>
 
-        <Card title={editing ? "Taklifni tahrirlash" : "Yangi taklif"} lead={t("Bir vaqtda bitta taklif: vaqtlar ustma-ust tushmasin. Kelgusi kunlar uchun ham navbatga qoʻyish mumkin.")} actions={editing ? <Link href="/admin/storefront/deal" className={linkClass}>{t("Bekor qilish")}</Link> : undefined}>
+        <Card title={editing ? t("Taklifni tahrirlash") : t("Yangi taklif")} lead={t("Bir vaqtda bitta taklif: vaqtlar ustma-ust tushmasin. Kelgusi kunlar uchun ham navbatga qoʻyish mumkin.")} actions={editing ? <Link href="/admin/storefront/deal" className={linkClass}>{t("Bekor qilish")}</Link> : undefined}>
           <DealForm key={editing?.id ?? "new"} values={values} products={options} />
         </Card>
       </div>

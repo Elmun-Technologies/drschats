@@ -18,7 +18,7 @@ export const generateMetadata = () => adminTitle("Mahsulotlar");
 const FILTERS = {
   all: { label: "Hammasi", test: () => true },
   live: { label: "Sotuvda", test: (p: Row) => p.kind !== "unlisted" && p.inStock },
-  out: { label: "Tugagan", test: (p: Row) => p.kind !== "unlisted" && !p.inStock },
+  out: { label: "Tugaganlar", test: (p: Row) => p.kind !== "unlisted" && !p.inStock },
   low: { label: "Kam qolganlar", test: (p: Row) => p.kind !== "unlisted" && isLowStock(p.stockQty, p.lowAt) },
   sale: { label: "Chegirmada", test: (p: Row) => Boolean(p.oldPrice) },
   noimage: { label: "Rasmsiz", test: (p: Row) => !p.cutout && p.images.length === 0 },
@@ -37,6 +37,13 @@ const SORTS = {
 } as const;
 type Sort = keyof typeof SORTS;
 
+/* stockLabel() answers in Uzbek; the same four shapes in the admin's language. */
+function stockText(qty: number | null, lowAt: number): string {
+  if (qty == null) return t("kuzatilmaydi");
+  if (qty <= 0) return t("tugagan");
+  return stockLabel(qty, lowAt).low ? t("kam: {n}", { n: qty }) : t("{n} ta", { n: qty });
+}
+
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
@@ -46,16 +53,16 @@ function importedNotice(raw: string | undefined): string | null {
   if (!raw || !/^\d+(\.\d+){4}$/.test(raw)) return null;
   const [p, c, b, img, catImg] = raw.split(".").map(Number);
   const parts = [
-    p > 0 && `${p} ta mahsulot`,
-    c > 0 && `${c} ta kategoriya`,
-    b > 0 && `${b} ta brend`,
+    p > 0 && t("{n} ta mahsulot", { n: p }),
+    c > 0 && t("{n} ta kategoriya", { n: c }),
+    b > 0 && t("{n} ta brend", { n: b }),
   ].filter(Boolean);
   const filled = img + catImg;
-  if (parts.length === 0 && filled === 0) return "Hammasi allaqachon panelda edi — hech narsa oʻzgarmadi.";
+  if (parts.length === 0 && filled === 0) return t("Hammasi allaqachon panelda edi — hech narsa oʻzgarmadi.");
   return [
-    parts.length > 0 && `Panelga olindi: ${parts.join(", ")}.`,
-    filled > 0 && `${filled} ta yozuvning boʻsh rasmi toʻldirildi.`,
-    "Mavjud mahsulotlar oʻzgartirilmadi.",
+    parts.length > 0 && t("Panelga olindi: {list}.", { list: parts.join(", ") }),
+    filled > 0 && t("{n} ta yozuvning boʻsh rasmi toʻldirildi.", { n: filled }),
+    t("Mavjud mahsulotlar oʻzgartirilmadi."),
   ]
     .filter(Boolean)
     .join(" ");
@@ -152,7 +159,7 @@ export default async function AdminProductsPage({
           )
         ) : (
           <>
-            <p className="mb-2 text-[13px] text-muted">{rows.length} {t("ta mahsulot ·")} {t(SORTS[sort].label).toLowerCase()}</p>
+            <p className="mb-2 text-[13px] text-muted">{t("{n} ta mahsulot", { n: rows.length })} · {t(SORTS[sort].label).toLowerCase()}</p>
             <ul className="divide-y divide-line">
               {rows.map((p) => {
                 const image = p.cutout ?? p.images[0];
@@ -164,16 +171,16 @@ export default async function AdminProductsPage({
                         {image ? (
                           <Image src={image} alt="" fill unoptimized={!image.startsWith("/")} sizes="64px" className="object-contain p-1.5" />
                         ) : (
-                          <span className="text-[12px] text-muted">rasmsiz</span>
+                          <span className="text-[12px] text-muted">{t("rasmsiz")}</span>
                         )}
                       </span>
                       <span className="flex min-w-0 flex-1 flex-col gap-1.5">
                         <span className="line-clamp-2 text-[15px] font-semibold leading-5 text-ink sm:truncate">{p.name || p.slug}</span>
                         <span className="flex flex-wrap items-center gap-1.5">
-                          <Pill tone={cat ? "neutral" : "outline"}>{cat ?? "kategoriyasiz"}</Pill>
+                          <Pill tone={cat ? "neutral" : "outline"}>{cat ?? t("kategoriyasiz")}</Pill>
                           {p.kind === "unlisted" && <Pill tone="muted">{t("sotuvdan olingan")}</Pill>}
-                          {p.kind !== "unlisted" && !p.inStock && p.stockQty == null && <Pill tone="outline">tugagan</Pill>}
-                          {p.stockQty != null && <Pill tone={stockLabel(p.stockQty, p.lowAt).tone} className="sm:hidden">{stockLabel(p.stockQty, p.lowAt).label}</Pill>}
+                          {p.kind !== "unlisted" && !p.inStock && p.stockQty == null && <Pill tone="outline">{t("tugagan")}</Pill>}
+                          {p.stockQty != null && <Pill tone={stockLabel(p.stockQty, p.lowAt).tone} className="sm:hidden">{stockText(p.stockQty, p.lowAt)}</Pill>}
                           {p.kind === "addon" && <Pill tone="muted">{t("qoʻshimcha")}</Pill>}
                         </span>
                       </span>
@@ -189,8 +196,8 @@ export default async function AdminProductsPage({
                     {p.kind !== "unlisted" && p.stockQty == null && (
                       <form action={toggleProductStock} className="hidden shrink-0 sm:block">
                         <input type="hidden" name="id" value={p.id} />
-                        <button type="submit" className="h-11 w-[136px] rounded-[12px] bg-tile text-[14px] font-semibold text-ink hover:bg-tile-hover" title={p.inStock ? "Tugadi deb belgilash" : "Omborda bor deb belgilash"}>
-                          {p.inStock ? "Tugadi" : "Omborga keldi"}
+                        <button type="submit" className="h-11 w-[136px] rounded-[12px] bg-tile text-[14px] font-semibold text-ink hover:bg-tile-hover" title={p.inStock ? t("Tugadi deb belgilash") : t("Omborda bor deb belgilash")}>
+                          {p.inStock ? t("Tugadi") : t("Omborga keldi")}
                         </button>
                       </form>
                     )}

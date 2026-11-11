@@ -9,12 +9,12 @@ import { clubOverview, getClubConfig } from "@/lib/bot/store";
 import { SEGMENTS, segmentCounts } from "@/lib/admin/segments";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
-import { adminTitle, t } from "@/lib/admin/i18n/server";
+import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
 export const generateMetadata = () => adminTitle("Telegram klub");
 
 /** The panel speaks the same words the bot's own menu uses (shop.py, t(locale, key)). */
-const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = {
+const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = labels({
   miniApp: "Mini App (Doʻkon)",
   catalog: "Katalog",
   search: "Qidiruv",
@@ -22,7 +22,7 @@ const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = {
   orders: "Buyurtmalarim",
   promo: "Aksiyalar",
   help: "Yordam",
-};
+});
 
 export default async function AdminBotPage() {
   await requireAdmin();
@@ -32,12 +32,12 @@ export default async function AdminBotPage() {
   const miniAppReady = Boolean(process.env.TELEGRAM_CLUB_BOT_TOKEN);
 
   const tiles = [
-    { label: t("Aʼzolar"), value: stats.members, hint: `${stats.blocked} tasi botni bloklagan` },
+    { label: t("Aʼzolar"), value: stats.members, hint: t("{n} tasi botni bloklagan", { n: stats.blocked }) },
     { label: t("Raqami bogʻlangan"), value: stats.linked },
     { label: t("Ochiq murojaatlar"), value: stats.openTickets },
     { label: t("Botdan (30 kun)"), value: stats.botOrders30d },
-    { label: t("Mini App (30 kun)"), value: stats.miniOrders30d, hint: `${stats.siteOrders30d} ta saytdan · ${somShort(stats.botRevenue30d)}` },
-    { label: t("Navbatda"), value: stats.pendingJobs, hint: stats.failedJobs ? `${stats.failedJobs} tasi yuborilmadi` : undefined },
+    { label: t("Mini App (30 kun)"), value: stats.miniOrders30d, hint: t("{n} ta saytdan · {sum}", { n: stats.siteOrders30d, sum: somShort(stats.botRevenue30d) }) },
+    { label: t("Navbatda"), value: stats.pendingJobs, hint: stats.failedJobs ? t("{n} tasi yuborilmadi", { n: stats.failedJobs }) : undefined },
   ];
 
   return (
@@ -47,19 +47,19 @@ export default async function AdminBotPage() {
       {!keyReady && (
         <div className="mb-4">
           <Notice>
-            {t("Bot hali ulanmagan:")} <code>{t("BOT_API_KEY")}</code> ({MIN_BOT_KEY_LENGTH}{t("+ belgi) oʻrnatilmagan. Qadamlar — docs/BOT-ADMIN.md.")}
+            {t("Bot hali ulanmagan:")} <code>BOT_API_KEY</code> {t("({n}+ belgi) oʻrnatilmagan. Qadamlar — docs/BOT-ADMIN.md.", { n: MIN_BOT_KEY_LENGTH })}
           </Notice>
         </div>
       )}
       {!miniAppReady && (
         <div className="mb-4">
           <Notice>
-            {t("Mini App buyurtmalari Telegram akkauntiga bogʻlanmaydi:")} <code>{t("TELEGRAM_CLUB_BOT_TOKEN")}</code> {t("oʻrnatilmagan.")}
+            {t("Mini App buyurtmalari Telegram akkauntiga bogʻlanmaydi:")} <code>TELEGRAM_CLUB_BOT_TOKEN</code> {t("oʻrnatilmagan.")}
           </Notice>
         </div>
       )}
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {tiles.map((t) => <Metric key={t.label} label={t.label} value={t.value} hint={t.hint} />)}
+        {tiles.map((tile) => <Metric key={tile.label} label={tile.label} value={tile.value} hint={tile.hint} />)}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
@@ -82,7 +82,7 @@ export default async function AdminBotPage() {
               <Field label={t("Salomlashuv (oʻzbekcha)")} hint={t("Yangi mijoz /start bosganda shu matn chiqadi")}>
                 <textarea name="greetingUz" defaultValue={club.greeting.uz} maxLength={600} rows={3} className={textareaClass} />
               </Field>
-              <Field label={t("Приветствие (русский)")} hint={t("Пустое поле — встроенный текст")}>
+              <Field label="Приветствие (русский)" hint="Пустое поле — встроенный текст">
                 <textarea name="greetingRu" defaultValue={club.greeting.ru} maxLength={600} rows={3} className={textareaClass} />
               </Field>
             </div>
@@ -108,7 +108,7 @@ export default async function AdminBotPage() {
 
         <Card title={t("Klubga xabar")}>
           <p className="mb-4 text-[15px] text-ink-2">
-            {t("Botni bloklamagan barcha")} {stats.members - stats.blocked} {t("aʼzoga yuboriladi. Bot soniyasiga bitta xabar yuboradi.")}
+            {t("Botni bloklamagan barcha {n} aʼzoga yuboriladi. Bot soniyasiga bitta xabar yuboradi.", { n: stats.members - stats.blocked })}
           </p>
           <ActionForm action={broadcastAction} submitLabel={t("Yuborish")} className="grid gap-4">
             <Field label={t("Matn")} hint={t("1000 belgigacha. Tibbiy vaʼda yozmang.")}>

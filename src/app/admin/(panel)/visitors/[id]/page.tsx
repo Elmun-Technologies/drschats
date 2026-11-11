@@ -18,7 +18,7 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
   const data = await getVisitor(id);
   if (!data) notFound();
   const { visitor: v, events, orders, otherDevices } = data;
-  const title = v.name ?? (v.phone9 ? `+998 ${v.phone9}` : `Mehmon ${v.id.slice(0, 6)}`);
+  const title = v.name ?? (v.phone9 ? `+998 ${v.phone9}` : t("Mehmon {id}", { id: v.id.slice(0, 6) }));
   const touch = v.firstTouch;
 
   return (
@@ -26,7 +26,7 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
       <PageHeader
         eyebrow={t("Mijozlar yoʻli")}
         title={title}
-        lead={`Birinchi marta ${formatDateTime(v.firstSeenAt)} · oxirgi faollik ${timeAgo(v.lastSeenAt)}`}
+        lead={t("Birinchi marta {first} · oxirgi faollik {last}", { first: formatDateTime(v.firstSeenAt), last: timeAgo(v.lastSeenAt) })}
         actions={<>
           {v.phone9 && <Link href={`/admin/customers/${v.phone9}`} className={secondaryButtonClass}>{t("Mijoz profili")}</Link>}
           <Link href="/admin/visitors" className={secondaryButtonClass}>{t("← Roʻyxat")}</Link>
@@ -38,17 +38,17 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
           const reached = stageRank(stage) <= stageRank(v.stage);
           return (
             <li key={stage} className={cn("rounded-[12px] px-1.5 py-2.5 text-center text-[12px] font-semibold leading-4 [overflow-wrap:anywhere] sm:px-2 sm:text-[13px]", reached ? "bg-ink text-white" : "bg-tile text-muted")}>
-              {STAGE_LABEL[stage]}
+              {t(STAGE_LABEL[stage])}
             </li>
           );
         })}
       </ol>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label={t("Tashriflar")} value={formatNumber(v.sessions)} hint={`${formatNumber(v.pageViews)} sahifa`} />
-        <Metric label={t("Buyurtmalar")} value={formatNumber(orders.length)} hint={v.lastOrderAt ? `oxirgisi ${timeAgo(v.lastOrderAt)}` : "hali yoʻq"} />
+        <Metric label={t("Tashriflar")} value={formatNumber(v.sessions)} hint={t("{n} sahifa", { n: formatNumber(v.pageViews) })} />
+        <Metric label={t("Buyurtmalar")} value={formatNumber(orders.length)} hint={v.lastOrderAt ? t("oxirgisi {time}", { time: timeAgo(v.lastOrderAt) }) : t("hali yoʻq")} />
         <Metric label={t("Savatda hozir")} value={v.cartValue > 0 ? som(v.cartValue) : "—"} hint={v.cartAt ? timeAgo(v.cartAt) : undefined} />
-        <Metric label={t("Qurilma")} value={v.device ? DEVICE_LABEL[v.device] : "—"} hint={v.locale ? `til: ${v.locale}` : undefined} />
+        <Metric label={t("Qurilma")} value={v.device ? t(DEVICE_LABEL[v.device] ?? v.device) : "—"} hint={v.locale ? t("til: {locale}", { locale: v.locale }) : undefined} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
@@ -58,7 +58,7 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
         <div className="flex flex-col gap-4">
           <Card title={t("Qayerdan keldi")}>
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[14px]">
-              <dt className="text-muted">{t("Kanal")}</dt><dd className="font-semibold">{v.channel}</dd>
+              <dt className="text-muted">{t("Kanal")}</dt><dd className="font-semibold">{t(v.channel)}</dd>
               {touch?.source && <><dt className="text-muted">utm_source</dt><dd>{touch.source}</dd></>}
               {touch?.medium && <><dt className="text-muted">utm_medium</dt><dd>{touch.medium}</dd></>}
               {touch?.campaign && <><dt className="text-muted">{t("Kampaniya")}</dt><dd>{touch.campaign}</dd></>}
@@ -68,7 +68,7 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
             </dl>
           </Card>
           {v.cartItems.length > 0 && (
-            <Card title={t("Savatdagi mahsulotlar")} lead={v.cartAt ? `Yangilangan: ${formatDateTime(v.cartAt)}` : undefined}>
+            <Card title={t("Savatdagi mahsulotlar")} lead={v.cartAt ? t("Yangilangan: {time}", { time: formatDateTime(v.cartAt) }) : undefined}>
               <ul className="divide-y divide-line">
                 {v.cartItems.map((item) => (
                   <li key={item.slug} className="flex justify-between gap-3 py-2.5 text-[14px]">
@@ -97,7 +97,7 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
             <Card title={t("Shu mijozning boshqa qurilmalari")}>
               <ul className="flex flex-col gap-2 text-[14px]">
                 {otherDevices.map((d) => (
-                  <li key={d.id}><Link href={`/admin/visitors/${d.id}`} className={linkClass}>{d.device ? DEVICE_LABEL[d.device] : "Qurilma"}</Link> <span className="text-muted">· {timeAgo(d.lastSeenAt)}</span></li>
+                  <li key={d.id}><Link href={`/admin/visitors/${d.id}`} className={linkClass}>{d.device ? t(DEVICE_LABEL[d.device] ?? d.device) : t("Qurilma")}</Link> <span className="text-muted">· {timeAgo(d.lastSeenAt)}</span></li>
                 ))}
               </ul>
             </Card>

@@ -4,17 +4,17 @@ import { retryJobAction } from "@/app/admin/_actions/bot";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { listJobs } from "@/lib/bot/store";
 import { requireAdmin } from "@/lib/admin/session";
-import { adminTitle, t } from "@/lib/admin/i18n/server";
+import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
 export const generateMetadata = () => adminTitle("Xabarlar navbati");
 
-const KIND: Record<string, string> = { order_status: "Buyurtma holati", support: "Operator javobi", broadcast: "Klub xabari" };
-const STATUS = { pending: "Kutmoqda", leased: "Yuborilmoqda", sent: "Yuborildi", failed: "Yuborilmadi", blocked: "Bloklangan" } as const;
+const KIND: Record<string, string> = labels({ order_status: "Buyurtma holati", support: "Operator javobi", broadcast: "Klub xabari" });
+const STATUS = labels({ pending: "Kutmoqda", leased: "Yuborilmoqda", sent: "Yuborildi", failed: "Yuborilmadi", blocked: "Bloklangan" } as const);
 /** Telegram's own reason, kept short: an admin needs to know what to fix. */
-const REASON: Record<string, string> = {
+const REASON: Record<string, string> = labels({
   telegram_refused: "Telegram qabul qilmadi",
   retry_exhausted: "Qayta urinishlar tugadi",
-};
+});
 
 export default async function BotOutboxPage() {
   await requireAdmin();

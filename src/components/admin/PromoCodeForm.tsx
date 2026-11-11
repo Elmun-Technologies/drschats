@@ -11,7 +11,7 @@ type ProductOption = { slug: string; name: string };
 export function PromoCodeForm({ promo, products }: { promo?: PromoCode; products: ProductOption[] }) {
   const selected = new Set(promo?.productSlugs ?? []);
   return (
-    <ActionForm action={savePromoCode} submitLabel={promo ? "Saqlash" : "Promokod yaratish"} className="grid gap-5 lg:grid-cols-2">
+    <ActionForm action={savePromoCode} submitLabel={promo ? t("Saqlash") : t("Promokod yaratish")} className="grid gap-5 lg:grid-cols-2">
       {promo ? (
         <input type="hidden" name="original" value={promo.code} />
       ) : (

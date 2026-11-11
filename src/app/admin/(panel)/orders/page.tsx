@@ -52,7 +52,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
     <>
       <PageHeader
         title={t("Buyurtmalar")}
-        lead={<>{formatNumber(counts.all)} {t("ta buyurtma ·")} {som(revenue)} {t("(bekor qilinganlarsiz)")}</>}
+        lead={t("{n} ta buyurtma · {sum} (bekor qilinganlarsiz)", { n: formatNumber(counts.all), sum: som(revenue) })}
         actions={<a href={`/admin/orders/export?${query({})}`} className={secondaryButtonClass}>{t("Excelʼga yuklash (CSV)")}</a>}
       />
       <nav aria-label={t("Davr")} className="mb-4 flex w-fit max-w-full gap-1 overflow-x-auto rounded-[14px] bg-tile p-1">
@@ -102,7 +102,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
                 {rows.map((o) => (
                   <tr key={o.id}>
                     <td className={tdClass}><Link href={`/admin/orders/${o.number}`} className={linkClass}>{o.number}</Link><span className="block text-[13px] text-muted">{formatDateTime(o.createdAt)}</span></td>
-                    <td className={`${tdClass} max-w-[260px]`}><span className="block truncate">{o.customer.name}</span><span className="block text-[13px] text-muted">{o.customer.phone} · {o.items.reduce((sum, item) => sum + item.quantity, 0)} dona</span></td>
+                    <td className={`${tdClass} max-w-[260px]`}><span className="block truncate">{o.customer.name}</span><span className="block text-[13px] text-muted">{o.customer.phone} · {t("{n} dona", { n: o.items.reduce((sum, item) => sum + item.quantity, 0) })}</span></td>
                     <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{SOURCE_LABEL[o.source]}</td>
                     <td className={`${tdClass} max-w-[180px] truncate text-ink-2`}>{describeAttribution(o.attribution ?? undefined) || t("Bevosita")}</td>
                     <td className={tdClass}><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill></td>

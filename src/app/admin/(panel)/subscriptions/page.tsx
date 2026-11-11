@@ -21,9 +21,9 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 
 function dueLabel(at: Date, now = Date.now()): string {
   const days = Math.round((at.getTime() - now) / DAY_MS);
-  if (days < 0) return `${-days} kun oʻtdi`;
-  if (days === 0) return "bugun";
-  return `${days} kundan keyin`;
+  if (days < 0) return t("{n} kun oʻtdi", { n: -days });
+  if (days === 0) return t("bugun");
+  return t("{n} kundan keyin", { n: days });
 }
 
 /*
@@ -53,7 +53,7 @@ export default async function SubscriptionsPage({ searchParams }: { searchParams
       <Card>
         <ChipNav label={t("Saralash")} className="mb-4" items={FILTERS.map((f) => ({ href: `/admin/subscriptions?f=${f.key}`, label: t(f.label), active: f.key === filter }))} />
         {rows.length === 0 ? (
-          <EmptyState title={filter === "due" ? "Yaqin kunlarda navbatdagi yetkazish yoʻq" : "Obuna yoʻq"}>
+          <EmptyState title={filter === "due" ? t("Yaqin kunlarda navbatdagi yetkazish yoʻq") : t("Obuna yoʻq")}>
             {t("Mijoz mahsulot sahifasida «Obuna bilan» tanlab buyurtma bersa, obuna shu yerda paydo boʻladi.")}
           </EmptyState>
         ) : (
@@ -84,7 +84,7 @@ export default async function SubscriptionsPage({ searchParams }: { searchParams
                       <td className={tdClass}>
                         <Link href={`/admin/customers/${s.phone9}`} className={linkClass}>{s.customerName || `••• ${s.phone9.slice(-4)}`}</Link>
                       </td>
-                      <td className={tdClass}>har {s.intervalDays} kun</td>
+                      <td className={tdClass}>{t("har {n} kun", { n: s.intervalDays })}</td>
                       <td className={tdClass}>
                         {s.lastOrderNumber ? (
                           <Link href={`/admin/orders/${s.lastOrderNumber}`} className={linkClass}>{s.lastOrderNumber}</Link>

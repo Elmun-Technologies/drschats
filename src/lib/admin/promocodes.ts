@@ -3,6 +3,7 @@ import "server-only";
 import { sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import type { PromoSource } from "@/lib/db/schema";
+import { labels, t } from "@/lib/admin/i18n/server";
 
 /*
   Read side of /admin/promocodes: the list with its usage, and the page's
@@ -12,26 +13,26 @@ import type { PromoSource } from "@/lib/db/schema";
 
 const ts = (d: Date) => sql`${d.toISOString()}::timestamptz`;
 
-export const PROMO_FILTERS = {
+export const PROMO_FILTERS = labels({
   all: "Hammasi",
   active: "Faol",
   expired: "Tugagan / oʻchirilgan",
   personal: "Shaxsiy",
-} as const;
+} as const);
 export type PromoFilter = keyof typeof PROMO_FILTERS;
 
 export function parsePromoFilter(raw: unknown): PromoFilter {
   return typeof raw === "string" && raw in PROMO_FILTERS ? (raw as PromoFilter) : "all";
 }
 
-export const SOURCE_LABEL: Record<PromoSource, string> = {
+export const SOURCE_LABEL: Record<PromoSource, string> = labels({
   manual: "Qoʻlda",
   campaign: "Kampaniya",
   flow: "Avtomatik xabar",
   referral: "Tavsiya",
   birthday: "Tugʻilgan kun",
   "first-order": "Birinchi buyurtma",
-};
+});
 
 export interface PromoListRow {
   code: string;
@@ -175,5 +176,5 @@ export async function promoRedemptionsOf(code: string, limit = 100): Promise<Pro
 
 /** "−15%" or "−20 000 soʻm". */
 export function promoValueLabel(kind: "percent" | "fixed", value: number): string {
-  return kind === "percent" ? `−${value}%` : `−${value.toLocaleString("ru-RU").replace(/ /g, " ")} soʻm`;
+  return kind === "percent" ? `−${value}%` : `−${value.toLocaleString("ru-RU").replace(/ /g, " ")} ${t("soʻm")}`;
 }

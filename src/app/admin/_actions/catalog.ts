@@ -38,7 +38,7 @@ function formObject(form: FormData): Record<string, string> {
 }
 
 function firstIssue(err: z.ZodError) {
-  return err.issues[0]?.message ?? "Maydonlarni tekshiring.";
+  return t(err.issues[0]?.message ?? "Maydonlarni tekshiring.");
 }
 
 /* ─── Import ─────────────────────────────────────────────────────────────── */
@@ -81,7 +81,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     .map((u) => u.trim())
     .filter((u) => u && !isAllowedImageUrl(u));
   if (rejected.length > 0) {
-    return { error: `Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): ${rejected[0]}. Rasmni «Rasm yuklash» orqali yuklang.` };
+    return { error: t("Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): {url}. Rasmni «Rasm yuklash» orqali yuklang.", { url: rejected[0] }) };
   }
 
   const db = getDb();
@@ -125,7 +125,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
   };
 
   const [clash] = await db.select({ id: products.id }).from(products).where(eq(products.slug, d.slug)).limit(1);
-  if (clash && clash.id !== editingId) return { error: `«${d.slug}» slug boshqa mahsulotda band.` };
+  if (clash && clash.id !== editingId) return { error: t("«{slug}» slug boshqa mahsulotda band.", { slug: d.slug }) };
 
   if (editingId) {
     const updated = await db.update(products).set(row).where(eq(products.id, editingId)).returning({ id: products.id });
@@ -134,7 +134,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
     refresh();
     const sent = before ? await afterProductChange(editingId, before, { inStock, price: d.price }) : null;
     await auditLog(admin, "product.save", auditTarget(form));
-    return { ok: `Saqlandi. Saytda darhol yangilanadi.${sent && sent.due > 0 ? ` Kutayotgan ${sent.due} kishiga xabar yuborildi.` : ""}` };
+    return { ok: sent && sent.due > 0 ? t("Saqlandi. Saytda darhol yangilanadi. Kutayotgan {n} kishiga xabar yuborildi.", { n: sent.due }) : t("Saqlandi. Saytda darhol yangilanadi.") };
   }
 
   /*
@@ -218,7 +218,7 @@ function parseCategory(data: Record<string, string>): { error: string } | { data
   if (parsed.data.slug === "new") return { error: t("«new» slug band — boshqa nom tanlang.") };
   const image = parsed.data.image;
   if (image && !isAllowedImageUrl(image)) {
-    return { error: `Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): ${image}. Roʻyxatdan tanlang yoki yuklang.` };
+    return { error: t("Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): {url}. Roʻyxatdan tanlang yoki yuklang.", { url: image }) };
   }
   return { data: parsed.data };
 }
@@ -238,7 +238,7 @@ function categoryRow(d: CategoryInput) {
 async function insertCategory(d: CategoryInput): Promise<string | null> {
   const db = getDb();
   const [exists] = await db.select({ slug: categories.slug }).from(categories).where(eq(categories.slug, d.slug)).limit(1);
-  if (exists) return `«${d.slug}» kategoriyasi allaqachon bor.`;
+  if (exists) return t("«{slug}» kategoriyasi allaqachon bor.", { slug: d.slug });
   const [idTaken] = await db.select({ id: categories.id }).from(categories).where(eq(categories.id, `cat-${d.slug}`)).limit(1);
   await db.insert(categories).values({ id: idTaken ? `cat-${d.slug}-${randomBytes(3).toString("hex")}` : `cat-${d.slug}`, ...categoryRow(d) });
   return null;
@@ -262,14 +262,14 @@ export async function saveCategory(_: FormState, form: FormData): Promise<FormSt
   const db = getDb();
   if (d.slug !== original) {
     const [exists] = await db.select({ slug: categories.slug }).from(categories).where(eq(categories.slug, d.slug)).limit(1);
-    if (exists) return { error: `«${d.slug}» kategoriyasi allaqachon bor.` };
+    if (exists) return { error: t("«{slug}» kategoriyasi allaqachon bor.", { slug: d.slug }) };
   }
   // slug changes cascade to products (on update cascade).
   const updated = await db.update(categories).set(categoryRow(d)).where(eq(categories.slug, original)).returning({ slug: categories.slug });
   if (updated.length === 0) return { error: t("Kategoriya topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin.") };
   refresh();
   if (d.slug !== original) redirect(`/admin/categories/${encodeURIComponent(d.slug)}?saved=1`);
-  return { ok: "Saqlandi. Saytda darhol yangilanadi." };
+  return { ok: t("Saqlandi. Saytda darhol yangilanadi.") };
 }
 
 /* The product form's "+ Yangi kategoriya": creates it and hands back the slug to select. */
@@ -311,7 +311,7 @@ export async function saveBrand(_: FormState, form: FormData): Promise<FormState
     .values(parsed.data)
     .onConflictDoUpdate({ target: brands.slug, set: { name: parsed.data.name, sort: parsed.data.sort } });
   refresh();
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }
 
 export async function deleteBrand(form: FormData) {

@@ -6,6 +6,7 @@ import { ORDER_STATUSES, type OrderStatus } from "@/lib/db/schema";
 import { DELIVERY_LABEL, STATUS_LABEL, formatDateTime } from "@/lib/admin/order-labels";
 import { describeAttribution } from "@/lib/analytics/attribution";
 import { csvResponse, toCsv } from "@/lib/admin/csv";
+import { t } from "@/lib/admin/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -24,7 +25,7 @@ export async function GET(req: Request) {
   });
   return csvResponse(
     toCsv([
-      ["Raqam", "Sana", "Holat", "Ism", "Telefon", "Email", "Hudud", "Manzil", "Usul", "Mahsulotlar", "Dona", "Chegirma", "Yetkazish", "Jami", "Manba"],
+      [t("Raqam"), t("Sana"), t("Holat"), t("Ism"), t("Telefon"), t("Email"), t("Hudud"), t("Manzil"), t("Usul"), t("Mahsulotlar"), t("Dona"), t("Chegirma"), t("Yetkazish"), t("Jami"), t("Manba")],
       ...rows.map((o) => [
         o.number,
         formatDateTime(o.createdAt),
@@ -40,7 +41,7 @@ export async function GET(req: Request) {
         o.totals.discount,
         o.totals.shipping,
         o.total,
-        describeAttribution(o.attribution ?? undefined) || "Bevosita",
+        describeAttribution(o.attribution ?? undefined) || t("Bevosita"),
       ]),
     ]),
     "govita-buyurtmalar",

@@ -5,8 +5,8 @@ import { Card, Field, Notice, Pill, inputClass } from "@/components/admin/ui";
 import type { IntegrationAdminOverview } from "@/lib/integrations/settings";
 import { t } from "@/lib/admin/i18n/server";
 
-export function Status({ on, label = on ? "Ulangan" : "Ulanmagan" }: { on: boolean; label?: string }) {
-  return <Pill tone={on ? "dark" : "outline"}>{label}</Pill>;
+export function Status({ on, label }: { on: boolean; label?: string }) {
+  return <Pill tone={on ? "dark" : "outline"}>{label ?? (on ? t("Ulangan") : t("Ulanmagan"))}</Pill>;
 }
 
 function External({ href, children }: { href: string; children: ReactNode }) {
@@ -41,21 +41,21 @@ export function AnalyticsForm({ overview }: { overview: IntegrationAdminOverview
     <Card title={t("Analitika va reklama teglari")} lead={t("ID kiritib saqlang — teg saytning barcha sahifalariga oʻzi qoʻyiladi. Kod yozish yoki qayta deploy shart emas.")}>
       {!overview.analyticsCspReady && <div className="mb-4"><Notice tone="error">{t("Bu build analitika hostlarini xavfsizlik siyosatida (CSP) ochmagan. fly.tomlʼda ADMIN_ANALYTICS_CSP=on yoqilgan — keyingi deployʼdan keyin bu yerda saqlash ishlaydi.")}</Notice></div>}
       <ActionForm action={saveAnalyticsIntegration} submitLabel={t("Saqlash")} className="grid gap-3 md:grid-cols-2">
-        <Vendor title={t("Google Analytics 4")} status={<Status on={Boolean(a.ga4)} />} hint={<>{t("GA4 → Admin → Data streams →")} <b>{t("Measurement ID")}</b> {t("(G-…).")} <External href="https://analytics.google.com/">{t("Ochish")}</External></>}>
-          <input name="ga4" defaultValue={a.ga4} placeholder={t("G-XXXXXXXXXX")} autoComplete="off" aria-label={t("GA4 Measurement ID")} className={inputClass} />
+        <Vendor title="Google Analytics 4" status={<Status on={Boolean(a.ga4)} />} hint={<>{t("GA4 → Admin → Data streams →")} <b>Measurement ID</b> (G-…). <External href="https://analytics.google.com/">{t("Ochish")}</External></>}>
+          <input name="ga4" defaultValue={a.ga4} placeholder="G-XXXXXXXXXX" autoComplete="off" aria-label="GA4 Measurement ID" className={inputClass} />
         </Vendor>
-        <Vendor title={t("Google Tag Manager")} status={<Status on={Boolean(a.gtm)} />} hint={<>{t("Container ID (GTM-…). GTM boʻlsa, GA4 ni GTM ichida sozlash ham mumkin.")} <External href="https://tagmanager.google.com/">{t("Ochish")}</External></>}>
-          <input name="gtm" defaultValue={a.gtm} placeholder={t("GTM-XXXXXXX")} autoComplete="off" aria-label={t("GTM Container ID")} className={inputClass} />
+        <Vendor title="Google Tag Manager" status={<Status on={Boolean(a.gtm)} />} hint={<>{t("Container ID (GTM-…). GTM boʻlsa, GA4 ni GTM ichida sozlash ham mumkin.")} <External href="https://tagmanager.google.com/">{t("Ochish")}</External></>}>
+          <input name="gtm" defaultValue={a.gtm} placeholder="GTM-XXXXXXX" autoComplete="off" aria-label="GTM Container ID" className={inputClass} />
         </Vendor>
-        <Vendor title={t("Yandex Metrika")} status={<Status on={Boolean(a.yandexMetrika)} />} hint={<>{t("Hisoblagich raqami (faqat raqamlar). Buyurtma «order_submitted» maqsadi sifatida yuboriladi.")} <External href="https://metrika.yandex.uz/">{t("Ochish")}</External></>}>
-          <input name="yandexMetrika" defaultValue={a.yandexMetrika} inputMode="numeric" placeholder="98765432" autoComplete="off" aria-label={t("Yandex Metrika ID")} className={inputClass} />
+        <Vendor title="Yandex Metrika" status={<Status on={Boolean(a.yandexMetrika)} />} hint={<>{t("Hisoblagich raqami (faqat raqamlar). Buyurtma «order_submitted» maqsadi sifatida yuboriladi.")} <External href="https://metrika.yandex.uz/">{t("Ochish")}</External></>}>
+          <input name="yandexMetrika" defaultValue={a.yandexMetrika} inputMode="numeric" placeholder="98765432" autoComplete="off" aria-label="Yandex Metrika ID" className={inputClass} />
           <label className="flex min-h-11 items-center gap-3 text-[14px] font-semibold text-ink">
             <input type="checkbox" name="webvisor" defaultChecked={overview.webvisor} className="h-5 w-5 accent-ink" />
             {t("Vebvizor (sessiya yozuvlari)")}
           </label>
         </Vendor>
-        <Vendor title={t("Meta Pixel")} status={<Status on={Boolean(a.metaPixel)} />} hint={<>{t("Events Manager → Pixel ID. Savat, checkout va xarid hodisalari avtomatik yuboriladi.")} <External href="https://business.facebook.com/events_manager2">{t("Ochish")}</External></>}>
-          <input name="metaPixel" defaultValue={a.metaPixel} inputMode="numeric" placeholder="1234567890123456" autoComplete="off" aria-label={t("Meta Pixel ID")} className={inputClass} />
+        <Vendor title="Meta Pixel" status={<Status on={Boolean(a.metaPixel)} />} hint={<>{t("Events Manager → Pixel ID. Savat, checkout va xarid hodisalari avtomatik yuboriladi.")} <External href="https://business.facebook.com/events_manager2">{t("Ochish")}</External></>}>
+          <input name="metaPixel" defaultValue={a.metaPixel} inputMode="numeric" placeholder="1234567890123456" autoComplete="off" aria-label="Meta Pixel ID" className={inputClass} />
         </Vendor>
       </ActionForm>
     </Card>
@@ -67,14 +67,14 @@ export function VerificationForm({ overview, siteUrl }: { overview: IntegrationA
   return (
     <Card title={t("Qidiruv tizimlari")} lead={t("Saytga egalikni tasdiqlash. Konsoldagi «HTML-teg» usulini tanlang va tegni yoki faqat content kodini shu yerga joylang.")}>
       <ActionForm action={saveVerificationCodes} submitLabel={t("Saqlash")} className="grid gap-3 md:grid-cols-3">
-        <Vendor title={t("Google Search Console")} status={<Status on={Boolean(v.google)} label={v.google ? "Kod qoʻyilgan" : "Kod yoʻq"} />} hint={<>{t("Mulk qoʻshing → «HTML tag».")} <External href="https://search.google.com/search-console">{t("Ochish")}</External></>}>
-          <input name="google" defaultValue={v.google} placeholder={t("<meta name=\"google-site-verification\" …>")} autoComplete="off" aria-label={t("Google tasdiqlash kodi")} className={inputClass} />
+        <Vendor title="Google Search Console" status={<Status on={Boolean(v.google)} label={v.google ? t("Kod qoʻyilgan") : t("Kod yoʻq")} />} hint={<>{t("Mulk qoʻshing → «HTML tag».")} <External href="https://search.google.com/search-console">{t("Ochish")}</External></>}>
+          <input name="google" defaultValue={v.google} placeholder='<meta name="google-site-verification" …>' autoComplete="off" aria-label={t("Google tasdiqlash kodi")} className={inputClass} />
         </Vendor>
-        <Vendor title={t("Yandex Webmaster")} status={<Status on={Boolean(v.yandex)} label={v.yandex ? "Kod qoʻyilgan" : "Kod yoʻq"} />} hint={<>{t("Sayt qoʻshing → «Meta-teg».")} <External href="https://webmaster.yandex.uz/">{t("Ochish")}</External></>}>
-          <input name="yandex" defaultValue={v.yandex} placeholder={t("<meta name=\"yandex-verification\" …>")} autoComplete="off" aria-label={t("Yandex tasdiqlash kodi")} className={inputClass} />
+        <Vendor title="Yandex Webmaster" status={<Status on={Boolean(v.yandex)} label={v.yandex ? t("Kod qoʻyilgan") : t("Kod yoʻq")} />} hint={<>{t("Sayt qoʻshing → «Meta-teg».")} <External href="https://webmaster.yandex.uz/">{t("Ochish")}</External></>}>
+          <input name="yandex" defaultValue={v.yandex} placeholder='<meta name="yandex-verification" …>' autoComplete="off" aria-label={t("Yandex tasdiqlash kodi")} className={inputClass} />
         </Vendor>
-        <Vendor title={t("Bing Webmaster")} status={<Status on={Boolean(v.bing)} label={v.bing ? "Kod qoʻyilgan" : "Kod yoʻq"} />} hint={<>{t("«HTML Meta Tag» usuli (ixtiyoriy).")} <External href="https://www.bing.com/webmasters">{t("Ochish")}</External></>}>
-          <input name="bing" defaultValue={v.bing} placeholder={t("<meta name=\"msvalidate.01\" …>")} autoComplete="off" aria-label={t("Bing tasdiqlash kodi")} className={inputClass} />
+        <Vendor title="Bing Webmaster" status={<Status on={Boolean(v.bing)} label={v.bing ? t("Kod qoʻyilgan") : t("Kod yoʻq")} />} hint={<>{t("«HTML Meta Tag» usuli (ixtiyoriy).")} <External href="https://www.bing.com/webmasters">{t("Ochish")}</External></>}>
+          <input name="bing" defaultValue={v.bing} placeholder='<meta name="msvalidate.01" …>' autoComplete="off" aria-label={t("Bing tasdiqlash kodi")} className={inputClass} />
         </Vendor>
       </ActionForm>
       <div className="mt-4 rounded-[16px] border border-line p-4 text-[14px] leading-6 text-ink-2">
@@ -86,11 +86,11 @@ export function VerificationForm({ overview, siteUrl }: { overview: IntegrationA
 
 export function MessagingForms({ overview }: { overview: IntegrationAdminOverview }) {
   const operatorTokenHint = overview.operator.botTokenConfigured
-    ? overview.operator.botTokenManagedInAdmin ? "Panelda shifrlangan holda saqlangan. Almashtirish uchun yangisini kiriting." : "Deploy sozlamasidan olinmoqda. Almashtirish uchun yangisini kiriting."
-    : "Bot tokeni sozlanmagan.";
+    ? overview.operator.botTokenManagedInAdmin ? t("Panelda shifrlangan holda saqlangan. Almashtirish uchun yangisini kiriting.") : t("Deploy sozlamasidan olinmoqda. Almashtirish uchun yangisini kiriting.")
+    : t("Bot tokeni sozlanmagan.");
   const emailKeyHint = overview.email.apiKeyConfigured
-    ? overview.email.apiKeyManagedInAdmin ? "Shifrlangan holda saqlangan va qayta koʻrsatilmaydi." : "Deploy sozlamasidan olinmoqda."
-    : "Resend API kaliti sozlanmagan.";
+    ? overview.email.apiKeyManagedInAdmin ? t("Shifrlangan holda saqlangan va qayta koʻrsatilmaydi.") : t("Deploy sozlamasidan olinmoqda.")
+    : t("Resend API kaliti sozlanmagan.");
   const needsKey = !overview.encryptionConfigured;
   return (
     <div className="grid gap-4 xl:grid-cols-2">
@@ -98,7 +98,7 @@ export function MessagingForms({ overview }: { overview: IntegrationAdminOvervie
         {needsKey && <div className="mb-4"><Notice>{t("Maxfiy kalitlarni panelda saqlash uchun deployʼda INTEGRATION_ENCRYPTION_KEY kerak (openssl rand -hex 32).")}</Notice></div>}
         <ActionForm action={saveOperatorIntegration} submitLabel={t("Saqlash")} className="flex flex-col gap-4">
           <Field label={t("Bot tokeni")} hint={operatorTokenHint}>
-            <input name="botToken" type="password" autoComplete="new-password" spellCheck={false} placeholder={t("123456789:AA…")} className={inputClass} />
+            <input name="botToken" type="password" autoComplete="new-password" spellCheck={false} placeholder="123456789:AA…" className={inputClass} />
           </Field>
           <Field label={t("Operator chat ID")} hint={t("Guruh uchun odatda -100… bilan boshlanadi.")}>
             <input name="chatId" inputMode="numeric" defaultValue={overview.operator.chatId} placeholder="-1001234567890" className={inputClass} />
@@ -115,7 +115,7 @@ export function MessagingForms({ overview }: { overview: IntegrationAdminOvervie
       <Card title={t("Email — Resend")} lead={t("Buyurtma tasdigʻi va obuna xatlari. Yuboruvchi domen Resendʼda tasdiqlangan boʻlsin (SPF, DKIM, DMARC).")} actions={<Status on={overview.email.configured} />}>
         <ActionForm action={saveEmailIntegration} submitLabel={t("Saqlash")} className="flex flex-col gap-4">
           <Field label={t("Resend API kaliti")} hint={emailKeyHint}>
-            <input name="apiKey" type="password" autoComplete="new-password" spellCheck={false} placeholder={t("re_…")} className={inputClass} />
+            <input name="apiKey" type="password" autoComplete="new-password" spellCheck={false} placeholder="re_…" className={inputClass} />
           </Field>
           <Field label={t("Yuboruvchi (From)")} hint={t("Masalan: Go Vita <no-reply@govita.uz>")}>
             <input name="from" defaultValue={overview.email.from} autoComplete="off" className={inputClass} />
@@ -142,13 +142,13 @@ export function MessagingForms({ overview }: { overview: IntegrationAdminOvervie
 export function SmsForm({ overview }: { overview: IntegrationAdminOverview }) {
   const sms = overview.sms;
   const passwordHint = sms.passwordConfigured
-    ? sms.passwordManagedInAdmin ? "Shifrlangan holda saqlangan va qayta koʻrsatilmaydi." : "Deploy sozlamasidan (ESKIZ_PASSWORD) olinmoqda."
-    : "Parol sozlanmagan.";
+    ? sms.passwordManagedInAdmin ? t("Shifrlangan holda saqlangan va qayta koʻrsatilmaydi.") : t("Deploy sozlamasidan ({env}) olinmoqda.", { env: "ESKIZ_PASSWORD" })
+    : t("Parol sozlanmagan.");
   return (
     <Card
       title={t("SMS — Eskiz")}
       lead={t("Avtomatlashtirish va kampaniyalar Telegram ulanmagan mijozga SMS yuboradi. Reklama SMS faqat roziligini bergan mijozga ketadi (savatdagi belgi), oxirida «STOP» havolasi, 18:00–09:00 (Toshkent) yuborilmaydi. Yuboruvchi pd.gov.uz (shaxsga doir maʼlumotlar bazalari reyestri) da roʻyxatdan oʻtgan boʻlishi shart.")}
-      actions={<Status on={sms.configured || sms.fake} label={sms.fake ? "Sinov rejimi" : undefined} />}
+      actions={<Status on={sms.configured || sms.fake} label={sms.fake ? t("Sinov rejimi") : undefined} />}
     >
       {sms.fake && <div className="mb-4"><Notice>{t("SMS_FAKE=1: SMS haqiqatda yuborilmaydi, faqat «Xabarlar» jurnaliga yoziladi. Live deployʼda bu bayroq eʼtiborga olinmaydi.")}</Notice></div>}
       {!overview.encryptionConfigured && <div className="mb-4"><Notice>{t("Parolni panelda saqlash uchun deployʼda INTEGRATION_ENCRYPTION_KEY kerak (openssl rand -hex 32).")}</Notice></div>}
@@ -203,19 +203,19 @@ function Endpoint({ label, url }: { label: string; url: string }) {
 }
 
 function secretHint(configured: boolean, inAdmin: boolean, env: string): string {
-  if (!configured) return "Kiritilmagan.";
-  return inAdmin ? "Shifrlangan holda saqlangan va qayta koʻrsatilmaydi. Almashtirish uchun yangisini kiriting." : `Deploy sozlamasidan (${env}) olinmoqda.`;
+  if (!configured) return t("Kiritilmagan.");
+  return inAdmin ? t("Shifrlangan holda saqlangan va qayta koʻrsatilmaydi. Almashtirish uchun yangisini kiriting.") : t("Deploy sozlamasidan ({env}) olinmoqda.", { env });
 }
 
 export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overview: IntegrationAdminOverview; siteUrl: string; ready: { payme: boolean; click: boolean }; ordersInDb: boolean }) {
   const { payme, click, fiscal } = overview;
-  const status = (on: boolean, enabled: boolean, test = false) => <Status on={on} label={on ? (test ? "Test rejimi" : "Ishlayapti") : enabled ? "Kalit yetishmaydi" : "Oʻchiq"} />;
+  const status = (on: boolean, enabled: boolean, test = false) => <Status on={on} label={on ? (test ? t("Test rejimi") : t("Ishlayapti")) : enabled ? t("Kalit yetishmaydi") : t("Oʻchiq")} />;
   return (
     <>
       {!ordersInDb && <div className="mb-4"><Notice tone="error">{t("Onlayn toʻlov buyurtmalar bazada saqlanganda ishlaydi (DATABASE_URL). Hozir checkoutʼda faqat naqd pul.")}</Notice></div>}
       {!overview.encryptionConfigured && <div className="mb-4"><Notice>{t("Kalitlarni panelda saqlash uchun deployʼda INTEGRATION_ENCRYPTION_KEY kerak (openssl rand -hex 32).")}</Notice></div>}
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card title={t("Payme")} lead={t("Payme Business → Kassa. Kalitlar shifrlangan holda saqlanadi; mijoz Payme sahifasida toʻlaydi va buyurtma sahifasiga qaytadi.")} actions={status(ready.payme, payme.enabled, payme.testMode)}>
+        <Card title="Payme" lead={t("Payme Business → Kassa. Kalitlar shifrlangan holda saqlanadi; mijoz Payme sahifasida toʻlaydi va buyurtma sahifasiga qaytadi.")} actions={status(ready.payme, payme.enabled, payme.testMode)}>
           <ActionForm action={savePaymeIntegration} submitLabel={t("Saqlash")} className="flex flex-col gap-4">
             <Field label={t("Merchant ID (kassa ID)")} hint={t("Payme Business → Kassa → Sozlamalar.")}>
               <input name="merchantId" defaultValue={payme.merchantId} autoComplete="off" spellCheck={false} placeholder="5e730e8e0b852a417aa49ceb" className={inputClass} />
@@ -240,12 +240,12 @@ export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overvie
           </div>
         </Card>
 
-        <Card title={t("Click")} lead={t("merchant.click.uz → Servis sozlamalari. Mijoz Click sahifasida toʻlaydi va buyurtma sahifasiga qaytadi.")} actions={status(ready.click, click.enabled)}>
+        <Card title="Click" lead={t("merchant.click.uz → Servis sozlamalari. Mijoz Click sahifasida toʻlaydi va buyurtma sahifasiga qaytadi.")} actions={status(ready.click, click.enabled)}>
           <ActionForm action={saveClickIntegration} submitLabel={t("Saqlash")} className="flex flex-col gap-4">
-            <Field label={t("Service ID")}>
+            <Field label="Service ID">
               <input name="serviceId" defaultValue={click.serviceId} inputMode="numeric" autoComplete="off" placeholder="12345" className={inputClass} />
             </Field>
-            <Field label={t("Merchant ID")}>
+            <Field label="Merchant ID">
               <input name="merchantId" defaultValue={click.merchantId} inputMode="numeric" autoComplete="off" placeholder="6789" className={inputClass} />
             </Field>
             <Field label={t("Secret key")} hint={secretHint(click.secretKeyConfigured, click.secretKeyManagedInAdmin, "CLICK_SECRET_KEY")}>
@@ -255,8 +255,8 @@ export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overvie
             {click.secretKeyManagedInAdmin && <ClearOverride name="clearSecretKey" label={t("Paneldagi Secret keyʼni oʻchirish")} />}
           </ActionForm>
           <div className="mt-4 flex flex-col gap-3 border-t border-line pt-4">
-            <Endpoint label={t("Prepare URL")} url={`${siteUrl}/api/payments/click/prepare`} />
-            <Endpoint label={t("Complete URL")} url={`${siteUrl}/api/payments/click/complete`} />
+            <Endpoint label="Prepare URL" url={`${siteUrl}/api/payments/click/prepare`} />
+            <Endpoint label="Complete URL" url={`${siteUrl}/api/payments/click/complete`} />
             <p className="text-[13px] leading-[18px] text-muted">{t("Har soʻrovning md5 imzosi Secret key bilan tekshiriladi; summa buyurtma jamiga teng boʻlmasa toʻlov rad etiladi.")}</p>
           </div>
         </Card>

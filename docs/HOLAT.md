@@ -37,13 +37,13 @@ production'ni o'zi yangilaydi. «Deploy to Fly» va «Deploy to Hetzner» secret
   nuqta». Brendbook PDF — foydalanuvchida (repoda yoʻq). **Diqqat**: SMS matnlari «govita:» bilan
   boshlanadi — Eskiz shablonlarini qayta tasdiqlatish kerak.
 
-## Admin panel ruscha (2026-11, boshlangan)
+## Admin panel ruscha (2026-11, qilindi)
 
-- **Qilindi**: infratuzilma (`lib/admin/i18n/`, til tanlovi `UZ | RU` yon menyuda, cookie `gv_admin_lang`), menyu va qobiq,
-  bosh sahifa (dashboard), buyurtmalar ro'yxati va buyurtma sahifasi, grafiklar. Test: `i18n.test.ts`.
-- **Qolgan** (~105 fayl, skript bilan o'raladi, so'ng lug'at): login/setup/2FA, mahsulotlar, mijozlar, segmentlar, kampaniyalar,
-  vitrina, sodiqlik, integratsiyalar, savdo qoidalari, bot, kontent, audit, server action xabarlari (`_actions/*.ts`),
-  `ui.tsx` dagi «soʻm» yozuvi (client komponentlar uni import qiladi — alohida hal qilinadi).
+- **Qilindi (2026-11-11)**: butun admin panel — menyu, bosh sahifa, buyurtmalar, katalog, mijozlar, segmentlar,
+  kampaniyalar, oqimlar, vitrina, aksiya/promokod, sodiqlik, savdo qoidalari, integratsiyalar, bot, kontent, audit,
+  login/2FA, server action xabarlari. Lug'at `dict-ru.ts` (~2100 yozuv), `i18n.test.ts` har `t("…")` ni tekshiradi.
+- **Atayin o'zbekcha**: mijozga boradigan matnlar (SMS/Telegram shablonlari, vitrina kontenti), mahsulot/kategoriya
+  nomlari (maʼlumot), Keyword Planner eksporti, kutayotganlar CSV sarlavhalari.
 
 ## Navbatdagi ish (reja tayyor, qurilish foydalanuvchi aytganda)
 

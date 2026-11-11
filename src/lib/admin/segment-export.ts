@@ -52,15 +52,22 @@ export function withoutOptedOut(members: SegmentMember[], optedOut: ReadonlySet<
 /**
  * crm — readable list for the team; meta / google — the column layouts
  * Meta Custom Audiences and Google Customer Match accept, SHA-256 hashed so
- * no raw contact leaves the shop.
+ * no raw contact leaves the shop. `tr` puts the crm list's headers in the
+ * admin's language (the route passes t(); the ad formats are fixed).
  */
-export function segmentCsv(members: SegmentMember[], format: ExportFormat, optedOut: ReadonlySet<string> = new Set()): string {
+export function segmentCsv(
+  members: SegmentMember[],
+  format: ExportFormat,
+  optedOut: ReadonlySet<string> = new Set(),
+  tr: (uz: string) => string = (uz) => uz,
+): string {
   const lines: string[] = [];
   if (format === "crm") {
-    lines.push(["Ism", "Telefon", "Email", "Buyurtmalar", "Summa (soʻm)", "Oxirgi faollik", "Telegram", "Reklamadan voz kechgan"].join(","));
+    lines.push(["Ism", "Telefon", "Email", "Buyurtmalar", "Summa (soʻm)", "Oxirgi faollik", "Telegram", "Reklamadan voz kechgan"].map((h) => csvCell(tr(h))).join(","));
+    const yes = tr("ha");
     for (const m of members) {
       const stopped = optedOut.has(phone9(m.phone) ?? "");
-      lines.push([m.name, m.phone, m.email, m.orders, m.value, m.lastAt?.toISOString().slice(0, 10) ?? "", m.telegramChatId ? "ha" : "", stopped ? "ha" : ""].map(csvCell).join(","));
+      lines.push([m.name, m.phone, m.email, m.orders, m.value, m.lastAt?.toISOString().slice(0, 10) ?? "", m.telegramChatId ? yes : "", stopped ? yes : ""].map(csvCell).join(","));
     }
   } else if (format === "meta") {
     members = withoutOptedOut(members, optedOut);

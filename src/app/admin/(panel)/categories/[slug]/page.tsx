@@ -22,7 +22,7 @@ export default async function EditCategoryPage({ params, searchParams }: { param
       <PageHeader
         eyebrow={t("Kategoriyalar")}
         title={category.name.uz}
-        lead={n > 0 ? `${n} ta mahsulot` : "Hali mahsulot yoʻq — saytda koʻrinmaydi"}
+        lead={n > 0 ? t("{n} ta mahsulot", { n }) : t("Hali mahsulot yoʻq — saytda koʻrinmaydi")}
         actions={<>
           {n > 0 && <a href={`/uz/products/${category.slug}`} target="_blank" rel="noopener noreferrer" className={secondaryButtonClass}>{t("Saytda koʻrish ↗")}</a>}
           <Link href={`/admin/products?category=${encodeURIComponent(category.slug)}`} className={secondaryButtonClass}>{t("Mahsulotlar")}</Link>
@@ -49,7 +49,7 @@ export default async function EditCategoryPage({ params, searchParams }: { param
         <div className="min-w-0">
           <h2 className="text-[17px] font-bold text-ink">{t("Kategoriyani oʻchirish")}</h2>
           <p className="mt-1 max-w-2xl text-[14px] text-ink-2">
-            {n > 0 ? `Unda ${n} ta mahsulot bor — avval ularni boshqa kategoriyaga oʻtkazing.` : "Qaytarib boʻlmaydi. Mahsulot yoʻq, shuning uchun hech narsa yoʻqolmaydi."}
+            {n > 0 ? t("Unda {n} ta mahsulot bor — avval ularni boshqa kategoriyaga oʻtkazing.", { n }) : t("Qaytarib boʻlmaydi. Mahsulot yoʻq, shuning uchun hech narsa yoʻqolmaydi.")}
           </p>
         </div>
         {n === 0 && (

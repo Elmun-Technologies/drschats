@@ -57,7 +57,7 @@ const campaignSchema = z
 export async function sendSegmentCampaign(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
   const parsed = campaignSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (!parsed.success) return { error: t(parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring.") };
   const segment = segmentById(parsed.data.segment);
   if (!segment) return { error: t("Segment topilmadi.") };
   const d = parsed.data;
@@ -95,10 +95,10 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
     return {
       error:
         segment.kind === "bot"
-          ? "Bu auditoriyada ochiq Telegram chati yoʻq: hamma botni bloklagan yoki klub oʻchirilgan."
+          ? t("Bu auditoriyada ochiq Telegram chati yoʻq: hamma botni bloklagan yoki klub oʻchirilgan.")
           : d.channel === "telegram"
-            ? "Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi."
-            : "Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq, obunadan chiqqan yoki SMS ga rozilik bermagan).",
+            ? t("Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi.")
+            : t("Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq, obunadan chiqqan yoki SMS ga rozilik bermagan)."),
     };
   }
 
@@ -107,17 +107,17 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
     .values({ name: d.name, channel: d.channel, segment: segment.id, message: d.message, audience: members.length, createdBy: admin.id, promo, link: d.link || null })
     .returning({ id: campaigns.id });
   let queued = 0;
-  for (const t of targets) {
+  for (const target of targets) {
     const id = await queueMessage(db, {
-      channel: t.reach.channel,
-      phone9: t.phone9,
-      chatId: t.reach.channel === "telegram" ? t.reach.chatId : null,
+      channel: target.reach.channel,
+      phone9: target.phone9,
+      chatId: target.reach.channel === "telegram" ? target.reach.chatId : null,
       locale: "uz",
-      text: renderTemplate(d.message, { ism: firstName(t.name, "uz") }),
+      text: renderTemplate(d.message, { ism: firstName(target.name, "uz") }),
       link: d.link || null,
       promo,
       campaignId: campaign.id,
-      dedupeKey: campaignMessageKey(campaign.id, t.key),
+      dedupeKey: campaignMessageKey(campaign.id, target.key),
     });
     if (id) queued += 1;
   }
@@ -125,9 +125,12 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   revalidatePath("/admin/campaigns");
   revalidatePath("/admin/messages");
   revalidatePath(`/admin/segments/${segment.id}`);
-  const night = isQuietHours(new Date()) ? " Hozir kechki/tungi vaqt (18:00–09:00) — xabarlar ertalab 09:00 da ketadi." : "";
+  const night = isQuietHours(new Date()) ? ` ${t("Hozir kechki/tungi vaqt (18:00–09:00) — xabarlar ertalab 09:00 da ketadi.")}` : "";
   await auditLog(admin, "campaign.send", auditTarget(form));
-  return { ok: `${queued} ta mijozga navbatga qoʻyildi${unreachable ? ` (${unreachable} tasiga kanal yoʻq yoki obunadan chiqqan)` : ""}. Ishchi har daqiqada yuboradi.${night}` };
+  const queuedText = unreachable
+    ? t("{queued} ta mijozga navbatga qoʻyildi ({unreachable} tasiga kanal yoʻq yoki obunadan chiqqan). Ishchi har daqiqada yuboradi.", { queued, unreachable })
+    : t("{queued} ta mijozga navbatga qoʻyildi. Ishchi har daqiqada yuboradi.", { queued });
+  return { ok: `${queuedText}${night}` };
 }
 
 /* ─── Promotions ─────────────────────────────────────────────────────────── */
@@ -165,7 +168,7 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   const admin = await requireAdmin("marketing");
   const data = Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")) as Record<string, string>;
   const parsed = promotionSchema.safeParse(data);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (!parsed.success) return { error: t(parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring.") };
   const d = parsed.data;
   const slugs = form.getAll("productSlugs").map(String).filter((s) => SLUG_RE.test(s)).slice(0, 500);
   const startsAt = fromTashkentInput(d.startsAt);
@@ -196,7 +199,7 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   revalidatePath("/admin/promotions");
   if (!id) redirect("/admin/promotions?saved=1");
   await auditLog(admin, "promotion.save", auditTarget(form));
-  return { ok: "Saqlandi. Saytda darhol amal qiladi." };
+  return { ok: t("Saqlandi. Saytda darhol amal qiladi.") };
 }
 
 export async function togglePromotion(form: FormData) {

@@ -56,11 +56,11 @@ export default async function NewBannerPage({ searchParams }: { searchParams: Pr
     <>
       <PageHeader
         eyebrow={t("Vitrina")}
-        title={copy ? `Yangi variant (${copy.variant})` : "Yangi banner"}
+        title={copy ? t("Yangi variant ({variant})", { variant: copy.variant }) : t("Yangi banner")}
         lead={
           copy
-            ? `«${copy.experiment}» tajribasi uchun ikkinchi variant. Saqlanganda asl banner shu tajribaning ${copy.variant === "B" ? "A" : "B"} varianti boʻladi.`
-            : "Banner muddat ichida saytda chiqadi. Bosh sahifada faol banner boʻlmasa oʻrnatilgan slaydlar koʻrinadi."
+            ? t("«{experiment}» tajribasi uchun ikkinchi variant. Saqlanganda asl banner shu tajribaning {variant} varianti boʻladi.", { experiment: copy.experiment, variant: copy.variant === "B" ? "A" : "B" })
+            : t("Banner muddat ichida saytda chiqadi. Bosh sahifada faol banner boʻlmasa oʻrnatilgan slaydlar koʻrinadi.")
         }
         actions={<Link href="/admin/storefront" className={secondaryButtonClass}>{t("← Bannerlar")}</Link>}
       />

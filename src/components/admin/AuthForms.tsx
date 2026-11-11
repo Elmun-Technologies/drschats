@@ -38,7 +38,7 @@ export function SetupForm({ minPassword }: { minPassword: number }) {
       <Field label={t("Email")}>
         <input name="email" type="email" autoComplete="username" required className={inputClass} />
       </Field>
-      <Field label={t("Parol")} hint={`Kamida ${minPassword} belgi`}>
+      <Field label={t("Parol")} hint={t("Kamida {n} belgi", { n: minPassword })}>
         <input name="password" type="password" autoComplete="new-password" minLength={minPassword} required className={inputClass} />
       </Field>
       <SubmitButton pendingLabel={t("Yaratilmoqda…")}>{t("Administratorni yaratish")}</SubmitButton>

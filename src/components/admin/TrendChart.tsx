@@ -20,9 +20,9 @@ const MEASURES: { key: Measure; label: string; unit: string }[] = [
   { key: "visitors", label: "Tashriflar", unit: "kishi" },
 ];
 
-function compact(value: number): string {
-  if (value >= 1_000_000) return `${(value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1).replace(".0", "")} mln`;
-  if (value >= 10_000) return `${Math.round(value / 1000)} ming`;
+function compact(value: number, t: (uz: string, vars?: Record<string, string | number>) => string): string {
+  if (value >= 1_000_000) return t("{n} mln", { n: (value / 1_000_000).toFixed(value >= 10_000_000 ? 0 : 1).replace(".0", "") });
+  if (value >= 10_000) return t("{n} ming", { n: Math.round(value / 1000) });
   return formatNumber(Math.round(value));
 }
 
@@ -85,10 +85,10 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
           ))}
         </div>
         <div className="sm:text-right">
-          <p className="text-[28px] font-bold leading-8 tabular-nums text-ink">{measure === "revenue" ? compact(total) : formatNumber(total)} <span className="text-[15px] font-semibold text-muted">{t(meta.unit)}</span></p>
+          <p className="text-[28px] font-bold leading-8 tabular-nums text-ink">{measure === "revenue" ? compact(total, t) : formatNumber(total)} <span className="text-[15px] font-semibold text-muted">{t(meta.unit)}</span></p>
           <p className="mt-1 text-[13px] text-muted">
             {change !== null && <span className="mr-1.5 font-semibold tabular-nums text-ink">{change >= 0 ? "↑" : "↓"} {Math.abs(change)}%</span>}
-            {t("oldingi")} {periodLabel}: {measure === "revenue" ? compact(prevTotal) : formatNumber(prevTotal)}
+            {t("oldingi")} {periodLabel}: {measure === "revenue" ? compact(prevTotal, t) : formatNumber(prevTotal)}
           </p>
         </div>
       </div>
@@ -101,7 +101,7 @@ export function TrendChart({ current, previous, unit, periodLabel }: { current: 
       <div className="mt-4 flex min-h-[268px] flex-1 gap-3">
         <div className="relative mb-7 w-12 shrink-0 text-right text-[12px] tabular-nums text-muted" aria-hidden="true">
           {[1, 0.5, 0].map((f) => (
-            <span key={f} className="absolute right-0 -translate-y-1/2" style={{ top: `${(1 - f) * 100}%` }}>{compact(max * f)}</span>
+            <span key={f} className="absolute right-0 -translate-y-1/2" style={{ top: `${(1 - f) * 100}%` }}>{compact(max * f, t)}</span>
           ))}
         </div>
         <div className="flex min-w-0 flex-1 flex-col">
