@@ -16,14 +16,17 @@ def message(chat=7, text='/start'):
 @pytest.mark.asyncio
 async def test_menu_opens_the_shop_as_a_mini_app():
     rows = remote.menu().inline_keyboard
-    assert rows[0][0].web_app.url.endswith('/uz')
+    # The default language is Russian; an Uzbek member gets the Uzbek shop.
+    assert rows[0][0].web_app.url.endswith('/ru')
+    assert remote.menu('uz').inline_keyboard[0][0].web_app.url.endswith('/uz')
     assert all(button.callback_data != 'm:subs' for row in rows for button in row)
 
 
 @pytest.mark.asyncio
 async def test_unlinked_start_asks_for_contact():
     api = SimpleNamespace(request=AsyncMock(side_effect=[
-        {'ok': True}, BackendError(404, 'customer_not_linked'), {'greeting': {'uz': 'Salom <b>Ali</b>'}}]))
+        {'ok': True}, BackendError(404, 'customer_not_linked'), {'locale': 'uz'},
+        {'greeting': {'uz': 'Salom <b>Ali</b>'}}]))
     m = message()
     await remote.start(m, api)
     assert api.request.await_args_list[0].args[:2] == ('POST', '/members/7/start')
@@ -35,10 +38,22 @@ async def test_unlinked_start_asks_for_contact():
 @pytest.mark.asyncio
 async def test_start_survives_a_config_failure():
     api = SimpleNamespace(request=AsyncMock(side_effect=[
-        {'ok': True}, BackendError(404, 'customer_not_linked'), BackendError(503, 'upstream_unavailable')]))
+        {'ok': True}, BackendError(404, 'customer_not_linked'), {'locale': 'ru'},
+        BackendError(503, 'upstream_unavailable')]))
     m = message()
     await remote.start(m, api)
-    assert m.answer.await_args_list[0].args[0] == remote.T['welcome']
+    assert m.answer.await_args_list[0].args[0] == remote.tr('welcome', 'ru')
+
+
+@pytest.mark.asyncio
+async def test_new_member_starts_in_russian():
+    api = SimpleNamespace(request=AsyncMock(side_effect=[
+        {'ok': True}, BackendError(404, 'customer_not_linked'), {'locale': 'ru'}, {'greeting': {}}]))
+    m = message()
+    await remote.start(m, api)
+    assert api.request.await_args_list[0].kwargs['body']['locale'] == 'ru'
+    assert m.answer.await_args_list[0].args[0] == remote.tr('welcome', 'ru')
+    assert 'Поделиться номером' in str(m.answer.await_args_list[1].kwargs['reply_markup'])
 
 
 @pytest.mark.asyncio

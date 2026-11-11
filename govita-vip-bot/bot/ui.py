@@ -32,6 +32,22 @@ T = {
     "opAsk": "Savolingizni bitta xabarda yozing — operatorga yuboramiz.",
 }
 
+# Russian for the texts the club flow (remote.py) still sent in Uzbek only.
+# The bot speaks Russian by default (2026-11): a member who never chose a
+# language reads these.
+T_RU = {
+    "welcome": "Здравствуйте! Добро пожаловать в <b>govita</b> — VIP-клуб здоровья 👋",
+    "askContact": "Чтобы вступить в клуб, поделитесь номером — статус заказов и напоминания привяжутся к нему.",
+    "menu": ("<b>govita — VIP-клуб здоровья</b>\n\nКаталог, корзина, статус заказа и предложения клуба — "
+             "всё здесь. Кнопки внизу всегда под рукой."),
+}
+
+
+def tr(key: str, locale: str = "ru") -> str:
+    """T in the member's language: Russian unless they chose Uzbek."""
+    return T[key] if locale == "uz" else T_RU.get(key, T[key])
+
+
 STAGE_MSG = {
     "received": "🧾 Buyurtma <b>№{code}</b> qabul qilindi · {total}",
     "confirmed": "✅ Buyurtma <b>№{code}</b> tasdiqlandi va yigʻilmoqda.",
@@ -72,8 +88,9 @@ def main_menu():
     )
 
 
-def contact_kb():
-    return RM(keyboard=[[KB(text="📱 Raqamni ulashish", request_contact=True)]],
+def contact_kb(locale="ru"):
+    label = "📱 Raqamni ulashish" if locale == "uz" else "📱 Поделиться номером"
+    return RM(keyboard=[[KB(text=label, request_contact=True)]],
               resize_keyboard=True, is_persistent=True)
 
 

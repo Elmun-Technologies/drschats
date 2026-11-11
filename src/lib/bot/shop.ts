@@ -189,7 +189,7 @@ export async function readBotCart(chatId: number): Promise<StoredCart> {
   return {
     lines: row?.lines ?? [],
     promoCode: row?.promoCode ?? null,
-    locale: row?.locale ?? ((await memberLocale(chatId)) ?? "uz"),
+    locale: row?.locale ?? ((await memberLocale(chatId)) ?? "ru"),
   };
 }
 
@@ -207,7 +207,7 @@ async function saveBotCart(chatId: number, cart: StoredCart): Promise<void> {
 /** The stored language, available before a phone is linked (bot_carts/bot_members). */
 export async function botLocale(chatId: number): Promise<BotLocale> {
   const [row] = await getDb().select({ locale: botCarts.locale }).from(botCarts).where(eq(botCarts.chatId, chatId)).limit(1);
-  return row?.locale ?? ((await memberLocale(chatId)) ?? "uz");
+  return row?.locale ?? ((await memberLocale(chatId)) ?? "ru");
 }
 
 export async function setBotLocale(chatId: number, locale: BotLocale): Promise<void> {

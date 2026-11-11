@@ -57,8 +57,9 @@ export async function startMember(chatId: number, locale: Locale, source?: strin
     .values({ chatId, locale, source })
     .onConflictDoUpdate({
       target: botMembers.chatId,
-      // A returning member is reachable again; the first source is kept.
-      set: { locale, blockedAt: null, source: sql`coalesce(${botMembers.source}, excluded.source)` },
+      // A returning member is reachable again; the first source is kept, and so
+      // is the language they chose — /start sends the default every time.
+      set: { blockedAt: null, source: sql`coalesce(${botMembers.source}, excluded.source)` },
     });
 }
 

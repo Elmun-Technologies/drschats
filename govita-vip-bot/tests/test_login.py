@@ -134,7 +134,8 @@ async def test_deny_and_expired():
     m = message("/start login_bad!")
     api = Api({f"/members/{CHAT}/start": {"ok": True}})
     await login.start_login(m, api, State())
-    assert "eskirgan" in m.answer.await_args.args[0]
+    # A malformed link is answered before the member's language is known: Russian, the default.
+    assert "устарела" in m.answer.await_args.args[0]
 
 
 @pytest.mark.asyncio

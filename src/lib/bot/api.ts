@@ -26,7 +26,7 @@ const fail = (status: number, error: string): ApiResponse => ({ status, body: { 
 const chatIdSchema = z.coerce.number().int().positive().max(Number.MAX_SAFE_INTEGER);
 
 const memberSchema = z.object({
-  locale: z.enum(["uz", "ru"]).default("uz"),
+  locale: z.enum(["uz", "ru"]).default("ru"),
   // Deep-link payloads are attacker-chosen; a bad one is dropped, not an error.
   source: z.string().optional().transform((s) => (s && /^[A-Za-z0-9_-]{1,64}$/.test(s) ? s : undefined)),
 });
@@ -47,7 +47,7 @@ const ticketSchema = z.object({
 
 const claimSchema = z.object({ limit: z.number().int().min(1).max(25).default(10) });
 
-const localeSchema = z.enum(["uz", "ru"]).default("uz");
+const localeSchema = z.enum(["uz", "ru"]).default("ru");
 // Absent means "the member's own language" downstream; zod 4 would fill the default inside .optional().
 const optionalLocale = z.enum(["uz", "ru"]).optional();
 const cartSchema = z.object({ chatId: chatIdSchema, locale: optionalLocale });
@@ -75,7 +75,7 @@ const quoteSchema = z.object({
 });
 const orderSchema = z.object({
   chatId: chatIdSchema,
-  locale: localeSchema.default("uz"),
+  locale: localeSchema.default("ru"),
   name: z.string().trim().min(2).max(120),
   phone: z.string().trim().min(7).max(20),
   method: z.enum(["courier", "pickup"]),
@@ -111,7 +111,7 @@ export async function handleBotApi(method: string, path: string[], body: unknown
 
   // A slug is not numeric, so the generic mapper above leaves it as-is.
   if (method === "GET" && path[0] === "shop" && path[1] === "product" && path[2]) {
-    const locale = localeSchema.safeParse(query.get("locale") ?? "uz");
+    const locale = localeSchema.safeParse(query.get("locale") ?? "ru");
     if (!locale.success || path[2].length > 160) return fail(422, "invalid");
     const product = await shop.botProduct(path[2], locale.data);
     return product
@@ -135,7 +135,7 @@ export async function handleBotApi(method: string, path: string[], body: unknown
       }
       const r = await store.linkContact({ chatId: p.data.chatId, phone: p.data.phone, name: p.data.name, username: p.data.username ?? undefined });
       if (!r.ok) return fail(r.error === "invalid_phone" ? 422 : 409, r.error);
-      return ok({ phone: r.phone, name: p.data.name ?? "", locale: (await store.memberLocale(p.data.chatId)) ?? "uz" });
+      return ok({ phone: r.phone, name: p.data.name ?? "", locale: (await store.memberLocale(p.data.chatId)) ?? "ru" });
     }
 
     case "POST /members/:id/start": {
@@ -151,14 +151,14 @@ export async function handleBotApi(method: string, path: string[], body: unknown
       if (!chat.success) return fail(422, "invalid");
       const link = await store.linkOf(chat.data);
       if (!link) return fail(404, "customer_not_linked");
-      return ok({ id: link.chatId, name: link.name ?? "", phone: link.phone, locale: (await store.memberLocale(chat.data)) ?? "uz" });
+      return ok({ id: link.chatId, name: link.name ?? "", phone: link.phone, locale: (await store.memberLocale(chat.data)) ?? "ru" });
     }
 
     case "GET /customers/:id/orders": {
       const chat = id(1);
       if (!chat.success) return fail(422, "invalid");
       const limit = Math.min(50, Math.max(1, Number(query.get("limit")) || 5));
-      const locale = (await store.memberLocale(chat.data)) ?? "uz";
+      const locale = (await store.memberLocale(chat.data)) ?? "ru";
       return ok({ items: await store.ordersFor(chat.data, limit, locale) });
     }
 
@@ -178,7 +178,7 @@ export async function handleBotApi(method: string, path: string[], body: unknown
     case "GET /customers/:id/orders/:code": {
       const chat = id(1);
       if (!chat.success || !/^GV-\d{1,12}$/.test(path[3])) return fail(404, "order_not_found");
-      const order = await store.orderFor(chat.data, path[3], (await store.memberLocale(chat.data)) ?? "uz");
+      const order = await store.orderFor(chat.data, path[3], (await store.memberLocale(chat.data)) ?? "ru");
       return order ? ok(order) : fail(404, "order_not_found");
     }
 
@@ -187,7 +187,7 @@ export async function handleBotApi(method: string, path: string[], body: unknown
       if (!chat.success) return fail(422, "invalid");
       const link = await store.linkOf(chat.data);
       if (!link) return fail(404, "customer_not_linked");
-      const locale = (await store.memberLocale(chat.data)) ?? "uz";
+      const locale = (await store.memberLocale(chat.data)) ?? "ru";
       return ok({ ...(await clubCard(link.phone.slice(-9))), cabinetUrl: `${SITE_URL}/${locale}/account` });
     }
 
@@ -223,13 +223,13 @@ export async function handleBotApi(method: string, path: string[], body: unknown
     }
 
     case "GET /shop/categories": {
-      const locale = localeSchema.safeParse(query.get("locale") ?? "uz");
+      const locale = localeSchema.safeParse(query.get("locale") ?? "ru");
       if (!locale.success) return fail(422, "invalid");
       return ok({ categories: await shop.botCategories(locale.data) });
     }
 
     case "GET /shop/catalog": {
-      const locale = localeSchema.safeParse(query.get("locale") ?? "uz");
+      const locale = localeSchema.safeParse(query.get("locale") ?? "ru");
       if (!locale.success) return fail(422, "invalid");
       const page = Math.min(10_000, Math.max(1, Number(query.get("page")) || 1));
       return ok(
@@ -321,9 +321,9 @@ export async function handleBotApi(method: string, path: string[], body: unknown
     case "POST /shop/reorder": {
       const p = reorderSchema.safeParse(body);
       if (!p.success) return fail(422, "invalid");
-      const order = await store.orderFor(p.data.chatId, p.data.orderNumber, p.data.locale ?? "uz");
+      const order = await store.orderFor(p.data.chatId, p.data.orderNumber, p.data.locale ?? "ru");
       if (!order) return fail(404, "order_not_found");
-      const locale = p.data.locale ?? "uz";
+      const locale = p.data.locale ?? "ru";
       const added = await shop.reorderToCart(p.data.chatId, order.items.map((i) => ({ slug: i.slug, qty: i.qty })), locale);
       if (added === 0) return fail(409, "not_available");
       return ok(await shop.quoteBotCart({ chatId: p.data.chatId, locale }));
