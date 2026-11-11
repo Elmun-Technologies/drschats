@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn, formatNumber } from "@/lib/utils";
+import { tr } from "@/lib/admin/i18n/runtime";
 
 /*
   Admin building blocks, drawn with the storefront's V3 tokens: white page,
@@ -203,14 +204,14 @@ export function TableWrap({ children }: { children: ReactNode }) {
 }
 
 export function som(value: number): string {
-  return `${formatNumber(Math.round(value))} soʻm`;
+  return `${formatNumber(Math.round(value))} ${tr("soʻm")}`;
 }
 
 /** Big sums for tiles and notes: "26,01 mln soʻm". Below a million the exact figure reads fine. */
 export function somShort(value: number): string {
   if (Math.abs(value) < 1_000_000) return som(value);
   const millions = value / 1_000_000;
-  return `${millions.toLocaleString("ru-RU", { maximumFractionDigits: millions >= 100 ? 0 : millions >= 10 ? 1 : 2 })} mln soʻm`;
+  return `${millions.toLocaleString("ru-RU", { maximumFractionDigits: millions >= 100 ? 0 : millions >= 10 ? 1 : 2 })} ${tr("mln soʻm")}`;
 }
 
 /*

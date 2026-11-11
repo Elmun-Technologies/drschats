@@ -1,12 +1,13 @@
 import Link from "next/link";
 import { cn, formatNumber } from "@/lib/utils";
 import { RANGES, type Range } from "@/lib/admin/crm";
+import { labels, t } from "@/lib/admin/i18n/server";
 
-const RANGE_LABEL: Record<Range, string> = { 1: "Bugun", 7: "7 kun", 30: "30 kun", 90: "90 kun" };
+const RANGE_LABEL: Record<Range, string> = labels({ 1: "Bugun", 7: "7 kun", 30: "30 kun", 90: "90 kun" });
 
 export function RangeTabs({ range, basePath, extra = "" }: { range: Range; basePath: string; extra?: string }) {
   return (
-    <nav aria-label="Hisobot davri" className="flex gap-1 rounded-[14px] bg-tile p-1">
+    <nav aria-label={t("Hisobot davri")} className="flex gap-1 rounded-[14px] bg-tile p-1">
       {RANGES.map((value) => (
         <Link
           key={value}
@@ -46,7 +47,7 @@ export function FunnelBars({ steps }: { steps: { label: string; hint?: string; v
               <div className="h-full rounded-full bg-ink" style={{ width: `${step.value ? Math.max(1, share) : 0}%` }} />
             </div>
             <p className="mt-1.5 text-[13px] text-muted">
-              {index === 0 ? step.hint : `${share}% kirganlardan${rate !== null ? ` · oldingi bosqichdan ${rate}% oʻtdi` : ""}`}
+              {index === 0 ? step.hint : rate !== null ? t("{share}% kirganlardan · oldingi bosqichdan {rate}% oʻtdi", { share, rate }) : t("{share}% kirganlardan", { share })}
             </p>
           </li>
         );
@@ -78,7 +79,7 @@ const SHARE_TONES = ["bg-ink", "bg-muted", "bg-line-strong", "bg-chip-strong"];
  */
 export function ShareBar({ parts, format = formatNumber }: { parts: { label: string; value: number; note?: string }[]; format?: (n: number) => string }) {
   const total = parts.reduce((sum, p) => sum + p.value, 0);
-  if (total === 0) return <p className="rounded-[12px] bg-tile px-4 py-5 text-center text-[14px] text-muted">Maʼlumot yoʻq</p>;
+  if (total === 0) return <p className="rounded-[12px] bg-tile px-4 py-5 text-center text-[14px] text-muted">{t("Maʼlumot yoʻq")}</p>;
   return (
     <div>
       <div className="flex h-3 gap-[2px] overflow-hidden rounded-full" aria-hidden="true">

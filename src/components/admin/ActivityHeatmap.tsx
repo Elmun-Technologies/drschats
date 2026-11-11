@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn, formatNumber } from "@/lib/utils";
+import { useT } from "@/lib/admin/i18n/client";
 
 const DAYS = ["Du", "Se", "Ch", "Pa", "Ju", "Sh", "Ya"];
 const DAY_NAMES = ["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "Shanba", "Yakshanba"];
@@ -12,6 +13,7 @@ const DAY_NAMES = ["Dushanba", "Seshanba", "Chorshanba", "Payshanba", "Juma", "S
   hours to post in Telegram or to keep the operator at the phone.
 */
 export function ActivityHeatmap({ visits, orders, days }: { visits: number[][]; orders: number[][]; days: number }) {
+  const t = useT();
   const [mode, setMode] = useState<"visits" | "orders">(visits.flat().some(Boolean) ? "visits" : "orders");
   const [hover, setHover] = useState<{ d: number; h: number } | null>(null);
   const grid = mode === "visits" ? visits : orders;
@@ -25,13 +27,13 @@ export function ActivityHeatmap({ visits, orders, days }: { visits: number[][]; 
     <section className="min-w-0 rounded-[20px] border border-line bg-white p-5 sm:p-6">
       <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
-          <h2 className="text-[18px] font-bold leading-6 text-ink">Faol vaqtlar</h2>
+          <h2 className="text-[18px] font-bold leading-6 text-ink">{t("Faol vaqtlar")}</h2>
           <p className="mt-1 text-[13px] leading-5 text-muted">
-            Oxirgi {days} kun, Toshkent vaqti.{" "}
-            {peak.v > 0 ? <>Eng faol: <b className="font-semibold text-ink">{DAY_NAMES[peak.d]}, {String(peak.h).padStart(2, "0")}:00</b></> : "Hali maʼlumot yoʻq."}
+            {t("Oxirgi {days} kun, Toshkent vaqti.", { days })}{" "}
+            {peak.v > 0 ? <>{t("Eng faol:")} <b className="font-semibold text-ink">{t(DAY_NAMES[peak.d])}, {String(peak.h).padStart(2, "0")}:00</b></> : t("Hali maʼlumot yoʻq.")}
           </p>
         </div>
-        <div className="flex gap-1 rounded-[14px] bg-tile p-1" role="group" aria-label="Nimani koʻrsatish">
+        <div className="flex gap-1 rounded-[14px] bg-tile p-1" role="group" aria-label={t("Nimani koʻrsatish")}>
           {(["visits", "orders"] as const).map((m) => (
             <button
               key={m}
@@ -54,7 +56,7 @@ export function ActivityHeatmap({ visits, orders, days }: { visits: number[][]; 
           <div className="grid grid-cols-[28px_repeat(24,minmax(12px,1fr))] gap-[2px]">
             {grid.map((row, d) => (
               <div key={d} className="contents">
-                <span className="flex items-center text-[12px] text-muted">{DAYS[d]}</span>
+                <span className="flex items-center text-[12px] text-muted">{t(DAYS[d])}</span>
                 {row.map((v, h) => (
                   <span
                     key={h}
@@ -75,23 +77,23 @@ export function ActivityHeatmap({ visits, orders, days }: { visits: number[][]; 
 
       <div className="mt-3 flex min-h-6 flex-wrap items-center justify-between gap-3 text-[13px] text-ink-2">
         <p role="status">
-          {hover ? <>{DAY_NAMES[hover.d]}, {String(hover.h).padStart(2, "0")}:00–{String(hover.h + 1).padStart(2, "0")}:00 — <b className="tabular-nums text-ink">{formatNumber(grid[hover.d][hover.h])}</b> {unit}</> : <>Jami <b className="tabular-nums text-ink">{formatNumber(total)}</b> {unit}</>}
+          {hover ? <>{t(DAY_NAMES[hover.d])}, {String(hover.h).padStart(2, "0")}:00–{String(hover.h + 1).padStart(2, "0")}:00 — <b className="tabular-nums text-ink">{formatNumber(grid[hover.d][hover.h])}</b> {t(unit)}</> : <>{t("Jami")} <b className="tabular-nums text-ink">{formatNumber(total)}</b> {t(unit)}</>}
         </p>
         <span className="inline-flex items-center gap-1.5 text-[12px] text-muted" aria-hidden="true">
-          kam
+          {t("kam")}
           {[0, 0.25, 0.5, 0.75, 1].map((f) => (
             <span key={f} className="h-3 w-3 rounded-[3px]" style={{ backgroundColor: f === 0 ? "var(--color-tile)" : `color-mix(in srgb, var(--color-ink) ${Math.round(12 + f * 88)}%, var(--color-tile))` }} />
           ))}
-          koʻp
+          {t("koʻp")}
         </span>
       </div>
 
       <div className="sr-only">
       <table>
-        <caption>Faol vaqtlar: {unit}lar soni, kun va soat boʻyicha</caption>
+        <caption>{t("Faol vaqtlar: tashrif va buyurtmalar soni, kun va soat boʻyicha")}</caption>
         <tbody>
           {grid.map((row, d) => (
-            <tr key={d}><th scope="row">{DAY_NAMES[d]}</th>{row.map((v, h) => <td key={h}>{h}:00 — {v}</td>)}</tr>
+            <tr key={d}><th scope="row">{t(DAY_NAMES[d])}</th>{row.map((v, h) => <td key={h}>{h}:00 — {v}</td>)}</tr>
           ))}
         </tbody>
       </table>

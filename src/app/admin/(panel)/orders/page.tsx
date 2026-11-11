@@ -6,15 +6,16 @@ import { describeAttribution } from "@/lib/analytics/attribution";
 import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { cn, formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Buyurtmalar" };
+export const generateMetadata = () => adminTitle("Buyurtmalar");
 
 /* Channel labels: the bot's two storefronts must be readable at a glance. */
-const SOURCE_LABEL: Record<OrderSource, string> = {
+const SOURCE_LABEL: Record<OrderSource, string> = labels({
   site: "Sayt",
   telegram_bot: "Telegram bot",
   telegram_mini: "Mini App",
-};
+});
 
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -50,11 +51,11 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
   return (
     <>
       <PageHeader
-        title="Buyurtmalar"
-        lead={<>{formatNumber(counts.all)} ta buyurtma · {som(revenue)} (bekor qilinganlarsiz)</>}
-        actions={<a href={`/admin/orders/export?${query({})}`} className={secondaryButtonClass}>Excelʼga yuklash (CSV)</a>}
+        title={t("Buyurtmalar")}
+        lead={<>{formatNumber(counts.all)} {t("ta buyurtma ·")} {som(revenue)} {t("(bekor qilinganlarsiz)")}</>}
+        actions={<a href={`/admin/orders/export?${query({})}`} className={secondaryButtonClass}>{t("Excelʼga yuklash (CSV)")}</a>}
       />
-      <nav aria-label="Davr" className="mb-4 flex w-fit max-w-full gap-1 overflow-x-auto rounded-[14px] bg-tile p-1">
+      <nav aria-label={t("Davr")} className="mb-4 flex w-fit max-w-full gap-1 overflow-x-auto rounded-[14px] bg-tile p-1">
         {(Object.keys(ORDER_PERIODS) as OrderPeriod[]).map((p) => {
           const text = query({ period: p });
           return (
@@ -67,43 +68,43 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
                 p === period ? "bg-ink text-white" : "text-ink-2 hover:bg-white hover:text-ink",
               )}
             >
-              {ORDER_PERIODS[p]}
+              {t(ORDER_PERIODS[p])}
             </Link>
           );
         })}
       </nav>
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Buyurtmalar" value={formatNumber(counts.all)} hint={`${formatNumber(counts.new)} ta yangi`} />
-        <Metric label="Savdo summasi" value={somShort(revenue)} hint="bekor qilinganlarsiz" />
-        <Metric label="Oʻrtacha chek" value={som(average)} />
-        <Metric label="Bekor qilingan" value={`${counts.all ? Math.round((counts.cancelled / counts.all) * 100) : 0}%`} hint={`${formatNumber(counts.cancelled)} ta buyurtma`} />
+        <Metric label={t("Buyurtmalar")} value={formatNumber(counts.all)} hint={t("{n} ta yangi", { n: formatNumber(counts.new) })} />
+        <Metric label={t("Savdo summasi")} value={somShort(revenue)} hint={t("bekor qilinganlarsiz")} />
+        <Metric label={t("Oʻrtacha chek")} value={som(average)} />
+        <Metric label={t("Bekor qilingan")} value={`${counts.all ? Math.round((counts.cancelled / counts.all) * 100) : 0}%`} hint={t("{n} ta buyurtma", { n: formatNumber(counts.cancelled) })} />
       </div>
       <form role="search" action="/admin/orders" className="mb-4 flex flex-wrap gap-2">
         {active && <input type="hidden" name="status" value={active} />}
         {period !== "all" && <input type="hidden" name="period" value={period} />}
-        <input name="q" defaultValue={q} placeholder="Raqam, ism, telefon yoki email" aria-label="Buyurtmalarni qidirish" className={`${inputClass} max-w-[440px]`} />
-        <button type="submit" className={buttonClass}>Qidirish</button>
-        {(q || active) && <Link href="/admin/orders" className={secondaryButtonClass}>Tozalash</Link>}
+        <input name="q" defaultValue={q} placeholder={t("Raqam, ism, telefon yoki email")} aria-label={t("Buyurtmalarni qidirish")} className={`${inputClass} max-w-[440px]`} />
+        <button type="submit" className={buttonClass}>{t("Qidirish")}</button>
+        {(q || active) && <Link href="/admin/orders" className={secondaryButtonClass}>{t("Tozalash")}</Link>}
       </form>
       <ChipNav
-        label="Holat boʻyicha"
+        label={t("Holat boʻyicha")}
         className="mb-4"
-        items={[{ href: href(), label: "Hammasi", active: !active, count: counts.all }, ...ORDER_STATUSES.map((s) => ({ href: href(s), label: STATUS_LABEL[s], active: s === active, count: counts[s] }))]}
+        items={[{ href: href(), label: t("Hammasi"), active: !active, count: counts.all }, ...ORDER_STATUSES.map((s) => ({ href: href(s), label: STATUS_LABEL[s], active: s === active, count: counts[s] }))]}
       />
       <Card>
         {rows.length === 0 ? (
-          <EmptyState title="Buyurtma topilmadi" />
+          <EmptyState title={t("Buyurtma topilmadi")} />
         ) : (
           <TableWrap>
             <table className={tableClass}>
-              <thead><tr><th className={thClass}>Buyurtma</th><th className={thClass}>Mijoz</th><th className={thClass}>Kanal</th><th className={thClass}>Manba</th><th className={thClass}>Holat</th><th className={`${thClass} text-right`}>Jami</th></tr></thead>
+              <thead><tr><th className={thClass}>{t("Buyurtma")}</th><th className={thClass}>{t("Mijoz")}</th><th className={thClass}>{t("Kanal")}</th><th className={thClass}>{t("Manba")}</th><th className={thClass}>{t("Holat")}</th><th className={`${thClass} text-right`}>{t("Jami")}</th></tr></thead>
               <tbody>
                 {rows.map((o) => (
                   <tr key={o.id}>
                     <td className={tdClass}><Link href={`/admin/orders/${o.number}`} className={linkClass}>{o.number}</Link><span className="block text-[13px] text-muted">{formatDateTime(o.createdAt)}</span></td>
                     <td className={`${tdClass} max-w-[260px]`}><span className="block truncate">{o.customer.name}</span><span className="block text-[13px] text-muted">{o.customer.phone} · {o.items.reduce((sum, item) => sum + item.quantity, 0)} dona</span></td>
                     <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{SOURCE_LABEL[o.source]}</td>
-                    <td className={`${tdClass} max-w-[180px] truncate text-ink-2`}>{describeAttribution(o.attribution ?? undefined) || "Bevosita"}</td>
+                    <td className={`${tdClass} max-w-[180px] truncate text-ink-2`}>{describeAttribution(o.attribution ?? undefined) || t("Bevosita")}</td>
                     <td className={tdClass}><Pill tone={STATUS_TONE[o.status]}>{STATUS_LABEL[o.status]}</Pill></td>
                     <td className={`${tdClass} whitespace-nowrap text-right font-semibold tabular-nums`}>{som(o.total)}</td>
                   </tr>
@@ -112,7 +113,7 @@ export default async function AdminOrdersPage({ searchParams }: { searchParams: 
             </table>
           </TableWrap>
         )}
-        {rows.length === 100 && <p className="mt-3 text-[13px] text-muted">Eng soʻnggi 100 ta koʻrsatildi — qidiruv yoki holat filtridan foydalaning.</p>}
+        {rows.length === 100 && <p className="mt-3 text-[13px] text-muted">{t("Eng soʻnggi 100 ta koʻrsatildi — qidiruv yoki holat filtridan foydalaning.")}</p>}
       </Card>
     </>
   );
