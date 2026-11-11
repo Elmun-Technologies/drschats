@@ -6,8 +6,9 @@ import { listVisitors } from "@/lib/admin/crm";
 import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
 import { Card, EmptyState, PageHeader, Pill, buttonClass, inputClass, som, timeAgo } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Qidiruv" };
+export const generateMetadata = () => adminTitle("Qidiruv");
 
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
@@ -25,13 +26,13 @@ export default async function AdminSearchPage({ searchParams }: { searchParams: 
 
   return (
     <>
-      <PageHeader title="Qidiruv" lead="Buyurtma raqami, mijoz ismi yoki telefoni, mahsulot nomi — hammasi bitta joyda." />
+      <PageHeader title={t("Qidiruv")} lead={t("Buyurtma raqami, mijoz ismi yoki telefoni, mahsulot nomi — hammasi bitta joyda.")} />
       <form role="search" action="/admin/search" className="mb-5 flex flex-wrap gap-2">
-        <input name="q" defaultValue={q} autoFocus placeholder="Masalan: GV-000123, Dilnoza, 90 123, omega" aria-label="Qidirish" className={`${inputClass} max-w-[520px]`} />
-        <button type="submit" className={buttonClass}>Qidirish</button>
+        <input name="q" defaultValue={q} autoFocus placeholder={t("Masalan: GV-000123, Dilnoza, 90 123, omega")} aria-label={t("Qidirish")} className={`${inputClass} max-w-[520px]`} />
+        <button type="submit" className={buttonClass}>{t("Qidirish")}</button>
       </form>
       {q.length < 2 ? (
-        <EmptyState title="Kamida 2 ta belgi kiriting" />
+        <EmptyState title={t("Kamida 2 ta belgi kiriting")} />
       ) : total === 0 ? (
         <EmptyState title={`«${q}» boʻyicha hech narsa topilmadi`} />
       ) : (
@@ -50,7 +51,7 @@ export default async function AdminSearchPage({ searchParams }: { searchParams: 
             <Card title={`Mijozlar · ${customers.length}`}>
               <ul>{customers.map((c) => (
                 <li key={c.phone9}><Link href={`/admin/customers/${c.phone9}`} className={rowClass}>
-                  <span className="min-w-0"><span className="block font-semibold">{c.name}</span><span className="block text-[13px] text-muted">{c.phone} · {c.successfulOrderCount} ta buyurtma</span></span>
+                  <span className="min-w-0"><span className="block font-semibold">{c.name}</span><span className="block text-[13px] text-muted">{c.phone} · {c.successfulOrderCount} {t("ta buyurtma")}</span></span>
                   <b className="shrink-0 tabular-nums">{som(c.lifetimeValue)}</b>
                 </Link></li>
               ))}</ul>

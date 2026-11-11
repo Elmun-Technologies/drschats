@@ -5,8 +5,9 @@ import { parseRange, percent, utmCampaigns } from "@/lib/admin/crm";
 import { SITE_URL } from "@/lib/config/site";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "UTM havolalar" };
+export const generateMetadata = () => adminTitle("UTM havolalar");
 
 export default async function AdminMarketingPage({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
   await requireAdmin();
@@ -15,19 +16,19 @@ export default async function AdminMarketingPage({ searchParams }: { searchParam
   return (
     <>
       <PageHeader
-        title="UTM havolalar"
-        lead="Har bir reklama, post yoki xabar uchun alohida havola yarating — qaysi biri odam olib kelib, savdo qilganini quyidagi jadvalda koʻrasiz."
+        title={t("UTM havolalar")}
+        lead={t("Har bir reklama, post yoki xabar uchun alohida havola yarating — qaysi biri odam olib kelib, savdo qilganini quyidagi jadvalda koʻrasiz.")}
         actions={<RangeTabs range={range} basePath="/admin/marketing" />}
       />
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
         <CampaignLinkBuilder baseUrl={SITE_URL} />
-        <Card title="Kampaniyalar natijasi" lead="utm_campaign boʻyicha, saytning oʻz kuzatuvidan">
+        <Card title={t("Kampaniyalar natijasi")} lead={t("utm_campaign boʻyicha, saytning oʻz kuzatuvidan")}>
           {rows.length === 0 ? (
-            <EmptyState title="UTM bilan kelgan tashrif hali yoʻq">Chapdagi forma bilan havola yarating va reklamada ishlating.</EmptyState>
+            <EmptyState title={t("UTM bilan kelgan tashrif hali yoʻq")}>{t("Chapdagi forma bilan havola yarating va reklamada ishlating.")}</EmptyState>
           ) : (
             <TableWrap>
               <table className={tableClass}>
-                <thead><tr><th className={thClass}>Kampaniya</th><th className={thClass}>Manba</th><th className={`${thClass} text-right`}>Tashrif</th><th className={`${thClass} text-right`}>Xaridor</th><th className={`${thClass} text-right`}>Savdo</th></tr></thead>
+                <thead><tr><th className={thClass}>{t("Kampaniya")}</th><th className={thClass}>{t("Manba")}</th><th className={`${thClass} text-right`}>{t("Tashrif")}</th><th className={`${thClass} text-right`}>{t("Xaridor")}</th><th className={`${thClass} text-right`}>{t("Savdo")}</th></tr></thead>
                 <tbody>
                   {rows.map((r) => (
                     <tr key={`${r.campaign}-${r.source}`}>

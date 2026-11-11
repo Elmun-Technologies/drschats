@@ -9,6 +9,7 @@ import { SubmitButton } from "./SubmitButton";
 import { ImageListField, SingleImageField } from "./catalog/ImageFields";
 import { QuickCategoryDialog } from "./catalog/QuickCategoryDialog";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/admin/i18n/client";
 
 export interface ProductFormValues {
   id?: string;
@@ -69,6 +70,7 @@ export function ProductForm({
   storageReady: boolean;
   repoImages: RepoImage[];
 }) {
+  const t = useT();
   const [state, action] = useActionState<FormState, FormData>(saveProduct, undefined);
   const [tab, setTab] = useState<"uz" | "ru">("uz");
   const [images, setImages] = useState(() => [...new Set(values.images.split(/\r?\n/).map((u) => u.trim()).filter(Boolean))]);
@@ -94,40 +96,40 @@ export function ProductForm({
       )}
 
       <div className="flex min-w-0 flex-col gap-5">
-        <Panel title="Rasmlar">
-          <p className="-mt-2 text-[14px] leading-5 text-ink-2">Birinchi rasm — asosiy: mahsulot sahifasida birinchi chiqadi. Strelkalar bilan tartibini oʻzgartiring.</p>
+        <Panel title={t("Rasmlar")}>
+          <p className="-mt-2 text-[14px] leading-5 text-ink-2">{t("Birinchi rasm — asosiy: mahsulot sahifasida birinchi chiqadi. Strelkalar bilan tartibini oʻzgartiring.")}</p>
           <ImageListField name="images" value={images} onChange={setImages} repoImages={repoImages} slug={slug} storageReady={storageReady} />
         </Panel>
-        <Panel title="Fiskal chek (Payme)">
-          <p className="text-caption text-muted">Onlayn toʻlovda chek shu kodlar bilan chiqadi. Kodni tasnif.soliq.uz dan oling; boʻsh boʻlsa Payme chekni maʼlumotsiz qabul qiladi.</p>
-          <Field label="MXIK (IKPU) kodi" hint="17 ta raqam">
+        <Panel title={t("Fiskal chek (Payme)")}>
+          <p className="text-caption text-muted">{t("Onlayn toʻlovda chek shu kodlar bilan chiqadi. Kodni tasnif.soliq.uz dan oling; boʻsh boʻlsa Payme chekni maʼlumotsiz qabul qiladi.")}</p>
+          <Field label={t("MXIK (IKPU) kodi")} hint={t("17 ta raqam")}>
             <input name="mxikCode" inputMode="numeric" maxLength={17} pattern="[0-9]{17}" defaultValue={values.mxikCode} className={inputClass} />
           </Field>
-          <Field label="Qadoq kodi" hint="Tasnifdagi oʻlchov birligi kodi">
+          <Field label={t("Qadoq kodi")} hint={t("Tasnifdagi oʻlchov birligi kodi")}>
             <input name="packageCode" inputMode="numeric" maxLength={20} pattern="[0-9]{1,20}" defaultValue={values.packageCode} className={inputClass} />
           </Field>
         </Panel>
-        <Panel title="Qadoqdagi maʼlumot">
-          <p className="text-[13px] leading-[17px] text-muted">Mahsulot sahifasida faqat toʻldirilgan qatorlar chiqadi. Matnni qadoqdan aynan koʻchiring — tibbiy vaʼda qoʻshmang. Tilga bogʻliq maydonlar pastdagi «Oʻzbekcha / Русский» boʻlimida.</p>
-          <Field label="Roʻyxatdan oʻtish raqami" hint="Davlat roʻyxatidagi raqam, qadoqda yozilgan">
+        <Panel title={t("Qadoqdagi maʼlumot")}>
+          <p className="text-[13px] leading-[17px] text-muted">{t("Mahsulot sahifasida faqat toʻldirilgan qatorlar chiqadi. Matnni qadoqdan aynan koʻchiring — tibbiy vaʼda qoʻshmang. Tilga bogʻliq maydonlar pastdagi «Oʻzbekcha / Русский» boʻlimida.")}</p>
+          <Field label={t("Roʻyxatdan oʻtish raqami")} hint={t("Davlat roʻyxatidagi raqam, qadoqda yozilgan")}>
             <input name="registrationNumber" maxLength={80} defaultValue={values.registrationNumber} className={inputClass} />
           </Field>
         </Panel>
-        <Panel title="Kesma rasm (fonsiz PNG)">
+        <Panel title={t("Kesma rasm (fonsiz PNG)")}>
           <SingleImageField
             name="cutout"
-            label="Kesma rasm manzili"
-            hint="Katalog kartasida shu chiziladi; boʻsh boʻlsa birinchi rasm"
+            label={t("Kesma rasm manzili")}
+            hint={t("Katalog kartasida shu chiziladi; boʻsh boʻlsa birinchi rasm")}
             value={cutout}
             onChange={setCutout}
             repoImages={repoImages}
             slug={slug}
             initialKind="cutout"
-            emptyText="Kesma yoʻq"
+            emptyText={t("Kesma yoʻq")}
           />
         </Panel>
         <section className="flex flex-col gap-4 rounded-[20px] border border-line bg-white p-5 lg:p-6">
-          <div role="tablist" aria-label="Til" className="flex gap-2">
+          <div role="tablist" aria-label={t("Til")} className="flex gap-2">
             {LOCALES.map((l) => (
               <button
                 key={l.code}
@@ -144,49 +146,49 @@ export function ProductForm({
         {LOCALES.map((l) => (
           // Both languages stay in the DOM (hidden, not unmounted) so one submit saves both.
           <div key={l.code} role="tabpanel" hidden={tab !== l.code} className="grid gap-4 lg:grid-cols-2">
-            <Field label="Nomi" className="lg:col-span-2">
+            <Field label={t("Nomi")} className="lg:col-span-2">
               <input name={`${l.code}.name`} defaultValue={c(`${l.code}.name`)} required={l.code === "uz"} onChange={l.code === "uz" ? (e) => onNameChange(e.target.value) : undefined} className={inputClass} />
             </Field>
-            <Field label="Qisqa tavsif (tagline)" hint="Kartada va qidiruv natijasida" className="lg:col-span-2">
+            <Field label={t("Qisqa tavsif (tagline)")} hint={t("Kartada va qidiruv natijasida")} className="lg:col-span-2">
               <input name={`${l.code}.tagline`} defaultValue={c(`${l.code}.tagline`)} className={inputClass} />
             </Field>
-            <Field label="Toʻliq tavsif" className="lg:col-span-2">
+            <Field label={t("Toʻliq tavsif")} className="lg:col-span-2">
               <textarea name={`${l.code}.description`} defaultValue={c(`${l.code}.description`)} rows={5} className={textareaClass} />
             </Field>
-            <Field label="Qoʻllash" className="lg:col-span-2">
+            <Field label={t("Qoʻllash")} className="lg:col-span-2">
               <textarea name={`${l.code}.howToUse`} defaultValue={c(`${l.code}.howToUse`)} rows={3} className={textareaClass} />
             </Field>
-            <Field label="Qadoq (masalan: 30 kapsula)">
+            <Field label={t("Qadoq (masalan: 30 kapsula)")}>
               <input name={`${l.code}.servings`} defaultValue={c(`${l.code}.servings`)} className={inputClass} />
             </Field>
-            <Field label="Ishlab chiqarilgan joy">
+            <Field label={t("Ishlab chiqarilgan joy")}>
               <input name={`${l.code}.origin`} defaultValue={c(`${l.code}.origin`)} className={inputClass} />
             </Field>
-            <Field label="Asosiy jihatlar" hint={LIST_HINT}>
+            <Field label={t("Asosiy jihatlar")} hint={LIST_HINT}>
               <textarea name={`${l.code}.highlights`} defaultValue={c(`${l.code}.highlights`)} rows={4} className={textareaClass} />
             </Field>
-            <Field label="Belgilar (badge)" hint={LIST_HINT}>
+            <Field label={t("Belgilar (badge)")} hint={LIST_HINT}>
               <textarea name={`${l.code}.badges`} defaultValue={c(`${l.code}.badges`)} rows={4} className={textareaClass} />
             </Field>
-            <Field label="Foydalari" hint="Sarlavha | tavsif | ikonka (ixtiyoriy)" className="lg:col-span-2">
+            <Field label={t("Foydalari")} hint={t("Sarlavha | tavsif | ikonka (ixtiyoriy)")} className="lg:col-span-2">
               <textarea name={`${l.code}.benefits`} defaultValue={c(`${l.code}.benefits`)} rows={4} className={textareaClass} />
             </Field>
-            <Field label="Tarkibi" hint="Modda | miqdori | kunlik meʼyor % (ixtiyoriy)" className="lg:col-span-2">
+            <Field label={t("Tarkibi")} hint={t("Modda | miqdori | kunlik meʼyor % (ixtiyoriy)")} className="lg:col-span-2">
               <textarea name={`${l.code}.ingredients`} defaultValue={c(`${l.code}.ingredients`)} rows={6} className={textareaClass} />
             </Field>
-            <Field label="Savol-javob" hint="Savol | Javob — har qatorda bittasi" className="lg:col-span-2">
+            <Field label={t("Savol-javob")} hint={t("Savol | Javob — har qatorda bittasi")} className="lg:col-span-2">
               <textarea name={`${l.code}.faq`} defaultValue={c(`${l.code}.faq`)} rows={4} className={textareaClass} />
             </Field>
-            <Field label="Qarshi koʻrsatmalar (qadoqdan)" className="lg:col-span-2">
+            <Field label={t("Qarshi koʻrsatmalar (qadoqdan)")} className="lg:col-span-2">
               <textarea name={`${l.code}.contraindications`} defaultValue={c(`${l.code}.contraindications`)} rows={3} className={textareaClass} />
             </Field>
-            <Field label="Yaroqlilik muddati" hint="Masalan: 24 oy">
+            <Field label={t("Yaroqlilik muddati")} hint={t("Masalan: 24 oy")}>
               <input name={`${l.code}.shelfLife`} defaultValue={c(`${l.code}.shelfLife`)} className={inputClass} />
             </Field>
-            <Field label="Saqlash sharoiti" hint="Masalan: 25 °C dan past, quruq joyda">
+            <Field label={t("Saqlash sharoiti")} hint={t("Masalan: 25 °C dan past, quruq joyda")}>
               <input name={`${l.code}.storage`} defaultValue={c(`${l.code}.storage`)} className={inputClass} />
             </Field>
-            <Field label="Qoʻshimcha qidiruv soʻzlari" hint="Kartada koʻrinmaydi; har qatorda bittasi" className="lg:col-span-2">
+            <Field label={t("Qoʻshimcha qidiruv soʻzlari")} hint={t("Kartada koʻrinmaydi; har qatorda bittasi")} className="lg:col-span-2">
               <textarea name={`${l.code}.searchAliases`} defaultValue={c(`${l.code}.searchAliases`)} rows={2} className={textareaClass} />
             </Field>
           </div>
@@ -196,49 +198,49 @@ export function ProductForm({
       </div>
 
       <aside className="flex min-w-0 flex-col gap-5 xl:sticky xl:top-6 xl:self-start">
-        <Panel title="Holat">
-          <Field label="Koʻrinishi">
+        <Panel title={t("Holat")}>
+          <Field label={t("Koʻrinishi")}>
             <select name="kind" defaultValue={values.kind} className={inputClass}>
-              <option value="core">Asosiy assortiment</option>
-              <option value="addon">Qoʻshimcha (aksessuar, qahva…)</option>
-              <option value="unlisted">Sotuvdan olingan (koʻrinmaydi)</option>
+              <option value="core">{t("Asosiy assortiment")}</option>
+              <option value="addon">{t("Qoʻshimcha (aksessuar, qahva…)")}</option>
+              <option value="unlisted">{t("Sotuvdan olingan (koʻrinmaydi)")}</option>
             </select>
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Ombordagi soni" hint="Boʻsh — kuzatilmaydi">
+            <Field label={t("Ombordagi soni")} hint={t("Boʻsh — kuzatilmaydi")}>
               <input name="stockQty" type="number" min={0} max={1000000} step={1} inputMode="numeric" value={stockQty} onChange={(e) => setStockQty(e.target.value)} className={inputClass} />
             </Field>
-            <Field label="Kam qoldi chegarasi" hint={`Boʻsh — standart (${lowStockDefault})`}>
+            <Field label={t("Kam qoldi chegarasi")} hint={`Boʻsh — standart (${lowStockDefault})`}>
               <input name="lowStockAt" type="number" min={1} max={1000} step={1} inputMode="numeric" defaultValue={values.lowStockAt} placeholder={String(lowStockDefault)} className={inputClass} />
             </Field>
           </div>
           {tracked ? (
-            <p className="text-caption text-muted">Soni kiritilgan: «Omborda bor» sondan aniqlanadi (0 — tugagan). Buyurtma sonni kamaytiradi, bekor qilish qaytaradi. Saytda soni chegaradan kam boʻlganda «Omborda N ta qoldi» chiqadi.</p>
+            <p className="text-caption text-muted">{t("Soni kiritilgan: «Omborda bor» sondan aniqlanadi (0 — tugagan). Buyurtma sonni kamaytiradi, bekor qilish qaytaradi. Saytda soni chegaradan kam boʻlganda «Omborda N ta qoldi» chiqadi.")}</p>
           ) : (
             <label className="flex min-h-11 items-center gap-3 text-[15px] font-semibold">
               <input name="inStock" type="checkbox" defaultChecked={values.inStock} className="h-5 w-5 accent-ink" />
-              Omborda bor
+              {t("Omborda bor")}
             </label>
           )}
         </Panel>
-        <Panel title="Narx">
+        <Panel title={t("Narx")}>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Narx, soʻm">
+            <Field label={t("Narx, soʻm")}>
               <input name="price" type="number" min={0} step={1} value={price} onChange={(e) => setPrice(e.target.value)} required className={inputClass} />
             </Field>
-            <Field label="Eski narx">
+            <Field label={t("Eski narx")}>
               <input name="oldPrice" type="number" min={0} step={1} value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} className={inputClass} />
             </Field>
           </div>
-          {discount > 0 && <p className="text-[14px] text-ink-2">Saytda chegirma: <span className="rounded-full bg-red px-2 py-0.5 text-[13px] font-semibold text-white">−{discount}%</span></p>}
-          <Field label="Aksiya tugashi" hint="Toshkent vaqti. Oʻtgach narx eski narxga qaytadi">
+          {discount > 0 && <p className="text-[14px] text-ink-2">{t("Saytda chegirma:")} <span className="rounded-full bg-red px-2 py-0.5 text-[13px] font-semibold text-white">−{discount}%</span></p>}
+          <Field label={t("Aksiya tugashi")} hint={t("Toshkent vaqti. Oʻtgach narx eski narxga qaytadi")}>
             <input name="saleEndsAt" type="datetime-local" defaultValue={values.saleEndsAt} className={inputClass} />
           </Field>
           <div className="grid grid-cols-2 gap-3">
-            <Field label="Qadoqda (dona)">
+            <Field label={t("Qadoqda (dona)")}>
               <input name="unitCount" type="number" min={1} defaultValue={values.unitCount} className={inputClass} />
             </Field>
-            <Field label="Birlik">
+            <Field label={t("Birlik")}>
               <select name="unitKind" defaultValue={values.unitKind} className={inputClass}>
                 <option value="">—</option>
                 <option value="tablet">tabletka</option>
@@ -247,16 +249,16 @@ export function ProductForm({
             </Field>
           </div>
         </Panel>
-        <Panel title="Tashkil etish">
+        <Panel title={t("Tashkil etish")}>
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between gap-2">
-              <label htmlFor="product-category" className="text-[14px] font-semibold text-ink">Kategoriya</label>
+              <label htmlFor="product-category" className="text-[14px] font-semibold text-ink">{t("Kategoriya")}</label>
               <button type="button" onClick={() => setNewCategoryOpen(true)} className="-my-2 inline-flex h-11 items-center rounded-[12px] px-2 text-[14px] font-semibold text-ink underline-offset-4 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30">
-                + Yangi kategoriya
+                {t("+ Yangi kategoriya")}
               </button>
             </div>
             <select id="product-category" name="categorySlug" value={categorySlug} onChange={(e) => setCategorySlug(e.target.value)} required className={inputClass}>
-              <option value="">— tanlang —</option>
+              <option value="">{t("— tanlang —")}</option>
               {categoryList.map((cat) => <option key={cat.slug} value={cat.slug}>{cat.name}</option>)}
             </select>
           </div>
@@ -268,16 +270,16 @@ export function ProductForm({
               setCategorySlug(cat.slug);
             }}
           />
-          <Field label="Brend">
+          <Field label={t("Brend")}>
             <select name="brandSlug" defaultValue={values.brandSlug} className={inputClass}>
-              <option value="">— yoʻq —</option>
+              <option value="">{t("— yoʻq —")}</option>
               {brands.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
             </select>
           </Field>
-          <Field label="Sahifa manzili (slug)" hint={slug ? `govita.uz/uz/product/${slug}` : "Oʻzbekcha nomdan avtomatik yaratiladi"}>
+          <Field label={t("Sahifa manzili (slug)")} hint={slug ? `govita.uz/uz/product/${slug}` : "Oʻzbekcha nomdan avtomatik yaratiladi"}>
             <input name="slug" value={slug} onChange={(e) => { setSlug(e.target.value); setSlugTouched(true); }} required pattern="[a-z0-9]+(-[a-z0-9]+)*" className={inputClass} />
           </Field>
-          <Field label="Tartib" hint="Kichik raqam — roʻyxatda oldinroq">
+          <Field label={t("Tartib")} hint={t("Kichik raqam — roʻyxatda oldinroq")}>
             <input name="sort" type="number" defaultValue={values.sort} className={inputClass} />
           </Field>
         </Panel>

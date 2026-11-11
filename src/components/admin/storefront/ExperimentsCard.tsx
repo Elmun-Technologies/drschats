@@ -4,6 +4,7 @@ import { PLACEMENT_LABEL } from "@/lib/merch/model";
 import { keepWinner } from "@/app/admin/_actions/experiments";
 import { Card, Pill, TableWrap, linkClass, smallButtonClass, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { t } from "@/lib/admin/i18n/server";
 
 /*
   A/B tests on the banner list: per arm exposures, clicks, CTR and the orders
@@ -14,11 +15,11 @@ import { formatNumber } from "@/lib/utils";
 const pct = (v: number) => `${(v * 100).toFixed(v < 0.1 ? 2 : 1).replace(".", ",")}%`;
 
 function verdict(exp: ExperimentResult): { text: string; tone: "dark" | "outline" | "muted" } {
-  const t = exp.test;
-  if (!t || !exp.arms.A || !exp.arms.B) return { text: "Ikkinchi variant yoʻq", tone: "muted" };
-  if (!t.enough) return { text: "Hali yetarli maʼlumot yoʻq", tone: "muted" };
-  const p = t.p < 0.001 ? "p < 0,001" : `p = ${t.p.toFixed(3).replace(".", ",")}`;
-  if (t.significant && t.winner) return { text: `${t.winner} yaxshiroq (${p})`, tone: "dark" };
+  const zt = exp.test;
+  if (!zt || !exp.arms.A || !exp.arms.B) return { text: t("Ikkinchi variant yoʻq"), tone: "muted" };
+  if (!zt.enough) return { text: t("Hali yetarli maʼlumot yoʻq"), tone: "muted" };
+  const p = zt.p < 0.001 ? "p < 0,001" : `p = ${zt.p.toFixed(3).replace(".", ",")}`;
+  if (zt.significant && zt.winner) return { text: `${zt.winner} yaxshiroq (${p})`, tone: "dark" };
   return { text: `Farq ishonchli emas (${p})`, tone: "outline" };
 }
 
@@ -44,7 +45,7 @@ function ArmRow({ exp, arm, ctr }: { exp: ExperimentResult; arm: ArmResult; ctr:
               <input type="hidden" name="experiment" value={exp.key} />
               <input type="hidden" name="variant" value={arm.variant} />
               <button type="submit" className={smallButtonClass} aria-label={`${exp.key}: ${arm.variant} variantini gʻolib sifatida qoldirish`}>
-                Gʻolibni qoldirish
+                {t("Gʻolibni qoldirish")}
               </button>
             </form>
           ) : (
@@ -60,8 +61,8 @@ export function ExperimentsCard({ experiments }: { experiments: ExperimentResult
   if (experiments.length === 0) return null;
   return (
     <Card
-      title="A/B testlar"
-      lead="Har bir tashrif buyuruvchi doim bitta variantni koʻradi (50/50, cookie boʻyicha). Koʻrish — bir kunda bir kishi; CTR — bosgan kishi-kunlar ulushi; buyurtmalar — variantni koʻrgandan keyin shu brauzerdan berilgan buyurtmalar. Ishonchlilik: ikki ulushli z-test, 95%."
+      title={t("A/B testlar")}
+      lead={t("Har bir tashrif buyuruvchi doim bitta variantni koʻradi (50/50, cookie boʻyicha). Koʻrish — bir kunda bir kishi; CTR — bosgan kishi-kunlar ulushi; buyurtmalar — variantni koʻrgandan keyin shu brauzerdan berilgan buyurtmalar. Ishonchlilik: ikki ulushli z-test, 95%.")}
       className="mb-5"
     >
       <div className="flex flex-col gap-6">
@@ -73,23 +74,23 @@ export function ExperimentsCard({ experiments }: { experiments: ExperimentResult
                 <h3 className="text-[16px] font-bold text-ink">{exp.key}</h3>
                 <span className="text-[13px] text-muted">{PLACEMENT_LABEL[exp.placement as keyof typeof PLACEMENT_LABEL] ?? exp.placement}</span>
                 <Pill tone={v.tone}>{v.text}</Pill>
-                {!exp.running && <Pill tone="muted">Toʻxtatilgan</Pill>}
+                {!exp.running && <Pill tone="muted">{t("Toʻxtatilgan")}</Pill>}
                 {exp.arms.A && !exp.arms.B && (
-                  <Link href={`/admin/storefront/banners/new?from=${exp.arms.A.id}`} className={smallButtonClass}>+ B variant</Link>
+                  <Link href={`/admin/storefront/banners/new?from=${exp.arms.A.id}`} className={smallButtonClass}>{t("+ B variant")}</Link>
                 )}
               </div>
               <TableWrap>
                 <table className={`${tableClass} min-w-[860px]`}>
                   <thead>
                     <tr>
-                      <th className={thClass}>Variant</th>
-                      <th className={`${thClass} text-right`}>Koʻrishlar</th>
-                      <th className={`${thClass} text-right`}>Kishilar</th>
-                      <th className={`${thClass} text-right`}>Bosishlar</th>
-                      <th className={`${thClass} text-right`}>CTR</th>
-                      <th className={`${thClass} text-right`}>Buyurtma</th>
-                      <th className={`${thClass} text-right`}>Tushum</th>
-                      <th className={thClass}><span className="sr-only">Amallar</span></th>
+                      <th className={thClass}>{t("Variant")}</th>
+                      <th className={`${thClass} text-right`}>{t("Koʻrishlar")}</th>
+                      <th className={`${thClass} text-right`}>{t("Kishilar")}</th>
+                      <th className={`${thClass} text-right`}>{t("Bosishlar")}</th>
+                      <th className={`${thClass} text-right`}>{t("CTR")}</th>
+                      <th className={`${thClass} text-right`}>{t("Buyurtma")}</th>
+                      <th className={`${thClass} text-right`}>{t("Tushum")}</th>
+                      <th className={thClass}><span className="sr-only">{t("Amallar")}</span></th>
                     </tr>
                   </thead>
                   <tbody>

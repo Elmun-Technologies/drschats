@@ -10,6 +10,7 @@ import { Field, Notice, inputClass } from "@/components/admin/ui";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { ImageUpload, SingleImageField } from "@/components/admin/catalog/ImageFields";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/admin/i18n/client";
 
 export interface BannerFormValues {
   id?: number;
@@ -51,6 +52,7 @@ function Panel({ title, lead, children }: { title: string; lead?: string; childr
 const isLocal = (src: string) => src.startsWith("/") && !src.startsWith("//");
 
 export function BannerForm({ values, repoImages, storageReady }: { values: BannerFormValues; repoImages: RepoImage[]; storageReady: boolean }) {
+  const t = useT();
   const [state, action] = useActionState<FormState, FormData>(saveBanner, undefined);
   const [v, setV] = useState(values);
   const [lang, setLang] = useState<"uz" | "ru">("uz");
@@ -65,15 +67,15 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
         <div className="xl:col-span-2">{state?.error ? <Notice tone="error">{state.error}</Notice> : <Notice tone="ok">{state?.ok}</Notice>}</div>
       )}
       <div className="flex min-w-0 flex-col gap-5">
-        <Panel title="Joyi va koʻrinishi">
+        <Panel title={t("Joyi va koʻrinishi")}>
           <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Qayerda chiqadi">
+            <Field label={t("Qayerda chiqadi")}>
               <select name="placement" value={v.placement} onChange={(e) => set("placement")(e.target.value as BannerFormValues["placement"])} className={inputClass}>
                 {Object.entries(PLACEMENT_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
               </select>
             </Field>
             <fieldset className="flex flex-col gap-1.5">
-              <legend className="mb-1.5 text-[14px] font-semibold text-ink">Fon</legend>
+              <legend className="mb-1.5 text-[14px] font-semibold text-ink">{t("Fon")}</legend>
               <div className="flex gap-2">
                 {(["light", "dark"] as const).map((theme) => (
                   <label key={theme} className={cn("flex h-12 flex-1 cursor-pointer items-center justify-center gap-2 rounded-[12px] border text-[15px] font-semibold", v.theme === theme ? "border-ink bg-ink text-white" : "border-line-strong bg-white text-ink")}>
@@ -86,48 +88,48 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
           </div>
         </Panel>
 
-        <Panel title="Matn" lead="Ikkala tilda. Tibbiy vaʼda yozmang («davolaydi», «100% natija»). Tugma matni boʻsh boʻlsa tugma chizilmaydi — banner baribir bosiladi.">
+        <Panel title={t("Matn")} lead={t("Ikkala tilda. Tibbiy vaʼda yozmang («davolaydi», «100% natija»). Tugma matni boʻsh boʻlsa tugma chizilmaydi — banner baribir bosiladi.")}>
           <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Sarlavha (uz)"><input name="uz.title" required minLength={2} maxLength={90} {...text("uzTitle")} className={inputClass} /></Field>
-            <Field label="Sarlavha (ru)"><input name="ru.title" required minLength={2} maxLength={90} {...text("ruTitle")} className={inputClass} /></Field>
-            <Field label="Qoʻshimcha matn (uz)" hint="160 belgigacha"><input name="uz.subtitle" maxLength={160} {...text("uzSubtitle")} className={inputClass} /></Field>
-            <Field label="Qoʻshimcha matn (ru)" hint="160 belgigacha"><input name="ru.subtitle" maxLength={160} {...text("ruSubtitle")} className={inputClass} /></Field>
-            <Field label="Tugma (uz)" hint="Masalan: «Batafsil»"><input name="uz.cta" maxLength={30} {...text("uzCta")} className={inputClass} /></Field>
-            <Field label="Tugma (ru)" hint="Например: «Подробнее»"><input name="ru.cta" maxLength={30} {...text("ruCta")} className={inputClass} /></Field>
-            <Field label="Havola" hint="Saytdagi yoʻl (/product/omega-3, /sale, /products?sale=1) yoki https:// manzil" className="lg:col-span-2">
-              <input name="href" required {...text("href")} placeholder="/product/…" className={inputClass} />
+            <Field label={t("Sarlavha (uz)")}><input name="uz.title" required minLength={2} maxLength={90} {...text("uzTitle")} className={inputClass} /></Field>
+            <Field label={t("Sarlavha (ru)")}><input name="ru.title" required minLength={2} maxLength={90} {...text("ruTitle")} className={inputClass} /></Field>
+            <Field label={t("Qoʻshimcha matn (uz)")} hint={t("160 belgigacha")}><input name="uz.subtitle" maxLength={160} {...text("uzSubtitle")} className={inputClass} /></Field>
+            <Field label={t("Qoʻshimcha matn (ru)")} hint={t("160 belgigacha")}><input name="ru.subtitle" maxLength={160} {...text("ruSubtitle")} className={inputClass} /></Field>
+            <Field label={t("Tugma (uz)")} hint={t("Masalan: «Batafsil»")}><input name="uz.cta" maxLength={30} {...text("uzCta")} className={inputClass} /></Field>
+            <Field label={t("Tugma (ru)")} hint={t("Например: «Подробнее»")}><input name="ru.cta" maxLength={30} {...text("ruCta")} className={inputClass} /></Field>
+            <Field label={t("Havola")} hint={t("Saytdagi yoʻl (/product/omega-3, /sale, /products?sale=1) yoki https:// manzil")} className="lg:col-span-2">
+              <input name="href" required {...text("href")} placeholder={t("/product/…")} className={inputClass} />
             </Field>
           </div>
         </Panel>
 
-        <Panel title="Rasm" lead="Fonsiz kesma (c-*.png) eng yaxshi koʻrinadi. Telefon uchun alohida rasm ixtiyoriy.">
+        <Panel title={t("Rasm")} lead={t("Fonsiz kesma (c-*.png) eng yaxshi koʻrinadi. Telefon uchun alohida rasm ixtiyoriy.")}>
           <SingleImageField
             name="image"
-            label="Asosiy rasm"
+            label={t("Asosiy rasm")}
             value={v.image}
             onChange={set("image")}
             repoImages={repoImages}
             initialKind="cutout"
-            emptyText="Rasmsiz"
+            emptyText={t("Rasmsiz")}
           />
           <ImageUpload ready={storageReady} onUploaded={set("image")} />
           <div className="border-t border-line pt-4">
             <SingleImageField
               name="imageMobile"
-              label="Telefon uchun rasm (ixtiyoriy)"
+              label={t("Telefon uchun rasm (ixtiyoriy)")}
               value={v.imageMobile}
               onChange={set("imageMobile")}
               repoImages={repoImages}
               initialKind="cutout"
-              emptyText="Asosiy rasm"
+              emptyText={t("Asosiy rasm")}
             />
           </div>
         </Panel>
 
-        <Panel title="Muddat" lead="Toshkent vaqti. Boshlanishi boʻsh — darhol; tugashi boʻsh — muddatsiz. Banner tugash vaqtida saytdan oʻzi yoʻqoladi.">
+        <Panel title={t("Muddat")} lead={t("Toshkent vaqti. Boshlanishi boʻsh — darhol; tugashi boʻsh — muddatsiz. Banner tugash vaqtida saytdan oʻzi yoʻqoladi.")}>
           <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Boshlanishi"><input name="startsAt" type="datetime-local" {...text("startsAt")} className={inputClass} /></Field>
-            <Field label="Tugashi"><input name="endsAt" type="datetime-local" {...text("endsAt")} className={inputClass} /></Field>
+            <Field label={t("Boshlanishi")}><input name="startsAt" type="datetime-local" {...text("startsAt")} className={inputClass} /></Field>
+            <Field label={t("Tugashi")}><input name="endsAt" type="datetime-local" {...text("endsAt")} className={inputClass} /></Field>
             <label className={cn("flex min-h-12 items-center gap-3 text-[15px] font-semibold", v.endsAt ? "text-ink" : "text-muted")}>
               <input
                 type="checkbox"
@@ -137,28 +139,28 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
                 onChange={(e) => set("showCountdown")(e.target.checked)}
                 className="h-5 w-5 accent-ink"
               />
-              Taymer koʻrsatish {!v.endsAt && <span className="text-[13px] font-normal">(tugash vaqti kerak)</span>}
+              {t("Taymer koʻrsatish")} {!v.endsAt && <span className="text-[13px] font-normal">{t("(tugash vaqti kerak)")}</span>}
             </label>
-            <Field label="Tartib" hint="Kichik raqam — oldinroq"><input name="sort" type="number" value={v.sort} onChange={(e) => set("sort")(Number(e.target.value))} className={inputClass} /></Field>
+            <Field label={t("Tartib")} hint={t("Kichik raqam — oldinroq")}><input name="sort" type="number" value={v.sort} onChange={(e) => set("sort")(Number(e.target.value))} className={inputClass} /></Field>
             <label className="flex min-h-12 items-center gap-3 text-[15px] font-semibold text-ink">
               <input type="checkbox" name="active" checked={v.active} onChange={(e) => set("active")(e.target.checked)} className="h-5 w-5 accent-ink" />
-              Faol
+              {t("Faol")}
             </label>
           </div>
         </Panel>
         <Panel
-          title="A/B test (ixtiyoriy)"
-          lead="Bir joydagi ikkita banner bitta kalit bilan A va B variant boʻladi: har bir tashrif buyuruvchi doim bittasini koʻradi (50/50). Natija — «Bannerlar» roʻyxati tepasidagi «A/B testlar» kartasida."
+          title={t("A/B test (ixtiyoriy)")}
+          lead={t("Bir joydagi ikkita banner bitta kalit bilan A va B variant boʻladi: har bir tashrif buyuruvchi doim bittasini koʻradi (50/50). Natija — «Bannerlar» roʻyxati tepasidagi «A/B testlar» kartasida.")}
         >
           <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Tajriba kaliti" hint="Masalan: hero-oktabr. Ikkala variantda bir xil.">
+            <Field label={t("Tajriba kaliti")} hint={t("Masalan: hero-oktabr. Ikkala variantda bir xil.")}>
               <input name="experiment" value={v.experiment} onChange={(e) => set("experiment")(e.target.value)} maxLength={40} className={inputClass} />
             </Field>
-            <Field label="Variant">
+            <Field label={t("Variant")}>
               <select name="variant" value={v.variant} onChange={(e) => set("variant")(e.target.value as BannerFormValues["variant"])} className={inputClass}>
-                <option value="">Test yoʻq</option>
-                <option value="A">A</option>
-                <option value="B">B</option>
+                <option value="">{t("Test yoʻq")}</option>
+                <option value="A">{t("A")}</option>
+                <option value="B">{t("B")}</option>
               </select>
             </Field>
           </div>
@@ -168,8 +170,8 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
 
       <aside className="flex min-w-0 flex-col gap-3 xl:sticky xl:top-6 xl:self-start">
         <div className="flex items-center justify-between gap-3">
-          <h2 className="text-[17px] font-bold text-ink">Koʻrinishi</h2>
-          <div role="group" aria-label="Koʻrinish tili" className="flex gap-1">
+          <h2 className="text-[17px] font-bold text-ink">{t("Koʻrinishi")}</h2>
+          <div role="group" aria-label={t("Koʻrinish tili")} className="flex gap-1">
             {(["uz", "ru"] as const).map((l) => (
               <button key={l} type="button" aria-pressed={lang === l} onClick={() => setLang(l)} className={cn("h-11 min-w-11 rounded-[12px] px-3 text-[14px] font-semibold uppercase", lang === l ? "bg-ink text-white" : "bg-tile text-ink hover:bg-tile-hover")}>
                 {l}
@@ -178,7 +180,7 @@ export function BannerForm({ values, repoImages, storageReady }: { values: Banne
           </div>
         </div>
         <Preview v={v} lang={lang} />
-        <p className="text-[13px] leading-5 text-muted">Taxminiy koʻrinish. Taymer saytda tugash vaqtigacha qolgan vaqtni koʻrsatadi.</p>
+        <p className="text-[13px] leading-5 text-muted">{t("Taxminiy koʻrinish. Taymer saytda tugash vaqtigacha qolgan vaqtni koʻrsatadi.")}</p>
       </aside>
     </form>
   );

@@ -4,8 +4,9 @@ import { requireAdmin } from "@/lib/admin/session";
 import { listReviews, reviewCounts } from "@/lib/reviews/server";
 import { moderateReviewAction } from "@/app/admin/_actions/reviews";
 import { Card, ChipNav, EmptyState, PageHeader, Pill, linkClass, secondaryButtonClass, smallButtonClass, timeAgo } from "@/components/admin/ui";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Sharhlar" };
+export const generateMetadata = () => adminTitle("Sharhlar");
 export const dynamic = "force-dynamic";
 
 const STATUS_LABEL: Record<ReviewStatus, string> = { pending: "Tekshiruvda", approved: "Chop etilgan", rejected: "Rad etilgan" };
@@ -29,21 +30,21 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
   return (
     <>
       <PageHeader
-        title="Sharhlar"
-        lead="Mahsulot sahifasida yozilgan sharhlar. Tasdiqlangani saytda chiqadi va mahsulot reytingiga qoʻshiladi; telefon saytda koʻrinmaydi. Tibbiy vaʼda, shaxsiy maʼlumot yoki reklama boʻlsa — rad eting."
+        title={t("Sharhlar")}
+        lead={t("Mahsulot sahifasida yozilgan sharhlar. Tasdiqlangani saytda chiqadi va mahsulot reytingiga qoʻshiladi; telefon saytda koʻrinmaydi. Tibbiy vaʼda, shaxsiy maʼlumot yoki reklama boʻlsa — rad eting.")}
       />
       <Card>
         <ChipNav
-          label="Holat boʻyicha"
+          label={t("Holat boʻyicha")}
           className="mb-4"
           items={[
             ...REVIEW_STATUSES.map((s) => ({ href: `/admin/reviews?status=${s}`, label: STATUS_LABEL[s], active: status === s, count: counts[s] })),
-            { href: "/admin/reviews?status=all", label: "Hammasi", active: status === "all" },
+            { href: "/admin/reviews?status=all", label: t("Hammasi"), active: status === "all" },
           ]}
         />
         {reviews.length === 0 ? (
           <EmptyState title={status === "pending" ? "Tekshiruvni kutayotgan sharh yoʻq" : "Sharh yoʻq"}>
-            Mijoz mahsulot sahifasidagi «Sharh yozish» orqali yuborgan sharhlar shu yerda chiqadi.
+            {t("Mijoz mahsulot sahifasidagi «Sharh yozish» orqali yuborgan sharhlar shu yerda chiqadi.")}
           </EmptyState>
         ) : (
           <ul className="flex flex-col gap-3">
@@ -55,8 +56,8 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
                     {r.productSlug}
                   </a>
                   <span>· {r.author}</span>
-                  {r.phone9 && <span>· tel. ••• {r.phone9.slice(-4)}</span>}
-                  {r.verified ? <Pill tone="dark">xarid qilgan</Pill> : <Pill tone="outline">buyurtmasi topilmadi</Pill>}
+                  {r.phone9 && <span>{t("· tel. •••")} {r.phone9.slice(-4)}</span>}
+                  {r.verified ? <Pill tone="dark">{t("xarid qilgan")}</Pill> : <Pill tone="outline">{t("buyurtmasi topilmadi")}</Pill>}
                   <Pill tone="muted">{STATUS_LABEL[r.status]}</Pill>
                   <span title={r.createdAt.toISOString()}>· {timeAgo(r.createdAt)}</span>
                   {r.moderatedBy && <span>· {r.moderatedBy}</span>}
@@ -67,19 +68,19 @@ export default async function ReviewsPage({ searchParams }: { searchParams: Prom
                     <form action={moderateReviewAction}>
                       <input type="hidden" name="id" value={r.id} />
                       <input type="hidden" name="status" value="approved" />
-                      <button type="submit" className={smallButtonClass}>Tasdiqlash</button>
+                      <button type="submit" className={smallButtonClass}>{t("Tasdiqlash")}</button>
                     </form>
                   )}
                   {r.status !== "rejected" && (
                     <form action={moderateReviewAction}>
                       <input type="hidden" name="id" value={r.id} />
                       <input type="hidden" name="status" value="rejected" />
-                      <button type="submit" className={secondaryButtonClass}>Rad etish</button>
+                      <button type="submit" className={secondaryButtonClass}>{t("Rad etish")}</button>
                     </form>
                   )}
                   {r.phone9 && (
                     <Link href={`/admin/customers/${r.phone9}`} className={`${secondaryButtonClass}`}>
-                      Mijoz
+                      {t("Mijoz")}
                     </Link>
                   )}
                 </div>

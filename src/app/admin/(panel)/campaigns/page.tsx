@@ -8,8 +8,9 @@ import { formatDateTime } from "@/lib/admin/order-labels";
 import { conversion, messageStats, type MessageStats } from "@/lib/messaging/stats";
 import { Card, EmptyState, PageHeader, Pill, TableWrap, buttonClass, linkClass, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Kampaniyalar" };
+export const generateMetadata = () => adminTitle("Kampaniyalar");
 export const dynamic = "force-dynamic";
 
 const CHANNEL: Record<CampaignChannel, string> = { telegram: "Telegram", sms: "SMS", telegram_then_sms: "Telegram → SMS" };
@@ -40,30 +41,30 @@ export default async function AdminCampaignsPage() {
   return (
     <>
       <PageHeader
-        title="Kampaniyalar"
-        lead="Segmentlarga yuborilgan xabarlar: yetkazilishi, bosilishi va olib kelgan buyurtmalari. Yangi kampaniya segment sahifasidan boshlanadi."
-        actions={<Link href="/admin/segments" className={buttonClass}>+ Yangi kampaniya</Link>}
+        title={t("Kampaniyalar")}
+        lead={t("Segmentlarga yuborilgan xabarlar: yetkazilishi, bosilishi va olib kelgan buyurtmalari. Yangi kampaniya segment sahifasidan boshlanadi.")}
+        actions={<Link href="/admin/segments" className={buttonClass}>{t("+ Yangi kampaniya")}</Link>}
       />
       <Card>
         {rows.length === 0 ? (
-          <EmptyState title="Hali kampaniya yuborilmagan" action={<Link href="/admin/segments" className={buttonClass}>Segment tanlash</Link>}>
-            Masalan, «Kursi tugayapti» segmentiga takroriy buyurtma eslatmasi yuboring.
+          <EmptyState title={t("Hali kampaniya yuborilmagan")} action={<Link href="/admin/segments" className={buttonClass}>{t("Segment tanlash")}</Link>}>
+            {t("Masalan, «Kursi tugayapti» segmentiga takroriy buyurtma eslatmasi yuboring.")}
           </EmptyState>
         ) : (
           <TableWrap>
             <table className={`${tableClass} min-w-[980px]`}>
               <thead>
                 <tr>
-                  <th className={thClass}>Kampaniya</th>
-                  <th className={thClass}>Segment</th>
-                  <th className={`${thClass} text-right`}>Auditoriya</th>
-                  <th className={`${thClass} text-right`}>Yuborildi</th>
-                  <th className={`${thClass} text-right`}>Yetkazildi</th>
-                  <th className={`${thClass} text-right`}>Bosildi</th>
-                  <th className={`${thClass} text-right`}>Buyurtma</th>
-                  <th className={`${thClass} text-right`}>Tushum</th>
-                  <th className={`${thClass} text-right`}>Konversiya</th>
-                  <th className={thClass}>Sana</th>
+                  <th className={thClass}>{t("Kampaniya")}</th>
+                  <th className={thClass}>{t("Segment")}</th>
+                  <th className={`${thClass} text-right`}>{t("Auditoriya")}</th>
+                  <th className={`${thClass} text-right`}>{t("Yuborildi")}</th>
+                  <th className={`${thClass} text-right`}>{t("Yetkazildi")}</th>
+                  <th className={`${thClass} text-right`}>{t("Bosildi")}</th>
+                  <th className={`${thClass} text-right`}>{t("Buyurtma")}</th>
+                  <th className={`${thClass} text-right`}>{t("Tushum")}</th>
+                  <th className={`${thClass} text-right`}>{t("Konversiya")}</th>
+                  <th className={thClass}>{t("Sana")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -88,7 +89,7 @@ export default async function AdminCampaignsPage() {
                           </span>
                         )}
                       </td>
-                      <td className={tdClass}>{segment ? <Link href={`/admin/segments/${segment.id}`} className={linkClass}>{segment.title}</Link> : c.segment}</td>
+                      <td className={tdClass}>{segment ? <Link href={`/admin/segments/${segment.id}`} className={linkClass}>{t(segment.title)}</Link> : c.segment}</td>
                       <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.audience)}</td>
                       <td className={`${tdClass} text-right tabular-nums`}><Link href={`/admin/messages?campaign=${c.id}`} className={linkClass}>{formatNumber(sent)}</Link></td>
                       <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(s.delivered + (old?.sent ?? 0))}</td>
@@ -106,7 +107,7 @@ export default async function AdminCampaignsPage() {
         )}
       </Card>
       <p className="mt-4 text-[13px] leading-5 text-muted">
-        «Buyurtma» — kampaniya bergan shaxsiy promokod bilan yoki xabardagi havola orqali (utm_campaign=campaign-…) kelgan, bekor qilinmagan buyurtmalar. Telegram xabarlari klub boti orqali ketadi (<Link href="/admin/bot/outbox" className={linkClass}>Xabarlar navbati</Link>), SMS — Eskiz orqali. Har bir xabar: <Link href="/admin/messages" className={linkClass}>Xabarlar jurnali</Link>.
+        {t("«Buyurtma» — kampaniya bergan shaxsiy promokod bilan yoki xabardagi havola orqali (utm_campaign=campaign-…) kelgan, bekor qilinmagan buyurtmalar. Telegram xabarlari klub boti orqali ketadi (")}<Link href="/admin/bot/outbox" className={linkClass}>{t("Xabarlar navbati")}</Link>{t("), SMS — Eskiz orqali. Har bir xabar:")} <Link href="/admin/messages" className={linkClass}>{t("Xabarlar jurnali")}</Link>.
       </p>
     </>
   );

@@ -3,6 +3,7 @@ import { EVENT_LABEL, KEY_EVENTS } from "@/lib/admin/event-labels";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { EmptyState, som } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
+import { t } from "@/lib/admin/i18n/server";
 
 function eventDetail(e: VisitorEvent): string {
   if (e.type === "search") return `«${String(e.meta?.term ?? "")}»`;
@@ -14,7 +15,7 @@ function eventDetail(e: VisitorEvent): string {
 
 /** Events grouped into visits (sessions), newest first. */
 export function Timeline({ events }: { events: VisitorEvent[] }) {
-  if (events.length === 0) return <EmptyState title="Harakatlar hali yozilmagan" />;
+  if (events.length === 0) return <EmptyState title={t("Harakatlar hali yozilmagan")} />;
   const sessions: { id: string; events: VisitorEvent[] }[] = [];
   for (const event of events) {
     const last = sessions[sessions.length - 1];
@@ -27,7 +28,7 @@ export function Timeline({ events }: { events: VisitorEvent[] }) {
         const start = session.events[session.events.length - 1].createdAt;
         return (
           <li key={`${session.id}-${index}`}>
-            <p className="mb-2 text-[13px] font-semibold text-muted">Tashrif · {formatDateTime(start)} · {session.events.length} ta harakat</p>
+            <p className="mb-2 text-[13px] font-semibold text-muted">{t("Tashrif ·")} {formatDateTime(start)} · {session.events.length} {t("ta harakat")}</p>
             <ol className="relative flex flex-col gap-2 border-l border-line pl-5">
               {session.events.map((e) => (
                 <li key={e.id} className="relative">

@@ -19,8 +19,9 @@ import { describeAttribution } from "@/lib/analytics/attribution";
 import { lineTotal } from "@/lib/cart/pricing";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Mijoz profili" };
+export const generateMetadata = () => adminTitle("Mijoz profili");
 
 const LIFECYCLE_LABEL = { new: "Yangi mijoz", repeat: "Qayta xarid qilgan", vip: "VIP mijoz", dormant: "Faolligi pasaygan" } as const;
 
@@ -47,23 +48,23 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
         title={customer.name}
         lead={`${customer.phone}${customer.email ? ` · ${customer.email}` : ""}`}
         actions={<>
-          <a href={`tel:${customer.phone}`} className={buttonClass}>Qoʻngʻiroq qilish</a>
-          {customer.email && <a href={`mailto:${customer.email}`} className={secondaryButtonClass}>Email</a>}
-          <Link href="/admin/customers" className={secondaryButtonClass}>← Roʻyxat</Link>
+          <a href={`tel:${customer.phone}`} className={buttonClass}>{t("Qoʻngʻiroq qilish")}</a>
+          {customer.email && <a href={`mailto:${customer.email}`} className={secondaryButtonClass}>{t("Email")}</a>}
+          <Link href="/admin/customers" className={secondaryButtonClass}>{t("← Roʻyxat")}</Link>
         </>}
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-5">
-        <Metric label="Buyurtmalar" value={formatNumber(customer.successfulOrderCount)} hint={customer.orderCount > customer.successfulOrderCount ? `+${customer.orderCount - customer.successfulOrderCount} bekor` : "bekor qilinganlarsiz"} />
-        <Metric label="Jami xarid" value={som(customer.lifetimeValue)} />
-        <Metric label="Oʻrtacha chek" value={som(average)} />
-        <Metric label="Oxirgi xariddan beri" value={days === 0 ? "bugun" : `${days} kun`} hint={formatDate(customer.lastOrderAt)} />
-        <Metric label="Xarid oraligʻi" value={cadence !== null ? `${cadence} kun` : "—"} hint={cadence !== null ? "oʻrtacha" : "bitta xarid"} />
+        <Metric label={t("Buyurtmalar")} value={formatNumber(customer.successfulOrderCount)} hint={customer.orderCount > customer.successfulOrderCount ? `+${customer.orderCount - customer.successfulOrderCount} bekor` : "bekor qilinganlarsiz"} />
+        <Metric label={t("Jami xarid")} value={som(customer.lifetimeValue)} />
+        <Metric label={t("Oʻrtacha chek")} value={som(average)} />
+        <Metric label={t("Oxirgi xariddan beri")} value={days === 0 ? "bugun" : `${days} kun`} hint={formatDate(customer.lastOrderAt)} />
+        <Metric label={t("Xarid oraligʻi")} value={cadence !== null ? `${cadence} kun` : "—"} hint={cadence !== null ? "oʻrtacha" : "bitta xarid"} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <div className="flex min-w-0 flex-col gap-4">
-          <Card title="Buyurtmalar">
+          <Card title={t("Buyurtmalar")}>
             <ol className="flex flex-col gap-3">
               {customer.orders.map((order) => (
                 <li key={order.id} className="rounded-[16px] border border-line p-4">
@@ -89,18 +90,18 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
               ))}
             </ol>
           </Card>
-          <Card title="Saytdagi harakatlari" lead="Shu telefon bilan bogʻlangan barcha qurilmalardan">
+          <Card title={t("Saytdagi harakatlari")} lead={t("Shu telefon bilan bogʻlangan barcha qurilmalardan")}>
             <Timeline events={events} />
           </Card>
         </div>
 
         <div className="flex min-w-0 flex-col gap-4">
           <CustomerLoyalty phone9={phone9} />
-          <Card title="Mijoz haqida">
+          <Card title={t("Mijoz haqida")}>
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2.5 text-[14px]">
-              <dt className="text-muted">Birinchi buyurtma</dt><dd className="font-semibold">{formatDate(customer.firstOrderAt)}</dd>
-              <dt className="text-muted">Hudud</dt><dd className="font-semibold">{regionName(customer.orders[0]?.delivery.region) || "—"}</dd>
-              <dt className="text-muted">Birinchi kelgan</dt><dd className="font-semibold">{firstTouch ?? (describeAttribution(customer.orders[customer.orders.length - 1]?.attribution ?? undefined) || "Bevosita")}</dd>
+              <dt className="text-muted">{t("Birinchi buyurtma")}</dt><dd className="font-semibold">{formatDate(customer.firstOrderAt)}</dd>
+              <dt className="text-muted">{t("Hudud")}</dt><dd className="font-semibold">{regionName(customer.orders[0]?.delivery.region) || "—"}</dd>
+              <dt className="text-muted">{t("Birinchi kelgan")}</dt><dd className="font-semibold">{firstTouch ?? (describeAttribution(customer.orders[customer.orders.length - 1]?.attribution ?? undefined) || "Bevosita")}</dd>
             </dl>
             {visitors.length > 0 && (
               <ul className="mt-4 flex flex-col gap-2 border-t border-line pt-4 text-[14px]">
@@ -113,24 +114,24 @@ export default async function AdminCustomerPage({ params }: { params: Promise<{ 
               </ul>
             )}
           </Card>
-          <Card title="Jamoa izohlari">
-            <ActionForm action={addCustomerNote} submitLabel="Izohni saqlash" className="flex flex-col gap-3">
+          <Card title={t("Jamoa izohlari")}>
+            <ActionForm action={addCustomerNote} submitLabel={t("Izohni saqlash")} className="flex flex-col gap-3">
               <input type="hidden" name="phone9" value={customer.phone9} />
-              <Field label="Ichki izoh" hint="Faqat xizmat va buyurtma boʻyicha. Sogʻliq yoki karta maʼlumotini yozmang.">
-                <textarea name="note" rows={3} maxLength={2000} required placeholder="Masalan: soat 15:00 dan keyin qoʻngʻiroq qilish" className={textareaClass} />
+              <Field label={t("Ichki izoh")} hint={t("Faqat xizmat va buyurtma boʻyicha. Sogʻliq yoki karta maʼlumotini yozmang.")}>
+                <textarea name="note" rows={3} maxLength={2000} required placeholder={t("Masalan: soat 15:00 dan keyin qoʻngʻiroq qilish")} className={textareaClass} />
               </Field>
             </ActionForm>
             {notes.length > 0 ? (
               <ul className="mt-4 flex flex-col gap-2 border-t border-line pt-4">
                 {notes.map((note) => <li key={note.id} className="rounded-[12px] bg-tile p-3"><p className="whitespace-pre-wrap text-[14px] leading-5 text-ink">{note.note}</p><p className="mt-1.5 text-[12px] text-muted">{note.author ?? "Admin"} · {formatDateTime(note.createdAt)}</p></li>)}
               </ul>
-            ) : <p className="mt-3 text-[14px] text-muted">Hali izoh yoʻq.</p>}
+            ) : <p className="mt-3 text-[14px] text-muted">{t("Hali izoh yoʻq.")}</p>}
           </Card>
           {can(admin.role, "users") && (
-            <Card title="Shaxsiy maʼlumotni oʻchirish" lead="Mijoz soʻrasa: ism, telefon, email va manzil buyurtmalardan olib tashlanadi; tashriflar, izohlar, kutish roʻyxati, xabarlar, ballar, tavsiya kodi, tugʻilgan kun va Telegram bogʻlanishi oʻchiriladi. Buyurtma summasi va tarkibi hisobot uchun qoladi. Qaytarib boʻlmaydi.">
-              <ActionForm action={anonymiseCustomerAction} submitLabel="Maʼlumotni oʻchirish" className="flex flex-col gap-3">
+            <Card title={t("Shaxsiy maʼlumotni oʻchirish")} lead={t("Mijoz soʻrasa: ism, telefon, email va manzil buyurtmalardan olib tashlanadi; tashriflar, izohlar, kutish roʻyxati, xabarlar, ballar, tavsiya kodi, tugʻilgan kun va Telegram bogʻlanishi oʻchiriladi. Buyurtma summasi va tarkibi hisobot uchun qoladi. Qaytarib boʻlmaydi.")}>
+              <ActionForm action={anonymiseCustomerAction} submitLabel={t("Maʼlumotni oʻchirish")} className="flex flex-col gap-3">
                 <input type="hidden" name="phone9" value={customer.phone9} />
-                <Field label="Tasdiqlash uchun «OʻCHIRISH» deb yozing">
+                <Field label={t("Tasdiqlash uchun «OʻCHIRISH» deb yozing")}>
                   <input name="confirm" required autoComplete="off" className={inputClass} />
                 </Field>
               </ActionForm>

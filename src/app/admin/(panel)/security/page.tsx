@@ -12,8 +12,9 @@ import { logoutEverywhere } from "@/app/admin/_actions/auth";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { ConfirmTwoFactorForm, RegenerateCodesForm } from "@/components/admin/TwoFactorForms";
 import { Card, Field, Notice, PageHeader, Pill, buttonClass, inputClass, secondaryButtonClass } from "@/components/admin/ui";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Xavfsizlik" };
+export const generateMetadata = () => adminTitle("Xavfsizlik");
 export const dynamic = "force-dynamic";
 
 /* Every role: my password, my two-factor sign-in, my sessions. */
@@ -29,56 +30,56 @@ export default async function AdminSecurityPage({ searchParams }: { searchParams
 
   return (
     <>
-      <PageHeader title="Xavfsizlik" lead={<span className="inline-flex flex-wrap items-center gap-2"><Pill tone="dark">{ROLE_LABEL[me.role]}</Pill><span className="text-ink-2">{ROLE_HINT[me.role]}</span></span>} />
-      {required && !me.twoFactor && <div className="mb-4"><Notice tone="error">Doʻkon egasi ikki bosqichli kirishni majburiy qilgan. Uni yoqmaguncha panelning boshqa sahifalari ochilmaydi.</Notice></div>}
+      <PageHeader title={t("Xavfsizlik")} lead={<span className="inline-flex flex-wrap items-center gap-2"><Pill tone="dark">{ROLE_LABEL[me.role]}</Pill><span className="text-ink-2">{ROLE_HINT[me.role]}</span></span>} />
+      {required && !me.twoFactor && <div className="mb-4"><Notice tone="error">{t("Doʻkon egasi ikki bosqichli kirishni majburiy qilgan. Uni yoqmaguncha panelning boshqa sahifalari ochilmaydi.")}</Notice></div>}
       <div className="flex flex-col gap-4">
         <Card
-          title="Ikki bosqichli kirish"
-          lead="Parolga qoʻshimcha — telefondagi autentifikator ilovasi (Google Authenticator, Microsoft Authenticator, 1Password) beradigan 6 xonali kod. Parol sizsa ham panelga kirib boʻlmaydi."
+          title={t("Ikki bosqichli kirish")}
+          lead={t("Parolga qoʻshimcha — telefondagi autentifikator ilovasi (Google Authenticator, Microsoft Authenticator, 1Password) beradigan 6 xonali kod. Parol sizsa ham panelga kirib boʻlmaydi.")}
           actions={<Pill tone={me.twoFactor ? "dark" : "outline"}>{me.twoFactor ? "Yoqilgan" : "Oʻchiq"}</Pill>}
         >
           {me.twoFactor ? (
             <div className="grid gap-6 lg:grid-cols-2">
               <div className="flex flex-col gap-3">
-                <p className="text-[14px] text-ink-2">Ishlatilmagan tiklash kodlari: <b className="text-ink">{codesLeft}</b> ta.{codesLeft <= 3 && " Yangilarini yarating."}</p>
+                <p className="text-[14px] text-ink-2">{t("Ishlatilmagan tiklash kodlari:")} <b className="text-ink">{codesLeft}</b> ta.{codesLeft <= 3 && " Yangilarini yarating."}</p>
                 <RegenerateCodesForm />
               </div>
               <div className="flex flex-col gap-3 border-t border-line pt-4 lg:border-l lg:border-t-0 lg:pl-6 lg:pt-0">
-                <p className="text-[14px] font-semibold text-ink">Oʻchirish</p>
-                <ActionForm action={disableTwoFactor} submitLabel="Ikki bosqichli kirishni oʻchirish" className="flex flex-col gap-4">
-                  <Field label="Parol"><input name="password" type="password" autoComplete="current-password" required className={inputClass} /></Field>
-                  <Field label="Ilovadagi kod"><input name="code" inputMode="numeric" autoComplete="one-time-code" maxLength={8} required className={inputClass} /></Field>
+                <p className="text-[14px] font-semibold text-ink">{t("Oʻchirish")}</p>
+                <ActionForm action={disableTwoFactor} submitLabel={t("Ikki bosqichli kirishni oʻchirish")} className="flex flex-col gap-4">
+                  <Field label={t("Parol")}><input name="password" type="password" autoComplete="current-password" required className={inputClass} /></Field>
+                  <Field label={t("Ilovadagi kod")}><input name="code" inputMode="numeric" autoComplete="one-time-code" maxLength={8} required className={inputClass} /></Field>
                 </ActionForm>
               </div>
             </div>
           ) : setup && qr ? (
             <div className="grid gap-6 lg:grid-cols-[240px_1fr]">
               {/* eslint-disable-next-line @next/next/no-img-element -- a data: URL generated on the server, nothing to optimise */}
-              <img src={qr} alt="Autentifikator ilovasi uchun QR kod" width={220} height={220} className="rounded-[12px] border border-line bg-white" />
+              <img src={qr} alt={t("Autentifikator ilovasi uchun QR kod")} width={220} height={220} className="rounded-[12px] border border-line bg-white" />
               <div className="flex flex-col gap-4">
                 <ol className="list-decimal pl-5 text-[14px] leading-6 text-ink-2">
-                  <li>Ilovada «+» → «QR kodni skanerlash».</li>
-                  <li>Skaner boʻlmasa — kalitni qoʻlda kiriting: <code className="break-all rounded-[8px] bg-tile px-2 py-0.5 text-[13px] text-ink">{setup.match(/.{1,4}/g)?.join(" ")}</code></li>
-                  <li>Ilova koʻrsatgan kodni pastga yozing.</li>
+                  <li>{t("Ilovada «+» → «QR kodni skanerlash».")}</li>
+                  <li>{t("Skaner boʻlmasa — kalitni qoʻlda kiriting:")} <code className="break-all rounded-[8px] bg-tile px-2 py-0.5 text-[13px] text-ink">{setup.match(/.{1,4}/g)?.join(" ")}</code></li>
+                  <li>{t("Ilova koʻrsatgan kodni pastga yozing.")}</li>
                 </ol>
                 <ConfirmTwoFactorForm />
               </div>
             </div>
           ) : (
             <form action={startTwoFactor}>
-              <button type="submit" className={buttonClass}>Ikki bosqichli kirishni sozlash</button>
+              <button type="submit" className={buttonClass}>{t("Ikki bosqichli kirishni sozlash")}</button>
             </form>
           )}
-          {params.enrol === "1" && !me.twoFactor && !setup && <p className="mt-3 text-[13px] text-muted">Sozlash 2 daqiqa oladi.</p>}
+          {params.enrol === "1" && !me.twoFactor && !setup && <p className="mt-3 text-[13px] text-muted">{t("Sozlash 2 daqiqa oladi.")}</p>}
         </Card>
 
-        <Card title="Parol" lead="Parol almashtirilganda boshqa qurilmalardagi sessiyalar yopiladi.">
-          <ActionForm action={changePassword} submitLabel="Parolni almashtirish" className="grid gap-4 lg:grid-cols-2">
-            <Field label="Joriy parol"><input name="current" type="password" autoComplete="current-password" required className={inputClass} /></Field>
-            <Field label="Yangi parol" hint={`Kamida ${MIN_PASSWORD_LENGTH} belgi`}><input name="next" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required className={inputClass} /></Field>
+        <Card title={t("Parol")} lead={t("Parol almashtirilganda boshqa qurilmalardagi sessiyalar yopiladi.")}>
+          <ActionForm action={changePassword} submitLabel={t("Parolni almashtirish")} className="grid gap-4 lg:grid-cols-2">
+            <Field label={t("Joriy parol")}><input name="current" type="password" autoComplete="current-password" required className={inputClass} /></Field>
+            <Field label={t("Yangi parol")} hint={`Kamida ${MIN_PASSWORD_LENGTH} belgi`}><input name="next" type="password" autoComplete="new-password" minLength={MIN_PASSWORD_LENGTH} required className={inputClass} /></Field>
           </ActionForm>
           <form action={logoutEverywhere} className="mt-4 border-t border-line pt-4">
-            <button type="submit" className={secondaryButtonClass}>Barcha qurilmalardan chiqish</button>
+            <button type="submit" className={secondaryButtonClass}>{t("Barcha qurilmalardan chiqish")}</button>
           </form>
         </Card>
       </div>

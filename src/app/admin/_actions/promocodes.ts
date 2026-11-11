@@ -15,6 +15,7 @@ import { normalizePromoCode, phone9Of } from "@/lib/promo/rules";
 import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/issue";
 import { saveFirstOrderSetting } from "@/lib/promo/settings";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 const optionalInt = (label: string, min: number) =>
   z
@@ -39,12 +40,12 @@ const codeSchema = z
     note: z.string().trim().max(300).default(""),
   })
   .superRefine((d, ctx) => {
-    if (!Number.isInteger(d.value) || d.value <= 0) ctx.addIssue({ code: "custom", message: "Chegirma qiymatini kiriting.", path: ["value"] });
-    else if (d.kind === "percent" && d.value > 90) ctx.addIssue({ code: "custom", message: "Foiz 1 dan 90 gacha boʻlsin.", path: ["value"] });
+    if (!Number.isInteger(d.value) || d.value <= 0) ctx.addIssue({ code: "custom", message: t("Chegirma qiymatini kiriting."), path: ["value"] });
+    else if (d.kind === "percent" && d.value > 90) ctx.addIssue({ code: "custom", message: t("Foiz 1 dan 90 gacha boʻlsin."), path: ["value"] });
     if (!Number.isInteger(d.perPhoneLimit) || d.perPhoneLimit < 1 || d.perPhoneLimit > 100) {
-      ctx.addIssue({ code: "custom", message: "Bir telefon uchun limit 1–100.", path: ["perPhoneLimit"] });
+      ctx.addIssue({ code: "custom", message: t("Bir telefon uchun limit 1–100."), path: ["perPhoneLimit"] });
     }
-    if (d.phone && !phone9Of(d.phone)) ctx.addIssue({ code: "custom", message: "Telefon raqami kamida 9 raqamdan iborat boʻlsin.", path: ["phone"] });
+    if (d.phone && !phone9Of(d.phone)) ctx.addIssue({ code: "custom", message: t("Telefon raqami kamida 9 raqamdan iborat boʻlsin."), path: ["phone"] });
   });
 
 function refresh(code?: string) {
@@ -61,7 +62,7 @@ export async function savePromoCode(_: FormState, form: FormData): Promise<FormS
   const d = parsed.data;
   const startsAt = fromTashkentInput(d.startsAt);
   const endsAt = fromTashkentInput(d.endsAt);
-  if (startsAt && endsAt && endsAt <= startsAt) return { error: "Tugash sanasi boshlanishdan keyin boʻlsin." };
+  if (startsAt && endsAt && endsAt <= startsAt) return { error: t("Tugash sanasi boshlanishdan keyin boʻlsin.") };
   const slugs = form.getAll("productSlugs").map(String).filter((s) => SLUG_RE.test(s)).slice(0, 500);
   const row = {
     kind: d.kind,
@@ -80,7 +81,7 @@ export async function savePromoCode(_: FormState, form: FormData): Promise<FormS
   const editing = data.original?.trim();
   if (editing) {
     const updated = await db.update(promoCodes).set(row).where(eq(promoCodes.code, editing)).returning({ code: promoCodes.code });
-    if (updated.length === 0) return { error: "Promokod topilmadi." };
+    if (updated.length === 0) return { error: t("Promokod topilmadi.") };
     refresh(editing);
     await auditLog(admin, "promocode.save", auditTarget(form));
     return { ok: "Saqlandi. Savatda darhol amal qiladi." };
@@ -89,7 +90,7 @@ export async function savePromoCode(_: FormState, form: FormData): Promise<FormS
   let code: string;
   if (d.code) {
     const normalized = normalizePromoCode(d.code);
-    if (!normalized) return { error: "Kod 3–32 belgi: lotin harflari, raqamlar va chiziqcha (-)." };
+    if (!normalized) return { error: t("Kod 3–32 belgi: lotin harflari, raqamlar va chiziqcha (-).") };
     const inserted = await db.insert(promoCodes).values({ code: normalized, ...row, source: "manual" }).onConflictDoNothing().returning({ code: promoCodes.code });
     if (inserted.length === 0) return { error: `${normalized} kodi allaqachon bor.` };
     code = normalized;

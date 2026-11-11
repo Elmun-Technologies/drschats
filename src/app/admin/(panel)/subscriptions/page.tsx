@@ -4,8 +4,9 @@ import { listSubscriptions, subscriptionCounts } from "@/lib/subscription/server
 import { subscriptionAction } from "@/app/admin/_actions/reviews";
 import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, linkClass, secondaryButtonClass, smallButtonClass, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Obunalar" };
+export const generateMetadata = () => adminTitle("Obunalar");
 export const dynamic = "force-dynamic";
 
 const FILTERS = [
@@ -42,30 +43,30 @@ export default async function SubscriptionsPage({ searchParams }: { searchParams
   return (
     <>
       <PageHeader
-        title="Obunalar"
-        lead="Mijoz «obuna» bilan buyurtma qilgan mahsulotlar. Keyingi yetkazish sanasi kelganda mijozga qoʻngʻiroq qiling, takroriy buyurtmani rasmiylashtiring va «Yetkazildi» ni bosing — keyingi sana bir oraliqqa suriladi. Avtomatik toʻlov yoki joʻnatish yoʻq."
+        title={t("Obunalar")}
+        lead={t("Mijoz «obuna» bilan buyurtma qilgan mahsulotlar. Keyingi yetkazish sanasi kelganda mijozga qoʻngʻiroq qiling, takroriy buyurtmani rasmiylashtiring va «Yetkazildi» ni bosing — keyingi sana bir oraliqqa suriladi. Avtomatik toʻlov yoki joʻnatish yoʻq.")}
       />
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Faol obunalar" value={formatNumber(counts.active)} />
-        <Metric label="3 kun ichida navbat" value={formatNumber(counts.due)} hint="muddati oʻtganlar ham" />
+        <Metric label={t("Faol obunalar")} value={formatNumber(counts.active)} />
+        <Metric label={t("3 kun ichida navbat")} value={formatNumber(counts.due)} hint={t("muddati oʻtganlar ham")} />
       </div>
       <Card>
-        <ChipNav label="Saralash" className="mb-4" items={FILTERS.map((f) => ({ href: `/admin/subscriptions?f=${f.key}`, label: f.label, active: f.key === filter }))} />
+        <ChipNav label={t("Saralash")} className="mb-4" items={FILTERS.map((f) => ({ href: `/admin/subscriptions?f=${f.key}`, label: t(f.label), active: f.key === filter }))} />
         {rows.length === 0 ? (
           <EmptyState title={filter === "due" ? "Yaqin kunlarda navbatdagi yetkazish yoʻq" : "Obuna yoʻq"}>
-            Mijoz mahsulot sahifasida «Obuna bilan» tanlab buyurtma bersa, obuna shu yerda paydo boʻladi.
+            {t("Mijoz mahsulot sahifasida «Obuna bilan» tanlab buyurtma bersa, obuna shu yerda paydo boʻladi.")}
           </EmptyState>
         ) : (
           <TableWrap>
             <table className={tableClass}>
               <thead>
                 <tr>
-                  <th className={thClass}>Keyingi yetkazish</th>
-                  <th className={thClass}>Mahsulot</th>
-                  <th className={thClass}>Mijoz</th>
-                  <th className={thClass}>Oraliq</th>
-                  <th className={thClass}>Oxirgi buyurtma</th>
-                  <th className={`${thClass} text-right`} aria-label="Amal" />
+                  <th className={thClass}>{t("Keyingi yetkazish")}</th>
+                  <th className={thClass}>{t("Mahsulot")}</th>
+                  <th className={thClass}>{t("Mijoz")}</th>
+                  <th className={thClass}>{t("Oraliq")}</th>
+                  <th className={thClass}>{t("Oxirgi buyurtma")}</th>
+                  <th className={`${thClass} text-right`} aria-label={t("Amal")} />
                 </tr>
               </thead>
               <tbody>
@@ -90,8 +91,8 @@ export default async function SubscriptionsPage({ searchParams }: { searchParams
                         ) : (
                           "—"
                         )}
-                        {stale && <Pill tone="outline" className="ml-2">bekor qilingan</Pill>}
-                        {s.status === "cancelled" && <Pill tone="muted" className="ml-2">obuna tugagan</Pill>}
+                        {stale && <Pill tone="outline" className="ml-2">{t("bekor qilingan")}</Pill>}
+                        {s.status === "cancelled" && <Pill tone="muted" className="ml-2">{t("obuna tugagan")}</Pill>}
                       </td>
                       <td className={`${tdClass} text-right`}>
                         {s.status === "active" && (
@@ -99,12 +100,12 @@ export default async function SubscriptionsPage({ searchParams }: { searchParams
                             <form action={subscriptionAction}>
                               <input type="hidden" name="id" value={s.id} />
                               <input type="hidden" name="op" value="advance" />
-                              <button type="submit" className={smallButtonClass} disabled={stale}>Yetkazildi</button>
+                              <button type="submit" className={smallButtonClass} disabled={stale}>{t("Yetkazildi")}</button>
                             </form>
                             <form action={subscriptionAction}>
                               <input type="hidden" name="id" value={s.id} />
                               <input type="hidden" name="op" value="cancel" />
-                              <button type="submit" className={secondaryButtonClass}>Bekor qilish</button>
+                              <button type="submit" className={secondaryButtonClass}>{t("Bekor qilish")}</button>
                             </form>
                           </div>
                         )}

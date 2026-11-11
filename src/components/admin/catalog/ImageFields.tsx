@@ -7,6 +7,7 @@ import type { RepoImage, RepoImageKind } from "@/lib/admin/repo-images";
 import { Field, inputClass, secondaryButtonClass, smallButtonClass, smallDangerButtonClass } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
 import { ImagePicker } from "./ImagePicker";
+import { useT } from "@/lib/admin/i18n/client";
 
 const iconButton =
   "grid h-11 w-11 place-items-center rounded-[12px] bg-tile text-ink transition-colors hover:bg-tile-hover disabled:opacity-40 disabled:hover:bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30";
@@ -42,6 +43,7 @@ export function ImageListField({
   slug: string;
   storageReady: boolean;
 }) {
+  const t = useT();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [url, setUrl] = useState("");
   const add = (src: string) => {
@@ -85,16 +87,16 @@ export function ImageListField({
           ))}
         </ol>
       ) : (
-        <p className="rounded-[16px] bg-tile px-4 py-6 text-center text-[14px] text-muted">Hali rasm yoʻq — saytdagi rasmlardan tanlang{storageReady ? ", yuklang" : ""} yoki manzilini kiriting.</p>
+        <p className="rounded-[16px] bg-tile px-4 py-6 text-center text-[14px] text-muted">{t("Hali rasm yoʻq — saytdagi rasmlardan tanlang")}{storageReady ? ", yuklang" : ""} {t("yoki manzilini kiriting.")}</p>
       )}
 
       <div className="flex flex-wrap items-center gap-2">
-        <button type="button" onClick={() => setPickerOpen(true)} className={secondaryButtonClass}>Saytdagi rasmlardan tanlash</button>
+        <button type="button" onClick={() => setPickerOpen(true)} className={secondaryButtonClass}>{t("Saytdagi rasmlardan tanlash")}</button>
         <ImageUpload ready={storageReady} onUploaded={add} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={`${name}-url`} className="text-[14px] font-semibold text-ink">Manzil boʻyicha qoʻshish</label>
+        <label htmlFor={`${name}-url`} className="text-[14px] font-semibold text-ink">{t("Manzil boʻyicha qoʻshish")}</label>
         <div className="flex gap-2">
           <input
             id={`${name}-url`}
@@ -107,10 +109,10 @@ export function ImageListField({
                 setUrl("");
               }
             }}
-            placeholder="https://… yoki /products/…"
+            placeholder={t("https://… yoki /products/…")}
             className={inputClass}
           />
-          <button type="button" onClick={() => { add(url); setUrl(""); }} disabled={!url.trim()} className={cn(smallButtonClass, "h-12 shrink-0 disabled:opacity-50")}>Qoʻshish</button>
+          <button type="button" onClick={() => { add(url); setUrl(""); }} disabled={!url.trim()} className={cn(smallButtonClass, "h-12 shrink-0 disabled:opacity-50")}>{t("Qoʻshish")}</button>
         </div>
       </div>
 
@@ -122,7 +124,7 @@ export function ImageListField({
         selected={value}
         onPick={add}
         slug={slug}
-        title="Rasm tanlash"
+        title={t("Rasm tanlash")}
         initialKind="photo"
       />
     </div>
@@ -151,6 +153,7 @@ export function SingleImageField({
   initialKind?: RepoImageKind;
   emptyText: string;
 }) {
+  const t = useT();
   const [pickerOpen, setPickerOpen] = useState(false);
   const src = value.trim();
   return (
@@ -165,11 +168,11 @@ export function SingleImageField({
         </span>
         <div className="flex flex-wrap gap-2">
           <button type="button" onClick={() => setPickerOpen(true)} className={smallButtonClass}>{src ? "Almashtirish" : "Tanlash"}</button>
-          {src && <button type="button" onClick={() => onChange("")} className={smallDangerButtonClass}>Olib tashlash</button>}
+          {src && <button type="button" onClick={() => onChange("")} className={smallDangerButtonClass}>{t("Olib tashlash")}</button>}
         </div>
       </div>
       <Field label={label} hint={hint}>
-        <input name={name} value={value} onChange={(e) => onChange(e.target.value)} placeholder="/images/products/c-….png" className={inputClass} />
+        <input name={name} value={value} onChange={(e) => onChange(e.target.value)} placeholder={t("/images/products/c-….png")} className={inputClass} />
       </Field>
       <ImagePicker
         open={pickerOpen}
@@ -187,19 +190,20 @@ export function SingleImageField({
 }
 
 export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded: (url: string) => void }) {
+  const t = useT();
   const [state, setState] = useState<FormState & { url?: string }>();
   const [pending, setPending] = useState(false);
   const input = useRef<HTMLInputElement>(null);
 
   if (!ready) {
-    return <p className="text-[13px] text-muted">Yangi faylni yuklash uchun Tigris sozlanishi kerak (docs/ADMIN.md).</p>;
+    return <p className="text-[13px] text-muted">{t("Yangi faylni yuklash uchun Tigris sozlanishi kerak (docs/ADMIN.md).")}</p>;
   }
 
   async function onChange() {
     const file = input.current?.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      setState({ error: "Fayl 5 MB dan katta." });
+      setState({ error: t("Fayl 5 MB dan katta.") });
       if (input.current) input.current.value = "";
       return;
     }
@@ -209,11 +213,11 @@ export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded:
     try {
       // A route handler, not an action: only this request may carry 5 MB (products/upload/route.ts).
       const response = await fetch("/admin/products/upload", { method: "POST", body: fd });
-      const result = (await response.json().catch(() => ({ error: "Yuklab boʻlmadi." }))) as FormState & { url?: string };
+      const result = (await response.json().catch(() => ({ error: t("Yuklab boʻlmadi.") }))) as FormState & { url?: string };
       setState(result);
       if (result?.url) onUploaded(result.url);
     } catch {
-      setState({ error: "Yuklab boʻlmadi — internetni tekshirib qayta urinib koʻring." });
+      setState({ error: t("Yuklab boʻlmadi — internetni tekshirib qayta urinib koʻring.") });
     } finally {
       setPending(false);
       if (input.current) input.current.value = "";

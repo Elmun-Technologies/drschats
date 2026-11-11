@@ -12,8 +12,9 @@ import { CopyButton } from "@/components/admin/CopyButton";
 import { Card, EmptyState, Notice, PageHeader, Pill, TableWrap, dangerButtonClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Promokod" };
+export const generateMetadata = () => adminTitle("Promokod");
 
 export default async function PromoCodePage({ params, searchParams }: { params: Promise<{ code: string }>; searchParams: Promise<{ inUse?: string }> }) {
   await requireAdmin();
@@ -38,7 +39,7 @@ export default async function PromoCodePage({ params, searchParams }: { params: 
         lead={
           <span className="inline-flex flex-wrap items-center gap-2">
             <Pill tone={promo.active ? "dark" : "muted"}>{promo.active ? "Faol" : "Oʻchirilgan"}</Pill>
-            <span>{promoValueLabel(promo.kind, promo.value)} · ishlatildi {formatNumber(promo.uses)}{promo.maxUses != null ? ` / ${formatNumber(promo.maxUses)}` : ""}</span>
+            <span>{promoValueLabel(promo.kind, promo.value)} {t("· ishlatildi")} {formatNumber(promo.uses)}{promo.maxUses != null ? ` / ${formatNumber(promo.maxUses)}` : ""}</span>
             <CopyButton text={promo.code} />
           </span>
         }
@@ -51,30 +52,30 @@ export default async function PromoCodePage({ params, searchParams }: { params: 
             {promo.uses === 0 && redemptions.length === 0 && (
               <form action={deletePromoCode}>
                 <input type="hidden" name="code" value={promo.code} />
-                <button type="submit" className={dangerButtonClass}>Oʻchirib tashlash</button>
+                <button type="submit" className={dangerButtonClass}>{t("Oʻchirib tashlash")}</button>
               </form>
             )}
-            <Link href="/admin/promocodes" className={secondaryButtonClass}>← Promokodlar</Link>
+            <Link href="/admin/promocodes" className={secondaryButtonClass}>{t("← Promokodlar")}</Link>
           </>
         }
       />
-      {inUse && <div className="mb-4"><Notice tone="error">Bu kod buyurtmalarda ishlatilgan — uni oʻchirib boʻlmaydi. Oʻrniga «Oʻchirish» bilan faolsizlantiring.</Notice></div>}
+      {inUse && <div className="mb-4"><Notice tone="error">{t("Bu kod buyurtmalarda ishlatilgan — uni oʻchirib boʻlmaydi. Oʻrniga «Oʻchirish» bilan faolsizlantiring.")}</Notice></div>}
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(320px,1fr)]">
-        <Card title="Sozlamalar">
+        <Card title={t("Sozlamalar")}>
           <PromoCodeForm promo={promo} products={products.map((p) => ({ slug: p.slug, name: p.name }))} />
         </Card>
-        <Card title="Ishlatilishi" lead={live.length ? `${formatNumber(live.length)} ta buyurtma · ${som(revenue)} tushum · ${som(given)} chegirma` : undefined}>
+        <Card title={t("Ishlatilishi")} lead={live.length ? `${formatNumber(live.length)} ta buyurtma · ${som(revenue)} tushum · ${som(given)} chegirma` : undefined}>
           {redemptions.length === 0 ? (
-            <EmptyState title="Hali ishlatilmagan" />
+            <EmptyState title={t("Hali ishlatilmagan")} />
           ) : (
             <TableWrap>
               <table className={`${tableClass} min-w-[420px]`}>
                 <thead>
                   <tr>
-                    <th className={thClass}>Buyurtma</th>
-                    <th className={`${thClass} text-right`}>Chegirma</th>
-                    <th className={`${thClass} text-right`}>Jami</th>
+                    <th className={thClass}>{t("Buyurtma")}</th>
+                    <th className={`${thClass} text-right`}>{t("Chegirma")}</th>
+                    <th className={`${thClass} text-right`}>{t("Jami")}</th>
                   </tr>
                 </thead>
                 <tbody>

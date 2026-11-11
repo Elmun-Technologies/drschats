@@ -7,8 +7,9 @@ import { StorefrontTabs } from "@/components/admin/storefront/StorefrontTabs";
 import { AnnouncementsForm } from "@/components/admin/storefront/AnnouncementsForm";
 import { Notice, PageHeader } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Eʼlon qatori" };
+export const generateMetadata = () => adminTitle("Eʼlon qatori");
 
 export default async function AnnouncementsPage() {
   await requireAdmin();
@@ -17,13 +18,13 @@ export default async function AnnouncementsPage() {
   return (
     <>
       <PageHeader
-        title="Vitrina"
-        lead="Sayt tepasidagi qator: kompyuterda shahar va telefon oʻrtasida, telefonda header ustida ingichka qator. Bir nechta eʼlon boʻlsa 6 soniyada almashadi."
+        title={t("Vitrina")}
+        lead={t("Sayt tepasidagi qator: kompyuterda shahar va telefon oʻrtasida, telefonda header ustida ingichka qator. Bir nechta eʼlon boʻlsa 6 soniyada almashadi.")}
       />
       <StorefrontTabs active="announcements" />
       <div className="mb-4">
         <Notice>
-          Yoqilgan eʼlon boʻlmasa saytda odatiy qator koʻrinadi (Yetkazib berish, Toʻlov, Kafolat, Sodiqlik dasturi, Dorixonalar uchun). Qatorni olib tashlash uchun ikkala tildagi matnni oʻchiring.
+          {t("Yoqilgan eʼlon boʻlmasa saytda odatiy qator koʻrinadi (Yetkazib berish, Toʻlov, Kafolat, Sodiqlik dasturi, Dorixonalar uchun). Qatorni olib tashlash uchun ikkala tildagi matnni oʻchiring.")}
         </Notice>
       </div>
       <AnnouncementsForm

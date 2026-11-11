@@ -12,8 +12,9 @@ import { StorefrontTabs } from "@/components/admin/storefront/StorefrontTabs";
 import { DealForm, type DealFormValues } from "@/components/admin/storefront/DealForm";
 import { Card, EmptyState, Notice, PageHeader, Pill, SectionTitle, TableWrap, linkClass, smallButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Bugungi taklif" };
+export const generateMetadata = () => adminTitle("Bugungi taklif");
 
 type DealRow = typeof deals.$inferSelect;
 
@@ -71,16 +72,16 @@ export default async function DealOfDayPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <PageHeader
-        title="Vitrina"
-        lead="Bugungi taklif — bitta mahsulot, cheklangan vaqtga haqiqiy past narx. Narx jadval boʻyicha oʻz vaqtida oʻzi oʻzgaradi va oʻzi qaytadi: saytda, savatda va buyurtmada bir xil."
+        title={t("Vitrina")}
+        lead={t("Bugungi taklif — bitta mahsulot, cheklangan vaqtga haqiqiy past narx. Narx jadval boʻyicha oʻz vaqtida oʻzi oʻzgaradi va oʻzi qaytadi: saytda, savatda va buyurtmada bir xil.")}
       />
       <StorefrontTabs active="deal" />
-      {params.saved && <div className="mb-4"><Notice tone="ok">Taklif saqlandi.</Notice></div>}
-      {params.deleted && <div className="mb-4"><Notice tone="ok">Taklif oʻchirildi.</Notice></div>}
-      {params.ended && <div className="mb-4"><Notice tone="ok">Taklif tugatildi — mahsulot odatiy narxida.</Notice></div>}
+      {params.saved && <div className="mb-4"><Notice tone="ok">{t("Taklif saqlandi.")}</Notice></div>}
+      {params.deleted && <div className="mb-4"><Notice tone="ok">{t("Taklif oʻchirildi.")}</Notice></div>}
+      {params.ended && <div className="mb-4"><Notice tone="ok">{t("Taklif tugatildi — mahsulot odatiy narxida.")}</Notice></div>}
 
       <div className="grid items-start gap-5 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-        <Card title="Hozir saytda">
+        <Card title={t("Hozir saytda")}>
           {current ? (
             (() => {
               const p = priceOf(current);
@@ -95,34 +96,34 @@ export default async function DealOfDayPage({ searchParams }: { searchParams: Pr
                         <Pill tone="red">−{Math.round((1 - p.deal / p.base) * 100)}%</Pill>
                       </>
                     ) : (
-                      <span className="text-ink-2">Narx hozirgi narxdan past emas — taklif amal qilmayapti ({terms(current)}).</span>
+                      <span className="text-ink-2">{t("Narx hozirgi narxdan past emas — taklif amal qilmayapti (")}{terms(current)}).</span>
                     )}
                   </p>
                   <p className="text-[14px] text-ink-2">{formatDateTime(current.startsAt)} — <b className="text-ink">{formatDateTime(current.endsAt)}</b> gacha</p>
                   <div className="flex flex-wrap gap-2">
-                    <Link href={`/admin/storefront/deal?edit=${current.id}`} className={smallButtonClass}>Tahrirlash</Link>
+                    <Link href={`/admin/storefront/deal?edit=${current.id}`} className={smallButtonClass}>{t("Tahrirlash")}</Link>
                     <form action={endDealNow}>
                       <input type="hidden" name="id" value={current.id} />
-                      <button type="submit" className={smallButtonClass}>Hozir tugatish</button>
+                      <button type="submit" className={smallButtonClass}>{t("Hozir tugatish")}</button>
                     </form>
                   </div>
                 </div>
               );
             })()
           ) : (
-            <EmptyState title="Hozir taklif yoʻq">Bosh sahifada «Bugungi taklif» bloki koʻrinmaydi. Oʻngdagi forma bilan rejalashtiring.</EmptyState>
+            <EmptyState title={t("Hozir taklif yoʻq")}>{t("Bosh sahifada «Bugungi taklif» bloki koʻrinmaydi. Oʻngdagi forma bilan rejalashtiring.")}</EmptyState>
           )}
         </Card>
 
-        <Card title={editing ? "Taklifni tahrirlash" : "Yangi taklif"} lead="Bir vaqtda bitta taklif: vaqtlar ustma-ust tushmasin. Kelgusi kunlar uchun ham navbatga qoʻyish mumkin." actions={editing ? <Link href="/admin/storefront/deal" className={linkClass}>Bekor qilish</Link> : undefined}>
+        <Card title={editing ? "Taklifni tahrirlash" : "Yangi taklif"} lead={t("Bir vaqtda bitta taklif: vaqtlar ustma-ust tushmasin. Kelgusi kunlar uchun ham navbatga qoʻyish mumkin.")} actions={editing ? <Link href="/admin/storefront/deal" className={linkClass}>{t("Bekor qilish")}</Link> : undefined}>
           <DealForm key={editing?.id ?? "new"} values={values} products={options} />
         </Card>
       </div>
 
-      <SectionTitle>Navbat</SectionTitle>
+      <SectionTitle>{t("Navbat")}</SectionTitle>
       <Card>
         {queue.length === 0 ? (
-          <EmptyState title="Navbatda taklif yoʻq" />
+          <EmptyState title={t("Navbatda taklif yoʻq")} />
         ) : (
           <DealTable rows={queue} names={names} priceOf={priceOf} terms={terms} actions />
         )}
@@ -130,7 +131,7 @@ export default async function DealOfDayPage({ searchParams }: { searchParams: Pr
 
       {past.length > 0 && (
         <>
-          <SectionTitle>Oʻtgan takliflar</SectionTitle>
+          <SectionTitle>{t("Oʻtgan takliflar")}</SectionTitle>
           <Card>
             <DealTable rows={past} names={names} priceOf={priceOf} terms={terms} />
           </Card>
@@ -158,11 +159,11 @@ function DealTable({
       <table className={tableClass}>
         <thead>
           <tr>
-            <th className={thClass}>Vaqt (Toshkent)</th>
-            <th className={thClass}>Mahsulot</th>
-            <th className={thClass}>Chegirma</th>
-            <th className={`${thClass} text-right`}>Narx</th>
-            {actions && <th className={thClass}><span className="sr-only">Amallar</span></th>}
+            <th className={thClass}>{t("Vaqt (Toshkent)")}</th>
+            <th className={thClass}>{t("Mahsulot")}</th>
+            <th className={thClass}>{t("Chegirma")}</th>
+            <th className={`${thClass} text-right`}>{t("Narx")}</th>
+            {actions && <th className={thClass}><span className="sr-only">{t("Amallar")}</span></th>}
           </tr>
         </thead>
         <tbody>
@@ -177,10 +178,10 @@ function DealTable({
                 {actions && (
                   <td className={tdClass}>
                     <div className="flex justify-end gap-2">
-                      <Link href={`/admin/storefront/deal?edit=${d.id}`} className={smallButtonClass}>Tahrirlash</Link>
+                      <Link href={`/admin/storefront/deal?edit=${d.id}`} className={smallButtonClass}>{t("Tahrirlash")}</Link>
                       <form action={deleteDeal}>
                         <input type="hidden" name="id" value={d.id} />
-                        <button type="submit" className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-tile">Oʻchirish</button>
+                        <button type="submit" className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-tile">{t("Oʻchirish")}</button>
                       </form>
                     </div>
                   </td>

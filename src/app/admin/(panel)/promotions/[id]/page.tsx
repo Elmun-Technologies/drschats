@@ -7,8 +7,9 @@ import { listProducts } from "@/lib/admin/queries";
 import { PromotionForm } from "@/components/admin/PromotionForm";
 import { Card, PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Aksiya" };
+export const generateMetadata = () => adminTitle("Aksiya");
 
 export default async function EditPromotionPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
@@ -17,7 +18,7 @@ export default async function EditPromotionPage({ params }: { params: Promise<{ 
   if (!promotion) notFound();
   return (
     <>
-      <PageHeader eyebrow="Aksiyalar" title={promotion.title.uz} actions={<Link href="/admin/promotions" className={secondaryButtonClass}>← Aksiyalar</Link>} />
+      <PageHeader eyebrow={t("Aksiyalar")} title={promotion.title.uz} actions={<Link href="/admin/promotions" className={secondaryButtonClass}>{t("← Aksiyalar")}</Link>} />
       <Card><PromotionForm promotion={promotion} products={products.map((p) => ({ slug: p.slug, name: p.name, categorySlug: p.categorySlug }))} /></Card>
     </>
   );

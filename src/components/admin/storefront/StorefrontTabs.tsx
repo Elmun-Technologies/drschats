@@ -1,4 +1,5 @@
 import { ChipNav } from "@/components/admin/ui";
+import { t } from "@/lib/admin/i18n/server";
 
 export type StorefrontSection = "banners" | "announcements" | "deal";
 
@@ -12,9 +13,9 @@ const ITEMS: { key: StorefrontSection; href: string; label: string }[] = [
 export function StorefrontTabs({ active }: { active: StorefrontSection }) {
   return (
     <ChipNav
-      label="Vitrina boʻlimlari"
+      label={t("Vitrina boʻlimlari")}
       className="mb-5"
-      items={ITEMS.map((item) => ({ href: item.href, label: item.label, active: item.key === active }))}
+      items={ITEMS.map((item) => ({ href: item.href, label: t(item.label), active: item.key === active }))}
     />
   );
 }

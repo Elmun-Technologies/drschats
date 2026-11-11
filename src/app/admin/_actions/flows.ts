@@ -9,6 +9,7 @@ import { requireAdmin } from "@/lib/admin/session";
 import { stepsSchema } from "@/lib/flows/types";
 import { saveTransactionalSms } from "@/lib/sms/transactional-server";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 const saveSchema = z.object({
   id: z.string().regex(/^[a-z0-9][a-z0-9-]{1,39}$/),
@@ -24,7 +25,7 @@ export async function saveFlow(_: FormState, form: FormData): Promise<FormState>
   try {
     raw = JSON.parse(parsed.data.steps);
   } catch {
-    return { error: "Qadamlarni oʻqib boʻlmadi." };
+    return { error: t("Qadamlarni oʻqib boʻlmadi.") };
   }
   const steps = stepsSchema.safeParse(raw);
   if (!steps.success) {
@@ -38,7 +39,7 @@ export async function saveFlow(_: FormState, form: FormData): Promise<FormState>
     .set({ name: parsed.data.name, steps: sorted, updatedAt: new Date() })
     .where(eq(flows.id, parsed.data.id))
     .returning({ id: flows.id });
-  if (updated.length === 0) return { error: "Avtomatlashtirish topilmadi." };
+  if (updated.length === 0) return { error: t("Avtomatlashtirish topilmadi.") };
   revalidatePath("/admin/flows");
   revalidatePath(`/admin/flows/${parsed.data.id}`);
   return { ok: "Saqlandi. Yangi matn va muddatlar keyingi qadamlardan amal qiladi." };
@@ -68,7 +69,7 @@ export async function runMessagingNow(_: FormState, _form: FormData): Promise<Fo
     };
   } catch (err) {
     console.error("[messages] manual tick failed:", (err as Error).message);
-    return { error: "Ishga tushirib boʻlmadi. Server logini tekshiring." };
+    return { error: t("Ishga tushirib boʻlmadi. Server logini tekshiring.") };
   }
 }
 

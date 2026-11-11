@@ -8,8 +8,9 @@ import { STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-lab
 import { Card, Metric, PageHeader, Pill, linkClass, secondaryButtonClass, som, timeAgo } from "@/components/admin/ui";
 import { cn, formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Tashrif buyuruvchi" };
+export const generateMetadata = () => adminTitle("Tashrif buyuruvchi");
 
 export default async function AdminVisitorPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
@@ -23,16 +24,16 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
   return (
     <>
       <PageHeader
-        eyebrow="Mijozlar yoʻli"
+        eyebrow={t("Mijozlar yoʻli")}
         title={title}
         lead={`Birinchi marta ${formatDateTime(v.firstSeenAt)} · oxirgi faollik ${timeAgo(v.lastSeenAt)}`}
         actions={<>
-          {v.phone9 && <Link href={`/admin/customers/${v.phone9}`} className={secondaryButtonClass}>Mijoz profili</Link>}
-          <Link href="/admin/visitors" className={secondaryButtonClass}>← Roʻyxat</Link>
+          {v.phone9 && <Link href={`/admin/customers/${v.phone9}`} className={secondaryButtonClass}>{t("Mijoz profili")}</Link>}
+          <Link href="/admin/visitors" className={secondaryButtonClass}>{t("← Roʻyxat")}</Link>
         </>}
       />
 
-      <ol aria-label="Bosqichlar" className="mb-5 grid grid-cols-5 gap-1.5">
+      <ol aria-label={t("Bosqichlar")} className="mb-5 grid grid-cols-5 gap-1.5">
         {STAGE_ORDER.map((stage) => {
           const reached = stageRank(stage) <= stageRank(v.stage);
           return (
@@ -44,30 +45,30 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
       </ol>
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Tashriflar" value={formatNumber(v.sessions)} hint={`${formatNumber(v.pageViews)} sahifa`} />
-        <Metric label="Buyurtmalar" value={formatNumber(orders.length)} hint={v.lastOrderAt ? `oxirgisi ${timeAgo(v.lastOrderAt)}` : "hali yoʻq"} />
-        <Metric label="Savatda hozir" value={v.cartValue > 0 ? som(v.cartValue) : "—"} hint={v.cartAt ? timeAgo(v.cartAt) : undefined} />
-        <Metric label="Qurilma" value={v.device ? DEVICE_LABEL[v.device] : "—"} hint={v.locale ? `til: ${v.locale}` : undefined} />
+        <Metric label={t("Tashriflar")} value={formatNumber(v.sessions)} hint={`${formatNumber(v.pageViews)} sahifa`} />
+        <Metric label={t("Buyurtmalar")} value={formatNumber(orders.length)} hint={v.lastOrderAt ? `oxirgisi ${timeAgo(v.lastOrderAt)}` : "hali yoʻq"} />
+        <Metric label={t("Savatda hozir")} value={v.cartValue > 0 ? som(v.cartValue) : "—"} hint={v.cartAt ? timeAgo(v.cartAt) : undefined} />
+        <Metric label={t("Qurilma")} value={v.device ? DEVICE_LABEL[v.device] : "—"} hint={v.locale ? `til: ${v.locale}` : undefined} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
-        <Card title="Harakatlar tarixi" lead="Har bir tashrif alohida, eng yangisi tepada">
+        <Card title={t("Harakatlar tarixi")} lead={t("Har bir tashrif alohida, eng yangisi tepada")}>
           <Timeline events={events} />
         </Card>
         <div className="flex flex-col gap-4">
-          <Card title="Qayerdan keldi">
+          <Card title={t("Qayerdan keldi")}>
             <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-2 text-[14px]">
-              <dt className="text-muted">Kanal</dt><dd className="font-semibold">{v.channel}</dd>
+              <dt className="text-muted">{t("Kanal")}</dt><dd className="font-semibold">{v.channel}</dd>
               {touch?.source && <><dt className="text-muted">utm_source</dt><dd>{touch.source}</dd></>}
               {touch?.medium && <><dt className="text-muted">utm_medium</dt><dd>{touch.medium}</dd></>}
-              {touch?.campaign && <><dt className="text-muted">Kampaniya</dt><dd>{touch.campaign}</dd></>}
-              {touch?.referrer && <><dt className="text-muted">Havola</dt><dd>{touch.referrer}</dd></>}
-              {touch?.clickId && <><dt className="text-muted">Reklama ID</dt><dd className="truncate">{touch.clickId.split(":")[0]}</dd></>}
-              {touch?.landing && <><dt className="text-muted">Kirish sahifasi</dt><dd className="break-all">{touch.landing}</dd></>}
+              {touch?.campaign && <><dt className="text-muted">{t("Kampaniya")}</dt><dd>{touch.campaign}</dd></>}
+              {touch?.referrer && <><dt className="text-muted">{t("Havola")}</dt><dd>{touch.referrer}</dd></>}
+              {touch?.clickId && <><dt className="text-muted">{t("Reklama ID")}</dt><dd className="truncate">{touch.clickId.split(":")[0]}</dd></>}
+              {touch?.landing && <><dt className="text-muted">{t("Kirish sahifasi")}</dt><dd className="break-all">{touch.landing}</dd></>}
             </dl>
           </Card>
           {v.cartItems.length > 0 && (
-            <Card title="Savatdagi mahsulotlar" lead={v.cartAt ? `Yangilangan: ${formatDateTime(v.cartAt)}` : undefined}>
+            <Card title={t("Savatdagi mahsulotlar")} lead={v.cartAt ? `Yangilangan: ${formatDateTime(v.cartAt)}` : undefined}>
               <ul className="divide-y divide-line">
                 {v.cartItems.map((item) => (
                   <li key={item.slug} className="flex justify-between gap-3 py-2.5 text-[14px]">
@@ -78,9 +79,9 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
               </ul>
             </Card>
           )}
-          <Card title="Buyurtmalar">
+          <Card title={t("Buyurtmalar")}>
             {orders.length === 0 ? (
-              <p className="text-[14px] text-muted">Hali buyurtma bermagan.</p>
+              <p className="text-[14px] text-muted">{t("Hali buyurtma bermagan.")}</p>
             ) : (
               <ul className="divide-y divide-line">
                 {orders.map((o) => (
@@ -93,7 +94,7 @@ export default async function AdminVisitorPage({ params }: { params: Promise<{ i
             )}
           </Card>
           {otherDevices.length > 0 && (
-            <Card title="Shu mijozning boshqa qurilmalari">
+            <Card title={t("Shu mijozning boshqa qurilmalari")}>
               <ul className="flex flex-col gap-2 text-[14px]">
                 {otherDevices.map((d) => (
                   <li key={d.id}><Link href={`/admin/visitors/${d.id}`} className={linkClass}>{d.device ? DEVICE_LABEL[d.device] : "Qurilma"}</Link> <span className="text-muted">· {timeAgo(d.lastSeenAt)}</span></li>

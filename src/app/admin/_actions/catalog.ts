@@ -17,6 +17,7 @@ import { SLUG_RE, formToContent, formToFacts, fromTashkentInput, parseImages, pr
 import { isAllowedImageUrl } from "@/lib/security/csp";
 import { recordManualMovement } from "@/lib/catalog/stock";
 import { afterProductChange } from "@/lib/notify/waitlist";
+import { t } from "@/lib/admin/i18n/server";
 
 export type FormState = { error?: string; ok?: string } | undefined;
 
@@ -128,7 +129,7 @@ export async function saveProduct(_: FormState, form: FormData): Promise<FormSta
 
   if (editingId) {
     const updated = await db.update(products).set(row).where(eq(products.id, editingId)).returning({ id: products.id });
-    if (updated.length === 0) return { error: "Mahsulot topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin." };
+    if (updated.length === 0) return { error: t("Mahsulot topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin.") };
     if (qtyTouched) await recordManualMovement(editingId, before?.stockQty ?? null, stockQty, "Mahsulot formasi");
     refresh();
     const sent = before ? await afterProductChange(editingId, before, { inStock, price: d.price }) : null;
@@ -214,7 +215,7 @@ function parseCategory(data: Record<string, string>): { error: string } | { data
   const parsed = categorySchema.safeParse({ ...data, slug: data.slug?.trim() || slugify(data["uz.name"] ?? "") });
   if (!parsed.success) return { error: firstIssue(parsed.error) };
   // /admin/categories/new is the creation page; a category called "new" could never be opened.
-  if (parsed.data.slug === "new") return { error: "«new» slug band — boshqa nom tanlang." };
+  if (parsed.data.slug === "new") return { error: t("«new» slug band — boshqa nom tanlang.") };
   const image = parsed.data.image;
   if (image && !isAllowedImageUrl(image)) {
     return { error: `Bu rasm manzili saytda chiqmaydi (ruxsat etilmagan host): ${image}. Roʻyxatdan tanlang yoki yuklang.` };
@@ -265,7 +266,7 @@ export async function saveCategory(_: FormState, form: FormData): Promise<FormSt
   }
   // slug changes cascade to products (on update cascade).
   const updated = await db.update(categories).set(categoryRow(d)).where(eq(categories.slug, original)).returning({ slug: categories.slug });
-  if (updated.length === 0) return { error: "Kategoriya topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin." };
+  if (updated.length === 0) return { error: t("Kategoriya topilmadi — u boshqa oynada oʻchirilgan boʻlishi mumkin.") };
   refresh();
   if (d.slug !== original) redirect(`/admin/categories/${encodeURIComponent(d.slug)}?saved=1`);
   return { ok: "Saqlandi. Saytda darhol yangilanadi." };

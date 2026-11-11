@@ -7,6 +7,7 @@ import { Field, Notice, buttonClass, inputClass, secondaryButtonClass, smallButt
 import { stockLabel } from "@/lib/catalog/stock-rules";
 import { cn } from "@/lib/utils";
 import { AdminDialog } from "./AdminDialog";
+import { useT } from "@/lib/admin/i18n/client";
 
 type Mode = "delta" | "set" | "untrack";
 
@@ -16,6 +17,7 @@ type Mode = "delta" | "set" | "untrack";
   stops tracking; every change is a stock_movements row with the note.
 */
 export function StockButton({ id, name, qty, lowAt }: { id: string; name: string; qty: number | null; lowAt: number }) {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState<Mode>(qty == null ? "set" : "delta");
   const [state, action, pending] = useActionState<FormState, FormData>(adjustStockAction, undefined);
@@ -27,7 +29,7 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
       <button
         type="button"
         onClick={() => setOpen(true)}
-        title="Ombordagi sonini oʻzgartirish"
+        title={t("Ombordagi sonini oʻzgartirish")}
         aria-label={`${name}: ombor — ${label.label}. Oʻzgartirish`}
         className={cn(
           "inline-flex h-11 w-[132px] items-center justify-center gap-1.5 rounded-[12px] px-3 text-[14px] font-semibold tabular-nums transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30",
@@ -43,8 +45,8 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
       <AdminDialog
         open={open}
         onClose={() => setOpen(false)}
-        title="Ombordagi soni"
-        lead={<>{name} · hozir: <b className="text-ink">{qty == null ? "kuzatilmaydi" : `${qty} ta`}</b></>}
+        title={t("Ombordagi soni")}
+        lead={<>{name} {t("· hozir:")} <b className="text-ink">{qty == null ? "kuzatilmaydi" : `${qty} ta`}</b></>}
         footer={
           <>
             <button type="button" onClick={() => setOpen(false)} className={secondaryButtonClass}>{state?.ok ? "Yopish" : "Bekor qilish"}</button>
@@ -57,7 +59,7 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
           <input type="hidden" name="mode" value={mode} />
           {state?.error && <Notice tone="error">{state.error}</Notice>}
           {state?.ok && <Notice tone="ok">{state.ok}</Notice>}
-          <div role="radiogroup" aria-label="Oʻzgartirish turi" className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+          <div role="radiogroup" aria-label={t("Oʻzgartirish turi")} className="grid grid-cols-1 gap-2 sm:grid-cols-3">
             {(
               [
                 ["delta", "Qoʻshish / ayirish"],
@@ -78,20 +80,20 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
             ))}
           </div>
           {mode === "delta" && (
-            <Field label="Necha dona" hint="Keldi: 24 · Hisobdan chiqarildi: −2">
-              <input key="delta" name="value" type="number" step={1} required inputMode="numeric" placeholder="+24 yoki −2" className={inputClass} autoFocus />
+            <Field label={t("Necha dona")} hint={t("Keldi: 24 · Hisobdan chiqarildi: −2")}>
+              <input key="delta" name="value" type="number" step={1} required inputMode="numeric" placeholder={t("+24 yoki −2")} className={inputClass} autoFocus />
             </Field>
           )}
           {mode === "set" && (
-            <Field label="Ombordagi aniq soni" hint="Inventarizatsiyadan keyin">
+            <Field label={t("Ombordagi aniq soni")} hint={t("Inventarizatsiyadan keyin")}>
               <input key="set" name="value" type="number" min={0} step={1} required inputMode="numeric" defaultValue={qty ?? ""} className={inputClass} autoFocus />
             </Field>
           )}
           {mode === "untrack" && (
-            <p className="rounded-[12px] bg-tile px-4 py-3 text-[14px] leading-5 text-ink-2">Son kuzatilmaydi: saytda son chiqmaydi, buyurtma hech narsani kamaytirmaydi. «Omborda bor» holati oʻzgarmaydi.</p>
+            <p className="rounded-[12px] bg-tile px-4 py-3 text-[14px] leading-5 text-ink-2">{t("Son kuzatilmaydi: saytda son chiqmaydi, buyurtma hech narsani kamaytirmaydi. «Omborda bor» holati oʻzgarmaydi.")}</p>
           )}
           {mode !== "untrack" && (
-            <Field label="Izoh (ixtiyoriy)" hint="Masalan: yetkazib beruvchidan partiya, buzilgan qadoq">
+            <Field label={t("Izoh (ixtiyoriy)")} hint={t("Masalan: yetkazib beruvchidan partiya, buzilgan qadoq")}>
               <input name="note" maxLength={300} className={inputClass} />
             </Field>
           )}
@@ -103,10 +105,11 @@ export function StockButton({ id, name, qty, lowAt }: { id: string; name: string
 
 /* The site-wide "kam qoldi" threshold: a product without its own uses this. */
 export function LowStockDefaultForm({ value }: { value: number }) {
+  const t = useT();
   const [state, action, pending] = useActionState<FormState, FormData>(saveLowStockDefaultAction, undefined);
   return (
     <form action={action} className="flex flex-wrap items-end gap-2">
-      <Field label="Kam qoldi chegarasi (standart)" hint="Saytda «Omborda N ta qoldi» shu sondan kam yoki teng boʻlganda chiqadi" className="w-full max-w-[360px]">
+      <Field label={t("Kam qoldi chegarasi (standart)")} hint={t("Saytda «Omborda N ta qoldi» shu sondan kam yoki teng boʻlganda chiqadi")} className="w-full max-w-[360px]">
         <input name="lowStockAt" type="number" min={1} max={1000} step={1} required defaultValue={value} inputMode="numeric" className={inputClass} />
       </Field>
       <button type="submit" disabled={pending} className={cn(smallButtonClass, "h-12")}>{pending ? "Saqlanmoqda…" : "Saqlash"}</button>
@@ -118,12 +121,13 @@ export function LowStockDefaultForm({ value }: { value: number }) {
 
 /* Unpaid online orders give their units back after this many hours (lib/orders/release.ts). */
 export function ReleaseHoursForm({ value }: { value: number }) {
+  const t = useT();
   const [state, action, pending] = useActionState<FormState, FormData>(saveReleaseHoursAction, undefined);
   return (
     <form action={action} className="flex flex-wrap items-end gap-2">
       <Field
-        label="Toʻlanmagan onlayn buyurtma (soat)"
-        hint="Onlayn toʻlov shu vaqt ichida kelmasa, «Yangi» buyurtma avtomatik bekor qilinadi va mahsulot omborga qaytadi. 0 — hech qachon. Naqd buyurtmalarga tegilmaydi."
+        label={t("Toʻlanmagan onlayn buyurtma (soat)")}
+        hint={t("Onlayn toʻlov shu vaqt ichida kelmasa, «Yangi» buyurtma avtomatik bekor qilinadi va mahsulot omborga qaytadi. 0 — hech qachon. Naqd buyurtmalarga tegilmaydi.")}
         className="w-full max-w-[360px]"
       >
         <input name="hours" type="number" min={0} max={168} step={1} required defaultValue={value} inputMode="numeric" className={inputClass} />

@@ -11,6 +11,7 @@ import { getCustomerDetails } from "@/lib/admin/customers";
 import { adminCustomerNotes } from "@/lib/db/schema";
 import { getDb } from "@/lib/db/client";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 const noteSchema = z.object({
   phone9: z.string().regex(/^\d{9}$/, "Mijoz identifikatori notoʻgʻri."),
@@ -23,7 +24,7 @@ export async function addCustomerNote(_: FormState, form: FormData): Promise<For
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
 
   const customer = await getCustomerDetails(parsed.data.phone9);
-  if (!customer) return { error: "Mijoz topilmadi." };
+  if (!customer) return { error: t("Mijoz topilmadi.") };
 
   await getDb().insert(adminCustomerNotes).values({
     phone9: parsed.data.phone9,
@@ -56,7 +57,7 @@ export async function anonymiseCustomerAction(_: FormState, form: FormData): Pro
     await auditLog(admin, "customer.anonymise", redactPhone(parsed.data.phone9), removed);
   } catch (err) {
     console.error("[admin] anonymise failed:", (err as Error).message);
-    return { error: "Oʻchirib boʻlmadi. Qayta urinib koʻring." };
+    return { error: t("Oʻchirib boʻlmadi. Qayta urinib koʻring.") };
   }
   revalidatePath("/admin/customers");
   redirect("/admin/customers?anonymised=1");

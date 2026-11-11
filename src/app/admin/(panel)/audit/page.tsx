@@ -5,8 +5,9 @@ import { requireAdmin } from "@/lib/admin/session";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { AUDIT_ACTION_LABEL } from "@/lib/admin/audit-labels";
 import { Card, EmptyState, PageHeader, TableWrap, tableClass, tdClass, thClass } from "@/components/admin/ui";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Audit jurnali" };
+export const generateMetadata = () => adminTitle("Audit jurnali");
 export const dynamic = "force-dynamic";
 
 /* Owner only (lib/admin/roles.ts): who changed what, when, from where. */
@@ -21,15 +22,15 @@ export default async function AdminAuditPage({ searchParams }: { searchParams: P
     .limit(300);
   return (
     <>
-      <PageHeader title="Audit jurnali" lead="Panelda kim nima oʻzgartirgani: kirishlar, buyurtma holatlari, narx va katalog, kalitlar, administratorlar. Oxirgi 300 ta yozuv." />
+      <PageHeader title={t("Audit jurnali")} lead={t("Panelda kim nima oʻzgartirgani: kirishlar, buyurtma holatlari, narx va katalog, kalitlar, administratorlar. Oxirgi 300 ta yozuv.")} />
       <Card>
         {rows.length === 0 ? (
-          <EmptyState title="Hali yozuv yoʻq">Panelda oʻzgarish qilinishi bilan shu yerda koʻrinadi.</EmptyState>
+          <EmptyState title={t("Hali yozuv yoʻq")}>{t("Panelda oʻzgarish qilinishi bilan shu yerda koʻrinadi.")}</EmptyState>
         ) : (
           <TableWrap>
             <table className={tableClass}>
               <thead>
-                <tr><th className={thClass}>Vaqt</th><th className={thClass}>Kim</th><th className={thClass}>Nima</th><th className={thClass}>Obyekt</th><th className={thClass}>IP</th></tr>
+                <tr><th className={thClass}>{t("Vaqt")}</th><th className={thClass}>{t("Kim")}</th><th className={thClass}>{t("Nima")}</th><th className={thClass}>{t("Obyekt")}</th><th className={thClass}>{t("IP")}</th></tr>
               </thead>
               <tbody>
                 {rows.map((r) => (

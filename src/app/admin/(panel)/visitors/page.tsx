@@ -5,8 +5,9 @@ import { DEVICE_LABEL } from "@/lib/admin/event-labels";
 import { ChipNav, Card, EmptyState, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass, timeAgo } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Mijozlar yoʻli" };
+export const generateMetadata = () => adminTitle("Mijozlar yoʻli");
 
 const PAGE_SIZE = 50;
 
@@ -34,34 +35,34 @@ export default async function AdminVisitorsPage({ searchParams }: { searchParams
   return (
     <>
       <PageHeader
-        title="Mijozlar yoʻli"
-        lead="Saytga kirgan har bir odam: qayerdan keldi, nimani koʻrdi, qaysi bosqichda toʻxtadi. Telefon buyurtma paytida bogʻlanadi."
+        title={t("Mijozlar yoʻli")}
+        lead={t("Saytga kirgan har bir odam: qayerdan keldi, nimani koʻrdi, qaysi bosqichda toʻxtadi. Telefon buyurtma paytida bogʻlanadi.")}
       />
       <form role="search" action="/admin/visitors" className="mb-4 flex flex-wrap gap-2">
         {filter !== "all" && <input type="hidden" name="filter" value={filter} />}
-        <input name="q" defaultValue={q} placeholder="Ism yoki telefon raqami" aria-label="Qidirish" className={`${inputClass} max-w-[420px]`} />
-        <button type="submit" className={buttonClass}>Qidirish</button>
-        {q && <Link href={qs({})} className={secondaryButtonClass}>Tozalash</Link>}
+        <input name="q" defaultValue={q} placeholder={t("Ism yoki telefon raqami")} aria-label={t("Qidirish")} className={`${inputClass} max-w-[420px]`} />
+        <button type="submit" className={buttonClass}>{t("Qidirish")}</button>
+        {q && <Link href={qs({})} className={secondaryButtonClass}>{t("Tozalash")}</Link>}
       </form>
       <ChipNav
-        label="Bosqich boʻyicha"
+        label={t("Bosqich boʻyicha")}
         className="mb-4"
-        items={(Object.keys(VISITOR_FILTERS) as VisitorFilter[]).map((key) => ({ href: qs({ filter: key }), label: VISITOR_FILTERS[key].label, active: key === filter, count: counts[key] }))}
+        items={(Object.keys(VISITOR_FILTERS) as VisitorFilter[]).map((key) => ({ href: qs({ filter: key }), label: t(VISITOR_FILTERS[key].label), active: key === filter, count: counts[key] }))}
       />
       <Card>
         {rows.length === 0 ? (
-          <EmptyState title="Hech kim topilmadi">Kuzatuv yoqilgandan keyingi tashriflar shu yerda chiqadi.</EmptyState>
+          <EmptyState title={t("Hech kim topilmadi")}>{t("Kuzatuv yoqilgandan keyingi tashriflar shu yerda chiqadi.")}</EmptyState>
         ) : (
           <TableWrap>
             <table className={tableClass}>
               <thead>
                 <tr>
-                  <th className={thClass}>Kim</th>
-                  <th className={thClass}>Bosqich</th>
-                  <th className={thClass}>Manba</th>
-                  <th className={`${thClass} text-right`}>Tashriflar</th>
-                  <th className={`${thClass} text-right`}>Savatda</th>
-                  <th className={thClass}>Oxirgi faollik</th>
+                  <th className={thClass}>{t("Kim")}</th>
+                  <th className={thClass}>{t("Bosqich")}</th>
+                  <th className={thClass}>{t("Manba")}</th>
+                  <th className={`${thClass} text-right`}>{t("Tashriflar")}</th>
+                  <th className={`${thClass} text-right`}>{t("Savatda")}</th>
+                  <th className={thClass}>{t("Oxirgi faollik")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -84,9 +85,9 @@ export default async function AdminVisitorsPage({ searchParams }: { searchParams
         )}
         {(page > 1 || rows.length === PAGE_SIZE) && (
           <div className="mt-4 flex items-center justify-between gap-3">
-            {page > 1 ? <Link href={qs({ page: page - 1 })} className={secondaryButtonClass}>← Oldingi</Link> : <span />}
+            {page > 1 ? <Link href={qs({ page: page - 1 })} className={secondaryButtonClass}>{t("← Oldingi")}</Link> : <span />}
             <span className="text-[14px] text-muted">{page}-sahifa</span>
-            {rows.length === PAGE_SIZE ? <Link href={qs({ page: page + 1 })} className={secondaryButtonClass}>Keyingi →</Link> : <span />}
+            {rows.length === PAGE_SIZE ? <Link href={qs({ page: page + 1 })} className={secondaryButtonClass}>{t("Keyingi →")}</Link> : <span />}
           </div>
         )}
       </Card>

@@ -7,6 +7,7 @@ import { SITE_SETTINGS_TAG } from "@/lib/integrations/site-settings";
 import { saveCommerceSection } from "@/lib/commerce/server";
 import { isCommerceSection, parseCommerceSection } from "@/lib/commerce/form";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 /*
   One card of /admin/commerce: save its section, or put it back to the
@@ -17,7 +18,7 @@ import type { FormState } from "./catalog";
 export async function saveCommerceSettings(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("commerce");
   const section = form.get("section");
-  if (!isCommerceSection(section)) return { error: "Boʻlim topilmadi." };
+  if (!isCommerceSection(section)) return { error: t("Boʻlim topilmadi.") };
   const label = admin.name?.trim() || admin.email;
 
   if (form.get("intent") === "reset") {

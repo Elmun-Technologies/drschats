@@ -5,9 +5,11 @@ import { notifyWaitlistNow } from "@/app/admin/_actions/stock";
 import type { FormState } from "@/app/admin/_actions/catalog";
 import { smallButtonClass } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/admin/i18n/client";
 
 /* Masked in the list; the full number only for the request someone opens. */
 export function PhoneReveal({ masked, full }: { masked: string; full: string }) {
+  const t = useT();
   const [shown, setShown] = useState(false);
   if (shown) {
     return (
@@ -24,7 +26,7 @@ export function PhoneReveal({ masked, full }: { masked: string; full: string }) 
       className="inline-flex min-h-11 items-center gap-2 rounded-[8px] tabular-nums text-ink-2 hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
     >
       {masked}
-      <span className="text-[13px] font-semibold text-ink underline underline-offset-4">koʻrsatish</span>
+      <span className="text-[13px] font-semibold text-ink underline underline-offset-4">{t("koʻrsatish")}</span>
     </button>
   );
 }

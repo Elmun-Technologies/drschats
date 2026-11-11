@@ -4,8 +4,9 @@ import { retryJobAction } from "@/app/admin/_actions/bot";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { listJobs } from "@/lib/bot/store";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Xabarlar navbati" };
+export const generateMetadata = () => adminTitle("Xabarlar navbati");
 
 const KIND: Record<string, string> = { order_status: "Buyurtma holati", support: "Operator javobi", broadcast: "Klub xabari" };
 const STATUS = { pending: "Kutmoqda", leased: "Yuborilmoqda", sent: "Yuborildi", failed: "Yuborilmadi", blocked: "Bloklangan" } as const;
@@ -20,11 +21,11 @@ export default async function BotOutboxPage() {
   const rows = await listJobs();
   return (
     <>
-      <PageHeader title="Xabarlar navbati" lead="Sayt navbatga qoʻyadi, bot yuboradi. Oxirgi 100 ta." />
+      <PageHeader title={t("Xabarlar navbati")} lead={t("Sayt navbatga qoʻyadi, bot yuboradi. Oxirgi 100 ta.")} />
       <BotTabs active="/admin/bot/outbox" />
       <Card>
         {rows.length === 0 ? (
-          <p className="text-[15px] text-ink-2">Navbat boʻsh.</p>
+          <p className="text-[15px] text-ink-2">{t("Navbat boʻsh.")}</p>
         ) : (
           <ul className="divide-y divide-line">
             {rows.map((j) => (
@@ -42,7 +43,7 @@ export default async function BotOutboxPage() {
                 {(j.status === "failed" || j.status === "blocked") && (
                   <form action={retryJobAction}>
                     <input type="hidden" name="id" value={j.id} />
-                    <button type="submit" className={secondaryButtonClass}>Qayta yuborish</button>
+                    <button type="submit" className={secondaryButtonClass}>{t("Qayta yuborish")}</button>
                   </form>
                 )}
               </li>

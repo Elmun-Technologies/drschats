@@ -3,6 +3,7 @@ import type { CatalogDiff } from "@/lib/admin/catalog-sync";
 import { importBuiltInCatalog, dismissBuiltInImportAction } from "@/app/admin/_actions/catalog";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { formatNumber } from "@/lib/utils";
+import { t } from "@/lib/admin/i18n/server";
 
 /* One row of six tiles: all of them, or five and a "+ yana N ta" tile. */
 const TILES = 6;
@@ -39,21 +40,21 @@ export function BuiltInSyncCard({ diff, compact = false }: { diff: CatalogDiff; 
               : "Bu mahsulotlarning paneldagi rasmi boʻsh, saytda esa ularning haqiqiy rasmlari bor."}
             {missing > 0 && extras.length > 0 && ` Shuningdek: ${extras.join(", ")}.`}
             {backfill > 0 && ` ${formatNumber(backfill)} ta mavjud yozuvning boʻsh rasmi saytdagi rasm bilan toʻldiriladi.`}
-            {" "}Paneldagi mavjud maʼlumot ustidan yozilmaydi.
+            {" "}{t("Paneldagi mavjud maʼlumot ustidan yozilmaydi.")}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
           <form action={importBuiltInCatalog}>
-            <SubmitButton pendingLabel="Olinmoqda…" className="bg-white text-ink hover:bg-tile">Panelga olish</SubmitButton>
+            <SubmitButton pendingLabel={t("Olinmoqda…")} className="bg-white text-ink hover:bg-tile">{t("Panelga olish")}</SubmitButton>
           </form>
           {diff.pending > 0 && (
             <form action={dismissBuiltInImportAction}>
               <button
                 type="submit"
-                title="Ataylab oʻchirilgan boʻlsa — bu taklif qayta chiqmaydi"
+                title={t("Ataylab oʻchirilgan boʻlsa — bu taklif qayta chiqmaydi")}
                 className="inline-flex h-12 items-center rounded-[12px] px-4 text-[15px] font-semibold text-on-dark-2 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               >
-                Kerak emas
+                {t("Kerak emas")}
               </button>
             </form>
           )}
@@ -74,7 +75,7 @@ export function BuiltInSyncCard({ diff, compact = false }: { diff: CatalogDiff; 
           })}
           {missing > shown && (
             <li className="grid min-h-24 place-items-center rounded-[16px] bg-white/5 p-2 text-center text-[14px] font-semibold">
-              + yana {formatNumber(missing - shown)} ta
+              {t("+ yana")} {formatNumber(missing - shown)} ta
             </li>
           )}
         </ul>

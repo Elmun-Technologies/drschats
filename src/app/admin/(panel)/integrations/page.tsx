@@ -10,8 +10,9 @@ import { Card, Notice, PageHeader, SectionTitle, linkClass } from "@/components/
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
 import { configStatus } from "@/lib/ops/config-status";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Integratsiyalar" };
+export const generateMetadata = () => adminTitle("Integratsiyalar");
 export const dynamic = "force-dynamic";
 
 /** Products on sale without the fiscal codes Payme's receipt needs. */
@@ -59,79 +60,79 @@ export default async function AdminIntegrationsPage() {
   return (
     <>
       <PageHeader
-        title="Integratsiyalar"
-        lead="Analitika, reklama teglari, qidiruv tizimlari va xabar kanallari — hammasi shu yerda ulanadi. ID kiritib saqlash kifoya: sayt oʻzi yangilanadi."
+        title={t("Integratsiyalar")}
+        lead={t("Analitika, reklama teglari, qidiruv tizimlari va xabar kanallari — hammasi shu yerda ulanadi. ID kiritib saqlash kifoya: sayt oʻzi yangilanadi.")}
         actions={<span className="rounded-[12px] bg-tile px-4 py-3 text-[15px] font-semibold text-ink">{connected} / {items.length} ulangan</span>}
       />
-      {overview.storeStatus === "database-error" && <div className="mb-4"><Notice tone="error">Sozlamalar jadvalini oʻqib boʻlmadi — bazada migratsiyalar qoʻllanganini tekshiring.</Notice></div>}
-      {(overview.storeStatus === "encryption-key-missing" || overview.storeStatus === "decrypt-error") && <div className="mb-4"><Notice tone="error">Shifrlangan sozlamalarni ochib boʻlmadi: INTEGRATION_ENCRYPTION_KEY saqlash paytidagi bilan bir xil emas. Maxfiy kalitlarni qayta kiriting.</Notice></div>}
+      {overview.storeStatus === "database-error" && <div className="mb-4"><Notice tone="error">{t("Sozlamalar jadvalini oʻqib boʻlmadi — bazada migratsiyalar qoʻllanganini tekshiring.")}</Notice></div>}
+      {(overview.storeStatus === "encryption-key-missing" || overview.storeStatus === "decrypt-error") && <div className="mb-4"><Notice tone="error">{t("Shifrlangan sozlamalarni ochib boʻlmadi: INTEGRATION_ENCRYPTION_KEY saqlash paytidagi bilan bir xil emas. Maxfiy kalitlarni qayta kiriting.")}</Notice></div>}
 
       <div className="flex flex-col gap-4">
         <AnalyticsForm overview={overview} />
         <VerificationForm overview={overview} siteUrl={SITE_URL} />
       </div>
 
-      <SectionTitle>Onlayn toʻlov</SectionTitle>
-      {ready.payme && noFiscal > 0 && <div className="mb-4"><Notice>{formatNumber(noFiscal)} ta sotuvdagi mahsulotda MXIK yoki qadoq kodi yoʻq — ular bor buyurtmada Payme chekni maʼlumotsiz chiqaradi. Kodlarni <Link href="/admin/products" className={linkClass}>mahsulotlarda</Link> kiriting.</Notice></div>}
+      <SectionTitle>{t("Onlayn toʻlov")}</SectionTitle>
+      {ready.payme && noFiscal > 0 && <div className="mb-4"><Notice>{formatNumber(noFiscal)} {t("ta sotuvdagi mahsulotda MXIK yoki qadoq kodi yoʻq — ular bor buyurtmada Payme chekni maʼlumotsiz chiqaradi. Kodlarni")} <Link href="/admin/products" className={linkClass}>mahsulotlarda</Link> kiriting.</Notice></div>}
       <PaymentForms overview={overview} siteUrl={SITE_URL} ready={ready} ordersInDb={ORDERS_IN_DB} />
 
-      <SectionTitle>Xabar kanallari</SectionTitle>
+      <SectionTitle>{t("Xabar kanallari")}</SectionTitle>
       <MessagingForms overview={overview} />
       <div className="mt-4 grid gap-4 xl:grid-cols-2">
         <SmsForm overview={overview} />
-        <Card title="Xabar qoidalari" lead="Avtomatlashtirish va kampaniyalar uchun bir xil — kodda yozilgan, oʻchirib boʻlmaydi.">
+        <Card title={t("Xabar qoidalari")} lead={t("Avtomatlashtirish va kampaniyalar uchun bir xil — kodda yozilgan, oʻchirib boʻlmaydi.")}>
           <ul className="flex list-disc flex-col gap-2 pl-5 text-[14px] leading-5 text-ink-2">
-            <li>18:00–09:00 (Toshkent) hech qanday marketing xabari ketmaydi — navbat ertalab 09:00 ga suriladi (2026-11-01 dan reklama SMS va qoʻngʻiroqlari shu vaqtda taqiqlangan).</li>
-            <li>Reklama SMS faqat oldindan rozilik bergan raqamga ketadi (savatdagi belgi); rozilik yoʻq boʻlsa xabar «rozilik yoʻq» bilan oʻtkaziladi. Yuboruvchi pd.gov.uz reyestrida roʻyxatdan oʻtgan boʻlishi kerak.</li>
-            <li>Har bir SMS oxirida «STOP» havolasi, Telegram xabarida «oʻchirish» tugmasi. Obunadan chiqqanlarga boshqa yuborilmaydi.</li>
-            <li>Telegram ulangan mijozga — Telegram (bepul), boʻlmasa SMS. Telefoni nomaʼlum tashrif buyuruvchi faqat retarget auditoriyasida.</li>
-            <li>Shaxsiy promokod xabar ketayotgan paytda beriladi; havola bosilishi va kod orqali buyurtmalar natijalarda koʻrinadi.</li>
+            <li>{t("18:00–09:00 (Toshkent) hech qanday marketing xabari ketmaydi — navbat ertalab 09:00 ga suriladi (2026-11-01 dan reklama SMS va qoʻngʻiroqlari shu vaqtda taqiqlangan).")}</li>
+            <li>{t("Reklama SMS faqat oldindan rozilik bergan raqamga ketadi (savatdagi belgi); rozilik yoʻq boʻlsa xabar «rozilik yoʻq» bilan oʻtkaziladi. Yuboruvchi pd.gov.uz reyestrida roʻyxatdan oʻtgan boʻlishi kerak.")}</li>
+            <li>{t("Har bir SMS oxirida «STOP» havolasi, Telegram xabarida «oʻchirish» tugmasi. Obunadan chiqqanlarga boshqa yuborilmaydi.")}</li>
+            <li>{t("Telegram ulangan mijozga — Telegram (bepul), boʻlmasa SMS. Telefoni nomaʼlum tashrif buyuruvchi faqat retarget auditoriyasida.")}</li>
+            <li>{t("Shaxsiy promokod xabar ketayotgan paytda beriladi; havola bosilishi va kod orqali buyurtmalar natijalarda koʻrinadi.")}</li>
           </ul>
           <p className="mt-4 flex flex-wrap gap-x-4 gap-y-2 text-[14px]">
-            <Link href="/admin/flows" className={linkClass}>Avtomatlashtirish →</Link>
-            <Link href="/admin/messages" className={linkClass}>Xabarlar jurnali →</Link>
+            <Link href="/admin/flows" className={linkClass}>{t("Avtomatlashtirish →")}</Link>
+            <Link href="/admin/messages" className={linkClass}>{t("Xabarlar jurnali →")}</Link>
           </p>
         </Card>
       </div>
 
-      <SectionTitle>Tizim holati</SectionTitle>
+      <SectionTitle>{t("Tizim holati")}</SectionTitle>
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card title="Sozlamalar" lead="Muhit oʻzgaruvchilari va panel birga — nima yoqilgan, nima yoʻq. Qiymatlar koʻrsatilmaydi. Sogʻliq tekshiruvi: /api/health.">
+        <Card title={t("Sozlamalar")} lead={t("Muhit oʻzgaruvchilari va panel birga — nima yoqilgan, nima yoʻq. Qiymatlar koʻrsatilmaydi. Sogʻliq tekshiruvi: /api/health.")}>
           <ul className="divide-y divide-line">
             {system.items.map((item) => <Row key={item.name} name={item.name} detail={item.detail} on={item.on} />)}
           </ul>
-          {system.issues.length > 0 && <div className="mt-3"><Notice tone="error">Notoʻgʻri qiymat: {system.issues.join("; ")}</Notice></div>}
+          {system.issues.length > 0 && <div className="mt-3"><Notice tone="error">{t("Notoʻgʻri qiymat:")} {system.issues.join("; ")}</Notice></div>}
         </Card>
-        <Card title="Fon ishlari va CSP" lead="Xabarlar navbati, buyurtma xabarlari va brauzer xavfsizlik siyosati buzilishlari (soʻnggi 7 kun).">
+        <Card title={t("Fon ishlari va CSP")} lead={t("Xabarlar navbati, buyurtma xabarlari va brauzer xavfsizlik siyosati buzilishlari (soʻnggi 7 kun).")}>
           {system.worker ? (
             <ul className="divide-y divide-line">
               <Row name="Navbat kechikishi" detail={`${formatNumber(system.worker.lagSec)} s · 10 daqiqadan ortiq kutayotgan: ${formatNumber(system.worker.overdue)}`} on={system.worker.overdue === 0} label={system.worker.overdue === 0 ? "Joyida" : "Orqada"} />
               <Row name="Soʻnggi soatda yuborilmagan" detail={`${formatNumber(system.worker.failed1h)} ta xabar`} on={system.worker.failed1h === 0} label={system.worker.failed1h === 0 ? "Yoʻq" : "Bor"} />
               <Row name="Yetib bormagan buyurtma xabarlari" detail={`${formatNumber(system.worker.unsentOperatorPings)} ta (24 soat)`} on={system.worker.unsentOperatorPings === 0} label={system.worker.unsentOperatorPings === 0 ? "Yoʻq" : "Bor"} />
             </ul>
-          ) : <p className="text-[14px] text-muted">Baza ulanmagan — fon ishlari yoʻq.</p>}
+          ) : <p className="text-[14px] text-muted">{t("Baza ulanmagan — fon ishlari yoʻq.")}</p>}
           {system.csp.length > 0 ? (
             <ul className="mt-3 flex flex-col gap-1.5 border-t border-line pt-3 text-[13px] text-ink-2">
               {system.csp.map((r) => <li key={`${r.directive}:${r.blocked}`} className="flex justify-between gap-3"><span className="min-w-0 truncate">{r.directive} · {r.blocked}</span><span className="font-semibold text-ink">{formatNumber(r.count)}</span></li>)}
             </ul>
-          ) : <p className="mt-3 border-t border-line pt-3 text-[13px] text-muted">CSP buzilishi qayd etilmagan.</p>}
+          ) : <p className="mt-3 border-t border-line pt-3 text-[13px] text-muted">{t("CSP buzilishi qayd etilmagan.")}</p>}
         </Card>
       </div>
 
-      <SectionTitle>Boshqa ulanishlar</SectionTitle>
+      <SectionTitle>{t("Boshqa ulanishlar")}</SectionTitle>
       <div className="grid gap-4 xl:grid-cols-2">
-        <Card title="Saytning oʻz kuzatuvi" lead="Mijozlar yoʻli, voronka va segmentlar shu maʼlumotdan quriladi. Sozlash talab qilinmaydi.">
+        <Card title={t("Saytning oʻz kuzatuvi")} lead={t("Mijozlar yoʻli, voronka va segmentlar shu maʼlumotdan quriladi. Sozlash talab qilinmaydi.")}>
           <ul className="divide-y divide-line">
             <Row name="Birinchi tomon kuzatuv" detail={health.last ? `Oxirgi 24 soatda ${formatNumber(health.day)} ta hodisa` : "Hali hodisa kelmagan — yangi buildʼdan keyin boshlanadi"} on={health.day > 0} label={health.day > 0 ? "Ishlayapti" : "Kutilmoqda"} />
-            <Row name="Telegram klub boti" detail="Mini App, aʼzolar, kampaniyalar" on={telegramClub} />
-            <Row name="Sanity CMS" detail="Blog va kontent" on={sanity} />
+            <Row name="Telegram klub boti" detail={t("Mini App, aʼzolar, kampaniyalar")} on={telegramClub} />
+            <Row name="Sanity CMS" detail={t("Blog va kontent")} on={sanity} />
           </ul>
-          <p className="mt-3 text-[13px] text-muted">Klub boti sozlamalari: <Link href="/admin/bot" className={linkClass}>Telegram klub</Link>.</p>
+          <p className="mt-3 text-[13px] text-muted">{t("Klub boti sozlamalari:")} <Link href="/admin/bot" className={linkClass}>{t("Telegram klub")}</Link>.</p>
         </Card>
-        <Card title="Yetkazish" lead="Kuryer xizmatlari">
+        <Card title={t("Yetkazish")} lead={t("Kuryer xizmatlari")}>
           <ul className="divide-y divide-line">
-            <Row name="BTS Express" detail="Operator qoʻlda boshqaradi — API ulanmagan" on={false} label="Qoʻlda" />
-            <Row name="Yandex Dostavka" detail="Operator qoʻlda boshqaradi — API ulanmagan" on={false} label="Qoʻlda" />
+            <Row name="BTS Express" detail={t("Operator qoʻlda boshqaradi — API ulanmagan")} on={false} label={t("Qoʻlda")} />
+            <Row name="Yandex Dostavka" detail={t("Operator qoʻlda boshqaradi — API ulanmagan")} on={false} label={t("Qoʻlda")} />
           </ul>
         </Card>
       </div>

@@ -7,6 +7,7 @@ import type { Placeholder } from "@/lib/messaging/template";
 import { ActionForm } from "./ActionForm";
 import { TemplateInput } from "./MessageComposer";
 import { Field, Pill, inputClass, smallButtonClass } from "./ui";
+import { useT } from "@/lib/admin/i18n/client";
 
 /*
   The flow editor: name and an ordered list of steps (delay from the trigger,
@@ -58,6 +59,7 @@ export function FlowEditor({
   placeholders: readonly Placeholder[];
   transliterate: boolean;
 }) {
+  const t = useT();
   const [name, setName] = useState(initialName);
   const [steps, setSteps] = useState<EditableStep[]>(() => (initialSteps.length ? initialSteps : [BLANK]).map(editable));
 
@@ -68,10 +70,10 @@ export function FlowEditor({
   const payload = JSON.stringify(steps.map(({ key: _key, unit: _unit, ...step }) => step));
 
   return (
-    <ActionForm action={saveFlow} submitLabel="Saqlash" className="flex flex-col gap-4">
+    <ActionForm action={saveFlow} submitLabel={t("Saqlash")} className="flex flex-col gap-4">
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="steps" value={payload} />
-      <Field label="Nomi">
+      <Field label={t("Nomi")}>
         <input name="name" value={name} onChange={(e) => setName(e.target.value)} required maxLength={120} className={inputClass} />
       </Field>
 
@@ -87,25 +89,25 @@ export function FlowEditor({
                 </p>
                 {steps.length > 1 && (
                   <button type="button" onClick={() => remove(step.key)} className={smallButtonClass}>
-                    Oʻchirish
+                    {t("Oʻchirish")}
                   </button>
                 )}
               </div>
 
               <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
                 <div className="flex flex-col gap-1.5">
-                  <span className="text-[14px] font-semibold text-ink" id={`delay-${step.key}`}>Qachon</span>
+                  <span className="text-[14px] font-semibold text-ink" id={`delay-${step.key}`}>{t("Qachon")}</span>
                   <div className="flex gap-2" role="group" aria-labelledby={`delay-${step.key}`}>
                     <input
                       type="number"
                       min={0}
-                      aria-label="Kechikish"
+                      aria-label={t("Kechikish")}
                       value={Number.isFinite(amount) ? amount : 0}
                       onChange={(e) => update(step.key, { delayMinutes: Math.max(0, Math.round(Number(e.target.value) * UNIT_MINUTES[step.unit])) })}
                       className={`${inputClass} w-24`}
                     />
                     <select
-                      aria-label="Birlik"
+                      aria-label={t("Birlik")}
                       value={step.unit}
                       onChange={(e) => {
                         const unit = e.target.value as Unit;
@@ -117,15 +119,15 @@ export function FlowEditor({
                     </select>
                   </div>
                 </div>
-                <Field label="Kanal">
+                <Field label={t("Kanal")}>
                   <select value={step.channel} onChange={(e) => update(step.key, { channel: e.target.value as StepChannel })} className={inputClass}>
                     {STEP_CHANNELS.map((c) => <option key={c} value={c}>{CHANNEL_LABELS[c]}</option>)}
                   </select>
                 </Field>
-                <Field label="Havola ({havola})" hint="Saytdagi sahifa: /cart, /sale, /products">
+                <Field label={t("Havola ({havola})")} hint={t("Saytdagi sahifa: /cart, /sale, /products")}>
                   <input value={step.link} onChange={(e) => update(step.key, { link: e.target.value })} placeholder="/cart" className={inputClass} />
                 </Field>
-                <Field label="Shaxsiy promokod">
+                <Field label={t("Shaxsiy promokod")}>
                   <select
                     value={step.promo ? step.promo.kind : "none"}
                     onChange={(e) => {
@@ -134,9 +136,9 @@ export function FlowEditor({
                     }}
                     className={inputClass}
                   >
-                    <option value="none">Yoʻq</option>
-                    <option value="percent">Foiz chegirma</option>
-                    <option value="fixed">Summa (soʻm)</option>
+                    <option value="none">{t("Yoʻq")}</option>
+                    <option value="percent">{t("Foiz chegirma")}</option>
+                    <option value="fixed">{t("Summa (soʻm)")}</option>
                   </select>
                 </Field>
               </div>
@@ -146,18 +148,18 @@ export function FlowEditor({
                   <Field label={step.promo.kind === "percent" ? "Chegirma, %" : "Chegirma, soʻm"}>
                     <input type="number" min={1} max={step.promo.kind === "percent" ? 90 : undefined} value={step.promo.value} onChange={(e) => update(step.key, { promo: { ...step.promo!, value: Math.max(1, Math.round(Number(e.target.value))) } })} className={inputClass} />
                   </Field>
-                  <Field label="Amal qiladi, soat" hint="{muddat} shu muddatdan hisoblanadi">
+                  <Field label={t("Amal qiladi, soat")} hint={t("{muddat} shu muddatdan hisoblanadi")}>
                     <input type="number" min={1} max={2160} value={step.promo.ttlHours} onChange={(e) => update(step.key, { promo: { ...step.promo!, ttlHours: Math.max(1, Math.round(Number(e.target.value))) } })} className={inputClass} />
                   </Field>
-                  <Field label="Minimal savat, soʻm" hint="Boʻsh — cheklovsiz">
+                  <Field label={t("Minimal savat, soʻm")} hint={t("Boʻsh — cheklovsiz")}>
                     <input type="number" min={0} value={step.promo.minSubtotal ?? ""} onChange={(e) => update(step.key, { promo: { ...step.promo!, minSubtotal: e.target.value === "" ? null : Math.max(0, Math.round(Number(e.target.value))) } })} className={inputClass} />
                   </Field>
                 </div>
               )}
 
               <div className="mt-4 grid gap-4 xl:grid-cols-2">
-                <TemplateInput label="Matn (oʻzbekcha)" locale="uz" value={step.text.uz} onChange={(uz) => update(step.key, { text: { ...step.text, uz } })} placeholders={placeholders} transliterate={transliterate} showSms={step.channel !== "telegram"} />
-                <TemplateInput label="Matn (ruscha)" locale="ru" value={step.text.ru} onChange={(ru) => update(step.key, { text: { ...step.text, ru } })} placeholders={placeholders} transliterate={transliterate} showSms={step.channel !== "telegram"} />
+                <TemplateInput label={t("Matn (oʻzbekcha)")} locale="uz" value={step.text.uz} onChange={(uz) => update(step.key, { text: { ...step.text, uz } })} placeholders={placeholders} transliterate={transliterate} showSms={step.channel !== "telegram"} />
+                <TemplateInput label={t("Matn (ruscha)")} locale="ru" value={step.text.ru} onChange={(ru) => update(step.key, { text: { ...step.text, ru } })} placeholders={placeholders} transliterate={transliterate} showSms={step.channel !== "telegram"} />
               </div>
             </li>
           );
@@ -166,11 +168,11 @@ export function FlowEditor({
 
       {steps.length < 8 && (
         <button type="button" onClick={add} className={`${smallButtonClass} self-start`}>
-          + Qadam qoʻshish
+          {t("+ Qadam qoʻshish")}
         </button>
       )}
       <p className="text-[13px] leading-5 text-muted">
-        Muddat {anchor} hisoblanadi. Oʻtib ketgan qadam keyingisi ham kelgan boʻlsa yuborilmaydi — mijoz bir vaqtda bir nechta xabar olmaydi. SMS oxiriga «STOP» havolasi, Telegram xabariga «oʻchirish» tugmasi oʻzi qoʻshiladi.
+        {t("Muddat")} {anchor} {t("hisoblanadi. Oʻtib ketgan qadam keyingisi ham kelgan boʻlsa yuborilmaydi — mijoz bir vaqtda bir nechta xabar olmaydi. SMS oxiriga «STOP» havolasi, Telegram xabariga «oʻchirish» tugmasi oʻzi qoʻshiladi.")}
       </p>
     </ActionForm>
   );

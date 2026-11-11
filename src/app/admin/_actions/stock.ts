@@ -8,6 +8,7 @@ import { CATALOG_TAG } from "@/lib/catalog/db";
 import { adjustStock, saveLowStockDefault, saveReleaseHours } from "@/lib/catalog/stock";
 import { afterProductChange, cancelWaitRequest, notifyWaitlist, type DispatchResult } from "@/lib/notify/waitlist";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 function refresh() {
   revalidateTag(CATALOG_TAG);
@@ -36,12 +37,12 @@ const adjustSchema = z.object({
 export async function adjustStockAction(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("catalog");
   const parsed = adjustSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: "Sonni tekshiring." };
+  if (!parsed.success) return { error: t("Sonni tekshiring.") };
   const { id, mode, value, note } = parsed.data;
-  if (mode !== "untrack" && (value == null || (mode === "delta" && value === 0))) return { error: "Sonni kiriting." };
-  if (mode === "set" && (value as number) < 0) return { error: "Son manfiy boʻlmaydi." };
+  if (mode !== "untrack" && (value == null || (mode === "delta" && value === 0))) return { error: t("Sonni kiriting.") };
+  if (mode === "set" && (value as number) < 0) return { error: t("Son manfiy boʻlmaydi.") };
   const result = await adjustStock(id, mode === "untrack" ? { mode } : { mode, value: value as number }, note || null);
-  if (!result) return { error: "Mahsulot topilmadi." };
+  if (!result) return { error: t("Mahsulot topilmadi.") };
   refresh();
   const sent = await afterProductChange(id, result.before, result.after);
   const now = result.after.stockQty == null ? "kuzatilmaydi" : `${result.after.stockQty} ta`;
@@ -54,7 +55,7 @@ const thresholdSchema = z.object({ lowStockAt: z.coerce.number().int().min(1).ma
 export async function saveLowStockDefaultAction(_: FormState, form: FormData): Promise<FormState> {
   const me = await requireAdmin("catalog");
   const parsed = thresholdSchema.safeParse({ lowStockAt: form.get("lowStockAt") });
-  if (!parsed.success) return { error: "1 dan 1000 gacha son kiriting." };
+  if (!parsed.success) return { error: t("1 dan 1000 gacha son kiriting.") };
   await saveLowStockDefault(parsed.data.lowStockAt, me.id);
   refresh();
   return { ok: "Saqlandi." };
@@ -64,10 +65,10 @@ export async function saveLowStockDefaultAction(_: FormState, form: FormData): P
 export async function notifyWaitlistNow(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("waitlist");
   const id = String(form.get("productId") ?? "");
-  if (!id) return { error: "Mahsulot tanlanmagan." };
+  if (!id) return { error: t("Mahsulot tanlanmagan.") };
   const r = await notifyWaitlist(id);
   revalidatePath("/admin/waitlist");
-  if (r.due === 0) return { error: "Hozir xabar beradigan hech kim yoʻq: mahsulot sotuvda emas yoki narxi kutilgan narxdan tushmagan." };
+  if (r.due === 0) return { error: t("Hozir xabar beradigan hech kim yoʻq: mahsulot sotuvda emas yoki narxi kutilgan narxdan tushmagan.") };
   return { ok: `Yuborildi.${sentNote(r)}` };
 }
 
@@ -76,7 +77,7 @@ const releaseSchema = z.object({ hours: z.coerce.number().int().min(0).max(168) 
 export async function saveReleaseHoursAction(_: FormState, form: FormData): Promise<FormState> {
   const me = await requireAdmin("catalog");
   const parsed = releaseSchema.safeParse({ hours: form.get("hours") });
-  if (!parsed.success) return { error: "0 dan 168 gacha son kiriting." };
+  if (!parsed.success) return { error: t("0 dan 168 gacha son kiriting.") };
   await saveReleaseHours(parsed.data.hours, me.id);
   await auditLog(me, "stock.release_hours", null, { hours: parsed.data.hours });
   return { ok: parsed.data.hours ? `Saqlandi: ${parsed.data.hours} soat.` : "Saqlandi: avtomatik bekor qilish oʻchiq." };

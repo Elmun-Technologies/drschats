@@ -16,6 +16,7 @@ import { fromTashkentInput } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
 import { EXPERIMENT_RE } from "@/lib/merch/ab";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 /*
   Admin → Vitrina. Every save drops the storefront's merchandising cache and
@@ -73,14 +74,14 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const d = parsed.data;
   const href = safeHref(d.href);
-  if (!href) return { error: "Havola saytdagi yoʻl (/product/…) yoki https:// manzil boʻlsin." };
-  if (Boolean(d["uz.cta"]) !== Boolean(d["ru.cta"])) return { error: "Tugma matnini ikkala tilda yozing yoki ikkalasini boʻsh qoldiring." };
+  if (!href) return { error: t("Havola saytdagi yoʻl (/product/…) yoki https:// manzil boʻlsin.") };
+  if (Boolean(d["uz.cta"]) !== Boolean(d["ru.cta"])) return { error: t("Tugma matnini ikkala tilda yozing yoki ikkalasini boʻsh qoldiring.") };
   const startsAt = fromTashkentInput(d.startsAt);
   const endsAt = fromTashkentInput(d.endsAt);
-  if (d.startsAt && !startsAt) return { error: "Boshlanish sanasini toʻliq kiriting." };
-  if (d.endsAt && !endsAt) return { error: "Tugash sanasini toʻliq kiriting." };
-  if (startsAt && endsAt && endsAt <= startsAt) return { error: "Tugash sanasi boshlanishdan keyin boʻlsin." };
-  if (Boolean(d.experiment) !== Boolean(d.variant)) return { error: "A/B test uchun tajriba kalitini ham, variantni ham tanlang (yoki ikkalasini boʻsh qoldiring)." };
+  if (d.startsAt && !startsAt) return { error: t("Boshlanish sanasini toʻliq kiriting.") };
+  if (d.endsAt && !endsAt) return { error: t("Tugash sanasini toʻliq kiriting.") };
+  if (startsAt && endsAt && endsAt <= startsAt) return { error: t("Tugash sanasi boshlanishdan keyin boʻlsin.") };
+  if (Boolean(d.experiment) !== Boolean(d.variant)) return { error: t("A/B test uchun tajriba kalitini ham, variantni ham tanlang (yoki ikkalasini boʻsh qoldiring).") };
   const experiment = d.experiment || null;
   const variant = d.variant || null;
   if (experiment && variant) {
@@ -89,11 +90,11 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
       .from(banners)
       .where(and(eq(banners.experiment, experiment), ne(banners.id, Number(data.id) || 0)));
     if (others.some((o) => o.variant === variant)) return { error: `«${experiment}» tajribasida ${variant} varianti allaqachon bor.` };
-    if (others.some((o) => o.placement !== d.placement)) return { error: "Tajribaning ikkala varianti bir joyda (bitta joylashuvda) boʻlsin." };
+    if (others.some((o) => o.placement !== d.placement)) return { error: t("Tajribaning ikkala varianti bir joyda (bitta joylashuvda) boʻlsin.") };
   }
   const showCountdown = form.get("showCountdown") === "on";
   // A countdown is only ever a real end date.
-  if (showCountdown && !endsAt) return { error: "Taymer faqat tugash sanasi bor bannerda koʻrsatiladi." };
+  if (showCountdown && !endsAt) return { error: t("Taymer faqat tugash sanasi bor bannerda koʻrsatiladi.") };
 
   const row = {
     placement: d.placement,
@@ -117,7 +118,7 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
   const id = Number(data.id);
   if (id) {
     const updated = await db.update(banners).set(row).where(eq(banners.id, id)).returning({ id: banners.id });
-    if (updated.length === 0) return { error: "Banner topilmadi." };
+    if (updated.length === 0) return { error: t("Banner topilmadi.") };
   } else {
     await db.insert(banners).values(row);
     // «+ B variant»: the banner it was started from becomes the other arm, if it is not in a test yet.
@@ -222,14 +223,14 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
   const d = parsed.data;
   const percent = d.mode === "percent" ? Number(d.percent) : null;
   const price = d.mode === "price" ? Number(d.price.replace(/\s/g, "")) : null;
-  if (percent !== null && (!Number.isInteger(percent) || percent < 1 || percent > 90)) return { error: "Chegirma foizi 1 dan 90 gacha boʻlsin." };
-  if (price !== null && (!Number.isInteger(price) || price <= 0)) return { error: "Narxni soʻmda butun son bilan kiriting." };
+  if (percent !== null && (!Number.isInteger(percent) || percent < 1 || percent > 90)) return { error: t("Chegirma foizi 1 dan 90 gacha boʻlsin.") };
+  if (price !== null && (!Number.isInteger(price) || price <= 0)) return { error: t("Narxni soʻmda butun son bilan kiriting.") };
 
   const startsAt = fromTashkentInput(d.startsAt) ?? new Date();
   const endsAt = fromTashkentInput(d.endsAt);
-  if (!endsAt) return { error: "Tugash vaqtini kiriting." };
-  if (endsAt <= startsAt) return { error: "Tugash vaqti boshlanishdan keyin boʻlsin." };
-  if (endsAt.getTime() <= Date.now()) return { error: "Tugash vaqti oʻtib ketgan." };
+  if (!endsAt) return { error: t("Tugash vaqtini kiriting.") };
+  if (endsAt <= startsAt) return { error: t("Tugash vaqti boshlanishdan keyin boʻlsin.") };
+  if (endsAt.getTime() <= Date.now()) return { error: t("Tugash vaqti oʻtib ketgan.") };
 
   const db = getDb();
   const [product] = await db
@@ -237,8 +238,8 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
     .from(products)
     .where(eq(products.slug, d.productSlug))
     .limit(1);
-  if (!product) return { error: "Mahsulot topilmadi." };
-  if (!product.inStock || product.kind === "unlisted") return { error: "Bu mahsulot hozir sotuvda emas." };
+  if (!product) return { error: t("Mahsulot topilmadi.") };
+  if (!product.inStock || product.kind === "unlisted") return { error: t("Bu mahsulot hozir sotuvda emas.") };
   // The price it sells at today (an expired product sale already reverted).
   const base = livePrice({ price: product.price, oldPrice: product.oldPrice ?? undefined, saleEndsAt: product.saleEndsAt?.toISOString() }).price;
   if (discounted(base, { percent, price }) == null) {
@@ -250,7 +251,7 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
   try {
     if (id) {
       const updated = await db.update(deals).set(row).where(eq(deals.id, id)).returning({ id: deals.id });
-      if (updated.length === 0) return { error: "Taklif topilmadi." };
+      if (updated.length === 0) return { error: t("Taklif topilmadi.") };
     } else {
       await db.insert(deals).values({ ...row, createdBy: admin.id });
     }
@@ -259,7 +260,7 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
     const e = err as { code?: string; message?: string; cause?: { code?: string; message?: string; constraint_name?: string } };
     const text = [e.code, e.message, e.cause?.code, e.cause?.message, e.cause?.constraint_name].join(" ");
     if (/deals_no_overlap|23P01/.test(text)) {
-      return { error: "Bu vaqtda boshqa taklif bor. Vaqtni oʻzgartiring yoki avvalgisini oʻchiring." };
+      return { error: t("Bu vaqtda boshqa taklif bor. Vaqtni oʻzgartiring yoki avvalgisini oʻchiring.") };
     }
     throw err;
   }

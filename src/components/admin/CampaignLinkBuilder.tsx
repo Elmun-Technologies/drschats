@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Field, inputClass } from "@/components/admin/ui";
+import { useT } from "@/lib/admin/i18n/client";
 
 const CHANNELS = [
   { source: "google", medium: "cpc", label: "Google Ads" },
@@ -22,6 +23,7 @@ const LANDINGS = [
 ];
 
 export function CampaignLinkBuilder({ baseUrl }: { baseUrl: string }) {
+  const t = useT();
   const [channel, setChannel] = useState<string>("google");
   const [landing, setLanding] = useState("/uz");
   const [campaign, setCampaign] = useState("");
@@ -58,39 +60,39 @@ export function CampaignLinkBuilder({ baseUrl }: { baseUrl: string }) {
 
   return (
     <section className="rounded-[20px] border border-line bg-white p-5 sm:p-6">
-      <div className="mb-5"><h2 className="text-[18px] font-bold leading-6 text-ink">UTM havola yaratish</h2><p className="mt-1 text-[13px] leading-4 text-muted">Reklama havolalari buyurtmaga birinchi va soʻnggi trafik manbasini biriktirishga yordam beradi.</p></div>
+      <div className="mb-5"><h2 className="text-[18px] font-bold leading-6 text-ink">{t("UTM havola yaratish")}</h2><p className="mt-1 text-[13px] leading-4 text-muted">{t("Reklama havolalari buyurtmaga birinchi va soʻnggi trafik manbasini biriktirishga yordam beradi.")}</p></div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Reklama kanali">
+        <Field label={t("Reklama kanali")}>
           <select value={channel} onChange={(event) => setChannel(event.target.value)} className={inputClass}>
             {CHANNELS.map((item) => <option key={item.source} value={item.source}>{item.label}</option>)}
           </select>
         </Field>
-        <Field label="Landing sahifa">
+        <Field label={t("Landing sahifa")}>
           <select value={landing} onChange={(event) => setLanding(event.target.value)} className={inputClass}>
-            {LANDINGS.map((page) => <option key={page.value} value={page.value}>{page.label}</option>)}
+            {LANDINGS.map((page) => <option key={page.value} value={page.value}>{t(page.label)}</option>)}
           </select>
         </Field>
-        <Field label="Kampaniya nomi" hint="Masalan: kuzgi chegirma">
+        <Field label={t("Kampaniya nomi")} hint={t("Masalan: kuzgi chegirma")}>
           <input value={campaign} onChange={(event) => setCampaign(event.target.value)} placeholder="autumn-sale-2026" maxLength={100} className={inputClass} />
         </Field>
-        <Field label="Eʼlon / kreativ (ixtiyoriy)">
+        <Field label={t("Eʼlon / kreativ (ixtiyoriy)")}>
           <input value={content} onChange={(event) => setContent(event.target.value)} placeholder="video-01" maxLength={100} className={inputClass} />
         </Field>
-        <Field label="Kalit soʻz (ixtiyoriy)" className="sm:col-span-2">
+        <Field label={t("Kalit soʻz (ixtiyoriy)")} className="sm:col-span-2">
           <input value={term} onChange={(event) => setTerm(event.target.value)} placeholder="omega-3" maxLength={100} className={inputClass} />
         </Field>
       </div>
       {url ? (
         <div className="mt-5 rounded-sm bg-tile p-4">
-          <p className="text-[12px] font-semibold text-muted">Tayyor havola</p>
+          <p className="text-[12px] font-semibold text-muted">{t("Tayyor havola")}</p>
           <div className="mt-2 flex flex-col gap-3 sm:flex-row sm:items-center">
             <output className="min-w-0 flex-1 break-all rounded-sm border border-line bg-white px-3 py-2.5 font-mono text-[12px] leading-4 text-ink-2">{url}</output>
-            <button type="button" onClick={copyLink} className="inline-flex h-12 shrink-0 items-center justify-center rounded-sm bg-ink px-5 text-[15px] font-semibold text-white hover:bg-black">Nusxalash</button>
+            <button type="button" onClick={copyLink} className="inline-flex h-12 shrink-0 items-center justify-center rounded-sm bg-ink px-5 text-[15px] font-semibold text-white hover:bg-black">{t("Nusxalash")}</button>
           </div>
           <p aria-live="polite" className="mt-2 min-h-4 text-[12px] text-ink">{copyState}</p>
         </div>
       ) : (
-        <p className="mt-4 rounded-sm bg-tile p-3 text-[12px] leading-4 text-muted">Havolani tuzish uchun kampaniya nomini kiriting.</p>
+        <p className="mt-4 rounded-sm bg-tile p-3 text-[12px] leading-4 text-muted">{t("Havolani tuzish uchun kampaniya nomini kiriting.")}</p>
       )}
     </section>
   );

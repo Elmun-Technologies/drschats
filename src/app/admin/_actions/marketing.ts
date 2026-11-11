@@ -18,6 +18,7 @@ import { firstName, renderTemplate } from "@/lib/messaging/template";
 import { isQuietHours } from "@/lib/messaging/quiet-hours";
 import { campaignMessageKey } from "@/lib/messaging/keys";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 const campaignSchema = z
   .object({
@@ -34,12 +35,12 @@ const campaignSchema = z
   })
   .superRefine((d, ctx) => {
     if (d.promoKind !== "none") {
-      if (d.promoValue < 1 || (d.promoKind === "percent" && d.promoValue > 90)) ctx.addIssue({ code: "custom", message: "Chegirma: foiz 1–90, summa 1 soʻmdan.", path: ["promoValue"] });
-      if (d.promoTtl < 1 || d.promoTtl > 24 * 90) ctx.addIssue({ code: "custom", message: "Kod muddati 1 soatdan 90 kungacha.", path: ["promoTtl"] });
-      if (!d.message.includes("{kod}")) ctx.addIssue({ code: "custom", message: "Shaxsiy kod tanlangan — matnga {kod} qoʻshing.", path: ["message"] });
+      if (d.promoValue < 1 || (d.promoKind === "percent" && d.promoValue > 90)) ctx.addIssue({ code: "custom", message: t("Chegirma: foiz 1–90, summa 1 soʻmdan."), path: ["promoValue"] });
+      if (d.promoTtl < 1 || d.promoTtl > 24 * 90) ctx.addIssue({ code: "custom", message: t("Kod muddati 1 soatdan 90 kungacha."), path: ["promoTtl"] });
+      if (!d.message.includes("{kod}")) ctx.addIssue({ code: "custom", message: t("Shaxsiy kod tanlangan — matnga {kod} qoʻshing."), path: ["message"] });
     }
-    if (d.link && !d.message.includes("{havola}")) ctx.addIssue({ code: "custom", message: "Havola berilgan — matnga {havola} qoʻshing.", path: ["message"] });
-    if (d.message.includes("{havola}") && !d.link) ctx.addIssue({ code: "custom", message: "Matnda {havola} bor — havola sahifasini yozing (masalan /sale).", path: ["link"] });
+    if (d.link && !d.message.includes("{havola}")) ctx.addIssue({ code: "custom", message: t("Havola berilgan — matnga {havola} qoʻshing."), path: ["message"] });
+    if (d.message.includes("{havola}") && !d.link) ctx.addIssue({ code: "custom", message: t("Matnda {havola} bor — havola sahifasini yozing (masalan /sale)."), path: ["link"] });
   });
 
 /*
@@ -58,7 +59,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   const parsed = campaignSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
   const segment = segmentById(parsed.data.segment);
-  if (!segment) return { error: "Segment topilmadi." };
+  if (!segment) return { error: t("Segment topilmadi.") };
   const d = parsed.data;
   const promo: MessagePromo | null =
     d.promoKind === "none" ? null : { kind: d.promoKind, value: d.promoValue, ttlHours: d.promoTtl, minSubtotal: d.promoMin ? Math.max(0, Math.round(Number(d.promoMin))) || null : null };
@@ -66,7 +67,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   const members = await segmentMembers(segment, 5000);
   const db = getDb();
   const ctx = await reachContext();
-  if (d.channel === "sms" && !ctx.smsAvailable) return { error: "SMS ulanmagan. Integratsiyalar → SMS (Eskiz) boʻlimida sozlang." };
+  if (d.channel === "sms" && !ctx.smsAvailable) return { error: t("SMS ulanmagan. Integratsiyalar → SMS (Eskiz) boʻlimida sozlang.") };
 
   /*
     A bot audience also contains people who pressed /start but never linked a
@@ -74,7 +75,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
     impossible without a number, so that channel is rejected outright.
   */
   if (segment.kind === "bot" && d.channel !== "telegram") {
-    return { error: "Bot auditoriyasiga faqat Telegram orqali yoziladi: telefon raqami hali maʼlum emas." };
+    return { error: t("Bot auditoriyasiga faqat Telegram orqali yoziladi: telefon raqami hali maʼlum emas.") };
   }
 
   const targets: { phone9: string | null; key: string; name: string | null; reach: Exclude<Reach, { channel: null }> }[] = [];
@@ -147,11 +148,11 @@ const promotionSchema = z
   .superRefine((d, ctx) => {
     if (d.type === "percent_off") {
       const n = Number(d.percent);
-      if (!Number.isInteger(n) || n < 1 || n > 90) ctx.addIssue({ code: "custom", message: "Chegirma foizi 1 dan 90 gacha boʻlsin.", path: ["percent"] });
+      if (!Number.isInteger(n) || n < 1 || n > 90) ctx.addIssue({ code: "custom", message: t("Chegirma foizi 1 dan 90 gacha boʻlsin."), path: ["percent"] });
     }
     if (d.type === "free_shipping_over") {
       const n = Number(d.threshold);
-      if (!Number.isInteger(n) || n < 0) ctx.addIssue({ code: "custom", message: "Bepul yetkazish chegarasini soʻmda kiriting.", path: ["threshold"] });
+      if (!Number.isInteger(n) || n < 0) ctx.addIssue({ code: "custom", message: t("Bepul yetkazish chegarasini soʻmda kiriting."), path: ["threshold"] });
     }
   });
 
@@ -169,7 +170,7 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   const slugs = form.getAll("productSlugs").map(String).filter((s) => SLUG_RE.test(s)).slice(0, 500);
   const startsAt = fromTashkentInput(d.startsAt);
   const endsAt = fromTashkentInput(d.endsAt);
-  if (startsAt && endsAt && endsAt <= startsAt) return { error: "Tugash sanasi boshlanishdan keyin boʻlsin." };
+  if (startsAt && endsAt && endsAt <= startsAt) return { error: t("Tugash sanasi boshlanishdan keyin boʻlsin.") };
   const row = {
     type: d.type,
     title: { uz: d["uz.title"], ru: d["ru.title"] },
@@ -187,7 +188,7 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   const id = data.id?.trim();
   if (id) {
     const updated = await db.update(promotions).set(row).where(eq(promotions.id, id)).returning({ id: promotions.id });
-    if (updated.length === 0) return { error: "Aksiya topilmadi." };
+    if (updated.length === 0) return { error: t("Aksiya topilmadi.") };
   } else {
     await db.insert(promotions).values({ id: `promo-${randomBytes(4).toString("hex")}`, ...row });
   }

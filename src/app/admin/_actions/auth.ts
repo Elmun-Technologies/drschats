@@ -17,6 +17,7 @@ import { PENDING_2FA_COOKIE, SESSION_COOKIE } from "@/lib/admin/cookie";
 import { hashRecoveryCode, normalizeRecoveryCode, verifyTotp } from "@/lib/admin/totp";
 import { openTotpSecret } from "@/lib/admin/totp-store";
 import { auditLog } from "@/lib/admin/audit";
+import { t } from "@/lib/admin/i18n/server";
 
 export type AuthState = { error?: string } | undefined;
 
@@ -81,7 +82,7 @@ const CODE_FAIL_SCOPE = "admin-2fa-fail";
 */
 export async function verifySecondFactor(_: AuthState, form: FormData): Promise<AuthState> {
   const pending = readPendingToken((await cookies()).get(PENDING_2FA_COOKIE)?.value);
-  if (!pending) return { error: "Kirish muddati tugadi. Email va parolni qayta kiriting." };
+  if (!pending) return { error: t("Kirish muddati tugadi. Email va parolni qayta kiriting.") };
   const ip = clientIp(await headers());
   if (!(await hitRateLimit("admin-2fa-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs }))) return { error: TOO_MANY };
   const now = Date.now();
@@ -94,7 +95,7 @@ export async function verifySecondFactor(_: AuthState, form: FormData): Promise<
   const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, pending.uid)).limit(1);
   if (!user || user.sessionEpoch !== pending.epoch || !user.totpEnabledAt || !user.totpSecret) {
     await clearPendingCookie();
-    return { error: "Kirish muddati tugadi. Email va parolni qayta kiriting." };
+    return { error: t("Kirish muddati tugadi. Email va parolni qayta kiriting.") };
   }
 
   const code = String(form.get("code") ?? "").trim().slice(0, 40);
@@ -121,7 +122,7 @@ export async function verifySecondFactor(_: AuthState, form: FormData): Promise<
 
   if (!accepted) {
     await hitRateLimit(CODE_FAIL_SCOPE, String(user.id), LOGIN_RATE);
-    return { error: "Kod notoʻgʻri yoki eskirgan." };
+    return { error: t("Kod notoʻgʻri yoki eskirgan.") };
   }
   await resetRateLimit(CODE_FAIL_SCOPE, String(user.id));
   await clearPendingCookie();
@@ -181,10 +182,10 @@ function tokenMatches(given: string): boolean {
 */
 export async function setupFirstAdmin(_: AuthState, form: FormData): Promise<AuthState> {
   const ip = clientIp(await headers());
-  if (!(await hitRateLimit("admin-setup", ip, LOGIN_RATE))) return { error: "Urinishlar juda koʻp." };
+  if (!(await hitRateLimit("admin-setup", ip, LOGIN_RATE))) return { error: t("Urinishlar juda koʻp.") };
   const parsed = setupSchema.safeParse(Object.fromEntries(form));
   if (!parsed.success) return { error: `Maydonlarni tekshiring: parol kamida ${MIN_PASSWORD_LENGTH} belgi.` };
-  if (!tokenMatches(parsed.data.token)) return { error: "Sozlash kaliti notoʻgʻri." };
+  if (!tokenMatches(parsed.data.token)) return { error: t("Sozlash kaliti notoʻgʻri.") };
 
   const passwordHash = await hashPassword(parsed.data.password);
   // Count and insert under one lock: two simultaneous setups must not both see "no admins".
@@ -198,7 +199,7 @@ export async function setupFirstAdmin(_: AuthState, form: FormData): Promise<Aut
       .returning({ id: adminUsers.id, epoch: adminUsers.sessionEpoch });
     return row;
   });
-  if (!user) return { error: "Administrator allaqachon yaratilgan." };
+  if (!user) return { error: t("Administrator allaqachon yaratilgan.") };
   await setSessionCookie(user.id, user.epoch);
   redirect("/admin");
 }

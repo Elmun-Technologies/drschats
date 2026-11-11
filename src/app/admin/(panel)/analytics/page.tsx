@@ -8,8 +8,9 @@ import { ActivityHeatmap } from "@/components/admin/ActivityHeatmap";
 import { BarList, Card, EmptyState, Metric, PageHeader, TableWrap, linkClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Analitika" };
+export const generateMetadata = () => adminTitle("Analitika");
 
 export default async function AdminAnalyticsPage({ searchParams }: { searchParams: Promise<{ range?: string | string[] }> }) {
   await requireAdmin();
@@ -31,18 +32,18 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
   return (
     <>
       <PageHeader
-        title="Analitika"
-        lead="Saytning oʻz kuzatuvi: kim kirdi, nimani koʻrdi, qayerdan keldi va nima sotib oldi. GA4 va Metrika maʼlumotlari bilan bir qatorda ishlaydi."
+        title={t("Analitika")}
+        lead={t("Saytning oʻz kuzatuvi: kim kirdi, nimani koʻrdi, qayerdan keldi va nima sotib oldi. GA4 va Metrika maʼlumotlari bilan bir qatorda ishlaydi.")}
         actions={<RangeTabs range={range} basePath="/admin/analytics" />}
       />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 xl:grid-cols-6">
-        <Metric label="Tashrif buyuruvchilar" value={formatNumber(f.visitors)} delta={{ current: f.visitors, previous: p.visitors }} />
-        <Metric label="Yangi" value={formatNumber(funnel.newVisitors)} hint="birinchi marta kirgan" />
-        <Metric label="Sessiyalar" value={formatNumber(f.sessions)} delta={{ current: f.sessions, previous: p.sessions }} />
-        <Metric label="Sahifa koʻrishlar" value={formatNumber(f.pageViews)} hint={f.sessions ? `${(f.pageViews / f.sessions).toFixed(1)} sahifa / sessiya` : undefined} />
-        <Metric label="Konversiya" value={`${percent(f.purchased, f.visitors)}%`} hint={`${formatNumber(f.purchased)} ta xaridor`} />
-        <Metric label="Savdo" value={som(metrics.current.revenue)} delta={{ current: metrics.current.revenue, previous: metrics.previous.revenue }} />
+        <Metric label={t("Tashrif buyuruvchilar")} value={formatNumber(f.visitors)} delta={{ current: f.visitors, previous: p.visitors }} />
+        <Metric label={t("Yangi")} value={formatNumber(funnel.newVisitors)} hint={t("birinchi marta kirgan")} />
+        <Metric label={t("Sessiyalar")} value={formatNumber(f.sessions)} delta={{ current: f.sessions, previous: p.sessions }} />
+        <Metric label={t("Sahifa koʻrishlar")} value={formatNumber(f.pageViews)} hint={f.sessions ? `${(f.pageViews / f.sessions).toFixed(1)} sahifa / sessiya` : undefined} />
+        <Metric label={t("Konversiya")} value={`${percent(f.purchased, f.visitors)}%`} hint={`${formatNumber(f.purchased)} ta xaridor`} />
+        <Metric label={t("Savdo")} value={som(metrics.current.revenue)} delta={{ current: metrics.current.revenue, previous: metrics.previous.revenue }} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
@@ -50,13 +51,13 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
         <ActivityHeatmap visits={heat.visits} orders={heat.orders} days={heat.days} />
       </div>
 
-      <Card title="Kanallar" lead="Har bir manba qancha odam olib keldi va ulardan qanchasi sotib oldi" className="mt-4">
+      <Card title={t("Kanallar")} lead={t("Har bir manba qancha odam olib keldi va ulardan qanchasi sotib oldi")} className="mt-4">
         {channelRows.length === 0 ? (
-          <EmptyState title="Hali tashrif yozilmagan" />
+          <EmptyState title={t("Hali tashrif yozilmagan")} />
         ) : (
           <TableWrap>
             <table className={tableClass}>
-              <thead><tr><th className={thClass}>Manba</th><th className={`${thClass} text-right`}>Tashrif buyuruvchi</th><th className={`${thClass} text-right`}>Xaridor</th><th className={`${thClass} text-right`}>Konversiya</th><th className={`${thClass} text-right`}>Savdo</th></tr></thead>
+              <thead><tr><th className={thClass}>{t("Manba")}</th><th className={`${thClass} text-right`}>{t("Tashrif buyuruvchi")}</th><th className={`${thClass} text-right`}>{t("Xaridor")}</th><th className={`${thClass} text-right`}>{t("Konversiya")}</th><th className={`${thClass} text-right`}>{t("Savdo")}</th></tr></thead>
               <tbody>
                 {channelRows.map((c) => (
                   <tr key={c.channel}>
@@ -73,13 +74,13 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
         )}
       </Card>
 
-      <Card title="Mahsulotlar: qiziqish va xarid" lead="Koʻp koʻrilib kam sotilayotgan mahsulot — narx, rasm yoki tavsifni tekshirish uchun signal" className="mt-4">
+      <Card title={t("Mahsulotlar: qiziqish va xarid")} lead={t("Koʻp koʻrilib kam sotilayotgan mahsulot — narx, rasm yoki tavsifni tekshirish uchun signal")} className="mt-4">
         {interest.length === 0 ? (
-          <EmptyState title="Maʼlumot yoʻq" />
+          <EmptyState title={t("Maʼlumot yoʻq")} />
         ) : (
           <TableWrap>
             <table className={tableClass}>
-              <thead><tr><th className={thClass}>Mahsulot</th><th className={`${thClass} text-right`}>Koʻrdi</th><th className={`${thClass} text-right`}>Savatga qoʻshdi</th><th className={`${thClass} text-right`}>Sotildi (dona)</th><th className={`${thClass} text-right`}>Koʻrish → savat</th></tr></thead>
+              <thead><tr><th className={thClass}>{t("Mahsulot")}</th><th className={`${thClass} text-right`}>{t("Koʻrdi")}</th><th className={`${thClass} text-right`}>{t("Savatga qoʻshdi")}</th><th className={`${thClass} text-right`}>{t("Sotildi (dona)")}</th><th className={`${thClass} text-right`}>{t("Koʻrish → savat")}</th></tr></thead>
               <tbody>
                 {interest.map((row) => (
                   <tr key={row.slug}>
@@ -97,19 +98,19 @@ export default async function AdminAnalyticsPage({ searchParams }: { searchParam
       </Card>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-3">
-        <Card title="Qurilmalar">
+        <Card title={t("Qurilmalar")}>
           <ShareBar parts={deviceRows.slice(0, 4).map((d) => ({ label: d.device, value: d.visitors }))} />
         </Card>
-        <Card title="Koʻp ochilgan sahifalar">
+        <Card title={t("Koʻp ochilgan sahifalar")}>
           <BarList rows={pages.map((page) => ({ label: page.path, value: page.views, note: `${formatNumber(page.visitors)} kishi` }))} />
         </Card>
-        <Card title="Saytdagi qidiruvlar" lead="Mijozlar nimani izlayapti">
-          <BarList rows={searches.map((s) => ({ label: s.term, value: s.count, href: `/uz/search?q=${encodeURIComponent(s.term)}` }))} empty="Qidiruv hali yozilmagan" />
+        <Card title={t("Saytdagi qidiruvlar")} lead={t("Mijozlar nimani izlayapti")}>
+          <BarList rows={searches.map((s) => ({ label: s.term, value: s.count, href: `/uz/search?q=${encodeURIComponent(s.term)}` }))} empty={t("Qidiruv hali yozilmagan")} />
         </Card>
       </div>
 
       <p className="mt-6 text-[13px] leading-5 text-muted">
-        Raqamlar saytning birinchi tomon kuzatuvidan olinadi (botlar va avtomatik tekshiruvlar sanalmaydi). Reklama kabinetlari uchun GA4, Metrika va Meta Pixel — <Link href="/admin/integrations" className={linkClass}>Integratsiyalar</Link>.
+        {t("Raqamlar saytning birinchi tomon kuzatuvidan olinadi (botlar va avtomatik tekshiruvlar sanalmaydi). Reklama kabinetlari uchun GA4, Metrika va Meta Pixel —")} <Link href="/admin/integrations" className={linkClass}>{t("Integratsiyalar")}</Link>.
       </p>
     </>
   );

@@ -6,6 +6,7 @@ import { REPO_IMAGE_KINDS, belongsTo, filterRepoImages, type RepoImage, type Rep
 import { buttonClass, inputClass } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
 import { AdminDialog } from "./AdminDialog";
+import { useT } from "@/lib/admin/i18n/client";
 
 const PAGE = 60;
 
@@ -36,6 +37,7 @@ export function ImagePicker({
   title: string;
   initialKind?: RepoImageKind;
 }) {
+  const t = useT();
   const [query, setQuery] = useState("");
   const [kind, setKind] = useState<RepoImageKind | undefined>(initialKind);
   const [limit, setLimit] = useState(PAGE);
@@ -61,7 +63,7 @@ export function ImagePicker({
       footer={
         <>
           <span className="mr-auto text-[14px] text-muted">{mode === "multi" ? `Tanlangan: ${selected.length}` : `${hits.length} ta rasm`}</span>
-          <button type="button" onClick={onClose} className={buttonClass}>Tayyor</button>
+          <button type="button" onClick={onClose} className={buttonClass}>{t("Tayyor")}</button>
         </>
       }
     >
@@ -70,11 +72,11 @@ export function ImagePicker({
           type="search"
           value={query}
           onChange={(e) => { setQuery(e.target.value); setLimit(PAGE); }}
-          placeholder="Fayl nomi boʻyicha qidirish: omega, swiss, c-…"
-          aria-label="Rasm qidirish"
+          placeholder={t("Fayl nomi boʻyicha qidirish: omega, swiss, c-…")}
+          aria-label={t("Rasm qidirish")}
           className={inputClass}
         />
-        <div role="group" aria-label="Rasm turi" className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
+        <div role="group" aria-label={t("Rasm turi")} className="-mx-1 flex gap-2 overflow-x-auto px-1 pb-1">
           {kinds.map((k) => (
             <button
               key={k ?? "all"}
@@ -94,7 +96,7 @@ export function ImagePicker({
       </div>
 
       {hits.length === 0 ? (
-        <p className="rounded-[16px] bg-tile px-4 py-8 text-center text-[14px] text-muted">Bunday nomli rasm topilmadi.</p>
+        <p className="rounded-[16px] bg-tile px-4 py-8 text-center text-[14px] text-muted">{t("Bunday nomli rasm topilmadi.")}</p>
       ) : (
         <>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-5">
@@ -119,8 +121,8 @@ export function ImagePicker({
                   >
                     <span className="relative block aspect-square w-full overflow-hidden rounded-[12px] bg-tile">
                       <Image src={img.src} alt="" fill sizes="(min-width: 1024px) 170px, (min-width: 640px) 25vw, 45vw" className="object-contain p-2" />
-                      {isChosen && <span className="absolute right-2 top-2 rounded-full bg-ink px-2 py-0.5 text-[12px] font-semibold text-white">Tanlangan</span>}
-                      {!isChosen && own && <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-0.5 text-[12px] font-semibold text-ink">Shu mahsulot</span>}
+                      {isChosen && <span className="absolute right-2 top-2 rounded-full bg-ink px-2 py-0.5 text-[12px] font-semibold text-white">{t("Tanlangan")}</span>}
+                      {!isChosen && own && <span className="absolute left-2 top-2 rounded-full bg-white px-2 py-0.5 text-[12px] font-semibold text-ink">{t("Shu mahsulot")}</span>}
                     </span>
                     <span className={cn("block truncate px-1 text-[12px] leading-4", isChosen ? "text-white" : "text-ink-2")}>{img.name}</span>
                   </button>
@@ -131,7 +133,7 @@ export function ImagePicker({
           {hits.length > limit && (
             <div className="mt-4 flex justify-center">
               <button type="button" onClick={() => setLimit((n) => n + PAGE)} className="inline-flex h-11 items-center rounded-[12px] bg-tile px-4 text-[14px] font-semibold text-ink hover:bg-tile-hover">
-                Yana {Math.min(PAGE, hits.length - limit)} ta koʻrsatish
+                {t("Yana")} {Math.min(PAGE, hits.length - limit)} {t("ta koʻrsatish")}
               </button>
             </div>
           )}
