@@ -304,6 +304,9 @@ va `orders.payment_status`/`paid_at` (`0015_online_payments.sql`).
 4. Fiskal chek: har mahsulot formasida «Fiskal chek» — MXIK (17 raqam, tasnif.soliq.uz)
    va qadoq kodi; panelda yetkazish xizmatining kodi va QQS (standart 12%). Kod
    yetishmasa Payme `detail` yuborilmaydi va panel qaysi mahsulotlar ekanini aytadi.
+   MXIK 21 mahsulotga `0035_mxik_codes.sql` bilan yozilgan (Dr Schatz roʻyxati, 2026-11-11;
+   faqat boʻsh maydonga). Qadoq kodlari roʻyxatda yoʻq — panelda toʻldiriladi. Kodsiz:
+   Neuroforce, Aminomorin, Peano, Hamdard Safi, qahvalar.
 
 **Oqim:** checkout buyurtmani `payment_status='pending'` bilan saqlaydi va mijozni
 toʻlov sahifasiga yuboradi (summa — serverdagi jami, brauzerdan emas). Toʻlov tizimi
