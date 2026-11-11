@@ -37,6 +37,14 @@ function plain(text: string, max = 3000, { markup = false } = {}): string {
   return clean.length > max ? `${clean.slice(0, max - 1).trimEnd()}…` : clean;
 }
 
+/**
+ * «Swiss Energy Calcivit 30 — Kalsiy D3 K2, kapsula»: the brand name a shopper
+ * may know, then the words they search by (content/product-keywords.ts).
+ */
+export function feedTitle(p: Pick<Product, "name" | "keyword">): string {
+  return plain(p.keyword ? `${p.name} — ${p.keyword}` : p.name, 150);
+}
+
 /** In stock, listed, with a price and a photo: the products an ad may send someone to. */
 export function feedProducts(products: Product[]): Product[] {
   return products.filter(
@@ -80,7 +88,7 @@ export function googleFeed({
     const window = saleWindow(p, now);
     const lines = [
       `<g:id>${xmlEscape(p.id)}</g:id>`,
-      `<g:title>${xmlEscape(plain(p.name, 150))}</g:title>`,
+      `<g:title>${xmlEscape(feedTitle(p))}</g:title>`,
       `<g:description>${xmlEscape(plain(p.description || p.tagline || p.name, 5000, { markup: true }))}</g:description>`,
       `<g:link>${xmlEscape(productUrl(p, locale))}</g:link>`,
       `<g:image_link>${xmlEscape(absolute(p.images[0].url))}</g:image_link>`,
@@ -141,7 +149,7 @@ export function yandexFeed({
     const brand = brandOf(p);
     const cat = p.categorySlug ? categoryId.get(p.categorySlug) : undefined;
     const lines = [
-      `<name>${xmlEscape(plain(p.name, 150))}</name>`,
+      `<name>${xmlEscape(feedTitle(p))}</name>`,
       ...(brand ? [`<vendor>${xmlEscape(brand.name)}</vendor>`] : []),
       `<url>${xmlEscape(productUrl(p, locale))}</url>`,
       `<price>${Math.round(p.price)}</price>`,

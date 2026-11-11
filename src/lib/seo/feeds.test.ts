@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { Product } from "@/lib/shopflow/types";
-import { feedProducts, googleFeed, xmlEscape, yandexFeed } from "./feeds";
+import { feedProducts, feedTitle, googleFeed, xmlEscape, yandexFeed } from "./feeds";
 
 const base = {
   id: "p1",
@@ -82,5 +82,12 @@ describe("yandexFeed", () => {
 describe("xmlEscape", () => {
   it("drops control characters XML 1.0 cannot carry", () => {
     expect(xmlEscape("a\u0001b\tc")).toBe("ab\tc");
+  });
+});
+
+describe("feed titles", () => {
+  it("add the search keyword after the product name", () => {
+    expect(feedTitle({ name: "Swiss Energy Calcivit 30", keyword: "Kalsiy D3 K2, kapsula" })).toBe("Swiss Energy Calcivit 30 — Kalsiy D3 K2, kapsula");
+    expect(feedTitle({ name: "Peano balzam 30 g" })).toBe("Peano balzam 30 g");
   });
 });
