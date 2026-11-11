@@ -204,7 +204,7 @@ if (payOrder) {
   check("Payme: check allows", (await payme("CheckPerformTransaction", { amount, account })).result?.allow === true);
   const created = await payme("CreateTransaction", { id: "e2e-payme-1", time: Date.now(), amount, account });
   check("Payme: create", created.result?.state === 1, JSON.stringify(created));
-  check("Payme: a second transaction waits", (await payme("CreateTransaction", { id: "e2e-payme-2", time: Date.now(), amount, account })).error?.code === -31008);
+  check("Payme: a second transaction waits", (await payme("CreateTransaction", { id: "e2e-payme-2", time: Date.now(), amount, account })).error?.code === -31099);
   const performed = await payme("PerformTransaction", { id: "e2e-payme-1" });
   check("Payme: perform", performed.result?.state === 2, JSON.stringify(performed));
   check("Payme: repeated perform returns the same answer", JSON.stringify((await payme("PerformTransaction", { id: "e2e-payme-1" })).result) === JSON.stringify(performed.result));

@@ -316,7 +316,7 @@ mijozni imzolangan `/track/<raqam>.<imzo>` sahifasiga qaytaradi: holat, kerak bo
 
 **Qoidalar (kodda):**
 - Payme: Basic auth (test rejimida test kaliti), summa tiyinda va aynan jamiga teng,
-  buyurtmaga bitta ochiq tranzaksiya (`-31008`, sandbox shuni kutadi), 12 soatda yakunlanmagan tranzaksiya
+  buyurtmaga bitta ochiq tranzaksiya (`-31099`; sandbox testi `-31050…-31099` ni talab qiladi), 12 soatda yakunlanmagan tranzaksiya
   bekor (reason 4), takroriy Create/Perform/Cancel oldingi javobni qaytaradi,
   toʻlangan buyurtma bekor qilinsa (`-2`) — `refunded`, **yetkazilgan buyurtmani
   qaytarib boʻlmaydi** (`-31007`), doʻkon bekor qilgan buyurtma uchun pul olinmaydi.
