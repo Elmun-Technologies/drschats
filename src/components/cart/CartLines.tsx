@@ -20,9 +20,9 @@ import { cutoutOf } from "@/lib/catalog/product-facts";
 
 /*
   Design: CartV3 / CartMobileV3 line list and the "Buyurtmangizga qoʻshing"
-  row. Quantity stops at 1 — the store reads 0 as "remove", and one press too
-  many used to delete a product with nothing to undo it; removing is its own
-  labelled control.
+  row. At quantity 1 the "−" turns into a trash icon that removes the line:
+  a disabled "−" left people with no way out of the stepper (2026-11). The
+  icon changes first, so one press too many never deletes silently.
 
   `compact` is the cart drawer: the phone row at every width (the drawer is
   448px wide on desktop too), and `onNavigate` closes it when a product link
@@ -170,6 +170,8 @@ function Stepper({ line, small = false }: { line: CartLine; small?: boolean }) {
   const tc = useTranslations("checkout");
   const common = useTranslations("common");
   const setQuantity = useCart((s) => s.setQuantity);
+  const remove = useCart((s) => s.remove);
+  const last = line.quantity <= 1;
   return (
     <div
       role="group"
@@ -178,12 +180,11 @@ function Stepper({ line, small = false }: { line: CartLine; small?: boolean }) {
     >
       <button
         type="button"
-        onClick={() => setQuantity(line.lineId, line.quantity - 1)}
-        disabled={line.quantity <= 1}
-        aria-label={tc("decreaseFor", { name: line.name })}
-        className="flex h-full w-11 items-center justify-center text-xl font-medium disabled:opacity-40"
+        onClick={() => (last ? remove(line.lineId) : setQuantity(line.lineId, line.quantity - 1))}
+        aria-label={last ? tc("removeFor", { name: line.name }) : tc("decreaseFor", { name: line.name })}
+        className="flex h-full w-11 items-center justify-center text-xl font-medium"
       >
-        −
+        {last ? <Icon d={ICON.trash} className="h-[18px] w-[18px]" /> : "−"}
       </button>
       <span aria-live="polite" className="text-base font-bold tabular-nums">
         {line.quantity}

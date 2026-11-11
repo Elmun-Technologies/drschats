@@ -311,9 +311,9 @@ export interface PaymeCheckout {
   testMode: boolean;
 }
 
-/** GET https://checkout.paycom.uz/<base64 of m=…;ac.order_id=…;a=…;l=…;c=…> (test.paycom.uz in test mode). */
+/** GET https://checkout.paycom.uz/<base64 of m=…;ac.order_id=…;a=…;l=…;c=…> (checkout.test.paycom.uz in test mode). */
 export function paymeCheckoutUrl(p: PaymeCheckout): string {
   const params = [`m=${p.merchantId}`, `ac.${p.account}=${p.orderNumber}`, `a=${p.amount}`, `l=${p.locale}`, `c=${p.returnUrl}`];
-  const host = p.testMode ? "https://test.paycom.uz" : "https://checkout.paycom.uz";
+  const host = p.testMode ? "https://checkout.test.paycom.uz" : "https://checkout.paycom.uz";
   return `${host}/${Buffer.from(params.join(";")).toString("base64")}`;
 }

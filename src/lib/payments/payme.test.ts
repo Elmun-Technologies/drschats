@@ -202,6 +202,6 @@ describe("checkout link", () => {
     expect(url.startsWith("https://checkout.paycom.uz/")).toBe(true);
     const decoded = Buffer.from(url.split("/").pop()!, "base64").toString();
     expect(decoded).toBe("m=m1;ac.order_id=GV-1;a=500000;l=uz;c=https://x.uz/uz/track/a.b");
-    expect(paymeCheckoutUrl({ merchantId: "m1", account: "order_id", orderNumber: "GV-1", amount: 1, locale: "ru", returnUrl: "r", testMode: true })).toMatch(/^https:\/\/test\.paycom\.uz\//);
+    expect(paymeCheckoutUrl({ merchantId: "m1", account: "order_id", orderNumber: "GV-1", amount: 1, locale: "ru", returnUrl: "r", testMode: true })).toMatch(/^https:\/\/checkout\.test\.paycom\.uz\//);
   });
 });
