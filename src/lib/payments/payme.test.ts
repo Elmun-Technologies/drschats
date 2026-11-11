@@ -108,7 +108,7 @@ describe("Create → Perform → Cancel", () => {
     expect(resultOf(await s.call("CreateTransaction", { id: "p1", time: 1, amount: 15_000_000, account }))).toEqual(create);
     // A second transaction for the same order waits for the first.
     const busy = errorOf(await s.call("CreateTransaction", { id: "p2", time: 2, amount: 15_000_000, account }));
-    expect(busy?.code).toBe(-31099);
+    expect(busy?.code).toBe(-31008);
     expect(busy?.data).toBe("order_id");
 
     s.tick(1000);
@@ -174,7 +174,7 @@ describe("Create → Perform → Cancel", () => {
   it("maps a store fault to its error and anything else to a system error", async () => {
     const s = setup();
     s.mem.store.createTx = async () => { throw new PaymeFault({ ...PAYME_ERRORS.orderBusy, data: "order_id" }); };
-    expect(errorOf(await s.call("CreateTransaction", { id: "p9", time: 1, amount: 15_000_000, account }))?.code).toBe(-31099);
+    expect(errorOf(await s.call("CreateTransaction", { id: "p9", time: 1, amount: 15_000_000, account }))?.code).toBe(-31008);
     s.mem.store.findTx = async () => { throw new Error("db down"); };
     expect(errorOf(await s.call("CheckTransaction", { id: "p9" }))?.code).toBe(-32400);
   });
@@ -202,6 +202,6 @@ describe("checkout link", () => {
     expect(url.startsWith("https://checkout.paycom.uz/")).toBe(true);
     const decoded = Buffer.from(url.split("/").pop()!, "base64").toString();
     expect(decoded).toBe("m=m1;ac.order_id=GV-1;a=500000;l=uz;c=https://x.uz/uz/track/a.b");
-    expect(paymeCheckoutUrl({ merchantId: "m1", account: "order_id", orderNumber: "GV-1", amount: 1, locale: "ru", returnUrl: "r", testMode: true })).toMatch(/^https:\/\/checkout\.test\.paycom\.uz\//);
+    expect(paymeCheckoutUrl({ merchantId: "m1", account: "order_id", orderNumber: "GV-1", amount: 1, locale: "ru", returnUrl: "r", testMode: true })).toMatch(/^https:\/\/test\.paycom\.uz\//);
   });
 });
