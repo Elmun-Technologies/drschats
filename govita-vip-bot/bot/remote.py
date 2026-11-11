@@ -21,7 +21,7 @@ from .config import cfg
 from .logic import som
 from . import settings as settings_store
 from . import shop as shop_ui
-from .ui import b, kb, contact_kb, T
+from .ui import b, kb, contact_kb, tr
 from .reply_menu import reply_kb
 
 router = Router()
@@ -113,7 +113,7 @@ TICKET_WINDOW_S = 30
 _last_ticket: dict[int, float] = {}
 
 
-async def greeting(api, locale="uz"):
+async def greeting(api, locale="ru"):
     """The welcome an admin wrote in /admin/bot, in the customer's language.
 
     Plain text from the admin, so it is escaped before HTML parse mode sees it.
@@ -123,15 +123,15 @@ async def greeting(api, locale="uz"):
         config = await api.request('GET', '/config')
     except Exception as e:  # noqa: BLE001 — the greeting is never worth a failed /start
         log.warning('config unavailable, using built-in greeting: %s', type(e).__name__)
-        return T['welcome']
+        return tr('welcome', locale)
     # A /start is also a good moment to pick up the rest of the panel: the
     # address, the phone and the hours are shown in this same conversation.
     settings_store.apply(config or {})
     saved = ((config or {}).get('greeting') or {}).get('ru' if locale == 'ru' else 'uz') or ''
-    return escape(saved.strip()) if saved.strip() else T['welcome']
+    return escape(saved.strip()) if saved.strip() else tr('welcome', locale)
 
 
-def menu(locale="uz", customer=None):
+def menu(locale="ru", customer=None):
     """The club's main menu: the Mini App and the native shop side by side."""
     return shop_ui.main_menu(locale, customer)
 
@@ -143,24 +143,25 @@ async def start(m, api):
     payload = (m.text.split(maxsplit=1) + [''])[1]
     # The site drops a malformed source rather than failing; send it as is.
     await api.request('POST', f'/members/{m.from_user.id}/start', body={
-        'locale': 'uz', **({'source': payload[2:]} if payload.startswith('s_') else {})})
+        'locale': 'ru', **({'source': payload[2:]} if payload.startswith('s_') else {})})
     try:
         await api.request('GET', f'/customers/{m.from_user.id}')
     except BackendError as e:
         if e.status != 404:
             raise
-        await m.answer(await greeting(api), reply_markup=menu())
-        return await m.answer(T['askContact'], reply_markup=contact_kb())
+        locale = await shop_ui.locale_of(api, m.from_user.id)
+        await m.answer(await greeting(api, locale), reply_markup=menu(locale))
+        return await m.answer(tr('askContact', locale), reply_markup=contact_kb(locale))
     if payload.startswith('o_'):
         return await show_order(m, api, m.from_user.id, payload[2:])
     customer = await shop_ui.customer_of(api, m.from_user.id)
-    locale = (customer or {}).get('locale') or 'uz'
+    locale = (customer or {}).get('locale') or 'ru'
     # The keyboard under the message field stays; the inline menu scrolls away.
     await m.answer(await greeting(api, locale), reply_markup=reply_kb(locale))
-    await m.answer(T['menu'], reply_markup=menu(locale, customer))
+    await m.answer(tr('menu', locale), reply_markup=menu(locale, customer))
 
 
-async def send_orders(m, api, chat, locale="uz"):
+async def send_orders(m, api, chat, locale="ru"):
     d = await api.request('GET', f'/customers/{chat}/orders', params={'limit': 10})
     rows = [[b(f"№{o['code']} · {o['stage']} · {som(o['total'])}", f"ord:{o['code']}")] for o in d['items']]
     if not rows:
@@ -218,7 +219,7 @@ async def callback(q, api):
     else:
         locale = await shop_ui.locale_of(api, chat)
         customer = await shop_ui.customer_of(api, chat)
-        await q.message.answer(T['menu'], reply_markup=menu(locale, customer))
+        await q.message.answer(tr('menu', locale), reply_markup=menu(locale, customer))
 
 
 @router.message()
@@ -228,9 +229,9 @@ async def text(m, api):
     locale = await shop_ui.locale_of(api, m.from_user.id)
     customer = await shop_ui.customer_of(api, m.from_user.id)
     if not m.text or m.text.startswith('/'):
-        return await m.answer(T['menu'], reply_markup=menu(locale, customer))
+        return await m.answer(tr('menu', locale), reply_markup=menu(locale, customer))
     if m.text in {'☰ Menyu', 'Menyu'}:
-        return await m.answer(T['menu'], reply_markup=menu(locale, customer))
+        return await m.answer(tr('menu', locale), reply_markup=menu(locale, customer))
     # A typed product name is a search, not a support ticket: the shop must
     # answer the obvious question first and offer the operator only when the
     # catalogue has nothing.
@@ -309,7 +310,7 @@ async def outbox_loop(bot, api):
             if "shop_url" in changed:
                 try:
                     await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
-                        text="Doʻkon", web_app=WebAppInfo(url=f"{cfg.shop_url}/uz")))
+                        text="Магазин", web_app=WebAppInfo(url=f"{cfg.shop_url}/ru")))
                 except Exception as e:  # noqa: BLE001 — a stale button is not worth the loop
                     log.warning("menu button not updated: %s", type(e).__name__)
             batch = await api.request('POST', '/outbox/claim', body={'limit': 10})

@@ -263,7 +263,7 @@ describe("bot shop API contract", () => {
     expect(shop.reorderToCart).toHaveBeenCalledWith(21, [
       { slug: "delical-vanil-200ml", qty: 2 },
       { slug: "gone", qty: 1 },
-    ], "uz");
+    ], "ru");
     expect((await handleBotApi("POST", ["shop", "reorder"], { chatId: 21, orderNumber: "nope" }, q)).status).toBe(422);
     (shop.reorderToCart as ReturnType<typeof vi.fn>).mockResolvedValueOnce(0);
     (store.orderFor as ReturnType<typeof vi.fn>).mockResolvedValueOnce({ items: [] });

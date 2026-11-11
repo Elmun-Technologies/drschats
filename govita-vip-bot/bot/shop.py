@@ -204,9 +204,9 @@ async def locale_of(api, chat: int) -> str:
         pass
     try:
         c = await api.request("GET", f"/customers/{chat}")
-        return c.get("locale") or "uz"
+        return c.get("locale") or "ru"
     except BackendError:
-        return "uz"
+        return "ru"
 
 
 def cbd(data: str) -> str | None:
@@ -234,7 +234,7 @@ def menu_switch(key: str) -> bool:
 def main_menu(locale: str, customer: dict | None = None):
     rows = []
     if menu_switch("miniApp") and cfg.shop_url.startswith("https://"):
-        rows.append([b(t(locale, "mini_app"), webapp=f"{cfg.shop_url}/uz")])
+        rows.append([b(t(locale, "mini_app"), webapp=f"{cfg.shop_url}/{'ru' if locale == 'ru' else 'uz'}")])
     # Two per row, skipping what the panel switched off. An empty list would
     # leave the customer with no way back, so all-off falls back to the full menu.
     buttons = [(key, data) for key, data in MENU_LAYOUT if menu_switch(key)]
@@ -501,7 +501,7 @@ async def on_contact(m: Message, api, state: FSMContext):
     """Phone sharing is the only proof of the number; the checkout resumes after it."""
     locale = await locale_of(api, m.from_user.id)
     if m.contact.user_id != m.from_user.id or m.chat.id != m.from_user.id:
-        return await m.answer(t(locale, "contact_not_own"), reply_markup=contact_kb())
+        return await m.answer(t(locale, "contact_not_own"), reply_markup=contact_kb(locale))
     try:
         res = await api.request(
             "POST",
@@ -572,7 +572,7 @@ async def begin_checkout(m, api, chat: int, locale: str, state: FSMContext):
     customer = await customer_of(api, chat)
     if not customer or not customer.get("phone"):
         await state.clear()
-        await m.answer(t(locale, "not_linked"), reply_markup=contact_kb())
+        await m.answer(t(locale, "not_linked"), reply_markup=contact_kb(locale))
         return
     try:
         quote = await api.request("GET", "/shop/cart", params={"chatId": chat, "locale": locale})
@@ -812,7 +812,7 @@ async def ask_phone(m, api, locale: str, state: FSMContext):
     data = await state.get_data()
     await state.set_state(None)
     if not data.get("phone"):
-        return await m.answer(t(locale, "not_linked"), reply_markup=contact_kb())
+        return await m.answer(t(locale, "not_linked"), reply_markup=contact_kb(locale))
     await m.answer(
         t(locale, "phone_step", phone="+" + str(data.get("phone", "")).lstrip("+")),
         reply_markup=kb(
@@ -827,7 +827,7 @@ async def ask_phone(m, api, locale: str, state: FSMContext):
 async def cb_phone_change(q: CallbackQuery, api, state: FSMContext):
     await q.answer()
     locale = await locale_of(api, q.from_user.id)
-    await q.message.answer(t(locale, "not_linked"), reply_markup=contact_kb())
+    await q.message.answer(t(locale, "not_linked"), reply_markup=contact_kb(locale))
 
 
 @router.message(ShopState.name)
@@ -1065,7 +1065,7 @@ async def cb_confirm(q: CallbackQuery, api, state: FSMContext):
             )
         if e.status == 409 and e.code == "not_linked":
             await state.clear()
-            return await q.message.answer(t(locale, "not_linked"), reply_markup=contact_kb())
+            return await q.message.answer(t(locale, "not_linked"), reply_markup=contact_kb(locale))
         if e.status == 425 or e.status == 429:
             return await q.message.answer(t(locale, "order_pending"))
         if e.status == 400 or e.status == 422:
@@ -1116,7 +1116,7 @@ async def cb_club(q: CallbackQuery, api):
     locale = await locale_of(api, q.from_user.id)
     customer = await customer_of(api, q.from_user.id)
     if not customer:
-        return await q.message.answer(t(locale, "not_linked"), reply_markup=contact_kb())
+        return await q.message.answer(t(locale, "not_linked"), reply_markup=contact_kb(locale))
     await send_club(q.message, api, q.from_user.id, locale)
 
 

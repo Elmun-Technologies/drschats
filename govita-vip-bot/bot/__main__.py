@@ -38,14 +38,25 @@ async def main():
             if me.url:
                 sys.exit('Webhook faol. Pollingga ko‘chirishni avval rejalashtiring.')
             # The menu button beside the message field opens the shop inside Telegram.
+            # The bot speaks Russian by default (2026-11); Uzbek is one press away.
             await bot.set_chat_menu_button(menu_button=MenuButtonWebApp(
-                text="Doʻkon", web_app=WebAppInfo(url=f"{cfg.shop_url}/uz")))
+                text="Магазин", web_app=WebAppInfo(url=f"{cfg.shop_url}/ru")))
+            await bot.set_my_commands([
+                BotCommand(command="start", description="Главное меню"),
+                BotCommand(command="katalog", description="Каталог"),
+                BotCommand(command="savat", description="Корзина"),
+                BotCommand(command="buyurtmalar", description="Мои заказы"),
+                BotCommand(command="klub", description="Клуб: баллы и код для друга"),
+                BotCommand(command="yordam", description="Помощь"),
+            ])
             await bot.set_my_commands([
                 BotCommand(command="start", description="Bosh menyu"),
                 BotCommand(command="katalog", description="Katalog"),
                 BotCommand(command="savat", description="Savat"),
+                BotCommand(command="buyurtmalar", description="Buyurtmalarim"),
                 BotCommand(command="klub", description="Klub: ballar va doʻst kodi"),
-            ])
+                BotCommand(command="yordam", description="Yordam"),
+            ], language_code="uz")
             dp = Dispatcher(api=api)
             # The shop first: it owns the catalogue/cart/checkout callbacks and
             # the FSM text steps; the club menu catches everything else.

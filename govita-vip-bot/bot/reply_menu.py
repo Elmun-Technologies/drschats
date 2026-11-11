@@ -41,7 +41,7 @@ def label(locale: str, key: str) -> str:
     return LABELS[key][1 if locale == "ru" else 0]
 
 
-def reply_kb(locale: str = "uz") -> RM:
+def reply_kb(locale: str = "ru") -> RM:
     return RM(
         keyboard=[
             [KB(text=label(locale, "catalog")), KB(text=label(locale, "cart"))],
@@ -126,7 +126,7 @@ async def send_club(m: Message, api, chat: int, locale: str):
 
     customer = await customer_of(api, chat)
     if not customer:
-        return await m.answer(shop_t(locale, "not_linked"), reply_markup=contact_kb())
+        return await m.answer(shop_t(locale, "not_linked"), reply_markup=contact_kb(locale))
     try:
         card = await api.request("GET", f"/customers/{chat}/club")
     except BackendError:

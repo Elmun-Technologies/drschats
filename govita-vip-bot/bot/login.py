@@ -78,7 +78,7 @@ async def _open(m: Message, api, chat: int, token: str, state: FSMContext | None
         if e.status == 429:
             return await m.answer("⏳ Juda koʻp urinish. Bir daqiqadan keyin qayta urinib koʻring.")
         raise
-    locale = r.get("locale") or "uz"
+    locale = r.get("locale") or "ru"
     s = r.get("state")
     if s == "confirm":
         device = t(locale, "device", device=escape(r["device"])) if r.get("device") else ""
@@ -89,7 +89,7 @@ async def _open(m: Message, api, chat: int, token: str, state: FSMContext | None
     if s == "need_contact":
         if state is not None:
             await state.update_data(login_token=token)
-        return await m.answer(t(locale, "need_contact"), reply_markup=contact_kb())
+        return await m.answer(t(locale, "need_contact"), reply_markup=contact_kb(locale))
     if s == "done":
         return await m.answer(t(locale, "already"))
     return await m.answer(t(locale, "expired"))
@@ -101,9 +101,9 @@ async def start_login(m: Message, api, state: FSMContext):
         return
     token = m.text.split(maxsplit=1)[1][len("login_"):]
     # The member record is the same one a plain /start writes.
-    await api.request("POST", f"/members/{m.from_user.id}/start", body={"locale": "uz", "source": "site-login"})
+    await api.request("POST", f"/members/{m.from_user.id}/start", body={"locale": "ru", "source": "site-login"})
     if not TOKEN.match(token):
-        return await m.answer(t("uz", "expired"))
+        return await m.answer(t("ru", "expired"))
     await _open(m, api, m.from_user.id, token, state)
 
 
@@ -131,7 +131,7 @@ async def on_answer(q: CallbackQuery, api):
     except BackendError as e:
         await q.answer()
         if e.status == 409:
-            return await q.message.answer(t(locale, "need_contact"), reply_markup=contact_kb())
+            return await q.message.answer(t(locale, "need_contact"), reply_markup=contact_kb(locale))
         if e.status == 410:
             return await _replace(q, t(locale, "expired"))
         raise
