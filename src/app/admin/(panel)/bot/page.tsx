@@ -9,11 +9,12 @@ import { clubOverview, getClubConfig } from "@/lib/bot/store";
 import { SEGMENTS, segmentCounts } from "@/lib/admin/segments";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Telegram klub" };
+export const generateMetadata = () => adminTitle("Telegram klub");
 
 /** The panel speaks the same words the bot's own menu uses (shop.py, t(locale, key)). */
-const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = {
+const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = labels({
   miniApp: "Mini App (Doʻkon)",
   catalog: "Katalog",
   search: "Qidiruv",
@@ -21,7 +22,7 @@ const MENU_LABEL: Record<(typeof MENU_BUTTONS)[number], string> = {
   orders: "Buyurtmalarim",
   promo: "Aksiyalar",
   help: "Yordam",
-};
+});
 
 export default async function AdminBotPage() {
   await requireAdmin();
@@ -31,67 +32,67 @@ export default async function AdminBotPage() {
   const miniAppReady = Boolean(process.env.TELEGRAM_CLUB_BOT_TOKEN);
 
   const tiles = [
-    { label: "Aʼzolar", value: stats.members, hint: `${stats.blocked} tasi botni bloklagan` },
-    { label: "Raqami bogʻlangan", value: stats.linked },
-    { label: "Ochiq murojaatlar", value: stats.openTickets },
-    { label: "Botdan (30 kun)", value: stats.botOrders30d },
-    { label: "Mini App (30 kun)", value: stats.miniOrders30d, hint: `${stats.siteOrders30d} ta saytdan · ${somShort(stats.botRevenue30d)}` },
-    { label: "Navbatda", value: stats.pendingJobs, hint: stats.failedJobs ? `${stats.failedJobs} tasi yuborilmadi` : undefined },
+    { label: t("Aʼzolar"), value: stats.members, hint: t("{n} tasi botni bloklagan", { n: stats.blocked }) },
+    { label: t("Raqami bogʻlangan"), value: stats.linked },
+    { label: t("Ochiq murojaatlar"), value: stats.openTickets },
+    { label: t("Botdan (30 kun)"), value: stats.botOrders30d },
+    { label: t("Mini App (30 kun)"), value: stats.miniOrders30d, hint: t("{n} ta saytdan · {sum}", { n: stats.siteOrders30d, sum: somShort(stats.botRevenue30d) }) },
+    { label: t("Navbatda"), value: stats.pendingJobs, hint: stats.failedJobs ? t("{n} tasi yuborilmadi", { n: stats.failedJobs }) : undefined },
   ];
 
   return (
     <>
-      <PageHeader title="Telegram klub" lead="Bot, Mini App doʻkon va klub aʼzolari" />
+      <PageHeader title={t("Telegram klub")} lead={t("Bot, Mini App doʻkon va klub aʼzolari")} />
       <BotTabs active="/admin/bot" />
       {!keyReady && (
         <div className="mb-4">
           <Notice>
-            Bot hali ulanmagan: <code>BOT_API_KEY</code> ({MIN_BOT_KEY_LENGTH}+ belgi) oʻrnatilmagan. Qadamlar — docs/BOT-ADMIN.md.
+            {t("Bot hali ulanmagan:")} <code>BOT_API_KEY</code> {t("({n}+ belgi) oʻrnatilmagan. Qadamlar — docs/BOT-ADMIN.md.", { n: MIN_BOT_KEY_LENGTH })}
           </Notice>
         </div>
       )}
       {!miniAppReady && (
         <div className="mb-4">
           <Notice>
-            Mini App buyurtmalari Telegram akkauntiga bogʻlanmaydi: <code>TELEGRAM_CLUB_BOT_TOKEN</code> oʻrnatilmagan.
+            {t("Mini App buyurtmalari Telegram akkauntiga bogʻlanmaydi:")} <code>TELEGRAM_CLUB_BOT_TOKEN</code> {t("oʻrnatilmagan.")}
           </Notice>
         </div>
       )}
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        {tiles.map((t) => <Metric key={t.label} label={t.label} value={t.value} hint={t.hint} />)}
+        {tiles.map((tile) => <Metric key={tile.label} label={tile.label} value={tile.value} hint={tile.hint} />)}
       </div>
 
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card title="Sozlamalar">
+        <Card title={t("Sozlamalar")}>
           <ActionForm action={saveClub} className="grid gap-4">
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
               <input type="checkbox" name="enabled" defaultChecked={club.enabled} className="h-5 w-5 accent-ink" />
-              Buyurtma holati xabarlari yoqilgan
+              {t("Buyurtma holati xabarlari yoqilgan")}
             </label>
-            <Field label="Klub nomi">
+            <Field label={t("Klub nomi")}>
               <input name="clubName" defaultValue={club.clubName} required maxLength={120} className={inputClass} />
             </Field>
-            <Field label="Doʻkon manzili (Mini App)" hint="Botdagi «Doʻkon» tugmasi shu sahifani Telegram ichida ochadi">
+            <Field label={t("Doʻkon manzili (Mini App)")} hint={t("Botdagi «Doʻkon» tugmasi shu sahifani Telegram ichida ochadi")}>
               <input name="shopUrl" type="url" defaultValue={club.shopUrl} required className={inputClass} />
             </Field>
-            <Field label="Operator telefoni">
+            <Field label={t("Operator telefoni")}>
               <input name="supportPhone" defaultValue={club.supportPhone} maxLength={40} className={inputClass} />
             </Field>
             <div className="grid gap-4 md:grid-cols-2">
-              <Field label="Salomlashuv (oʻzbekcha)" hint="Yangi mijoz /start bosganda shu matn chiqadi">
+              <Field label={t("Salomlashuv (oʻzbekcha)")} hint={t("Yangi mijoz /start bosganda shu matn chiqadi")}>
                 <textarea name="greetingUz" defaultValue={club.greeting.uz} maxLength={600} rows={3} className={textareaClass} />
               </Field>
               <Field label="Приветствие (русский)" hint="Пустое поле — встроенный текст">
                 <textarea name="greetingRu" defaultValue={club.greeting.ru} maxLength={600} rows={3} className={textareaClass} />
               </Field>
             </div>
-            <Field label="Ish vaqti">
+            <Field label={t("Ish vaqti")}>
               <input name="supportHours" defaultValue={club.supportHours} maxLength={120} className={inputClass} />
             </Field>
             <fieldset className="grid gap-2">
-              <legend className="text-[14px] font-semibold text-ink">Menyu tugmalari</legend>
+              <legend className="text-[14px] font-semibold text-ink">{t("Menyu tugmalari")}</legend>
               <p className="text-[13px] leading-5 text-muted">
-                Botning asosiy menyusida koʻrinadigan tugmalar. Hech biri qolmasa, bot standart menyuni koʻrsatadi.
+                {t("Botning asosiy menyusida koʻrinadigan tugmalar. Hech biri qolmasa, bot standart menyuni koʻrsatadi.")}
               </p>
               <div className="grid gap-1 sm:grid-cols-2">
                 {MENU_BUTTONS.map((key) => (
@@ -105,17 +106,17 @@ export default async function AdminBotPage() {
           </ActionForm>
         </Card>
 
-        <Card title="Klubga xabar">
+        <Card title={t("Klubga xabar")}>
           <p className="mb-4 text-[15px] text-ink-2">
-            Botni bloklamagan barcha {stats.members - stats.blocked} aʼzoga yuboriladi. Bot soniyasiga bitta xabar yuboradi.
+            {t("Botni bloklamagan barcha {n} aʼzoga yuboriladi. Bot soniyasiga bitta xabar yuboradi.", { n: stats.members - stats.blocked })}
           </p>
-          <ActionForm action={broadcastAction} submitLabel="Yuborish" className="grid gap-4">
-            <Field label="Matn" hint="1000 belgigacha. Tibbiy vaʼda yozmang.">
+          <ActionForm action={broadcastAction} submitLabel={t("Yuborish")} className="grid gap-4">
+            <Field label={t("Matn")} hint={t("1000 belgigacha. Tibbiy vaʼda yozmang.")}>
               <textarea name="text" required maxLength={1000} className={textareaClass} />
             </Field>
             <label className="flex min-h-11 items-center gap-3 text-[15px]">
               <input type="checkbox" name="confirm" required className="h-5 w-5 accent-ink" />
-              Hammaga yuborishni tasdiqlayman
+              {t("Hammaga yuborishni tasdiqlayman")}
             </label>
           </ActionForm>
         </Card>
@@ -123,8 +124,8 @@ export default async function AdminBotPage() {
 
       <div className="mt-6">
         <Card
-          title="Segmental kampaniyalar"
-          lead="Barcha aʼzolarga emas — tanlangan guruhga Telegramda yozing. Har bir xabar navbat, kechki va tungi soatlar (18:00–09:00) va opt-out qoidalaridan oʻtadi."
+          title={t("Segmental kampaniyalar")}
+          lead={t("Barcha aʼzolarga emas — tanlangan guruhga Telegramda yozing. Har bir xabar navbat, kechki va tungi soatlar (18:00–09:00) va opt-out qoidalaridan oʻtadi.")}
         >
           <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
             {botSegments.map((segment) => (
@@ -134,11 +135,11 @@ export default async function AdminBotPage() {
                 className="flex flex-col rounded-[16px] bg-tile p-4 transition-colors hover:bg-tile-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
               >
                 <span className="flex items-baseline justify-between gap-3">
-                  <span className="text-[15px] font-semibold text-ink">{segment.title}</span>
+                  <span className="text-[15px] font-semibold text-ink">{t(segment.title)}</span>
                   <span className="text-[22px] font-bold leading-7 tabular-nums text-ink">{formatNumber(counts[segment.id]?.reachable ?? 0)}</span>
                 </span>
-                <span className="mt-1 flex-1 text-[13px] leading-5 text-ink-2">{segment.description}</span>
-                <span className="mt-3 text-[13px] font-semibold text-ink">→ Xabar yuborish</span>
+                <span className="mt-1 flex-1 text-[13px] leading-5 text-ink-2">{t(segment.description)}</span>
+                <span className="mt-3 text-[13px] font-semibold text-ink">{t("→ Xabar yuborish")}</span>
               </Link>
             ))}
           </div>

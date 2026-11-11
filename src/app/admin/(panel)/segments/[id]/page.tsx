@@ -7,8 +7,9 @@ import { CampaignFields } from "@/components/admin/CampaignFields";
 import { Card, EmptyState, Field, Metric, PageHeader, Pill, TableWrap, inputClass, linkClass, secondaryButtonClass, smallButtonClass, som, tableClass, tdClass, thClass, timeAgo } from "@/components/admin/ui";
 import { cn, formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Segment" };
+export const generateMetadata = () => adminTitle("Segment");
 
 /** +998 90 123-45-67 for a row that stores bare digits, otherwise as given. */
 function phoneLabel(phone: string | null): string | null {
@@ -44,47 +45,47 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
   const c = counts[segment.id];
   const isCustomers = segment.kind === "customers";
   const isBot = segment.kind === "bot";
-  const valueHead = segment.id === "bot-cart" ? "Savatda" : isCustomers || isBot ? "Jami xarid" : "Savatda";
+  const valueHead = segment.id === "bot-cart" ? t("Savatda") : isCustomers || isBot ? t("Jami xarid") : t("Savatda");
 
   return (
     <>
-      <PageHeader eyebrow="Segmentlar va retarget" title={segment.title} lead={segment.description} actions={<Link href="/admin/segments" className={secondaryButtonClass}>← Barcha segmentlar</Link>} />
+      <PageHeader eyebrow={t("Segmentlar va retarget")} title={t(segment.title)} lead={t(segment.description)} actions={<Link href="/admin/segments" className={secondaryButtonClass}>{t("← Barcha segmentlar")}</Link>} />
 
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Auditoriya" value={formatNumber(c.size)} hint={isCustomers ? "mijoz" : isBot ? "bot aʼzosi" : "tashrif buyuruvchi"} />
-        <Metric label={isCustomers ? "Telegramga ulangan" : isBot ? "Telegramga ochiq" : "Telefoni maʼlum"} value={formatNumber(c.reachable)} hint="toʻgʻridan-toʻgʻri murojaat" />
-        <Metric label={segment.id === "bot-cart" ? "Savatda qolgan" : isCustomers || isBot ? "Jami xaridi" : "Savatlarda qolgan"} value={som(c.value)} />
-        <Metric label="Tavsiya" value={<span className="text-[17px] leading-6">{segment.action}</span>} />
+        <Metric label={t("Auditoriya")} value={formatNumber(c.size)} hint={isCustomers ? t("mijoz") : isBot ? t("bot aʼzosi") : t("tashrif buyuruvchi")} />
+        <Metric label={isCustomers ? t("Telegramga ulangan") : isBot ? t("Telegramga ochiq") : t("Telefoni maʼlum")} value={formatNumber(c.reachable)} hint={t("toʻgʻridan-toʻgʻri murojaat")} />
+        <Metric label={segment.id === "bot-cart" ? t("Savatda qolgan") : isCustomers || isBot ? t("Jami xaridi") : t("Savatlarda qolgan")} value={som(c.value)} />
+        <Metric label={t("Tavsiya")} value={<span className="text-[17px] leading-6">{t(segment.action)}</span>} />
       </div>
 
       <div className="mt-4 grid gap-4 xl:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
         <Card
-          title="Auditoriya"
-          lead={isBot ? "Telefon faqat bogʻlanganda maʼlum boʻladi — shuning uchun bu roʻyxat eksport qilinmaydi, xabar bot orqali ketadi." : members.length === 200 ? "Birinchi 200 tasi — toʻliq roʻyxat eksportda" : undefined}
+          title={t("Auditoriya")}
+          lead={isBot ? t("Telefon faqat bogʻlanganda maʼlum boʻladi — shuning uchun bu roʻyxat eksport qilinmaydi, xabar bot orqali ketadi.") : members.length === 200 ? t("Birinchi 200 tasi — toʻliq roʻyxat eksportda") : undefined}
           actions={
             isBot ? undefined : (
               <div className="flex flex-wrap gap-2">
-                <a href={`/admin/segments/${segment.id}/export?format=crm`} className={smallButtonClass}>CSV (jamoa uchun)</a>
-                <a href={`/admin/segments/${segment.id}/export?format=meta`} className={smallButtonClass}>Meta auditoriya</a>
-                <a href={`/admin/segments/${segment.id}/export?format=google`} className={smallButtonClass}>Google Customer Match</a>
+                <a href={`/admin/segments/${segment.id}/export?format=crm`} className={smallButtonClass}>{t("CSV (jamoa uchun)")}</a>
+                <a href={`/admin/segments/${segment.id}/export?format=meta`} className={smallButtonClass}>{t("Meta auditoriya")}</a>
+                <a href={`/admin/segments/${segment.id}/export?format=google`} className={smallButtonClass}>{t("Google Customer Match")}</a>
               </div>
             )
           }
         >
           {members.length === 0 ? (
-            <EmptyState title="Hozircha bu segment boʻsh">Shartga mos kelgan odam paydo boʻlishi bilan roʻyxat oʻzi toʻladi.</EmptyState>
+            <EmptyState title={t("Hozircha bu segment boʻsh")}>{t("Shartga mos kelgan odam paydo boʻlishi bilan roʻyxat oʻzi toʻladi.")}</EmptyState>
           ) : (
             <TableWrap>
               <table className={cn(tableClass, isBot && "min-w-[560px]")}>
-                <thead><tr><th className={thClass}>Kim</th><th className={`${thClass} text-right`}>Buyurtmalar</th><th className={`${thClass} text-right`}>{valueHead}</th><th className={thClass}>{isCustomers ? "Oxirgi xarid" : "Oxirgi faollik"}</th><th className={thClass}>Telegram</th></tr></thead>
+                <thead><tr><th className={thClass}>{t("Kim")}</th><th className={`${thClass} text-right`}>{t("Buyurtmalar")}</th><th className={`${thClass} text-right`}>{valueHead}</th><th className={thClass}>{isCustomers ? t("Oxirgi xarid") : t("Oxirgi faollik")}</th><th className={thClass}>{t("Telegram")}</th></tr></thead>
                 <tbody>
                   {members.map((m) => (
                     <tr key={m.key}>
                       <td className={tdClass}>
                         {isBot ? (
-                          <span className="font-semibold text-ink">{m.name ?? m.phone ?? `Chat ${m.telegramChatId}`}</span>
+                          <span className="font-semibold text-ink">{m.name ?? m.phone ?? t("Chat {id}", { id: m.telegramChatId ?? "" })}</span>
                         ) : (
-                          <Link href={isCustomers ? `/admin/customers/${m.key}` : `/admin/visitors/${m.key}`} className={linkClass}>{m.name ?? m.phone ?? `Mehmon ${m.key.slice(0, 6)}`}</Link>
+                          <Link href={isCustomers ? `/admin/customers/${m.key}` : `/admin/visitors/${m.key}`} className={linkClass}>{m.name ?? m.phone ?? t("Mehmon {id}", { id: m.key.slice(0, 6) })}</Link>
                         )}
                         {m.phone && m.name && <span className="block whitespace-nowrap text-[13px] text-muted">{phoneLabel(m.phone)}</span>}
                       </td>
@@ -93,9 +94,9 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
                       <td className={`${tdClass} whitespace-nowrap text-ink-2`}>{timeAgo(m.lastAt)}</td>
                       <td className={tdClass}>
                         {isBot ? (
-                          <Pill tone={m.phone ? "dark" : "outline"}>{m.phone ? "telefon" : "bot chati"}</Pill>
+                          <Pill tone={m.phone ? "dark" : "outline"}>{m.phone ? t("telefon") : t("bot chati")}</Pill>
                         ) : m.telegramChatId ? (
-                          <Pill tone="dark">ulangan</Pill>
+                          <Pill tone="dark">{t("ulangan")}</Pill>
                         ) : (
                           <span className="text-muted">—</span>
                         )}
@@ -109,11 +110,11 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
         </Card>
 
         <div className="flex min-w-0 flex-col gap-4">
-          <Card title="Xabar yuborish" lead="Telegram, SMS yoki ikkalasi. {ism} — mijoz ismi, {kod} — har biriga alohida promokod, {havola} — bosishlar va buyurtmalar shu kampaniyaga yoziladi. 18:00–09:00 yuborilmaydi; SMS faqat rozilik bergan mijozga.">
-            <ActionForm action={sendSegmentCampaign} submitLabel="Xabarni yuborish" className="flex flex-col gap-4">
+          <Card title={t("Xabar yuborish")} lead={t("Telegram, SMS yoki ikkalasi. {ism} — mijoz ismi, {kod} — har biriga alohida promokod, {havola} — bosishlar va buyurtmalar shu kampaniyaga yoziladi. 18:00–09:00 yuborilmaydi; SMS faqat rozilik bergan mijozga.")}>
+            <ActionForm action={sendSegmentCampaign} submitLabel={t("Xabarni yuborish")} className="flex flex-col gap-4">
               <input type="hidden" name="segment" value={segment.id} />
-              <Field label="Kampaniya nomi">
-                <input name="name" required maxLength={120} defaultValue={`${segment.title} — ${new Date().toLocaleDateString("ru-RU")}`} className={inputClass} />
+              <Field label={t("Kampaniya nomi")}>
+                <input name="name" required maxLength={120} defaultValue={`${t(segment.title)} — ${new Date().toLocaleDateString("ru-RU")}`} className={inputClass} />
               </Field>
               <CampaignFields
                 defaultMessage={TEMPLATES[segment.id]?.text ?? ""}
@@ -123,30 +124,30 @@ export default async function AdminSegmentPage({ params }: { params: Promise<{ i
               />
               <label className="flex min-h-11 items-center gap-3 text-[14px] text-ink">
                 <input type="checkbox" name="confirm" className="h-5 w-5 accent-ink" required />
-                Yuborishni tasdiqlayman
+                {t("Yuborishni tasdiqlayman")}
               </label>
             </ActionForm>
           </Card>
-          <Card title="Reklama kabinetida remarketing">
+          <Card title={t("Reklama kabinetida remarketing")}>
             <ol className="flex list-decimal flex-col gap-2 pl-5 text-[14px] leading-5 text-ink-2">
               {isBot ? (
                 <>
-                  <li>Bu auditoriya faqat Telegram ichida: har bir aʼzo botni oʻzi ishga tushirgan.</li>
-                  <li>Telefoni bogʻlanmaganlar ham xabar oladi — SMS yoki reklama kabinetisiz.</li>
-                  <li>Yuborilgan xabar <Link href="/admin/campaigns" className={linkClass}>Kampaniyalar</Link> boʻlimida bosilish va buyurtma bilan hisoblanadi.</li>
+                  <li>{t("Bu auditoriya faqat Telegram ichida: har bir aʼzo botni oʻzi ishga tushirgan.")}</li>
+                  <li>{t("Telefoni bogʻlanmaganlar ham xabar oladi — SMS yoki reklama kabinetisiz.")}</li>
+                  <li>{t("Yuborilgan xabar")} <Link href="/admin/campaigns" className={linkClass}>{t("Kampaniyalar")}</Link> {t("boʻlimida bosilish va buyurtma bilan hisoblanadi.")}</li>
                 </>
               ) : isCustomers ? (
                 <>
-                  <li><b>Meta auditoriya</b> faylini Meta Ads Manager → Audiences → Custom Audience → Customer list ga yuklang.</li>
-                  <li><b>Google Customer Match</b> faylini Google Ads → Audience manager → Customer list ga yuklang.</li>
-                  <li>Telefon va email SHA-256 bilan xeshlangan — xom kontakt doʻkondan chiqmaydi.</li>
+                  <li><b>{t("Meta auditoriya")}</b> {t("faylini Meta Ads Manager → Audiences → Custom Audience → Customer list ga yuklang.")}</li>
+                  <li><b>{t("Google Customer Match")}</b> {t("faylini Google Ads → Audience manager → Customer list ga yuklang.")}</li>
+                  <li>{t("Telefon va email SHA-256 bilan xeshlangan — xom kontakt doʻkondan chiqmaydi.")}</li>
                 </>
               ) : (
                 <>
-                  <li>Sayt <b>ViewContent</b>, <b>AddToCart</b>, <b>InitiateCheckout</b>, <b>Purchase</b> hodisalarini Meta Pixel va GA4 ga yuboradi.</li>
-                  <li>Meta: Custom Audience → Website → «AddToCart, lekin Purchase emas, 30 kun» — shu segmentning nusxasi.</li>
-                  <li>Google Ads: GA4 auditoriyasi «add_to_cart, purchase yoʻq» → remarketing kampaniyasi.</li>
-                  <li>Pixel IDʼlari <Link href="/admin/integrations" className={linkClass}>Integratsiyalar</Link> boʻlimida.</li>
+                  <li>{t("Sayt hodisalarni Meta Pixel va GA4 ga yuboradi:")} <b>ViewContent</b>, <b>AddToCart</b>, <b>InitiateCheckout</b>, <b>Purchase</b>.</li>
+                  <li>{t("Meta: Custom Audience → Website → «AddToCart, lekin Purchase emas, 30 kun» — shu segmentning nusxasi.")}</li>
+                  <li>{t("Google Ads: GA4 auditoriyasi «add_to_cart, purchase yoʻq» → remarketing kampaniyasi.")}</li>
+                  <li>{t("Pixel IDʼlari:")} <Link href="/admin/integrations" className={linkClass}>{t("Integratsiyalar")}</Link>.</li>
                 </>
               )}
             </ol>

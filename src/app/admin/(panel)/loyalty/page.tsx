@@ -11,8 +11,9 @@ import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, EmptyState, Field, Metric, Notice, PageHeader, Pill, SectionTitle, TableWrap, inputClass, linkClass, som, somShort, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Sodiqlik" };
+export const generateMetadata = () => adminTitle("Sodiqlik");
 
 const L = RULE_LIMITS;
 
@@ -49,44 +50,44 @@ export default async function AdminLoyaltyPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Marketing"
-        title="Sodiqlik"
-        lead="Keshbek ballari, doʻstni taklif qilish va tugʻilgan kun sovgʻasi. Hammasi sukut boʻyicha oʻchiq; yoqilganda savat, buyurtma, Telegram xabari va /loyalty sahifasi shu raqamlarni oʻqiydi."
+        eyebrow={t("Marketing")}
+        title={t("Sodiqlik")}
+        lead={t("Keshbek ballari, doʻstni taklif qilish va tugʻilgan kun sovgʻasi. Hammasi sukut boʻyicha oʻchiq; yoqilganda savat, buyurtma, Telegram xabari va /loyalty sahifasi shu raqamlarni oʻqiydi.")}
       />
 
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Hozirgi majburiyat" value={somShort(stats.outstanding)} hint={`${formatNumber(stats.holders)} mijozda ball bor`} />
-        <Metric label="Berilgan ball" value={somShort(stats.issued)} hint={`30 kunda: ${som(stats.issued30)}`} />
-        <Metric label="Ishlatilgan ball" value={somShort(stats.redeemed)} hint={`30 kunda: ${som(stats.redeemed30)} · ${formatNumber(stats.ordersWithPoints30)} ta buyurtma`} />
-        <Metric label="Muddati tugagan" value={somShort(stats.expired)} hint={stats.reversed ? `bekor qilish: ${som(stats.reversed)}` : "bekor qilishsiz"} />
+        <Metric label={t("Hozirgi majburiyat")} value={somShort(stats.outstanding)} hint={t("{n} mijozda ball bor", { n: formatNumber(stats.holders) })} />
+        <Metric label={t("Berilgan ball")} value={somShort(stats.issued)} hint={t("30 kunda: {sum}", { sum: som(stats.issued30) })} />
+        <Metric label={t("Ishlatilgan ball")} value={somShort(stats.redeemed)} hint={t("30 kunda: {sum} · {n} ta buyurtma", { sum: som(stats.redeemed30), n: formatNumber(stats.ordersWithPoints30) })} />
+        <Metric label={t("Muddati tugagan")} value={somShort(stats.expired)} hint={stats.reversed ? t("bekor qilish: {sum}", { sum: som(stats.reversed) }) : t("bekor qilishsiz")} />
       </div>
 
       {rules.enabled && !sms && (
         <div className="mb-4">
           <Notice>
-            SMS sozlanmagan — ballarni ishlatish savatda koʻrinmaydi (telefon egasini SMS kod bilan tasdiqlab boʻlmaydi). Ball yigʻilishi davom etadi.{" "}
-            <Link href="/admin/integrations" className={linkClass}>SMS ni sozlash</Link>
+            {t("SMS sozlanmagan — ballarni ishlatish savatda koʻrinmaydi (telefon egasini SMS kod bilan tasdiqlab boʻlmaydi). Ball yigʻilishi davom etadi.")}{" "}
+            <Link href="/admin/integrations" className={linkClass}>{t("SMS ni sozlash")}</Link>
           </Notice>
         </div>
       )}
 
       <div className="grid gap-4 xl:grid-cols-2">
         <Card
-          title="Keshbek ballari"
-          lead="Buyurtma «Yetkazildi» boʻlganda toʻlangan mahsulot summasidan (chegirma va ballardan keyin, yetkazishsiz) foiz ball beriladi — bir buyurtmaga bir marta. Bekor qilinsa ball qaytarib olinadi, ishlatilgan ball mijozga qaytariladi."
+          title={t("Keshbek ballari")}
+          lead={t("Buyurtma «Yetkazildi» boʻlganda toʻlangan mahsulot summasidan (chegirma va ballardan keyin, yetkazishsiz) foiz ball beriladi — bir buyurtmaga bir marta. Bekor qilinsa ball qaytarib olinadi, ishlatilgan ball mijozga qaytariladi.")}
         >
           <ActionForm action={saveCashbackRules} className="grid gap-4 sm:grid-cols-2">
-            <Toggle name="enabled" defaultChecked={rules.enabled}>Keshbek yoqilgan</Toggle>
-            <Field label="Keshbek, %" hint={`${L.earnPercent[0]}–${L.earnPercent[1]}`}>
+            <Toggle name="enabled" defaultChecked={rules.enabled}>{t("Keshbek yoqilgan")}</Toggle>
+            <Field label={t("Keshbek, %")} hint={`${L.earnPercent[0]}–${L.earnPercent[1]}`}>
               <input name="earnPercent" inputMode="numeric" required defaultValue={rules.earnPercent} className={inputClass} />
             </Field>
-            <Field label="Minimal buyurtma, soʻm" hint="0 — har qanday buyurtma">
+            <Field label={t("Minimal buyurtma, soʻm")} hint={t("0 — har qanday buyurtma")}>
               <input name="minOrder" inputMode="numeric" required defaultValue={rules.minOrder} className={inputClass} />
             </Field>
-            <Field label="Ball bilan toʻlash, % gacha" hint="Chegirmalardan keyingi mahsulot summasidan">
+            <Field label={t("Ball bilan toʻlash, % gacha")} hint={t("Chegirmalardan keyingi mahsulot summasidan")}>
               <input name="maxSharePercent" inputMode="numeric" required defaultValue={rules.maxSharePercent} className={inputClass} />
             </Field>
-            <Field label="Amal qilish muddati, kun" hint="0 — muddatsiz">
+            <Field label={t("Amal qilish muddati, kun")} hint={t("0 — muddatsiz")}>
               <input name="expiryDays" inputMode="numeric" required defaultValue={rules.expiryDays} className={inputClass} />
             </Field>
           </ActionForm>
@@ -94,81 +95,81 @@ export default async function AdminLoyaltyPage() {
 
         <Card
           id="referral"
-          title="Doʻstni taklif qilish"
-          lead="Yetkazilgan buyurtmasi bor mijoz GV + 6 belgili kod oladi (muvaffaqiyat sahifasi va Telegram). Doʻsti uni savatdagi promokod maydoniga yozsa — birinchi buyurtmasiga chegirma; buyurtma yetkazilganda taklif qilganga mukofot. Oʻz kodini ishlatib boʻlmaydi."
+          title={t("Doʻstni taklif qilish")}
+          lead={t("Yetkazilgan buyurtmasi bor mijoz GV + 6 belgili kod oladi (muvaffaqiyat sahifasi va Telegram). Doʻsti uni savatdagi promokod maydoniga yozsa — birinchi buyurtmasiga chegirma; buyurtma yetkazilganda taklif qilganga mukofot. Oʻz kodini ishlatib boʻlmaydi.")}
         >
           <ActionForm action={saveReferralRules} className="grid gap-4 sm:grid-cols-2">
-            <Toggle name="enabled" defaultChecked={rules.referral.enabled}>Taklif dasturi yoqilgan</Toggle>
-            <Field label="Doʻst chegirmasi, %" hint="Faqat birinchi buyurtmaga">
+            <Toggle name="enabled" defaultChecked={rules.referral.enabled}>{t("Taklif dasturi yoqilgan")}</Toggle>
+            <Field label={t("Doʻst chegirmasi, %")} hint={t("Faqat birinchi buyurtmaga")}>
               <input name="friendPercent" inputMode="numeric" required defaultValue={rules.referral.friendPercent} className={inputClass} />
             </Field>
-            <Field label="Mukofot turi" hint={rules.enabled ? undefined : "Keshbek oʻchiq — ball oʻrniga promokod beriladi"}>
+            <Field label={t("Mukofot turi")} hint={rules.enabled ? undefined : t("Keshbek oʻchiq — ball oʻrniga promokod beriladi")}>
               <select name="reward" defaultValue={rules.referral.reward} className={inputClass}>
-                <option value="points">Ball</option>
-                <option value="promo">Shaxsiy promokod</option>
+                <option value="points">{t("Ball")}</option>
+                <option value="promo">{t("Shaxsiy promokod")}</option>
               </select>
             </Field>
-            <Field label="Mukofot, ball">
+            <Field label={t("Mukofot, ball")}>
               <input name="rewardPoints" inputMode="numeric" required defaultValue={rules.referral.rewardPoints} className={inputClass} />
             </Field>
-            <Field label="Mukofot promokod, %" hint="60 kun amal qiladi">
+            <Field label={t("Mukofot promokod, %")} hint={t("60 kun amal qiladi")}>
               <input name="rewardPercent" inputMode="numeric" required defaultValue={rules.referral.rewardPercent} className={inputClass} />
             </Field>
-            <Field label="Oyiga mukofot, ta gacha" hint="Bir taklif qiluvchiga">
+            <Field label={t("Oyiga mukofot, ta gacha")} hint={t("Bir taklif qiluvchiga")}>
               <input name="monthlyCap" inputMode="numeric" required defaultValue={rules.referral.monthlyCap} className={inputClass} />
             </Field>
           </ActionForm>
           <p className="mt-3 text-[13px] text-muted">
-            Hozir mukofot: <b className="text-ink">{rewardKind === "points" ? `${formatNumber(rules.referral.rewardPoints)} ball` : `−${rules.referral.rewardPercent}% promokod`}</b>
+            {t("Hozir mukofot:")} <b className="text-ink">{rewardKind === "points" ? t("{n} ball", { n: formatNumber(rules.referral.rewardPoints) }) : t("−{p}% promokod", { p: rules.referral.rewardPercent })}</b>
           </p>
         </Card>
 
         <Card
-          title="Tugʻilgan kun sovgʻasi"
-          lead="Yoqilsa /profile sahifasida aniq rozilik bilan «Tugʻilgan kunimda sovgʻa olishni xohlayman» chiqadi (ism, kun/oy, telefon). Tabrik «Avtomatlashtirish» boʻlimidagi «Tugʻilgan kun» oqimi orqali, yiliga bir marta, faqat avval buyurtma bergan raqamlarga ketadi."
+          title={t("Tugʻilgan kun sovgʻasi")}
+          lead={t("Yoqilsa /profile sahifasida aniq rozilik bilan «Tugʻilgan kunimda sovgʻa olishni xohlayman» chiqadi (ism, kun/oy, telefon). Tabrik «Avtomatlashtirish» boʻlimidagi «Tugʻilgan kun» oqimi orqali, yiliga bir marta, faqat avval buyurtma bergan raqamlarga ketadi.")}
         >
           <ActionForm action={saveBirthdayRules} className="grid gap-4 sm:grid-cols-2">
-            <Toggle name="enabled" defaultChecked={rules.birthday.enabled}>Profilda rozilik formasi koʻrinadi</Toggle>
-            <Field label="Necha kun oldin" hint={`${L.daysBefore[0]}–${L.daysBefore[1]}`}>
+            <Toggle name="enabled" defaultChecked={rules.birthday.enabled}>{t("Profilda rozilik formasi koʻrinadi")}</Toggle>
+            <Field label={t("Necha kun oldin")} hint={`${L.daysBefore[0]}–${L.daysBefore[1]}`}>
               <input name="daysBefore" inputMode="numeric" required defaultValue={rules.birthday.daysBefore} className={inputClass} />
             </Field>
           </ActionForm>
           <div className="mt-4 flex flex-wrap items-center gap-2 text-[14px]">
-            <span>Rozilik bergan: <b className="tabular-nums">{formatNumber(birthdays.total)}</b></span>
+            <span>{t("Rozilik bergan:")} <b className="tabular-nums">{formatNumber(birthdays.total)}</b></span>
             <span className="text-muted">·</span>
-            <span>30 kunda tugʻilgan kun: <b className="tabular-nums">{formatNumber(birthdays.next30)}</b></span>
+            <span>{t("30 kunda tugʻilgan kun:")} <b className="tabular-nums">{formatNumber(birthdays.next30)}</b></span>
             <span className="text-muted">·</span>
             {flow ? (
               <Link href={`/admin/flows/${flow.id}`} className={linkClass}>
-                Oqim: <Pill tone={flow.active ? "dark" : "muted"}>{flow.active ? "yoqilgan" : "oʻchiq"}</Pill>
+                {t("Oqim:")} <Pill tone={flow.active ? "dark" : "muted"}>{flow.active ? t("yoqilgan") : t("oʻchiq")}</Pill>
               </Link>
             ) : (
-              <span className="text-muted">Oqim server ishga tushganda yaratiladi</span>
+              <span className="text-muted">{t("Oqim server ishga tushganda yaratiladi")}</span>
             )}
           </div>
         </Card>
       </div>
 
-      <SectionTitle>Tavsiyalar</SectionTitle>
+      <SectionTitle>{t("Tavsiyalar")}</SectionTitle>
       <div className="mb-4 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Kodi bor mijozlar" value={formatNumber(referral.codes)} />
-        <Metric label="Doʻst buyurtmalari" value={formatNumber(referral.referrals - referral.cancelled)} hint={`${formatNumber(referral.pending)} ta yetkazilishi kutilmoqda`} />
-        <Metric label="Mukofot berildi" value={formatNumber(referral.rewarded)} hint={referral.capped ? `${formatNumber(referral.capped)} ta oylik limitdan oshgan` : "limitga yetmagan"} />
-        <Metric label="Doʻstlar tushumi" value={somShort(referral.revenue)} hint={`chegirma: ${som(referral.discount)}`} />
+        <Metric label={t("Kodi bor mijozlar")} value={formatNumber(referral.codes)} />
+        <Metric label={t("Doʻst buyurtmalari")} value={formatNumber(referral.referrals - referral.cancelled)} hint={t("{n} ta yetkazilishi kutilmoqda", { n: formatNumber(referral.pending) })} />
+        <Metric label={t("Mukofot berildi")} value={formatNumber(referral.rewarded)} hint={referral.capped ? t("{n} ta oylik limitdan oshgan", { n: formatNumber(referral.capped) }) : t("limitga yetmagan")} />
+        <Metric label={t("Doʻstlar tushumi")} value={somShort(referral.revenue)} hint={t("chegirma: {sum}", { sum: som(referral.discount) })} />
       </div>
-      <Card title="Eng faol taklif qiluvchilar">
+      <Card title={t("Eng faol taklif qiluvchilar")}>
         {referral.top.length === 0 ? (
-          <EmptyState title="Hali tavsiya yoʻq">Kod birinchi yetkazilgan buyurtmadan keyin beriladi; doʻst uni savatdagi promokod maydoniga yozadi.</EmptyState>
+          <EmptyState title={t("Hali tavsiya yoʻq")}>{t("Kod birinchi yetkazilgan buyurtmadan keyin beriladi; doʻst uni savatdagi promokod maydoniga yozadi.")}</EmptyState>
         ) : (
           <TableWrap>
             <table className={tableClass}>
               <thead>
                 <tr>
-                  <th className={thClass}>Mijoz</th>
-                  <th className={thClass}>Kod</th>
-                  <th className={`${thClass} text-right`}>Doʻstlar</th>
-                  <th className={`${thClass} text-right`}>Mukofot</th>
-                  <th className={`${thClass} text-right`}>Tushum</th>
+                  <th className={thClass}>{t("Mijoz")}</th>
+                  <th className={thClass}>{t("Kod")}</th>
+                  <th className={`${thClass} text-right`}>{t("Doʻstlar")}</th>
+                  <th className={`${thClass} text-right`}>{t("Mukofot")}</th>
+                  <th className={`${thClass} text-right`}>{t("Tushum")}</th>
                 </tr>
               </thead>
               <tbody>

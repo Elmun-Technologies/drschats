@@ -3,6 +3,7 @@ import { auditLog } from "@/lib/admin/audit";
 import { segmentById, segmentMembers } from "@/lib/admin/segments";
 import { segmentCsv, type ExportFormat } from "@/lib/admin/segment-export";
 import { optedOutPhones } from "@/lib/messaging/optout";
+import { t } from "@/lib/admin/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,7 @@ export async function GET(req: Request, { params }: { params: Promise<{ id: stri
   const format = (new URL(req.url).searchParams.get("format") ?? "crm") as ExportFormat;
   if (!FORMATS.includes(format)) return new Response("Bad format", { status: 400 });
   const [members, optedOut] = await Promise.all([segmentMembers(segment, 50_000), optedOutPhones()]);
-  const csv = segmentCsv(members, format, optedOut);
+  const csv = segmentCsv(members, format, optedOut, (uz) => t(uz));
   const date = new Date().toISOString().slice(0, 10);
   return new Response(csv, {
     headers: {

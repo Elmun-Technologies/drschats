@@ -18,6 +18,7 @@ import { firstName, renderTemplate } from "@/lib/messaging/template";
 import { isQuietHours } from "@/lib/messaging/quiet-hours";
 import { campaignMessageKey } from "@/lib/messaging/keys";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 const campaignSchema = z
   .object({
@@ -34,12 +35,12 @@ const campaignSchema = z
   })
   .superRefine((d, ctx) => {
     if (d.promoKind !== "none") {
-      if (d.promoValue < 1 || (d.promoKind === "percent" && d.promoValue > 90)) ctx.addIssue({ code: "custom", message: "Chegirma: foiz 1–90, summa 1 soʻmdan.", path: ["promoValue"] });
-      if (d.promoTtl < 1 || d.promoTtl > 24 * 90) ctx.addIssue({ code: "custom", message: "Kod muddati 1 soatdan 90 kungacha.", path: ["promoTtl"] });
-      if (!d.message.includes("{kod}")) ctx.addIssue({ code: "custom", message: "Shaxsiy kod tanlangan — matnga {kod} qoʻshing.", path: ["message"] });
+      if (d.promoValue < 1 || (d.promoKind === "percent" && d.promoValue > 90)) ctx.addIssue({ code: "custom", message: t("Chegirma: foiz 1–90, summa 1 soʻmdan."), path: ["promoValue"] });
+      if (d.promoTtl < 1 || d.promoTtl > 24 * 90) ctx.addIssue({ code: "custom", message: t("Kod muddati 1 soatdan 90 kungacha."), path: ["promoTtl"] });
+      if (!d.message.includes("{kod}")) ctx.addIssue({ code: "custom", message: t("Shaxsiy kod tanlangan — matnga {kod} qoʻshing."), path: ["message"] });
     }
-    if (d.link && !d.message.includes("{havola}")) ctx.addIssue({ code: "custom", message: "Havola berilgan — matnga {havola} qoʻshing.", path: ["message"] });
-    if (d.message.includes("{havola}") && !d.link) ctx.addIssue({ code: "custom", message: "Matnda {havola} bor — havola sahifasini yozing (masalan /sale).", path: ["link"] });
+    if (d.link && !d.message.includes("{havola}")) ctx.addIssue({ code: "custom", message: t("Havola berilgan — matnga {havola} qoʻshing."), path: ["message"] });
+    if (d.message.includes("{havola}") && !d.link) ctx.addIssue({ code: "custom", message: t("Matnda {havola} bor — havola sahifasini yozing (masalan /sale)."), path: ["link"] });
   });
 
 /*
@@ -56,9 +57,9 @@ const campaignSchema = z
 export async function sendSegmentCampaign(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
   const parsed = campaignSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (!parsed.success) return { error: t(parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring.") };
   const segment = segmentById(parsed.data.segment);
-  if (!segment) return { error: "Segment topilmadi." };
+  if (!segment) return { error: t("Segment topilmadi.") };
   const d = parsed.data;
   const promo: MessagePromo | null =
     d.promoKind === "none" ? null : { kind: d.promoKind, value: d.promoValue, ttlHours: d.promoTtl, minSubtotal: d.promoMin ? Math.max(0, Math.round(Number(d.promoMin))) || null : null };
@@ -66,7 +67,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   const members = await segmentMembers(segment, 5000);
   const db = getDb();
   const ctx = await reachContext();
-  if (d.channel === "sms" && !ctx.smsAvailable) return { error: "SMS ulanmagan. Integratsiyalar → SMS (Eskiz) boʻlimida sozlang." };
+  if (d.channel === "sms" && !ctx.smsAvailable) return { error: t("SMS ulanmagan. Integratsiyalar → SMS (Eskiz) boʻlimida sozlang.") };
 
   /*
     A bot audience also contains people who pressed /start but never linked a
@@ -74,7 +75,7 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
     impossible without a number, so that channel is rejected outright.
   */
   if (segment.kind === "bot" && d.channel !== "telegram") {
-    return { error: "Bot auditoriyasiga faqat Telegram orqali yoziladi: telefon raqami hali maʼlum emas." };
+    return { error: t("Bot auditoriyasiga faqat Telegram orqali yoziladi: telefon raqami hali maʼlum emas.") };
   }
 
   const targets: { phone9: string | null; key: string; name: string | null; reach: Exclude<Reach, { channel: null }> }[] = [];
@@ -94,10 +95,10 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
     return {
       error:
         segment.kind === "bot"
-          ? "Bu auditoriyada ochiq Telegram chati yoʻq: hamma botni bloklagan yoki klub oʻchirilgan."
+          ? t("Bu auditoriyada ochiq Telegram chati yoʻq: hamma botni bloklagan yoki klub oʻchirilgan.")
           : d.channel === "telegram"
-            ? "Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi."
-            : "Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq, obunadan chiqqan yoki SMS ga rozilik bermagan).",
+            ? t("Bu segmentda Telegram botga ulangan mijoz yoʻq. Mijozlar botda telefonini ulashganda ular shu yerda paydo boʻladi.")
+            : t("Bu segmentda xabar yuborish mumkin boʻlgan mijoz yoʻq (telefon yoʻq, obunadan chiqqan yoki SMS ga rozilik bermagan)."),
     };
   }
 
@@ -106,17 +107,17 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
     .values({ name: d.name, channel: d.channel, segment: segment.id, message: d.message, audience: members.length, createdBy: admin.id, promo, link: d.link || null })
     .returning({ id: campaigns.id });
   let queued = 0;
-  for (const t of targets) {
+  for (const target of targets) {
     const id = await queueMessage(db, {
-      channel: t.reach.channel,
-      phone9: t.phone9,
-      chatId: t.reach.channel === "telegram" ? t.reach.chatId : null,
+      channel: target.reach.channel,
+      phone9: target.phone9,
+      chatId: target.reach.channel === "telegram" ? target.reach.chatId : null,
       locale: "uz",
-      text: renderTemplate(d.message, { ism: firstName(t.name, "uz") }),
+      text: renderTemplate(d.message, { ism: firstName(target.name, "uz") }),
       link: d.link || null,
       promo,
       campaignId: campaign.id,
-      dedupeKey: campaignMessageKey(campaign.id, t.key),
+      dedupeKey: campaignMessageKey(campaign.id, target.key),
     });
     if (id) queued += 1;
   }
@@ -124,9 +125,12 @@ export async function sendSegmentCampaign(_: FormState, form: FormData): Promise
   revalidatePath("/admin/campaigns");
   revalidatePath("/admin/messages");
   revalidatePath(`/admin/segments/${segment.id}`);
-  const night = isQuietHours(new Date()) ? " Hozir kechki/tungi vaqt (18:00–09:00) — xabarlar ertalab 09:00 da ketadi." : "";
+  const night = isQuietHours(new Date()) ? ` ${t("Hozir kechki/tungi vaqt (18:00–09:00) — xabarlar ertalab 09:00 da ketadi.")}` : "";
   await auditLog(admin, "campaign.send", auditTarget(form));
-  return { ok: `${queued} ta mijozga navbatga qoʻyildi${unreachable ? ` (${unreachable} tasiga kanal yoʻq yoki obunadan chiqqan)` : ""}. Ishchi har daqiqada yuboradi.${night}` };
+  const queuedText = unreachable
+    ? t("{queued} ta mijozga navbatga qoʻyildi ({unreachable} tasiga kanal yoʻq yoki obunadan chiqqan). Ishchi har daqiqada yuboradi.", { queued, unreachable })
+    : t("{queued} ta mijozga navbatga qoʻyildi. Ishchi har daqiqada yuboradi.", { queued });
+  return { ok: `${queuedText}${night}` };
 }
 
 /* ─── Promotions ─────────────────────────────────────────────────────────── */
@@ -147,11 +151,11 @@ const promotionSchema = z
   .superRefine((d, ctx) => {
     if (d.type === "percent_off") {
       const n = Number(d.percent);
-      if (!Number.isInteger(n) || n < 1 || n > 90) ctx.addIssue({ code: "custom", message: "Chegirma foizi 1 dan 90 gacha boʻlsin.", path: ["percent"] });
+      if (!Number.isInteger(n) || n < 1 || n > 90) ctx.addIssue({ code: "custom", message: t("Chegirma foizi 1 dan 90 gacha boʻlsin."), path: ["percent"] });
     }
     if (d.type === "free_shipping_over") {
       const n = Number(d.threshold);
-      if (!Number.isInteger(n) || n < 0) ctx.addIssue({ code: "custom", message: "Bepul yetkazish chegarasini soʻmda kiriting.", path: ["threshold"] });
+      if (!Number.isInteger(n) || n < 0) ctx.addIssue({ code: "custom", message: t("Bepul yetkazish chegarasini soʻmda kiriting."), path: ["threshold"] });
     }
   });
 
@@ -164,12 +168,12 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   const admin = await requireAdmin("marketing");
   const data = Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")) as Record<string, string>;
   const parsed = promotionSchema.safeParse(data);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  if (!parsed.success) return { error: t(parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring.") };
   const d = parsed.data;
   const slugs = form.getAll("productSlugs").map(String).filter((s) => SLUG_RE.test(s)).slice(0, 500);
   const startsAt = fromTashkentInput(d.startsAt);
   const endsAt = fromTashkentInput(d.endsAt);
-  if (startsAt && endsAt && endsAt <= startsAt) return { error: "Tugash sanasi boshlanishdan keyin boʻlsin." };
+  if (startsAt && endsAt && endsAt <= startsAt) return { error: t("Tugash sanasi boshlanishdan keyin boʻlsin.") };
   const row = {
     type: d.type,
     title: { uz: d["uz.title"], ru: d["ru.title"] },
@@ -187,7 +191,7 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   const id = data.id?.trim();
   if (id) {
     const updated = await db.update(promotions).set(row).where(eq(promotions.id, id)).returning({ id: promotions.id });
-    if (updated.length === 0) return { error: "Aksiya topilmadi." };
+    if (updated.length === 0) return { error: t("Aksiya topilmadi.") };
   } else {
     await db.insert(promotions).values({ id: `promo-${randomBytes(4).toString("hex")}`, ...row });
   }
@@ -195,7 +199,7 @@ export async function savePromotion(_: FormState, form: FormData): Promise<FormS
   revalidatePath("/admin/promotions");
   if (!id) redirect("/admin/promotions?saved=1");
   await auditLog(admin, "promotion.save", auditTarget(form));
-  return { ok: "Saqlandi. Saytda darhol amal qiladi." };
+  return { ok: t("Saqlandi. Saytda darhol amal qiladi.") };
 }
 
 export async function togglePromotion(form: FormData) {

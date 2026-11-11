@@ -9,6 +9,13 @@ import { isIntegrationEncryptionConfigured } from "@/lib/integrations/crypto";
 import { getRuntimeIntegrationSettings, saveIntegrationSettings, type IntegrationSettingUpdates } from "@/lib/integrations/settings";
 import { SITE_SETTINGS_TAG, savePublicSettings, verificationCode } from "@/lib/integrations/site-settings";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
+
+/** Zod messages are written in Uzbek at module level; they are translated when returned. */
+function issue(error: z.ZodError): string | undefined {
+  const message = error.issues[0]?.message;
+  return message ? t(message) : undefined;
+}
 
 function formString(form: FormData, key: string): string {
   const value = form.get(key);
@@ -24,8 +31,8 @@ const operatorSchema = z.object({
   clearBotToken: z.boolean(),
   clearChatId: z.boolean(),
 }).superRefine((value, context) => {
-  if (value.clearBotToken && value.botToken) context.addIssue({ code: "custom", message: "Tokenni kiriting yoki oʻchirishni tanlang — ikkalasini birga emas.", path: ["botToken"] });
-  if (value.clearChatId && value.chatId) context.addIssue({ code: "custom", message: "Chat IDni kiriting yoki oʻchirishni tanlang — ikkalasini birga emas.", path: ["chatId"] });
+  if (value.clearBotToken && value.botToken) context.addIssue({ code: "custom", message: t("Tokenni kiriting yoki oʻchirishni tanlang — ikkalasini birga emas."), path: ["botToken"] });
+  if (value.clearChatId && value.chatId) context.addIssue({ code: "custom", message: t("Chat IDni kiriting yoki oʻchirishni tanlang — ikkalasini birga emas."), path: ["chatId"] });
 });
 
 function validSender(value: string): boolean {
@@ -53,23 +60,23 @@ const emailSchema = z.object({
   clearFrom: z.boolean(),
   clearReplyTo: z.boolean(),
 }).superRefine((value, context) => {
-  if (value.clearApiKey && value.apiKey) context.addIssue({ code: "custom", message: "API kalitini kiriting yoki oʻchirishni tanlang — ikkalasini birga emas.", path: ["apiKey"] });
-  if (value.clearFrom && value.from) context.addIssue({ code: "custom", message: "Yuboruvchi manzilini kiriting yoki oʻchirishni tanlang — ikkalasini birga emas.", path: ["from"] });
-  if (value.clearReplyTo && value.replyTo) context.addIssue({ code: "custom", message: "Javob manzilini kiriting yoki oʻchirishni tanlang — ikkalasini birga emas.", path: ["replyTo"] });
+  if (value.clearApiKey && value.apiKey) context.addIssue({ code: "custom", message: t("API kalitini kiriting yoki oʻchirishni tanlang — ikkalasini birga emas."), path: ["apiKey"] });
+  if (value.clearFrom && value.from) context.addIssue({ code: "custom", message: t("Yuboruvchi manzilini kiriting yoki oʻchirishni tanlang — ikkalasini birga emas."), path: ["from"] });
+  if (value.clearReplyTo && value.replyTo) context.addIssue({ code: "custom", message: t("Javob manzilini kiriting yoki oʻchirishni tanlang — ikkalasini birga emas."), path: ["replyTo"] });
 });
 
 function saveErrorMessage(error: unknown): string {
   const message = error instanceof Error ? error.message : "";
   if (message.includes("INTEGRATION_ENCRYPTION_KEY")) {
-    return "Deploy sozlamalarida INTEGRATION_ENCRYPTION_KEY ni 64 ta hex belgili maxfiy qiymat bilan sozlang.";
+    return t("Deploy sozlamalarida INTEGRATION_ENCRYPTION_KEY ni 64 ta hex belgili maxfiy qiymat bilan sozlang.");
   }
-  if (message.includes("DATABASE_URL")) return "Admin bazasi sozlanmagan.";
-  return "Saqlab boʻlmadi. Database migratsiyasini tekshiring va qayta urinib koʻring.";
+  if (message.includes("DATABASE_URL")) return t("Admin bazasi sozlanmagan.");
+  return t("Saqlab boʻlmadi. Database migratsiyasini tekshiring va qayta urinib koʻring.");
 }
 
 function integrationSettingsError(): FormState | null {
   if (!isIntegrationEncryptionConfigured()) {
-    return { error: "Avval deploy sozlamalarida INTEGRATION_ENCRYPTION_KEY ni 64 ta hex belgili maxfiy qiymat bilan sozlang." };
+    return { error: t("Avval deploy sozlamalarida INTEGRATION_ENCRYPTION_KEY ni 64 ta hex belgili maxfiy qiymat bilan sozlang.") };
   }
   return null;
 }
@@ -77,7 +84,7 @@ function integrationSettingsError(): FormState | null {
 export async function saveAnalyticsIntegration(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("integrations");
   if (process.env.NODE_ENV === "production" && process.env.ANALYTICS_CSP_BUILD_ENABLED !== "on") {
-    return { error: "Bu build analitika hostlarini CSPʼda ochmagan. Deployʼda ADMIN_ANALYTICS_CSP=on bilan qayta build qiling (fly.tomlʼda allaqachon yoqilgan — keyingi deployʼdan keyin ishlaydi)." };
+    return { error: t("Bu build analitika hostlarini CSPʼda ochmagan. Deployʼda ADMIN_ANALYTICS_CSP=on bilan qayta build qiling (fly.tomlʼda allaqachon yoqilgan — keyingi deployʼdan keyin ishlaydi).") };
   }
   const parsed = analyticsSchema.safeParse({
     gtm: formString(form, "gtm"),
@@ -85,7 +92,7 @@ export async function saveAnalyticsIntegration(_: FormState, form: FormData): Pr
     metaPixel: formString(form, "metaPixel"),
     yandexMetrika: formString(form, "yandexMetrika"),
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Analitika IDʼlarini tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Analitika IDʼlarini tekshiring.") };
 
   try {
     await savePublicSettings(
@@ -103,12 +110,12 @@ export async function saveAnalyticsIntegration(_: FormState, form: FormData): Pr
       await saveIntegrationSettings({ "analytics.gtmId": null, "analytics.ga4Id": null, "analytics.metaPixelId": null, "analytics.yandexMetrikaId": null }, admin.id).catch(() => {});
     }
   } catch {
-    return { error: "Saqlab boʻlmadi. Bazada 0006 migratsiyasi qoʻllanganini tekshiring." };
+    return { error: t("Saqlab boʻlmadi. Bazada 0006 migratsiyasi qoʻllanganini tekshiring.") };
   }
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: "Saqlandi. Saytning keyingi sahifa yuklanishlari yangi teglar bilan ishlaydi." };
+  return { ok: t("Saqlandi. Saytning keyingi sahifa yuklanishlari yangi teglar bilan ishlaydi.") };
 }
 
 const verificationSchema = z.object({ google: z.string().max(400), yandex: z.string().max(400), bing: z.string().max(400) });
@@ -116,21 +123,21 @@ const verificationSchema = z.object({ google: z.string().max(400), yandex: z.str
 export async function saveVerificationCodes(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("integrations");
   const parsed = verificationSchema.safeParse({ google: formString(form, "google"), yandex: formString(form, "yandex"), bing: formString(form, "bing") });
-  if (!parsed.success) return { error: "Kodlar juda uzun." };
+  if (!parsed.success) return { error: t("Kodlar juda uzun.") };
   const codes = { google: verificationCode(parsed.data.google), yandex: verificationCode(parsed.data.yandex), bing: verificationCode(parsed.data.bing) };
   for (const key of ["google", "yandex", "bing"] as const) {
-    if (parsed.data[key] && !codes[key]) return { error: `${key === "google" ? "Google" : key === "yandex" ? "Yandex" : "Bing"} kodi notoʻgʻri. Meta tegni toʻliq yoki faqat content="…" qiymatini joylang.` };
+    if (parsed.data[key] && !codes[key]) return { error: t("{name} kodi notoʻgʻri. Meta tegni toʻliq yoki faqat content=\"…\" qiymatini joylang.", { name: key === "google" ? "Google" : key === "yandex" ? "Yandex" : "Bing" }) };
   }
   try {
     await savePublicSettings({ "verify.google": codes.google || null, "verify.yandex": codes.yandex || null, "verify.bing": codes.bing || null }, admin.id);
   } catch {
-    return { error: "Saqlab boʻlmadi. Bazada 0006 migratsiyasi qoʻllanganini tekshiring." };
+    return { error: t("Saqlab boʻlmadi. Bazada 0006 migratsiyasi qoʻllanganini tekshiring.") };
   }
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/", "layout");
   revalidatePath("/admin/integrations");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: "Saqlandi. Tasdiqlash meta-tegi saytning barcha sahifalarida chiqadi — endi Search Console / Webmasterʼda «Tasdiqlash» tugmasini bosing." };
+  return { ok: t("Saqlandi. Tasdiqlash meta-tegi saytning barcha sahifalarida chiqadi — endi Search Console / Webmasterʼda «Tasdiqlash» tugmasini bosing.") };
 }
 
 export async function saveOperatorIntegration(_: FormState, form: FormData): Promise<FormState> {
@@ -141,7 +148,7 @@ export async function saveOperatorIntegration(_: FormState, form: FormData): Pro
     clearBotToken: form.get("clearBotToken") === "on",
     clearChatId: form.get("clearChatId") === "on",
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Telegram sozlamalarini tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Telegram sozlamalarini tekshiring.") };
   const unavailable = integrationSettingsError();
   if (unavailable) return unavailable;
 
@@ -150,7 +157,7 @@ export async function saveOperatorIntegration(_: FormState, form: FormData): Pro
   else if (parsed.data.botToken) updates["operator.botToken"] = parsed.data.botToken;
   if (parsed.data.clearChatId) updates["operator.chatId"] = null;
   else if (parsed.data.chatId) updates["operator.chatId"] = parsed.data.chatId;
-  if (Object.keys(updates).length === 0) return { error: "Saqlash uchun qiymat kiriting yoki oʻchirish belgisini tanlang." };
+  if (Object.keys(updates).length === 0) return { error: t("Saqlash uchun qiymat kiriting yoki oʻchirish belgisini tanlang.") };
 
   try {
     await saveIntegrationSettings(updates, admin.id);
@@ -160,7 +167,7 @@ export async function saveOperatorIntegration(_: FormState, form: FormData): Pro
   revalidatePath("/admin/integrations");
   revalidatePath("/admin/marketing");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: "Telegram operator sozlamalari saqlandi. Yangi xabarlar shu konfiguratsiyadan foydalanadi." };
+  return { ok: t("Telegram operator sozlamalari saqlandi. Yangi xabarlar shu konfiguratsiyadan foydalanadi.") };
 }
 
 export async function saveEmailIntegration(_: FormState, form: FormData): Promise<FormState> {
@@ -173,7 +180,7 @@ export async function saveEmailIntegration(_: FormState, form: FormData): Promis
     clearFrom: form.get("clearFrom") === "on",
     clearReplyTo: form.get("clearReplyTo") === "on",
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Email sozlamalarini tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Email sozlamalarini tekshiring.") };
   const unavailable = integrationSettingsError();
   if (unavailable) return unavailable;
 
@@ -184,7 +191,7 @@ export async function saveEmailIntegration(_: FormState, form: FormData): Promis
   else if (parsed.data.from) updates["email.from"] = parsed.data.from;
   if (parsed.data.clearReplyTo) updates["email.replyTo"] = null;
   else if (parsed.data.replyTo) updates["email.replyTo"] = parsed.data.replyTo;
-  if (Object.keys(updates).length === 0) return { error: "Saqlash uchun qiymat kiriting yoki oʻchirish belgisini tanlang." };
+  if (Object.keys(updates).length === 0) return { error: t("Saqlash uchun qiymat kiriting yoki oʻchirish belgisini tanlang.") };
 
   try {
     await saveIntegrationSettings(updates, admin.id);
@@ -194,19 +201,19 @@ export async function saveEmailIntegration(_: FormState, form: FormData): Promis
   revalidatePath("/admin/integrations");
   revalidatePath("/admin/marketing");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: "Email sozlamalari saqlandi. Yangi xatlar ushbu server konfiguratsiyasidan foydalanadi." };
+  return { ok: t("Email sozlamalari saqlandi. Yangi xatlar ushbu server konfiguratsiyasidan foydalanadi.") };
 }
 
 /** Validates both the bot token and that the bot can resolve the operator chat. */
 export async function testOperatorTelegramConnection(_: FormState, _form: FormData): Promise<FormState> {
   await requireAdmin("integrations");
   const { operatorBotToken: token, operatorChatId: chatId } = await getRuntimeIntegrationSettings();
-  if (!token || !chatId) return { error: "Avval Telegram bot tokeni va operator chat IDʼni saqlang." };
+  if (!token || !chatId) return { error: t("Avval Telegram bot tokeni va operator chat IDʼni saqlang.") };
 
   try {
     const botResponse = await fetch(`https://api.telegram.org/bot${token}/getMe`, { signal: AbortSignal.timeout(5000) });
     const bot = await botResponse.json().catch(() => null) as { ok?: boolean; result?: { username?: string } } | null;
-    if (!botResponse.ok || !bot?.ok) return { error: "Telegram bot tokeni qabul qilinmadi. Tokenni tekshirib qayta saqlang." };
+    if (!botResponse.ok || !bot?.ok) return { error: t("Telegram bot tokeni qabul qilinmadi. Tokenni tekshirib qayta saqlang.") };
 
     const chatResponse = await fetch(`https://api.telegram.org/bot${token}/getChat`, {
       method: "POST",
@@ -215,11 +222,11 @@ export async function testOperatorTelegramConnection(_: FormState, _form: FormDa
       signal: AbortSignal.timeout(5000),
     });
     const chat = await chatResponse.json().catch(() => null) as { ok?: boolean } | null;
-    if (!chatResponse.ok || !chat?.ok) return { error: "Bot tokeni toʻgʻri, ammo Telegram shu chat IDʼni topmadi yoki bot chatni koʻra olmaydi." };
+    if (!chatResponse.ok || !chat?.ok) return { error: t("Bot tokeni toʻgʻri, ammo Telegram shu chat IDʼni topmadi yoki bot chatni koʻra olmaydi.") };
     const botName = bot.result?.username ? `@${bot.result.username}` : "bot";
-    return { ok: `${botName} va operator chat Telegramʼda topildi. Bu tekshiruv xabar yuborish ruxsatini sinamaydi.` };
+    return { ok: t("{bot} va operator chat Telegramʼda topildi. Bu tekshiruv xabar yuborish ruxsatini sinamaydi.", { bot: botName }) };
   } catch {
-    return { error: "Telegram API bilan bogʻlanib boʻlmadi; token oshkor qilinmadi. Keyinroq qayta urinib koʻring." };
+    return { error: t("Telegram API bilan bogʻlanib boʻlmadi; token oshkor qilinmadi. Keyinroq qayta urinib koʻring.") };
   }
 }
 
@@ -229,10 +236,10 @@ const testEmailSchema = z.string().trim().email("Test uchun toʻgʻri email manz
 export async function sendResendTestEmail(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("integrations");
   const parsedRecipient = testEmailSchema.safeParse(formString(form, "testRecipient"));
-  if (!parsedRecipient.success) return { error: parsedRecipient.error.issues[0]?.message ?? "Email manzilini tekshiring." };
+  if (!parsedRecipient.success) return { error: issue(parsedRecipient.error) ?? t("Email manzilini tekshiring.") };
 
   const email = await getEmailConfig();
-  if (!email.apiKey) return { error: "Resend API key sozlanmagan. Avval uni saqlang." };
+  if (!email.apiKey) return { error: t("Resend API key sozlanmagan. Avval uni saqlang.") };
 
   try {
     const response = await fetch("https://api.resend.com/emails", {
@@ -249,14 +256,14 @@ export async function sendResendTestEmail(_: FormState, form: FormData): Promise
       signal: AbortSignal.timeout(8000),
     });
     if (!response.ok) {
-      if (response.status === 401) return { error: "Resend API key qabul qilinmadi. Kalitni tekshiring." };
-      if (response.status === 403 || response.status === 422) return { error: "Resend soʻrovni rad etdi. From domeni tasdiqlangani va sender sozlamalarini tekshiring." };
-      return { error: `Resend test xatini qabul qilmadi (HTTP ${response.status}).` };
+      if (response.status === 401) return { error: t("Resend API key qabul qilinmadi. Kalitni tekshiring.") };
+      if (response.status === 403 || response.status === 422) return { error: t("Resend soʻrovni rad etdi. From domeni tasdiqlangani va sender sozlamalarini tekshiring.") };
+      return { error: t("Resend test xatini qabul qilmadi (HTTP {status}).", { status: response.status }) };
     }
     const result = await response.json().catch(() => null) as { id?: string } | null;
-    return { ok: `Resend test soʻrovini qabul qildi${result?.id ? ` (${result.id})` : ""}. Xat inboxga yetganini qabul qiluvchi manzilda tekshiring.` };
+    return { ok: result?.id ? t("Resend test soʻrovini qabul qildi ({id}). Xat inboxga yetganini qabul qiluvchi manzilda tekshiring.", { id: result.id }) : t("Resend test soʻrovini qabul qildi. Xat inboxga yetganini qabul qiluvchi manzilda tekshiring.") };
   } catch {
-    return { error: "Resend API bilan bogʻlanib boʻlmadi. Keyinroq qayta urinib koʻring." };
+    return { error: t("Resend API bilan bogʻlanib boʻlmadi. Keyinroq qayta urinib koʻring.") };
   }
 }
 
@@ -280,7 +287,7 @@ export async function saveSmsIntegration(_: FormState, form: FormData): Promise<
     clearPassword: form.get("clearPassword") === "on",
     clearSender: form.get("clearSender") === "on",
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "SMS sozlamalarini tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("SMS sozlamalarini tekshiring.") };
 
   const updates: IntegrationSettingUpdates = {};
   if (parsed.data.clearEmail) updates["sms.email"] = null;
@@ -302,13 +309,13 @@ export async function saveSmsIntegration(_: FormState, form: FormData): Promise<
   try {
     await savePublicSettings({ "sms.transliterate": form.get("transliterate") === "on" ? "on" : null }, admin.id);
   } catch {
-    return { error: "Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring." };
+    return { error: t("Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring.") };
   }
   revalidatePath("/admin/integrations");
   // Pages promise the automatic first-order discount only where SMS can prove the phone (lib/promo/offer.ts).
   revalidateTag(SITE_SETTINGS_TAG);
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: "SMS sozlamalari saqlandi. Ulanishni «Test SMS yuborish» bilan tekshiring." };
+  return { ok: t("SMS sozlamalari saqlandi. Ulanishni «Test SMS yuborish» bilan tekshiring.") };
 }
 
 const testPhone = z
@@ -321,16 +328,19 @@ const testPhone = z
 export async function sendTestSms(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("integrations");
   const parsed = testPhone.safeParse(formString(form, "testPhone"));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Raqamni tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Raqamni tekshiring.") };
   const { resolveSmsProvider } = await import("@/lib/sms");
   const { provider } = await resolveSmsProvider();
-  if (!provider) return { error: "SMS sozlanmagan. Avval Eskiz email va parolini saqlang." };
+  if (!provider) return { error: t("SMS sozlanmagan. Avval Eskiz email va parolini saqlang.") };
   // Until Eskiz approves the account's templates it accepts only its own test text.
   const text = formString(form, "testText") || "Bu Eskiz dan test";
   const result = await provider.send(`+998${parsed.data.slice(-9)}`, text.slice(0, 300));
-  if (result.ok) return { ok: `${provider.name === "fake" ? "Sinov rejimi (SMS_FAKE): " : ""}SMS qabul qilindi${result.id ? ` (id ${result.id})` : ""}. Telefoningizni tekshiring.` };
-  if (result.error === "eskiz_login_rejected") return { error: "Eskiz email yoki parolni qabul qilmadi." };
-  return { error: `SMS yuborilmadi: ${result.error}` };
+  if (result.ok) {
+    const accepted = result.id ? t("SMS qabul qilindi (id {id}). Telefoningizni tekshiring.", { id: result.id }) : t("SMS qabul qilindi. Telefoningizni tekshiring.");
+    return { ok: provider.name === "fake" ? t("Sinov rejimi (SMS_FAKE): {text}", { text: accepted }) : accepted };
+  }
+  if (result.error === "eskiz_login_rejected") return { error: t("Eskiz email yoki parolni qabul qilmadi.") };
+  return { error: t("SMS yuborilmadi: {error}", { error: String(result.error) }) };
 }
 
 /* ---------- online payments (lib/payments) ---------- */
@@ -361,7 +371,7 @@ export async function savePaymeIntegration(_: FormState, form: FormData): Promis
     clearKey: form.get("clearKey") === "on",
     clearTestKey: form.get("clearTestKey") === "on",
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Payme sozlamalarini tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Payme sozlamalarini tekshiring.") };
   const d = parsed.data;
 
   const updates: IntegrationSettingUpdates = { "payme.merchantId": d.merchantId || null };
@@ -373,7 +383,7 @@ export async function savePaymeIntegration(_: FormState, form: FormData): Promis
   const current = (await getRuntimeIntegrationSettings()).payme;
   const key = d.testMode ? (d.clearTestKey ? "" : d.testKey || current.testKey) : (d.clearKey ? "" : d.key || current.key);
   if (d.enabled && (!d.merchantId || !key)) {
-    return { error: d.testMode ? "Test rejimida yoqish uchun Merchant ID va test kaliti kerak." : "Yoqish uchun Merchant ID va kassa kaliti kerak." };
+    return { error: d.testMode ? t("Test rejimida yoqish uchun Merchant ID va test kaliti kerak.") : t("Yoqish uchun Merchant ID va kassa kaliti kerak.") };
   }
 
   const unavailable = integrationSettingsError();
@@ -390,7 +400,7 @@ export async function savePaymeIntegration(_: FormState, form: FormData): Promis
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: d.enabled ? `Saqlandi. Payme ${d.testMode ? "test rejimida " : ""}yoqildi — checkoutʼda koʻrinadi.` : "Saqlandi. Payme oʻchiq — checkoutʼda koʻrinmaydi." };
+  return { ok: d.enabled ? (d.testMode ? t("Saqlandi. Payme test rejimida yoqildi — checkoutʼda koʻrinadi.") : t("Saqlandi. Payme yoqildi — checkoutʼda koʻrinadi.")) : t("Saqlandi. Payme oʻchiq — checkoutʼda koʻrinmaydi.") };
 }
 
 const clickSchema = z.object({
@@ -411,7 +421,7 @@ export async function saveClickIntegration(_: FormState, form: FormData): Promis
     enabled: form.get("enabled") === "on",
     clearSecretKey: form.get("clearSecretKey") === "on",
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Click sozlamalarini tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Click sozlamalarini tekshiring.") };
   const d = parsed.data;
 
   const updates: IntegrationSettingUpdates = { "click.serviceId": d.serviceId || null, "click.merchantId": d.merchantId || null };
@@ -419,7 +429,7 @@ export async function saveClickIntegration(_: FormState, form: FormData): Promis
   else if (d.secretKey) updates["click.secretKey"] = d.secretKey;
   const current = (await getRuntimeIntegrationSettings()).click;
   const secretKey = d.clearSecretKey ? "" : d.secretKey || current.secretKey;
-  if (d.enabled && (!d.serviceId || !d.merchantId || !secretKey)) return { error: "Yoqish uchun Service ID, Merchant ID va Secret key kerak." };
+  if (d.enabled && (!d.serviceId || !d.merchantId || !secretKey)) return { error: t("Yoqish uchun Service ID, Merchant ID va Secret key kerak.") };
 
   const unavailable = integrationSettingsError();
   if (unavailable) return unavailable;
@@ -432,7 +442,7 @@ export async function saveClickIntegration(_: FormState, form: FormData): Promis
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: d.enabled ? "Saqlandi. Click yoqildi — checkoutʼda koʻrinadi." : "Saqlandi. Click oʻchiq — checkoutʼda koʻrinmaydi." };
+  return { ok: d.enabled ? t("Saqlandi. Click yoqildi — checkoutʼda koʻrinadi.") : t("Saqlandi. Click oʻchiq — checkoutʼda koʻrinmaydi.") };
 }
 
 const fiscalSchema = z.object({
@@ -448,7 +458,7 @@ export async function saveFiscalSettings(_: FormState, form: FormData): Promise<
     shippingPackage: formString(form, "shippingPackage"),
     vatPercent: formString(form, "vatPercent") || "12",
   });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Fiskal sozlamalarni tekshiring." };
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Fiskal sozlamalarni tekshiring.") };
   try {
     await savePublicSettings(
       {
@@ -459,10 +469,10 @@ export async function saveFiscalSettings(_: FormState, form: FormData): Promise<
       admin.id,
     );
   } catch {
-    return { error: "Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring." };
+    return { error: t("Saqlab boʻlmadi. Bazada migratsiyalar qoʻllanganini tekshiring.") };
   }
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: "Saqlandi. Keyingi Payme toʻlovlari chekida shu kodlar ishlatiladi." };
+  return { ok: t("Saqlandi. Keyingi Payme toʻlovlari chekida shu kodlar ishlatiladi.") };
 }

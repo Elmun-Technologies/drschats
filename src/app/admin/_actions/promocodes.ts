@@ -15,17 +15,19 @@ import { normalizePromoCode, phone9Of } from "@/lib/promo/rules";
 import { issuePromoCode, issuePromoCodeBatch } from "@/lib/promo/issue";
 import { saveFirstOrderSetting } from "@/lib/promo/settings";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
+/* Schemas are built per request, after requireAdmin has set the language, so their messages answer in it. */
 const optionalInt = (label: string, min: number) =>
   z
     .string()
     .trim()
     .default("")
     .transform((v) => v.replace(/\s/g, ""))
-    .refine((v) => v === "" || (/^\d+$/.test(v) && Number(v) >= min), `${label}: ${min} yoki undan katta butun son kiriting.`)
+    .refine((v) => v === "" || (/^\d+$/.test(v) && Number(v) >= min), t("{label}: {min} yoki undan katta butun son kiriting.", { label: t(label), min }))
     .transform((v) => (v === "" ? null : Number(v)));
 
-const codeSchema = z
+const codeSchema = () => z
   .object({
     code: z.string().trim().default(""),
     kind: z.enum(["percent", "fixed"]),
@@ -39,12 +41,12 @@ const codeSchema = z
     note: z.string().trim().max(300).default(""),
   })
   .superRefine((d, ctx) => {
-    if (!Number.isInteger(d.value) || d.value <= 0) ctx.addIssue({ code: "custom", message: "Chegirma qiymatini kiriting.", path: ["value"] });
-    else if (d.kind === "percent" && d.value > 90) ctx.addIssue({ code: "custom", message: "Foiz 1 dan 90 gacha boʻlsin.", path: ["value"] });
+    if (!Number.isInteger(d.value) || d.value <= 0) ctx.addIssue({ code: "custom", message: t("Chegirma qiymatini kiriting."), path: ["value"] });
+    else if (d.kind === "percent" && d.value > 90) ctx.addIssue({ code: "custom", message: t("Foiz 1 dan 90 gacha boʻlsin."), path: ["value"] });
     if (!Number.isInteger(d.perPhoneLimit) || d.perPhoneLimit < 1 || d.perPhoneLimit > 100) {
-      ctx.addIssue({ code: "custom", message: "Bir telefon uchun limit 1–100.", path: ["perPhoneLimit"] });
+      ctx.addIssue({ code: "custom", message: t("Bir telefon uchun limit 1–100."), path: ["perPhoneLimit"] });
     }
-    if (d.phone && !phone9Of(d.phone)) ctx.addIssue({ code: "custom", message: "Telefon raqami kamida 9 raqamdan iborat boʻlsin.", path: ["phone"] });
+    if (d.phone && !phone9Of(d.phone)) ctx.addIssue({ code: "custom", message: t("Telefon raqami kamida 9 raqamdan iborat boʻlsin."), path: ["phone"] });
   });
 
 function refresh(code?: string) {
@@ -56,12 +58,12 @@ function refresh(code?: string) {
 export async function savePromoCode(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
   const data = Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")) as Record<string, string>;
-  const parsed = codeSchema.safeParse(data);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = codeSchema().safeParse(data);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const d = parsed.data;
   const startsAt = fromTashkentInput(d.startsAt);
   const endsAt = fromTashkentInput(d.endsAt);
-  if (startsAt && endsAt && endsAt <= startsAt) return { error: "Tugash sanasi boshlanishdan keyin boʻlsin." };
+  if (startsAt && endsAt && endsAt <= startsAt) return { error: t("Tugash sanasi boshlanishdan keyin boʻlsin.") };
   const slugs = form.getAll("productSlugs").map(String).filter((s) => SLUG_RE.test(s)).slice(0, 500);
   const row = {
     kind: d.kind,
@@ -80,18 +82,18 @@ export async function savePromoCode(_: FormState, form: FormData): Promise<FormS
   const editing = data.original?.trim();
   if (editing) {
     const updated = await db.update(promoCodes).set(row).where(eq(promoCodes.code, editing)).returning({ code: promoCodes.code });
-    if (updated.length === 0) return { error: "Promokod topilmadi." };
+    if (updated.length === 0) return { error: t("Promokod topilmadi.") };
     refresh(editing);
     await auditLog(admin, "promocode.save", auditTarget(form));
-    return { ok: "Saqlandi. Savatda darhol amal qiladi." };
+    return { ok: t("Saqlandi. Savatda darhol amal qiladi.") };
   }
 
   let code: string;
   if (d.code) {
     const normalized = normalizePromoCode(d.code);
-    if (!normalized) return { error: "Kod 3–32 belgi: lotin harflari, raqamlar va chiziqcha (-)." };
+    if (!normalized) return { error: t("Kod 3–32 belgi: lotin harflari, raqamlar va chiziqcha (-).") };
     const inserted = await db.insert(promoCodes).values({ code: normalized, ...row, source: "manual" }).onConflictDoNothing().returning({ code: promoCodes.code });
-    if (inserted.length === 0) return { error: `${normalized} kodi allaqachon bor.` };
+    if (inserted.length === 0) return { error: t("{code} kodi allaqachon bor.", { code: normalized }) };
     code = normalized;
   } else {
     code = await issuePromoCode({
@@ -130,22 +132,22 @@ export async function deletePromoCode(form: FormData) {
   redirect("/admin/promocodes?deleted=1");
 }
 
-const batchSchema = z
+const batchSchema = () => z
   .object({
-    count: z.coerce.number().int().min(1, "Kamida 1 ta kod.").max(2000, "Bir martada 2000 tagacha."),
+    count: z.coerce.number().int().min(1, t("Kamida 1 ta kod.")).max(2000, t("Bir martada 2000 tagacha.")),
     kind: z.enum(["percent", "fixed"]),
-    value: z.coerce.number().int().positive("Chegirma qiymatini kiriting."),
+    value: z.coerce.number().int().positive(t("Chegirma qiymatini kiriting.")),
     ttlDays: z.coerce.number().int().min(0).max(365).default(0),
     minSubtotal: optionalInt("Minimal summa", 0),
     label: z.string().trim().max(60).default(""),
   })
-  .refine((d) => d.kind !== "percent" || d.value <= 90, { message: "Foiz 1 dan 90 gacha boʻlsin.", path: ["value"] });
+  .refine((d) => d.kind !== "percent" || d.value <= 90, { message: t("Foiz 1 dan 90 gacha boʻlsin."), path: ["value"] });
 
 /** N personal single-use codes under one campaign id, then the CSV link. */
 export async function generatePromoBatch(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
-  const parsed = batchSchema.safeParse(Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = batchSchema().safeParse(Object.fromEntries([...form.entries()].filter(([, v]) => typeof v === "string")));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const d = parsed.data;
   const slug = d.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40);
   const campaignId = `${slug || "batch"}-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${randomBytes(2).toString("hex")}`;
@@ -163,18 +165,19 @@ export async function generatePromoBatch(_: FormState, form: FormData): Promise<
   redirect(`/admin/promocodes?batch=${encodeURIComponent(campaignId)}&made=${codes.length}`);
 }
 
-const firstOrderSchema = z.object({
-  percent: z.coerce.number().int().min(1, "Foiz 1 dan 50 gacha.").max(50, "Foiz 1 dan 50 gacha."),
-});
+const firstOrderSchema = () =>
+  z.object({
+    percent: z.coerce.number().int().min(1, t("Foiz 1 dan 50 gacha.")).max(50, t("Foiz 1 dan 50 gacha.")),
+  });
 
 export async function saveFirstOrderDiscount(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
-  const parsed = firstOrderSchema.safeParse({ percent: form.get("percent") });
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Foizni tekshiring." };
+  const parsed = firstOrderSchema().safeParse({ percent: form.get("percent") });
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Foizni tekshiring.") };
   await saveFirstOrderSetting({ enabled: form.get("enabled") === "on", percent: parsed.data.percent }, admin.id);
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/", "layout");
   revalidatePath("/admin/promocodes");
   await auditLog(admin, "promocode.save", auditTarget(form));
-  return { ok: "Saqlandi. Saytda va savatda darhol amal qiladi." };
+  return { ok: t("Saqlandi. Saytda va savatda darhol amal qiladi.") };
 }

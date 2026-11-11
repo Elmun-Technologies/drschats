@@ -16,6 +16,7 @@ import { fromTashkentInput } from "@/lib/admin/product-form";
 import { requireAdmin } from "@/lib/admin/session";
 import { EXPERIMENT_RE } from "@/lib/merch/ab";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 /*
   Admin → Vitrina. Every save drops the storefront's merchandising cache and
@@ -34,23 +35,24 @@ const strings = (form: FormData) =>
 
 /* ─── Banners ───────────────────────────────────────────────────────────── */
 
-const imagePath = z
+/* Schemas are built per request, after requireAdmin has set the language, so their messages answer in it. */
+const imagePath = () => z
   .string()
   .trim()
   .max(500)
-  .refine((v) => v === "" || /^\/[^/\\]/.test(v) || /^https:\/\//i.test(v), "Rasm manzili / yoki https:// bilan boshlansin.");
+  .refine((v) => v === "" || /^\/[^/\\]/.test(v) || /^https:\/\//i.test(v), t("Rasm manzili / yoki https:// bilan boshlansin."));
 
-const bannerSchema = z.object({
+const bannerSchema = () => z.object({
   placement: z.enum(["hero", "strip", "category"]),
-  "uz.title": z.string().trim().min(2, "Sarlavha (uz) majburiy").max(90, "Sarlavha 90 belgidan oshmasin"),
-  "ru.title": z.string().trim().min(2, "Sarlavha (ru) majburiy").max(90, "Sarlavha 90 belgidan oshmasin"),
+  "uz.title": z.string().trim().min(2, t("Sarlavha (uz) majburiy")).max(90, t("Sarlavha 90 belgidan oshmasin")),
+  "ru.title": z.string().trim().min(2, t("Sarlavha (ru) majburiy")).max(90, t("Sarlavha 90 belgidan oshmasin")),
   "uz.subtitle": z.string().trim().max(160).default(""),
   "ru.subtitle": z.string().trim().max(160).default(""),
   "uz.cta": z.string().trim().max(30).default(""),
   "ru.cta": z.string().trim().max(30).default(""),
-  href: z.string().trim().min(1, "Havolani kiriting."),
-  image: imagePath.default(""),
-  imageMobile: imagePath.default(""),
+  href: z.string().trim().min(1, t("Havolani kiriting.")),
+  image: imagePath().default(""),
+  imageMobile: imagePath().default(""),
   theme: z.enum(["light", "dark"]).default("light"),
   startsAt: z.string().optional(),
   endsAt: z.string().optional(),
@@ -61,7 +63,7 @@ const bannerSchema = z.object({
     .trim()
     .toLowerCase()
     .max(40)
-    .refine((v) => v === "" || EXPERIMENT_RE.test(v), "Tajriba kaliti: lotin harflari, raqam va «-» (masalan: hero-oktabr).")
+    .refine((v) => v === "" || EXPERIMENT_RE.test(v), t("Tajriba kaliti: lotin harflari, raqam va «-» (masalan: hero-oktabr)."))
     .default(""),
   variant: z.enum(["", "A", "B"]).default(""),
 });
@@ -69,18 +71,18 @@ const bannerSchema = z.object({
 export async function saveBanner(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("marketing");
   const data = strings(form);
-  const parsed = bannerSchema.safeParse(data);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = bannerSchema().safeParse(data);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const d = parsed.data;
   const href = safeHref(d.href);
-  if (!href) return { error: "Havola saytdagi yoʻl (/product/…) yoki https:// manzil boʻlsin." };
-  if (Boolean(d["uz.cta"]) !== Boolean(d["ru.cta"])) return { error: "Tugma matnini ikkala tilda yozing yoki ikkalasini boʻsh qoldiring." };
+  if (!href) return { error: t("Havola saytdagi yoʻl (/product/…) yoki https:// manzil boʻlsin.") };
+  if (Boolean(d["uz.cta"]) !== Boolean(d["ru.cta"])) return { error: t("Tugma matnini ikkala tilda yozing yoki ikkalasini boʻsh qoldiring.") };
   const startsAt = fromTashkentInput(d.startsAt);
   const endsAt = fromTashkentInput(d.endsAt);
-  if (d.startsAt && !startsAt) return { error: "Boshlanish sanasini toʻliq kiriting." };
-  if (d.endsAt && !endsAt) return { error: "Tugash sanasini toʻliq kiriting." };
-  if (startsAt && endsAt && endsAt <= startsAt) return { error: "Tugash sanasi boshlanishdan keyin boʻlsin." };
-  if (Boolean(d.experiment) !== Boolean(d.variant)) return { error: "A/B test uchun tajriba kalitini ham, variantni ham tanlang (yoki ikkalasini boʻsh qoldiring)." };
+  if (d.startsAt && !startsAt) return { error: t("Boshlanish sanasini toʻliq kiriting.") };
+  if (d.endsAt && !endsAt) return { error: t("Tugash sanasini toʻliq kiriting.") };
+  if (startsAt && endsAt && endsAt <= startsAt) return { error: t("Tugash sanasi boshlanishdan keyin boʻlsin.") };
+  if (Boolean(d.experiment) !== Boolean(d.variant)) return { error: t("A/B test uchun tajriba kalitini ham, variantni ham tanlang (yoki ikkalasini boʻsh qoldiring).") };
   const experiment = d.experiment || null;
   const variant = d.variant || null;
   if (experiment && variant) {
@@ -88,12 +90,12 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
       .select({ id: banners.id, variant: banners.variant, placement: banners.placement })
       .from(banners)
       .where(and(eq(banners.experiment, experiment), ne(banners.id, Number(data.id) || 0)));
-    if (others.some((o) => o.variant === variant)) return { error: `«${experiment}» tajribasida ${variant} varianti allaqachon bor.` };
-    if (others.some((o) => o.placement !== d.placement)) return { error: "Tajribaning ikkala varianti bir joyda (bitta joylashuvda) boʻlsin." };
+    if (others.some((o) => o.variant === variant)) return { error: t("«{experiment}» tajribasida {variant} varianti allaqachon bor.", { experiment, variant }) };
+    if (others.some((o) => o.placement !== d.placement)) return { error: t("Tajribaning ikkala varianti bir joyda (bitta joylashuvda) boʻlsin.") };
   }
   const showCountdown = form.get("showCountdown") === "on";
   // A countdown is only ever a real end date.
-  if (showCountdown && !endsAt) return { error: "Taymer faqat tugash sanasi bor bannerda koʻrsatiladi." };
+  if (showCountdown && !endsAt) return { error: t("Taymer faqat tugash sanasi bor bannerda koʻrsatiladi.") };
 
   const row = {
     placement: d.placement,
@@ -117,7 +119,7 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
   const id = Number(data.id);
   if (id) {
     const updated = await db.update(banners).set(row).where(eq(banners.id, id)).returning({ id: banners.id });
-    if (updated.length === 0) return { error: "Banner topilmadi." };
+    if (updated.length === 0) return { error: t("Banner topilmadi.") };
   } else {
     await db.insert(banners).values(row);
     // «+ B variant»: the banner it was started from becomes the other arm, if it is not in a test yet.
@@ -131,7 +133,7 @@ export async function saveBanner(_: FormState, form: FormData): Promise<FormStat
   }
   refreshStorefront();
   if (!id) redirect("/admin/storefront?saved=1");
-  return { ok: "Saqlandi. Saytda darhol koʻrinadi." };
+  return { ok: t("Saqlandi. Saytda darhol koʻrinadi.") };
 }
 
 export async function toggleBanner(form: FormData) {
@@ -169,15 +171,15 @@ export async function saveAnnouncements(_: FormState, form: FormData): Promise<F
     const uz = (r.uz ?? "").trim();
     const ru = (r.ru ?? "").trim();
     if (!uz && !ru) continue;
-    if (!uz || !ru) return { error: `${items.length + 1}-qator: matnni ikkala tilda yozing.` };
-    if (uz.length > 140 || ru.length > 140) return { error: `${items.length + 1}-qator: matn 140 belgidan oshmasin.` };
+    if (!uz || !ru) return { error: t("{n}-qator: matnni ikkala tilda yozing.", { n: items.length + 1 }) };
+    if (uz.length > 140 || ru.length > 140) return { error: t("{n}-qator: matn 140 belgidan oshmasin.", { n: items.length + 1 }) };
     const rawHref = (r.href ?? "").trim();
     const href = rawHref ? safeHref(rawHref) : null;
-    if (rawHref && !href) return { error: `${items.length + 1}-qator: havola /… yoki https:// bilan boshlansin.` };
+    if (rawHref && !href) return { error: t("{n}-qator: havola /… yoki https:// bilan boshlansin.", { n: items.length + 1 }) };
     const ends = fromTashkentInput(r.endsAt);
-    if (r.endsAt && !ends) return { error: `${items.length + 1}-qator: tugash vaqtini toʻliq kiriting.` };
+    if (r.endsAt && !ends) return { error: t("{n}-qator: tugash vaqtini toʻliq kiriting.", { n: items.length + 1 }) };
     const showCountdown = form.get(`a.${n}.showCountdown`) === "on";
-    if (showCountdown && !ends) return { error: `${items.length + 1}-qator: taymer faqat tugash vaqti bilan.` };
+    if (showCountdown && !ends) return { error: t("{n}-qator: taymer faqat tugash vaqti bilan.", { n: items.length + 1 }) };
     items.push({
       id: /^[a-z0-9]{4,40}$/.test(r.id ?? "") ? r.id : randomBytes(4).toString("hex"),
       text: { uz, ru },
@@ -187,7 +189,7 @@ export async function saveAnnouncements(_: FormState, form: FormData): Promise<F
       active: form.get(`a.${n}.active`) === "on",
     });
   }
-  if (items.length > MAX_ANNOUNCEMENTS) return { error: `Koʻpi bilan ${MAX_ANNOUNCEMENTS} ta eʼlon.` };
+  if (items.length > MAX_ANNOUNCEMENTS) return { error: t("Koʻpi bilan {n} ta eʼlon.", { n: MAX_ANNOUNCEMENTS }) };
 
   const db = getDb();
   if (items.length === 0) {
@@ -200,13 +202,13 @@ export async function saveAnnouncements(_: FormState, form: FormData): Promise<F
       .onConflictDoUpdate({ target: siteSettings.key, set: { value, updatedBy: admin.id, updatedAt: new Date() } });
   }
   refreshStorefront();
-  return { ok: items.length ? "Saqlandi. Eʼlon qatori saytda yangilandi." : "Eʼlonlar olib tashlandi — saytda odatiy qator koʻrinadi." };
+  return { ok: items.length ? t("Saqlandi. Eʼlon qatori saytda yangilandi.") : t("Eʼlonlar olib tashlandi — saytda odatiy qator koʻrinadi.") };
 }
 
 /* ─── Deal of the day ───────────────────────────────────────────────────── */
 
-const dealSchema = z.object({
-  productSlug: z.string().trim().min(1, "Mahsulotni tanlang."),
+const dealSchema = () => z.object({
+  productSlug: z.string().trim().min(1, t("Mahsulotni tanlang.")),
   mode: z.enum(["percent", "price"]),
   percent: z.string().trim().default(""),
   price: z.string().trim().default(""),
@@ -217,19 +219,19 @@ const dealSchema = z.object({
 export async function saveDeal(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
   const data = strings(form);
-  const parsed = dealSchema.safeParse(data);
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = dealSchema().safeParse(data);
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const d = parsed.data;
   const percent = d.mode === "percent" ? Number(d.percent) : null;
   const price = d.mode === "price" ? Number(d.price.replace(/\s/g, "")) : null;
-  if (percent !== null && (!Number.isInteger(percent) || percent < 1 || percent > 90)) return { error: "Chegirma foizi 1 dan 90 gacha boʻlsin." };
-  if (price !== null && (!Number.isInteger(price) || price <= 0)) return { error: "Narxni soʻmda butun son bilan kiriting." };
+  if (percent !== null && (!Number.isInteger(percent) || percent < 1 || percent > 90)) return { error: t("Chegirma foizi 1 dan 90 gacha boʻlsin.") };
+  if (price !== null && (!Number.isInteger(price) || price <= 0)) return { error: t("Narxni soʻmda butun son bilan kiriting.") };
 
   const startsAt = fromTashkentInput(d.startsAt) ?? new Date();
   const endsAt = fromTashkentInput(d.endsAt);
-  if (!endsAt) return { error: "Tugash vaqtini kiriting." };
-  if (endsAt <= startsAt) return { error: "Tugash vaqti boshlanishdan keyin boʻlsin." };
-  if (endsAt.getTime() <= Date.now()) return { error: "Tugash vaqti oʻtib ketgan." };
+  if (!endsAt) return { error: t("Tugash vaqtini kiriting.") };
+  if (endsAt <= startsAt) return { error: t("Tugash vaqti boshlanishdan keyin boʻlsin.") };
+  if (endsAt.getTime() <= Date.now()) return { error: t("Tugash vaqti oʻtib ketgan.") };
 
   const db = getDb();
   const [product] = await db
@@ -237,12 +239,12 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
     .from(products)
     .where(eq(products.slug, d.productSlug))
     .limit(1);
-  if (!product) return { error: "Mahsulot topilmadi." };
-  if (!product.inStock || product.kind === "unlisted") return { error: "Bu mahsulot hozir sotuvda emas." };
+  if (!product) return { error: t("Mahsulot topilmadi.") };
+  if (!product.inStock || product.kind === "unlisted") return { error: t("Bu mahsulot hozir sotuvda emas.") };
   // The price it sells at today (an expired product sale already reverted).
   const base = livePrice({ price: product.price, oldPrice: product.oldPrice ?? undefined, saleEndsAt: product.saleEndsAt?.toISOString() }).price;
   if (discounted(base, { percent, price }) == null) {
-    return { error: `Taklif narxi hozirgi narxdan (${base.toLocaleString("ru-RU")} soʻm) past boʻlishi kerak.` };
+    return { error: t("Taklif narxi hozirgi narxdan ({price}) past boʻlishi kerak.", { price: `${base.toLocaleString("ru-RU")} ${t("soʻm")}` }) };
   }
 
   const id = Number(data.id);
@@ -250,7 +252,7 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
   try {
     if (id) {
       const updated = await db.update(deals).set(row).where(eq(deals.id, id)).returning({ id: deals.id });
-      if (updated.length === 0) return { error: "Taklif topilmadi." };
+      if (updated.length === 0) return { error: t("Taklif topilmadi.") };
     } else {
       await db.insert(deals).values({ ...row, createdBy: admin.id });
     }
@@ -259,13 +261,13 @@ export async function saveDeal(_: FormState, form: FormData): Promise<FormState>
     const e = err as { code?: string; message?: string; cause?: { code?: string; message?: string; constraint_name?: string } };
     const text = [e.code, e.message, e.cause?.code, e.cause?.message, e.cause?.constraint_name].join(" ");
     if (/deals_no_overlap|23P01/.test(text)) {
-      return { error: "Bu vaqtda boshqa taklif bor. Vaqtni oʻzgartiring yoki avvalgisini oʻchiring." };
+      return { error: t("Bu vaqtda boshqa taklif bor. Vaqtni oʻzgartiring yoki avvalgisini oʻchiring.") };
     }
     throw err;
   }
   refreshStorefront({ catalog: true });
   if (!id) redirect("/admin/storefront/deal?saved=1");
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }
 
 export async function deleteDeal(form: FormData) {

@@ -4,6 +4,7 @@ import { and, desc, eq, ilike, max, min, sql, count, or } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { adminCustomerNotes, adminUsers, orders, type OrderStatus } from "@/lib/db/schema";
 import type { OrderAttribution, OrderRequest } from "@/lib/shopflow/types";
+import { t } from "@/lib/admin/i18n/server";
 
 const phoneTailSql = sql<string>`right(regexp_replace(${orders.customer}->>'phone', '\\D', '', 'g'), 9)`;
 
@@ -68,7 +69,7 @@ export async function listCustomers(search?: string, limit = 250): Promise<Custo
   return rows.map((row) => ({
     ...row,
     phone9: row.phone9 ?? "",
-    name: row.name ?? "Mijoz",
+    name: row.name ?? t("Mijoz"),
     phone: row.phone ?? "",
     email: row.email || null,
     orderCount: Number(row.orderCount),

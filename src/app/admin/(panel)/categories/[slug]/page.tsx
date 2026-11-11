@@ -6,8 +6,9 @@ import { deleteCategory } from "@/app/admin/_actions/catalog";
 import { Notice, PageHeader, dangerButtonClass, secondaryButtonClass } from "@/components/admin/ui";
 import { CategoryForm } from "@/components/admin/catalog/CategoryForm";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Kategoriyani tahrirlash" };
+export const generateMetadata = () => adminTitle("Kategoriyani tahrirlash");
 
 export default async function EditCategoryPage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<{ saved?: string; blocked?: string }> }) {
   await requireAdmin();
@@ -19,17 +20,17 @@ export default async function EditCategoryPage({ params, searchParams }: { param
   return (
     <>
       <PageHeader
-        eyebrow="Kategoriyalar"
+        eyebrow={t("Kategoriyalar")}
         title={category.name.uz}
-        lead={n > 0 ? `${n} ta mahsulot` : "Hali mahsulot yoʻq — saytda koʻrinmaydi"}
+        lead={n > 0 ? t("{n} ta mahsulot", { n }) : t("Hali mahsulot yoʻq — saytda koʻrinmaydi")}
         actions={<>
-          {n > 0 && <a href={`/uz/products/${category.slug}`} target="_blank" rel="noopener noreferrer" className={secondaryButtonClass}>Saytda koʻrish ↗</a>}
-          <Link href={`/admin/products?category=${encodeURIComponent(category.slug)}`} className={secondaryButtonClass}>Mahsulotlar</Link>
-          <Link href="/admin/categories" className={secondaryButtonClass}>← Kategoriyalar</Link>
+          {n > 0 && <a href={`/uz/products/${category.slug}`} target="_blank" rel="noopener noreferrer" className={secondaryButtonClass}>{t("Saytda koʻrish ↗")}</a>}
+          <Link href={`/admin/products?category=${encodeURIComponent(category.slug)}`} className={secondaryButtonClass}>{t("Mahsulotlar")}</Link>
+          <Link href="/admin/categories" className={secondaryButtonClass}>{t("← Kategoriyalar")}</Link>
         </>}
       />
-      {saved && <div className="mb-4"><Notice tone="ok">Saqlandi. Kategoriya manzili oʻzgardi — mahsulotlari ham oʻtdi.</Notice></div>}
-      {blocked && <div className="mb-4"><Notice tone="error">Kategoriyada mahsulot bor — avval mahsulotlarni boshqa kategoriyaga oʻtkazing.</Notice></div>}
+      {saved && <div className="mb-4"><Notice tone="ok">{t("Saqlandi. Kategoriya manzili oʻzgardi — mahsulotlari ham oʻtdi.")}</Notice></div>}
+      {blocked && <div className="mb-4"><Notice tone="error">{t("Kategoriyada mahsulot bor — avval mahsulotlarni boshqa kategoriyaga oʻtkazing.")}</Notice></div>}
       <CategoryForm
         key={category.slug}
         editing
@@ -46,15 +47,15 @@ export default async function EditCategoryPage({ params, searchParams }: { param
       />
       <section className="mt-8 flex flex-wrap items-center justify-between gap-3 rounded-[20px] border border-red/25 p-5">
         <div className="min-w-0">
-          <h2 className="text-[17px] font-bold text-ink">Kategoriyani oʻchirish</h2>
+          <h2 className="text-[17px] font-bold text-ink">{t("Kategoriyani oʻchirish")}</h2>
           <p className="mt-1 max-w-2xl text-[14px] text-ink-2">
-            {n > 0 ? `Unda ${n} ta mahsulot bor — avval ularni boshqa kategoriyaga oʻtkazing.` : "Qaytarib boʻlmaydi. Mahsulot yoʻq, shuning uchun hech narsa yoʻqolmaydi."}
+            {n > 0 ? t("Unda {n} ta mahsulot bor — avval ularni boshqa kategoriyaga oʻtkazing.", { n }) : t("Qaytarib boʻlmaydi. Mahsulot yoʻq, shuning uchun hech narsa yoʻqolmaydi.")}
           </p>
         </div>
         {n === 0 && (
           <form action={deleteCategory}>
             <input type="hidden" name="slug" value={category.slug} />
-            <button type="submit" className={dangerButtonClass}>Oʻchirish</button>
+            <button type="submit" className={dangerButtonClass}>{t("Oʻchirish")}</button>
           </form>
         )}
       </section>

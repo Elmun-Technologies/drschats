@@ -5,8 +5,9 @@ import { customerStats } from "@/lib/admin/dashboard";
 import { Card, ChipNav, EmptyState, Metric, PageHeader, Pill, TableWrap, buttonClass, inputClass, linkClass, secondaryButtonClass, som, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Mijozlar" };
+export const generateMetadata = () => adminTitle("Mijozlar");
 
 const EXPORT_HREF = "/admin/customers/export";
 
@@ -47,43 +48,43 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
   return (
     <>
       <PageHeader
-        title="Mijozlar"
-        lead="Buyurtma bergan har bir mijoz, telefon raqami boʻyicha birlashtirilgan: qancha xarid qildi, oxirgi marta qachon va hozir qaysi bosqichda."
-        actions={<><a href={EXPORT_HREF} download className={secondaryButtonClass}>Excelʼga yuklash (CSV)</a><Link href="/admin/segments" className={secondaryButtonClass}>Segmentlar va retarget</Link></>}
+        title={t("Mijozlar")}
+        lead={t("Buyurtma bergan har bir mijoz, telefon raqami boʻyicha birlashtirilgan: qancha xarid qildi, oxirgi marta qachon va hozir qaysi bosqichda.")}
+        actions={<><a href={EXPORT_HREF} download className={secondaryButtonClass}>{t("Excelʼga yuklash (CSV)")}</a><Link href="/admin/segments" className={secondaryButtonClass}>{t("Segmentlar va retarget")}</Link></>}
       />
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
-        <Metric label="Xaridorlar" value={formatNumber(stats.customers)} hint="kamida bitta buyurtma" />
-        <Metric label="Qayta xarid qilganlar" value={`${stats.customers ? Math.round((stats.repeat / stats.customers) * 100) : 0}%`} hint={`${formatNumber(stats.repeat)} ta mijoz`} href="/admin/customers?stage=repeat" />
-        <Metric label="Mijozning oʻrtacha qiymati" value={som(stats.averageValue)} hint={stats.averageGapDays !== null ? `har ${stats.averageGapDays} kunda qayta xarid` : "hali qayta xarid yoʻq"} />
-        <Metric label="60 kundan beri xarid qilmagan" value={formatNumber(stats.lapsed)} hint="qaytarish uchun segment" href="/admin/segments/lapsed-60" />
+        <Metric label={t("Xaridorlar")} value={formatNumber(stats.customers)} hint={t("kamida bitta buyurtma")} />
+        <Metric label={t("Qayta xarid qilganlar")} value={`${stats.customers ? Math.round((stats.repeat / stats.customers) * 100) : 0}%`} hint={t("{n} ta mijoz", { n: formatNumber(stats.repeat) })} href="/admin/customers?stage=repeat" />
+        <Metric label={t("Mijozning oʻrtacha qiymati")} value={som(stats.averageValue)} hint={stats.averageGapDays !== null ? t("har {n} kunda qayta xarid", { n: stats.averageGapDays }) : t("hali qayta xarid yoʻq")} />
+        <Metric label={t("60 kundan beri xarid qilmagan")} value={formatNumber(stats.lapsed)} hint={t("qaytarish uchun segment")} href="/admin/segments/lapsed-60" />
       </div>
       <form role="search" action="/admin/customers" className="mb-4 flex flex-wrap gap-2">
         {stage && <input type="hidden" name="stage" value={stage} />}
-        <input name="q" defaultValue={q} placeholder="Ism, telefon yoki email" aria-label="Mijozni qidirish" className={`${inputClass} max-w-[420px]`} />
-        <button type="submit" className={buttonClass}>Qidirish</button>
-        {q && <Link href={href(stage)} className={secondaryButtonClass}>Tozalash</Link>}
+        <input name="q" defaultValue={q} placeholder={t("Ism, telefon yoki email")} aria-label={t("Mijozni qidirish")} className={`${inputClass} max-w-[420px]`} />
+        <button type="submit" className={buttonClass}>{t("Qidirish")}</button>
+        {q && <Link href={href(stage)} className={secondaryButtonClass}>{t("Tozalash")}</Link>}
       </form>
       <ChipNav
-        label="Mijoz bosqichi"
+        label={t("Mijoz bosqichi")}
         className="mb-4"
         items={[
-          { href: href(null), label: "Hammasi", active: stage === null, count: all.length },
-          ...(Object.keys(LIFECYCLE) as CustomerLifecycle[]).map((key) => ({ href: href(key), label: LIFECYCLE[key].label, active: stage === key, count: counts[key] })),
+          { href: href(null), label: t("Hammasi"), active: stage === null, count: all.length },
+          ...(Object.keys(LIFECYCLE) as CustomerLifecycle[]).map((key) => ({ href: href(key), label: t(LIFECYCLE[key].label), active: stage === key, count: counts[key] })),
         ]}
       />
       <Card>
         {rows.length === 0 ? (
-          <EmptyState title="Mijoz topilmadi">Birinchi buyurtma tushishi bilan mijoz shu yerda paydo boʻladi.</EmptyState>
+          <EmptyState title={t("Mijoz topilmadi")}>{t("Birinchi buyurtma tushishi bilan mijoz shu yerda paydo boʻladi.")}</EmptyState>
         ) : (
           <TableWrap>
             <table className={tableClass}>
               <thead>
                 <tr>
-                  <th className={thClass}>Mijoz</th>
-                  <th className={thClass}>Bosqich</th>
-                  <th className={`${thClass} text-right`}>Buyurtmalar</th>
-                  <th className={`${thClass} text-right`}>Jami xarid</th>
-                  <th className={`${thClass} text-right`}>Oxirgi xariddan beri</th>
+                  <th className={thClass}>{t("Mijoz")}</th>
+                  <th className={thClass}>{t("Bosqich")}</th>
+                  <th className={`${thClass} text-right`}>{t("Buyurtmalar")}</th>
+                  <th className={`${thClass} text-right`}>{t("Jami xarid")}</th>
+                  <th className={`${thClass} text-right`}>{t("Oxirgi xariddan beri")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,10 +96,10 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
                         <Link href={`/admin/customers/${c.phone9}`} className={linkClass}>{c.name}</Link>
                         <span className="block text-[13px] text-muted">{phoneMask(c.phone)}{c.email ? ` · ${c.email}` : ""}</span>
                       </td>
-                      <td className={tdClass}><Pill tone={LIFECYCLE[c.lifecycle].tone}>{LIFECYCLE[c.lifecycle].label}</Pill></td>
-                      <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.successfulOrderCount)}{c.orderCount > c.successfulOrderCount && <span className="block text-[13px] text-muted">+{c.orderCount - c.successfulOrderCount} bekor</span>}</td>
+                      <td className={tdClass}><Pill tone={LIFECYCLE[c.lifecycle].tone}>{t(LIFECYCLE[c.lifecycle].label)}</Pill></td>
+                      <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(c.successfulOrderCount)}{c.orderCount > c.successfulOrderCount && <span className="block text-[13px] text-muted">{t("+{n} bekor", { n: c.orderCount - c.successfulOrderCount })}</span>}</td>
                       <td className={`${tdClass} whitespace-nowrap text-right font-semibold tabular-nums`}>{som(c.lifetimeValue)}</td>
-                      <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{days === 0 ? "bugun" : `${days} kun`}</td>
+                      <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{days === 0 ? t("bugun") : days === null ? "—" : t("{n} kun", { n: days })}</td>
                     </tr>
                   );
                 })}
@@ -106,7 +107,7 @@ export default async function AdminCustomersPage({ searchParams }: { searchParam
             </table>
           </TableWrap>
         )}
-        {all.length === 250 && <p className="mt-3 text-[13px] text-muted">Eng soʻnggi 250 ta mijoz koʻrsatildi — aniq mijozni qidiruv orqali toping.</p>}
+        {all.length === 250 && <p className="mt-3 text-[13px] text-muted">{t("Eng soʻnggi 250 ta mijoz koʻrsatildi — aniq mijozni qidiruv orqali toping.")}</p>}
       </Card>
     </>
   );

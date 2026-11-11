@@ -133,11 +133,11 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
           {funnel.current.visitors === 0 ? (
             <EmptyState title={t("Hali tashrif yozilmagan")}>{t("Birinchi tashriflardan keyin voronka shu yerda koʻrinadi.")}</EmptyState>
           ) : (
-            <FunnelBars steps={FUNNEL_STEPS.map((step) => ({ label: step.label, hint: step.hint, value: funnel.current[step.key] }))} />
+            <FunnelBars steps={FUNNEL_STEPS.map((step) => ({ label: t(step.label), hint: t(step.hint), value: funnel.current[step.key] }))} />
           )}
         </Card>
         <Card title={t("Qayerdan kelishyapti")} lead={t("Birinchi tashrif manbasi")} actions={<Link href={`/admin/analytics?range=${range}`} className={linkClass}>{t("Analitika")}</Link>}>
-          <BarList rows={channelRows.slice(0, 7).map((c) => ({ label: c.channel, value: c.visitors, note: c.buyers ? `${t("{n} ta xaridor", { n: c.buyers })} · ${som(c.revenue)} · ${percent(c.buyers, c.visitors)}%` : undefined }))} empty={t("Tashriflar yozilgach manbalar shu yerda chiqadi")} />
+          <BarList rows={channelRows.slice(0, 7).map((c) => ({ label: t(c.channel), value: c.visitors, note: c.buyers ? `${t("{n} ta xaridor", { n: c.buyers })} · ${som(c.revenue)} · ${percent(c.buyers, c.visitors)}%` : undefined }))} empty={t("Tashriflar yozilgach manbalar shu yerda chiqadi")} />
         </Card>
         <Card title={t("Mijozlar")} lead={t("Buyurtmalar: birinchi xarid va qaytib kelganlar")} className="lg:col-span-2 xl:col-span-1">
           <ShareBar
@@ -172,7 +172,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
                     </span>
                     <span className="shrink-0 text-right">
                       <span className="block text-[14px] font-semibold tabular-nums text-ink">{som(p.revenue)}</span>
-                      <span className="block text-[12px] tabular-nums text-muted">{formatNumber(p.units)} dona</span>
+                      <span className="block text-[12px] tabular-nums text-muted">{t("{n} dona", { n: formatNumber(p.units) })}</span>
                     </span>
                   </>
                 );
@@ -218,10 +218,10 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
       <section aria-label={t("Katalog")} className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3 rounded-[20px] bg-tile px-5 py-4">
         <h2 className="text-[15px] font-bold text-ink">{t("Katalog")}</h2>
         {[
-          { href: "/admin/products", label: "mahsulot", value: counts.products },
-          { href: "/admin/products?filter=out", label: "tugagan", value: counts.outOfStock },
+          { href: "/admin/products", label: t("mahsulot"), value: counts.products },
+          { href: "/admin/products?filter=out", label: t("tugagan"), value: counts.outOfStock },
           { href: "/admin/products?filter=hidden", label: t("sotuvdan olingan"), value: counts.hidden },
-          { href: "/admin/categories", label: "kategoriya", value: counts.categories },
+          { href: "/admin/categories", label: t("kategoriya"), value: counts.categories },
         ].map((item) => (
           <Link key={item.href} href={item.href} className="inline-flex min-h-11 items-center gap-1.5 text-[14px] text-ink-2 underline-offset-4 hover:text-ink hover:underline">
             <b className="text-[16px] tabular-nums text-ink">{formatNumber(item.value)}</b> {item.label}

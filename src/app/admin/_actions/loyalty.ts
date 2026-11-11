@@ -8,19 +8,27 @@ import { RULE_LIMITS, coerceLoyaltyRules, type LoyaltyRules } from "@/lib/loyalt
 import { readLoyaltyRules, saveLoyaltyRules } from "@/lib/loyalty/settings";
 import { adjustPoints } from "@/lib/loyalty/server";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 const L = RULE_LIMITS;
-const n = (label: string, [min, max]: readonly [number, number]) =>
-  z.coerce.number({ error: `${label}: son kiriting` }).int(`${label}: butun son`).min(min, `${label}: ${min}–${max}`).max(max, `${label}: ${min}–${max}`);
+/* Built per request, after requireAdmin has set the language, so the messages answer in it. */
+const n = (uz: string, [min, max]: readonly [number, number]) => {
+  const label = t(uz);
+  return z.coerce
+    .number({ error: t("{label}: son kiriting", { label }) })
+    .int(t("{label}: butun son", { label }))
+    .min(min, `${label}: ${min}–${max}`)
+    .max(max, `${label}: ${min}–${max}`);
+};
 
-const cashbackSchema = z.object({
+const cashbackSchema = () => z.object({
   earnPercent: n("Keshbek foizi", L.earnPercent),
   minOrder: n("Minimal buyurtma", L.minOrder),
   maxSharePercent: n("Ball bilan toʻlash ulushi", L.maxSharePercent),
   expiryDays: n("Amal qilish muddati", L.expiryDays),
 });
 
-const referralSchema = z.object({
+const referralSchema = () => z.object({
   friendPercent: n("Doʻst chegirmasi", L.friendPercent),
   reward: z.enum(["points", "promo"]),
   rewardPoints: n("Mukofot ball", L.rewardPoints),
@@ -28,7 +36,7 @@ const referralSchema = z.object({
   monthlyCap: n("Oylik limit", L.monthlyCap),
 });
 
-const birthdaySchema = z.object({ daysBefore: n("Necha kun oldin", L.daysBefore) });
+const birthdaySchema = () => z.object({ daysBefore: n("Necha kun oldin", L.daysBefore) });
 
 async function persist(next: LoyaltyRules, adminId: number): Promise<void> {
   await saveLoyaltyRules(coerceLoyaltyRules(next), adminId);
@@ -40,47 +48,48 @@ async function persist(next: LoyaltyRules, adminId: number): Promise<void> {
 /** One form per section; the other sections keep what they had. */
 export async function saveCashbackRules(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
-  const parsed = cashbackSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = cashbackSchema().safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const current = await readLoyaltyRules();
   await persist({ ...current, ...parsed.data, enabled: form.get("enabled") === "on" }, admin.id);
-  return { ok: "Saqlandi. Savat, buyurtma va /loyalty sahifasi yangi qoidalar bilan ishlaydi." };
+  return { ok: t("Saqlandi. Savat, buyurtma va /loyalty sahifasi yangi qoidalar bilan ishlaydi.") };
 }
 
 export async function saveReferralRules(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
-  const parsed = referralSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = referralSchema().safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const current = await readLoyaltyRules();
   await persist({ ...current, referral: { ...parsed.data, enabled: form.get("enabled") === "on" } }, admin.id);
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }
 
 export async function saveBirthdayRules(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
-  const parsed = birthdaySchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = birthdaySchema().safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const current = await readLoyaltyRules();
   await persist({ ...current, birthday: { daysBefore: parsed.data.daysBefore, enabled: form.get("enabled") === "on" } }, admin.id);
-  return { ok: "Saqlandi. Xabar yuborish — «Avtomatlashtirish» boʻlimidagi «Tugʻilgan kun» oqimi yoqilganda." };
+  return { ok: t("Saqlandi. Xabar yuborish — «Avtomatlashtirish» boʻlimidagi «Tugʻilgan kun» oqimi yoqilganda.") };
 }
 
-const adjustSchema = z.object({
-  phone9: z.string().regex(/^[0-9]{9}$/),
-  delta: z.coerce
-    .number({ error: "Ball miqdorini kiriting" })
-    .int("Butun son kiriting")
-    .refine((v) => v !== 0, "Nol boʻlmasin")
-    .refine((v) => Math.abs(v) <= 10_000_000, "Juda katta miqdor"),
-  note: z.string().trim().min(3, "Izoh yozing (kamida 3 belgi)").max(300),
-});
+const adjustSchema = () =>
+  z.object({
+    phone9: z.string().regex(/^[0-9]{9}$/),
+    delta: z.coerce
+      .number({ error: t("Ball miqdorini kiriting") })
+      .int(t("Butun son kiriting"))
+      .refine((v) => v !== 0, t("Nol boʻlmasin"))
+      .refine((v) => Math.abs(v) <= 10_000_000, t("Juda katta miqdor")),
+    note: z.string().trim().min(3, t("Izoh yozing (kamida 3 belgi)")).max(300),
+  });
 
 /** Manual correction on the customer page. The note is required: every change to a balance has a reason on record. */
 export async function adjustCustomerPoints(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
-  const parsed = adjustSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? "Maydonlarni tekshiring." };
+  const parsed = adjustSchema().safeParse(Object.fromEntries(form));
+  if (!parsed.success) return { error: parsed.error.issues[0]?.message ?? t("Maydonlarni tekshiring.") };
   const balance = await adjustPoints({ ...parsed.data, adminId: admin.id });
   revalidatePath(`/admin/customers/${parsed.data.phone9}`);
-  return { ok: `Saqlandi. Yangi balans: ${balance.toLocaleString("ru-RU").replace(/ /g, " ")} ball.` };
+  return { ok: t("Saqlandi. Yangi balans: {n} ball.", { n: balance.toLocaleString("ru-RU").replace(/ /g, " ") }) };
 }

@@ -4,8 +4,9 @@ import { listRepoImages } from "@/lib/admin/repo-images.server";
 import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { CategoryForm } from "@/components/admin/catalog/CategoryForm";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Yangi kategoriya" };
+export const generateMetadata = () => adminTitle("Yangi kategoriya");
 
 export default async function NewCategoryPage() {
   await requireAdmin();
@@ -14,10 +15,10 @@ export default async function NewCategoryPage() {
   return (
     <>
       <PageHeader
-        eyebrow="Kategoriyalar"
-        title="Yangi kategoriya"
-        lead="Kategoriya saytda unga birinchi mahsulot qoʻshilganda chiqadi — boʻsh javon menyuda koʻrinmaydi."
-        actions={<Link href="/admin/categories" className={secondaryButtonClass}>← Kategoriyalar</Link>}
+        eyebrow={t("Kategoriyalar")}
+        title={t("Yangi kategoriya")}
+        lead={t("Kategoriya saytda unga birinchi mahsulot qoʻshilganda chiqadi — boʻsh javon menyuda koʻrinmaydi.")}
+        actions={<Link href="/admin/categories" className={secondaryButtonClass}>{t("← Kategoriyalar")}</Link>}
       />
       <CategoryForm
         editing={false}

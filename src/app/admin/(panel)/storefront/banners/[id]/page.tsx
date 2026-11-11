@@ -10,8 +10,9 @@ import { formatNumber } from "@/lib/utils";
 import { BannerForm } from "@/components/admin/storefront/BannerForm";
 import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Banner" };
+export const generateMetadata = () => adminTitle("Banner");
 
 export default async function EditBannerPage({ params }: { params: Promise<{ id: string }> }) {
   await requireAdmin();
@@ -23,10 +24,10 @@ export default async function EditBannerPage({ params }: { params: Promise<{ id:
   return (
     <>
       <PageHeader
-        eyebrow="Vitrina"
+        eyebrow={t("Vitrina")}
         title={b.title.uz}
-        lead={`Bosishlar: ${formatNumber(b.clicks)}`}
-        actions={<Link href="/admin/storefront" className={secondaryButtonClass}>← Bannerlar</Link>}
+        lead={t("Bosishlar: {n}", { n: formatNumber(b.clicks) })}
+        actions={<Link href="/admin/storefront" className={secondaryButtonClass}>{t("← Bannerlar")}</Link>}
       />
       <BannerForm
         repoImages={repoImages}

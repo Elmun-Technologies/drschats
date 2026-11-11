@@ -3,6 +3,7 @@ import { EVENT_LABEL, KEY_EVENTS } from "@/lib/admin/event-labels";
 import { formatDateTime } from "@/lib/admin/order-labels";
 import { EmptyState, som } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
+import { t } from "@/lib/admin/i18n/server";
 
 function eventDetail(e: VisitorEvent): string {
   if (e.type === "search") return `«${String(e.meta?.term ?? "")}»`;
@@ -14,7 +15,7 @@ function eventDetail(e: VisitorEvent): string {
 
 /** Events grouped into visits (sessions), newest first. */
 export function Timeline({ events }: { events: VisitorEvent[] }) {
-  if (events.length === 0) return <EmptyState title="Harakatlar hali yozilmagan" />;
+  if (events.length === 0) return <EmptyState title={t("Harakatlar hali yozilmagan")} />;
   const sessions: { id: string; events: VisitorEvent[] }[] = [];
   for (const event of events) {
     const last = sessions[sessions.length - 1];
@@ -27,13 +28,13 @@ export function Timeline({ events }: { events: VisitorEvent[] }) {
         const start = session.events[session.events.length - 1].createdAt;
         return (
           <li key={`${session.id}-${index}`}>
-            <p className="mb-2 text-[13px] font-semibold text-muted">Tashrif · {formatDateTime(start)} · {session.events.length} ta harakat</p>
+            <p className="mb-2 text-[13px] font-semibold text-muted">{t("Tashrif · {date} · {n} ta harakat", { date: formatDateTime(start), n: session.events.length })}</p>
             <ol className="relative flex flex-col gap-2 border-l border-line pl-5">
               {session.events.map((e) => (
                 <li key={e.id} className="relative">
                   <span className={cn("absolute -left-[25px] top-1.5 h-2.5 w-2.5 rounded-full ring-4 ring-white", KEY_EVENTS.has(e.type) ? "bg-ink" : "bg-line-strong")} />
                   <p className={cn("text-[14px] leading-5 [overflow-wrap:anywhere]", KEY_EVENTS.has(e.type) ? "font-semibold text-ink" : "text-ink-2")}>
-                    {EVENT_LABEL[e.type]}
+                    {EVENT_LABEL[e.type] ? t(EVENT_LABEL[e.type]) : e.type}
                     {eventDetail(e) && <span className="font-normal text-muted"> — {eventDetail(e)}</span>}
                   </p>
                   <p className="text-[12px] text-muted">{new Intl.DateTimeFormat("ru-RU", { timeStyle: "short", timeZone: "Asia/Tashkent" }).format(e.createdAt)}</p>

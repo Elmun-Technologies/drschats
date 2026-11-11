@@ -9,6 +9,7 @@ import { MENU_BUTTONS, clubConfigSchema } from "@/lib/bot/config";
 import { escapeHtml } from "@/lib/bot/messages";
 import { answerTicket, broadcast, closeTicket, retryJob, saveClubConfig } from "@/lib/bot/store";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 export async function saveClub(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("marketing");
@@ -20,10 +21,10 @@ export async function saveClub(_: FormState, form: FormData): Promise<FormState>
     greeting: { uz: raw.greetingUz ?? "", ru: raw.greetingRu ?? "" },
     menu,
   });
-  if (!parsed.success) return { error: "Maydonlarni tekshiring: doʻkon manzili https:// bilan boshlansin." };
+  if (!parsed.success) return { error: t("Maydonlarni tekshiring: doʻkon manzili https:// bilan boshlansin.") };
   await saveClubConfig(parsed.data);
   revalidatePath("/admin/bot");
-  return { ok: "Saqlandi. Bot yangi sozlamani keyingi soʻrovda oladi." };
+  return { ok: t("Saqlandi. Bot yangi sozlamani keyingi soʻrovda oladi.") };
 }
 
 const replySchema = z.object({ id: z.coerce.number().int().positive(), reply: z.string().trim().min(1).max(3000) });
@@ -31,10 +32,10 @@ const replySchema = z.object({ id: z.coerce.number().int().positive(), reply: z.
 export async function replyTicket(_: FormState, form: FormData): Promise<FormState> {
   await requireAdmin("support");
   const parsed = replySchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: "Javob matnini yozing (3000 belgigacha)." };
-  if (!(await answerTicket(parsed.data.id, parsed.data.reply))) return { error: "Murojaat topilmadi." };
+  if (!parsed.success) return { error: t("Javob matnini yozing (3000 belgigacha).") };
+  if (!(await answerTicket(parsed.data.id, parsed.data.reply))) return { error: t("Murojaat topilmadi.") };
   revalidatePath("/admin/bot/tickets");
-  return { ok: "Javob navbatga qoʻyildi — bot bir necha soniyada yuboradi." };
+  return { ok: t("Javob navbatga qoʻyildi — bot bir necha soniyada yuboradi.") };
 }
 
 export async function closeTicketAction(form: FormData) {
@@ -56,9 +57,9 @@ const broadcastSchema = z.object({ text: z.string().trim().min(1).max(1000), con
 export async function broadcastAction(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("marketing");
   const parsed = broadcastSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: "Matnni yozing va yuborishni tasdiqlang." };
+  if (!parsed.success) return { error: t("Matnni yozing va yuborishni tasdiqlang.") };
   const queued = await broadcast(randomUUID(), { text: escapeHtml(parsed.data.text) });
   revalidatePath("/admin/bot");
   await auditLog(admin, "broadcast.send", auditTarget(form));
-  return { ok: `${queued} ta aʼzoga navbatga qoʻyildi.` };
+  return { ok: t("{n} ta aʼzoga navbatga qoʻyildi.", { n: queued }) };
 }

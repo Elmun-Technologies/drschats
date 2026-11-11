@@ -1,6 +1,7 @@
 import { requireAdmin } from "@/lib/admin/session";
 import { auditLog } from "@/lib/admin/audit";
 import { MAX_UPLOAD_BYTES, isStorageConfigured, uploadImage } from "@/lib/admin/storage";
+import { t } from "@/lib/admin/i18n/server";
 
 export const dynamic = "force-dynamic";
 
@@ -28,19 +29,19 @@ function sameOrigin(request: Request): boolean {
 
 export async function POST(request: Request) {
   const admin = await requireAdmin("catalog");
-  if (!sameOrigin(request)) return Response.json({ error: "Soʻrov boshqa saytdan keldi." }, { status: 403 });
-  if (!isStorageConfigured) return Response.json({ error: "Rasm saqlash (Tigris) sozlanmagan — URL manzilini qoʻlda kiriting." }, { status: 400 });
-  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY) return Response.json({ error: "Fayl 5 MB dan katta." }, { status: 413 });
+  if (!sameOrigin(request)) return Response.json({ error: t("Soʻrov boshqa saytdan keldi.") }, { status: 403 });
+  if (!isStorageConfigured) return Response.json({ error: t("Rasm saqlash (Tigris) sozlanmagan — URL manzilini qoʻlda kiriting.") }, { status: 400 });
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY) return Response.json({ error: t("Fayl 5 MB dan katta.") }, { status: 413 });
   const form = await request.formData().catch(() => null);
   const file = form?.get("file");
-  if (!(file instanceof File) || file.size === 0) return Response.json({ error: "Fayl tanlanmagan." }, { status: 400 });
+  if (!(file instanceof File) || file.size === 0) return Response.json({ error: t("Fayl tanlanmagan.") }, { status: 400 });
   try {
     const url = await uploadImage(file, "products");
     await auditLog(admin, "product.image_upload", null, { bytes: file.size });
-    return Response.json({ ok: "Yuklandi.", url });
+    return Response.json({ ok: t("Yuklandi."), url });
   } catch (err) {
     const code = (err as Error).message;
-    const error = code === "too-large" ? "Fayl 5 MB dan katta." : code === "unsupported-type" ? "Faqat JPG, PNG, WebP yoki AVIF." : "Yuklab boʻlmadi.";
+    const error = code === "too-large" ? t("Fayl 5 MB dan katta.") : code === "unsupported-type" ? t("Faqat JPG, PNG, WebP yoki AVIF.") : t("Yuklab boʻlmadi.");
     return Response.json({ error }, { status: 400 });
   }
 }

@@ -19,7 +19,7 @@ import ts from "typescript";
 const write = process.argv.includes("--write");
 const files = process.argv.slice(2).filter((a) => !a.startsWith("--"));
 const LABEL_KEYS = new Set(["label", "title", "description", "text", "hint", "lead", "empty", "error", "message", "heading", "note", "cta", "subtitle"]);
-const ATTRS = new Set(["placeholder", "title", "aria-label", "alt", "label", "hint", "lead", "empty", "subtitle", "description", "tooltip", "confirm"]);
+const ATTRS = new Set(["placeholder", "title", "aria-label", "alt", "label", "hint", "lead", "empty", "subtitle", "description", "tooltip", "confirm", "eyebrow", "submitLabel", "pendingLabel", "detail", "emptyText", "submit"]);
 const HAS_LETTER = /\p{L}/u;
 const LOOKS_CODE = /^[\w./:#@?=&%+-]+$/; // slugs, paths, ids: one token with no spaces
 
@@ -101,6 +101,7 @@ for (const file of files) {
   if (client) {
     for (const comp of needT) {
       const body = comp.body;
+      if (body && ts.isBlock(body) && body.getText().includes("useT()")) continue;
       if (body && ts.isBlock(body)) edits.push([body.getStart() + 1, body.getStart() + 1, "\n  const t = useT();"]);
       else console.log(`   ! ${file}: a component without a block body needs const t = useT() by hand`);
     }

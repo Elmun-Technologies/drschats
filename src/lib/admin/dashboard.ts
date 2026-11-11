@@ -3,6 +3,7 @@ import "server-only";
 import { sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { rangeWindow, type Range } from "./crm";
+import { t } from "@/lib/admin/i18n/server";
 
 /*
   Series the dashboard draws. "Today" is bucketed by hour, every other range
@@ -42,7 +43,8 @@ function dayKey(d: Date) {
 
 function dayLabelOf(key: string) {
   const [, m, d] = key.split("-");
-  return `${Number(d)} ${MONTHS[Number(m) - 1] ?? ""}`;
+  const month = MONTHS[Number(m) - 1];
+  return `${Number(d)} ${month ? t(month) : ""}`;
 }
 
 async function bucketed(from: Date, to: Date, unit: "hour" | "day"): Promise<SeriesPoint[]> {
@@ -177,7 +179,7 @@ export async function categorySales(days: Range): Promise<CategorySales[]> {
   const { from, to } = rangeWindow(days);
   const rows = await query(sql`
     select coalesce(p.category_slug, 'boshqa') as slug,
-           coalesce(c.name->>'uz', 'Boshqa') as name,
+           c.name->>'uz' as name,
            sum((item->>'quantity')::int) as units,
            sum((item->>'unitPrice')::numeric * (item->>'quantity')::int * (100 - coalesce((item->>'upsellDiscountPercent')::numeric, 0)) / 100) as revenue
     from orders o
@@ -188,7 +190,7 @@ export async function categorySales(days: Range): Promise<CategorySales[]> {
     group by 1, 2
     order by revenue desc
     limit 8`);
-  return rows.map((row) => ({ slug: String(row.slug), name: String(row.name), units: num(row.units), revenue: Math.round(num(row.revenue)) }));
+  return rows.map((row) => ({ slug: String(row.slug), name: row.name == null ? t("Boshqa") : String(row.name), units: num(row.units), revenue: Math.round(num(row.revenue)) }));
 }
 
 export interface TopProduct {

@@ -12,8 +12,9 @@ import { experimentResults } from "@/lib/merch/ab-stats";
 import { Card, EmptyState, Notice, PageHeader, Pill, TableWrap, buttonClass, linkClass, smallButtonClass, tableClass, tdClass, thClass, type PillTone } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Vitrina" };
+export const generateMetadata = () => adminTitle("Vitrina");
 
 const TONE: Record<ScheduleStatus, PillTone> = { live: "dark", scheduled: "outline", ended: "muted", off: "muted" };
 const isLocal = (src: string) => src.startsWith("/") && !src.startsWith("//");
@@ -31,36 +32,36 @@ export default async function StorefrontBannersPage({ searchParams }: { searchPa
   return (
     <>
       <PageHeader
-        title="Vitrina"
-        lead="Saytda nima koʻrinishini shu yerdan boshqarasiz: bannerlar, eʼlon qatori va bugungi taklif. Saqlash bilan sayt darhol yangilanadi; rejalashtirilgan banner oʻz vaqtida oʻzi chiqadi va tugaganda oʻzi yoʻqoladi."
-        actions={<Link href="/admin/storefront/banners/new" className={buttonClass}>+ Yangi banner</Link>}
+        title={t("Vitrina")}
+        lead={t("Saytda nima koʻrinishini shu yerdan boshqarasiz: bannerlar, eʼlon qatori va bugungi taklif. Saqlash bilan sayt darhol yangilanadi; rejalashtirilgan banner oʻz vaqtida oʻzi chiqadi va tugaganda oʻzi yoʻqoladi.")}
+        actions={<Link href="/admin/storefront/banners/new" className={buttonClass}>{t("+ Yangi banner")}</Link>}
       />
       <StorefrontTabs active="banners" />
-      {params.saved && <div className="mb-4"><Notice tone="ok">Banner saqlandi.</Notice></div>}
-      {params.deleted && <div className="mb-4"><Notice tone="ok">Banner oʻchirildi.</Notice></div>}
+      {params.saved && <div className="mb-4"><Notice tone="ok">{t("Banner saqlandi.")}</Notice></div>}
+      {params.deleted && <div className="mb-4"><Notice tone="ok">{t("Banner oʻchirildi.")}</Notice></div>}
       {!liveHero && (
         <div className="mb-4">
-          <Notice>Hozir faol slayder banneri yoʻq — bosh sahifada oʻrnatilgan slaydlar (ImmunoVit, Vitamin C, Prenatal Forte) koʻrinadi. Bosh sahifa hech qachon boʻsh qolmaydi.</Notice>
+          <Notice>{t("Hozir faol slayder banneri yoʻq — bosh sahifada oʻrnatilgan slaydlar (ImmunoVit, Vitamin C, Prenatal Forte) koʻrinadi. Bosh sahifa hech qachon boʻsh qolmaydi.")}</Notice>
         </div>
       )}
 
       <ExperimentsCard experiments={experiments} />
       <Card>
         {rows.length === 0 ? (
-          <EmptyState title="Hali banner yoʻq" action={<Link href="/admin/storefront/banners/new" className={buttonClass}>Birinchi bannerni yaratish</Link>}>
-            Bosh sahifa slayderi, header ostidagi ingichka qator yoki katalog sahifalari uchun banner qoʻshing. Muddat va taymerni ham shu yerda belgilaysiz.
+          <EmptyState title={t("Hali banner yoʻq")} action={<Link href="/admin/storefront/banners/new" className={buttonClass}>{t("Birinchi bannerni yaratish")}</Link>}>
+            {t("Bosh sahifa slayderi, header ostidagi ingichka qator yoki katalog sahifalari uchun banner qoʻshing. Muddat va taymerni ham shu yerda belgilaysiz.")}
           </EmptyState>
         ) : (
           <TableWrap>
             <table className={tableClass}>
               <thead>
                 <tr>
-                  <th className={thClass}>Banner</th>
-                  <th className={thClass}>Joyi</th>
-                  <th className={thClass}>Muddat (Toshkent)</th>
-                  <th className={thClass}>Holat</th>
-                  <th className={`${thClass} text-right`}>Bosishlar</th>
-                  <th className={thClass}><span className="sr-only">Amallar</span></th>
+                  <th className={thClass}>{t("Banner")}</th>
+                  <th className={thClass}>{t("Joyi")}</th>
+                  <th className={thClass}>{t("Muddat (Toshkent)")}</th>
+                  <th className={thClass}>{t("Holat")}</th>
+                  <th className={`${thClass} text-right`}>{t("Bosishlar")}</th>
+                  <th className={thClass}><span className="sr-only">{t("Amallar")}</span></th>
                 </tr>
               </thead>
               <tbody>
@@ -74,7 +75,7 @@ export default async function StorefrontBannersPage({ searchParams }: { searchPa
                             {b.image ? (
                               <Image src={b.image} alt="" fill sizes="56px" unoptimized={!isLocal(b.image)} className="object-contain p-1.5" />
                             ) : (
-                              <span className={`text-[12px] ${b.theme === "dark" ? "text-on-dark-2" : "text-muted"}`}>Rasmsiz</span>
+                              <span className={`text-[12px] ${b.theme === "dark" ? "text-on-dark-2" : "text-muted"}`}>{t("Rasmsiz")}</span>
                             )}
                           </span>
                           <span className="min-w-0">
@@ -84,29 +85,29 @@ export default async function StorefrontBannersPage({ searchParams }: { searchPa
                           </span>
                         </div>
                       </td>
-                      <td className={`${tdClass} text-ink-2`}>{PLACEMENT_LABEL[b.placement]}</td>
+                      <td className={`${tdClass} text-ink-2`}>{t(PLACEMENT_LABEL[b.placement])}</td>
                       <td className={`${tdClass} whitespace-nowrap text-[13px] text-ink-2`}>
-                        {b.startsAt ? formatDateTime(b.startsAt) : "darhol"} — {b.endsAt ? formatDateTime(b.endsAt) : "muddatsiz"}
-                        {b.showCountdown && <span className="block text-muted">taymer bilan</span>}
+                        {b.startsAt ? formatDateTime(b.startsAt) : t("darhol")} — {b.endsAt ? formatDateTime(b.endsAt) : t("muddatsiz")}
+                        {b.showCountdown && <span className="block text-muted">{t("taymer bilan")}</span>}
                       </td>
-                      <td className={tdClass}><Pill tone={TONE[status]}>{SCHEDULE_LABEL[status]}</Pill></td>
+                      <td className={tdClass}><Pill tone={TONE[status]}>{t(SCHEDULE_LABEL[status])}</Pill></td>
                       <td className={`${tdClass} text-right tabular-nums`}>{formatNumber(b.clicks)}</td>
                       <td className={tdClass}>
                         <div className="flex justify-end gap-2">
-                          <Link href={`/admin/storefront/banners/${b.id}`} className={smallButtonClass}>Tahrirlash</Link>
+                          <Link href={`/admin/storefront/banners/${b.id}`} className={smallButtonClass}>{t("Tahrirlash")}</Link>
                           {!b.experiment && (
-                            <Link href={`/admin/storefront/banners/new?from=${b.id}`} className={smallButtonClass} aria-label={`«${b.title.uz}» uchun A/B test boshlash`}>
-                              A/B test
+                            <Link href={`/admin/storefront/banners/new?from=${b.id}`} className={smallButtonClass} aria-label={t("«{title}» uchun A/B test boshlash", { title: b.title.uz })}>
+                              {t("A/B test")}
                             </Link>
                           )}
                           <form action={toggleBanner}>
                             <input type="hidden" name="id" value={b.id} />
-                            <button type="submit" className={smallButtonClass}>{b.active ? "Oʻchirish" : "Yoqish"}</button>
+                            <button type="submit" className={smallButtonClass}>{b.active ? t("Oʻchirib qoʻyish") : t("Yoqish")}</button>
                           </form>
                           <form action={deleteBanner}>
                             <input type="hidden" name="id" value={b.id} />
-                            <button type="submit" aria-label={`«${b.title.uz}» bannerini oʻchirib tashlash`} className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-tile">
-                              Oʻchirib tashlash
+                            <button type="submit" aria-label={t("«{title}» bannerini oʻchirib tashlash", { title: b.title.uz })} className="inline-flex h-11 items-center rounded-[12px] px-3 text-[14px] font-semibold text-red hover:bg-tile">
+                              {t("Oʻchirib tashlash")}
                             </button>
                           </form>
                         </div>

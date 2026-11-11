@@ -7,6 +7,7 @@ import type { RepoImage } from "@/lib/admin/repo-images";
 import { Field, Notice, inputClass, textareaClass } from "@/components/admin/ui";
 import { SubmitButton } from "@/components/admin/SubmitButton";
 import { SingleImageField } from "./ImageFields";
+import { useT } from "@/lib/admin/i18n/client";
 
 export interface CategoryFormValues {
   slug: string;
@@ -29,6 +30,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
 
 /* New and edit share one form; `original` tells saveCategory which row to update. */
 export function CategoryForm({ values, repoImages, editing }: { values: CategoryFormValues; repoImages: RepoImage[]; editing: boolean }) {
+  const t = useT();
   const [state, action] = useActionState<FormState, FormData>(saveCategory, undefined);
   const [uzName, setUzName] = useState(values.uzName);
   const [slug, setSlug] = useState(values.slug);
@@ -43,9 +45,9 @@ export function CategoryForm({ values, repoImages, editing }: { values: Category
         <div className="xl:col-span-2">{state?.error ? <Notice tone="error">{state.error}</Notice> : <Notice tone="ok">{state?.ok}</Notice>}</div>
       )}
       <div className="flex min-w-0 flex-col gap-5">
-        <Panel title="Nomi va tavsifi">
+        <Panel title={t("Nomi va tavsifi")}>
           <div className="grid gap-4 lg:grid-cols-2">
-            <Field label="Nomi (uz)">
+            <Field label={t("Nomi (uz)")}>
               <input
                 name="uz.name"
                 value={uzName}
@@ -59,33 +61,33 @@ export function CategoryForm({ values, repoImages, editing }: { values: Category
                 className={inputClass}
               />
             </Field>
-            <Field label="Nomi (ru)">
+            <Field label={t("Nomi (ru)")}>
               <input name="ru.name" defaultValue={values.ruName} required minLength={2} maxLength={80} className={inputClass} />
             </Field>
-            <Field label="Tavsif (uz)" hint="Kategoriya sahifasining yuqorisida; 400 belgigacha">
+            <Field label={t("Tavsif (uz)")} hint={t("Kategoriya sahifasining yuqorisida; 400 belgigacha")}>
               <textarea name="uz.description" defaultValue={values.uzDescription} rows={3} maxLength={400} className={textareaClass} />
             </Field>
-            <Field label="Tavsif (ru)" hint="400 belgigacha">
+            <Field label={t("Tavsif (ru)")} hint={t("400 belgigacha")}>
               <textarea name="ru.description" defaultValue={values.ruDescription} rows={3} maxLength={400} className={textareaClass} />
             </Field>
           </div>
         </Panel>
-        <Panel title="Rasm">
+        <Panel title={t("Rasm")}>
           <SingleImageField
             name="image"
-            label="Rasm manzili"
-            hint="Katalog menyusida va kategoriya kartasida chiqadi. Fonsiz kesma rasm eng yaxshi koʻrinadi."
+            label={t("Rasm manzili")}
+            hint={t("Katalog menyusida va kategoriya kartasida chiqadi. Fonsiz kesma rasm eng yaxshi koʻrinadi.")}
             value={image}
             onChange={setImage}
             repoImages={repoImages}
             initialKind="cutout"
-            emptyText="Rasm yoʻq"
+            emptyText={t("Rasm yoʻq")}
           />
         </Panel>
       </div>
       <aside className="flex min-w-0 flex-col gap-5 xl:sticky xl:top-6 xl:self-start">
-        <Panel title="Manzil va tartib">
-          <Field label="Sahifa manzili (slug)" hint={effectiveSlug ? `govita.uz/uz/products/${effectiveSlug}` : "Oʻzbekcha nomdan avtomatik yaratiladi"}>
+        <Panel title={t("Manzil va tartib")}>
+          <Field label={t("Sahifa manzili (slug)")} hint={effectiveSlug ? `govita.uz/uz/products/${effectiveSlug}` : t("Oʻzbekcha nomdan avtomatik yaratiladi")}>
             <input
               name="slug"
               value={slug}
@@ -94,19 +96,19 @@ export function CategoryForm({ values, repoImages, editing }: { values: Category
                 setSlugTouched(true);
               }}
               pattern="[a-z0-9]+(-[a-z0-9]+)*"
-              placeholder={slugify(uzName) || "masalan: omega-3"}
+              placeholder={slugify(uzName) || t("masalan: omega-3")}
               className={inputClass}
             />
           </Field>
           {editing && slug.trim() && slug.trim() !== values.slug && (
-            <p className="text-[13px] leading-5 text-ink-2">Manzil oʻzgarsa, mahsulotlar yangi kategoriyaga oʻzi oʻtadi, lekin eski havola (/products/{values.slug}) 404 boʻladi.</p>
+            <p className="text-[13px] leading-5 text-ink-2">{t("Manzil oʻzgarsa, mahsulotlar yangi kategoriyaga oʻzi oʻtadi, lekin eski havola (/products/{slug}) 404 boʻladi.", { slug: values.slug })}</p>
           )}
-          <Field label="Tartib" hint="Kichik raqam — menyuda oldinroq">
+          <Field label={t("Tartib")} hint={t("Kichik raqam — menyuda oldinroq")}>
             <input name="sort" type="number" defaultValue={values.sort} className={inputClass} />
           </Field>
         </Panel>
         <div className="sticky bottom-0 -mx-4 border-t border-line bg-bg px-4 py-3 xl:static xl:mx-0 xl:border-0 xl:bg-transparent xl:p-0">
-          <SubmitButton className="w-full">{editing ? "Saqlash" : "Kategoriyani yaratish"}</SubmitButton>
+          <SubmitButton className="w-full">{editing ? t("Saqlash") : t("Kategoriyani yaratish")}</SubmitButton>
         </div>
       </aside>
     </form>

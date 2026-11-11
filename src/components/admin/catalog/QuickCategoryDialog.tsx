@@ -5,6 +5,7 @@ import { quickCreateCategory } from "@/app/admin/_actions/catalog";
 import { slugify } from "@/lib/admin/slugify";
 import { Field, Notice, buttonClass, inputClass, secondaryButtonClass } from "@/components/admin/ui";
 import { AdminDialog } from "./AdminDialog";
+import { useT } from "@/lib/admin/i18n/client";
 
 /*
   "+ Yangi kategoriya" from inside the product form. No <form> here: the
@@ -13,6 +14,7 @@ import { AdminDialog } from "./AdminDialog";
   Description and picture can be added later on the category's own page.
 */
 export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolean; onClose: () => void; onCreated: (cat: { slug: string; name: string }) => void }) {
+  const t = useT();
   const [uz, setUz] = useState("");
   const [ru, setRu] = useState("");
   const [slug, setSlug] = useState("");
@@ -30,7 +32,7 @@ export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolea
     try {
       const result = await quickCreateCategory(fd);
       if (result.error || !result.slug) {
-        setError(result.error ?? "Saqlab boʻlmadi.");
+        setError(result.error ?? t("Saqlab boʻlmadi."));
         return;
       }
       onCreated({ slug: result.slug, name: result.name ?? uz });
@@ -39,7 +41,7 @@ export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolea
       setSlug("");
       onClose();
     } catch {
-      setError("Saqlab boʻlmadi — internetni tekshirib qayta urinib koʻring.");
+      setError(t("Saqlab boʻlmadi — internetni tekshirib qayta urinib koʻring."));
     } finally {
       setPending(false);
     }
@@ -56,25 +58,25 @@ export function QuickCategoryDialog({ open, onClose, onCreated }: { open: boolea
     <AdminDialog
       open={open}
       onClose={onClose}
-      title="Yangi kategoriya"
-      lead="Yaratilgach shu mahsulotga tanlanadi. Tavsif va rasmni keyin «Kategoriyalar» boʻlimida qoʻshasiz."
+      title={t("Yangi kategoriya")}
+      lead={t("Yaratilgach shu mahsulotga tanlanadi. Tavsif va rasmni keyin «Kategoriyalar» boʻlimida qoʻshasiz.")}
       footer={
         <>
-          <button type="button" onClick={onClose} className={secondaryButtonClass}>Bekor qilish</button>
-          <button type="button" onClick={() => void submit()} disabled={pending} className={buttonClass}>{pending ? "Saqlanmoqda…" : "Yaratish"}</button>
+          <button type="button" onClick={onClose} className={secondaryButtonClass}>{t("Bekor qilish")}</button>
+          <button type="button" onClick={() => void submit()} disabled={pending} className={buttonClass}>{pending ? t("Saqlanmoqda…") : t("Yaratish")}</button>
         </>
       }
     >
       <div className="flex flex-col gap-4">
         {error && <Notice tone="error">{error}</Notice>}
-        <Field label="Nomi (uz)">
+        <Field label={t("Nomi (uz)")}>
           <input value={uz} onChange={(e) => setUz(e.target.value)} onKeyDown={onEnter} required className={inputClass} />
         </Field>
-        <Field label="Nomi (ru)">
+        <Field label={t("Nomi (ru)")}>
           <input value={ru} onChange={(e) => setRu(e.target.value)} onKeyDown={onEnter} required className={inputClass} />
         </Field>
-        <Field label="Slug (URL)" hint={preview ? `govita.uz/uz/products/${preview}` : "Boʻsh qolsa oʻzbekcha nomdan yaratiladi"}>
-          <input value={slug} onChange={(e) => setSlug(e.target.value)} onKeyDown={onEnter} placeholder={slugify(uz) || "masalan: omega-3"} className={inputClass} />
+        <Field label={t("Slug (URL)")} hint={preview ? `govita.uz/uz/products/${preview}` : t("Boʻsh qolsa oʻzbekcha nomdan yaratiladi")}>
+          <input value={slug} onChange={(e) => setSlug(e.target.value)} onKeyDown={onEnter} placeholder={slugify(uz) || t("masalan: omega-3")} className={inputClass} />
         </Field>
       </div>
     </AdminDialog>

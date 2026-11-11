@@ -4,6 +4,7 @@ import { useCallback, useEffect, useId, useRef, useState, type ReactNode } from 
 import { createPortal } from "react-dom";
 import { useDialog } from "@/lib/ui/useDialog";
 import { cn } from "@/lib/utils";
+import { useT } from "@/lib/admin/i18n/client";
 
 /*
   A modal for the catalogue forms. Rendered into <body> through a portal, so
@@ -28,6 +29,7 @@ export function AdminDialog({
   footer?: ReactNode;
   wide?: boolean;
 }) {
+  const t = useT();
   // useDialog re-runs (and re-focuses) when its callback changes; callers pass inline arrows.
   const latestClose = useRef(onClose);
   useEffect(() => {
@@ -52,7 +54,7 @@ export function AdminDialog({
 
   return createPortal(
     <div className="fixed inset-0 z-50 flex items-end justify-center sm:items-center sm:p-6">
-      <button type="button" aria-label="Yopish" tabIndex={-1} className="absolute inset-0 bg-ink/40" onClick={onClose} />
+      <button type="button" aria-label={t("Yopish")} tabIndex={-1} className="absolute inset-0 bg-ink/40" onClick={onClose} />
       <div
         ref={ref}
         role="dialog"
@@ -69,7 +71,7 @@ export function AdminDialog({
             <h2 id={titleId} className="text-[20px] font-bold leading-7 text-ink">{title}</h2>
             {lead && <p className="mt-1 text-[14px] leading-5 text-muted">{lead}</p>}
           </div>
-          <button type="button" onClick={onClose} aria-label="Yopish" className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] text-ink hover:bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30">
+          <button type="button" onClick={onClose} aria-label={t("Yopish")} className="grid h-11 w-11 shrink-0 place-items-center rounded-[12px] text-ink hover:bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" className="h-5 w-5"><path d="M6 6l12 12M18 6 6 18" /></svg>
           </button>
         </div>

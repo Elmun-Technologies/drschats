@@ -171,8 +171,8 @@ export function EmptyState({ title, children, action }: { title: string; childre
 }
 
 /** Horizontal bars for a ranked list (channels, products). Values share one scale. */
-export function BarList({ rows, format = formatNumber, empty = "Maʼlumot yoʻq" }: { rows: { label: ReactNode; value: number; note?: ReactNode; href?: string }[]; format?: (n: number) => string; empty?: string }) {
-  if (rows.length === 0) return <p className="rounded-[12px] bg-tile px-4 py-5 text-center text-[14px] text-muted">{empty}</p>;
+export function BarList({ rows, format = formatNumber, empty }: { rows: { label: ReactNode; value: number; note?: ReactNode; href?: string }[]; format?: (n: number) => string; empty?: string }) {
+  if (rows.length === 0) return <p className="rounded-[12px] bg-tile px-4 py-5 text-center text-[14px] text-muted">{empty ?? tr("Maʼlumot yoʻq")}</p>;
   const max = Math.max(1, ...rows.map((row) => row.value));
   return (
     <ul className="flex flex-col gap-3">
@@ -219,13 +219,19 @@ export function somShort(value: number): string {
   differs between Node and browsers (an English or "-3 h" fallback in some
   builds), and the same string renders on both sides.
 */
-const UNIT = { minute: "daqiqa", hour: "soat", day: "kun", month: "oy", year: "yil" } as const;
+const UNIT = {
+  minute: ["{n} daqiqa oldin", "{n} daqiqadan keyin"],
+  hour: ["{n} soat oldin", "{n} soatdan keyin"],
+  day: ["{n} kun oldin", "{n} kundan keyin"],
+  month: ["{n} oy oldin", "{n} oydan keyin"],
+  year: ["{n} yil oldin", "{n} yildan keyin"],
+} as const;
 
 function relativeUz(value: number, unit: keyof typeof UNIT): string {
-  if (unit === "day" && value === -1) return "kecha";
-  if (unit === "day" && value === 1) return "ertaga";
-  const n = Math.abs(value);
-  return value < 0 ? `${n} ${UNIT[unit]} oldin` : `${n} ${UNIT[unit]}dan keyin`;
+  if (unit === "day" && value === -1) return tr("kecha");
+  if (unit === "day" && value === 1) return tr("ertaga");
+  const [past, future] = UNIT[unit];
+  return tr(value < 0 ? past : future, { n: Math.abs(value) });
 }
 
 /** "3 soat oldin" — the panel speaks in how long ago, the tooltip has the exact time. */
@@ -233,7 +239,7 @@ export function timeAgo(date: Date | null | undefined, now = Date.now()): string
   if (!date) return "—";
   const seconds = Math.round((date.getTime() - now) / 1000);
   const abs = Math.abs(seconds);
-  if (abs < 60) return "hozirgina";
+  if (abs < 60) return tr("hozirgina");
   if (abs < 3600) return relativeUz(Math.round(seconds / 60), "minute");
   if (abs < 86400) return relativeUz(Math.round(seconds / 3600), "hour");
   if (abs < 86400 * 45) return relativeUz(Math.round(seconds / 86400), "day");

@@ -17,14 +17,16 @@ import { PENDING_2FA_COOKIE, SESSION_COOKIE } from "@/lib/admin/cookie";
 import { hashRecoveryCode, normalizeRecoveryCode, verifyTotp } from "@/lib/admin/totp";
 import { openTotpSecret } from "@/lib/admin/totp-store";
 import { auditLog } from "@/lib/admin/audit";
+import { initAdminLocale, t } from "@/lib/admin/i18n/server";
 
 export type AuthState = { error?: string } | undefined;
 
 const LOGIN_RATE = { limit: 5, windowMs: 10 * 60 * 1000 };
 
 /* Same answer for an unknown email and a wrong password: no account enumeration. */
-const BAD_LOGIN = "Email yoki parol notoʻgʻri.";
-const TOO_MANY = "Urinishlar juda koʻp. 10 daqiqadan keyin qayta urining.";
+/* Sign-in runs before requireAdmin, so each action reads the language cookie itself (initAdminLocale). */
+const badLogin = () => t("Email yoki parol notoʻgʻri.");
+const tooMany = () => t("Urinishlar juda koʻp. 10 daqiqadan keyin qayta urining.");
 
 /*
   Failed passwords, counted in Postgres (lib/rate-limit-store.ts), so a
@@ -41,13 +43,14 @@ const EMAIL_SLOW = { limit: 20, windowMs: 60 * 60 * 1000 };
 const SLOW_DOWN_MS = 2000;
 
 export async function login(_: AuthState, form: FormData): Promise<AuthState> {
+  await initAdminLocale();
   const email = String(form.get("email") ?? "").trim().toLowerCase().slice(0, 160);
   const password = String(form.get("password") ?? "").slice(0, 200);
   const ip = clientIp(await headers());
-  if (!email || !password) return { error: BAD_LOGIN };
+  if (!email || !password) return { error: badLogin() };
   const pair = `${ip}|${email}`;
   if (!(await hitRateLimit("admin-login-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs })) || (await rateLimitReached(FAIL_SCOPE, pair, LOGIN_RATE))) {
-    return { error: TOO_MANY };
+    return { error: tooMany() };
   }
   if (await rateLimitReached("admin-login-email", email, EMAIL_SLOW)) await new Promise((resolve) => setTimeout(resolve, SLOW_DOWN_MS));
 
@@ -58,7 +61,7 @@ export async function login(_: AuthState, form: FormData): Promise<AuthState> {
   if (!user || !ok) {
     await hitRateLimit(FAIL_SCOPE, pair, LOGIN_RATE);
     await hitRateLimit("admin-login-email", email, EMAIL_SLOW);
-    return { error: BAD_LOGIN };
+    return { error: badLogin() };
   }
   await resetRateLimit(FAIL_SCOPE, pair);
 
@@ -80,21 +83,22 @@ const CODE_FAIL_SCOPE = "admin-2fa-fail";
   codes (each works once). Five wrong codes end the half-finished sign-in.
 */
 export async function verifySecondFactor(_: AuthState, form: FormData): Promise<AuthState> {
+  await initAdminLocale();
   const pending = readPendingToken((await cookies()).get(PENDING_2FA_COOKIE)?.value);
-  if (!pending) return { error: "Kirish muddati tugadi. Email va parolni qayta kiriting." };
+  if (!pending) return { error: t("Kirish muddati tugadi. Email va parolni qayta kiriting.") };
   const ip = clientIp(await headers());
-  if (!(await hitRateLimit("admin-2fa-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs }))) return { error: TOO_MANY };
+  if (!(await hitRateLimit("admin-2fa-ip", ip, { limit: 20, windowMs: LOGIN_RATE.windowMs }))) return { error: tooMany() };
   const now = Date.now();
   if (await rateLimitReached(CODE_FAIL_SCOPE, String(pending.uid), LOGIN_RATE)) {
     await clearPendingCookie();
-    return { error: TOO_MANY };
+    return { error: tooMany() };
   }
 
   const db = getDb();
   const [user] = await db.select().from(adminUsers).where(eq(adminUsers.id, pending.uid)).limit(1);
   if (!user || user.sessionEpoch !== pending.epoch || !user.totpEnabledAt || !user.totpSecret) {
     await clearPendingCookie();
-    return { error: "Kirish muddati tugadi. Email va parolni qayta kiriting." };
+    return { error: t("Kirish muddati tugadi. Email va parolni qayta kiriting.") };
   }
 
   const code = String(form.get("code") ?? "").trim().slice(0, 40);
@@ -121,7 +125,7 @@ export async function verifySecondFactor(_: AuthState, form: FormData): Promise<
 
   if (!accepted) {
     await hitRateLimit(CODE_FAIL_SCOPE, String(user.id), LOGIN_RATE);
-    return { error: "Kod notoʻgʻri yoki eskirgan." };
+    return { error: t("Kod notoʻgʻri yoki eskirgan.") };
   }
   await resetRateLimit(CODE_FAIL_SCOPE, String(user.id));
   await clearPendingCookie();
@@ -180,11 +184,12 @@ function tokenMatches(given: string): boolean {
   inside the panel.
 */
 export async function setupFirstAdmin(_: AuthState, form: FormData): Promise<AuthState> {
+  await initAdminLocale();
   const ip = clientIp(await headers());
-  if (!(await hitRateLimit("admin-setup", ip, LOGIN_RATE))) return { error: "Urinishlar juda koʻp." };
+  if (!(await hitRateLimit("admin-setup", ip, LOGIN_RATE))) return { error: t("Urinishlar juda koʻp.") };
   const parsed = setupSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: `Maydonlarni tekshiring: parol kamida ${MIN_PASSWORD_LENGTH} belgi.` };
-  if (!tokenMatches(parsed.data.token)) return { error: "Sozlash kaliti notoʻgʻri." };
+  if (!parsed.success) return { error: t("Maydonlarni tekshiring: parol kamida {n} belgi.", { n: MIN_PASSWORD_LENGTH }) };
+  if (!tokenMatches(parsed.data.token)) return { error: t("Sozlash kaliti notoʻgʻri.") };
 
   const passwordHash = await hashPassword(parsed.data.password);
   // Count and insert under one lock: two simultaneous setups must not both see "no admins".
@@ -198,7 +203,7 @@ export async function setupFirstAdmin(_: AuthState, form: FormData): Promise<Aut
       .returning({ id: adminUsers.id, epoch: adminUsers.sessionEpoch });
     return row;
   });
-  if (!user) return { error: "Administrator allaqachon yaratilgan." };
+  if (!user) return { error: t("Administrator allaqachon yaratilgan.") };
   await setSessionCookie(user.id, user.epoch);
   redirect("/admin");
 }

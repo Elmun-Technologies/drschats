@@ -11,6 +11,7 @@ import { notifyCustomerOfOrder } from "@/lib/sms/transactional-server";
 import { syncOrderStock } from "@/lib/catalog/order-stock";
 import { afterOrderStatus } from "@/lib/loyalty/order-status";
 import type { FormState } from "./catalog";
+import { t } from "@/lib/admin/i18n/server";
 
 const statusSchema = z.object({
   number: z.string().min(1),
@@ -21,10 +22,10 @@ const statusSchema = z.object({
 export async function updateOrder(_: FormState, form: FormData): Promise<FormState> {
   const admin = await requireAdmin("orders");
   const parsed = statusSchema.safeParse(Object.fromEntries(form));
-  if (!parsed.success) return { error: "Holatni tanlang." };
+  if (!parsed.success) return { error: t("Holatni tanlang.") };
   const db = getDb();
   const [before] = await db.select({ status: orders.status }).from(orders).where(eq(orders.number, parsed.data.number)).limit(1);
-  if (!before) return { error: "Buyurtma topilmadi." };
+  if (!before) return { error: t("Buyurtma topilmadi.") };
   await db
     .update(orders)
     .set({ status: parsed.data.status, adminNote: parsed.data.adminNote?.trim() || null, updatedAt: new Date() })
@@ -35,7 +36,7 @@ export async function updateOrder(_: FormState, form: FormData): Promise<FormSta
   if (before.status !== parsed.data.status) await notifyCustomerOfOrder(parsed.data.number, parsed.data.status, loyaltyLines);
   await auditLog(admin, "order.update", parsed.data.number, { from: before.status, to: parsed.data.status, note: Boolean(parsed.data.adminNote?.trim()) });
   revalidatePath("/admin/orders");
-  return { ok: "Saqlandi." };
+  return { ok: t("Saqlandi.") };
 }
 
 const quickSchema = z.object({ number: z.string().min(1).max(20), status: z.enum(ORDER_STATUSES) });

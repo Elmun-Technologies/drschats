@@ -11,13 +11,14 @@ import { LowStockDefaultForm, ReleaseHoursForm, StockButton } from "@/components
 import { readLowStockDefault, readReleaseHours } from "@/lib/catalog/stock";
 import { isLowStock, stockLabel } from "@/lib/catalog/stock-rules";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Mahsulotlar" };
+export const generateMetadata = () => adminTitle("Mahsulotlar");
 
 const FILTERS = {
   all: { label: "Hammasi", test: () => true },
   live: { label: "Sotuvda", test: (p: Row) => p.kind !== "unlisted" && p.inStock },
-  out: { label: "Tugagan", test: (p: Row) => p.kind !== "unlisted" && !p.inStock },
+  out: { label: "Tugaganlar", test: (p: Row) => p.kind !== "unlisted" && !p.inStock },
   low: { label: "Kam qolganlar", test: (p: Row) => p.kind !== "unlisted" && isLowStock(p.stockQty, p.lowAt) },
   sale: { label: "Chegirmada", test: (p: Row) => Boolean(p.oldPrice) },
   noimage: { label: "Rasmsiz", test: (p: Row) => !p.cutout && p.images.length === 0 },
@@ -36,6 +37,13 @@ const SORTS = {
 } as const;
 type Sort = keyof typeof SORTS;
 
+/* stockLabel() answers in Uzbek; the same four shapes in the admin's language. */
+function stockText(qty: number | null, lowAt: number): string {
+  if (qty == null) return t("kuzatilmaydi");
+  if (qty <= 0) return t("tugagan");
+  return stockLabel(qty, lowAt).low ? t("kam: {n}", { n: qty }) : t("{n} ta", { n: qty });
+}
+
 function first(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
@@ -45,16 +53,16 @@ function importedNotice(raw: string | undefined): string | null {
   if (!raw || !/^\d+(\.\d+){4}$/.test(raw)) return null;
   const [p, c, b, img, catImg] = raw.split(".").map(Number);
   const parts = [
-    p > 0 && `${p} ta mahsulot`,
-    c > 0 && `${c} ta kategoriya`,
-    b > 0 && `${b} ta brend`,
+    p > 0 && t("{n} ta mahsulot", { n: p }),
+    c > 0 && t("{n} ta kategoriya", { n: c }),
+    b > 0 && t("{n} ta brend", { n: b }),
   ].filter(Boolean);
   const filled = img + catImg;
-  if (parts.length === 0 && filled === 0) return "Hammasi allaqachon panelda edi — hech narsa oʻzgarmadi.";
+  if (parts.length === 0 && filled === 0) return t("Hammasi allaqachon panelda edi — hech narsa oʻzgarmadi.");
   return [
-    parts.length > 0 && `Panelga olindi: ${parts.join(", ")}.`,
-    filled > 0 && `${filled} ta yozuvning boʻsh rasmi toʻldirildi.`,
-    "Mavjud mahsulotlar oʻzgartirilmadi.",
+    parts.length > 0 && t("Panelga olindi: {list}.", { list: parts.join(", ") }),
+    filled > 0 && t("{n} ta yozuvning boʻsh rasmi toʻldirildi.", { n: filled }),
+    t("Mavjud mahsulotlar oʻzgartirilmadi."),
   ]
     .filter(Boolean)
     .join(" ");
@@ -99,59 +107,59 @@ export default async function AdminProductsPage({
     <>
       <CatalogTabs active="products" />
       <PageHeader
-        title="Mahsulotlar"
-        lead="Bu yerda qoʻshilgan yoki oʻzgartirilgan mahsulot saytda darhol koʻrinadi."
-        actions={<Link href="/admin/products/new" className={buttonClass}>+ Yangi mahsulot</Link>}
+        title={t("Mahsulotlar")}
+        lead={t("Bu yerda qoʻshilgan yoki oʻzgartirilgan mahsulot saytda darhol koʻrinadi.")}
+        actions={<Link href="/admin/products/new" className={buttonClass}>{t("+ Yangi mahsulot")}</Link>}
       />
-      {params.deleted && <div className="mb-4"><Notice tone="ok">Mahsulot oʻchirildi.</Notice></div>}
+      {params.deleted && <div className="mb-4"><Notice tone="ok">{t("Mahsulot oʻchirildi.")}</Notice></div>}
       {imported && <div className="mb-4"><Notice tone="ok">{imported}</Notice></div>}
       {showSync && <BuiltInSyncCard diff={status.diff} compact={status.empty} />}
 
       <form action="/admin/products" className="mb-4 grid gap-2 sm:grid-cols-2 lg:flex lg:flex-wrap" role="search">
         {filter !== "all" && <input type="hidden" name="filter" value={filter} />}
         {brand && <input type="hidden" name="brand" value={brand} />}
-        <input name="q" defaultValue={q} placeholder="Nomi yoki slug" aria-label="Mahsulot qidirish" className={`${inputClass} sm:col-span-2 lg:max-w-[320px]`} />
-        <select name="category" defaultValue={category} aria-label="Kategoriya" className={`${inputClass} lg:max-w-[240px]`}>
-          <option value="">Barcha kategoriyalar</option>
+        <input name="q" defaultValue={q} placeholder={t("Nomi yoki slug")} aria-label={t("Mahsulot qidirish")} className={`${inputClass} sm:col-span-2 lg:max-w-[320px]`} />
+        <select name="category" defaultValue={category} aria-label={t("Kategoriya")} className={`${inputClass} lg:max-w-[240px]`}>
+          <option value="">{t("Barcha kategoriyalar")}</option>
           {cats.map((c) => <option key={c.slug} value={c.slug}>{c.name.uz}</option>)}
-          <option value="none">Kategoriyasiz</option>
+          <option value="none">{t("Kategoriyasiz")}</option>
         </select>
-        <select name="sort" defaultValue={sort} aria-label="Saralash" className={`${inputClass} lg:max-w-[220px]`}>
-          {(Object.keys(SORTS) as Sort[]).map((key) => <option key={key} value={key}>{SORTS[key].label}</option>)}
+        <select name="sort" defaultValue={sort} aria-label={t("Saralash")} className={`${inputClass} lg:max-w-[220px]`}>
+          {(Object.keys(SORTS) as Sort[]).map((key) => <option key={key} value={key}>{t(SORTS[key].label)}</option>)}
         </select>
         <div className="flex gap-2 sm:col-span-2 lg:col-span-1">
-          <button type="submit" className={`${buttonClass} flex-1 lg:flex-none`}>Koʻrsatish</button>
-          {filtered && <Link href={`/admin/products${filter !== "all" ? `?filter=${filter}` : ""}`} className={`${secondaryButtonClass} flex-1 lg:flex-none`}>Tozalash</Link>}
+          <button type="submit" className={`${buttonClass} flex-1 lg:flex-none`}>{t("Koʻrsatish")}</button>
+          {filtered && <Link href={`/admin/products${filter !== "all" ? `?filter=${filter}` : ""}`} className={`${secondaryButtonClass} flex-1 lg:flex-none`}>{t("Tozalash")}</Link>}
         </div>
       </form>
       <ChipNav
-        label="Holat boʻyicha"
+        label={t("Holat boʻyicha")}
         className="mb-4"
         items={(Object.keys(FILTERS) as Filter[])
           .filter((key) => key !== "noimage" || inCategory.some(FILTERS.noimage.test))
           .filter((key) => key !== "low" || anyTracked)
-          .map((key) => ({ href: href({ filter: key }), label: FILTERS[key].label, active: key === filter, count: inCategory.filter(FILTERS[key].test).length }))}
+          .map((key) => ({ href: href({ filter: key }), label: t(FILTERS[key].label), active: key === filter, count: inCategory.filter(FILTERS[key].test).length }))}
       />
       <Card>
         {rows.length === 0 ? (
           all.length === 0 && !q ? (
             <EmptyState
-              title="Panelda hali mahsulot yoʻq"
+              title={t("Panelda hali mahsulot yoʻq")}
               action={
                 <div className="flex flex-wrap justify-center gap-2">
-                  <form action={importBuiltInCatalog}><SubmitButton pendingLabel="Olinmoqda…">Saytdagi mahsulotlarni olish</SubmitButton></form>
-                  <Link href="/admin/products/new" className={secondaryButtonClass}>+ Yangi mahsulot</Link>
+                  <form action={importBuiltInCatalog}><SubmitButton pendingLabel={t("Olinmoqda…")}>{t("Saytdagi mahsulotlarni olish")}</SubmitButton></form>
+                  <Link href="/admin/products/new" className={secondaryButtonClass}>{t("+ Yangi mahsulot")}</Link>
                 </div>
               }
             >
-              Saytdagi mahsulotlarni rasmlari bilan bir bosishda panelga olish mumkin.
+              {t("Saytdagi mahsulotlarni rasmlari bilan bir bosishda panelga olish mumkin.")}
             </EmptyState>
           ) : (
-            <EmptyState title="Mahsulot topilmadi" action={<Link href="/admin/products/new" className={buttonClass}>+ Yangi mahsulot</Link>} />
+            <EmptyState title={t("Mahsulot topilmadi")} action={<Link href="/admin/products/new" className={buttonClass}>{t("+ Yangi mahsulot")}</Link>} />
           )
         ) : (
           <>
-            <p className="mb-2 text-[13px] text-muted">{rows.length} ta mahsulot · {SORTS[sort].label.toLowerCase()}</p>
+            <p className="mb-2 text-[13px] text-muted">{t("{n} ta mahsulot", { n: rows.length })} · {t(SORTS[sort].label).toLowerCase()}</p>
             <ul className="divide-y divide-line">
               {rows.map((p) => {
                 const image = p.cutout ?? p.images[0];
@@ -163,17 +171,17 @@ export default async function AdminProductsPage({
                         {image ? (
                           <Image src={image} alt="" fill unoptimized={!image.startsWith("/")} sizes="64px" className="object-contain p-1.5" />
                         ) : (
-                          <span className="text-[12px] text-muted">rasmsiz</span>
+                          <span className="text-[12px] text-muted">{t("rasmsiz")}</span>
                         )}
                       </span>
                       <span className="flex min-w-0 flex-1 flex-col gap-1.5">
                         <span className="line-clamp-2 text-[15px] font-semibold leading-5 text-ink sm:truncate">{p.name || p.slug}</span>
                         <span className="flex flex-wrap items-center gap-1.5">
-                          <Pill tone={cat ? "neutral" : "outline"}>{cat ?? "kategoriyasiz"}</Pill>
-                          {p.kind === "unlisted" && <Pill tone="muted">sotuvdan olingan</Pill>}
-                          {p.kind !== "unlisted" && !p.inStock && p.stockQty == null && <Pill tone="outline">tugagan</Pill>}
-                          {p.stockQty != null && <Pill tone={stockLabel(p.stockQty, p.lowAt).tone} className="sm:hidden">{stockLabel(p.stockQty, p.lowAt).label}</Pill>}
-                          {p.kind === "addon" && <Pill tone="muted">qoʻshimcha</Pill>}
+                          <Pill tone={cat ? "neutral" : "outline"}>{cat ?? t("kategoriyasiz")}</Pill>
+                          {p.kind === "unlisted" && <Pill tone="muted">{t("sotuvdan olingan")}</Pill>}
+                          {p.kind !== "unlisted" && !p.inStock && p.stockQty == null && <Pill tone="outline">{t("tugagan")}</Pill>}
+                          {p.stockQty != null && <Pill tone={stockLabel(p.stockQty, p.lowAt).tone} className="sm:hidden">{stockText(p.stockQty, p.lowAt)}</Pill>}
+                          {p.kind === "addon" && <Pill tone="muted">{t("qoʻshimcha")}</Pill>}
                         </span>
                       </span>
                       <span className="shrink-0 text-right text-[14px] font-semibold tabular-nums text-ink sm:text-[15px]">
@@ -188,8 +196,8 @@ export default async function AdminProductsPage({
                     {p.kind !== "unlisted" && p.stockQty == null && (
                       <form action={toggleProductStock} className="hidden shrink-0 sm:block">
                         <input type="hidden" name="id" value={p.id} />
-                        <button type="submit" className="h-11 w-[136px] rounded-[12px] bg-tile text-[14px] font-semibold text-ink hover:bg-tile-hover" title={p.inStock ? "Tugadi deb belgilash" : "Omborda bor deb belgilash"}>
-                          {p.inStock ? "Tugadi" : "Omborga keldi"}
+                        <button type="submit" className="h-11 w-[136px] rounded-[12px] bg-tile text-[14px] font-semibold text-ink hover:bg-tile-hover" title={p.inStock ? t("Tugadi deb belgilash") : t("Omborda bor deb belgilash")}>
+                          {p.inStock ? t("Tugadi") : t("Omborga keldi")}
                         </button>
                       </form>
                     )}
@@ -200,7 +208,7 @@ export default async function AdminProductsPage({
           </>
         )}
       </Card>
-      <Card title="Ombor" lead="«Ombordagi soni» kiritilgan mahsulotlarda buyurtma sonni kamaytiradi, bekor qilish qaytaradi; 0 boʻlsa mahsulot «tugagan» boʻladi. Soni kiritilmagan mahsulot avvalgidek ishlaydi." className="mt-5">
+      <Card title={t("Ombor")} lead={t("«Ombordagi soni» kiritilgan mahsulotlarda buyurtma sonni kamaytiradi, bekor qilish qaytaradi; 0 boʻlsa mahsulot «tugagan» boʻladi. Soni kiritilmagan mahsulot avvalgidek ishlaydi.")} className="mt-5">
         <div className="flex flex-col gap-4">
           <LowStockDefaultForm value={lowStockDefault} />
           <ReleaseHoursForm value={releaseHours} />

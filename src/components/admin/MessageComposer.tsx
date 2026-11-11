@@ -14,6 +14,7 @@ import {
 } from "@/lib/messaging/template";
 import { cn } from "@/lib/utils";
 import { textareaClass } from "./ui";
+import { useT } from "@/lib/admin/i18n/client";
 
 /*
   A message template editor: textarea, placeholder chips that insert at the
@@ -23,12 +24,17 @@ import { textareaClass } from "./ui";
 */
 
 export function SmsMeter({ text, transliterate = false, className }: { text: string; transliterate?: boolean; className?: string }) {
+  const t = useT();
   const c = countSms(prepareSmsText(text, { transliterate }));
   const heavy = c.parts > 3;
   return (
     <p className={cn("text-[13px] tabular-nums", heavy ? "font-semibold text-ink" : "text-muted", className)} aria-live="polite">
-      SMS: {c.parts} qism · {c.length} belgi · {c.encoding === "GSM-7" ? "lotin (GSM-7, 160/153)" : "Unicode (UCS-2, 70/67)"}
-      {heavy && " — juda uzun, qisqartiring"}
+      {t("SMS: {parts} qism · {length} belgi · {encoding}", {
+        parts: c.parts,
+        length: c.length,
+        encoding: c.encoding === "GSM-7" ? t("lotin (GSM-7, 160/153)") : "Unicode (UCS-2, 70/67)",
+      })}
+      {heavy && ` — ${t("juda uzun, qisqartiring")}`}
     </p>
   );
 }
@@ -56,6 +62,7 @@ export function TemplateInput({
   rows?: number;
   maxLength?: number;
 }) {
+  const t = useT();
   const ref = useRef<HTMLTextAreaElement>(null);
   const id = useId();
 
@@ -89,13 +96,13 @@ export function TemplateInput({
         maxLength={maxLength}
         className={textareaClass}
       />
-      <div className="flex flex-wrap gap-1.5" role="group" aria-label="Oʻzgaruvchi qoʻshish">
+      <div className="flex flex-wrap gap-1.5" role="group" aria-label={t("Oʻzgaruvchi qoʻshish")}>
         {placeholders.map((key) => (
           <button
             key={key}
             type="button"
             onClick={() => insert(key)}
-            title={PLACEHOLDER_LABELS[key]}
+            title={t(PLACEHOLDER_LABELS[key])}
             className="inline-flex min-h-11 items-center rounded-[12px] bg-tile px-3 font-mono text-[13px] font-semibold text-ink transition-colors hover:bg-tile-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30"
           >
             {`{${key}}`}
@@ -103,7 +110,7 @@ export function TemplateInput({
         ))}
       </div>
       <div className="rounded-[12px] border border-line bg-white px-3.5 py-3">
-        <p className="text-[13px] font-semibold text-muted">Koʻrinishi (namuna qiymatlar bilan)</p>
+        <p className="text-[13px] font-semibold text-muted">{t("Koʻrinishi (namuna qiymatlar bilan)")}</p>
         <p className="mt-1 whitespace-pre-wrap break-words text-[14px] leading-5 text-ink">{preview || "—"}</p>
         {showSms && <SmsMeter text={smsText} transliterate={transliterate} className="mt-2" />}
       </div>

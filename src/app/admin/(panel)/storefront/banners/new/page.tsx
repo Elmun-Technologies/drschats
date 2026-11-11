@@ -8,8 +8,9 @@ import { toTashkentInput } from "@/lib/admin/product-form";
 import { BannerForm, type BannerFormValues } from "@/components/admin/storefront/BannerForm";
 import { PageHeader, secondaryButtonClass } from "@/components/admin/ui";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Yangi banner" };
+export const generateMetadata = () => adminTitle("Yangi banner");
 
 const PLACEMENTS = ["hero", "strip", "category"] as const;
 
@@ -54,14 +55,14 @@ export default async function NewBannerPage({ searchParams }: { searchParams: Pr
   return (
     <>
       <PageHeader
-        eyebrow="Vitrina"
-        title={copy ? `Yangi variant (${copy.variant})` : "Yangi banner"}
+        eyebrow={t("Vitrina")}
+        title={copy ? t("Yangi variant ({variant})", { variant: copy.variant }) : t("Yangi banner")}
         lead={
           copy
-            ? `«${copy.experiment}» tajribasi uchun ikkinchi variant. Saqlanganda asl banner shu tajribaning ${copy.variant === "B" ? "A" : "B"} varianti boʻladi.`
-            : "Banner muddat ichida saytda chiqadi. Bosh sahifada faol banner boʻlmasa oʻrnatilgan slaydlar koʻrinadi."
+            ? t("«{experiment}» tajribasi uchun ikkinchi variant. Saqlanganda asl banner shu tajribaning {variant} varianti boʻladi.", { experiment: copy.experiment, variant: copy.variant === "B" ? "A" : "B" })
+            : t("Banner muddat ichida saytda chiqadi. Bosh sahifada faol banner boʻlmasa oʻrnatilgan slaydlar koʻrinadi.")
         }
-        actions={<Link href="/admin/storefront" className={secondaryButtonClass}>← Bannerlar</Link>}
+        actions={<Link href="/admin/storefront" className={secondaryButtonClass}>{t("← Bannerlar")}</Link>}
       />
       <BannerForm
         repoImages={repoImages}

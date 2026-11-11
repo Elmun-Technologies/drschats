@@ -158,7 +158,7 @@ async function requestPath(): Promise<string | null> {
  * check falls back to the owner's — closed, not open.
  */
 export async function requireAdmin(permission?: Permission): Promise<AdminUser> {
-  // The language of this request (lib/admin/i18n): every t("…") after this point answers in it.
+  // The language of this request (lib/admin/i18n): every t() call after this point answers in it.
   await initAdminLocale();
   const user = await currentAdmin();
   if (!user) redirect("/admin/login");

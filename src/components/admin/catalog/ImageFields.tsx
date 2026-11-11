@@ -7,6 +7,7 @@ import type { RepoImage, RepoImageKind } from "@/lib/admin/repo-images";
 import { Field, inputClass, secondaryButtonClass, smallButtonClass, smallDangerButtonClass } from "@/components/admin/ui";
 import { cn } from "@/lib/utils";
 import { ImagePicker } from "./ImagePicker";
+import { useT } from "@/lib/admin/i18n/client";
 
 const iconButton =
   "grid h-11 w-11 place-items-center rounded-[12px] bg-tile text-ink transition-colors hover:bg-tile-hover disabled:opacity-40 disabled:hover:bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/30";
@@ -42,6 +43,7 @@ export function ImageListField({
   slug: string;
   storageReady: boolean;
 }) {
+  const t = useT();
   const [pickerOpen, setPickerOpen] = useState(false);
   const [url, setUrl] = useState("");
   const add = (src: string) => {
@@ -63,19 +65,19 @@ export function ImageListField({
           {value.map((src, i) => (
             <li key={src} className="flex min-w-0 flex-col gap-2 rounded-[16px] border border-line p-2">
               <span className="relative block aspect-square overflow-hidden rounded-[12px] bg-tile">
-                <Image src={src} alt={`Rasm ${i + 1}`} fill unoptimized={!isLocal(src)} sizes="200px" className="object-contain p-2" />
+                <Image src={src} alt={t("Rasm {n}", { n: i + 1 })} fill unoptimized={!isLocal(src)} sizes="200px" className="object-contain p-2" />
                 <span className={cn("absolute left-2 top-2 rounded-full px-2 py-0.5 text-[12px] font-semibold", i === 0 ? "bg-ink text-white" : "bg-white text-ink")}>
-                  {i === 0 ? "Asosiy" : i + 1}
+                  {i === 0 ? t("Asosiy") : i + 1}
                 </span>
               </span>
               <span className="truncate px-0.5 text-[12px] text-muted" title={src}>{src.split("/").pop()}</span>
               <span className="flex items-center gap-1.5">
-                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={`${i + 1}-rasmni oldinga surish`} className={iconButton}><Arrow dir="left" /></button>
-                <button type="button" onClick={() => move(i, i + 1)} disabled={i === value.length - 1} aria-label={`${i + 1}-rasmni orqaga surish`} className={iconButton}><Arrow dir="right" /></button>
+                <button type="button" onClick={() => move(i, i - 1)} disabled={i === 0} aria-label={t("{n}-rasmni oldinga surish", { n: i + 1 })} className={iconButton}><Arrow dir="left" /></button>
+                <button type="button" onClick={() => move(i, i + 1)} disabled={i === value.length - 1} aria-label={t("{n}-rasmni orqaga surish", { n: i + 1 })} className={iconButton}><Arrow dir="right" /></button>
                 <button
                   type="button"
                   onClick={() => onChange(value.filter((_, j) => j !== i))}
-                  aria-label={`${i + 1}-rasmni olib tashlash`}
+                  aria-label={t("{n}-rasmni olib tashlash", { n: i + 1 })}
                   className="ml-auto grid h-11 w-11 place-items-center rounded-[12px] text-red transition-colors hover:bg-tile focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red/30"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true" className="h-5 w-5"><path d="M6 6l12 12M18 6 6 18" /></svg>
@@ -85,16 +87,16 @@ export function ImageListField({
           ))}
         </ol>
       ) : (
-        <p className="rounded-[16px] bg-tile px-4 py-6 text-center text-[14px] text-muted">Hali rasm yoʻq — saytdagi rasmlardan tanlang{storageReady ? ", yuklang" : ""} yoki manzilini kiriting.</p>
+        <p className="rounded-[16px] bg-tile px-4 py-6 text-center text-[14px] text-muted">{storageReady ? t("Hali rasm yoʻq — saytdagi rasmlardan tanlang, yuklang yoki manzilini kiriting.") : t("Hali rasm yoʻq — saytdagi rasmlardan tanlang yoki manzilini kiriting.")}</p>
       )}
 
       <div className="flex flex-wrap items-center gap-2">
-        <button type="button" onClick={() => setPickerOpen(true)} className={secondaryButtonClass}>Saytdagi rasmlardan tanlash</button>
+        <button type="button" onClick={() => setPickerOpen(true)} className={secondaryButtonClass}>{t("Saytdagi rasmlardan tanlash")}</button>
         <ImageUpload ready={storageReady} onUploaded={add} />
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor={`${name}-url`} className="text-[14px] font-semibold text-ink">Manzil boʻyicha qoʻshish</label>
+        <label htmlFor={`${name}-url`} className="text-[14px] font-semibold text-ink">{t("Manzil boʻyicha qoʻshish")}</label>
         <div className="flex gap-2">
           <input
             id={`${name}-url`}
@@ -107,10 +109,10 @@ export function ImageListField({
                 setUrl("");
               }
             }}
-            placeholder="https://… yoki /products/…"
+            placeholder={t("https://… yoki /products/…")}
             className={inputClass}
           />
-          <button type="button" onClick={() => { add(url); setUrl(""); }} disabled={!url.trim()} className={cn(smallButtonClass, "h-12 shrink-0 disabled:opacity-50")}>Qoʻshish</button>
+          <button type="button" onClick={() => { add(url); setUrl(""); }} disabled={!url.trim()} className={cn(smallButtonClass, "h-12 shrink-0 disabled:opacity-50")}>{t("Qoʻshish")}</button>
         </div>
       </div>
 
@@ -122,7 +124,7 @@ export function ImageListField({
         selected={value}
         onPick={add}
         slug={slug}
-        title="Rasm tanlash"
+        title={t("Rasm tanlash")}
         initialKind="photo"
       />
     </div>
@@ -151,6 +153,7 @@ export function SingleImageField({
   initialKind?: RepoImageKind;
   emptyText: string;
 }) {
+  const t = useT();
   const [pickerOpen, setPickerOpen] = useState(false);
   const src = value.trim();
   return (
@@ -164,8 +167,8 @@ export function SingleImageField({
           )}
         </span>
         <div className="flex flex-wrap gap-2">
-          <button type="button" onClick={() => setPickerOpen(true)} className={smallButtonClass}>{src ? "Almashtirish" : "Tanlash"}</button>
-          {src && <button type="button" onClick={() => onChange("")} className={smallDangerButtonClass}>Olib tashlash</button>}
+          <button type="button" onClick={() => setPickerOpen(true)} className={smallButtonClass}>{src ? t("Almashtirish") : t("Tanlash")}</button>
+          {src && <button type="button" onClick={() => onChange("")} className={smallDangerButtonClass}>{t("Olib tashlash")}</button>}
         </div>
       </div>
       <Field label={label} hint={hint}>
@@ -187,19 +190,20 @@ export function SingleImageField({
 }
 
 export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded: (url: string) => void }) {
+  const t = useT();
   const [state, setState] = useState<FormState & { url?: string }>();
   const [pending, setPending] = useState(false);
   const input = useRef<HTMLInputElement>(null);
 
   if (!ready) {
-    return <p className="text-[13px] text-muted">Yangi faylni yuklash uchun Tigris sozlanishi kerak (docs/ADMIN.md).</p>;
+    return <p className="text-[13px] text-muted">{t("Yangi faylni yuklash uchun Tigris sozlanishi kerak (docs/ADMIN.md).")}</p>;
   }
 
   async function onChange() {
     const file = input.current?.files?.[0];
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      setState({ error: "Fayl 5 MB dan katta." });
+      setState({ error: t("Fayl 5 MB dan katta.") });
       if (input.current) input.current.value = "";
       return;
     }
@@ -209,11 +213,11 @@ export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded:
     try {
       // A route handler, not an action: only this request may carry 5 MB (products/upload/route.ts).
       const response = await fetch("/admin/products/upload", { method: "POST", body: fd });
-      const result = (await response.json().catch(() => ({ error: "Yuklab boʻlmadi." }))) as FormState & { url?: string };
+      const result = (await response.json().catch(() => ({ error: t("Yuklab boʻlmadi.") }))) as FormState & { url?: string };
       setState(result);
       if (result?.url) onUploaded(result.url);
     } catch {
-      setState({ error: "Yuklab boʻlmadi — internetni tekshirib qayta urinib koʻring." });
+      setState({ error: t("Yuklab boʻlmadi — internetni tekshirib qayta urinib koʻring.") });
     } finally {
       setPending(false);
       if (input.current) input.current.value = "";
@@ -223,7 +227,7 @@ export function ImageUpload({ ready, onUploaded }: { ready: boolean; onUploaded:
   return (
     <div className="flex flex-wrap items-center gap-3">
       <label className={cn(secondaryButtonClass, "cursor-pointer focus-within:ring-2 focus-within:ring-ink/30")}>
-        {pending ? "Yuklanmoqda…" : "Kompyuterdan yuklash"}
+        {pending ? t("Yuklanmoqda…") : t("Kompyuterdan yuklash")}
         <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" onChange={onChange} className="sr-only" />
       </label>
       {state?.error && <span role="alert" className="text-[14px] text-red">{state.error}</span>}

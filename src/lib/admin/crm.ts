@@ -4,6 +4,7 @@ import { sql, type SQL } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import type { CartSnapshotItem, OrderStatus, Touch, VisitorEventType, VisitorStage } from "@/lib/db/schema";
 import { channelOf } from "@/lib/journey/model";
+import { t } from "@/lib/admin/i18n/server";
 import type { OrderRequest } from "@/lib/shopflow/types";
 
 /*
@@ -160,7 +161,7 @@ export async function devices(days: Range) {
     where exists (select 1 from visitor_events e where e.visitor_id = v.id and e.created_at >= ${ts(from)} and e.created_at < ${ts(to)})
     group by 1 order by 2 desc`);
   const label: Record<string, string> = { mobile: "Telefon", tablet: "Planshet", desktop: "Kompyuter" };
-  return rows.map((row) => ({ device: label[row.device as string] ?? String(row.device), visitors: num(row.visitors) }));
+  return rows.map((row) => ({ device: label[row.device as string] ? t(label[row.device as string]) : String(row.device), visitors: num(row.visitors) }));
 }
 
 export interface ProductInterest {

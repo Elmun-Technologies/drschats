@@ -6,8 +6,9 @@ import { FunnelBars, RangeTabs } from "@/components/admin/charts";
 import { Card, EmptyState, Metric, PageHeader, Pill, linkClass, som } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
+import { adminTitle, t } from "@/lib/admin/i18n/server";
 
-export const metadata = { title: "Voronka" };
+export const generateMetadata = () => adminTitle("Voronka");
 
 const LANES = [
   { key: "new", label: "Yangi", description: "Operator tasdigʻini kutmoqda" },
@@ -31,26 +32,26 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
   const current = metrics.current;
   const stages = funnelStages(current.statusCounts);
   const lost = [
-    { key: "viewed", label: "Kirdi, lekin mahsulot koʻrmadi", value: f.visitors - f.viewed },
-    { key: "carted", label: "Koʻrdi, lekin savatga qoʻshmadi", value: f.viewed - f.carted },
-    { key: "checkout", label: "Savatga qoʻshdi, lekin rasmiylashtirmadi", value: f.carted - f.checkout },
-    { key: "purchased", label: "Formani ochdi, lekin yubormadi", value: f.checkout - f.purchased },
+    { key: "viewed", label: t("Kirdi, lekin mahsulot koʻrmadi"), value: f.visitors - f.viewed },
+    { key: "carted", label: t("Koʻrdi, lekin savatga qoʻshmadi"), value: f.viewed - f.carted },
+    { key: "checkout", label: t("Savatga qoʻshdi, lekin rasmiylashtirmadi"), value: f.carted - f.checkout },
+    { key: "purchased", label: t("Formani ochdi, lekin yubormadi"), value: f.checkout - f.purchased },
   ];
   const worst = lost.reduce((a, b) => (b.value > a.value ? b : a), lost[0]);
 
   return (
     <>
-      <PageHeader title="Voronka" lead="Saytga kirgan odam qaysi bosqichda toʻxtayotgani va buyurtma qanday yakunlanayotgani." actions={<RangeTabs range={range} basePath="/admin/funnel" />} />
+      <PageHeader title={t("Voronka")} lead={t("Saytga kirgan odam qaysi bosqichda toʻxtayotgani va buyurtma qanday yakunlanayotgani.")} actions={<RangeTabs range={range} basePath="/admin/funnel" />} />
 
       <div className="grid gap-4 xl:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
-        <Card title="Sayt voronkasi" lead="Noyob tashrif buyuruvchilar, tanlangan davrda">
+        <Card title={t("Sayt voronkasi")} lead={t("Noyob tashrif buyuruvchilar, tanlangan davrda")}>
           {f.visitors === 0 ? (
-            <EmptyState title="Hali tashrif yozilmagan" />
+            <EmptyState title={t("Hali tashrif yozilmagan")} />
           ) : (
-            <FunnelBars steps={FUNNEL_STEPS.map((step) => ({ label: step.label, hint: step.hint, value: f[step.key] }))} />
+            <FunnelBars steps={FUNNEL_STEPS.map((step) => ({ label: t(step.label), hint: t(step.hint), value: f[step.key] }))} />
           )}
         </Card>
-        <Card title="Qayerda yoʻqotyapmiz" lead="Har bosqichda toʻxtab qolganlar">
+        <Card title={t("Qayerda yoʻqotyapmiz")} lead={t("Har bosqichda toʻxtab qolganlar")}>
           <ul className="flex flex-col gap-3">
             {lost.map((row) => (
               <li key={row.key} className={`rounded-[16px] p-4 ${row === worst && row.value > 0 ? "bg-ink text-white" : "bg-tile"}`}>
@@ -60,7 +61,7 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
                 </div>
                 {DROP_LINKS[row.key] && (
                   <Link href={DROP_LINKS[row.key].href} className={`mt-1 inline-block text-[13px] font-semibold underline underline-offset-4 ${row === worst && row.value > 0 ? "text-on-dark-2" : "text-ink-2"}`}>
-                    {DROP_LINKS[row.key].label} → retarget
+                    {t("{label} → retarget", { label: t(DROP_LINKS[row.key].label) })}
                   </Link>
                 )}
               </li>
@@ -69,15 +70,15 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
         </Card>
       </div>
 
-      <h2 className="mb-3 mt-8 text-[22px] font-bold leading-7 text-ink">Buyurtma bajarilishi</h2>
+      <h2 className="mb-3 mt-8 text-[22px] font-bold leading-7 text-ink">{t("Buyurtma bajarilishi")}</h2>
       <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {stages.map((stage) => (
-          <Metric key={stage.key} label={stage.label} value={formatNumber(stage.value)} hint={stage.rate !== null ? `oldingisidan ${stage.rate}%` : `${range} kunda`} />
+          <Metric key={stage.key} label={stage.label} value={formatNumber(stage.value)} hint={stage.rate !== null ? t("oldingisidan {n}%", { n: stage.rate }) : t("{n} kunda", { n: range })} />
         ))}
       </div>
-      <p className="mt-2 text-[13px] text-muted">Yetkazilganlar summasi: <b className="text-ink">{som(current.deliveredRevenue)}</b> · bekor qilinganlar: {current.cancelledCount} ({percent(current.cancelledCount, current.orderCount)}%)</p>
+      <p className="mt-2 text-[13px] text-muted">{t("Yetkazilganlar summasi:")} <b className="text-ink">{som(current.deliveredRevenue)}</b> {t("· bekor qilinganlar:")} {current.cancelledCount} ({percent(current.cancelledCount, current.orderCount)}%)</p>
 
-      <section aria-label="Buyurtmalar holatlar boʻyicha" className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
+      <section aria-label={t("Buyurtmalar holatlar boʻyicha")} className="mt-4 grid gap-3 md:grid-cols-2 xl:grid-cols-5">
         {LANES.map((lane) => {
           const laneOrders = current.pipelineOrders.filter((order) => order.status === lane.key).slice(0, 6);
           const count = current.statusCounts[lane.key];
@@ -85,8 +86,8 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
             <section key={lane.key} className="min-w-0 rounded-[20px] bg-tile p-3">
               <header className="mb-3 flex items-start justify-between gap-2 px-1 pt-1">
                 <div className="min-w-0">
-                  <h3 className="text-[15px] font-bold text-ink">{lane.label}</h3>
-                  <p className="text-[13px] text-muted">{lane.description}</p>
+                  <h3 className="text-[15px] font-bold text-ink">{t(lane.label)}</h3>
+                  <p className="text-[13px] text-muted">{t(lane.description)}</p>
                 </div>
                 <span className="grid h-8 min-w-8 place-items-center rounded-full bg-white px-2 text-[13px] font-bold tabular-nums text-ink">{count}</span>
               </header>
@@ -98,8 +99,8 @@ export default async function AdminFunnelPage({ searchParams }: { searchParams: 
                     <div className="mt-1 flex items-center justify-between gap-2 text-[13px] text-muted"><span className="truncate">{formatDateTime(order.createdAt)}</span><span className="shrink-0 font-semibold tabular-nums text-ink">{formatNumber(order.total)}</span></div>
                   </Link>
                 ))}
-                {count === 0 && <p className="rounded-[14px] bg-white/70 px-3 py-4 text-center text-[13px] text-muted">Buyurtma yoʻq</p>}
-                {count > laneOrders.length && <Link href={`/admin/orders?status=${lane.key}`} className={`${linkClass} px-1 text-[13px]`}>+ yana {count - laneOrders.length} ta</Link>}
+                {count === 0 && <p className="rounded-[14px] bg-white/70 px-3 py-4 text-center text-[13px] text-muted">{t("Buyurtma yoʻq")}</p>}
+                {count > laneOrders.length && <Link href={`/admin/orders?status=${lane.key}`} className={`${linkClass} px-1 text-[13px]`}>{t("+ yana {n} ta", { n: count - laneOrders.length })}</Link>}
               </div>
             </section>
           );

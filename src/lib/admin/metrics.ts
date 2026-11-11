@@ -4,6 +4,7 @@ import { desc, gte, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { orders, type OrderStatus } from "@/lib/db/schema";
 import type { OrderAttribution, OrderRequest } from "@/lib/shopflow/types";
+import { t } from "@/lib/admin/i18n/server";
 
 export const REPORT_RANGES = [1, 7, 30, 90] as const;
 export type ReportRange = (typeof REPORT_RANGES)[number];
@@ -76,7 +77,7 @@ function identityOf(customer: OrderRequest["customer"]): string | null {
 }
 
 function displaySource(attribution: OrderAttribution | null): string {
-  if (!attribution) return "Bevosita";
+  if (!attribution) return t("Bevosita");
   const raw = attribution.utmSource?.trim();
   if (raw) {
     const value = raw.toLowerCase();
@@ -101,7 +102,7 @@ function displaySource(attribution: OrderAttribution | null): string {
     if (host.includes("t.me") || host.includes("telegram")) return "Telegram";
     return host.slice(0, 40);
   }
-  return "Bevosita";
+  return t("Bevosita");
 }
 
 function zeroStatusCounts(): StatusCounts {
@@ -253,10 +254,10 @@ async function previousPeriodTotals(from: Date, to: Date): Promise<Pick<PeriodMe
 export function funnelStages(counts: StatusCounts) {
   const placed = Object.values(counts).reduce((sum, count) => sum + count, 0);
   return [
-    { key: "new" as const, label: "Yangi buyurtma", value: placed },
-    { key: "confirmed" as const, label: "Tasdiqlandi", value: counts.confirmed + counts.shipped + counts.delivered },
-    { key: "shipped" as const, label: "Joʻnatildi", value: counts.shipped + counts.delivered },
-    { key: "delivered" as const, label: "Yetkazildi", value: counts.delivered },
+    { key: "new" as const, label: t("Yangi buyurtma"), value: placed },
+    { key: "confirmed" as const, label: t("Tasdiqlandi"), value: counts.confirmed + counts.shipped + counts.delivered },
+    { key: "shipped" as const, label: t("Joʻnatildi"), value: counts.shipped + counts.delivered },
+    { key: "delivered" as const, label: t("Yetkazildi"), value: counts.delivered },
   ].map((stage, index, all) => ({
     ...stage,
     rate: index === 0 || all[index - 1].value === 0 ? null : Math.round((stage.value / all[index - 1].value) * 100),
