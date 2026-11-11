@@ -69,7 +69,18 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        # The browser comes from Playwright's CDN; its system packages come from
+        # the Ubuntu mirrors, which the runners sometimes cannot resolve
+        # (2026-11-11: every run failed here before a single check ran). Try the
+        # packages twice, then carry on with the runner's preinstalled libraries.
+        run: |
+          npx playwright install chromium
+          # apt waits ~20 s per unresolvable mirror and package (about 7 min a
+          # try), so each attempt is capped: two tries cost at most 3 minutes.
+          for attempt in 1 2; do
+            if timeout 90 npx playwright install-deps chromium; then exit 0; fi
+          done
+          echo "::warning::Ubuntu mirrors unreachable; using the runner's preinstalled Chromium libraries"
 
       - name: Build
         run: npm run build
@@ -125,7 +136,18 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Install Chromium
-        run: npx playwright install --with-deps chromium
+        # The browser comes from Playwright's CDN; its system packages come from
+        # the Ubuntu mirrors, which the runners sometimes cannot resolve
+        # (2026-11-11: every run failed here before a single check ran). Try the
+        # packages twice, then carry on with the runner's preinstalled libraries.
+        run: |
+          npx playwright install chromium
+          # apt waits ~20 s per unresolvable mirror and package (about 7 min a
+          # try), so each attempt is capped: two tries cost at most 3 minutes.
+          for attempt in 1 2; do
+            if timeout 90 npx playwright install-deps chromium; then exit 0; fi
+          done
+          echo "::warning::Ubuntu mirrors unreachable; using the runner's preinstalled Chromium libraries"
 
       - name: Build (no database, as on Fly)
         run: DATABASE_URL= npm run build

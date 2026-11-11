@@ -11,6 +11,8 @@
   - CreateTransaction / PerformTransaction / CancelTransaction are sent twice:
     a repeated call must return the first answer.
   - Account errors are -31050…-31099 and carry the account field name in `data`.
+  - A second transaction for an order that is awaiting payment is -31008 (the
+    sandbox checks exactly this code; developer.help.paycom.uz/pesochnitsa).
 */
 
 export const PAYME_TIMEOUT_MS = 43_200_000;
@@ -37,7 +39,7 @@ export const PAYME_ERRORS = {
   cannotPerform: { code: -31008, message: msg("Невозможно выполнить данную операцию", "Bu amalni bajarib boʻlmaydi", "Unable to perform the operation") },
   orderNotFound: { code: -31050, message: msg("Неверный код заказа", "Buyurtma raqami notoʻgʻri", "Order not found") },
   orderClosed: { code: -31051, message: msg("Заказ уже оплачен или отменён", "Buyurtma toʻlangan yoki bekor qilingan", "Order is already paid or cancelled") },
-  orderBusy: { code: -31099, message: msg("Заказ ожидает оплаты другой транзакцией", "Buyurtma boshqa tranzaksiya bilan toʻlanmoqda", "Order is awaiting another transaction") },
+  orderBusy: { code: -31008, message: msg("Заказ ожидает оплаты другой транзакцией", "Buyurtma boshqa tranzaksiya bilan toʻlanmoqda", "Order is awaiting another transaction") },
 } satisfies Record<string, PaymeError>;
 
 export interface PaymeOrder {
@@ -311,9 +313,9 @@ export interface PaymeCheckout {
   testMode: boolean;
 }
 
-/** GET https://checkout.paycom.uz/<base64 of m=…;ac.order_id=…;a=…;l=…;c=…> (checkout.test.paycom.uz in test mode). */
+/** GET https://checkout.paycom.uz/<base64 of m=…;ac.order_id=…;a=…;l=…;c=…> (test.paycom.uz — the sandbox — in test mode). */
 export function paymeCheckoutUrl(p: PaymeCheckout): string {
   const params = [`m=${p.merchantId}`, `ac.${p.account}=${p.orderNumber}`, `a=${p.amount}`, `l=${p.locale}`, `c=${p.returnUrl}`];
-  const host = p.testMode ? "https://checkout.test.paycom.uz" : "https://checkout.paycom.uz";
+  const host = p.testMode ? "https://test.paycom.uz" : "https://checkout.paycom.uz";
   return `${host}/${Buffer.from(params.join(";")).toString("base64")}`;
 }
