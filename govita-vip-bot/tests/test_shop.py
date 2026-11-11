@@ -99,7 +99,8 @@ def message(text=None, contact=None, location=None):
 
 def callback(data):
     msg = SimpleNamespace(answer=AsyncMock(), edit_text=AsyncMock(), chat=SimpleNamespace(id=CHAT))
-    return SimpleNamespace(data=data, from_user=SimpleNamespace(id=CHAT), message=msg, answer=AsyncMock())
+    return SimpleNamespace(data=data, from_user=SimpleNamespace(id=CHAT), message=msg, answer=AsyncMock(),
+                           bot=SimpleNamespace(set_chat_menu_button=AsyncMock()))
 
 
 def all_buttons(markup):
@@ -379,6 +380,27 @@ async def test_language_is_saved_and_the_menu_is_rebuilt():
     # The keyboard under the message field switches language too.
     assert first.kwargs["reply_markup"].keyboard[0][0].text == "🛍 Каталог"
     assert_callbacks_fit(second.kwargs["reply_markup"])
+
+
+@pytest.mark.asyncio
+async def test_switching_to_russian_also_points_the_menu_button_at_ru():
+    """Regression: the Mini App button beside the message field used to stay
+    hardcoded at /uz even after a customer switched the bot to Russian.
+    """
+    api = Api(lambda m, p, b, q: {"ok": True} if p == "/shop/locale" else {"locale": "ru"})
+    q = callback("lang:ru")
+    await shop.cb_lang(q, api, State())
+    q.bot.set_chat_menu_button.assert_awaited_once()
+    kwargs = q.bot.set_chat_menu_button.await_args.kwargs
+    assert kwargs["chat_id"] == CHAT
+    assert kwargs["menu_button"].web_app.url.endswith("/ru")
+
+
+def test_the_main_menu_mini_app_button_follows_the_locale():
+    menu = shop.main_menu("ru")
+    buttons = all_buttons(menu)
+    mini_app = next(btn for btn in buttons if btn.web_app)
+    assert mini_app.web_app.url.endswith("/ru")
 
 
 @pytest.mark.asyncio

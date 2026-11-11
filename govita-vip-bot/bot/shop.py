@@ -16,7 +16,7 @@ from aiogram import F, Router
 from aiogram.exceptions import TelegramBadRequest, TelegramForbiddenError, TelegramRetryAfter
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import CallbackQuery, Message
+from aiogram.types import CallbackQuery, Message, MenuButtonWebApp, WebAppInfo
 
 from .backend import BackendError
 from .config import cfg
@@ -1095,6 +1095,18 @@ async def cb_lang(q: CallbackQuery, api, state: FSMContext):
     locale = "ru" if q.data.endswith("ru") else "uz"
     await api.request("POST", "/shop/locale", body={"chatId": q.from_user.id, "locale": locale})
     await state.clear()
+    if cfg.shop_url.startswith("https://"):
+        # The menu button beside the message field is global by default (set
+        # once at startup to /uz). Without this, a customer who switches to
+        # Russian still lands on the Uzbek storefront from that button —
+        # only the inline keyboard above actually followed their choice.
+        try:
+            await q.bot.set_chat_menu_button(
+                chat_id=q.from_user.id,
+                menu_button=MenuButtonWebApp(text=t(locale, "mini_app"), web_app=WebAppInfo(url=f"{cfg.shop_url}/{locale}")),
+            )
+        except Exception:  # noqa: BLE001 — a stale button is not worth failing the switch
+            log.warning("menu button not updated for chat %s", q.from_user.id)
     customer = await customer_of(api, q.from_user.id)
     text = "Язык: русский. Каталог, корзина и заказ — на русском." if locale == "ru" else "Til: oʻzbekcha. Katalog, savat va buyurtma oʻzbek tilida."
     await q.message.answer(text, reply_markup=reply_kb(locale))

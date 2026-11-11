@@ -156,6 +156,7 @@ async def start(m, api):
         return await show_order(m, api, m.from_user.id, payload[2:])
     customer = await shop_ui.customer_of(api, m.from_user.id)
     locale = (customer or {}).get('locale') or 'ru'
+    await sync_menu_button(m, locale)
     # The keyboard under the message field stays; the inline menu scrolls away.
     await m.answer(await greeting(api, locale), reply_markup=reply_kb(locale))
     await m.answer(tr('menu', locale), reply_markup=menu(locale, customer))
@@ -169,6 +170,24 @@ async def send_orders(m, api, chat, locale="ru"):
                 else 'Buyurtma topilmadi. Katalogdan buyurtma bering — holati shu yerga keladi.')
         return await m.answer(text, reply_markup=menu(locale))
     await m.answer('📦 Мои заказы' if locale == 'ru' else '📦 Buyurtmalarim', reply_markup=kb(*rows, [b('⬅️ Menyu', 'm:menu')]))
+
+
+async def sync_menu_button(m, locale):
+    """Points this chat's menu button (beside the message field) at the
+    customer's own language. The bot speaks Russian by default (2026-11), so
+    the button is set globally to /ru at startup; a returning Uzbek-speaking
+    customer would otherwise keep landing on the Russian storefront from that
+    button until they re-touched the toggle.
+    """
+    if locale != 'uz' or not cfg.shop_url.startswith('https://'):
+        return
+    try:
+        await m.bot.set_chat_menu_button(
+            chat_id=m.from_user.id,
+            menu_button=MenuButtonWebApp(text="Doʻkon", web_app=WebAppInfo(url=f"{cfg.shop_url}/uz")),
+        )
+    except Exception:  # noqa: BLE001 — a stale button is not worth failing /start
+        log.warning('menu button not synced for chat %s', m.from_user.id)
 
 
 async def show_order(m, api, chat, code):
