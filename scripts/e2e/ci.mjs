@@ -191,7 +191,7 @@ await sql`insert into site_settings (key, value) values ('payments.payme', 'on')
 const pay = await placeOrder({ phone: "+998901110002", pay: "payme" });
 const payOrder = await latestOrder("901110002");
 check("Payme order is saved as pending", payOrder?.payment_status === "pending", payOrder?.payment_status);
-check("checkout hands off to the Payme sandbox", Boolean(pay.gateway?.startsWith("https://test.paycom.uz/")), pay.gateway ?? pay.url);
+check("checkout hands off to the Payme sandbox", Boolean(pay.gateway?.startsWith("https://checkout.test.paycom.uz/")), pay.gateway ?? pay.url);
 if (pay.gateway && payOrder) {
   const decoded = Buffer.from(pay.gateway.split("/").pop(), "base64").toString();
   check("Payme link carries the saved total in tiyin", decoded.includes(`a=${payOrder.total * 100}`) && decoded.includes(`ac.order_id=${payOrder.number}`), decoded);
