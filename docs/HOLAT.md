@@ -17,6 +17,8 @@ production'ni o'zi yangilaydi. «Deploy to Fly» va «Deploy to Hetzner» secret
 
 ## Yaqinda tugagan (main'ga merge qilingan)
 
+- **Talab tahlili — bozor maʼlumoti oldindan** (2026-11-12): `0037_keyword_market_baseline.sql` 2026-11-02 Planner eksportini (1 913 soʻz, oyiga 250 800 qidiruv) boʻsh jadvalga yozadi — `/admin/keywords` fayl yuklamasdan toʻladi. Sahifaga qoʻshildi: talab darajasi (1000+/100–999/10–99/10 dan kam), tillar ulushi, mavsum, «Sahifa kerak», oʻsayotgan/pasayayotgan soʻzlar (`lib/keywords/report.ts`, testli). **Keyingi qadam (foydalanuvchi tanlagan «a» variant)**: «Sahifa kerak» roʻyxatidagi mavzuga tugma bilan uz/ru sahifa qoralamasi — Anthropic API kaliti va bazadagi qoralama sahifalar kerak.
+
 - Real narxlar (Dr Schatz prays-listi) — PR #133
 - SMS qonun muvofiqligi (reklama rozilik, tungi soat) + zod 4 — PR #134
 - Friksiyani kamaytirish: 4–5 savolli test, upsell oynasi o'chiq, bitta manzil

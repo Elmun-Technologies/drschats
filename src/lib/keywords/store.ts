@@ -124,6 +124,7 @@ export async function keywordDashboard() {
     bidLow: s.bidLow == null ? null : Number(s.bidLow),
     bidHigh: s.bidHigh == null ? null : Number(s.bidHigh),
     monthly: s.monthly ?? {},
+    yoyChange: s.yoyChange,
   }));
   const topicKinds = Object.fromEntries(getHealthTopicIndex().map((t) => [t.slug, t.kind]));
   const shop: ShopProduct[] = products.map((p) => ({ slug: p.slug, name: p.name.uz, text: p.text, inStock: p.inStock }));
