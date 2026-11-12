@@ -20,6 +20,8 @@ export interface StatRow {
   bidLow: number | null;
   bidHigh: number | null;
   monthly: Record<string, number>;
+  /** Planner's year-over-year change for the latest month, e.g. "179%". */
+  yoyChange?: string | null;
 }
 
 export interface ShopProduct {

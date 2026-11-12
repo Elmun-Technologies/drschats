@@ -3,9 +3,10 @@ import { requireAdmin } from "@/lib/admin/session";
 import { keywordDashboard, currentKeywordList } from "@/lib/keywords/store";
 import { SUBJECT_KIND_LABEL, type SubjectKind } from "@/lib/keywords/subjects";
 import { formatDateTime } from "@/lib/admin/order-labels";
-import { Sparkline } from "@/components/admin/charts";
-import { BarList, Card, ChipNav, EmptyState, Metric, Notice, PageHeader, Pill, SectionTitle, TableWrap, buttonClass, linkClass, secondaryButtonClass, tableClass, tdClass, thClass } from "@/components/admin/ui";
+import { ShareBar, Sparkline } from "@/components/admin/charts";
+import { BarList, Card, ChipNav, EmptyState, Metric, Notice, PageHeader, Pill, type PillTone, SectionTitle, TableWrap, buttonClass, linkClass, secondaryButtonClass, tableClass, tdClass, thClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
+import { LEVELS, languageTotals, levelSummary, monthlyTotals, subjectLevel, trends, type DemandLevel } from "@/lib/keywords/report";
 import { adminTitle, labels, t } from "@/lib/admin/i18n/server";
 
 export const generateMetadata = () => adminTitle("Talab tahlili");
@@ -21,6 +22,9 @@ const ERRORS: Record<string, string> = labels({
   format: "Bu Keyword Planner eksporti emas yoki fayl buzilgan. Plannerʼdan «Download → CSV» bilan qayta yuklab oling.",
   origin: "Soʻrov boshqa saytdan keldi — rad etildi.",
 });
+const LEVEL = labels({ high: "Yuqori", medium: "Oʻrta", low: "Past", none: "Talab yoʻq" });
+const KEYWORD_BAND = labels({ high: "oyiga 1 000+", medium: "100–999", low: "10–99", none: "10 dan kam" });
+const LEVEL_TONE: Record<DemandLevel, PillTone> = { high: "dark", medium: "neutral", low: "outline", none: "muted" };
 const KINDS: (SubjectKind | "all")[] = ["all", "vitamin", "mineral", "supplement", "goal", "audience", "symptom", "form", "category", "brand"];
 
 export default async function AdminKeywordsPage({ searchParams }: { searchParams: Promise<{ kind?: string; imported?: string; matched?: string; error?: string }> }) {
@@ -33,7 +37,14 @@ export default async function AdminKeywordsPage({ searchParams }: { searchParams
   const topProduct = withData.find((s) => s.kind === "vitamin" || s.kind === "mineral" || s.kind === "supplement");
   const total = withData.reduce((a, s) => a + s.total, 0);
   const langs = list.reduce((acc, r) => ({ ...acc, [r.lang]: (acc[r.lang] ?? 0) + 1 }), {} as Record<string, number>);
-  const gaps = withData.filter((s) => s.gap === "assortment").slice(0, 6);
+  const gaps = withData.filter((s) => s.gap === "assortment").slice(0, 10);
+  const pagesNeeded = withData.filter((s) => s.gap === "content").slice(0, 10);
+  const levels = levelSummary(data.keywords);
+  const byLang = languageTotals(data.keywords);
+  const months = monthlyTotals(data.keywords);
+  const busiest = months.length ? months.reduce((a, b) => (b.searches > a.searches ? b : a)) : null;
+  const quietest = months.length ? months.reduce((a, b) => (b.searches < a.searches ? b : a)) : null;
+  const moves = trends(data.keywords);
   const hasData = data.keywords.length > 0;
   const est = data.ranged ? "≈" : "";
 
@@ -97,13 +108,32 @@ export default async function AdminKeywordsPage({ searchParams }: { searchParams
             <Metric label={t("Assortiment imkoniyati")} value={formatNumber(withData.filter((s) => s.gap === "assortment").length)} hint={t("talab bor, bizda yoʻq")} />
           </div>
 
-          {gaps.length > 0 && (
+          <div className="mt-4 grid gap-4 xl:grid-cols-2">
+            <Card title={t("Talab darajasi")} lead={t("Kalit soʻzlar oylik qidiruv boʻyicha toʻrt guruhda: qidiruvning katta qismini oz sonli soʻz beradi.")}>
+              <ShareBar parts={LEVELS.filter((l) => l !== "none").map((l) => ({ label: LEVEL[l], value: levels[l].searches, note: t("{n} ta soʻz · {band}", { n: formatNumber(levels[l].keywords), band: KEYWORD_BAND[l] }) }))} />
+              <p className="mt-3 text-[13px] text-muted">{t("Yana {n} ta soʻzda talab yoʻq (oyiga 10 dan kam) — ular uchun alohida sahifa yoki reklama kerak emas.", { n: formatNumber(levels.none.keywords) })}</p>
+            </Card>
+            <Card title={t("Qaysi tilda qidirishadi")} lead={t("Har sahifa ikki tilda toʻliq boʻlishi kerak; kirill yozuvi kam qidiriladi.")}>
+              <ShareBar parts={[{ label: t("Rus"), value: byLang.ru }, { label: t("Oʻzbek (lotin)"), value: byLang.uz }, { label: t("Oʻzbek (kirill)"), value: byLang["uz-cyrl"] }]} />
+            </Card>
+          </div>
+
+          {months.length > 1 && busiest && quietest && (
             <div className="mt-4">
-              <Card title={t("Talab bor, bizda yoʻq")} lead={t("Oyiga 100+ qidiruv boʻlgan, lekin sotuvda mos mahsulotimiz yoʻq mavzular — assortimentga qoʻshish uchun nomzodlar.")}>
-                <BarList rows={gaps.map((g) => ({ label: g.label, value: g.total, note: g.productsOut ? t("{n} ta mahsulot tugagan", { n: g.productsOut }) : t("mahsulot yoʻq") }))} />
+              <Card title={t("Mavsum")} lead={t("Barcha kalit soʻzlar boʻyicha oylik qidiruv. Eng koʻp — {top}, eng kam — {low}: farq {p}%.", { top: monthName(busiest.month), low: monthName(quietest.month), p: Math.round(((busiest.searches - quietest.searches) / Math.max(1, quietest.searches)) * 100) })}>
+                <BarList rows={months.map((m) => ({ label: monthName(m.month), value: m.searches }))} />
               </Card>
             </div>
           )}
+
+          <div className="mt-4 grid gap-4 xl:grid-cols-2">
+            <Card title={t("Talab bor, bizda yoʻq")} lead={t("Oyiga 100+ qidiruv boʻlgan, lekin sotuvda mos mahsulotimiz yoʻq mavzular — assortimentga qoʻshish uchun nomzodlar.")}>
+              <BarList rows={gaps.map((g) => ({ label: g.label, value: g.total, note: g.productsOut ? t("{n} ta mahsulot tugagan", { n: g.productsOut }) : t("mahsulot yoʻq") }))} empty={t("Hammasi bor")} />
+            </Card>
+            <Card title={t("Sahifa kerak")} lead={t("Talab bor, lekin bu soʻrovga javob beradigan sahifamiz yoʻq — yozilsa qidiruvdan trafik keladi.")}>
+              <BarList rows={pagesNeeded.map((g) => ({ label: g.label, value: g.total, note: g.products.length ? t("mahsulot bor") : undefined }))} empty={t("Hamma mavzuda sahifa bor")} />
+            </Card>
+          </div>
 
           <SectionTitle>{t("Mavzular boʻyicha talab")}</SectionTitle>
           <ChipNav
@@ -135,6 +165,7 @@ export default async function AdminKeywordsPage({ searchParams }: { searchParams
                       </td>
                       <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>
                         <b className="text-ink">{s.total ? `${est}${formatNumber(s.total)}` : "—"}</b>
+                        {s.total > 0 && <Pill tone={LEVEL_TONE[subjectLevel(s.total)]} className="ml-2">{LEVEL[subjectLevel(s.total)]}</Pill>}
                         {s.total > 0 && <span className="block text-[13px] text-muted">{t("xarid {p}%", { p: Math.round((s.buy / s.total) * 100) })}{s.competition ? ` · ${t("raqobat {c}", { c: COMPETITION[s.competition].toLowerCase() })}` : ""}</span>}
                       </td>
                       <td className={`${tdClass} whitespace-nowrap text-[13px] tabular-nums text-ink-2`}>
@@ -182,6 +213,31 @@ export default async function AdminKeywordsPage({ searchParams }: { searchParams
               <BarList rows={data.siteTerms.map((st) => ({ label: st.term, value: st.count }))} empty={t("Hali qidiruv yoʻq")} />
             </Card>
           </div>
+
+          {(moves.rising.length > 0 || moves.falling.length > 0) && (
+            <div className="mt-4 grid gap-4 xl:grid-cols-2">
+              {[{ title: t("Oʻsayotgan soʻzlar"), rows: moves.rising }, { title: t("Pasayayotgan soʻzlar"), rows: moves.falling }].map((block) => (
+                <Card key={block.title} title={block.title} lead={t("Oyiga 200+ qidiruvli soʻzlar; oxirgi oy oʻtgan yilning shu oyi bilan solishtirilgan.")}>
+                  {block.rows.length === 0 ? <p className="text-[14px] text-muted">{t("Bunday soʻz yoʻq")}</p> : (
+                    <TableWrap>
+                      <table className={tableClass.replace("min-w-[640px]", "min-w-0")}>
+                        <thead><tr><th className={thClass}>{t("Kalit soʻz")}</th><th className={`${thClass} text-right`}>{t("Oyiga")}</th><th className={`${thClass} text-right`}>{t("Bir yilda")}</th></tr></thead>
+                        <tbody>
+                          {block.rows.map((k) => (
+                            <tr key={k.keyword}>
+                              <td className={tdClass}>{k.keyword}</td>
+                              <td className={`${tdClass} whitespace-nowrap text-right tabular-nums`}>{formatNumber(k.avg)}</td>
+                              <td className={`${tdClass} whitespace-nowrap text-right font-semibold tabular-nums`}>{k.yoy > 0 ? "+" : ""}{k.yoy}%</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </TableWrap>
+                  )}
+                </Card>
+              ))}
+            </div>
+          )}
         </>
       )}
     </>
