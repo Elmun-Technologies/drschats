@@ -3,7 +3,7 @@ import "server-only";
 import { getRuntimeIntegrationSettings, saveIntegrationSettings } from "@/lib/integrations/settings";
 import { isIntegrationEncryptionConfigured } from "@/lib/integrations/crypto";
 import { readOnlineProviders } from "./availability";
-import { fiscalDetail } from "./fiscal";
+import { orderFiscalDetail, type FiscalSettings } from "./fiscal-server";
 import { PAYME_ERRORS, PaymeFault, handlePayme, type PaymeContext, type PaymeOrder, type PaymeResponse, type PaymeStore, type PaymeTx } from "./payme";
 import {
   AlreadyPaid,
@@ -12,7 +12,6 @@ import {
   completePayment,
   findPayableOrder,
   findPayment,
-  fiscalCodes,
   insertPayment,
   paymentsBetween,
   pendingPaymentForOrder,
@@ -93,25 +92,6 @@ function paymeStore(account: string, testMode: boolean): PaymeStore {
   };
 }
 
-async function receipt(order: PaymeOrder, fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number }) {
-  const full = await findPayableOrder(order.number);
-  if (!full) return null;
-  const codes = await fiscalCodes([...new Set(full.items.map((i) => i.productId))]);
-  return fiscalDetail({
-    lines: full.items.map((i) => ({
-      name: i.name,
-      unitPrice: i.unitPrice,
-      quantity: i.quantity,
-      upsellDiscountPercent: i.upsellDiscountPercent,
-      mxik: codes.get(i.productId)?.mxik ?? null,
-      packageCode: codes.get(i.productId)?.packageCode ?? null,
-    })),
-    total: full.total,
-    shipping: full.totals?.shipping ?? 0,
-    ...fiscal,
-  });
-}
-
 /** The /api/payments/payme endpoint, settings read fresh on every call. */
 export async function paymeEndpoint(rawBody: string, authHeader: string | null): Promise<PaymeResponse> {
   const settings = await getRuntimeIntegrationSettings();
@@ -123,12 +103,12 @@ export async function paymeEndpoint(rawBody: string, authHeader: string | null):
   return handlePayme(rawBody, enabled ? authHeader : null, ctx);
 }
 
-function context(account: string, testMode: boolean, key: string, fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number }): PaymeContext {
+function context(account: string, testMode: boolean, key: string, fiscal: FiscalSettings): PaymeContext {
   return {
     key,
     account,
     store: paymeStore(account, testMode),
     now: () => Date.now(),
-    detail: (order) => receipt(order, fiscal),
+    detail: (order) => orderFiscalDetail(order.number, fiscal),
   };
 }

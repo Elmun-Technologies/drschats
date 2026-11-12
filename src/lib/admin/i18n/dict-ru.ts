@@ -2129,4 +2129,12 @@ export const RU: Record<string, string> = {
   "Chop etish": "Печать",
   "Chorshanba": "Среда",
   "choʻqqi: {m}": "пик: {m}",
+  "Merchant user ID faqat raqamlardan iborat.": "Merchant user ID — только цифры.",
+  "STIR (INN) 9 ta raqam.": "ИНН — 9 цифр.",
+  "Saqlandi. Keyingi Payme va Click toʻlovlari chekida shu kodlar ishlatiladi.": "Сохранено. Эти коды попадут в чеки следующих оплат Payme и Click.",
+  "Fiskal chek uchun (Merchant API): merchant.click.uz kabinetidagi API foydalanuvchisi IDʼsi.": "Для фискального чека (Merchant API): ID API-пользователя в кабинете merchant.click.uz.",
+  "Fiskal chek (Payme, Click)": "Фискальный чек (Payme, Click)",
+  "Har onlayn toʻlovga soliq cheki chiqadi: Payme uni toʻlov paytida oladi, Click — toʻlovdan keyin. Har mahsulotning MXIK (IKPU) va qadoq kodi mahsulot formasida («Fiskal chek») kiritiladi; bu yerda — yetkazib berish xizmati, QQS va kompaniya STIRi.": "На каждую онлайн-оплату выбивается фискальный чек: Payme получает его во время оплаты, Click — после. ИКПУ (MXIK) и код упаковки каждого товара задаются в форме товара («Фискальный чек»); здесь — услуга доставки, НДС и ИНН компании.",
+  "Kompaniya STIRi (INN)": "ИНН компании",
+  "9 raqam. Click chekida majburiy.": "9 цифр. Обязателен для чека Click.",
 };

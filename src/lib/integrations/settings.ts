@@ -29,6 +29,7 @@ export const INTEGRATION_SETTING_KEYS = [
   "click.serviceId",
   "click.merchantId",
   "click.secretKey",
+  "click.merchantUserId",
 ] as const;
 
 export type IntegrationSettingKey = (typeof INTEGRATION_SETTING_KEYS)[number];
@@ -46,8 +47,8 @@ export interface RuntimeIntegrationSettings {
   analytics: AnalyticsIds;
   webvisor: boolean;
   payme: { enabled: boolean; testMode: boolean; merchantId: string; key: string; testKey: string; account: string };
-  click: { enabled: boolean; serviceId: string; merchantId: string; secretKey: string };
-  fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number };
+  click: { enabled: boolean; serviceId: string; merchantId: string; secretKey: string; merchantUserId: string };
+  fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number; tin: string };
 }
 
 interface LoadedSettings {
@@ -80,6 +81,7 @@ const ENVIRONMENT: Record<IntegrationSettingKey, string> = {
   "click.serviceId": process.env.CLICK_SERVICE_ID?.trim() ?? "",
   "click.merchantId": process.env.CLICK_MERCHANT_ID?.trim() ?? "",
   "click.secretKey": process.env.CLICK_SECRET_KEY?.trim() ?? "",
+  "click.merchantUserId": process.env.CLICK_MERCHANT_USER_ID?.trim() ?? "",
 };
 
 /** VAT on the fiscal receipt: 12% unless the shop set another rate (0 for a VAT-exempt merchant). */
@@ -171,11 +173,13 @@ async function loadEffectiveSettings(): Promise<LoadedSettings> {
         serviceId: value("click.serviceId"),
         merchantId: value("click.merchantId"),
         secretKey: value("click.secretKey"),
+        merchantUserId: value("click.merchantUserId"),
       },
       fiscal: {
         shippingMxik: publicSettings["payments.shippingMxik"] ?? "",
         shippingPackage: publicSettings["payments.shippingPackage"] ?? "",
         vatPercent: vatPercentOf(publicSettings["payments.vatPercent"]),
+        tin: publicSettings["payments.tin"] ?? "",
       },
     },
     storedKeys: stored.keys,
@@ -241,8 +245,9 @@ export interface IntegrationAdminOverview {
     merchantId: string;
     secretKeyConfigured: boolean;
     secretKeyManagedInAdmin: boolean;
+    merchantUserId: string;
   };
-  fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number };
+  fiscal: { shippingMxik: string; shippingPackage: string; vatPercent: number; tin: string };
 }
 
 /** Safe-to-render status only. Secret values are deliberately not returned. */
@@ -316,6 +321,7 @@ export async function getIntegrationAdminOverview(): Promise<IntegrationAdminOve
       merchantId: settings.click.merchantId,
       secretKeyConfigured: Boolean(settings.click.secretKey),
       secretKeyManagedInAdmin: adminOverride("click.secretKey"),
+      merchantUserId: settings.click.merchantUserId,
     },
     fiscal: settings.fiscal,
   };

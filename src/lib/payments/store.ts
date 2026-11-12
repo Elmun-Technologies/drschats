@@ -154,7 +154,9 @@ export async function completePayment(id: number, time: number): Promise<Payment
     const order = await lockOrder(tx, current.order_number);
     if (order?.paymentStatus === "paid") throw new AlreadyPaid();
     const [row] = (await tx.execute(sql`
-      update payments set state = 2, perform_time = ${time}, updated_at = now()
+      update payments set state = 2, perform_time = ${time}, updated_at = now(),
+        -- Click takes the fiscal receipt after the payment (click-fiscal-server.ts).
+        fiscal_status = case when provider = 'click' then 'pending' else fiscal_status end
       where id = ${id} returning *`)) as unknown as RawPayment[];
     await tx.execute(sql`
       update orders set payment_status = 'paid', paid_at = to_timestamp(${time} / 1000.0), updated_at = now()
@@ -216,4 +218,36 @@ const LABEL: Record<PaymentGateway, string> = { payme: "Payme", click: "Click" }
 
 async function announcePaid(row: PaymentRow) {
   await notifyOperator(`💳 #${row.orderNumber} toʻlandi — ${LABEL[row.provider]}, ${formatMoney(row.amount / 100, "uz")}. Kuryer naqd pul olmaydi.`).catch(() => false);
+}
+
+
+/* ---------- Click fiscal receipts (0036) ---------- */
+
+export type ClickFiscalStatus = "pending" | "sent" | "failed" | "missing_codes";
+
+export interface DueClickFiscal {
+  id: number;
+  clickTransId: string;
+  orderNumber: string;
+  attempts: number;
+}
+
+/** Performed Click payments whose receipt Click has not accepted yet, oldest first. */
+export async function dueClickFiscal(maxAttempts: number, limit: number): Promise<DueClickFiscal[]> {
+  const rows = (await getDb().execute(sql`
+    select id, provider_tx_id, order_number, fiscal_attempts from payments
+    where provider = 'click' and state = 2
+      and fiscal_status in ('pending', 'failed', 'missing_codes') and fiscal_attempts < ${maxAttempts}
+    order by id asc limit ${limit}`)) as unknown as { id: string | number; provider_tx_id: string; order_number: string; fiscal_attempts: number }[];
+  return rows.map((r) => ({ id: Number(r.id), clickTransId: r.provider_tx_id, orderNumber: r.order_number, attempts: Number(r.fiscal_attempts) }));
+}
+
+/** A try's outcome. Only a call that reached Click counts as an attempt; missing codes wait for the admin. */
+export async function recordClickFiscal(id: number, status: ClickFiscalStatus, error: string | null, attempted: boolean): Promise<void> {
+  await getDb().execute(sql`
+    update payments set fiscal_status = ${status}, fiscal_error = ${error},
+      fiscal_attempts = fiscal_attempts + ${attempted ? 1 : 0},
+      fiscal_sent_at = case when ${status} = 'sent' then now() else fiscal_sent_at end,
+      updated_at = now()
+    where id = ${id}`);
 }

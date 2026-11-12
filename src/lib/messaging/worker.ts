@@ -11,6 +11,7 @@ import { WORKER_TICK_KEY } from "@/lib/ops/health";
 import { expirePoints } from "@/lib/loyalty/server";
 import { notifyStartedDeals } from "@/lib/merch/deal-notify";
 import { sweepBotCarts } from "@/lib/bot/abandoned";
+import { submitDueClickFiscal } from "@/lib/payments/click-fiscal-server";
 
 /*
   The message worker. Runs inside the Next.js server process (started from
@@ -91,6 +92,7 @@ export async function runMessagingTick(options: { now?: Date; flows?: boolean } 
       flows = await runFlows(now);
       if (await isOperatorChannelConfigured().catch(() => false)) await job("operator pings", retryOperatorPings);
       await job("unpaid orders", releaseUnpaidOrders);
+      await job("click fiscal receipts", submitDueClickFiscal);
       await job("alerts", runAlerts);
     }
     if (options.flows || Date.now() - lastExpire >= EXPIRE_EVERY_MS) {

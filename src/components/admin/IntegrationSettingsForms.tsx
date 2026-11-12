@@ -248,6 +248,9 @@ export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overvie
             <Field label="Merchant ID">
               <input name="merchantId" defaultValue={click.merchantId} inputMode="numeric" autoComplete="off" placeholder="6789" className={inputClass} />
             </Field>
+            <Field label="Merchant user ID" hint={t("Fiskal chek uchun (Merchant API): merchant.click.uz kabinetidagi API foydalanuvchisi IDʼsi.")}>
+              <input name="merchantUserId" defaultValue={click.merchantUserId} inputMode="numeric" autoComplete="off" placeholder="12345" className={inputClass} />
+            </Field>
             <Field label={t("Secret key")} hint={secretHint(click.secretKeyConfigured, click.secretKeyManagedInAdmin, "CLICK_SECRET_KEY")}>
               <input name="secretKey" type="password" autoComplete="new-password" spellCheck={false} className={inputClass} />
             </Field>
@@ -263,8 +266,8 @@ export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overvie
       </div>
 
       <div className="mt-4">
-        <Card title={t("Fiskal chek (Payme)")} lead={t("Payme har toʻlovga soliq chekini chiqaradi. Har mahsulotning MXIK (IKPU) va qadoq kodi mahsulot formasida («Fiskal chek») kiritiladi; bu yerda — yetkazib berish xizmati va QQS.")}>
-          <ActionForm action={saveFiscalSettings} submitLabel={t("Saqlash")} className="grid gap-4 md:grid-cols-3">
+        <Card title={t("Fiskal chek (Payme, Click)")} lead={t("Har onlayn toʻlovga soliq cheki chiqadi: Payme uni toʻlov paytida oladi, Click — toʻlovdan keyin. Har mahsulotning MXIK (IKPU) va qadoq kodi mahsulot formasida («Fiskal chek») kiritiladi; bu yerda — yetkazib berish xizmati, QQS va kompaniya STIRi.")}>
+          <ActionForm action={saveFiscalSettings} submitLabel={t("Saqlash")} className="grid gap-4 md:grid-cols-4">
             <Field label={t("Yetkazish MXIK kodi")} hint={t("17 raqam, tasnif.soliq.uz")}>
               <input name="shippingMxik" defaultValue={fiscal.shippingMxik} inputMode="numeric" maxLength={17} autoComplete="off" className={inputClass} />
             </Field>
@@ -273,6 +276,9 @@ export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overvie
             </Field>
             <Field label={t("QQS, %")} hint={t("QQS toʻlovchisi boʻlmasangiz 0.")}>
               <input name="vatPercent" defaultValue={String(fiscal.vatPercent)} inputMode="numeric" maxLength={3} autoComplete="off" className={inputClass} />
+            </Field>
+            <Field label={t("Kompaniya STIRi (INN)")} hint={t("9 raqam. Click chekida majburiy.")}>
+              <input name="tin" defaultValue={fiscal.tin} inputMode="numeric" maxLength={9} autoComplete="off" className={inputClass} />
             </Field>
           </ActionForm>
         </Card>

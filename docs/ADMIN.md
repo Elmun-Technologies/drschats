@@ -307,6 +307,10 @@ va `orders.payment_status`/`paid_at` (`0015_online_payments.sql`).
    MXIK 21 mahsulotga `0035_mxik_codes.sql` bilan yozilgan (Dr Schatz roʻyxati, 2026-11-11;
    faqat boʻsh maydonga). Qadoq kodlari roʻyxatda yoʻq — panelda toʻldiriladi. Kodsiz:
    Neuroforce, Aminomorin, Peano, Hamdard Safi, qahvalar.
+   **Click cheki** toʻlovdan keyin alohida yuboriladi (`ofd_data/submit_items`,
+   `lib/payments/click-fiscal*.ts`): Complete'dan soʻng darhol va ishchi har daqiqada
+   qayta urinadi (`payments.fiscal_status`, 0036). Kerak: Click «Merchant user ID»
+   (Integratsiyalar → Click) va kompaniya STIRi (Fiskal chek bloki).
 
 **Oqim:** checkout buyurtmani `payment_status='pending'` bilan saqlaydi va mijozni
 toʻlov sahifasiga yuboradi (summa — serverdagi jami, brauzerdan emas). Toʻlov tizimi
