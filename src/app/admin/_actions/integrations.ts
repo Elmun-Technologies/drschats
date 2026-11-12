@@ -406,6 +406,7 @@ export async function savePaymeIntegration(_: FormState, form: FormData): Promis
 const clickSchema = z.object({
   serviceId: z.string().trim().max(20).regex(/^$|^\d{1,20}$/, "Service ID faqat raqamlardan iborat."),
   merchantId: z.string().trim().max(20).regex(/^$|^\d{1,20}$/, "Merchant ID faqat raqamlardan iborat."),
+  merchantUserId: z.string().trim().max(20).regex(/^$|^\d{1,20}$/, "Merchant user ID faqat raqamlardan iborat."),
   secretKey: secretField,
   enabled: z.boolean(),
   clearSecretKey: z.boolean(),
@@ -417,6 +418,7 @@ export async function saveClickIntegration(_: FormState, form: FormData): Promis
   const parsed = clickSchema.safeParse({
     serviceId: formString(form, "serviceId"),
     merchantId: formString(form, "merchantId"),
+    merchantUserId: formString(form, "merchantUserId"),
     secretKey: typeof secret === "string" ? secret.trim() : "",
     enabled: form.get("enabled") === "on",
     clearSecretKey: form.get("clearSecretKey") === "on",
@@ -424,7 +426,11 @@ export async function saveClickIntegration(_: FormState, form: FormData): Promis
   if (!parsed.success) return { error: issue(parsed.error) ?? t("Click sozlamalarini tekshiring.") };
   const d = parsed.data;
 
-  const updates: IntegrationSettingUpdates = { "click.serviceId": d.serviceId || null, "click.merchantId": d.merchantId || null };
+  const updates: IntegrationSettingUpdates = {
+    "click.serviceId": d.serviceId || null,
+    "click.merchantId": d.merchantId || null,
+    "click.merchantUserId": d.merchantUserId || null,
+  };
   if (d.clearSecretKey) updates["click.secretKey"] = null;
   else if (d.secretKey) updates["click.secretKey"] = d.secretKey;
   const current = (await getRuntimeIntegrationSettings()).click;
@@ -449,6 +455,7 @@ const fiscalSchema = z.object({
   shippingMxik: z.string().trim().regex(/^$|^\d{17}$/, "MXIK kodi 17 ta raqam (tasnif.soliq.uz)."),
   shippingPackage: z.string().trim().regex(/^$|^\d{1,20}$/, "Qadoq kodi faqat raqamlar."),
   vatPercent: z.string().trim().regex(/^(\d{1,2}|100)$/, "QQS foizi 0–100 butun son."),
+  tin: z.string().trim().regex(/^$|^\d{9}$/, "STIR (INN) 9 ta raqam."),
 });
 
 export async function saveFiscalSettings(_: FormState, form: FormData): Promise<FormState> {
@@ -457,6 +464,7 @@ export async function saveFiscalSettings(_: FormState, form: FormData): Promise<
     shippingMxik: formString(form, "shippingMxik"),
     shippingPackage: formString(form, "shippingPackage"),
     vatPercent: formString(form, "vatPercent") || "12",
+    tin: formString(form, "tin"),
   });
   if (!parsed.success) return { error: issue(parsed.error) ?? t("Fiskal sozlamalarni tekshiring.") };
   try {
@@ -465,6 +473,7 @@ export async function saveFiscalSettings(_: FormState, form: FormData): Promise<
         "payments.shippingMxik": parsed.data.shippingMxik || null,
         "payments.shippingPackage": parsed.data.shippingPackage || null,
         "payments.vatPercent": parsed.data.vatPercent === "12" ? null : parsed.data.vatPercent,
+        "payments.tin": parsed.data.tin || null,
       },
       admin.id,
     );
@@ -474,5 +483,5 @@ export async function saveFiscalSettings(_: FormState, form: FormData): Promise<
   revalidateTag(SITE_SETTINGS_TAG);
   revalidatePath("/admin/integrations");
   await auditLog(admin, "integration.save", auditTarget(form));
-  return { ok: t("Saqlandi. Keyingi Payme toʻlovlari chekida shu kodlar ishlatiladi.") };
+  return { ok: t("Saqlandi. Keyingi Payme va Click toʻlovlari chekida shu kodlar ishlatiladi.") };
 }

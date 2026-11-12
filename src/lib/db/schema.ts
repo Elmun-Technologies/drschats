@@ -650,6 +650,11 @@ export const payments = pgTable("payments", {
   cancelTime: bigint("cancel_time", { mode: "number" }),
   providerTime: bigint("provider_time", { mode: "number" }),
   raw: jsonb("raw"),
+  /** 0036: Click fiscal receipt — pending / sent / failed / missing_codes; null for Payme. */
+  fiscalStatus: text("fiscal_status").$type<"pending" | "sent" | "failed" | "missing_codes">(),
+  fiscalAttempts: integer("fiscal_attempts").notNull().default(0),
+  fiscalError: text("fiscal_error"),
+  fiscalSentAt: timestamp("fiscal_sent_at", { withTimezone: true }),
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });

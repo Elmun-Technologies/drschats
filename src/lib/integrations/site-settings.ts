@@ -33,6 +33,7 @@ export const PUBLIC_SETTING_KEYS = [
   "payments.shippingMxik",
   "payments.shippingPackage",
   "payments.vatPercent",
+  "payments.tin",
   "admin.require2fa",
 ] as const;
 
