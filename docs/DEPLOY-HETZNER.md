@@ -16,9 +16,10 @@ workflow: `.github/workflows/hetzner-deploy.yml`.
 > Ishga tushirishdan oldin yurist bilan tekshiring (pd.gov.uz reyestri ham). Kerak boʻlsa xuddi
 > shu `deploy/hetzner/` mahalliy VPS'da (UZ data-markaz) ham oʻzgarishsiz ishlaydi.
 
-## Hozirgi holat: Coolify (2026-11-14)
+## Hozirgi holat: Coolify (2026-11-14, jonli)
 
-Sayt Vercel'dan (Hobby limit tufayli 2026-11-12 da toʻxtatilgan) **Coolify**ga koʻchirildi —
+Sayt Vercel'dan (Hobby limit tufayli 2026-11-12 da toʻxtatilgan) **Coolify**ga koʻchirildi va
+2026-11-14 dan `www.govita.uz` shu yerdan xizmat qiladi —
 yuqoridagi Compose toʻplami emas, Coolify UI'dagi resurslar (server `ubuntu-8gb-hel1-1`,
 `2.29.137.243`, Coolify loyiha **Govita → production**):
 
@@ -26,7 +27,7 @@ yuqoridagi Compose toʻplami emas, Coolify UI'dagi resurslar (server `ubuntu-8gb
 |---|---|---|
 | `govita-web` | Next.js, `Dockerfile` (Node 22), port 3000 | Post-deploy: `node scripts/db/migrate.mjs`; limit 2 GB RAM, CPU weight 2048 |
 | `govita-postgres` | Postgres 18 | **Asosiy baza** — Vercel ham shunga ulangan edi (migratsiyalar 0001–0037 shu yerda) |
-| `govita-bot` | `govita-vip-bot/compose.yaml` | `GOVITA_API_URL` = `https://www.govita.uz/api/bot`, `GOVITA_API_KEY` = saytdagi `BOT_API_KEY` |
+| `govita-bot` | `govita-vip-bot/compose.yaml` (bot `@go_vitabot`) | `GOVITA_API_URL` = `https://www.govita.uz/api/bot`, `GOVITA_API_KEY` = saytdagi `BOT_API_KEY` |
 | `seaweedfs-…` | S3 (rasm yuklash, hozircha ishlatilmaydi) | Ulansa: `AWS_S3_FORCE_PATH_STYLE=true`, `STORAGE_PUBLIC_URL=https://<host>/<bucket>` |
 
 **Muhit oʻzgaruvchilari** (`govita-web` → Environment Variables): `DATABASE_URL` (govita-postgres'ning
@@ -41,9 +42,38 @@ Sirlar 2026-11-14 da **yangidan** yaratildi (Vercel'dagilarni oʻqib boʻlmaydi)
 `0 6 * * *` — `node -e "fetch('http://127.0.0.1:3000/api/cron/marketing',{headers:{authorization:'Bearer '+process.env.CRON_SECRET}}).then(r=>console.log(r.status))"`.
 Xabarlar ishchisi (`instrumentation.ts`) jarayon ichida oʻzi yuradi.
 
-**DNS**: `govita.uz` nameserverlari **Vercel**da (Zoho Mail MX/SPF/DKIM ham shu yerda). Saytga faqat
-`@` va `www` A yozuvlari `2.29.137.243` ga oʻzgaradi; MX/TXT/CAA/`ai` tegilmaydi.
-Uzoq muddat: DNS'ni Cloudflare'ga koʻchirish (barcha yozuvlar nusxalanib, keyin registrarda NS).
+**Deploy (avtomatik)**: `main` ga push/merge → GitHub webhook (repo Settings → Webhooks,
+`http://2.29.137.243:8000/webhooks/source/github/events/manual`, faqat `push`) → Coolify `govita-web`
+ni qayta build qiladi (~7 daqiqa, rolling: sayt toʻxtamaydi). Webhook siri Coolify'da
+(`govita-web` → Webhooks → GitHub) va GitHub'da bir xil boʻlishi shart. Migratsiyalar post-deploy
+buyrugʻida (`node scripts/db/migrate.mjs`) — shuning uchun ular faqat kengaytiruvchi boʻlsin.
+
+**Qoʻlda deploy / muammo boʻlsa — tartib:**
+1. Coolify → Govita → production → `govita-web` → **Deployments**: oxirgi deploy holati va logi.
+2. Webhook kelmagan boʻlsa: GitHub → repo Settings → Webhooks → oxirgi yetkazish (Recent Deliveries),
+   yoki Coolify'da **Redeploy** tugmasi.
+3. Sayt ochilmasa: `govita-web` → **Logs** (Next.js xatosi), keyin konteyner ichida
+   `node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>r.text()).then(console.log)"`.
+4. Yangi muhit oʻzgaruvchisi: `govita-web` → Environment Variables → Add → **Redeploy** (`NEXT_PUBLIC_*`
+   build vaqtida oʻqiladi — toʻliq build kerak; qolganlari ham Redeploy bilan kuchga kiradi).
+5. Baza: `govita-postgres` → **Backups** (har 6 soatda, 14 kun; «Back Up Now» — qoʻlda nusxa).
+   Har katta oʻzgarishdan oldin qoʻlda backup oling. Hozircha nusxalar shu serverning oʻzida —
+   tashqi saqlash (S3/Storage Box) ulanishi kerak.
+6. Bot: `govita-bot` → Logs — «Run polling for bot @go_vitabot» boʻlishi kerak; `govita backend 401/402`
+   = sayt manzili yoki `GOVITA_API_KEY` saytdagi `BOT_API_KEY` ga mos emas.
+7. Sertifikat (`NET::ERR_CERT…`/self-signed) DNS oʻzgargandan keyin: Server → Proxy → **Restart Proxy**
+   (Traefik eski muvaffaqiyatsiz urinishni eslab qoladi; serverdagi hamma saytlar bir necha soniya uziladi).
+
+**Sirlar**: `govita-web` dagi sirlar 2026-11-14 da yangidan yaratilgan; `INTEGRATION_ENCRYPTION_KEY` ni
+**oʻzgartirmang** — oʻzgarsa `/admin/integrations` dagi barcha kalitlar (Payme, Click, Eskiz…) qayta
+kiritiladi. Qiymatlarning nusxasini parol menejerida saqlang.
+
+**DNS**: `govita.uz` registratori — Ahost, nameserverlari — **Vercel** (Zoho Mail MX/SPF/DKIM ham shu yerda;
+Vercel jamoasi Pro'ga oʻtkazilgan, aks holda bloklangan jamoada DNS tahrirlanmaydi). Vercel'ning oʻzgarmas
+standart `ALIAS` yozuvlarini bizning `@` va `www` **A 2.29.137.243** yozuvlari bekor qiladi; MX/TXT/CAA/`ai`
+tegilmagan. Vercel `drschats` loyihasidan domen olib tashlangan, cron oʻchirilgan, Git uzilgan.
+Keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (yozuvlar nusxalanadi, keyin Ahost'da NS) va Vercel'dan butunlay chiqish.
+DNS oʻzgargach sertifikat olinmasa (Traefik eski xatoni eslab qoladi): Server → Proxy → Restart Proxy.
 
 ## 1. Server (bir marta, ~20 daqiqa)
 
