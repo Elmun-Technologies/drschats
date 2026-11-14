@@ -47,6 +47,13 @@ Xabarlar ishchisi (`instrumentation.ts`) jarayon ichida oʻzi yuradi.
 ni qayta build qiladi (~7 daqiqa, rolling: sayt toʻxtamaydi). Webhook siri Coolify'da
 (`govita-web` → Webhooks → GitHub) va GitHub'da bir xil boʻlishi shart. Migratsiyalar post-deploy
 buyrugʻida (`node scripts/db/migrate.mjs`) — shuning uchun ular faqat kengaytiruvchi boʻlsin.
+Xuddi shu webhook `govita-bot` ni ham qayta quradi (uning Webhooks → GitHub siri ham bir xil):
+har pushda bot ~30 soniya qayta ishga tushadi.
+
+**Serverda qoʻlda `git pull` / `docker compose up` QILMANG.** Bot va sayt Coolify konteynerlarida;
+serverda alohida `docker compose up -d bot` ishga tushirilsa, ikkinchi bot oʻsha token bilan
+Telegram'dan yangilanish soʻraydi (`TelegramConflictError`) va xabarlar ikkiga boʻlinib yoʻqoladi.
+Yangi kod — faqat `main` ga merge orqali (yoki Coolify'da **Redeploy**).
 
 **Qoʻlda deploy / muammo boʻlsa — tartib:**
 1. Coolify → Govita → production → `govita-web` → **Deployments**: oxirgi deploy holati va logi.
