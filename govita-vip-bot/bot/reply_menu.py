@@ -19,7 +19,7 @@ from aiogram.types import KeyboardButton as KB, Message, ReplyKeyboardMarkup as 
 
 from .backend import BackendError
 from .config import cfg
-from .ui import b, kb, contact_kb
+from .ui import b, kb
 
 router = Router()
 
@@ -30,24 +30,43 @@ LABELS = {
     "club": ("⭐ Klub", "⭐ Клуб"),
     "help": ("💬 Yordam", "💬 Помощь"),
     "lang": ("🌐 Русский", "🌐 Oʻzbekcha"),
+    "share": ("📱 Raqamni ulashish", "📱 Поделиться номером"),
 }
 
 #: Every label in both languages → its key; a keyboard from before a language
-#: switch still works.
-BY_TEXT = {text: key for key, pair in LABELS.items() for text in pair}
+#: switch still works. «share» is a request_contact button, not a menu
+#: action, and is matched by `F.contact` instead — it must stay out of here.
+BY_TEXT = {text: key for key, pair in LABELS.items() for text in pair if key != "share"}
 
 
 def label(locale: str, key: str) -> str:
     return LABELS[key][1 if locale == "ru" else 0]
 
 
-def reply_kb(locale: str = "ru") -> RM:
-    return RM(
-        keyboard=[
+def reply_kb(locale: str = "ru", *, linked: bool = True) -> RM:
+    """The keyboard under the message field — always a full, shop-looking
+    bottom bar, never a single stray button.
+
+    A chat that has not shared its phone yet cannot check out or see its own
+    orders/club card, so those two keys give way to the one action that
+    unlocks them (`request_contact`); catalog, cart, help and the language
+    stay exactly where they are. The moment the phone is linked (`on_contact`),
+    the caller switches to `linked=True` and the full menu takes over.
+    """
+    if linked:
+        rows = [
             [KB(text=label(locale, "catalog")), KB(text=label(locale, "cart"))],
             [KB(text=label(locale, "orders")), KB(text=label(locale, "club"))],
             [KB(text=label(locale, "help")), KB(text=label(locale, "lang"))],
-        ],
+        ]
+    else:
+        rows = [
+            [KB(text=label(locale, "catalog")), KB(text=label(locale, "cart"))],
+            [KB(text=label(locale, "share"), request_contact=True), KB(text=label(locale, "help"))],
+            [KB(text=label(locale, "lang"))],
+        ]
+    return RM(
+        keyboard=rows,
         resize_keyboard=True,
         is_persistent=True,
         input_field_placeholder="Mahsulot nomini yozing…" if locale != "ru" else "Напишите название товара…",
@@ -126,7 +145,7 @@ async def send_club(m: Message, api, chat: int, locale: str):
 
     customer = await customer_of(api, chat)
     if not customer:
-        return await m.answer(shop_t(locale, "not_linked"), reply_markup=contact_kb(locale))
+        return await m.answer(shop_t(locale, "not_linked"), reply_markup=reply_kb(locale, linked=False))
     try:
         card = await api.request("GET", f"/customers/{chat}/club")
     except BackendError:
