@@ -16,6 +16,35 @@ workflow: `.github/workflows/hetzner-deploy.yml`.
 > Ishga tushirishdan oldin yurist bilan tekshiring (pd.gov.uz reyestri ham). Kerak boʻlsa xuddi
 > shu `deploy/hetzner/` mahalliy VPS'da (UZ data-markaz) ham oʻzgarishsiz ishlaydi.
 
+## Hozirgi holat: Coolify (2026-11-14)
+
+Sayt Vercel'dan (Hobby limit tufayli 2026-11-12 da toʻxtatilgan) **Coolify**ga koʻchirildi —
+yuqoridagi Compose toʻplami emas, Coolify UI'dagi resurslar (server `ubuntu-8gb-hel1-1`,
+`2.29.137.243`, Coolify loyiha **Govita → production**):
+
+| Resurs | Nima | Izoh |
+|---|---|---|
+| `govita-web` | Next.js, `Dockerfile` (Node 22), port 3000 | Post-deploy: `node scripts/db/migrate.mjs`; limit 2 GB RAM, CPU weight 2048 |
+| `govita-postgres` | Postgres 18 | **Asosiy baza** — Vercel ham shunga ulangan edi (migratsiyalar 0001–0037 shu yerda) |
+| `govita-bot` | `govita-vip-bot/compose.yaml` | `GOVITA_API_URL` = `https://www.govita.uz/api/bot`, `GOVITA_API_KEY` = saytdagi `BOT_API_KEY` |
+| `seaweedfs-…` | S3 (rasm yuklash, hozircha ishlatilmaydi) | Ulansa: `AWS_S3_FORCE_PATH_STYLE=true`, `STORAGE_PUBLIC_URL=https://<host>/<bucket>` |
+
+**Muhit oʻzgaruvchilari** (`govita-web` → Environment Variables): `DATABASE_URL` (govita-postgres'ning
+*internal* URL'i), `GOVITA_PRODUCTION=1`, `NEXT_PUBLIC_SITE_URL=https://www.govita.uz` (build-time),
+sirlar `ADMIN_SESSION_SECRET`, `INTEGRATION_ENCRYPTION_KEY` (64 hex), `MESSAGE_LINK_SECRET`,
+`LOYALTY_SECRET`, `EMAIL_TOKEN_SECRET`, `CRON_SECRET`, `BOT_API_KEY`, `RATE_LIMIT_SALT`,
+`TELEGRAM_CLUB_BOT_TOKEN` (= bot'ning `BOT_TOKEN`), build-time `NEXT_PUBLIC_TELEGRAM_CLUB_BOT`.
+Sirlar 2026-11-14 da **yangidan** yaratildi (Vercel'dagilarni oʻqib boʻlmaydi): shuning uchun
+`/admin/integrations` dagi Payme/Click kalitlari qayta kiritiladi.
+
+**Cron**: Vercel cron oʻrniga Coolify → `govita-web` → Scheduled Tasks:
+`0 6 * * *` — `node -e "fetch('http://127.0.0.1:3000/api/cron/marketing',{headers:{authorization:'Bearer '+process.env.CRON_SECRET}}).then(r=>console.log(r.status))"`.
+Xabarlar ishchisi (`instrumentation.ts`) jarayon ichida oʻzi yuradi.
+
+**DNS**: `govita.uz` nameserverlari **Vercel**da (Zoho Mail MX/SPF/DKIM ham shu yerda). Saytga faqat
+`@` va `www` A yozuvlari `2.29.137.243` ga oʻzgaradi; MX/TXT/CAA/`ai` tegilmaydi.
+Uzoq muddat: DNS'ni Cloudflare'ga koʻchirish (barcha yozuvlar nusxalanib, keyin registrarda NS).
+
 ## 1. Server (bir marta, ~20 daqiqa)
 
 1. **Hetzner Cloud → Add server**: Ubuntu 24.04, joy **Falkenstein / Nuremberg**
