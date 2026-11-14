@@ -16,8 +16,12 @@ catalog backend behind a single adapter interface — see
 
 ## Deploy
 
-Production runs on Fly.io: every merge to `main` deploys after CI passes
-(`.github/workflows/fly-deploy.yml`, details in [`docs/DEPLOY-FLY.md`](docs/DEPLOY-FLY.md)).
+Production runs on a Hetzner server under **Coolify** (since 2026-11-14): a push to `main`
+reaches Coolify through a GitHub webhook and the `govita-web` app rebuilds from the
+`Dockerfile` (~7 min, rolling — no downtime). Runbook — env vars, database, bot, DNS,
+backups, what to do when something breaks: [`docs/DEPLOY-HETZNER.md`](docs/DEPLOY-HETZNER.md)
+→ «Hozirgi holat: Coolify». The Fly.io files (`fly.toml`, `docs/DEPLOY-FLY.md`) are kept
+as a fallback plan only.
 Without `DATABASE_URL` the site serves the built-in catalogue, so a bare
 `next build && next start` (or any Node host) shows the full storefront.
 

@@ -13,8 +13,8 @@ Ish branch'i: `claude/dreamy-ride-p434h5` (asosiy: `main`). Rebrend va Hetzner t
 
 **Deploy (2026-11-14): sayt Hetzner/Coolify'da jonli.** `www.govita.uz` → Coolify `govita-web`
 (server `2.29.137.243`); baza `govita-postgres` (oʻsha asosiy baza), 6 soatlik backup, bot `@go_vitabot`
-(`govita-bot`) yangi saytga ulangan. **`main` ga merge avtomatik deploy QILMAYDI** — Coolify → `govita-web` →
-Redeploy (repo public, GitHub App yoʻq). Vercel `drschats` loyihasida domen, cron va Git ulanishi olib tashlangan.
+(`govita-bot`) yangi saytga ulangan. `main` ga merge → GitHub webhook → Coolify avtomatik deploy;
+ishlamasa Coolify → `govita-web` → Redeploy. Vercel `drschats` loyihasida domen, cron va Git ulanishi olib tashlangan.
 DNS hozircha Vercel nameserverlarida (Pro tarif 2026-12-14 gacha toʻlangan) — `@` va `www` A yozuvi serverga;
 keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Payme/Click kalitlari
 `/admin/integrations` da **qayta kiritilishi** kerak (shifrlash kaliti yangilandi). Tafsilot:

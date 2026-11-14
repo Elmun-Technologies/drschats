@@ -42,8 +42,31 @@ Sirlar 2026-11-14 da **yangidan** yaratildi (Vercel'dagilarni oʻqib boʻlmaydi)
 `0 6 * * *` — `node -e "fetch('http://127.0.0.1:3000/api/cron/marketing',{headers:{authorization:'Bearer '+process.env.CRON_SECRET}}).then(r=>console.log(r.status))"`.
 Xabarlar ishchisi (`instrumentation.ts`) jarayon ichida oʻzi yuradi.
 
-**Deploy**: `main` ga merge Coolify'ni oʻzi ishga tushirmaydi — Coolify → `govita-web` → **Redeploy**
-(~7 daqiqa, rolling: sayt toʻxtamaydi). Migratsiyalar post-deploy buyrugʻida.
+**Deploy (avtomatik)**: `main` ga push/merge → GitHub webhook (repo Settings → Webhooks,
+`http://2.29.137.243:8000/webhooks/source/github/events/manual`, faqat `push`) → Coolify `govita-web`
+ni qayta build qiladi (~7 daqiqa, rolling: sayt toʻxtamaydi). Webhook siri Coolify'da
+(`govita-web` → Webhooks → GitHub) va GitHub'da bir xil boʻlishi shart. Migratsiyalar post-deploy
+buyrugʻida (`node scripts/db/migrate.mjs`) — shuning uchun ular faqat kengaytiruvchi boʻlsin.
+
+**Qoʻlda deploy / muammo boʻlsa — tartib:**
+1. Coolify → Govita → production → `govita-web` → **Deployments**: oxirgi deploy holati va logi.
+2. Webhook kelmagan boʻlsa: GitHub → repo Settings → Webhooks → oxirgi yetkazish (Recent Deliveries),
+   yoki Coolify'da **Redeploy** tugmasi.
+3. Sayt ochilmasa: `govita-web` → **Logs** (Next.js xatosi), keyin konteyner ichida
+   `node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>r.text()).then(console.log)"`.
+4. Yangi muhit oʻzgaruvchisi: `govita-web` → Environment Variables → Add → **Redeploy** (`NEXT_PUBLIC_*`
+   build vaqtida oʻqiladi — toʻliq build kerak; qolganlari ham Redeploy bilan kuchga kiradi).
+5. Baza: `govita-postgres` → **Backups** (har 6 soatda, 14 kun; «Back Up Now» — qoʻlda nusxa).
+   Har katta oʻzgarishdan oldin qoʻlda backup oling. Hozircha nusxalar shu serverning oʻzida —
+   tashqi saqlash (S3/Storage Box) ulanishi kerak.
+6. Bot: `govita-bot` → Logs — «Run polling for bot @go_vitabot» boʻlishi kerak; `govita backend 401/402`
+   = sayt manzili yoki `GOVITA_API_KEY` saytdagi `BOT_API_KEY` ga mos emas.
+7. Sertifikat (`NET::ERR_CERT…`/self-signed) DNS oʻzgargandan keyin: Server → Proxy → **Restart Proxy**
+   (Traefik eski muvaffaqiyatsiz urinishni eslab qoladi; serverdagi hamma saytlar bir necha soniya uziladi).
+
+**Sirlar**: `govita-web` dagi sirlar 2026-11-14 da yangidan yaratilgan; `INTEGRATION_ENCRYPTION_KEY` ni
+**oʻzgartirmang** — oʻzgarsa `/admin/integrations` dagi barcha kalitlar (Payme, Click, Eskiz…) qayta
+kiritiladi. Qiymatlarning nusxasini parol menejerida saqlang.
 
 **DNS**: `govita.uz` registratori — Ahost, nameserverlari — **Vercel** (Zoho Mail MX/SPF/DKIM ham shu yerda;
 Vercel jamoasi Pro'ga oʻtkazilgan, aks holda bloklangan jamoada DNS tahrirlanmaydi). Vercel'ning oʻzgarmas
