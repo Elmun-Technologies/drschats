@@ -18,7 +18,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery, Message
 
 from .backend import BackendError
-from .ui import b, kb, contact_kb
+from .reply_menu import reply_kb
+from .ui import b, kb
 
 router = Router()
 log = logging.getLogger("govita.login")
@@ -89,7 +90,7 @@ async def _open(m: Message, api, chat: int, token: str, state: FSMContext | None
     if s == "need_contact":
         if state is not None:
             await state.update_data(login_token=token)
-        return await m.answer(t(locale, "need_contact"), reply_markup=contact_kb(locale))
+        return await m.answer(t(locale, "need_contact"), reply_markup=reply_kb(locale, linked=False))
     if s == "done":
         return await m.answer(t(locale, "already"))
     return await m.answer(t(locale, "expired"))
@@ -131,7 +132,7 @@ async def on_answer(q: CallbackQuery, api):
     except BackendError as e:
         await q.answer()
         if e.status == 409:
-            return await q.message.answer(t(locale, "need_contact"), reply_markup=contact_kb(locale))
+            return await q.message.answer(t(locale, "need_contact"), reply_markup=reply_kb(locale, linked=False))
         if e.status == 410:
             return await _replace(q, t(locale, "expired"))
         raise

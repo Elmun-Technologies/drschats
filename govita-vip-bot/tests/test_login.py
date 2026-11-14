@@ -91,7 +91,13 @@ async def test_unlinked_chat_shares_its_contact_then_confirms():
     m = message(f"/start login_{TOKEN}")
     await login.start_login(m, api, st)
     assert st.data["login_token"] == TOKEN
-    assert m.answer.await_args.kwargs["reply_markup"].keyboard[0][0].request_contact
+    # Still the full shop-looking bottom bar (Katalog, Savat, …), not a lone button —
+    # the share-contact key is one of its rows, not the whole keyboard.
+    rows = m.answer.await_args.kwargs["reply_markup"].keyboard
+    texts = [btn.text for row in rows for btn in row]
+    assert "🛍 Katalog" in texts and "🛒 Savat" in texts
+    share = next(btn for row in rows for btn in row if btn.request_contact)
+    assert share.text == "📱 Raqamni ulashish"
 
     # The contact arrives: the number is linked and the waiting sign-in resumes.
     api.routes.update({
@@ -148,6 +154,21 @@ async def test_keyboard_press_leaves_a_checkout_step():
     assert "Kategoriyani tanlang" in m.answer.await_args.args[0]
     kb = reply_menu.reply_kb("uz")
     assert kb.is_persistent and len([b for row in kb.keyboard for b in row]) == 6
+
+
+def test_unlinked_keyboard_is_still_a_full_menu_not_a_lone_button():
+    """The exact regression this fixes: a chat that has not shared its phone
+    yet must still look like the shop (Katalog, Savat, …), never just one
+    isolated «share your number» button."""
+    kb = reply_menu.reply_kb("ru", linked=False)
+    buttons = [btn for row in kb.keyboard for btn in row]
+    assert len(buttons) > 1
+    assert any(btn.text == "🛍 Каталог" for btn in buttons)
+    assert any(btn.text == "🛒 Корзина" for btn in buttons)
+    share = [btn for btn in buttons if btn.request_contact]
+    assert len(share) == 1 and share[0].text == "📱 Поделиться номером"
+    # «Мои заказы» / «Клуб» need a phone, so they give way to the share key.
+    assert not any(btn.text in ("📦 Мои заказы", "⭐ Клуб") for btn in buttons)
 
 
 @pytest.mark.asyncio

@@ -21,7 +21,7 @@ from .config import cfg
 from .logic import som
 from . import settings as settings_store
 from . import shop as shop_ui
-from .ui import b, kb, contact_kb, tr
+from .ui import b, kb, tr
 from .reply_menu import reply_kb
 
 router = Router()
@@ -151,7 +151,7 @@ async def start(m, api):
             raise
         locale = await shop_ui.locale_of(api, m.from_user.id)
         await m.answer(await greeting(api, locale), reply_markup=menu(locale))
-        return await m.answer(tr('askContact', locale), reply_markup=contact_kb(locale))
+        return await m.answer(tr('askContact', locale), reply_markup=reply_kb(locale, linked=False))
     if payload.startswith('o_'):
         return await show_order(m, api, m.from_user.id, payload[2:])
     customer = await shop_ui.customer_of(api, m.from_user.id)
