@@ -11,9 +11,13 @@ eski chat tarixini o'qishga harakat qilmang.
 Ish branch'i: `claude/dreamy-ride-p434h5` (asosiy: `main`). Rebrend va Hetzner to'plami
 #140 bilan `main` ga tushgan; branch merge'dan keyin `main` dan qayta boshlanadi.
 
-**Deploy (2026-11-09 tekshirildi): sayt Vercel'da** — `main` ga merge bo'lishi bilan Vercel
-production'ni o'zi yangilaydi. «Deploy to Fly» va «Deploy to Hetzner» secret'siz (`FLY_API_TOKEN`,
-`HETZNER_HOST`) qadamlarni o'tkazib yuborib «success» ko'rsatadi — bu deploy emas.
+**Deploy (2026-11-14): Vercel → Hetzner/Coolify koʻchirilmoqda.** Vercel jamoasi 2026-11-12 da
+Hobby limiti (Fast Origin Transfer) tufayli **toʻxtatilgan** — sayt, deploy va hatto DNS tahriri bloklangan
+(12-dekabrgacha). Coolify'da `govita-web` (Dockerfile, Node 22) yigʻildi va ishlayapti; baza
+`govita-postgres` — asosiy baza (Vercel ham shunga ulangan edi). Kunlik/6 soatlik backup qoʻyildi.
+Qolgani foydalanuvchida: `DATABASE_URL` va bot tokenini Coolify'ga qoʻyish, PR #153 merge,
+DNS'ni Vercel'dan Cloudflare'ga koʻchirish (Zoho Mail yozuvlari bilan), Payme/Click kalitlarini qayta kiritish.
+Tafsilot: [`DEPLOY-HETZNER.md`](DEPLOY-HETZNER.md) → «Hozirgi holat: Coolify».
 
 ## Yaqinda tugagan (main'ga merge qilingan)
 

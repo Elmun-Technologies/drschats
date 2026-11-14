@@ -8,6 +8,10 @@ import { randomBytes } from "node:crypto";
 
   Public URL: STORAGE_PUBLIC_URL if set (a CDN in front), else Tigris's
   virtual-host form https://<bucket>.fly.storage.tigris.dev/<key>.
+
+  Self-hosted S3 (SeaweedFS/MinIO on the Hetzner server) has no per-bucket
+  DNS names, so it needs path-style requests (AWS_S3_FORCE_PATH_STYLE=true)
+  and STORAGE_PUBLIC_URL including the bucket: https://media.govita.uz/<bucket>.
 */
 const endpoint = process.env.AWS_ENDPOINT_URL_S3;
 const bucket = process.env.BUCKET_NAME;
@@ -37,7 +41,11 @@ export async function uploadImage(file: File, folder: string): Promise<string> {
   const ext = TYPES[file.type];
   if (!ext) throw new Error("unsupported-type");
   if (file.size > MAX_UPLOAD_BYTES) throw new Error("too-large");
-  client ??= new S3Client({ region: process.env.AWS_REGION || "auto", endpoint });
+  client ??= new S3Client({
+    region: process.env.AWS_REGION || "auto",
+    endpoint,
+    forcePathStyle: process.env.AWS_S3_FORCE_PATH_STYLE === "true",
+  });
   const key = `${folder}/${Date.now().toString(36)}-${randomBytes(4).toString("hex")}.${ext}`;
   await client.send(
     new PutObjectCommand({
