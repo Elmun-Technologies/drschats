@@ -11,13 +11,14 @@ eski chat tarixini o'qishga harakat qilmang.
 Ish branch'i: `claude/dreamy-ride-p434h5` (asosiy: `main`). Rebrend va Hetzner to'plami
 #140 bilan `main` ga tushgan; branch merge'dan keyin `main` dan qayta boshlanadi.
 
-**Deploy (2026-11-14): Vercel → Hetzner/Coolify koʻchirilmoqda.** Vercel jamoasi 2026-11-12 da
-Hobby limiti (Fast Origin Transfer) tufayli **toʻxtatilgan** — sayt, deploy va hatto DNS tahriri bloklangan
-(12-dekabrgacha). Coolify'da `govita-web` (Dockerfile, Node 22) yigʻildi va ishlayapti; baza
-`govita-postgres` — asosiy baza (Vercel ham shunga ulangan edi). Kunlik/6 soatlik backup qoʻyildi.
-Qolgani foydalanuvchida: `DATABASE_URL` va bot tokenini Coolify'ga qoʻyish, PR #153 merge,
-DNS'ni Vercel'dan Cloudflare'ga koʻchirish (Zoho Mail yozuvlari bilan), Payme/Click kalitlarini qayta kiritish.
-Tafsilot: [`DEPLOY-HETZNER.md`](DEPLOY-HETZNER.md) → «Hozirgi holat: Coolify».
+**Deploy (2026-11-14): sayt Hetzner/Coolify'da jonli.** `www.govita.uz` → Coolify `govita-web`
+(server `2.29.137.243`); baza `govita-postgres` (oʻsha asosiy baza), 6 soatlik backup, bot `@go_vitabot`
+(`govita-bot`) yangi saytga ulangan. **`main` ga merge avtomatik deploy QILMAYDI** — Coolify → `govita-web` →
+Redeploy (repo public, GitHub App yoʻq). Vercel `drschats` loyihasida domen, cron va Git ulanishi olib tashlangan.
+DNS hozircha Vercel nameserverlarida (Pro tarif 2026-12-14 gacha toʻlangan) — `@` va `www` A yozuvi serverga;
+keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Payme/Click kalitlari
+`/admin/integrations` da **qayta kiritilishi** kerak (shifrlash kaliti yangilandi). Tafsilot:
+[`DEPLOY-HETZNER.md`](DEPLOY-HETZNER.md) → «Hozirgi holat: Coolify».
 
 ## Yaqinda tugagan (main'ga merge qilingan)
 
