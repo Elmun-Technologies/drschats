@@ -104,14 +104,20 @@ export default async function HomePage({
   const bundle = promotions.find((p) => p.type === "buy_x_get_y");
 
   // The built-in slides are the fallback: with no banner running, the hero is exactly what it always was.
-  const fallbackSlides: HeroSlide[] = (t.raw("slides") as Pick<HeroSlide, "eyebrow" | "title" | "cta" | "href">[]).map((s, i) => ({
-    key: `slide-${i}`,
-    eyebrow: s.eyebrow,
-    title: s.title,
-    cta: s.cta,
-    href: s.href,
-    image: productCutout(s.href.replace(/^\/product\//, "")) ?? null,
-  }));
+  const fallbackSlides: HeroSlide[] = (t.raw("slides") as Pick<HeroSlide, "eyebrow" | "title" | "subtitle" | "cta" | "href">[]).map((s, i) => {
+    const slug = s.href.replace(/^\/product\//, "");
+    const product = catalogue.find((p) => p.slug === slug);
+    return {
+      key: `slide-${i}`,
+      eyebrow: s.eyebrow,
+      title: s.title,
+      subtitle: s.subtitle,
+      cta: s.cta,
+      href: s.href,
+      price: product?.price,
+      image: productCutout(slug) ?? null,
+    };
+  });
   const toSlide = (b: (typeof heroBanners)[number]): HeroSlide => ({
     key: `banner-${b.id}`,
     bannerId: b.id,
