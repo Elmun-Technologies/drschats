@@ -41,6 +41,15 @@ Qilingan ishlar va sababi:
   da 308 (next-intl'ning 307 aniqlashi o'chiq, `localeDetection: false`);
   next-intl'ning `Link:` hreflang sarlavhasi ham o'chiq (`alternateLinks:
   false`) — hreflang faqat HTML'da, `buildAlternates` dan.
+  Boshqa lokalsiz yo'llar (`/delivery`, `/product/x`) ham **308** —
+  `middleware.ts` → `permanentLocaleRedirect` (next-intl 307 berardi; GSC
+  2026-11 da 26 ta "Page with redirect" shundan edi).
+- **GSC holati (2026-11-18)**: 105 indekslangan / 127 yo'q. 48 noindex —
+  atayin (`?sort`, `/search`, `/wishlist`, `/profile`); 404 `/&`, `/$` —
+  JS bundle satrlari, zararsiz; "Crawled – not indexed" asosan blog —
+  3 ta ~100 so'zli maqola (omega-3, vitamin D, magniy) 5 bo'limgacha
+  kengaytirildi. Maqola ~100 so'z bo'lsa Google indekslamaydi — yangi
+  maqola kamida 4–5 bo'lim.
 - **`*.fly.dev`** — `X-Robots-Tag: noindex, nofollow` (`/admin` dan tashqari):
   bitta indekslanadigan host.
 - **Kontentsiz sahifalar** — `/reviews` (sharh yo'q), `/licenses` (raqam yo'q),
