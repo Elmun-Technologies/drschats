@@ -298,11 +298,11 @@ const rawArticles: RawArticle[] = [
         paragraphs: {
           uz: [
             "Vitamin B6 ham asab tizimining meʼyoriy ishlashiga va charchoqni kamaytirishga hissa qoʻshadi, shuning uchun magniy koʻpincha B6 bilan birga chiqariladi. Sitrat va boshqa organik shakllar oksiddan yaxshiroq soʻriladi; shipuchi tabletka suvda eriydi va yutish oson.",
-            "Yuqori dozada ich ketishi mumkin — yorliqdagi dozadan oshirmang. Buyrak kasalligida magniyni faqat shifokor bilan kelishib qabul qiling. Baʼzi antibiotiklar va suyak uchun dorilar bilan magniy orasida kamida 2 soat oraliq boʻlishi kerak.",
+            "Yuqori dozada ich ketishi mumkin — yorliqdagi dozadan oshirmang. Buyrak kasalligida magniyni faqat shifokor bilan kelishib qabul qiling. Magniy baʼzi antibiotiklar (tetratsiklinlar, ftorxinolonlar) va suyak uchun dorilarning soʻrilishini kamaytiradi: odatda antibiotik magniydan kamida 2 soat oldin yoki 4–6 soat keyin ichiladi. Aniq oraliqni dori yoʻriqnomasidan yoki farmatsevtdan biling.",
           ],
           ru: [
             "Витамин B6 тоже способствует нормальной работе нервной системы и уменьшению усталости, поэтому магний часто выпускают вместе с B6. Цитрат и другие органические формы усваиваются лучше оксида; шипучая таблетка растворяется в воде, её легко принимать.",
-            "В высоких дозах магний может ослаблять стул — не превышайте дозу на этикетке. При заболеваниях почек принимайте магний только по согласованию с врачом. Между магнием и некоторыми антибиотиками и препаратами для костей нужен интервал не меньше 2 часов.",
+            "В высоких дозах магний может ослаблять стул — не превышайте дозу на этикетке. При заболеваниях почек принимайте магний только по согласованию с врачом. Магний снижает всасывание некоторых антибиотиков (тетрациклинов, фторхинолонов) и препаратов для костей: обычно антибиотик принимают минимум за 2 часа до магния или через 4–6 часов после. Точный интервал уточните в инструкции к лекарству или у фармацевта.",
           ],
         },
       },
