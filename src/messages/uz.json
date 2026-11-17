@@ -206,6 +206,7 @@
     },
     "v3": {
       "all": "Hammasi",
+      "price": "Narxi",
       "prevSlide": "Oldingi slayd",
       "nextSlide": "Keyingi slayd",
       "slides": "Slaydlar",

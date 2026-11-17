@@ -21,6 +21,8 @@ export interface HeroSlide {
   subtitle?: string;
   cta: string;
   href: string;
+  /** Built-in slides: the product's real current price. */
+  price?: number;
   /** Background-removed pack shot (built-in slides) or the banner's picture. */
   image: string | null;
   /** Phones only, when the banner has its own picture for them. */
@@ -100,8 +102,8 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
         )}
         {count > 1 && (
           <>
-            <ArrowButton dir="prev" label={t("v3.prevSlide")} onClick={() => go(-1)} className="absolute left-4 top-[182px] hidden lg:flex" />
-            <ArrowButton dir="next" label={t("v3.nextSlide")} onClick={() => go(1)} className="absolute right-4 top-[182px] hidden lg:flex" />
+            <ArrowButton dir="prev" label={t("v3.prevSlide")} onClick={() => go(-1)} className="absolute left-4 top-1/2 hidden -translate-y-1/2 lg:flex" />
+            <ArrowButton dir="next" label={t("v3.nextSlide")} onClick={() => go(1)} className="absolute right-4 top-1/2 hidden -translate-y-1/2 lg:flex" />
           </>
         )}
       </div>
@@ -131,10 +133,18 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
             >
               <span
                 className={cn(
-                  "h-1.5 rounded-full transition-all lg:h-2",
-                  i === index ? "w-5 bg-ink lg:w-6" : "w-1.5 bg-on-dark-2 lg:w-2",
+                  "relative h-1.5 overflow-hidden rounded-full transition-all lg:h-2",
+                  i === index ? "w-8 bg-chip-strong lg:w-10" : "w-1.5 bg-on-dark-2 lg:w-2",
                 )}
-              />
+              >
+                {i === index && (
+                  <span
+                    key={`${slide.key}-${paused || reduced}`}
+                    className={cn("absolute inset-0 origin-left rounded-full bg-ink", paused || reduced ? "" : "hero-progress")}
+                    style={{ animationPlayState: held ? "paused" : "running" }}
+                  />
+                )}
+              </span>
             </button>
           ))}
         </div>
@@ -146,17 +156,19 @@ export function HeroSlider({ slides: scheduled, fallback }: { slides: HeroSlide[
 /* One slide's card. A slide in an A/B test renders two of these inside an AbSlot. */
 function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean }) {
   const dark = slide.theme === "dark";
+  const locale = useLocale() as Locale;
+  const t = useTranslations("home.v3");
   return (
     <BannerLink
             href={slide.href}
       slot="hero"
       banner={slide.bannerId ? { id: slide.bannerId, title: slide.title } : undefined}
       className={cn(
-        "hero-slide-in relative flex min-h-[360px] flex-col overflow-hidden rounded-3xl px-5 pt-5 transition-colors md:grid md:min-h-[320px] md:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] md:items-center md:gap-6 md:px-10 md:py-8 lg:h-[420px] lg:rounded-[28px] lg:px-[88px] lg:py-0",
+        "hero-slide-in group/hero relative flex min-h-[360px] flex-col overflow-hidden rounded-3xl px-5 pt-5 transition-colors md:grid md:min-h-[320px] md:grid-cols-[minmax(0,1.25fr)_minmax(0,0.9fr)] md:items-center md:gap-6 md:px-10 md:py-8 lg:h-[420px] lg:rounded-[28px] lg:px-[88px] lg:py-0",
         dark ? "bg-dark-panel text-white hover:bg-ink" : "bg-tile hover:bg-tile-hover",
       )}
     >
-      <span className="relative z-10 flex flex-col items-start gap-3 lg:gap-4">
+      <span className="hero-stagger relative z-10 flex flex-col items-start gap-3 lg:gap-4">
         {slide.eyebrow && (
           <span className="inline-flex h-6 items-center rounded-pill bg-bg px-2.5 text-xs font-semibold text-ink lg:h-[26px] lg:text-[13px]">
             {slide.eyebrow}
@@ -168,20 +180,29 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
         )}
         {slide.countdownTo && <SaleCountdown as="span" endsAt={slide.countdownTo} onDark={dark} className="lg:text-[15px]" />}
         {slide.cta && (
-          <span
-            className={cn(
-              "mt-0.5 inline-flex h-11 items-center rounded-sm px-[18px] text-[15px] font-semibold lg:mt-1.5 lg:h-14 lg:rounded-input lg:px-8 lg:text-[17px]",
-              dark ? "bg-bg text-ink" : "bg-ink text-white",
-            )}
-          >
-            {slide.cta}
+          <span className="mt-0.5 flex flex-wrap items-center gap-x-5 gap-y-2 lg:mt-1.5">
+            <span
+              className={cn(
+                "inline-flex h-11 items-center gap-2 rounded-sm px-[18px] text-[15px] font-semibold lg:h-14 lg:rounded-input lg:px-8 lg:text-[17px]",
+                dark ? "bg-bg text-ink" : "bg-ink text-white",
+              )}
+            >
+              {slide.cta}
+              <span aria-hidden className="transition-transform group-hover/hero:translate-x-1">→</span>
+            </span>
+            {slide.price ? (
+              <span className="flex flex-col leading-tight">
+                <span className="text-xs text-muted lg:text-[13px]">{t("price")}</span>
+                <span className="text-xl font-extrabold lg:text-[26px]">{formatMoney(slide.price, locale)}</span>
+              </span>
+            ) : null}
           </span>
         )}
       </span>
       {slide.image && (
-        <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]">
+        <span className="relative -mr-3.5 mb-1.5 mt-auto h-44 w-44 shrink-0 self-end md:m-0 md:self-center md:aspect-square md:h-auto md:w-full md:max-w-[260px] md:justify-self-center lg:max-w-[330px]">
           {/* Brendbook «Grafika»: the logo's dot, grown — one big dot per composition. */}
-          <span aria-hidden className="absolute inset-[7%] rounded-full bg-yellow" />
+          <span aria-hidden className="hero-dot absolute inset-[3%] rounded-full bg-yellow" />
           {slide.imageMobile ? (
             <ArtDirected desktop={slide.image} mobile={slide.imageMobile} priority={priority} />
           ) : (
@@ -192,7 +213,7 @@ function SlideCard({ slide, priority }: { slide: HeroSlide; priority: boolean })
               priority={priority}
               unoptimized={!isLocal(slide.image)}
               sizes="(max-width: 767px) 176px, 330px"
-              className="object-contain"
+              className="hero-product object-contain drop-shadow-[0_18px_24px_rgba(23,25,27,0.18)]"
             />
           )}
         </span>
