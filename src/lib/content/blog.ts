@@ -59,6 +59,18 @@ const IMAGES: Record<string, string> = {
   "blog-bp": "/images/stock/st-range-devices.webp",
   "blog-thermo": "/images/stock/st-range-devices.webp",
   "blog-coffee": "/images/stock/st-shelf-range.webp",
+  "bank-vitamin-spoon": "/images/blog/vitamin-supplement-spoon.webp",
+  "bank-vitamin-capsule": "/images/blog/vitamin-capsule-wood.webp",
+  "bank-citrus-halves": "/images/blog/citrus-orange-lemon-halves.webp",
+  "bank-citrus-top": "/images/blog/citrus-top-view.webp",
+  "bank-sleep-pillow": "/images/blog/sleep-woman-pillow.webp",
+  "bank-sleep-bed": "/images/blog/sleep-woman-bed.webp",
+  "bank-kids-tea": "/images/blog/kids-winter-tea.webp",
+  "bank-family-snow": "/images/blog/family-winter-snow.webp",
+  "bank-pregnancy-cooking": "/images/blog/pregnancy-healthy-cooking.webp",
+  "bank-pregnancy-salad": "/images/blog/pregnancy-salad-sofa.webp",
+  "bank-sport-running": "/images/blog/sport-woman-running.webp",
+  "bank-sport-outdoor": "/images/blog/sport-woman-outdoor.webp",
 };
 const img = (seed: string) => IMAGES[seed] ?? "/images/stock/st-cat-capsules.webp";
 
