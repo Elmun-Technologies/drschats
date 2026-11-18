@@ -72,33 +72,72 @@ const rawArticles: RawArticle[] = [
       ru: "Зачем нужна омега-3 и как её выбрать",
     },
     excerpt: {
-      uz: "EPA va DHA — yurak, miya va koʻz uchun zarur yogʻ kislotalari. Sifatli omega-3 ni qanday tanlashni oʻrganing.",
-      ru: "EPA и DHA — жирные кислоты для сердца, мозга и зрения. Узнайте, как выбрать качественную омегу-3.",
+      uz: "EPA, DHA va ALA nima, kunlik meʼyor qancha, qaysi ovqatlarda bor va sifatli omega-3 ni yorliqqa qarab qanday tanlash mumkin.",
+      ru: "Что такое EPA, DHA и ALA, какая суточная норма, в каких продуктах они есть и как выбрать качественную омегу-3 по этикетке.",
     },
     sections: [
       {
-        heading: { uz: "EPA va DHA nima?", ru: "Что такое EPA и DHA?" },
+        heading: { uz: "Omega-3 nima", ru: "Что такое омега-3" },
         paragraphs: {
           uz: [
-            "Omega-3 — bu organizm oʻzi ishlab chiqara olmaydigan toʻyinmagan yogʻ kislotalari. Asosiy ikkitasi — EPA va DHA — baliq yogʻida koʻp boʻladi.",
-            "DHA miya va toʻr parda hujayralarining qurilish bloki, EPA esa yalligʻlanishni muvozanatlashga yordam beradi.",
+            "Omega-3 — koʻp toʻyinmagan yogʻ kislotalari guruhi. Organizm ularni yetarli miqdorda oʻzi ishlab chiqara olmaydi, shuning uchun ular ovqat bilan kelishi kerak. Uchta asosiy shakli bor: ALA (alfa-linolen kislota), EPA (eykozapentaen kislota) va DHA (dokozageksaen kislota).",
+            "ALA oʻsimliklarda boʻladi: zigʻir urugʻi, chia, yongʻoq va ularning moyi. EPA va DHA esa asosan yogʻli dengiz baligʻida va dengiz suvoʻtlarida uchraydi. Organizm ALA ning kichik qismini — odatda 10 foizdan kamini — EPA va DHA ga aylantiradi, shuning uchun oʻsimlik manbalari baliqni toʻliq almashtirmaydi.",
           ],
           ru: [
-            "Омега-3 — это ненасыщенные жирные кислоты, которые организм не вырабатывает сам. Две главные — EPA и DHA — содержатся в рыбьем жире.",
-            "DHA — строительный блок клеток мозга и сетчатки, а EPA помогает балансировать воспаление.",
+            "Омега-3 — группа полиненасыщенных жирных кислот. Организм не может вырабатывать их в достаточном количестве, поэтому они должны поступать с едой. Основных форм три: ALA (альфа-линоленовая кислота), EPA (эйкозапентаеновая) и DHA (докозагексаеновая).",
+            "ALA содержится в растениях: семенах льна и чиа, грецких орехах и их маслах. EPA и DHA — в основном в жирной морской рыбе и морских водорослях. Организм превращает в EPA и DHA лишь небольшую часть ALA — обычно меньше 10 процентов, поэтому растительные источники не заменяют рыбу полностью.",
           ],
         },
       },
       {
-        heading: { uz: "Sifatli mahsulotni qanday tanlash", ru: "Как выбрать качественный продукт" },
+        heading: { uz: "EPA va DHA organizmda nima qiladi", ru: "Что делают EPA и DHA в организме" },
         paragraphs: {
           uz: [
-            "Yorliqdagi EPA va DHA umumiy miqdoriga eʼtibor bering — bu baliq yogʻining umumiy ogʻirligidan muhimroq.",
-            "Molekulyar distillash va IFOS sertifikati ogʻir metallardan tozalanganini bildiradi. Hidsiz formula sifatdan dalolat beradi.",
+            "EPA va DHA har bir hujayra membranasining tarkibiy qismi. Kuniga kamida 250 mg EPA va DHA yurakning meʼyoriy ishlashiga hissa qoʻshadi. DHA miya va koʻzning toʻr pardasida ayniqsa koʻp: kuniga 250 mg DHA miyaning meʼyoriy faoliyati va meʼyoriy koʻrishni saqlashga hissa qoʻshadi.",
+            "Homiladorlik va emizish davrida DHA ga ehtiyoj ortadi — u bolaning miyasi va koʻzi rivojlanishida ishtirok etadi. Bu davrda har qanday qoʻshimchani shifokor bilan kelishib qabul qilish kerak.",
           ],
           ru: [
-            "Смотрите на суммарное количество EPA и DHA на этикетке — это важнее общего веса рыбьего жира.",
-            "Молекулярная дистилляция и сертификат IFOS означают очистку от тяжёлых металлов. Отсутствие запаха — признак качества.",
+            "EPA и DHA входят в состав мембраны каждой клетки. Не менее 250 мг EPA и DHA в день способствуют нормальной работе сердца. DHA особенно много в мозге и сетчатке глаза: 250 мг DHA в день способствуют поддержанию нормальной работы мозга и нормального зрения.",
+            "Во время беременности и кормления грудью потребность в DHA растёт — она участвует в развитии мозга и глаз ребёнка. В этот период любую добавку стоит согласовать с врачом.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Ovqatdan qancha olsa boʻladi", ru: "Сколько можно получить из еды" },
+        paragraphs: {
+          uz: [
+            "Haftasiga 1–2 marta yogʻli baliq (losos, skumbriya, seld, sardina) yeyish odatda kattalar uchun tavsiya qilinadigan miqdorni beradi. Oʻzbekistonda dengiz baligʻi har kuni ham, arzon ham emas, daryo baligʻida esa EPA va DHA kamroq — shuning uchun koʻpchilik omega-3 ni qoʻshimcha sifatida tanlaydi.",
+            "ALA uchun kuniga bir osh qoshiq zigʻir urugʻi yoki bir hovuch yongʻoq yetarli. Zigʻir urugʻini maydalab yeyish kerak: butun urugʻ hazm boʻlmay chiqib ketadi.",
+          ],
+          ru: [
+            "Жирная рыба (лосось, скумбрия, сельдь, сардины) 1–2 раза в неделю обычно даёт взрослому рекомендуемое количество. В Узбекистане морская рыба есть не каждый день и стоит недёшево, а в речной рыбе EPA и DHA меньше — поэтому многие выбирают омегу-3 в виде добавки.",
+            "Для ALA достаточно столовой ложки семян льна или горсти грецких орехов в день. Лён лучше есть молотым: целые семена выходят непереваренными.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Yorliqqa qarab qanday tanlash", ru: "Как выбрать по этикетке" },
+        paragraphs: {
+          uz: [
+            "Birinchi navbatda bir kapsuladagi EPA va DHA miqdoriga qarang, «baliq yogʻi 1000 mg» degan umumiy raqamga emas. 1000 mg baliq yogʻida EPA va DHA 300 mg ham, 700 mg ham boʻlishi mumkin — kunlik dozani shu raqam belgilaydi.",
+            "Shakli ham muhim: triglitserid va etil efir shakllari keng tarqalgan, ikkalasi ham ovqat bilan ichilganda yaxshi soʻriladi. Ishlab chiqaruvchi ogʻir metallar va oksidlanish boʻyicha tozalikni tekshirgani (masalan, IFOS yoki GOED standarti) yozilgan boʻlsa — bu qoʻshimcha ishonch belgisi.",
+            "Yaroqlilik muddatini tekshiring va ochilgan qutini salqin, quyoshdan uzoq joyda saqlang. Kapsulani ovqat paytida ichish baliq taʼmi bilan kekirishni kamaytiradi.",
+          ],
+          ru: [
+            "Смотрите в первую очередь на количество EPA и DHA в одной капсуле, а не на общую цифру «рыбий жир 1000 мг». В 1000 мг рыбьего жира EPA и DHA может быть и 300 мг, и 700 мг — суточную дозу определяет именно эта цифра.",
+            "Важна и форма: распространены триглицеридная и этиловая, обе хорошо усваиваются, если принимать их с едой. Если производитель указывает проверку чистоты от тяжёлых металлов и окисления (например, стандарт IFOS или GOED), — это дополнительный признак доверия.",
+            "Проверьте срок годности и храните открытую упаковку в прохладном месте вдали от солнца. Капсула во время еды реже даёт отрыжку со вкусом рыбы.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Kimlar ehtiyot boʻlishi kerak", ru: "Кому нужна осторожность" },
+        paragraphs: {
+          uz: [
+            "Qon suyultiruvchi dori ichadigan, operatsiyaga tayyorlanayotgan yoki baliqqa allergiyasi bor odamlar omega-3 ni faqat shifokor bilan kelishib qabul qilishi kerak. Kattalar uchun kuniga 5 grammgacha EPA va DHA xavfsiz deb hisoblanadi, ammo odatiy qoʻshimcha dozasi bundan ancha kam.",
+          ],
+          ru: [
+            "Людям, которые принимают препараты для разжижения крови, готовятся к операции или имеют аллергию на рыбу, омегу-3 стоит принимать только по согласованию с врачом. Для взрослых безопасным считается до 5 граммов EPA и DHA в день, но обычная доза добавок намного меньше.",
           ],
         },
       },
@@ -117,36 +156,75 @@ const rawArticles: RawArticle[] = [
       ru: "Витамин D зимой: почему его не хватает многим",
     },
     excerpt: {
-      uz: "Quyosh kam boʻlgan oylarda vitamin D darajasi pasayadi. Bu kayfiyat, suyak va immunitetga qanday taʼsir qiladi?",
-      ru: "В месяцы нехватки солнца уровень витамина D падает. Как это влияет на настроение, кости и иммунитет?",
+      uz: "Kuz va qishda quyosh kam, vitamin D esa asosan terida quyosh taʼsirida hosil boʻladi. Kimda yetishmaslik xavfi yuqori, kunlik meʼyor va qanday ichish haqida.",
+      ru: "Осенью и зимой солнца мало, а витамин D в основном образуется в коже под его действием. У кого выше риск нехватки, суточная норма и как принимать.",
     },
     sections: [
       {
         heading: { uz: "Quyosh va vitamin D", ru: "Солнце и витамин D" },
         paragraphs: {
           uz: [
-            "Terimiz quyosh nuri taʼsirida vitamin D ishlab chiqaradi. Kuz va qishda nur kamayadi, shuning uchun daraja pasayadi.",
-            "Vitamin D yetishmovchiligi charchoq, kayfiyat pasayishi va tez-tez shamollash bilan namoyon boʻlishi mumkin.",
+            "Vitamin D ning asosiy qismi terida quyoshning UVB nurlari taʼsirida hosil boʻladi. Noyabrdan fevralgacha Toshkentda kun qisqa, quyosh past turadi va nurning bu qismi kam yetib keladi. Ustiga qishki kiyim terining katta qismini yopadi — natijada koʻpchilikda bahorga kelib daraja pasayadi.",
+            "Ovqatda vitamin D kam: yogʻli baliq (losos, skumbriya, sardina), tuxum sarigʻi, jigar va vitamin D bilan boyitilgan mahsulotlar. Odatiy ratsiondan kunlik ehtiyojning kichik qismigina keladi.",
           ],
           ru: [
-            "Кожа вырабатывает витамин D под действием солнца. Осенью и зимой света меньше, поэтому уровень падает.",
-            "Дефицит витамина D может проявляться усталостью, снижением настроения и частыми простудами.",
+            "Большая часть витамина D образуется в коже под действием солнечных лучей UVB. С ноября по февраль в Ташкенте день короткий, солнце стоит низко, и этих лучей доходит мало. К тому же зимняя одежда закрывает большую часть кожи — в итоге у многих к весне уровень снижается.",
+            "В еде витамина D мало: жирная рыба (лосось, скумбрия, сардины), яичный желток, печень и продукты, обогащённые витамином D. Обычный рацион покрывает лишь небольшую часть суточной потребности.",
           ],
         },
       },
       {
-        heading: { uz: "Nega K2 bilan birga?", ru: "Почему вместе с K2?" },
+        heading: { uz: "Vitamin D nima uchun kerak", ru: "Зачем нужен витамин D" },
         paragraphs: {
           uz: [
-            "Vitamin K2 kalsiyni qon tomirlaridan suyaklarga yoʻnaltiradi. Shuning uchun D3 + K2 juftligi ideal hisoblanadi.",
+            "Vitamin D ichakda kalsiy va fosforning meʼyoriy soʻrilishiga hissa qoʻshadi va suyak hamda tishlarning meʼyoriy holatini saqlashda ishtirok etadi. U mushaklarning meʼyoriy ishlashi va immun tizimining meʼyoriy faoliyati uchun ham kerak.",
+            "Yetishmovchilik koʻpincha hech qanday belgisiz kechadi. Baʼzan charchoq, mushak va suyaklarda noqulaylik bilan namoyon boʻladi, ammo bu belgilar boshqa sabablardan ham boʻlishi mumkin — shuning uchun oʻzingizga tashxis qoʻymang.",
           ],
           ru: [
-            "Витамин K2 направляет кальций из сосудов в кости. Поэтому пара D3 + K2 считается идеальной.",
+            "Витамин D способствует нормальному всасыванию кальция и фосфора в кишечнике и участвует в поддержании нормального состояния костей и зубов. Он также нужен для нормальной работы мышц и иммунной системы.",
+            "Нехватка часто протекает без каких-либо признаков. Иногда она проявляется усталостью, дискомфортом в мышцах и костях, но такие признаки бывают и по другим причинам — поэтому не ставьте себе диагноз сами.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Kimda xavf yuqori", ru: "У кого риск выше" },
+        paragraphs: {
+          uz: [
+            "Koʻp vaqtini xonada oʻtkazadiganlar, keksalar (yosh bilan terida vitamin D kamroq hosil boʻladi), terisini toʻliq yopib yuradiganlar, ortiqcha vazni borlar, homilador va emizikli ayollar, faqat ona suti bilan oziqlanadigan chaqaloqlar.",
+            "Darajani bilishning yagona ishonchli yoʻli — qonda 25(OH)D tahlili. Natijaga qarab shifokor dozani va qancha vaqt ichishni belgilaydi.",
+          ],
+          ru: [
+            "Те, кто много времени проводит в помещении; пожилые люди (с возрастом кожа вырабатывает меньше витамина D); те, кто полностью закрывает кожу одеждой; люди с лишним весом; беременные и кормящие женщины; младенцы на исключительно грудном вскармливании.",
+            "Единственный надёжный способ узнать уровень — анализ крови на 25(OH)D. По результату врач подбирает дозу и длительность приёма.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Kunlik meʼyor va qanday ichish", ru: "Суточная норма и как принимать" },
+        paragraphs: {
+          uz: [
+            "Kattalar uchun tavsiya qilinadigan miqdor odatda kuniga 15 mkg (600 XB), 70 yoshdan keyin — 20 mkg (800 XB). Shifokor tavsiyasisiz kuniga 100 mkg (4000 XB) dan oshirmaslik kerak: vitamin D yogʻda eriydi va organizmda toʻplanadi, ortiqchasi qonda kalsiy oshishiga olib kelishi mumkin.",
+            "Vitamin D yogʻda eriydi, shuning uchun uni tarkibida biroz yogʻ bor ovqat bilan ichgan maʼqul. D3 (xolekalsiferol) shakli darajani D2 ga qaraganda yaxshiroq koʻtaradi — koʻp qoʻshimchalar aynan shu shaklda.",
+          ],
+          ru: [
+            "Рекомендуемое количество для взрослых обычно 15 мкг (600 МЕ) в день, после 70 лет — 20 мкг (800 МЕ). Без рекомендации врача не стоит превышать 100 мкг (4000 МЕ) в день: витамин D жирорастворимый, накапливается в организме, и его избыток может повышать кальций в крови.",
+            "Витамин D растворяется в жирах, поэтому его лучше принимать с едой, в которой есть немного жира. Форма D3 (холекальциферол) повышает уровень лучше, чем D2, — большинство добавок выпускают именно в ней.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Kalsiy va K2 bilan birga", ru: "Вместе с кальцием и K2" },
+        paragraphs: {
+          uz: [
+            "Kalsiy, D3 va K2 koʻpincha bitta kompleksda chiqariladi: D3 kalsiyning soʻrilishiga, K vitamini esa suyaklarning meʼyoriy holatini saqlashga hissa qoʻshadi. Qon suyultiruvchi dori (masalan, varfarin) ichadiganlar K vitaminini faqat shifokor bilan kelishib qabul qilishi kerak.",
+          ],
+          ru: [
+            "Кальций, D3 и K2 часто выпускают одним комплексом: D3 способствует всасыванию кальция, а витамин K — поддержанию нормального состояния костей. Тем, кто принимает препараты для разжижения крови (например, варфарин), витамин K можно принимать только по согласованию с врачом.",
           ],
         },
       },
     ],
-    relatedProductSlugs: ["swiss-energy-calcivit-30", "swiss-energy-immunovit-30"],
+    relatedProductSlugs: ["swiss-energy-calcivit-30", "dr-frei-multivitamins-biotin-20"],
   },
   {
     slug: "magniy-va-uyqu",
@@ -159,20 +237,72 @@ const rawArticles: RawArticle[] = [
       ru: "Магний и сон: минерал спокойствия",
     },
     excerpt: {
-      uz: "Magniy asab tizimini tinchlantiradi va mushak tirishishini yumshatadi. Uyqu sifatiga qanday yordam beradi?",
-      ru: "Магний успокаивает нервную систему и смягчает судороги. Как он помогает качеству сна?",
+      uz: "Magniy asab va mushaklarning meʼyoriy ishlashi uchun kerak. Kunlik meʼyor, qaysi ovqatlarda bor, kimda yetishmaydi, B6 bilan nega birga va uyqu haqida nimani bilish kerak.",
+      ru: "Магний нужен для нормальной работы нервов и мышц. Суточная норма, в каких продуктах он есть, у кого его не хватает, зачем он вместе с B6 и что важно знать о сне.",
     },
     sections: [
       {
-        heading: { uz: "Nega magniy muhim", ru: "Почему магний важен" },
+        heading: { uz: "Magniy nima uchun kerak", ru: "Зачем нужен магний" },
         paragraphs: {
           uz: [
-            "Magniy yuzlab fermentativ reaksiyalarda ishtirok etadi, jumladan asab va mushak ishini boshqarishda.",
-            "Kechqurun qabul qilingan magniy organizmni dam olishga tayyorlaydi va uyquga kirishni osonlashtiradi.",
+            "Kattalar organizmida taxminan 25 g magniy bor, uning yarmidan koʻpi suyaklarda. Magniy 300 dan ortiq fermentativ reaksiyada ishtirok etadi: energiya almashinuvi, oqsil hosil boʻlishi, asab impulslari va mushak qisqarishi.",
+            "Magniy asab tizimining meʼyoriy ishlashiga, meʼyoriy psixologik faoliyatga va mushaklarning meʼyoriy ishlashiga hissa qoʻshadi, shuningdek charchoq va holsizlikni kamaytirishga yordam beradi.",
           ],
           ru: [
-            "Магний участвует в сотнях ферментативных реакций, в том числе в работе нервов и мышц.",
-            "Принятый вечером магний готовит тело к отдыху и облегчает засыпание.",
+            "В организме взрослого около 25 г магния, больше половины — в костях. Магний участвует более чем в 300 ферментативных реакциях: энергетический обмен, синтез белка, передача нервных импульсов и сокращение мышц.",
+            "Магний способствует нормальной работе нервной системы, нормальной психологической функции и нормальной работе мышц, а также помогает уменьшить усталость и утомляемость.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Kunlik meʼyor va ovqatdagi manbalar", ru: "Суточная норма и источники в еде" },
+        paragraphs: {
+          uz: [
+            "Kattalar uchun tavsiya qilinadigan miqdor erkaklarda kuniga taxminan 400–420 mg, ayollarda 310–320 mg. Yorliqlarda koʻpincha 375 mg ga nisbatan foiz koʻrsatiladi — bu Yevropa maʼlumot qiymati.",
+            "Magniyga boy ovqatlar: qovoq urugʻi, bodom, yeryongʻoq, kunjut, ismaloq, loviya, noʻxat, mosh, grechka, toʻliq donli non va qora shokolad. Oʻzbek dasturxonidagi mosh, noʻxat va yongʻoq — yaxshi manba.",
+          ],
+          ru: [
+            "Рекомендуемое количество для взрослых — около 400–420 мг в день у мужчин и 310–320 мг у женщин. На этикетках процент часто считают от 375 мг — это европейское референсное значение.",
+            "Продукты, богатые магнием: тыквенные семечки, миндаль, арахис, кунжут, шпинат, фасоль, нут, маш, гречка, цельнозерновой хлеб и тёмный шоколад. Маш, нут и орехи из узбекской кухни — хороший источник.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Kimda yetishmasligi mumkin", ru: "У кого его может не хватать" },
+        paragraphs: {
+          uz: [
+            "Ratsionda sabzavot, dukkakli va don kam boʻlsa, spirtli ichimlik muntazam ichilsa, siydik haydovchi yoki oshqozon kislotasini kamaytiruvchi dorilar uzoq vaqt qabul qilinsa, 2-tur qandli diabetda va keksa yoshda magniy kamroq soʻriladi yoki koʻproq chiqib ketadi.",
+            "Qondagi magniy tahlili organizmdagi umumiy zaxirani toʻliq koʻrsatmaydi, shuning uchun shubha boʻlsa shifokor bilan gaplashing.",
+          ],
+          ru: [
+            "Магний хуже усваивается или сильнее выводится, если в рационе мало овощей, бобовых и злаков, при регулярном употреблении алкоголя, при длительном приёме мочегонных или препаратов, снижающих кислотность желудка, при диабете 2 типа и в пожилом возрасте.",
+            "Анализ крови на магний не полностью показывает общий запас в организме, поэтому при сомнениях поговорите с врачом.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "Magniy va uyqu: nimani bilish kerak", ru: "Магний и сон: что важно знать" },
+        paragraphs: {
+          uz: [
+            "Magniy asab tizimining meʼyoriy ishlashi uchun kerak, shuning uchun koʻpchilik uni kechki odatga qoʻshadi. Ammo magniy uyqu dori emas: uyqu sifati boʻyicha tadqiqotlar natijasi har xil, va yaxshi uyquning asosi — odatlar.",
+            "Har kuni bir vaqtda yotish va turish, kunduzi tabiiy yorugʻlik, soat 14:00 dan keyin kofe va choyni kamaytirish, yotishdan bir soat oldin telefon va ekrandan uzoqlashish, salqin va qorongʻi xona. Uyqusizlik ikki-uch haftadan uzoq davom etsa, shifokorga murojaat qiling.",
+          ],
+          ru: [
+            "Магний нужен для нормальной работы нервной системы, поэтому многие добавляют его в вечерний ритуал. Но магний — не снотворное: результаты исследований о качестве сна разные, а основа хорошего сна — привычки.",
+            "Ложиться и вставать в одно время, днём бывать на дневном свету, после 14:00 меньше кофе и крепкого чая, за час до сна отложить телефон и экраны, прохладная и тёмная спальня. Если бессонница длится дольше двух-трёх недель, обратитесь к врачу.",
+          ],
+        },
+      },
+      {
+        heading: { uz: "B6 bilan nega birga va qanday ichish", ru: "Зачем вместе с B6 и как принимать" },
+        paragraphs: {
+          uz: [
+            "Vitamin B6 ham asab tizimining meʼyoriy ishlashiga va charchoqni kamaytirishga hissa qoʻshadi, shuning uchun magniy koʻpincha B6 bilan birga chiqariladi. Sitrat va boshqa organik shakllar oksiddan yaxshiroq soʻriladi; shipuchi tabletka suvda eriydi va yutish oson.",
+            "Yuqori dozada ich ketishi mumkin — yorliqdagi dozadan oshirmang. Buyrak kasalligida magniyni faqat shifokor bilan kelishib qabul qiling. Magniy baʼzi antibiotiklar (tetratsiklinlar, ftorxinolonlar) va suyak uchun dorilarning soʻrilishini kamaytiradi: odatda antibiotik magniydan kamida 2 soat oldin yoki 4–6 soat keyin ichiladi. Aniq oraliqni dori yoʻriqnomasidan yoki farmatsevtdan biling.",
+          ],
+          ru: [
+            "Витамин B6 тоже способствует нормальной работе нервной системы и уменьшению усталости, поэтому магний часто выпускают вместе с B6. Цитрат и другие органические формы усваиваются лучше оксида; шипучая таблетка растворяется в воде, её легко принимать.",
+            "В высоких дозах магний может ослаблять стул — не превышайте дозу на этикетке. При заболеваниях почек принимайте магний только по согласованию с врачом. Магний снижает всасывание некоторых антибиотиков (тетрациклинов, фторхинолонов) и препаратов для костей: обычно антибиотик принимают минимум за 2 часа до магния или через 4–6 часов после. Точный интервал уточните в инструкции к лекарству или у фармацевта.",
           ],
         },
       },

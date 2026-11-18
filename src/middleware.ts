@@ -43,7 +43,7 @@ export default async function middleware(request: NextRequest) {
   } catch {
     // Immutable headers on some runtime: the response still carries the id.
   }
-  let response = intl(request);
+  let response = permanentLocaleRedirect(intl(request));
   if (shelf && response.headers.has("x-middleware-rewrite")) response = rewriteShelf(request, response, shelf.pathname, requestId);
   response.headers.set(REQUEST_ID_HEADER, requestId);
   if (!AB_COOKIE_RE.test(request.cookies.get(AB_COOKIE)?.value ?? "")) {
@@ -56,6 +56,23 @@ export default async function middleware(request: NextRequest) {
     });
   }
   return response;
+}
+
+/*
+  next-intl sends an unprefixed path (/delivery, /product/x) to the default
+  locale with a 307. localeDetection is off, so the target never changes —
+  a temporary redirect only kept Google re-crawling the old URL and listing
+  it as "Page with redirect". The same hop, as a permanent 308.
+*/
+function permanentLocaleRedirect(response: NextResponse): NextResponse {
+  const location = response.headers.get("location");
+  if (response.status !== 307 || !location) return response;
+  const permanent = NextResponse.redirect(location, 308);
+  response.headers.forEach((value, key) => {
+    if (key !== "location" && key !== "set-cookie") permanent.headers.set(key, value);
+  });
+  for (const cookie of response.cookies.getAll()) permanent.cookies.set(cookie);
+  return permanent;
 }
 
 /*
