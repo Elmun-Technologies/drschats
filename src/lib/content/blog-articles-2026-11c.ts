@@ -12,7 +12,7 @@ export const articlesNov2026c: RawArticle[] = [
     date: "2026-11-18",
     imageSeed: "blog-bp",
     category: { uz: "Tibbiy jihozlar", ru: "Медицинские приборы" },
-    categoryKey: "devices",
+    categoryKey: "science",
     title: {
       uz: "Qon bosimini uyda toʻgʻri oʻlchash: 8 qadam",
       ru: "Как правильно измерять давление дома: 8 шагов",
@@ -97,7 +97,7 @@ export const articlesNov2026c: RawArticle[] = [
     date: "2026-11-18",
     imageSeed: "blog-thermo",
     category: { uz: "Tibbiy jihozlar", ru: "Медицинские приборы" },
-    categoryKey: "devices",
+    categoryKey: "science",
     title: {
       uz: "Termometr tanlash: qaysi turi qulay",
       ru: "Как выбрать термометр: какой тип удобнее",
