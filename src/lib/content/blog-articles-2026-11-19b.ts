@@ -28,11 +28,11 @@ export const articlesNov2026e: RawArticle[] = [
         paragraphs: {
           uz: [
             "Magniy — organizmdagi 300 dan ortiq ferment ishida qatnashadigan mineral. NIH ODS (AQSH Milliy sogʻliqni saqlash institutlarining Ovqat qoʻshimchalari boʻlimi) maʼlumotiga koʻra, u energiya almashinuvi, mushak va asab faoliyati, suyak tuzilishi uchun kerak.",
-            "EFSA maʼqullagan formulalarga koʻra, magniy normal energiya almashinuviga, asab tizimining normal ishlashiga, mushaklarning normal faoliyatiga va charchoq hissini kamaytirishga hissa qoʻshadi. Bu — mineralning fiziologik vazifasi, taʼsir vaʼdasi emas.",
+            "Yevropa Ittifoqida ruxsat etilgan formulalarga koʻra, magniy normal energiya almashinuviga, asab tizimining normal ishlashiga, mushaklarning normal faoliyatiga va charchoq hissini kamaytirishga hissa qoʻshadi. Bu — mineralning fiziologik vazifasi, taʼsir vaʼdasi emas.",
           ],
           ru: [
             "Магний — минерал, участвующий в работе более 300 ферментов организма. По данным NIH ODS (Управление пищевых добавок Национальных институтов здоровья США), он нужен для энергетического обмена, работы мышц и нервов, строения костей.",
-            "По формулировкам, одобренным EFSA, магний способствует нормальному энергетическому обмену, нормальной работе нервной системы, нормальной функции мышц и уменьшению ощущения усталости. Это физиологическая роль минерала, а не обещание эффекта.",
+            "По формулировкам, разрешённым в ЕС, магний способствует нормальному энергетическому обмену, нормальной работе нервной системы, нормальной функции мышц и уменьшению ощущения усталости. Это физиологическая роль минерала, а не обещание эффекта.",
           ],
         },
       },
@@ -128,11 +128,11 @@ export const articlesNov2026e: RawArticle[] = [
         paragraphs: {
           uz: [
             "Folat — B9 vitaminining ovqatda tabiiy uchraydigan shakllari umumiy nomi. Foliy kislota esa uning sintetik shakli: u qoʻshimchalarda va boyitilgan unda ishlatiladi. NIH ODS maʼlumotiga koʻra, qoʻshimchadagi foliy kislota ovqatdagi folatga qaraganda yaxshiroq soʻriladi.",
-            "EFSA maʼqullagan formulalarga koʻra, folat hujayralar boʻlinishi jarayonida, normal qon hosil boʻlishida va homiladorlikda ona toʻqimalarining oʻsishida ishtirok etadi, shuningdek normal psixologik faoliyatga va charchoq hissini kamaytirishga hissa qoʻshadi.",
+            "Yevropa Ittifoqida ruxsat etilgan formulalarga koʻra, folat hujayralar boʻlinishi jarayonida, normal qon hosil boʻlishida va homiladorlikda ona toʻqimalarining oʻsishida ishtirok etadi, shuningdek normal psixologik faoliyatga va charchoq hissini kamaytirishga hissa qoʻshadi.",
           ],
           ru: [
             "Фолат — общее название природных форм витамина B9 в пище. Фолиевая кислота — его синтетическая форма: она используется в добавках и обогащённой муке. По данным NIH ODS, фолиевая кислота из добавок усваивается лучше, чем фолат из пищи.",
-            "По формулировкам, одобренным EFSA, фолат участвует в процессе деления клеток, нормальном кроветворении и росте тканей матери во время беременности, а также способствует нормальной психологической функции и уменьшению ощущения усталости.",
+            "По формулировкам, разрешённым в ЕС, фолат участвует в процессе деления клеток, нормальном кроветворении и росте тканей матери во время беременности, а также способствует нормальной психологической функции и уменьшению ощущения усталости.",
           ],
         },
       },
@@ -226,11 +226,11 @@ export const articlesNov2026e: RawArticle[] = [
         paragraphs: {
           uz: [
             "Vitamin E — yogʻda eriydigan birikmalar guruhi; inson organizmida asosan alfa-tokoferol shakli ishlatiladi. Yogʻda eriganligi sababli u ovqatdagi yogʻ bilan birga yaxshiroq soʻriladi va organizmda maʼlum zaxira hosil qiladi.",
-            "EFSA maʼqullagan formulaga koʻra, vitamin E hujayralarni oksidlovchi stressdan himoyalashga hissa qoʻshadi. Bu uning antioksidant vazifasi: u hujayra membranalaridagi yogʻlarni oksidlanishdan saqlashda ishtirok etadi. Bu formula kasallikka taʼsir haqida emas, balki vitaminning oddiy fiziologik roli haqida.",
+            "Yevropa Ittifoqida ruxsat etilgan formulaga koʻra, vitamin E hujayralarni oksidlovchi stressdan himoyalashga hissa qoʻshadi. Bu uning antioksidant vazifasi: u hujayra membranalaridagi yogʻlarni oksidlanishdan saqlashda ishtirok etadi. Bu formula kasallikka taʼsir haqida emas, balki vitaminning oddiy fiziologik roli haqida.",
           ],
           ru: [
             "Витамин Е — группа жирорастворимых соединений; в организме человека в основном используется форма альфа-токоферол. Поскольку он растворяется в жирах, он лучше усваивается вместе с жиром пищи и образует в организме определённый запас.",
-            "По формулировке, одобренной EFSA, витамин Е способствует защите клеток от окислительного стресса. Это его антиоксидантная роль: он участвует в защите жиров клеточных мембран от окисления. Эта формулировка говорит не о влиянии на болезни, а об обычной физиологической роли витамина.",
+            "По формулировке, разрешённой в ЕС, витамин Е способствует защите клеток от окислительного стресса. Это его антиоксидантная роль: он участвует в защите жиров клеточных мембран от окисления. Эта формулировка говорит не о влиянии на болезни, а об обычной физиологической роли витамина.",
           ],
         },
       },
@@ -434,12 +434,12 @@ export const articlesNov2026e: RawArticle[] = [
         heading: { uz: "Dori vositasidan asosiy farqlar", ru: "Главные отличия от лекарства" },
         paragraphs: {
           uz: [
-            "Dori vositasi kasallikka taʼsir qilish uchun moʻljallangan va roʻyxatdan oʻtishdan oldin samaradorligi va xavfsizligi klinik sinovlarda baholanadi; uni shifokor tayinlaydi va dozasini belgilaydi. BAD esa ratsionni toʻldiradi va kasallikka taʼsir haqida daʼvo qila olmaydi.",
-            "Yevropada ovqat qoʻshimchasi yorligʻida faqat EFSA baholagan va maʼqullangan formulalarni yozish mumkin (1924/2006-sonli reglament): masalan, «vitamin C immun tizimning normal faoliyatiga hissa qoʻshadi». Mahsulot biror kasallikdan xalos qilishini vaʼda qilsa, bu ruxsat etilgan formula emas — bunday mahsulotga ehtiyot boʻlib qarang.",
+            "Dori vositasi kasallikka taʼsir qilish uchun moʻljallangan va roʻyxatdan oʻtishdan oldin samaradorligi va xavfsizligi klinik sinovlarda baholanadi. Retseptli dorilarni shifokor tayinlaydi va dozasini belgilaydi, retseptsiz dorilar esa yoʻriqnomaga koʻra ishlatiladi. BAD esa ratsionni toʻldiradi va kasallikka taʼsir haqida daʼvo qila olmaydi.",
+            "Yevropada ovqat qoʻshimchasi yorligʻida faqat ruxsat etilgan formulalarni yozish mumkin: ularning ilmiy asosini EFSA baholaydi, ruxsatni esa Yevropa Komissiyasi beradi (1924/2006-sonli reglament): masalan, «vitamin C immun tizimning normal faoliyatiga hissa qoʻshadi». Mahsulot biror kasallikdan xalos qilishini vaʼda qilsa, bu ruxsat etilgan formula emas — bunday mahsulotga ehtiyot boʻlib qarang.",
           ],
           ru: [
-            "Лекарство предназначено для воздействия на болезнь, и до регистрации его эффективность и безопасность оцениваются в клинических испытаниях; его назначает врач и определяет дозу. БАД же дополняет рацион и не может заявлять о воздействии на болезнь.",
-            "В Европе на этикетке пищевой добавки можно писать только формулировки, оценённые и одобренные EFSA (регламент 1924/2006): например, «витамин C способствует нормальной работе иммунной системы». Если продукт обещает избавить от какой-либо болезни, это не разрешённая формулировка — относитесь к такому продукту с осторожностью.",
+            "Лекарство предназначено для воздействия на болезнь, и до регистрации его эффективность и безопасность оцениваются в клинических испытаниях. Рецептурные лекарства назначает врач и определяет дозу, а безрецептурные применяются по инструкции. БАД же дополняет рацион и не может заявлять о воздействии на болезнь.",
+            "В Европе на этикетке пищевой добавки можно писать только разрешённые формулировки: их научную основу оценивает EFSA, а разрешение даёт Европейская комиссия (регламент 1924/2006): например, «витамин C способствует нормальной работе иммунной системы». Если продукт обещает избавить от какой-либо болезни, это не разрешённая формулировка — относитесь к такому продукту с осторожностью.",
           ],
         },
       },
