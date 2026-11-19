@@ -16,3 +16,8 @@ Fayl -> Adobe Stock ID. Internetdan olingan yoki AI rasm yo'q. Yangi rasm qo'shi
 | pregnancy-salad-sofa.webp | homiladorlik | 531879329 |
 | sport-woman-running.webp | sport | 175330622 |
 | sport-woman-outdoor.webp | sport | 295426654 |
+| magnesium-capsules.webp | magniy (2026-11-19) | 323016675 |
+| folate-spinach.webp | foliy kislota / folat (2026-11-19) | 270183484 |
+| seeds-nuts-jars.webp | vitamin E manbalari (2026-11-19) | 270805908 |
+| supplement-label-reading.webp | BAD yorligʻi (2026-11-19) | 714317056 |
+| multivitamin-assorted.webp | multivitaminlar (2026-11-19) | 488937561 |

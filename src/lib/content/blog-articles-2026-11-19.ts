@@ -39,11 +39,11 @@ export const articlesNov2026d: RawArticle[] = [
         heading: { uz: "Qaysi vitamin nima uchun kerak", ru: "Какой витамин для чего нужен" },
         paragraphs: {
           uz: [
-            "B1, B2, B3, B5 va B7 ovqatdagi uglevod, yogʻ va oqsildan energiya olish jarayonida ishtirok etadi. Evropa xavfsizlik idorasi (EFSA) maʼqullagan formulaga koʻra, bu vitaminlar normal energiya almashinuviga hissa qoʻshadi. B1 va B6 yana asab tizimining normal ishlashi bilan bogʻliq.",
+            "B1, B2, B3, B5 va B7 ovqatdagi uglevod, yogʻ va oqsildan energiya olish jarayonida ishtirok etadi. Yevropa Ittifoqida ruxsat etilgan formulaga koʻra (EFSA ilmiy bahosi asosida), bu vitaminlar normal energiya almashinuviga hissa qoʻshadi. B1 va B6 yana asab tizimining normal ishlashi bilan bogʻliq.",
             "B6 oqsil almashinuvida va normal psixologik faoliyatda qatnashadi. B9 (foliy kislota) hujayralarning boʻlinishi va qon hosil boʻlishi uchun kerak, B12 esa qizil qon tanachalari va asab hujayralari faoliyatiga hissa qoʻshadi. Bu — taʼsir vaʼdasi emas, balki vitaminlarning oddiy fiziologik vazifasi: yetarli miqdorda boʻlsa, organizm bu jarayonlarni odatdagidek bajaradi.",
           ],
           ru: [
-            "B1, B2, B3, B5 и B7 участвуют в получении энергии из углеводов, жиров и белков пищи. По формулировкам, одобренным Европейским агентством по безопасности продуктов питания (EFSA), эти витамины способствуют нормальному энергетическому обмену. B1 и B6 также связаны с нормальной работой нервной системы.",
+            "B1, B2, B3, B5 и B7 участвуют в получении энергии из углеводов, жиров и белков пищи. По формулировкам, разрешённым в ЕС на основе оценки EFSA, эти витамины способствуют нормальному энергетическому обмену. B1 и B6 также связаны с нормальной работой нервной системы.",
             "B6 участвует в обмене белков и в нормальной психологической функции. B9 (фолиевая кислота) нужна для деления клеток и кроветворения, а B12 способствует нормальной работе красных кровяных клеток и нервных клеток. Это не обещание эффекта, а обычная физиологическая роль витаминов: при достаточном количестве организм выполняет эти процессы в обычном режиме.",
           ],
         },
