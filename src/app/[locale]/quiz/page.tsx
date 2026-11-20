@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getQuizQuestions } from "@/lib/quiz/questions";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { QuizFlow } from "@/components/quiz/QuizFlow";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 
@@ -28,6 +30,7 @@ export default async function QuizPage({
   const { who } = await searchParams;
   setRequestLocale(locale);
   const questions = getQuizQuestions(locale);
+  const tn = await getTranslations("nav");
 
   /* The home page offers the first question as its own set of cards, so
      arriving from one of those means it has already been answered — asking it
@@ -40,6 +43,7 @@ export default async function QuizPage({
 
   return (
     <div className="wrap pb-9 pt-2 lg:pb-20 lg:pt-10">
+      <JsonLd data={breadcrumbLd([{ name: tn("quiz"), url: `${SITE_URL}/${locale}/quiz` }])} />
       <QuizFlow questions={questions} initialAnswers={preset} />
       <Disclaimer variant="product" className="mx-auto mt-8 max-w-[1032px] lg:mt-12" />
     </div>

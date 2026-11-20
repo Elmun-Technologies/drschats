@@ -4,6 +4,8 @@ import type { Locale } from "@/lib/i18n/routing";
 import { getIngredients, getSynergy } from "@/lib/content/ingredients.sanity";
 import { getAllProducts } from "@/lib/shop/all-products";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { Reveal } from "@/components/animation/Reveal";
@@ -36,6 +38,7 @@ export default async function IngredientsPage({
 
   return (
     <div className="pt-10">
+      <JsonLd data={breadcrumbLd([{ name: t("title"), url: `${SITE_URL}/${locale}/ingredients` }])} />
       <Container>
         <header className="max-w-2xl">
           <p className="text-sm font-semibold text-ink">{t("badge")}</p>
