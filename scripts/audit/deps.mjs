@@ -56,23 +56,7 @@ const BASELINE = new Map(
     // vite@5 is pinned by sanity's Studio bundler and @vitejs/plugin-react; the advisories are
     // in its dev server and launch-editor (Windows), which a production Next server never runs.
     vite: "Sanity Studio bundler (dev server only) — closed by sanity@6",
-    // GHSA-fc5q-39xc-vjpf: ReDoS in picomatch's extglob parser. npm audit lists no patched
-    // version (range "*", 4.0.7 is still flagged), so nothing here is fixable by an upgrade. It needs
-    // an attacker-chosen glob pattern; every path below matches our own fixed patterns in
-    // lint/CLI tooling (eslint-config-next, the Sanity CLI chain), never request input.
-    picomatch: "GHSA-fc5q-39xc-vjpf, no patched release published; glob patterns are ours (lint/CLI only)",
-    micromatch: "via picomatch (GHSA-fc5q-39xc-vjpf) — no patched release; lint/CLI only",
-    "fast-glob": "via micromatch (GHSA-fc5q-39xc-vjpf) — no patched release; lint/CLI only",
-    fdir: "via picomatch (GHSA-fc5q-39xc-vjpf) — no patched release; Sanity CLI chain",
-    tinyglobby: "via fdir/picomatch (GHSA-fc5q-39xc-vjpf) — no patched release; Sanity CLI chain",
-    globby: "via fast-glob (GHSA-fc5q-39xc-vjpf) — no patched release; Sanity CLI chain",
-    chokidar: "via anymatch/picomatch (GHSA-fc5q-39xc-vjpf) — no patched release; Sanity CLI chain",
-    anymatch: "via picomatch (GHSA-fc5q-39xc-vjpf) — no patched release; Sanity CLI chain",
-    readdirp: "via picomatch (GHSA-fc5q-39xc-vjpf) — no patched release; Sanity CLI chain",
-    "preferred-pm": "via find-yarn-workspace-root2/micromatch — no patched release; Sanity CLI chain",
-    "find-yarn-workspace-root2": "via micromatch (GHSA-fc5q-39xc-vjpf) — no patched release; Sanity CLI chain",
     "@oclif/core": "via minimatch/picomatch chain — no patched release; Sanity CLI chain",
-    "@sanity/import": "via tinyglobby/picomatch — no patched release; Sanity CLI chain",
     postcss: "only fix is next@16 — major framework upgrade",
     // GHSA-mrhx-c7xc-m3w5 (memory on oversized bounded arrays). The site itself runs zod@4.6.7;
     // the zod@3 left in the tree is @sanity/codegen's, a CLI that never validates a request.
