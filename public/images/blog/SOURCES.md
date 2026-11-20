@@ -21,3 +21,6 @@ Fayl -> Adobe Stock ID. Internetdan olingan yoki AI rasm yo'q. Yangi rasm qo'shi
 | seeds-nuts-jars.webp | vitamin E manbalari (2026-11-19) | 270805908 |
 | supplement-label-reading.webp | BAD yorligʻi (2026-11-19) | 714317056 |
 | multivitamin-assorted.webp | multivitaminlar (2026-11-19) | 488937561 |
+| carrots-vitamin-a.webp | vitamin A (2026-11-20) | 246216945 |
+| pumpkin-seeds-zinc.webp | sink (2026-11-20) | 673506395 |
+| protein-foods-b12.webp | vitamin B12 (2026-11-20) | 366247755 |
