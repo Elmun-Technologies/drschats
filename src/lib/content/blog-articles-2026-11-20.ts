@@ -44,13 +44,11 @@ export const articlesNov2026f: RawArticle[] = [
             "Yevropa Ittifoqida ruxsat etilgan formulalarga koʻra (EFSA ilmiy bahosi asosida), vitamin A normal koʻrishni, teri va shilliq pardalarning meʼyoriy holatini, immunitet tizimining normal ishlashini hamda temir almashinuvini saqlashga hissa qoʻshadi. Bular vitaminning oddiy fiziologik vazifalari: yetarli miqdorda boʻlsa, organizm bu jarayonlarni odatdagidek bajaradi.",
             "Koʻrish bilan aloqasi ayniqsa mashhur: retinol koʻzning toʻr pardasidagi yorugʻlikni sezuvchi pigmentning qismi. Biroq bu qoʻshimcha ichish koʻrishni yaxshilaydi degani emas. Agar ovqat bilan yetarli kelayotgan boʻlsa, qoʻshimcha vitamin A qoʻshimcha foyda bermaydi.",
             "Ovqatlanishda vitamin A yetishmasligi iqtisodiy rivojlangan mintaqalarda kam uchraydi, chunki ovqat ratsioni odatda yetarli. Xavf guruhlariga ovqati juda cheklangan odamlar, soʻrilish buzilishi bor kasalliklarga chalinganlar va yogʻ soʻrilishi susaygan odamlar kiradi. Bunday holatda tashxis va miqdorni shifokor aniqlaydi, oʻzboshimchalik bilan ichish tavsiya etilmaydi.",
-            "Qon tahlilida B12 darajasi pastligi aniqlansa, sababni topish kerak: ovqatmi, soʻrilishmi yoki dori taʼsirimi. Faqat shundan keyin shifokor miqdor va qabul qilish shaklini (kapsula, tabletka yoki boshqa) tanlaydi. Oʻzboshimchalik bilan yuqori dozalarni ichish bu bosqichni oʻtkazib yuboradi.",
           ],
           ru: [
             "По формулировкам, разрешённым в ЕС на основе оценки EFSA, витамин A способствует поддержанию нормального зрения, нормального состояния кожи и слизистых оболочек, нормальной работы иммунной системы, а также нормального обмена железа. Это обычные физиологические функции витамина: при достаточном количестве организм выполняет эти процессы в обычном режиме.",
             "Связь со зрением особенно известна: ретинол входит в состав светочувствительного пигмента сетчатки глаза. Но это не значит, что добавка улучшит зрение. Если витамина A с едой поступает достаточно, дополнительное количество пользы не добавит.",
             "Недостаток витамина A из-за питания в экономически развитых регионах встречается редко, потому что рацион обычно достаточен. К группам риска относятся люди с очень ограниченным питанием, с заболеваниями, при которых нарушено всасывание, и с нарушенным всасыванием жиров. В таком случае диагноз и дозу определяет врач, самостоятельный приём не рекомендуется.",
-            "Если анализ показал низкий уровень B12, нужно найти причину: питание, усвоение или влияние лекарств. Только после этого врач подбирает дозу и форму приёма (капсулы, таблетки или другое). Самостоятельный приём высоких доз пропускает этот этап.",
           ],
         },
       },
@@ -60,12 +58,10 @@ export const articlesNov2026f: RawArticle[] = [
           uz: [
             "AQSH Milliy sogʻliqni saqlash institutlari qoshidagi Ovqat qoʻshimchalari boʻlimi (NIH ODS) maʼlumotiga koʻra, kattalar uchun tavsiya etilgan kunlik miqdor erkaklarda 900 mkg RAE, ayollarda 700 mkg RAE (RAE — retinol aktivlik ekvivalenti). Homiladorlikda 770 mkg, emizish davrida 1300 mkg RAE. Bolalar uchun meʼyor yoshiga qarab ancha past.",
             "Qadoqlarda vitamin A koʻpincha XB (xalqaro birlik, IU) bilan yoziladi. Oʻtkazish koeffitsiyenti vitamin shakliga bogʻliq, shuning uchun yorliqdagi sonni oʻzingiz taxmin qilib oʻtkazmang: ishlab chiqaruvchi odatda mkg RAE yoki foizni ham koʻrsatadi, yoʻq boʻlsa farmatsevtdan soʻrang.",
-            "Sinkka ehtiyoj yoshga qarab oʻzgaradi: bolalarda meʼyor kattalardan past, oʻsmirlarda esa erkaklar va ayollar orasida farq paydo boʻladi. Bola uchun alohida mahsulot kerak boʻlsa, kattalar uchun moʻljallangan kompleksni berib yubormang, chunki bolalarning yuqori chegarasi ancha past.",
           ],
           ru: [
             "По данным Управления пищевых добавок Национальных институтов здоровья США (NIH ODS), рекомендуемая суточная доза для взрослых — 900 мкг RAE у мужчин и 700 мкг RAE у женщин (RAE — эквивалент активности ретинола). При беременности 770 мкг, при кормлении грудью 1300 мкг RAE. Для детей норма заметно ниже и зависит от возраста.",
             "На упаковках витамин A часто указывают в МЕ (международных единицах). Коэффициент пересчёта зависит от формы витамина, поэтому не переводите цифры на этикетке сами: производитель обычно указывает и мкг RAE, или процент от нормы, а если нет — спросите фармацевта.",
-            "Потребность в цинке меняется с возрастом: у детей норма ниже, чем у взрослых, а у подростков появляется различие между мальчиками и девочками. Если нужен продукт для ребёнка, не давайте ему комплекс для взрослых, потому что верхний предел для детей заметно ниже.",
           ],
         },
       },
@@ -181,10 +177,12 @@ export const articlesNov2026f: RawArticle[] = [
           uz: [
             "NIH ODS maʼlumotiga koʻra, kattalar uchun tavsiya etilgan kunlik miqdor erkaklarda 11 mg, ayollarda 8 mg. Homiladorlikda 11 mg, emizish davrida 12 mg. Vegetarianlarga ehtiyoj taxminan 50 foizga yuqoriroq boʻlishi mumkin, chunki oʻsimlik ovqatidagi fitatlar sinkning soʻrilishini kamaytiradi.",
             "Ovqatdagi sink miqdori ham, qoʻshimchadagi miqdor ham milligrammda koʻrsatiladi. Qoʻshimchalarda sink turli tuz shaklida (sitrat, glyukonat, oksid, pikolinat) boʻladi: yorliqda nafaqat birikma, balki sof sink miqdori yozilganini tekshiring.",
+            "Sinkka ehtiyoj yoshga qarab oʻzgaradi: bolalarda meʼyor kattalardan past, oʻsmirlarda esa erkaklar va ayollar orasida farq paydo boʻladi. Bola uchun alohida mahsulot kerak boʻlsa, kattalar uchun moʻljallangan kompleksni berib yubormang, chunki bolalarning yuqori chegarasi ancha past.",
           ],
           ru: [
             "По данным NIH ODS, рекомендуемая суточная доза для взрослых — 11 мг у мужчин и 8 мг у женщин. При беременности 11 мг, при кормлении грудью 12 мг. Вегетарианцам потребность может быть примерно на 50 процентов выше, потому что фитаты растительной пищи снижают усвоение цинка.",
             "Количество цинка и в еде, и в добавках указывают в миллиграммах. В добавках цинк бывает в виде разных солей (цитрат, глюконат, оксид, пиколинат): проверьте, что на этикетке указано не только соединение, но и количество чистого цинка.",
+            "Потребность в цинке меняется с возрастом: у детей норма ниже, чем у взрослых, а у подростков появляется различие между мальчиками и девочками. Если нужен продукт для ребёнка, не давайте ему комплекс для взрослых, потому что верхний предел для детей заметно ниже.",
           ],
         },
       },
@@ -272,10 +270,12 @@ export const articlesNov2026f: RawArticle[] = [
           uz: [
             "Yevropa Ittifoqida ruxsat etilgan formulalarga koʻra (EFSA ilmiy bahosi asosida), vitamin B12 normal energiya almashinuviga, asab tizimining normal ishlashiga, normal psixologik faoliyatga, qizil qon tanachalarining normal hosil boʻlishiga, normal immunitet faoliyatiga hamda charchoq va holsizlikni kamaytirishga hissa qoʻshadi. U gomosistein almashinuvi va hujayra boʻlinishida ham ishtirok etadi.",
             "Bu — vitaminning oddiy fiziologik vazifalari. Charchoqning sabablari juda koʻp: uyqu, ish yuki, kamqonlik, qalqonsimon bez, depressiya va boshqalar. Shuning uchun «charchadim» degani «B12 yetishmayapti» degani emas, buni faqat qon tahlili aniqlaydi.",
+            "Qon tahlilida B12 darajasi pastligi aniqlansa, sababni topish kerak: ovqatmi, soʻrilishmi yoki dori taʼsirimi. Faqat shundan keyin shifokor miqdor va qabul qilish shaklini (kapsula, tabletka yoki boshqa) tanlaydi. Oʻzboshimchalik bilan yuqori dozalarni ichish bu bosqichni oʻtkazib yuboradi.",
           ],
           ru: [
             "По формулировкам, разрешённым в ЕС на основе оценки EFSA, витамин B12 способствует нормальному энергетическому обмену, нормальной работе нервной системы, нормальной психологической функции, нормальному образованию красных кровяных клеток, нормальной работе иммунной системы. Он участвует также в обмене гомоцистеина и делении клеток.",
             "Это обычные физиологические функции витамина. У усталости очень много причин: сон, нагрузка, малокровие, щитовидная железа, депрессия и другие. Поэтому «я устал» не означает «мне не хватает B12»: это определяет только анализ крови.",
+            "Если анализ показал низкий уровень B12, нужно найти причину: питание, усвоение или влияние лекарств. Только после этого врач подбирает дозу и форму приёма (капсулы, таблетки или другое). Самостоятельный приём высоких доз пропускает этот этап.",
           ],
         },
       },
