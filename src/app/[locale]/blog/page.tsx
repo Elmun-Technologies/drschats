@@ -5,6 +5,8 @@ import { getArticles } from "@/lib/content/blog.sanity";
 import { usedCategoryKeys } from "@/lib/content/blog-categories";
 import { BlogIndex } from "@/components/blog/BlogIndex";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, breadcrumbLd, itemListLd } from "@/lib/seo/jsonld";
 
 export const revalidate = 60;
 
@@ -19,12 +21,16 @@ export default async function BlogPage({ params }: { params: Promise<{ locale: L
   const t = await getTranslations("blog");
   const articles = await getArticles(locale);
   return (
-    <BlogIndex
-      locale={locale}
-      articles={articles}
-      categories={usedCategoryKeys(articles)}
-      title={t("title")}
-      lead={t("subtitle")}
-    />
+    <>
+      <JsonLd data={breadcrumbLd([{ name: t("title"), url: `${SITE_URL}/${locale}/blog` }])} />
+      <JsonLd data={itemListLd(t("title"), articles.map((a) => ({ name: a.title, description: a.excerpt })))} />
+      <BlogIndex
+        locale={locale}
+        articles={articles}
+        categories={usedCategoryKeys(articles)}
+        title={t("title")}
+        lead={t("subtitle")}
+      />
+    </>
   );
 }

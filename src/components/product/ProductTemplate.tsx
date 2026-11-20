@@ -53,6 +53,7 @@ export async function ProductTemplate({
   locale,
   reviewer,
   topics = [],
+  articles = [],
 }: {
   product: Product;
   category?: Category;
@@ -63,6 +64,8 @@ export async function ProductTemplate({
   reviewer?: Expert | null;
   /** Health topics this product belongs to; empty hides the block. */
   topics?: HealthTopic[];
+  /** Blog articles that name this product as related (internal links back from the shelf to the guides). */
+  articles?: { slug: string; title: string }[];
 }) {
   const t = await getTranslations("product");
   const tv = await getTranslations("product.v3");
@@ -268,7 +271,7 @@ export async function ProductTemplate({
                     ))}
                   </ul>
                 )}
-                <HealthContext topics={topics} />
+                <HealthContext topics={topics} articles={articles} />
               </div>
               {descriptionImage && (
                 <span className="relative hidden aspect-[3/4] overflow-hidden rounded-[20px] bg-tile xl:block">

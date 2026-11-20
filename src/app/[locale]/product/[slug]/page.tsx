@@ -8,6 +8,7 @@ import { productMetadata } from "@/lib/seo/page-meta";
 import { JsonLd, productGraph, faqLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { getHealthTopics } from "@/lib/content/health-topics.sanity";
+import { getArticles } from "@/lib/content/blog.sanity";
 import { topicsForProduct } from "@/lib/shop/product-topics";
 import { ProductTemplate } from "@/components/product/ProductTemplate";
 import { ViewTracker } from "@/components/personalization/ViewTracker";
@@ -65,6 +66,10 @@ export default async function ProductPage({
     ?? categories.find((c) => c.slug === product.categorySlug);
 
   const topics = topicsForProduct(product, allTopics);
+  const articles = (await getArticles(locale))
+    .filter((a) => a.relatedProductSlugs.includes(product.slug))
+    .slice(0, 3)
+    .map((a) => ({ slug: a.slug, title: a.title }));
   // Products with a cut-out pack shot first, as on every other rail.
   const similar = getSimilarProducts(product, allProducts.items, 12)
     .sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)))
@@ -103,6 +108,7 @@ export default async function ProductPage({
         locale={locale}
         reviewer={reviewer}
         topics={topics}
+        articles={articles}
       />
     </>
   );

@@ -6,6 +6,7 @@ import type { HealthTopicKind } from "@/lib/content/health-topics";
 import { COMMERCE } from "@/lib/config/commerce";
 import { localizedOr } from "@/lib/commerce/settings";
 import { formatMoney, formatNumber } from "@/lib/utils";
+import { SITE_NAME } from "@/lib/config/site";
 import { buildPageMetadata } from "./metadata";
 
 /*
@@ -100,7 +101,8 @@ export async function productMetadata(product: Product, locale: Locale): Promise
         t("productKeyword", { keyword, name: product.name }),
         t("productKeywordPrice", { keyword, name: product.name }),
         t("productKeywordShort", { keyword, name: product.name }),
-        `${keyword} — ${product.name}`,
+        `${keyword} — ${product.name} | ${SITE_NAME}`,
+        `${product.name} | ${SITE_NAME}`,
       ])
     : t("product", { name: product.name });
   return buildPageMetadata({
