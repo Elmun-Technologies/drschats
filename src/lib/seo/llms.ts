@@ -1,10 +1,10 @@
-import { getArticles } from "@/lib/content/blog";
+import { getArticles } from "@/lib/content/blog.sanity";
 import { SITE_URL } from "@/lib/config/site";
 
 const MAX_ARTICLES = 30;
 
-export function llmsTxt(siteUrl: string = SITE_URL): string {
-  const articles = [...getArticles("uz")]
+export async function llmsTxt(siteUrl: string = SITE_URL): Promise<string> {
+  const articles = [...(await getArticles("uz"))]
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, MAX_ARTICLES);
 
