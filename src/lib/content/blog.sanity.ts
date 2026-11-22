@@ -22,6 +22,7 @@ export interface Article {
   excerpt: string;
   sections: { heading: string; paragraphs: string[] }[];
   relatedProductSlugs: string[];
+  relatedArticleSlugs?: string[];
 }
 
 const isSanityConfigured = () => !!process.env.NEXT_PUBLIC_SANITY_PROJECT_ID;

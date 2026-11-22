@@ -18,6 +18,7 @@ import { buttonVariants } from "@/components/ui/Button";
 import { ShareRow } from "@/components/blog/ShareRow";
 import { clampDescription, seoTitle } from "@/lib/seo/page-meta";
 import { cutoutOf } from "@/lib/catalog/product-facts";
+import { relatedArticles } from "@/lib/content/related-articles";
 
 export const revalidate = 60;
 export const dynamicParams = true;
@@ -67,7 +68,7 @@ export default async function ArticlePage({
     reviewerForKey(`${slug}-author`, locale),
     getArticles(locale),
   ]);
-  const others = all.filter((a) => a.slug !== slug).slice(0, 2);
+  const others = relatedArticles(article, all);
   const relatedProducts = related.filter((p): p is Product => p !== null);
   const url = `${SITE_URL}/${locale}/blog/${slug}`;
 

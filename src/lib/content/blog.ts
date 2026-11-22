@@ -23,6 +23,8 @@ export interface RawArticle {
   excerpt: L;
   sections: ArticleSection[];
   relatedProductSlugs: string[];
+  /** Editorial "read next" picks, shown before the topical score. */
+  relatedArticleSlugs?: string[];
 }
 
 export interface Article {
@@ -36,6 +38,7 @@ export interface Article {
   excerpt: string;
   sections: { heading: string; paragraphs: string[] }[];
   relatedProductSlugs: string[];
+  relatedArticleSlugs?: string[];
 }
 
 /*
@@ -339,6 +342,7 @@ const rawArticles: RawArticle[] = [
       },
     ],
     relatedProductSlugs: ["dr-frei-antistress-magniy-20"],
+    relatedArticleSlugs: ["magniy-b6-va-magniy-sitrat-farqi"],
   },
 ];
 
@@ -375,6 +379,7 @@ function resolve(a: RawArticle, locale: Locale): Article {
     excerpt,
     sections,
     relatedProductSlugs: a.relatedProductSlugs,
+    relatedArticleSlugs: a.relatedArticleSlugs,
   };
 }
 
