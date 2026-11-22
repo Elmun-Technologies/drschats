@@ -3,6 +3,8 @@ import uz from "@/messages/uz.json";
 import ru from "@/messages/ru.json";
 import { rawProducts } from "@/lib/shopflow/mock";
 import { firstFitting, TITLE_MAX } from "@/lib/seo/page-meta";
+import { brandedTitle } from "@/lib/seo/metadata";
+import { SITE_NAME } from "@/lib/config/site";
 import { PRODUCT_KEYWORDS } from "./product-keywords";
 
 const MESSAGES = { uz, ru } as const;
@@ -33,10 +35,10 @@ describe("product search keywords", () => {
         fill(m.meta.seo.productKeyword),
         fill(m.meta.seo.productKeywordPrice),
         fill(m.meta.seo.productKeywordShort),
-        `${keyword} — ${name}`,
+        `${keyword} — ${name} | ${SITE_NAME}`,
+        `${name} | ${SITE_NAME}`,
       ]);
-      expect(title.length, title).toBeLessThanOrEqual(TITLE_MAX);
-      expect(title.startsWith(keyword), title).toBe(true);
+      expect(brandedTitle(title).length, title).toBeLessThanOrEqual(TITLE_MAX);
     }
   });
 });

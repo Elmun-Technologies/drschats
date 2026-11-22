@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { InfoShell } from "@/components/info/InfoShell";
 
 export const revalidate = 3600;
@@ -19,6 +21,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ locale
 
   return (
     <InfoShell crumb={t("title")}>
+      <JsonLd data={breadcrumbLd([{ name: t("title"), url: `${SITE_URL}/${locale}/privacy` }])} />
       <header className="flex flex-col gap-2 lg:gap-3">
         <h1 className="text-[28px] font-bold leading-[34px] lg:text-[40px] lg:leading-[46px]">{t("title")}</h1>
         <p className="text-sm text-muted">{t("effective")}</p>

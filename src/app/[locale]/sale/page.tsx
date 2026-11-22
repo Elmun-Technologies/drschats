@@ -11,6 +11,8 @@ import { getCommerceSettings } from "@/lib/commerce/server";
 import { localizedOr } from "@/lib/commerce/settings";
 import { ProductGrid } from "@/components/home/HomeBlocks";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { SITE_URL } from "@/lib/seo/metadata";
+import { JsonLd, breadcrumbLd } from "@/lib/seo/jsonld";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 
 export const revalidate = 300;
@@ -55,6 +57,7 @@ export default async function SalePage({ params }: { params: Promise<{ locale: L
 
   return (
     <div className="wrap flex flex-col gap-5 pb-9 pt-1 lg:gap-10 lg:pb-[72px] lg:pt-5">
+      <JsonLd data={breadcrumbLd([{ name: t("title"), url: `${SITE_URL}/${locale}/sale` }])} />
       <div className="flex flex-col gap-1.5 lg:gap-3.5">
         <nav aria-label={tp("breadcrumbHome")} className="hidden gap-2 text-sm text-muted lg:flex">
           <Link href="/" className="hover:text-ink">{tp("breadcrumbHome")}</Link>

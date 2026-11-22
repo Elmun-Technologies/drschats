@@ -80,6 +80,12 @@ Qilingan ishlar va sababi:
     sahifadan boshlanadi;
   - yetkazish ikki va'da: Toshkent (`UZ-TK`, 0–1 kun) va viloyatlar (1–3 kun);
   - Organization va Store `sameAs` — bitta ro'yxat (`SAME_AS`).
+- **2026-11-20 tekshiruvi** (jonli crawl, 268 URL): mahsulot title'ining oxirgi zaxira varianti
+  brend qo'shilishidan oldin o'lchanardi (5 ta mahsulot 71–75 belgi bo'lib chiqardi) — endi
+  `… | govita` bilan o'lchanadi va oxirida faqat nom qoladi; `/blog` (+ `ItemList`), `/ingredients`,
+  `/quiz`, `/sale`, `/privacy` ga `BreadcrumbList` qo'shildi; mahsulot sahifasi o'zini nomlagan
+  maqolalarga havola beradi (`HealthContext`, ≤ 3 ta). Infra: `http://govita.uz` → `https://govita.uz`
+  → `https://www.govita.uz` → `/uz` — 3 sakrash (Coolify/Traefik'da bitta 301 ga qisqartirish kerak).
 - **og:locale** — `uz_UZ` / `ru_RU` + `og:locale:alternate`.
 - **Verifikatsiya** — `GOOGLE_SITE_VERIFICATION`, `YANDEX_VERIFICATION` env.
 - **Kategoriya matnlari** — `src/lib/content/category-seo.ts`, 15 ta javon ×
