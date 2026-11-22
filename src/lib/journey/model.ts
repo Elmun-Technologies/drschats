@@ -109,6 +109,7 @@ export function channelOf(touch: Touch | null | undefined): string {
   const click = touch.clickId?.split(":", 1)[0];
   const ref = touch.referrer ?? "";
   const has = (...parts: string[]) => parts.some((part) => source.includes(part) || ref.includes(part));
+  if (has("chatgpt", "openai", "perplexity", "gemini.google", "copilot.microsoft", "claude.ai")) return "AI qidiruv";
   if (click === "gclid" || has("google")) return touch.medium === "organic" || (!source && !click) ? "Google qidiruv" : "Google Ads";
   if (click === "yclid" || has("yandex", "ya.ru")) return !source && !click ? "Yandex qidiruv" : "Yandex Direct";
   if (has("instagram")) return "Instagram";
