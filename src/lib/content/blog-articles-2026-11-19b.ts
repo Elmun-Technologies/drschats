@@ -107,6 +107,7 @@ export const articlesNov2026e: RawArticle[] = [
       },
     ],
     relatedProductSlugs: ["dr-frei-antistress-magniy-20", "swiss-energy-neuroforce-30"],
+    relatedArticleSlugs: ["magniy-va-uyqu"],
   },
   {
     slug: "foliy-kislota-nima-uchun-kerak",

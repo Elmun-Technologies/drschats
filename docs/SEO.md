@@ -182,3 +182,5 @@ Hub faqat katalogda haqiqiy mahsuloti bor mavzuga quriladi (mahsulotsiz hub traf
 - **Multivitamin** — `dr-frei-multivitamins-biotin-20`, `dr-frei-kids-multivitamins-20` + `multivitamin-qanday-tanlash`.
 - **Kalsiy + D3 + K2** — `swiss-energy-calcivit-30` (alohida D3 mahsuloti yo'q).
 - **Omega-3**: katalogda mahsulot yo'q; mavzu maqolada (`omega-3-nima-uchun-kerak`) qoladi, hub yo'q. Mahsulot qo'shilgach ochiladi.
+
+**Maqola ichki havolalari** (`lib/content/related-articles.ts`): maqola oxiridagi «Yana o'qing» endi ro'yxat tartibi bilan emas, mavzu bo'yicha tanlanadi: avval `relatedArticleSlugs` (muharrir tanlovi, masalan ikki magniy maqolasi bir-biriga), keyin umumiy mahsulotlar ulushi, keyin kategoriya, keyin sana. Yangi maqolada mavzudosh maqola bo'lsa `relatedArticleSlugs` ni yozing.
