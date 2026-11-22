@@ -34,6 +34,9 @@ describe("journey model", () => {
     expect(channelOf({ source: "chatgpt.com" })).toBe("AI qidiruv");
     expect(channelOf({ referrer: "perplexity.ai" })).toBe("AI qidiruv");
     expect(channelOf({ referrer: "gemini.google.com" })).toBe("AI qidiruv");
+    expect(channelOf({ source: "gemini" })).toBe("AI qidiruv");
+    expect(channelOf({ source: "copilot" })).toBe("AI qidiruv");
+    expect(channelOf({ source: "claude" })).toBe("AI qidiruv");
   });
 
   it("classifies devices and bots", () => {
