@@ -31,6 +31,9 @@ describe("journey model", () => {
     expect(channelOf({ referrer: "yandex.ru" })).toBe("Yandex qidiruv");
     expect(channelOf({ source: "instagram" })).toBe("Instagram");
     expect(channelOf({ referrer: "t.me" })).toBe("Telegram");
+    expect(channelOf({ source: "chatgpt.com" })).toBe("AI qidiruv");
+    expect(channelOf({ referrer: "perplexity.ai" })).toBe("AI qidiruv");
+    expect(channelOf({ referrer: "gemini.google.com" })).toBe("AI qidiruv");
   });
 
   it("classifies devices and bots", () => {

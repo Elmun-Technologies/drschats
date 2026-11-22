@@ -154,3 +154,31 @@ Reja:
 Har oy: GSC/Yandex.Webmaster'da top so'rovlar, o'rin, CTR; indeksdagi sahifalar
 soni = sitemap'dagi soni bo'lishi kerak. Core Web Vitals — GSC hisobotidan
 (maydon ma'lumoti), Lighthouse emas.
+
+## AI qidiruv: kuzatuv va monitoring (2026-11)
+
+**Trafik.** `channelOf()` (`lib/journey/model.ts`) ChatGPT, Perplexity, Gemini, Copilot va Claude'dan kelgan tashrifni «AI qidiruv» kanaliga yig'adi (utm_source yoki referrer bo'yicha; ChatGPT havolaga `utm_source=chatgpt.com` qo'shadi). `gemini.google.com` Google qidiruvga tushmaydi. Hamma AI trafikni aniqlab bo'lmaydi: referrer'siz o'tishlar «Bevosita» ga ketadi.
+
+**Crawler siyosati.** `robots.txt` da `*` hamma uchun ochiq (Googlebot, Bingbot, YandexBot, OAI-SearchBot, PerplexityBot; GPTBot ham). GPTBot (model treningi) alohida yopilmaydi: brend tanilishi ustun. Yopish kerak bo'lsa — `lib/seo/robots.ts` ga alohida `User-Agent: GPTBot` guruhi, `OAI-SearchBot` ochiq qoladi.
+
+**Oylik AI-ko'rinish tekshiruvi** (har oy bir xil savollar, ChatGPT Search / Gemini / Perplexity / Copilot'da; qayd: GoVita tilga olindimi, havola berildimi, qaysi sahifa, raqobatchi kim). Bu tajriba, platforma reytingi emas. Natija jadvali `docs/AI-KORINISH.md` da.
+
+Savollar (uz, ru — har biri alohida yoziladi, tarjima emas):
+- magniy B6 va magniy sitrat farqi nima? / чем отличается магний B6 от цитрата магния?
+- magniy uyquga ta'sir qiladimi? / помогает ли магний при бессоннице?
+- multivitamin qanday tanlanadi? / как выбрать мультивитамины?
+- shipuchi vitaminlar oddiy tabletkadan nimasi bilan farq qiladi? / шипучие витамины или таблетки — в чём разница?
+- bolalar uchun multivitamin 7 yoshdan / мультивитамины для детей с 7 лет
+- Toshkentda vitamin yetkazib berish / доставка витаминов в Ташкенте
+- vitamin C shipuchi sotib olish Toshkent / купить шипучий витамин С в Ташкенте
+- kalsiy D3 K2 komplekslari / кальций D3 K2 комплекс
+- BAD va dori farqi nima? / чем БАД отличается от лекарства?
+- eng yaxshi omega-3 / лучшая омега-3 (GoVita'da Omega-3 mahsuloti yo'q: bu savolda ko'rinishni kutmaymiz)
+
+## Hublar: tartib
+
+Hub faqat katalogda haqiqiy mahsuloti bor mavzuga quriladi (mahsulotsiz hub trafik beradi, sotmaydi).
+- **Magniy** — `dr-frei-antistress-magniy-20` + `magniy-b6-va-magniy-sitrat-farqi`, `magniy-va-uyqu`. Birinchi.
+- **Multivitamin** — `dr-frei-multivitamins-biotin-20`, `dr-frei-kids-multivitamins-20` + `multivitamin-qanday-tanlash`.
+- **Kalsiy + D3 + K2** — `swiss-energy-calcivit-30` (alohida D3 mahsuloti yo'q).
+- **Omega-3**: katalogda mahsulot yo'q; mavzu maqolada (`omega-3-nima-uchun-kerak`) qoladi, hub yo'q. Mahsulot qo'shilgach ochiladi.

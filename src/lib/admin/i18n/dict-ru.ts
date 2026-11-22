@@ -1952,6 +1952,7 @@ export const RU: Record<string, string> = {
   "Yana {n} ta koʻrsatish": "Показать ещё {n}",
   "Yandex Metrika ID faqat raqamlardan iborat.": "ID Яндекс Метрики состоит только из цифр.",
   "Yandex qidiruv": "Поиск Яндекса",
+  "AI qidiruv": "ИИ-поиск",
   "Yandex tasdiqlash kodi": "Код подтверждения Яндекса",
   "Yangi": "Новый",
   "Yangi administrator": "Новый администратор",
