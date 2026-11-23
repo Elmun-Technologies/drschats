@@ -20,6 +20,24 @@ keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Paym
 `/admin/integrations` da **qayta kiritilishi** kerak (shifrlash kaliti yangilandi). Tafsilot:
 [`DEPLOY-HETZNER.md`](DEPLOY-HETZNER.md) → «Hozirgi holat: Coolify».
 
+## Integratsiyalar holati (2026-11-23, `/admin/integrations`, kodsiz sozlandi)
+
+- **Analitika ulandi**: GA4 `G-WBYMBW0ZEZ` va Yandex Metrika `114537981` (Webvisor **o'chiq** — forma
+  maydonlarida telefon/manzil bor). Teglar saytda yuklanadi; cookie-rozilik berilgandagina
+  (`Analytics.tsx`), do'kon CSP'si `report-only` va ikkala host ro'yxatda. GTM va Meta Pixel — ulanmagan
+  (Pixel: Business Manager qarori kutilmoqda). GA4 hisobi va Metrika schyotchigi `n4zvi` Yandex akkauntida —
+  kompaniya akkauntiga o'tkazish kerak.
+- **Click** kalitlari kiritilgan (INN `307895851`), lekin **fiskal chek ketmaydi**: har SKU uchun package code
+  va yetkazish MXIK/package code buxgalterdan kutilmoqda (`0035_mxik_codes.sql` faqat MXIK'ni to'ldirgan;
+  Neuroforce, Aminomorin, Peano, Hamdard Safi, qahvalar qoplanmagan). Shu paytgacha Click'ni yoqmaslik xavfsizroq.
+- **Payme**: kalitlar hali kiritilmagan. **Eskiz SMS**: keyinga qoldirilgan. Operator Telegram tokeni va
+  Resend panelda sozlanmagan.
+- `integration_settings` dagi 2 ta eski (yangi `INTEGRATION_ENCRYPTION_KEY` bilan ochilmaydigan) qator
+  o'chirildi — `decrypt-error` yo'qoldi. Kalitni qayta o'zgartirmang.
+- **Rejalashtirilgan SEO vazifalari**: «govita SEO 12 soatlik tsikl» (09:07/21:07, GSC va Merchant Center —
+  Chrome kerak), «govita SEO haftalik kontent va raqobatchi» (dushanba) va «govita kunlik 3 blog maqola»
+  (04:32, PR + o'zi merge). 2026-11-21 da tsikl usage limit tufayli yiqilgan edi.
+
 ## Yaqinda tugagan (main'ga merge qilingan)
 
 - **Talab tahlili — bozor maʼlumoti oldindan** (2026-11-12): `0037_keyword_market_baseline.sql` 2026-11-02 Planner eksportini (1 913 soʻz, oyiga 250 800 qidiruv) boʻsh jadvalga yozadi — `/admin/keywords` fayl yuklamasdan toʻladi. Sahifaga qoʻshildi: talab darajasi (1000+/100–999/10–99/10 dan kam), tillar ulushi, mavsum, «Sahifa kerak», oʻsayotgan/pasayayotgan soʻzlar (`lib/keywords/report.ts`, testli). **Keyingi qadam (foydalanuvchi tanlagan «a» variant)**: «Sahifa kerak» roʻyxatidagi mavzuga tugma bilan uz/ru sahifa qoralamasi — Anthropic API kaliti va bazadagi qoralama sahifalar kerak.
