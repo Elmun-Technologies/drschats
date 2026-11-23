@@ -28,6 +28,7 @@ import {
   QuickChips,
   SectionHead,
 } from "@/components/home/HomeBlocks";
+import { HomeCare } from "@/components/home/HomeCare";
 import { isStocked } from "@/lib/shop/categories";
 import { cutoutOf } from "@/lib/catalog/product-facts";
 import { PersonalizedRail } from "@/components/personalization/PersonalizedRail";
@@ -164,6 +165,8 @@ export default async function HomePage({
         <HomeIntro locale={locale} />
 
         <HomeCategories categories={shelves} />
+
+        <HomeCare locale={locale} />
 
         {dealOfDay && <DealOfDay product={dealOfDay.product} endsAt={dealOfDay.endsAt} />}
 

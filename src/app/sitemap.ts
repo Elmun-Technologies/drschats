@@ -72,6 +72,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     "", "/products", "/about", "/blog", "/contact", "/delivery",
     "/ingredients", "/brands", "/payment", "/guarantee",
     "/requisites", "/quiz", "/programs", "/where-to-buy", "/partners", "/sale", "/privacy",
+    "/care/mom", "/care/baby",
     ...optional,
     ...(hasNews ? ["/news"] : []),
     ...(expertSlugs.length > 0 ? ["/experts"] : []),
@@ -126,6 +127,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority = 0.7;
     } else if (path.startsWith("/blog/")) {
       priority = 0.65;
+    } else if (path.startsWith("/care/")) {
+      priority = 0.8;
     } else if (["/goals", "/symptoms", "/vitamins", "/programs"].some((p) => path.startsWith(p))) {
       // Health topics are the organic-search backbone — rank them above the
       // static informational pages, just under product detail.

@@ -39,6 +39,8 @@ export const STORAGE_KEYS = {
   lastOrder: `${PREFIX}last-order`,
   /** localStorage: signed tracking links of orders placed in this browser — «Buyurtmalarim» (lib/orders/last-order.ts). */
   orders: `${PREFIX}orders`,
+  /** localStorage: the due date and children typed into /care/mom and /care/baby — never sent to the server (lib/care). */
+  care: `${PREFIX}care`,
 } as const;
 
 let migrated = false;

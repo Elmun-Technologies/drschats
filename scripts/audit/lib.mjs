@@ -21,6 +21,9 @@ export const PATHS = [
   // No results: the notify form and the suggested terms.
   "/search?q=topilmaydigan",
   "/goals",
+  // The care hubs: tracker, box / kit builder, stage tiles.
+  "/care/mom",
+  "/care/baby",
   "/quiz",
   // A filled-in result: the plan panel, the product rows and the doctor note.
   "/quiz/result?a=who.self-woman~age.18-35~concerns.fatigue_colds_hair-skin",
