@@ -61,7 +61,6 @@ export function MobileBottomNav({
       )}
       <nav
         aria-label={t("mainNav")}
-        data-miniapp-hide
         className="fixed inset-x-0 bottom-0 z-50 h-[var(--tab-bar)] border-t border-line bg-bg lg:hidden"
       >
         <div className="grid h-full grid-cols-5 px-1 pb-2.5 pt-1.5">
