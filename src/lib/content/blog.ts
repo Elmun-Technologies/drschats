@@ -4,6 +4,7 @@ import { articlesNov2026c } from "./blog-articles-2026-11c";
 import { articlesNov2026d } from "./blog-articles-2026-11-19";
 import { articlesNov2026e } from "./blog-articles-2026-11-19b";
 import { articlesNov2026f } from "./blog-articles-2026-11-20";
+import { articlesNov2026g } from "./blog-articles-2026-11-24";
 import type { Locale } from "@/lib/i18n/routing";
 
 type L<T = string> = Record<Locale, T>;
@@ -95,6 +96,7 @@ const rawArticles: RawArticle[] = [
   ...articlesNov2026d,
   ...articlesNov2026e,
   ...articlesNov2026f,
+  ...articlesNov2026g,
   {
     slug: "omega-3-nima-uchun-kerak",
     date: "2026-05-20",
