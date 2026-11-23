@@ -1,5 +1,6 @@
 import type { Locale } from "@/lib/i18n/routing";
 import { demandVitaminTopics } from "./health-topics-demand";
+import { audienceGoalTopics } from "./health-topics-audience";
 
 type L<T = string> = Record<Locale, T>;
 
@@ -1763,6 +1764,7 @@ const raw: RawHealthTopic[] = [
     },
   },
   ...demandVitaminTopics,
+  ...audienceGoalTopics,
 ];
 
 function localise(topic: RawHealthTopic, locale: Locale): HealthTopic {

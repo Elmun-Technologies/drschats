@@ -48,6 +48,13 @@ keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Paym
 borlari; miqdor — faqat katalogda yozilgani. `keywords/subjects.ts` da `site.topic` ulandi —
 admin'da «Нужна страница» belgisi o'zi yo'qoladi.
 
+**Auditoriya sahifalari (2026-11-23)**: `/goals/kids`, `/goals/pregnancy`, `/goals/men`, `/goals/women`, `/goals/eyes`
+(`lib/content/health-topics-audience.ts`; talab: bolalar 520, homilador 220, erkaklar 180, koʻz 170, ayollar 110). Mahsulotlar
+faqat shu auditoriyaga mos katalogdagilar; `keywords/subjects.ts` da `topic` ulangan.
+
+**Kunlik reja: ≥5 yangi sahifa.** Navbat: oyoq-qo'l sahifalari (symptom): kamqonlik/temir, mushak tortishishi (magniy),
+soch toʻkilishi bor; qolgan — mavzu bo'yicha `goal` (sport, keksalar, o'smirlar), shakl (shipuchi, marmelad), brend sahifalari.
+
 Qolgan (qaror kerak, kod emas): katalogda yo'q mahsulotlar — Omega-3 (20 440), Melatonin (8 270),
 Ashvaganda (5 780), Spirulina (5 350), Ginkgo (4 960), L-karnitin (4 340), Inulin, Yod, Q10.
 Mavjud 6 sahifa kengaytirildi (2026-11-23): Magniy B6 (nom ham «Магний B6»), D3, Rux, C, Kollagen, Kalsiy —
