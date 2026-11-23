@@ -52,8 +52,9 @@ admin'da «Нужна страница» belgisi o'zi yo'qoladi.
 (`lib/content/health-topics-audience.ts`; talab: bolalar 520, homilador 220, erkaklar 180, koʻz 170, ayollar 110). Mahsulotlar
 faqat shu auditoriyaga mos katalogdagilar; `keywords/subjects.ts` da `topic` ulangan.
 
-**Kunlik reja: ≥5 yangi sahifa.** Navbat: oyoq-qo'l sahifalari (symptom): kamqonlik/temir, mushak tortishishi (magniy),
-soch toʻkilishi bor; qolgan — mavzu bo'yicha `goal` (sport, keksalar, o'smirlar), shakl (shipuchi, marmelad), brend sahifalari.
+**Kunlik reja: ≥5 yangi sahifa** (egasi talabi). Navbat: shakl sahifalari (shipuchi, marmelad, tomchi), auditoriya
+(sportchilar, keksalar, oʻsmirlar), simptom sahifalari (kamqonlik, mushak tortishishi, soch toʻkilishi — hozir vitamin
+sahifasiga bogʻlangan), brend sahifalari; har biri — katalogdagi haqiqiy mahsulotlar va testdan oʻtgan matn.
 
 Qolgan (qaror kerak, kod emas): katalogda yo'q mahsulotlar — Omega-3 (20 440), Melatonin (8 270),
 Ashvaganda (5 780), Spirulina (5 350), Ginkgo (4 960), L-karnitin (4 340), Inulin, Yod, Q10.
