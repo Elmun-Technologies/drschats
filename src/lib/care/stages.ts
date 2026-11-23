@@ -31,9 +31,14 @@ export function parseIsoDate(value: string | null | undefined): Date | null {
  * Pregnancy week (completed weeks, at least 1) on `now` for a due date, or null when the date
  * cannot be a current pregnancy (more than 42 weeks ago or not yet conceived).
  */
+/** `now` moved to local noon, the hour dates are read at, so comparisons are by calendar day. */
+function today(now: Date): Date {
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), 12);
+}
+
 export function weekFromDueDate(due: Date, now: Date): number | null {
   const lmp = due.getTime() - PREGNANCY_DAYS * DAY;
-  const days = Math.floor((now.getTime() - lmp) / DAY);
+  const days = Math.round((today(now).getTime() - lmp) / DAY);
   if (days < 0) return null;
   // Completed weeks, as an obstetrician counts them: the due date is week 40.
   const week = Math.max(1, Math.floor(days / 7));
@@ -48,7 +53,7 @@ export function trimesterOf(week: number): Trimester {
 
 /** Whole months of age on `now`, or null for a birth date in the future. */
 export function ageInMonths(birth: Date, now: Date): number | null {
-  if (birth.getTime() > now.getTime()) return null;
+  if (birth.getTime() > today(now).getTime()) return null;
   let months = (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
   if (now.getDate() < birth.getDate()) months -= 1;
   return Math.max(0, months);

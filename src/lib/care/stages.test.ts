@@ -22,6 +22,10 @@ describe("weekFromDueDate", () => {
   it("is week 40 on the due date", () => {
     expect(weekFromDueDate(d("2026-10-08"), d("2026-10-08"))).toBe(40);
   });
+  it("changes week at the start of the day, not at noon", () => {
+    // 2026-01-15 is exactly 14 days after the period: week 2 already at 08:00
+    expect(weekFromDueDate(d("2026-10-08"), new Date(2026, 0, 15, 8))).toBe(2);
+  });
   it("is null before conception and two weeks after the due date", () => {
     expect(weekFromDueDate(d("2026-10-08"), d("2025-12-20"))).toBeNull();
     expect(weekFromDueDate(d("2026-10-08"), d("2026-10-30"))).toBeNull();
@@ -38,6 +42,9 @@ describe("ageInMonths", () => {
   it("counts whole months", () => {
     expect(ageInMonths(d("2026-01-15"), d("2026-03-14"))).toBe(1);
     expect(ageInMonths(d("2026-01-15"), d("2026-03-15"))).toBe(2);
+  });
+  it("accepts a birth earlier today", () => {
+    expect(ageInMonths(d("2026-04-01"), new Date(2026, 3, 1, 7))).toBe(0);
   });
   it("is null for a birth date in the future", () => {
     expect(ageInMonths(d("2026-05-01"), d("2026-04-01"))).toBeNull();
