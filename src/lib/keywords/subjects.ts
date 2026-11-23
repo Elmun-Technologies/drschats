@@ -57,7 +57,7 @@ export const SUBJECTS: KeywordSubject[] = [
   { id: "biotin", kind: "vitamin", label: "Biotin (B7)", ru: ["биотин", "витамин б7", "витамин h"], uz: ["biotin", "vitamin b7"], site: { terms: ["biotin", "биотин"], topic: "biotin" } },
   { id: "vitamin-a", kind: "vitamin", label: "Vitamin A", ru: ["витамин а", "ретинол"], uz: ["vitamin a", "a vitamini"], site: { terms: ["vitamin a", "витамин a", "retinol", "ретинол"], topic: "vitamin-a" } },
   { id: "vitamin-e", kind: "vitamin", label: "Vitamin E", ru: ["витамин е", "витамин e", "токоферол"], uz: ["vitamin e", "e vitamini"], site: { terms: ["vitamin e", "витамин e", "tokoferol", "токоферол"], topic: "vitamin-e" } },
-  { id: "aevit", kind: "vitamin", label: "Aevit (A + E)", ru: ["аевит"], uz: ["aevit"], uzCyr: ["аевит"], site: { terms: ["vitamin a", "витамин a", "vitamin e", "витамин e"], topic: "vitamin-a-e" } },
+  { id: "aevit", kind: "vitamin", label: "Aevit (A + E)", ru: ["аевит"], uz: ["aevit"], uzCyr: ["аевит"], site: { topic: "vitamin-a-e" } },
   { id: "vitamin-k2", kind: "vitamin", label: "Vitamin K2", ru: ["витамин к2", "витамин k2", "д3 к2", "витамин д3 к2"], uz: ["vitamin k2", "d3 k2"], site: { terms: ["k2", "к2", "menaxinon", "менахинон"], topic: "vitamin-k2" } },
 
   /* ---------- minerals ---------- */
