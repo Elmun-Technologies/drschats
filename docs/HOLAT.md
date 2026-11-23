@@ -38,6 +38,20 @@ keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Paym
   Chrome kerak), «govita SEO haftalik kontent va raqobatchi» (dushanba) va «govita kunlik 3 blog maqola»
   (04:32, PR + o'zi merge). 2026-11-21 da tsikl usage limit tufayli yiqilgan edi.
 
+## Talab tahlili → yangi sahifalar (2026-11-23)
+
+`/admin/keywords` (Planner 2026-11-02): bozor ≈ 250 470 qidiruv/oy, ruscha 62% / o'zbekcha 35%.
+«Mahsulot bor, sahifa yo'q» bo'yicha 12 ta `/vitamins/<slug>` sahifa qo'shildi
+(`lib/content/health-topics-demand.ts`, uz + ru): `folic-acid`, `vitamin-a`, `vitamin-e`,
+`vitamin-a-e`, `biotin`, `selenium`, `vitamin-k2`, `multivitamins`, `vitamin-b-complex`,
+`vitamin-b6`, `vitamin-b1`, `lutein` (≈ 44 000 qidiruv/oy). Mahsulotlar faqat tarkibida shu modda
+borlari; miqdor — faqat katalogda yozilgani. `keywords/subjects.ts` da `site.topic` ulandi —
+admin'da «Нужна страница» belgisi o'zi yo'qoladi.
+
+Qolgan (qaror kerak, kod emas): katalogda yo'q mahsulotlar — Omega-3 (20 440), Melatonin (8 270),
+Ashvaganda (5 780), Spirulina (5 350), Ginkgo (4 960), L-karnitin (4 340), Inulin, Yod, Q10.
+Mavjud sahifalarni kengaytirish: Magniy (30 440, ruscha 83%), Vitamin D, Rux, Vitamin C, Kollagen.
+
 ## Yaqinda tugagan (main'ga merge qilingan)
 
 - **Talab tahlili — bozor maʼlumoti oldindan** (2026-11-12): `0037_keyword_market_baseline.sql` 2026-11-02 Planner eksportini (1 913 soʻz, oyiga 250 800 qidiruv) boʻsh jadvalga yozadi — `/admin/keywords` fayl yuklamasdan toʻladi. Sahifaga qoʻshildi: talab darajasi (1000+/100–999/10–99/10 dan kam), tillar ulushi, mavsum, «Sahifa kerak», oʻsayotgan/pasayayotgan soʻzlar (`lib/keywords/report.ts`, testli). **Keyingi qadam (foydalanuvchi tanlagan «a» variant)**: «Sahifa kerak» roʻyxatidagi mavzuga tugma bilan uz/ru sahifa qoralamasi — Anthropic API kaliti va bazadagi qoralama sahifalar kerak.
