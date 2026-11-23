@@ -73,7 +73,7 @@ export const audienceGoalTopics: RawHealthTopic[] = [
     },
     ingredientSlugs: ["vitamin-c", "vitamin-d3", "calcium", "biotin"],
     productSlugs: ["dr-frei-kids-multivitamins-20"],
-    categorySlugs: ["kids", "effervescent"],
+    categorySlugs: ["kids"],
     relatedSlugs: ["immunity", "frequent-colds", "vitamin-d3", "calcium"],
     faq: {
       uz: [
@@ -178,7 +178,7 @@ export const audienceGoalTopics: RawHealthTopic[] = [
     },
     ingredientSlugs: ["iron", "vitamin-k2"],
     productSlugs: ["swiss-energy-prenatal-forte-60"],
-    categorySlugs: ["vitamins"],
+    categorySlugs: [],
     relatedSlugs: ["folic-acid", "iron", "vitamin-d3"],
     faq: {
       uz: [
@@ -275,7 +275,7 @@ export const audienceGoalTopics: RawHealthTopic[] = [
     },
     ingredientSlugs: ["zinc", "vitamin-d3", "magnesium"],
     productSlugs: ["swiss-energy-potenton-30", "dr-frei-multivitamins-biotin-20", "dr-frei-gold-vitamins-20", "swiss-energy-immunovit-30"],
-    categorySlugs: ["vitamins", "effervescent"],
+    categorySlugs: [],
     relatedSlugs: ["zinc", "energy", "stress"],
     faq: {
       uz: [
@@ -372,7 +372,7 @@ export const audienceGoalTopics: RawHealthTopic[] = [
     },
     ingredientSlugs: ["biotin", "collagen", "calcium", "vitamin-d3", "zinc"],
     productSlugs: ["swiss-energy-hair-nail-skin-30", "swiss-energy-nature-collagen", "swiss-energy-calcivit-30", "dr-frei-multivitamins-biotin-20"],
-    categorySlugs: ["beauty", "minerals"],
+    categorySlugs: [],
     relatedSlugs: ["beauty", "hair-loss", "calcium", "iron"],
     faq: {
       uz: [
@@ -469,7 +469,7 @@ export const audienceGoalTopics: RawHealthTopic[] = [
     },
     ingredientSlugs: ["zinc"],
     productSlugs: ["swiss-energy-visiovit-30", "dr-frei-gold-vitamins-20"],
-    categorySlugs: ["vitamins", "effervescent"],
+    categorySlugs: [],
     relatedSlugs: ["lutein", "vitamin-a", "vitamin-e", "zinc"],
     faq: {
       uz: [
