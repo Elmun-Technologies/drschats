@@ -318,14 +318,13 @@
   replaces the page's fixed buy bar — so the site's own bottom furniture and
   overlay popups would sit on top of the client's chrome. Everything marked
   `data-miniapp-hide` is the site chrome a Mini App must not repeat: the
-  announcement strip, the tab bar, the cookie bar, the scroll button, the
-  footer's link columns and the mobile buy bar. The cart drawer stays: it is
-  the shop's own control, not a popup.
+  announcement strip, the cookie bar, the scroll button, the footer's link
+  columns and the mobile buy bar. The cart drawer stays: it is the shop's own
+  control, not a popup. The tab bar stays too: Telegram draws no bottom
+  navigation, so without it a Mini App visitor on a phone cannot reach the
+  catalogue, the cart or the cabinet.
 */
 html[data-miniapp] {
-  --tab-bar: 0px;
-  --buy-bar: 0px;
-  --bottom-nav: 0px;
   color-scheme: light;
 }
 html[data-miniapp] [data-miniapp-hide] {
@@ -335,6 +334,9 @@ html[data-miniapp] [data-miniapp-hide] {
    proves it exists the bar is the only way to add to cart, so it stays. */
 html[data-miniapp-mainbutton] [data-buy-bar] {
   display: none !important;
+}
+:root[data-miniapp-mainbutton]:has([data-buy-bar]) {
+  --buy-bar: 0px;
 }
 html[data-miniapp] body {
   padding-bottom: env(safe-area-inset-bottom, 0px);
