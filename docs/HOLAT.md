@@ -50,7 +50,11 @@ admin'da «Нужна страница» belgisi o'zi yo'qoladi.
 
 Qolgan (qaror kerak, kod emas): katalogda yo'q mahsulotlar — Omega-3 (20 440), Melatonin (8 270),
 Ashvaganda (5 780), Spirulina (5 350), Ginkgo (4 960), L-karnitin (4 340), Inulin, Yod, Q10.
-Mavjud sahifalarni kengaytirish: Magniy (30 440, ruscha 83%), Vitamin D, Rux, Vitamin C, Kollagen.
+Mavjud 6 sahifa kengaytirildi (2026-11-23): Magniy B6 (nom ham «Магний B6»), D3, Rux, C, Kollagen, Kalsiy —
+bo'limlar + 3–4 FAQ (uz/ru), faqat katalogdagi tarkib; isbotsiz raqamlar (D3 «70%», IU dozalar, kollagen «1.5 baravar»,
+«gialuron kislotasi») olib tashlandi. **Ochiq savol:** kollagen sahifasi nomi «Dengiz kollageni» dan «Kollagen» ga
+o'zgardi — katalog kartasida manba (dengiz/qoramol) yozilmagan, `ingredients.ts` va `health-topics.ts` (beauty/joints)
+da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 
 ## Yaqinda tugagan (main'ga merge qilingan)
 

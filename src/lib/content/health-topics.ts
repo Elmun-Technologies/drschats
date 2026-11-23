@@ -644,62 +644,102 @@ const raw: RawHealthTopic[] = [
     slug: "vitamin-d3",
     name: { uz: "Vitamin D3", ru: "Витамин D3" },
     headline: {
-      uz: "Quyosh vitamini — suyak, immunitet va gormonal balans",
-      ru: "Солнечный витамин для костей, иммунитета и гормонального баланса",
+      uz: "Suyaklar, mushaklar va immunitet uchun quyosh vitamini",
+      ru: "Солнечный витамин для костей, мышц и иммунитета",
     },
     intro: {
-      uz: "Vitamin D3 (xolekalsiferol) organizmda yuzlab genlar faoliyatini boshqaradi. U kalsiy soʻrilishi va immun tizimining normal ishlashi uchun muhimdir.",
-      ru: "Витамин D3 участвует в регуляции работы сотен генов и важен для усвоения кальция и нормальной работы иммунной системы.",
+      uz: "Vitamin D3 kalsiy va fosforning normal soʻrilishiga, suyak, tish, mushak va immun tizimining normal ishlashiga hissa qoʻshadi.",
+      ru: "Витамин D3 вносит вклад в нормальное усвоение кальция и фосфора, состояние костей и зубов, работу мышц и иммунной системы.",
     },
     sections: {
       uz: [
         {
-          title: "Nima uchun D3 tanqisligi keng tarqalgan?",
-          body: "Kuyoshli mintaqalarda ham xonalarda oʻtirish, quyosh kremlari va yopiq kiyimlar sababli aholining 70% dan ortigʻida D vitamini yetishmovchiligi kuzatiladi.",
+          title: "Vitamin D3 nima uchun kerak",
+          body: "Vitamin D kalsiy va fosforning normal soʻrilishi va ishlatilishiga, qondagi kalsiy miqdorining normal boʻlishiga, suyak va tishlarning normal holatiga, mushaklar hamda immun tizimining normal ishlashiga hissa qoʻshadi.",
         },
         {
-          title: "D3 va K2 sinergiyasi",
-          body: "D3 kalsiyning ichakda normal soʻrilishiga hissa qoʻshadi, K2 vitamini esa kalsiyning suyak toʻqimasiga yoʻnaltirilishida ishtirok etadi.",
+          title: "D3 va D2 — farqi nimada",
+          body: "Vitamin D ikki asosiy shaklda uchraydi: D2 (ergokalsiferol) va D3 (xolekalsiferol). Qoʻshimchalarda koʻpincha D3 ishlatiladi. Qaysi shakl borligi mahsulot qadogʻida koʻrsatiladi: masalan, Swiss Energy Prenatal Forte tarkibida D2 shakli bor.",
+        },
+        {
+          title: "D3 va K2 birga",
+          body: "D vitamini kalsiyning normal soʻrilishiga hissa qoʻshadi, K vitamini esa suyaklarning normal holatiga va qonning normal ivishiga hissa qoʻshadi. Shuning uchun kalsiy, D3 va K2 koʻpincha bitta majmuada boʻladi.",
+        },
+        {
+          title: "Qaysi mahsulotlarda D bor",
+          body: "Swiss Energy Calcivit — kalsiy, D3, K2, sink, B vitaminlari, mis va marganets, 30 kapsula. Dr. Frei Multivitamins + Biotin — shipuchi tabletkada vitamin D 5 mkg. Alohida D3 (monokomponent) mahsuloti katalogda hozircha yoʻq.",
+        },
+        {
+          title: "Qanday qabul qilinadi",
+          body: "D vitamini yogʻda eriydi, shuning uchun uni ovqat bilan ichish qulay. Dozani mahsulot qadogʻidan oling; qoʻshimcha dozalar haqida shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          title: "Почему возникает дефицит?",
-          body: "Даже в солнечных странах пребывание в офисах и использование SPF-кремов приводит к дефициту D3 у более чем 70% людей.",
+          title: "Для чего нужен витамин D3",
+          body: "Витамин D вносит вклад в нормальное усвоение и использование кальция и фосфора, нормальный уровень кальция в крови, нормальное состояние костей и зубов, работу мышц и иммунной системы.",
         },
         {
-          title: "Синергия с K2",
-          body: "Витамин D3 способствует нормальному всасыванию кальция, а витамин K2 участвует в его направлении в костную ткань.",
+          title: "D3 и D2: в чём разница",
+          body: "Витамин D встречается в двух основных формах: D2 (эргокальциферол) и D3 (холекальциферол). В добавках чаще используют D3. Форма указана на упаковке: например, в Swiss Energy Prenatal Forte содержится форма D2.",
+        },
+        {
+          title: "D3 и K2 вместе",
+          body: "Витамин D вносит вклад в нормальное усвоение кальция, а витамин K — в нормальное состояние костей и свёртываемость крови. Поэтому кальций, D3 и K2 часто объединяют в одном комплексе.",
+        },
+        {
+          title: "В каких продуктах есть D",
+          body: "Swiss Energy Calcivit — кальций, D3, K2, цинк, витамины группы B, медь и марганец, 30 капсул. Dr. Frei Multivitamins + Biotin — шипучие таблетки, витамин D 5 мкг. Отдельного монокомпонентного D3 в каталоге пока нет.",
+        },
+        {
+          title: "Как принимать",
+          body: "Витамин D жирорастворим, поэтому принимать его удобно во время еды. Дозировку берите с упаковки; о дополнительных дозах проконсультируйтесь с врачом.",
         },
       ],
     },
     bullets: {
-      uz: [
-        "Odatiy doza: 2000–5000 IU (shifokor bilan kelishib)",
-        "Yogʻli taom bilan nonushtada qabul qilinadi",
-        "K2 (MK-7) bilan birga qabul qilish maqsadga muvofiq",
-      ],
-      ru: [
-        "Обычная дозировка: 2000–5000 МЕ (по согласованию с врачом)",
-        "Прием утром с жиросодержащей пищей",
-        "Оптимально в паре с витамином K2 (MK-7)",
-      ],
+      uz: ["Calcivit tarkibida: kalsiy + D3 + K2 + sink, B, Cu, Mn", "Multivitamins + Biotin tarkibida vitamin D 5 mkg", "D yogʻda eriydi — ovqat bilan qabul qilish qulay", "Dozani qadoqdan oling, qoʻshimcha dozani shifokor bilan kelishing"],
+      ru: ["В Calcivit: кальций + D3 + K2 + цинк, B, Cu, Mn", "В Multivitamins + Biotin витамин D 5 мкг", "D жирорастворим — удобно принимать с едой", "Дозировку берите с упаковки, дополнительную согласуйте с врачом"],
     },
     ingredientSlugs: ["vitamin-d3", "vitamin-k2"],
     productSlugs: ["swiss-energy-calcivit-30", "dr-frei-multivitamins-biotin-20"],
     categorySlugs: ["vitamins", "immunity"],
-    relatedSlugs: ["immunity", "frequent-colds", "calcium"],
+    relatedSlugs: ["immunity", "frequent-colds", "calcium", "vitamin-k2"],
     faq: {
       uz: [
         {
-          question: "D vitaminini yozda ham ichish kerakmi?",
-          answer: "Agar kunning koʻp qismini binoda oʻtkazsangiz, yozda ham kichik doza (1000–2000 IU) qabul qilish mumkin. Dozani shifokor bilan kelishing.",
+          question: "Vitamin D3 nima uchun kerak?",
+          answer: "D vitamini kalsiy va fosforning normal soʻrilishiga, suyak va tishlarning normal holatiga, mushaklar hamda immun tizimining normal ishlashiga hissa qoʻshadi. Qoʻshimcha dori vositasi emas.",
+        },
+        {
+          question: "D3 ni yozda ham ichish kerakmi?",
+          answer: "Bu quyosh nurida boʻlish vaqti, yashash joyi va ovqatlanishga bogʻliq. Ehtiyojni aniqlash uchun shifokor qon tahlilini (25-OH vitamin D) tavsiya qilishi mumkin; dozani u bilan kelishing.",
+        },
+        {
+          question: "D3 va D2 farqi nima?",
+          answer: "Ikkalasi ham vitamin D shakllari: D2 — ergokalsiferol, D3 — xolekalsiferol. Qoʻshimchalarda koʻpincha D3 ishlatiladi; qadoqda qaysi shakl borligi yoziladi.",
+        },
+        {
+          question: "D3 ni K2 bilan birga ichish kerakmi?",
+          answer: "D va K vitaminlari turli vazifalarda qatnashadi: D kalsiyning soʻrilishiga, K suyaklarning normal holatiga hissa qoʻshadi. Swiss Energy Calcivit tarkibida ular birga. Alohida qoʻshishdan oldin shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          question: "Нужно ли принимать летом?",
-          answer: "При работе в помещении умеренные дозировки (1000–2000 МЕ) можно принимать круглый год. Дозировку согласуйте с врачом.",
+          question: "Для чего нужен витамин D3?",
+          answer: "Витамин D вносит вклад в нормальное усвоение кальция и фосфора, состояние костей и зубов, работу мышц и иммунной системы. Добавка не является лекарством.",
+        },
+        {
+          question: "Нужно ли принимать D3 летом?",
+          answer: "Это зависит от времени на солнце, места проживания и питания. Чтобы оценить потребность, врач может назначить анализ крови (25-OH витамин D); дозировку согласуйте с ним.",
+        },
+        {
+          question: "Чем D3 отличается от D2?",
+          answer: "Обе формы — витамин D: D2 — эргокальциферол, D3 — холекальциферол. В добавках чаще используют D3; форма указана на упаковке.",
+        },
+        {
+          question: "Нужно ли принимать D3 вместе с K2?",
+          answer: "D и K участвуют в разных процессах: D вносит вклад в усвоение кальция, K — в нормальное состояние костей. В Swiss Energy Calcivit они вместе. Прежде чем добавлять отдельно, проконсультируйтесь с врачом.",
         },
       ],
     },
@@ -719,36 +759,76 @@ const raw: RawHealthTopic[] = [
     sections: {
       uz: [
         {
-          title: "Asosiy vazifalari",
-          body: "Hujayralarni oksidlovchi stressdan himoyalashga hissa qoʻshadi, qon tomirlarning normal faoliyati uchun zarur kollagen hosil boʻlishida ishtirok etadi va temir soʻrilishini oshiradi.",
+          title: "Vitamin C nima uchun kerak",
+          body: "Vitamin C immun va asab tizimining normal ishlashiga, normal kollagen hosil boʻlishiga, charchoq va holsizlikni kamaytirishga hissa qoʻshadi hamda temirning soʻrilishini oshiradi. Organizm uni oʻzi ishlab chiqara olmaydi.",
+        },
+        {
+          title: "Qaysi shaklda: shipuchi yoki kapsula",
+          body: "Swiss Energy Vitamin C — 550 mg, 20 shipuchi tabletka, apelsin taʼmi. Swiss Energy ImmunoVit — 30 kapsula: echinacea 100 mg, propolis 50 mg, vitamin C 80 mg va sink 10 mg. Dr. Frei Gold Vitamins tarkibida ham vitamin C 80 mg bor.",
+        },
+        {
+          title: "Vitamin C va temir",
+          body: "Vitamin C temirning soʻrilishini oshirishga hissa qoʻshadi — shuning uchun temir qoʻshimchalari koʻpincha C bilan birga boʻladi.",
+        },
+        {
+          title: "Qanday qabul qilinadi",
+          body: "Vitamin C 550 mg: 1 tabletkani suvda eriting, kuniga 1 marta, ovqat paytida yoki darhol keyin. Katta dozalar haqida shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          title: "Ключевые функции",
-          body: "Способствует защите клеток от окислительного стресса, участвует в образовании коллагена для нормальной работы сосудов и повышает усвоение железа.",
+          title: "Для чего нужен витамин C",
+          body: "Витамин C вносит вклад в нормальную работу иммунной и нервной систем, нормальное образование коллагена, снижение усталости и утомляемости, а также повышает усвоение железа. Организм не синтезирует его самостоятельно.",
+        },
+        {
+          title: "Какую форму выбрать: шипучие таблетки или капсулы",
+          body: "Swiss Energy Vitamin C — 550 мг, 20 шипучих таблеток со вкусом апельсина. Swiss Energy ImmunoVit — 30 капсул: эхинацея 100 мг, прополис 50 мг, витамин C 80 мг и цинк 10 мг. В Dr. Frei Gold Vitamins тоже есть витамин C 80 мг.",
+        },
+        {
+          title: "Витамин C и железо",
+          body: "Витамин C повышает усвоение железа — поэтому добавки с железом часто сочетают с C.",
+        },
+        {
+          title: "Как принимать",
+          body: "Витамин C 550 мг: 1 таблетку растворить в воде, 1 раз в день во время еды или сразу после. О высоких дозах проконсультируйтесь с врачом.",
         },
       ],
     },
     bullets: {
-      uz: ["Antioksidant va immun tizimining normal ishlashi", "Kollagen va elastiklik", "Temir soʻrilishini oshirish"],
-      ru: ["Антиоксидант и нормальная работа иммунитета", "Кофактор выработки коллагена", "Повышение усвоения железа"],
+      uz: ["550 mg — bir shipuchi tabletkada", "20 tabletka, apelsin taʼmi", "ImmunoVit: C 80 mg + sink 10 mg + echinacea + propolis", "Temirning soʻrilishini oshirishga hissa qoʻshadi"],
+      ru: ["550 мг в одной шипучей таблетке", "20 таблеток, вкус апельсина", "ImmunoVit: C 80 мг + цинк 10 мг + эхинацея + прополис", "Повышает усвоение железа"],
     },
     ingredientSlugs: ["vitamin-c"],
     productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-vitamin-c-20", "dr-frei-gold-vitamins-20"],
     categorySlugs: ["vitamins", "effervescent"],
-    relatedSlugs: ["immunity", "frequent-colds", "iron"],
+    relatedSlugs: ["immunity", "frequent-colds", "iron", "zinc"],
     faq: {
       uz: [
         {
-          question: "Katta dozada vitamin C buyrakka zarar emasmi?",
-          answer: "Odatiy kunlik doza 500–1000 mg ni tashkil etadi. Yetarli suv iching; buyrak kasalliklarida avval shifokor bilan maslahatlashing.",
+          question: "Vitamin C ni qachon ichish kerak?",
+          answer: "Swiss Energy Vitamin C uchun ishlab chiqaruvchi kuniga 1 marta, ovqat paytida yoki darhol keyin ichishni koʻrsatadi.",
+        },
+        {
+          question: "Shipuchi tabletka bilan kapsulaning farqi nima?",
+          answer: "Shipuchi tabletka suvda eritib ichiladi (Vitamin C 550 mg), kapsula esa suv bilan yutiladi (ImmunoVit, vitamin C 80 mg va boshqa komponentlar bilan). Miqdor va tarkib mahsulotga qarab farq qiladi — qadoqni solishtiring.",
+        },
+        {
+          question: "Vitamin C ni har kuni ichsa boʻladimi?",
+          answer: "Qadoqdagi koʻrsatma kuniga 1 tabletkani nazarda tutadi. Uzoq muddat yoki yuqori dozada qabul qilishdan oldin shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          question: "Безопасны ли дозировки 1000 мг?",
-          answer: "Обычная суточная дозировка — 500–1000 мг. Соблюдайте питьевой режим, а при заболеваниях почек посоветуйтесь с врачом.",
+          question: "Когда принимать витамин C?",
+          answer: "Для Swiss Energy Vitamin C производитель указывает: 1 раз в день во время еды или сразу после.",
+        },
+        {
+          question: "Чем шипучие таблетки отличаются от капсул?",
+          answer: "Шипучую таблетку растворяют в воде (Vitamin C 550 мг), капсулу запивают водой (ImmunoVit, витамин C 80 мг и другие компоненты). Количество и состав зависят от продукта — сравнивайте упаковки.",
+        },
+        {
+          question: "Можно ли принимать витамин C каждый день?",
+          answer: "Инструкция на упаковке предполагает 1 таблетку в день. Перед длительным приёмом или более высокой дозой проконсультируйтесь с врачом.",
         },
       ],
     },
@@ -756,48 +836,112 @@ const raw: RawHealthTopic[] = [
   {
     kind: "vitamin",
     slug: "magnesium",
-    name: { uz: "Magniy", ru: "Магний" },
+    name: { uz: "Magniy B6", ru: "Магний B6" },
     headline: {
-      uz: "Asab tizimi, mushaklar va sifatli uyqu uchun",
-      ru: "Минерал для нервной системы, мышц и сна",
+      uz: "Asab tizimi, mushaklar va energiya almashinuvi uchun mineral",
+      ru: "Минерал для нервной системы, мышц и энергетического обмена",
     },
     intro: {
-      uz: "Magniy — organizmdagi 300 dan ortiq ferment tizimlarining kofaktori. U yetishmaganda asabiylashish, uyqusizlik va tomir tortishishlari kuzatiladi.",
-      ru: "Магний контролирует передачу нервных импульсов, расслабление мышц и синтез энергии АТФ.",
+      uz: "Magniy asab va mushaklarning normal ishlashiga hissa qoʻshadi. Magniy B6 nima, sitrat va xelat farqi, qanday tanlash — qisqa va aniq.",
+      ru: "Магний вносит вклад в нормальную работу нервной системы и мышц. Магний B6, цитрат и хелат: чем отличаются и как выбрать.",
     },
     sections: {
       uz: [
         {
-          title: "Magniyning toʻgʻri shakllari",
-          body: "Magniy xelati (bisglisinat) va sitrati oshqozonga yumshoq taʼsir qiladi va ichakda 80% gacha yuqori soʻriladi.",
+          title: "Magniy nima uchun kerak",
+          body: "Magniy organizmdagi koʻplab fermentlar ishida qatnashadigan mineral. U normal energiya almashinuvi, asab tizimi va mushaklar faoliyati, elektrolit balansiga hamda charchoq va holsizlikni kamaytirishga hissa qoʻshadi.",
+        },
+        {
+          title: "Magniy B6 nima",
+          body: "Magniy B6 — magniy va B6 vitamini bitta qoʻshimchada. B6 vitamini ham asab tizimi va psixologik faoliyatning normal kechishiga hissa qoʻshadi. Har bir moddaning miqdori mahsulot qadogʻida koʻrsatiladi.",
+        },
+        {
+          title: "Sitrat, xelat, oksid — farqi nimada",
+          body: "Magniy turli tuz shakllarida boʻladi: sitrat, xelat (bisglitsinat), oksid, laktat va boshqalar. Shakllar turlicha soʻriladi va oshqozon-ichakka turlicha taʼsir qilishi mumkin. Tanlashda qadoqdagi shakl va sof magniy miqdoriga qarang. Dr. Frei Antistress tarkibida magniy 100 mg, B6 2 mg; magniy tuzining aniq shakli qadoqda alohida koʻrsatilmagan, shuning uchun uni sitrat yoki xelat deb atamaymiz.",
+        },
+        {
+          title: "Antistress tarkibida yana nima bor",
+          body: "Magniy va B6 dan tashqari bir tabletkada taurin 100 mg, vitamin C 80 mg va vitamin K 30 mkg bor. Shipuchi tabletka bir stakan suvda eriydi.",
+        },
+        {
+          title: "Qanday qabul qilinadi",
+          body: "1 tabletkani 200 ml suvda eriting va kechqurun, ovqatdan keyin iching. Aniq koʻrsatma uchun qadoqqa qarang.",
+        },
+        {
+          title: "Kimlar shifokor bilan maslahatlashishi kerak",
+          body: "Buyrak faoliyatida muammo boʻlsa, homiladorlik va emizish davrida yoki doimiy dori qabul qilsangiz — magniy qoʻshimchasini boshlashdan oldin shifokorga murojaat qiling.",
         },
       ],
       ru: [
         {
-          title: "Биодоступные формы",
-          body: "Органические формы (хелат, цитрат) обладают максимальной биодоступностью и не раздражают ЖКТ.",
+          title: "Для чего нужен магний",
+          body: "Магний участвует в работе многих ферментов. Он вносит вклад в нормальный энергетический обмен, работу нервной системы и мышц, баланс электролитов, а также в снижение усталости и утомляемости.",
+        },
+        {
+          title: "Что такое магний B6",
+          body: "Магний B6 — сочетание магния и витамина B6 в одной добавке. Витамин B6 тоже вносит вклад в нормальную работу нервной системы и психологические функции. Количество каждого вещества указано на упаковке.",
+        },
+        {
+          title: "Цитрат, хелат, оксид: в чём разница",
+          body: "Магний выпускают в разных солевых формах: цитрат, хелат (бисглицинат), оксид, лактат и другие. Формы по-разному усваиваются и могут по-разному переноситься желудочно-кишечным трактом. При выборе смотрите на форму и количество чистого магния на упаковке. В Dr. Frei Antistress магния 100 мг, B6 — 2 мг; конкретная соль магния на упаковке отдельно не указана, поэтому мы не называем её цитратом или хелатом.",
+        },
+        {
+          title: "Что ещё в составе Antistress",
+          body: "Помимо магния и B6 в одной таблетке таурин 100 мг, витамин C 80 мг и витамин K 30 мкг. Шипучая таблетка растворяется в стакане воды.",
+        },
+        {
+          title: "Как принимать",
+          body: "1 таблетку растворить в 200 мл воды и принимать вечером после еды. Точная инструкция — на упаковке.",
+        },
+        {
+          title: "Когда нужна консультация врача",
+          body: "Если есть нарушения работы почек, во время беременности и кормления грудью или при постоянном приёме лекарств — перед началом приёма магния проконсультируйтесь с врачом.",
         },
       ],
     },
     bullets: {
-      uz: ["Mushaklarning normal ishlashi", "Asab tizimining normal ishlashini qoʻllab-quvvatlash", "Charchoqni kamaytirishga hissa"],
-      ru: ["Нормальная работа мышц", "Поддержка нормальной работы нервной системы", "Вклад в снижение усталости"],
+      uz: ["Magniy 100 mg + B6 2 mg — bir tabletkada (Dr. Frei Antistress)", "Shipuchi tabletka: 200 ml suvda eriydi, kechqurun ovqatdan keyin", "Tarkibida taurin, vitamin C va K ham bor", "20 tabletka — 20 kunlik hajm"],
+      ru: ["Магний 100 мг + B6 2 мг в одной таблетке (Dr. Frei Antistress)", "Шипучая таблетка: растворить в 200 мл воды, вечером после еды", "В составе также таурин, витамин C и K", "20 таблеток — на 20 дней"],
     },
     ingredientSlugs: ["magnesium"],
     productSlugs: ["dr-frei-antistress-magniy-20"],
     categorySlugs: ["minerals", "sleep"],
-    relatedSlugs: ["sleep", "stress", "insomnia"],
+    relatedSlugs: ["vitamin-b6", "sleep", "stress", "insomnia"],
     faq: {
       uz: [
         {
-          question: "Magniyni kunning qaysi vaqtida ichish yaxshiroq?",
-          answer: "Magniyni kechki ovqatdan keyin yoki yotishdan oldin ichish qulay.",
+          question: "Magniy B6 nima uchun kerak?",
+          answer: "Magniy asab tizimi va mushaklarning normal ishlashiga, energiya almashinuviga va charchoqni kamaytirishga hissa qoʻshadi; B6 vitamini asab tizimi va psixologik faoliyatning normal kechishiga hissa qoʻshadi. Qoʻshimcha dori vositasi emas.",
+        },
+        {
+          question: "Magniy sitrat va magniy xelat — qaysi biri yaxshiroq?",
+          answer: "Bitta «eng yaxshi» shakl yoʻq: sitrat, xelat va boshqa tuzlar turlicha soʻriladi va ichakka turlicha taʼsir qilishi mumkin. Qadoqdagi sof magniy miqdoriga va oʻz bardoshliligingizga qarang; shakl tanlashda shifokor yoki farmatsevt bilan maslahatlashing.",
+        },
+        {
+          question: "Magniy B6 ni qachon ichish kerak?",
+          answer: "Dr. Frei Antistress uchun ishlab chiqaruvchi kechqurun, ovqatdan keyin 1 tabletkani 200 ml suvda eritib ichishni koʻrsatadi. Boshqa mahsulotlarda qadoqdagi koʻrsatmaga amal qiling.",
+        },
+        {
+          question: "Magniy B6 ni kimlar ichmasligi kerak?",
+          answer: "Tarkibdagi biror modda koʻtarilmasa, shuningdek buyrak kasalligi, homiladorlik, emizish yoki doimiy dori qabul qilish holatlarida avval shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          question: "В какое время суток принимать?",
-          answer: "Оптимально принимать магний вечером за ужином или перед сном.",
+          question: "Для чего нужен магний B6?",
+          answer: "Магний вносит вклад в нормальную работу нервной системы и мышц, энергетический обмен и снижение усталости; витамин B6 — в нормальную работу нервной системы и психологические функции. Добавка не является лекарством.",
+        },
+        {
+          question: "Магний цитрат или магний хелат — что лучше?",
+          answer: "Единой «лучшей» формы нет: цитрат, хелат и другие соли по-разному усваиваются и могут по-разному переноситься. Смотрите на количество чистого магния на упаковке и на собственную переносимость; форму лучше выбирать вместе с врачом или фармацевтом.",
+        },
+        {
+          question: "Когда принимать магний B6?",
+          answer: "Для Dr. Frei Antistress производитель указывает: 1 таблетку растворить в 200 мл воды и выпить вечером после еды. Для других продуктов следуйте инструкции на упаковке.",
+        },
+        {
+          question: "Кому нельзя принимать магний B6?",
+          answer: "Если есть непереносимость компонентов, а также при заболеваниях почек, беременности, кормлении грудью или постоянном приёме лекарств — сначала проконсультируйтесь с врачом.",
         },
       ],
     },
@@ -820,33 +964,73 @@ const raw: RawHealthTopic[] = [
           title: "Sink va immun tizimi",
           body: "Sink immun tizimining normal ishlashiga hissa qoʻshadi. Shamollash belgilari paydo boʻlsa, shifokorga murojaat qiling.",
         },
+        {
+          title: "Sink — teri, soch va tirnoq",
+          body: "Sink terining, sochning va tirnoqlarning normal holatini saqlashga hissa qoʻshadi. Shuning uchun u goʻzallik yoʻnalishidagi vitamin majmualarida ham uchraydi.",
+        },
+        {
+          title: "Qaysi mahsulotlarda sink bor",
+          body: "Katalogda sink 10 mg miqdorida: Swiss Energy ImmunoVit (echinacea, propolis va vitamin C bilan), Swiss Energy Hair Nail Skin (biotin va B vitaminlari bilan) hamda Dr. Frei Gold Vitamins (lutein, A, C va E bilan). Alohida sink mahsuloti hozircha yoʻq.",
+        },
+        {
+          title: "Qanday qabul qilinadi",
+          body: "Sink koʻngil aynishiga sabab boʻlishi mumkin, shuning uchun uni ovqat bilan ichish qulay. Har bir mahsulot uchun qadoqdagi koʻrsatmaga amal qiling.",
+        },
       ],
       ru: [
         {
           title: "Цинк и иммунная система",
           body: "Цинк способствует нормальной работе иммунной системы. При симптомах простуды обратитесь к врачу.",
         },
+        {
+          title: "Цинк: кожа, волосы, ногти",
+          body: "Цинк вносит вклад в поддержание нормального состояния кожи, волос и ногтей. Поэтому он встречается и в витаминных комплексах для красоты.",
+        },
+        {
+          title: "В каких продуктах есть цинк",
+          body: "В каталоге цинк в количестве 10 мг: Swiss Energy ImmunoVit (с эхинацеей, прополисом и витамином C), Swiss Energy Hair Nail Skin (с биотином и витаминами группы B) и Dr. Frei Gold Vitamins (с лютеином, A, C и E). Отдельного продукта с цинком пока нет.",
+        },
+        {
+          title: "Как принимать",
+          body: "Цинк может вызывать тошноту, поэтому его удобно принимать во время еды. Для каждого продукта следуйте инструкции на упаковке.",
+        },
       ],
     },
     bullets: {
-      uz: ["Immun tizimining normal ishlashini qoʻllab-quvvatlash", "Terining normal holatini saqlash", "Sochning normal holatini saqlash"],
-      ru: ["Поддержка нормальной работы иммунитета", "Поддержание нормального состояния кожи", "Поддержание нормального состояния волос"],
+      uz: ["Immun tizimining normal ishlashini qoʻllab-quvvatlash", "Terining normal holatini saqlash", "Sochning normal holatini saqlash", "Katalogda 3 ta mahsulotda 10 mg sink bor"],
+      ru: ["Поддержка нормальной работы иммунитета", "Поддержание нормального состояния кожи", "Поддержание нормального состояния волос", "В каталоге 3 продукта с цинком 10 мг"],
     },
     ingredientSlugs: ["zinc"],
     productSlugs: ["swiss-energy-immunovit-30", "swiss-energy-hair-nail-skin-30", "dr-frei-gold-vitamins-20"],
     categorySlugs: ["minerals", "immunity"],
-    relatedSlugs: ["immunity", "frequent-colds", "beauty"],
+    relatedSlugs: ["immunity", "frequent-colds", "beauty", "vitamin-c"],
     faq: {
       uz: [
         {
           question: "Sinkni och qoringa ichsa boʻladimi?",
-          answer: "Och qoringa ichilganda koʻngil aynishi mumkin, shuning uchun sinkni doimo toʻyib ovqatlangan holda ichish kerak.",
+          answer: "Och qoringa ichilganda koʻngil aynishi mumkin, shuning uchun sinkni ovqat bilan ichish qulay.",
+        },
+        {
+          question: "Sink qaysi mahsulotlarda bor?",
+          answer: "ImmunoVit, Hair Nail Skin va Gold Vitamins tarkibida 10 mg dan sink bor. Alohida sink mahsuloti katalogda hozircha yoʻq.",
+        },
+        {
+          question: "Sink va vitamin C ni birga ichsa boʻladimi?",
+          answer: "Swiss Energy ImmunoVit tarkibida ikkalasi birga: sink 10 mg va vitamin C 80 mg (echinacea va propolis bilan). Qoʻshimcha sifatida alohida ichishdan oldin shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          question: "Можно ли принимать натощак?",
-          answer: "Нет, цинк следует принимать строго после еды во избежание тошноты.",
+          question: "Можно ли принимать цинк натощак?",
+          answer: "Натощак возможна тошнота, поэтому цинк удобнее принимать во время еды.",
+        },
+        {
+          question: "В каких продуктах есть цинк?",
+          answer: "В ImmunoVit, Hair Nail Skin и Gold Vitamins по 10 мг цинка. Отдельного продукта с цинком в каталоге пока нет.",
+        },
+        {
+          question: "Можно ли принимать цинк вместе с витамином C?",
+          answer: "В Swiss Energy ImmunoVit они вместе: цинк 10 мг и витамин C 80 мг (с эхинацеей и прополисом). Прежде чем принимать добавки отдельно, проконсультируйтесь с врачом.",
         },
       ],
     },
@@ -903,48 +1087,96 @@ const raw: RawHealthTopic[] = [
   {
     kind: "vitamin",
     slug: "collagen",
-    name: { uz: "Dengiz Kollageni", ru: "Морской Коллаген" },
+    name: { uz: "Kollagen", ru: "Коллаген" },
     headline: {
-      uz: "Teri tarangligi, soch va boʻgʻimlar elastikligi uchun",
-      ru: "Пептиды коллагена для плотности кожи, блеска волос и гибкости суставов",
+      uz: "Teri, paylar va boʻgʻimlarning tarkibiy oqsili",
+      ru: "Структурный белок кожи, связок и суставов",
     },
     intro: {
-      uz: "Gidrolizlangan kichik molekulyar dengiz kollageni yaxshi oʻzlashtiriladi; kollagen terining tabiiy karkasining asosiy oqsili.",
-      ru: "Низкомолекулярные пептиды рыбного коллагена хорошо усваиваются; коллаген — основной белок естественного каркаса кожи.",
+      uz: "Kollagen — teri, paylar va xaftaga toʻqimasining tarkibiy oqsili. Kukun kollagen: tarkibi, qabul qilinishi va tanlash boʻyicha.",
+      ru: "Коллаген — структурный белок кожи, связок и хрящей. Порошковый коллаген: состав, как принимать и на что смотреть при выборе.",
     },
     sections: {
       uz: [
         {
-          title: "Nima uchun dengiz kollageni?",
-          body: "Dengiz kollageni molekulalari qoramol kollageniga qaraganda ancha mayda boʻlib, ichakda 1.5 baravar tezroq va toʻliq soʻriladi.",
+          title: "Kollagen nima",
+          body: "Kollagen — organizmdagi asosiy tarkibiy oqsil: teri, paylar, xaftaga va suyaklarda boʻladi. Qoʻshimcha sifatida odatda gidrolizlangan (mayda boʻlakchalarga ajratilgan) shaklda — kukun yoki kapsulada — sotiladi.",
+        },
+        {
+          title: "Swiss Energy Nature Collagen tarkibi",
+          body: "Qadoqda: Premium Formula, 100% sof kollagen, shakarsiz, neytral taʼm, Shveytsariyada ishlab chiqarilgan. Qadoq maʼlumotiga koʻra teri, soch, tirnoq, suyak va boʻgʻimlar uchun moʻljallangan. Taʼsir odamdan odamga farq qilishi mumkin.",
+        },
+        {
+          title: "Kollagen va vitamin C",
+          body: "Vitamin C normal kollagen hosil boʻlishiga (teri, qon tomirlar, suyak, xaftaga, tish va milk uchun) hissa qoʻshadi, shuning uchun kollagen koʻpincha vitamin C bilan birga olinadi. Katalogda C — Swiss Energy Vitamin C shipuchi tabletkasi.",
+        },
+        {
+          title: "Qanday qabul qilinadi",
+          body: "Kukun istalgan ichimlikka aralashtiriladi, taʼmi neytral, shakarsiz. Miqdor va qabul vaqti uchun bankadagi koʻrsatmaga amal qiling.",
         },
       ],
       ru: [
         {
-          title: "Преимущество морского источника",
-          body: "Пептиды морского коллагена имеют наименьший молекулярный вес и максимальное сродство к человеческой дерме.",
+          title: "Что такое коллаген",
+          body: "Коллаген — основной структурный белок организма: он есть в коже, связках, хрящах и костях. В добавках его обычно используют в гидролизованной форме (расщеплённой на мелкие фрагменты) — в виде порошка или капсул.",
+        },
+        {
+          title: "Состав Swiss Energy Nature Collagen",
+          body: "На упаковке: Premium Formula, 100% чистый коллаген, без сахара, нейтральный вкус, произведено в Швейцарии. По данным упаковки, предназначен для кожи, волос, ногтей, костей и суставов. Эффект может отличаться у разных людей.",
+        },
+        {
+          title: "Коллаген и витамин C",
+          body: "Витамин C вносит вклад в нормальное образование коллагена (для кожи, сосудов, костей, хрящей, зубов и дёсен), поэтому коллаген часто принимают вместе с витамином C. В каталоге C — шипучие таблетки Swiss Energy Vitamin C.",
+        },
+        {
+          title: "Как принимать",
+          body: "Порошок размешивают в любом напитке, вкус нейтральный, без сахара. Количество и время приёма — по инструкции на банке.",
         },
       ],
     },
     bullets: {
-      uz: ["I va III turdagi toza kollagen peptidlari", "Vitamin C va gialuron kislotasi bilan boyitilgan", "Teri namlanishi va mayinligi"],
-      ru: ["Пептиды коллагена I и III типа", "Обогащен витамином C и гиалуроновой кислотой", "Повышение гидратации кожи"],
+      uz: ["100% sof kollagen kukuni, shakarsiz", "Neytral taʼm — istalgan ichimlikka aralashadi", "Shveytsariyada ishlab chiqarilgan (Dr. Frei)", "Vitamin C bilan birga olish odatiy"],
+      ru: ["100% чистый коллаген в порошке, без сахара", "Нейтральный вкус — растворяется в любом напитке", "Произведено в Швейцарии (Dr. Frei)", "Часто принимают вместе с витамином C"],
     },
     ingredientSlugs: ["collagen", "vitamin-c", "biotin"],
-    productSlugs: ["swiss-energy-nature-collagen"],
+    productSlugs: ["swiss-energy-nature-collagen", "swiss-energy-hair-nail-skin-30", "swiss-energy-vitamin-c-20"],
     categorySlugs: ["beauty"],
-    relatedSlugs: ["beauty", "joints", "hair-loss"],
+    relatedSlugs: ["beauty", "joints", "hair-loss", "biotin", "vitamin-c"],
     faq: {
       uz: [
         {
-          question: "Kollagenni qanday ichish samaraliroq?",
-          answer: "Ertalab och qoringa yoki kechqurun ovqatdan 2 soat keyin 1 stakan iliq suv bilan qabul qilinadi.",
+          question: "Kollagenni qachon ichish kerak?",
+          answer: "Swiss Energy Nature Collagen istalgan ichimlikka aralashtiriladi. Qabul vaqti va miqdori uchun bankadagi koʻrsatmaga qarang.",
+        },
+        {
+          question: "Kukun kollagen bilan kapsulaning farqi nima?",
+          answer: "Kukun ichimlikka aralashtiriladi va miqdorni moslash oson; kapsula esa yutishga qulay. Tarkibi va miqdori mahsulotga qarab farq qiladi — qadoqni solishtiring.",
+        },
+        {
+          question: "Kollagenni vitamin C bilan birga ichish kerakmi?",
+          answer: "Vitamin C normal kollagen hosil boʻlishiga hissa qoʻshadi, shuning uchun ularni koʻpincha birga olishadi. Bu majburiy emas; har bir mahsulotning koʻrsatmasiga amal qiling.",
+        },
+        {
+          question: "Kollagenni kimlar ichmasligi kerak?",
+          answer: "Tarkibdagi manbaga allergiyangiz boʻlsa yoki homilador va emizikli boʻlsangiz — avval shifokor bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          question: "Как принимать для максимального эффекта?",
-          answer: "Утром натощак или через 2 часа после ужина, запивая стаканом теплой воды.",
+          question: "Когда принимать коллаген?",
+          answer: "Swiss Energy Nature Collagen размешивают в любом напитке. Время и количество приёма — по инструкции на банке.",
+        },
+        {
+          question: "Чем порошок отличается от капсул?",
+          answer: "Порошок размешивают в напитке, им удобно регулировать количество; капсулы проще проглатывать. Состав и количество зависят от продукта — сравнивайте упаковки.",
+        },
+        {
+          question: "Нужно ли принимать коллаген вместе с витамином C?",
+          answer: "Витамин C вносит вклад в нормальное образование коллагена, поэтому их часто принимают вместе. Это не обязательно; следуйте инструкции каждого продукта.",
+        },
+        {
+          question: "Кому не стоит принимать коллаген?",
+          answer: "Если есть аллергия на компоненты, а также во время беременности и кормления грудью — сначала проконсультируйтесь с врачом.",
         },
       ],
     },
@@ -1062,36 +1294,76 @@ const raw: RawHealthTopic[] = [
     sections: {
       uz: [
         {
-          title: "Kalsiy sitratining afzalligi",
-          body: "Kalsiy sitrati oshqozon kislotaliligi past boʻlganda ham yaxshi soʻriladi.",
+          title: "Kalsiy nima uchun kerak",
+          body: "Kalsiy suyaklar va tishlarning normal holatini saqlashga, mushaklarning normal ishlashiga, qonning normal ivishiga va asab impulslarining uzatilishiga hissa qoʻshadi.",
+        },
+        {
+          title: "Kalsiy, D3 va K2",
+          body: "Kalsiyning normal soʻrilishi uchun D vitamini kerak: u kalsiy va fosforning soʻrilishiga hissa qoʻshadi. K vitamini suyaklarning normal holatiga va qonning normal ivishiga hissa qoʻshadi. Shu sababli bu uch modda koʻpincha bitta majmuada boʻladi.",
+        },
+        {
+          title: "Swiss Energy Calcivit tarkibi",
+          body: "Kalsiy + D3 + K2 + sink, B vitaminlari, mis (Cu) va marganets (Mn); 30 kapsula, sekin chiqariladigan shakl. Qadoq maʼlumotiga koʻra suyak, tish va mushaklar uchun moʻljallangan. Alohida komponentlar miqdori uchun qadoqqa qarang.",
+        },
+        {
+          title: "Qanday qabul qilinadi",
+          body: "Bankadagi koʻrsatma boʻyicha. Kalsiy qoʻshimchalarini boshqa dorilar bilan birga ichishdan oldin shifokor yoki farmatsevt bilan maslahatlashing.",
         },
       ],
       ru: [
         {
-          title: "Форма цитрата",
-          body: "Цитрат кальция хорошо усваивается независимо от кислотности желудочного сока.",
+          title: "Для чего нужен кальций",
+          body: "Кальций вносит вклад в поддержание нормального состояния костей и зубов, нормальную работу мышц, свёртываемость крови и передачу нервных импульсов.",
+        },
+        {
+          title: "Кальций, D3 и K2",
+          body: "Для усвоения кальция нужен витамин D: он вносит вклад в усвоение кальция и фосфора. Витамин K вносит вклад в нормальное состояние костей и свёртываемость крови. Поэтому эти три вещества часто объединяют в одном комплексе.",
+        },
+        {
+          title: "Состав Swiss Energy Calcivit",
+          body: "Кальций + D3 + K2 + цинк, витамины группы B, медь (Cu) и марганец (Mn); 30 капсул замедленного высвобождения. По данным упаковки, предназначен для костей, зубов и мышц. Количество отдельных компонентов — на упаковке.",
+        },
+        {
+          title: "Как принимать",
+          body: "По инструкции на банке. Перед приёмом кальция вместе с лекарствами проконсультируйтесь с врачом или фармацевтом.",
         },
       ],
     },
     bullets: {
-      uz: ["Suyaklarning normal holatini saqlashga hissa", "D3 va K2 bilan toʻgʻri birikish", "Tishlarning normal holati"],
-      ru: ["Поддержание нормального состояния костей", "Синергия с D3 и K2", "Нормальное состояние зубов"],
+      uz: ["Calcivit: kalsiy + D3 + K2 bitta majmuada", "30 kapsula, sekin chiqariladigan shakl", "Tarkibida sink, B vitaminlari, mis va marganets ham bor", "Dori bilan birga ichishdan oldin shifokor bilan maslahatlashing"],
+      ru: ["Calcivit: кальций + D3 + K2 в одном комплексе", "30 капсул замедленного высвобождения", "В составе также цинк, витамины B, медь и марганец", "Перед приёмом вместе с лекарствами — консультация врача"],
     },
     ingredientSlugs: ["calcium", "vitamin-d3", "vitamin-k2"],
     productSlugs: ["swiss-energy-calcivit-30"],
     categorySlugs: ["minerals"],
-    relatedSlugs: ["joints", "vitamin-d3"],
+    relatedSlugs: ["joints", "vitamin-d3", "vitamin-k2"],
     faq: {
       uz: [
         {
-          question: "Kalsiyni qachon ichish maqsadga muvofiq?",
-          answer: "Kalsiy suyaklarga kechasi yaxshiroq birikadi, shuning uchun uni kechki ovqat paytida ichish tavsiya etiladi.",
+          question: "Kalsiyni D3 va K2 bilan birga ichish kerakmi?",
+          answer: "D vitamini kalsiyning normal soʻrilishiga, K vitamini suyaklarning normal holatiga hissa qoʻshadi. Swiss Energy Calcivit tarkibida uchalasi birga.",
+        },
+        {
+          question: "Kalsiyni qachon ichish kerak?",
+          answer: "Calcivit uchun bankadagi koʻrsatmaga amal qiling. Kapsula sekin chiqariladigan shaklda, 30 kunlik hajm.",
+        },
+        {
+          question: "Calcivit tarkibida nimalar bor?",
+          answer: "Kalsiy, vitamin D3, vitamin K2, sink, B vitaminlari, mis va marganets. Har bir komponentning aniq miqdori qadoqda koʻrsatilgan.",
         },
       ],
       ru: [
         {
+          question: "Нужно ли принимать кальций вместе с D3 и K2?",
+          answer: "Витамин D вносит вклад в нормальное усвоение кальция, витамин K — в нормальное состояние костей. В Swiss Energy Calcivit все три вещества вместе.",
+        },
+        {
           question: "Когда принимать кальций?",
-          answer: "Резорбция костной ткани наиболее активна ночью, поэтому кальций лучше принимать вечером.",
+          answer: "Для Calcivit следуйте инструкции на банке. Капсулы замедленного высвобождения, объём на 30 дней.",
+        },
+        {
+          question: "Что входит в состав Calcivit?",
+          answer: "Кальций, витамин D3, витамин K2, цинк, витамины группы B, медь и марганец. Точное количество каждого компонента указано на упаковке.",
         },
       ],
     },
