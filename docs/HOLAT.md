@@ -52,6 +52,8 @@ admin'da «Нужна страница» belgisi o'zi yo'qoladi.
 (`lib/content/health-topics-audience.ts`; talab: bolalar 520, homilador 220, erkaklar 180, koʻz 170, ayollar 110). Mahsulotlar
 faqat shu auditoriyaga mos katalogdagilar; `keywords/subjects.ts` da `topic` ulangan.
 
+**Ona va bola parvarishi (2026-11-23):** `/care/mom` va `/care/baby` qurildi (Claude Design canvas «govita — Ona va Bola parvarishi» asosida, egasi «go» dedi). Mehmon rejimi: kuzatuv faqat brauzerda. Header'da 2 sariq pill, bosh sahifada `HomeCare` bloki. Kutilmoqda (egasidan): shifokor/pediatr ismi, Dr. Frei/Swiss Energy 0–3 narx-listi + MXIK, huquqshunos (maʼlumotni saqlash) — keyin hisob, eslatmalar va bola qutisi. Reja: `docs/ONA-BOLA.md`. Hero'dagi onalar rasmi hozir Prenatal Forte qadoq fotosi — litsenziyali homilador ayol fotosi kerak.
+
 **Kunlik reja: ≥5 yangi sahifa** (egasi talabi). Navbat: shakl sahifalari (shipuchi, marmelad, tomchi), auditoriya
 (sportchilar, keksalar, oʻsmirlar), simptom sahifalari (kamqonlik, mushak tortishishi, soch toʻkilishi — hozir vitamin
 sahifasiga bogʻlangan), brend sahifalari; har biri — katalogdagi haqiqiy mahsulotlar va testdan oʻtgan matn.

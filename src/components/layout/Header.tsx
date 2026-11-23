@@ -14,7 +14,7 @@ import type { Category } from "@/lib/shopflow/types";
 import { TopBar } from "./TopBar";
 import { CartButton } from "./CartButton";
 import { CatalogMenu } from "./CatalogMenu";
-import { SALE_HREF } from "./nav-links";
+import { CARE_LINKS, SALE_HREF } from "./nav-links";
 import { SearchBox } from "./SearchBox";
 import { WishlistLink } from "./WishlistLink";
 import { CompareLink } from "./CompareLink";
@@ -101,6 +101,23 @@ export function Header({
           <CategoryLink href={SALE_HREF} active={false} className="font-semibold text-red">
             {nav("topDeals")}
           </CategoryLink>
+          {CARE_LINKS.map((l) => {
+            const active = pathname === l.href;
+            return (
+              <Link
+                key={l.key}
+                href={l.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "inline-flex h-9 shrink-0 items-center gap-1.5 self-center whitespace-nowrap rounded-full px-3.5 text-[15px] font-semibold transition-colors",
+                  active ? "bg-ink text-white" : "bg-yellow-banner text-ink hover:bg-yellow",
+                )}
+              >
+                <span aria-hidden className={cn("h-2 w-2 rounded-full", active ? "bg-yellow" : "bg-ink")} />
+                {nav(l.key)}
+              </Link>
+            );
+          })}
           {shelves.map((c) => {
             const href = `/products/${c.slug}`;
             return (

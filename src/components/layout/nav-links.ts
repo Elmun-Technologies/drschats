@@ -9,6 +9,14 @@ export const HEALTH_LINKS = [
   { key: "symptoms", href: "/symptoms" },
   { key: "vitamins", href: "/vitamins" },
   { key: "programs", href: "/programs" },
+  { key: "careMom", href: "/care/mom" },
+  { key: "careBaby", href: "/care/baby" },
+] as const;
+
+/** The two care hubs, lit up in the desktop category row (docs/ONA-BOLA.md). */
+export const CARE_LINKS = [
+  { key: "careMom", href: "/care/mom" },
+  { key: "careBaby", href: "/care/baby" },
 ] as const;
 
 /** The sale page (design: SaleV3). The catalogue still filters with ?sale=1. */

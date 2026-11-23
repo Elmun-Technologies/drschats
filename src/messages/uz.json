@@ -40,7 +40,9 @@
     "badge": {
       "sale": "-%"
     },
-    "whereToBuy": "Qayerdan sotib olish"
+    "whereToBuy": "Qayerdan sotib olish",
+    "careMom": "Onalar uchun",
+    "careBaby": "Bola 0–3 yosh"
   },
   "common": {
     "addToCart": "Savatga qoʻshish",
@@ -975,6 +977,14 @@
       "privacy": {
         "title": "Maxfiylik siyosati — shaxsiy maʼlumotlar himoyasi | govita",
         "description": "govita qanday maʼlumotlarni toʻplaydi, ulardan nima uchun foydalanadi va qanday himoya qiladi: buyurtma, yetkazib berish, analitika va cookie fayllari."
+      },
+      "careMom": {
+        "title": "Homiladorlar uchun vitaminlar va haftalik kuzatuv | govita",
+        "description": "Homiladorlik haftasini bepul hisoblash, trimester boʻyicha eslatmalar, Prenatal Forte oylik qutisi va tugʻruqdan keyingi davr uchun mahsulotlar."
+      },
+      "careBaby": {
+        "title": "Bolalar uchun termometr, ingalyator va 0–3 yosh kuzatuvi | govita",
+        "description": "Bolaning yoshini oyda bepul hisoblash, har bosqich eslatmalari, bolalar termometri, sovutuvchi plastir va ingalyator — uy aptechkasini yigʻing."
       }
     }
   },
