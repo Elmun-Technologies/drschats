@@ -1,4 +1,5 @@
 import type { Locale } from "@/lib/i18n/routing";
+import { demandVitaminTopics } from "./health-topics-demand";
 
 type L<T = string> = Record<Locale, T>;
 
@@ -61,7 +62,7 @@ export interface HealthTopic {
   faq: TopicFaq[];
 }
 
-interface RawHealthTopic {
+export interface RawHealthTopic {
   kind: HealthTopicKind;
   slug: string;
   name: L;
@@ -1489,6 +1490,7 @@ const raw: RawHealthTopic[] = [
       ],
     },
   },
+  ...demandVitaminTopics,
 ];
 
 function localise(topic: RawHealthTopic, locale: Locale): HealthTopic {
