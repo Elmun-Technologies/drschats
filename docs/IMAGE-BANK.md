@@ -1,8 +1,8 @@
 # Rasm banki (Adobe Stock, litsenziyalangan)
 
-2026-11-24 da Adobe Stock bepul davrida litsenziyalangan haqiqiy fotolar (AI-generatsiya yoʻq, `isGenTech: false`). Fayllar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Litsenziya doimiy — Adobe hisobida qayta yuklab olish yangi litsenziya talab qilmaydi (ID boʻyicha).
+2026-11-24 da Adobe Stock bepul davrida litsenziyalangan **140 ta foto va 5 ta video** — haqiqiy suratlar (AI-generatsiya yoʻq, `isGenTech: false`). Fotolar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Videolar: `public/videos/bank/<slug>.mp4` (720p, ovozsiz, ≤12 s). Litsenziya doimiy — Adobe hisobida ID boʻyicha qayta yuklab olish yangi litsenziya talab qilmaydi.
 
-**Qoidalar:** rasmni ishlatishdan oldin mavzuga mosligini tekshiring; qadoq/brend koʻrinmaydigan foto; `alt` uz/ru tilida mazmunni aytsin; tibbiy vaʼda yoʻq. Ishlatilgan rasmni `SOURCES.md` ga ham yozing.
+**Qoidalar:** ishlatishdan oldin rasm mavzuga mosligini tekshiring; qadoq yoki boshqa brend koʻrinmasin; `alt` uz/ru tilida rasm mazmunini aytsin; tibbiy vaʼda yoʻq. Ishlatilgan rasmni `public/images/blog/SOURCES.md` ga ham yozing. Kerakli mavzu topilmasa — Adobe Stock (litsenziyali) yoki egasidan haqiqiy foto; AI-generatsiya rasm ishlatilmaydi (CLAUDE.md).
 
 ## Ingredientlar va ovqat
 
@@ -22,6 +22,10 @@
 | `food-magnesium-2.webp` | ingredient:magnesium | 1234474445 | 1600×800 | Foods high in magnesium |
 | `food-spinach.webp` | ingredient:iron/folate | 276922576 | 1600×1067 | Baby spinach bowl |
 | `capsules-fish-oil.webp` | ingredient:epa-dha | 518451533 | 1600×1067 | Fish oil capsules |
+| `woman-milk-morning.webp` | ingredient:calcium | 1879223401 | 1600×1067 | Woman drinking milk in the morning |
+| `food-beef-liver.webp` | ingredient:iron/b12 | 479798925 | 1600×1066 | Raw beef liver |
+| `food-walnuts.webp` | ingredient:epa-dha/magnesium | 413170232 | 1600×1067 | Walnuts in wooden bowl |
+| `ayran-drink.webp` | ingredient:probiotics | 501092112 | 1600×1067 | Ayran with mint and cucumber |
 
 ## Simptomlar
 
@@ -45,6 +49,8 @@
 | `sore-throat.webp` | symptom:cold | 594402398 | 1600×1067 | Woman touching sore throat |
 | `woman-low-mood.webp` | symptom:fatigue/mood | 474339000 | 1600×1035 | Tired upset woman on couch |
 | `man-overtime.webp` | symptom:fatigue | 469269993 | 1600×900 | Exhausted man working overtime |
+| `nasal-spray.webp` | symptom:cold | 556289916 | 1600×1067 | Woman using nasal spray |
+| `nebulizer-child.webp` | symptom:breathing | 170643961 | 1600×1068 | Mother and son with nebulizer |
 
 ## Maqsadlar
 
@@ -63,6 +69,14 @@
 | `woman-cycling.webp` | goal:sport | 660286113 | 1600×1067 | Woman riding bicycle in park |
 | `eye-exam.webp` | goal:eyes | 105629317 | 1600×1067 | Eyesight measurement with phoropter |
 | `hiking-mountain.webp` | goal:sport/energy | 139406858 | 1600×1067 | Hikers on mountain top |
+| `running-sport.webp` | goal:sport | 275312531 | 1600×1067 | Running sports image |
+| `hand-cream-winter.webp` | goal:skin/season:winter | 327020728 | 1600×1066 | Applying hand cream in winter |
+| `woman-sleeping.webp` | goal:sleep | 433018951 | 1600×900 | Woman sleeping at night |
+| `face-serum-dropper.webp` | goal:skin | 482222187 | 1600×1066 | Face serum dropper bottle |
+| `sunscreen-beach.webp` | goal:skin/season:summer | 125442896 | 1600×1067 | Woman applying sunscreen |
+| `hair-washing.webp` | goal:hair | 382972877 | 1600×1067 | Woman washing hair in shower |
+| `doctor-xray-bones.webp` | goal:bones | 481795453 | 1600×1067 | Doctor shows x-ray to senior patient |
+| `energetic-woman-run.webp` | goal:energy | 398016558 | 1600×1067 | Running woman with open arms |
 
 ## Auditoriya
 
@@ -98,6 +112,16 @@
 | `baby-sleeping.webp` | audience:baby/sleep | 615290112 | 1600×1067 | Infant sleeping at night |
 | `ultrasound-pregnant.webp` | audience:pregnant | 168396240 | 1600×977 | Ultrasound examination of pregnant woman |
 | `mother-child-bedtime.webp` | audience:kids/sleep | 475220227 | 1600×1067 | Mother putting daughter to sleep |
+| `senior-woman-stretching.webp` | audience:seniors/bones | 511856829 | 1600×1067 | Senior woman stretching on mat |
+| `kids-fruit-snack.webp` | audience:kids | 568896060 | 1600×1067 | Children eating fruit in kindergarten |
+| `grandfather-grandson.webp` | audience:seniors/family | 228686990 | 1600×1067 | Grandfather playing with grandson |
+| `mother-kiss-baby.webp` | audience:baby | 416032799 | 1600×1068 | Asian mother kissing baby |
+| `teen-study-stress.webp` | audience:teens | 410286702 | 1600×1067 | Teen girl overwhelmed studying |
+| `senior-couple-home.webp` | audience:seniors | 196898786 | 1600×1068 | Senior couple at home |
+| `baby-teething.webp` | audience:baby | 550245340 | 1600×922 | Baby crying, first teeth visible |
+| `seniors-swimming.webp` | audience:seniors/sport | 249910530 | 1600×1067 | Senior women swimming |
+| `family-park.webp` | audience:family | 349202449 | 1600×1067 | Happy family in park |
+| `child-milk.webp` | audience:kids/calcium | 269140731 | 1600×1067 | Mother gives child glass of milk |
 
 ## Turmush tarzi
 
@@ -110,6 +134,12 @@
 | `oatmeal-berries.webp` | lifestyle:nutrition/heart | 87055546 | 1600×1059 | Oatmeal porridge with berries |
 | `morning-coffee.webp` | lifestyle:morning | 386648133 | 1600×1067 | Woman with coffee by window |
 | `green-smoothie.webp` | lifestyle:nutrition | 249980203 | 1600×1067 | Green smoothie in glass |
+| `man-drinking-water.webp` | lifestyle:hydration | 291393478 | 1600×1067 | Man drinking glass of water |
+| `office-healthy-lunch.webp` | lifestyle:nutrition | 403848946 | 1600×1067 | Healthy lunch at work |
+| `food-pomegranate.webp` | lifestyle:nutrition/local | 849353525 | 1600×1067 | Pomegranate seeds |
+| `food-dried-fruits.webp` | lifestyle:nutrition/local | 600361495 | 1600×1066 | Bowl of dried fruits |
+| `green-tea.webp` | lifestyle:drinks | 129240783 | 1600×1067 | Green tea with teapot |
+| `honey-jar.webp` | lifestyle:immunity | 369737127 | 1600×1067 | Honey jar with honeycombs |
 
 ## Qabul qilish shakli
 
@@ -119,6 +149,10 @@
 | `pill-organizer.webp` | format:routine | 409273464 | 1600×1067 | Pill organizer daily vitamins |
 | `woman-pill-water.webp` | format:taking | 279760393 | 1600×1088 | Woman takes capsule with water |
 | `supplements-white.webp` | format:assorted | 488937561 | 1600×712 | Supplements on white |
+| `reading-supplement-label.webp` | format:label | 714318242 | 1600×1067 | Woman reads supplement bottle label |
+| `first-aid-kit.webp` | format:aptechka | 334400396 | 1600×1067 | Home first aid kit |
+| `pills-color-top.webp` | format:assorted | 666728282 | 1600×1067 | Pills and capsules top view |
+| `pills-from-bottle-hand.webp` | format:taking | 520395954 | 1600×1067 | Pouring capsules from bottle into hand |
 
 ## Servis (yetkazish, toʻlov, maslahat)
 
@@ -132,6 +166,8 @@
 | `warehouse-packing.webp` | service:fulfilment | 283921322 | 1600×1067 | Worker packing box in warehouse |
 | `contactless-payment.webp` | service:payment | 271380947 | 1600×1067 | Contactless card and phone payment |
 | `support-operator.webp` | service:support | 517316374 | 1600×900 | Support operator with headset |
+| `woman-phone-sofa.webp` | service:online | 362395800 | 1600×1042 | Woman messaging on phone on sofa |
+| `doctor-woman.webp` | service:consultation | 146625980 | 1600×1099 | Female doctor in clinic |
 
 ## Mavsum
 
@@ -140,6 +176,7 @@
 | `season-autumn.webp` | season:autumn | 301020365 | 1600×1066 | Woman in autumn park |
 | `season-winter-family.webp` | season:winter | 1883199362 | 1600×1067 | Father and son in snow |
 | `season-summer.webp` | season:summer | 554023152 | 1600×1067 | Woman in summer hat |
+| `season-spring-blossom.webp` | season:spring | 315182795 | 1600×881 | Blossoming tree |
 
 ## Joylar
 
@@ -148,8 +185,21 @@
 | `city-tashkent-mosque.webp` | place:tashkent | 268643724 | 1600×1067 | Khast Imam Mosque, Tashkent |
 | `city-samarkand-registan.webp` | place:samarkand | 229159768 | 1600×780 | Registan, Samarkand |
 
-## Aksiya
+## Aksiya va bayramlar
 
 | Fayl | Mavzu | Adobe ID | Oʻlcham | Tavsif |
 |---|---|---|---|---|
 | `gift-box.webp` | promo:gift | 571959453 | 1600×1067 | Gift box with ribbon |
+| `tulips-march8.webp` | promo:march-8 | 324776207 | 1600×1066 | Red tulips on pink |
+| `season-new-year.webp` | promo:new-year | 302505736 | 1600×1070 | Family decorating New Year tree |
+| `shopping-bags.webp` | promo:sale | 390518818 | 1600×1067 | Woman with shopping bags |
+
+## Videolar
+
+| Fayl | Adobe ID | Format | Tavsif |
+|---|---|---|---|
+| `vitamins-falling.mp4` | 84822982 | 1280×720, 12 s | Vitaminlar yaltiroq yuzaga tushmoqda |
+| `capsules-scatter.mp4` | 2038403337 | 1280×720, 12 s | Oq kapsulalar sochilmoqda |
+| `effervescent-macro.mp4` | 539120539 | 1280×720, 12 s | Eruvchi tabletka suvda (makro) |
+| `courier-parcel.mp4` | 506765382 | 1280×720, 9 s | Kuryer posilkani topshirmoqda |
+| `kitchen-morning-vertical.mp4` | 1782276867 | 720×1280, 9 s | Ayol oshxonada nonushta (vertikal, Reels) |
