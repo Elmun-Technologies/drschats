@@ -150,10 +150,10 @@ export const articlesNov2026h: RawArticle[] = [
         heading: { uz: "Ovqatdan qanday olish mumkin", ru: "Как получить из еды" },
         paragraphs: {
           uz: [
-            "Temir — mol goʻshti, jigar, dukkaklilar va koʻkatlarda; oʻsimlikdagi temir C vitaminli ovqat bilan birga yaxshiroq soʻriladi, choy va qahva esa soʻrilishini kamaytiradi, shuning uchun ularni ovqatdan bir soat keyin ichgan maʼqul. B12 faqat hayvon mahsulotlarida bor: goʻsht, baliq, tuxum, sut. Magniy — yongʻoq, urugʻlar, butun don va dukkaklilarda.",
+            "Temir — mol goʻshti, jigar, dukkaklilar va koʻkatlarda; oʻsimlikdagi temir C vitaminli ovqat bilan birga yaxshiroq soʻriladi, choy va qahva esa soʻrilishini kamaytiradi, shuning uchun ularni ovqatdan bir soat keyin ichgan maʼqul. B12 asosan hayvon mahsulotlarida bor: goʻsht, baliq, tuxum, sut; oʻsimlik mahsulotlarida esa faqat boyitilgan boʻlsa (baʼzi yormalar, oziq-ovqat xamirturushi). Magniy — yongʻoq, urugʻlar, butun don va dukkaklilarda.",
           ],
           ru: [
-            "Железо — в говядине, печени, бобовых и зелени; растительное железо лучше усваивается вместе с едой, где есть витамин C, а чай и кофе усвоение снижают, поэтому их лучше пить через час после еды. B12 есть только в продуктах животного происхождения: мясе, рыбе, яйцах, молоке. Магний — в орехах, семенах, цельных злаках и бобовых.",
+            "Железо — в говядине, печени, бобовых и зелени; растительное железо лучше усваивается вместе с едой, где есть витамин C, а чай и кофе усвоение снижают, поэтому их лучше пить через час после еды. B12 есть в основном в продуктах животного происхождения: мясе, рыбе, яйцах, молоке; в растительных — только если они обогащены (некоторые хлопья, пищевые дрожжи). Магний — в орехах, семенах, цельных злаках и бобовых.",
           ],
         },
       },
