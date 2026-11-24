@@ -32,8 +32,7 @@ export const KIT_SLUGS = [
 /** Pre-ticked in the kit builder: the two things every home with a baby needs first. */
 export const KIT_DEFAULT = ["dr-frei-thermometer-t30", "hiew-cooling-plaster-16"] as const;
 
-/** `contain`: the mom photo is a pack shot on the tile colour, not a scene to crop. */
-export const CARE_PHOTO_FIT: Record<CareKind, "contain" | "cover"> = { mom: "contain", baby: "cover" };
+export const CARE_PHOTO_FIT: Record<CareKind, "contain" | "cover"> = { mom: "cover", baby: "cover" };
 
 export const CARE_PHOTO: Record<CareKind, string> = {
   mom: "/images/stock/st-aud-expectant.webp",
@@ -173,7 +172,7 @@ const COPY: Record<CareKind, Record<Locale, CareCopy>> = {
       heroCta: "Kuzatuvni boshlash",
       heroCta2: "Oylik quti",
       heroCta2Href: "#quti",
-      photoAlt: "Swiss Energy Prenatal Forte",
+      photoAlt: "Homilador ayol",
       stages: [
         { big: "1–13", small: "hafta", title: "1-trimestr", sub: "Birinchi koʻriklar" },
         { big: "14–27", small: "hafta", title: "2-trimestr", sub: "Tekshiruvlar, ovqatlanish" },
@@ -283,7 +282,7 @@ const COPY: Record<CareKind, Record<Locale, CareCopy>> = {
       heroCta: "Начать календарь",
       heroCta2: "Ежемесячная коробка",
       heroCta2Href: "#quti",
-      photoAlt: "Swiss Energy Prenatal Forte",
+      photoAlt: "Беременная женщина",
       stages: [
         { big: "1–13", small: "нед.", title: "1-й триместр", sub: "Первые обследования" },
         { big: "14–27", small: "нед.", title: "2-й триместр", sub: "Анализы, питание" },

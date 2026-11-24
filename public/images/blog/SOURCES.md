@@ -24,3 +24,17 @@ Fayl -> Adobe Stock ID. Internetdan olingan yoki AI rasm yo'q. Yangi rasm qo'shi
 | carrots-vitamin-a.webp | vitamin A (2026-11-20) | 246216945 |
 | pumpkin-seeds-zinc.webp | sink (2026-11-20) | 673506395 |
 | protein-foods-b12.webp | vitamin B12 (2026-11-20) | 366247755 |
+| eyes-tired-laptop.webp | koʻz, ekran (2026-11-24) | 437073782 |
+| inhaler-mother-son.webp | ingalyator, bola (2026-11-24) | 137029704 |
+| hair-curly-woman.webp | soch (2026-11-24) | 290178237 |
+| coffee-cup-beans.webp | qahva (2026-11-24) | 106217401 |
+| omega3-capsules.webp | omega-3 (2026-11-24) | 274247865 |
+| vitamin-d-sun-woman.webp | vitamin D, quyosh (2026-11-24) | 394400681 |
+
+## public/images/stock (auditoriya rasmlari)
+
+| Fayl | Adobe Stock ID |
+|---|---|
+| st-aud-expectant.webp | 336265028 (2026-11-24; oldin qadoq fotosi edi) |
+| st-aud-recovery.webp | 457079685 (2026-11-24; oldin qadoq fotosi edi) |
+| st-aud-man.webp | 438705525 (2026-11-24) |
