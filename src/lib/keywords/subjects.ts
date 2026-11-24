@@ -107,12 +107,12 @@ export const SUBJECTS: KeywordSubject[] = [
 
   /* ---------- audiences ---------- */
   { id: "aud-kids", kind: "audience", label: "Bolalar uchun", ru: ["витамины для детей", "детские витамины", "витамины для детей от 3 лет", "витамины для детей сироп", "жевательные витамины для детей"], uz: ["bolalar uchun vitamin", "bolalar uchun vitaminlar", "bolalar vitamini"], site: { terms: ["kids", "bolalar", "детск", "kinder"], topic: "kids" } },
-  { id: "aud-teens", kind: "audience", label: "Oʻsmirlar va maktab oʻquvchilari", ru: ["витамины для подростков", "витамины для школьников"], uz: ["o'smirlar uchun vitamin", "maktab o'quvchilari uchun vitamin"] },
+  { id: "aud-teens", kind: "audience", label: "Oʻsmirlar va maktab oʻquvchilari", ru: ["витамины для подростков", "витамины для школьников"], uz: ["o'smirlar uchun vitamin", "maktab o'quvchilari uchun vitamin"], site: { topic: "teens" } },
   { id: "aud-pregnant", kind: "audience", label: "Homiladorlar uchun", ru: ["витамины для беременных", "витамины при беременности", "витамины для планирования беременности", "витамины для кормящих"], uz: ["homiladorlar uchun vitamin", "homiladorlik vitaminlari", "homiladorlikda vitamin"], site: { terms: ["prenatal", "homilador", "беремен"], topic: "pregnancy" } },
   { id: "aud-women", kind: "audience", label: "Ayollar uchun", ru: ["витамины для женщин", "витамины для женщин после 40", "витамины для женщин после 50"], uz: ["ayollar uchun vitamin", "ayollar uchun vitaminlar"], site: { terms: ["women", "ayollar", "женщин", "woman"], topic: "women" } },
   { id: "aud-men", kind: "audience", label: "Erkaklar uchun", ru: ["витамины для мужчин", "витамины для мужчин после 40"], uz: ["erkaklar uchun vitamin", "erkaklar uchun vitaminlar"], site: { terms: ["erkaklar", "мужчин", "for men", "men's"], topic: "men" } },
-  { id: "aud-elderly", kind: "audience", label: "Keksalar uchun", ru: ["витамины для пожилых", "витамины после 60"], uz: ["keksalar uchun vitamin"] },
-  { id: "aud-sport", kind: "audience", label: "Sportchilar uchun", ru: ["витамины для спортсменов"], uz: ["sportchilar uchun vitamin"] },
+  { id: "aud-elderly", kind: "audience", label: "Keksalar uchun", ru: ["витамины для пожилых", "витамины после 60"], uz: ["keksalar uchun vitamin"], site: { topic: "seniors" } },
+  { id: "aud-sport", kind: "audience", label: "Sportchilar uchun", ru: ["витамины для спортсменов"], uz: ["sportchilar uchun vitamin"], site: { topic: "sport" } },
 
   /* ---------- symptoms ---------- */
   { id: "sym-hair-loss", kind: "symptom", label: "Soch toʻkilishi", ru: ["выпадение волос витамины", "от выпадения волос", "витамины от выпадения волос"], uz: ["soch to'kilishi", "soch to'kilishiga qarshi vitamin", "soch to'kilsa nima ichish kerak"], site: { topic: "hair-loss" } },
@@ -123,8 +123,8 @@ export const SUBJECTS: KeywordSubject[] = [
   { id: "sym-bloat", kind: "symptom", label: "Qorin dam boʻlishi", ru: ["вздутие живота", "вздутие что делать"], uz: ["qorin dam bo'lishi", "meteorizm"], site: { topic: "digestive-bloat" } },
   { id: "sym-joint-pain", kind: "symptom", label: "Boʻgʻim ogʻrigʻi", ru: ["болят суставы", "хруст в суставах"], uz: ["bo'g'im og'rig'i", "tizza og'rig'i"], site: { topic: "joint-pain" } },
   { id: "sym-anemia", kind: "symptom", label: "Kamqonlik", ru: ["низкий гемоглобин", "анемия", "как поднять гемоглобин"], uz: ["kamqonlik", "gemoglobin past", "gemoglobinni oshirish"], site: { topic: "iron" } },
-  { id: "sym-cramps", kind: "symptom", label: "Mushak tortishishi", ru: ["судороги в ногах", "сводит ноги"], uz: ["oyoq tortishishi", "mushak tortishishi"], site: { topic: "magnesium" } },
-  { id: "sym-nails", kind: "symptom", label: "Moʻrt tirnoqlar", ru: ["ломкие ногти", "слоятся ногти"], uz: ["tirnoq sinishi", "mo'rt tirnoq"] },
+  { id: "sym-cramps", kind: "symptom", label: "Mushak tortishishi", ru: ["судороги в ногах", "сводит ноги"], uz: ["oyoq tortishishi", "mushak tortishishi"], site: { topic: "muscle-cramps" } },
+  { id: "sym-nails", kind: "symptom", label: "Moʻrt tirnoqlar", ru: ["ломкие ногти", "слоятся ногти"], uz: ["tirnoq sinishi", "mo'rt tirnoq"], site: { topic: "brittle-nails" } },
 
   /* ---------- forms ---------- */
   { id: "form-effervescent", kind: "form", label: "Shipuchi tabletkalar", ru: ["шипучие витамины", "шипучие таблетки витамины"], uz: ["shipuchi vitamin", "eruvchan vitamin"], site: { terms: ["shipuchi", "шипуч", "effervescent", "eruvchan"], category: "shipuchi-tabletkalar" } },
