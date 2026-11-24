@@ -54,6 +54,8 @@ faqat shu auditoriyaga mos katalogdagilar; `keywords/subjects.ts` da `topic` ula
 
 **Ona va bola parvarishi (2026-11-23):** `/care/mom` va `/care/baby` qurildi (Claude Design canvas «govita — Ona va Bola parvarishi» asosida, egasi «go» dedi). Mehmon rejimi: kuzatuv faqat brauzerda. Header'da 2 sariq pill, bosh sahifada `HomeCare` bloki. Kutilmoqda (egasidan): shifokor/pediatr ismi, Dr. Frei/Swiss Energy 0–3 narx-listi + MXIK, huquqshunos (maʼlumotni saqlash) — keyin hisob, eslatmalar va bola qutisi. Reja: `docs/ONA-BOLA.md`. Hero'dagi onalar rasmi hozir Prenatal Forte qadoq fotosi — litsenziyali homilador ayol fotosi kerak.
 
+**2026-11-24 — 5 ta yangi sahifa:** `/goals/teens`, `/goals/seniors`, `/goals/sport`, `/symptoms/brittle-nails`, `/symptoms/muscle-cramps` (`health-topics-more.ts`, talab hisobotidagi `aud-teens`, `aud-elderly`, `aud-sport`, `sym-nails`, `sym-cramps` shu sahifalarga bogʻlandi).
+
 **Kunlik reja: ≥5 yangi sahifa** (egasi talabi). Navbat: shakl sahifalari (shipuchi, marmelad, tomchi), auditoriya
 (sportchilar, keksalar, oʻsmirlar), simptom sahifalari (kamqonlik, mushak tortishishi, soch toʻkilishi — hozir vitamin
 sahifasiga bogʻlangan), brend sahifalari; har biri — katalogdagi haqiqiy mahsulotlar va testdan oʻtgan matn.
