@@ -125,6 +125,11 @@ export const SUBJECTS: KeywordSubject[] = [
   { id: "sym-anemia", kind: "symptom", label: "Kamqonlik", ru: ["низкий гемоглобин", "анемия", "как поднять гемоглобин"], uz: ["kamqonlik", "gemoglobin past", "gemoglobinni oshirish"], site: { topic: "iron" } },
   { id: "sym-cramps", kind: "symptom", label: "Mushak tortishishi", ru: ["судороги в ногах", "сводит ноги"], uz: ["oyoq tortishishi", "mushak tortishishi"], site: { topic: "muscle-cramps" } },
   { id: "sym-nails", kind: "symptom", label: "Moʻrt tirnoqlar", ru: ["ломкие ногти", "слоятся ногти"], uz: ["tirnoq sinishi", "mo'rt tirnoq"], site: { topic: "brittle-nails" } },
+  { id: "sym-dry-skin", kind: "symptom", label: "Quruq teri", ru: ["сухая кожа", "сухая кожа рук", "шелушится кожа"], uz: ["quruq teri", "teri quruqligi"], site: { topic: "dry-skin" } },
+  { id: "sym-eye-strain", kind: "symptom", label: "Koʻz charchashi", ru: ["устают глаза", "усталость глаз", "сухость глаз от компьютера"], uz: ["ko'z charchashi", "ko'z quruqligi"], site: { topic: "eye-strain" } },
+  { id: "sym-fever", kind: "symptom", label: "Isitma, harorat oʻlchash", ru: ["температура у ребенка", "как измерить температуру", "градусник электронный"], uz: ["isitma", "harorat o'lchash", "termometr"], site: { topic: "fever" } },
+  { id: "goal-blood-pressure", kind: "goal", label: "Qon bosimi nazorati", ru: ["как измерить давление", "тонометр купить", "норма давления"], uz: ["qon bosimi", "tonometr", "bosim o'lchash"], site: { topic: "blood-pressure" } },
+  { id: "goal-menopause", kind: "goal", label: "Menopauza", ru: ["витамины при климаксе", "климакс", "менопауза витамины"], uz: ["menopauza", "klimaks"], site: { topic: "menopause" } },
 
   /* ---------- forms ---------- */
   { id: "form-effervescent", kind: "form", label: "Shipuchi tabletkalar", ru: ["шипучие витамины", "шипучие таблетки витамины"], uz: ["shipuchi vitamin", "eruvchan vitamin"], site: { terms: ["shipuchi", "шипуч", "effervescent", "eruvchan"], category: "shipuchi-tabletkalar" } },
