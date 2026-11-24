@@ -237,8 +237,8 @@ export const moreTopics: RawHealthTopic[] = [
       ru: "Ногти ломаются и слоятся: причины, уход и состав",
     },
     intro: {
-      uz: "Tirnoq sinishi va qatlamlanishi koʻpincha suv va tozalash vositalari, quruq havo yoki ratsionga bogʻliq. Sink va biotin normal tirnoqqa hissa qoʻshadi.",
-      ru: "Ногти ломаются и слоятся чаще всего из-за воды и бытовой химии, сухого воздуха или рациона. Цинк и биотин вносят вклад в нормальное состояние ногтей.",
+      uz: "Tirnoq sinishi va qatlamlanishi koʻpincha suv va tozalash vositalari, quruq havo yoki ratsionga bogʻliq. Sink normal tirnoqlarni saqlashga hissa qoʻshadi.",
+      ru: "Ногти ломаются и слоятся чаще всего из-за воды и бытовой химии, сухого воздуха или рациона. Цинк вносит вклад в поддержание нормального состояния ногтей.",
     },
     sections: {
       uz: [
