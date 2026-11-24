@@ -1,4 +1,6 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { topicImage, topicImageSrc } from "@/lib/content/topic-images";
 import type { Locale } from "@/lib/i18n/routing";
 import type { HealthTopic } from "@/lib/content/health-topics";
 import { TOPIC_BASE_PATH } from "@/lib/content/health-topics";
@@ -54,6 +56,7 @@ export async function HealthTopicTemplate({
     getHealthTopics(locale, "vitamin").catch(() => []),
   ]);
 
+  const hero = topicImage(topic.kind, topic.slug);
   const shown = products.slice(0, MAX_PRODUCTS);
   const lead = shown.slice(0, LEAD_PRODUCTS);
   const more = shown.slice(LEAD_PRODUCTS);
@@ -91,12 +94,27 @@ export async function HealthTopicTemplate({
           <span aria-current="page" className="text-ink">{topic.name}</span>
         </nav>
 
-        <header className="flex max-w-[820px] flex-col gap-2 lg:gap-3">
-          <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted lg:text-sm">{t(`${topic.kind}.singular`)}</span>
-          <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page">{topic.name}</h1>
-          <p className="text-[17px] font-semibold leading-[24px] text-ink lg:text-[19px] lg:leading-[28px]">{topic.headline}</p>
-          <p className="text-[15px] leading-[22px] text-ink-2 lg:text-lead">{topic.intro}</p>
-        </header>
+        <div className={cn(hero && "grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:items-center lg:gap-12")}>
+          <header className="flex max-w-[820px] flex-col gap-2 lg:gap-3">
+            <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted lg:text-sm">{t(`${topic.kind}.singular`)}</span>
+            <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page">{topic.name}</h1>
+            <p className="text-[17px] font-semibold leading-[24px] text-ink lg:text-[19px] lg:leading-[28px]">{topic.headline}</p>
+            <p className="text-[15px] leading-[22px] text-ink-2 lg:text-lead">{topic.intro}</p>
+          </header>
+          {hero && (
+            <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] bg-tile">
+              <Image
+                src={topicImageSrc(hero)}
+                alt={hero.alt[locale]}
+                fill
+                priority
+                sizes="(min-width: 1296px) 500px, (min-width: 1024px) 40vw, calc(100vw - 32px)"
+                className="object-cover"
+                style={hero.position ? { objectPosition: hero.position } : undefined}
+              />
+            </div>
+          )}
+        </div>
 
         {reviewer && <ReviewedBy expert={reviewer} />}
       </div>

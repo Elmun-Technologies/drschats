@@ -8,9 +8,15 @@ import { getHealthTopic } from "@/lib/content/health-topics.sanity";
 import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { clampDescription, topicTitle } from "@/lib/seo/page-meta";
 import { JsonLd, breadcrumbLd, faqLd, organizationNode } from "@/lib/seo/jsonld";
+import { topicImage, topicImageSrc } from "@/lib/content/topic-images";
 
 export function topicUrl(kind: HealthTopicKind, slug: string, locale: Locale) {
   return `${SITE_URL}/${locale}${TOPIC_BASE_PATH[kind]}/${slug}`;
+}
+
+function heroUrl(kind: HealthTopicKind, slug: string): string | undefined {
+  const image = topicImage(kind, slug);
+  return image ? `${SITE_URL}${topicImageSrc(image)}` : undefined;
 }
 
 export async function healthTopicMetadata(
@@ -26,6 +32,7 @@ export async function healthTopicMetadata(
     path: `${TOPIC_BASE_PATH[kind]}/${slug}`,
     title: await topicTitle(locale, kind, topic.name),
     description: clampDescription(topic.intro),
+    image: heroUrl(kind, slug),
   });
 }
 
@@ -62,6 +69,7 @@ export async function HealthTopicJsonLd({
         headline: topic.headline,
         description: topic.intro,
         inLanguage: locale,
+        ...(heroUrl(topic.kind, topic.slug) ? { primaryImageOfPage: heroUrl(topic.kind, topic.slug) } : {}),
         isPartOf: { "@id": `${SITE_URL}/#organization` },
         publisher: { "@id": `${SITE_URL}/#organization` },
         ...(reviewer
