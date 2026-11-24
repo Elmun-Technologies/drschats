@@ -1,6 +1,6 @@
 # Rasm banki (Adobe Stock, litsenziyalangan)
 
-2026-11-24 da Adobe Stock bepul davrida litsenziyalangan **140 ta foto va 5 ta video** — haqiqiy suratlar (AI-generatsiya yoʻq, `isGenTech: false`). Fotolar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Videolar: `public/videos/bank/<slug>.mp4` (720p, ovozsiz, ≤12 s). Litsenziya doimiy — Adobe hisobida ID boʻyicha qayta yuklab olish yangi litsenziya talab qilmaydi.
+2026-11-24 da Adobe Stock bepul davrida litsenziyalangan **160 ta foto va 5 ta video** — haqiqiy suratlar (AI-generatsiya yoʻq, `isGenTech: false`). Fotolar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Videolar: `public/videos/bank/<slug>.mp4` (720p, ovozsiz, ≤12 s). Litsenziya doimiy — Adobe hisobida ID boʻyicha qayta yuklab olish yangi litsenziya talab qilmaydi.
 
 **Qoidalar:** ishlatishdan oldin rasm mavzuga mosligini tekshiring; qadoq yoki boshqa brend koʻrinmasin; `alt` uz/ru tilida rasm mazmunini aytsin; tibbiy vaʼda yoʻq. Ishlatilgan rasmni `public/images/blog/SOURCES.md` ga ham yozing. Kerakli mavzu topilmasa — Adobe Stock (litsenziyali) yoki egasidan haqiqiy foto; AI-generatsiya rasm ishlatilmaydi (CLAUDE.md).
 
@@ -26,6 +26,15 @@
 | `food-beef-liver.webp` | ingredient:iron/b12 | 479798925 | 1600×1066 | Raw beef liver |
 | `food-walnuts.webp` | ingredient:epa-dha/magnesium | 413170232 | 1600×1067 | Walnuts in wooden bowl |
 | `ayran-drink.webp` | ingredient:probiotics | 501092112 | 1600×1067 | Ayran with mint and cucumber |
+| `food-magnesium-3.webp` | ingredient:magnesium | 435158808 | 1600×900 | Products containing magnesium |
+| `salmon-plate.webp` | ingredient:epa-dha | 321350584 | 1600×1068 | Grilled salmon with asparagus |
+| `food-carrots.webp` | ingredient:vitamin-a | 246216945 | 1600×1067 | Bunch of fresh carrots |
+| `food-vitamin-e.webp` | ingredient:vitamin-e | 267356881 | 1600×1066 | Foods rich in vitamin E |
+| `food-whole-grains.webp` | ingredient:b-complex | 309525745 | 1600×1018 | Whole grains in wooden bowl |
+| `food-legumes.webp` | ingredient:b6/folate | 192404904 | 1600×1067 | Beans, lentils, chickpeas |
+| `food-bananas.webp` | ingredient:b6/potassium | 541891941 | 1600×1068 | Bananas |
+| `food-egg-yolk.webp` | ingredient:lutein/d3 | 759941574 | 1600×900 | Egg yolks close-up |
+| `food-avocado.webp` | ingredient:vitamin-e | 869974778 | 1600×1067 | Avocado halves |
 
 ## Simptomlar
 
@@ -77,6 +86,8 @@
 | `hair-washing.webp` | goal:hair | 382972877 | 1600×1067 | Woman washing hair in shower |
 | `doctor-xray-bones.webp` | goal:bones | 481795453 | 1600×1067 | Doctor shows x-ray to senior patient |
 | `energetic-woman-run.webp` | goal:energy | 398016558 | 1600×1067 | Running woman with open arms |
+| `eye-drops.webp` | goal:eyes | 171899962 | 1600×1063 | Woman applying eye drops |
+| `doctor-heart-check.webp` | goal:heart | 576951455 | 1600×1067 | Doctor listens to man's heartbeat |
 
 ## Auditoriya
 
@@ -122,6 +133,41 @@
 | `seniors-swimming.webp` | audience:seniors/sport | 249910530 | 1600×1067 | Senior women swimming |
 | `family-park.webp` | audience:family | 349202449 | 1600×1067 | Happy family in park |
 | `child-milk.webp` | audience:kids/calcium | 269140731 | 1600×1067 | Mother gives child glass of milk |
+| `mother-daughter-hug.webp` | audience:family | 282877653 | 1600×1067 | Mother and daughter hugging at home |
+| `senior-man-sunny.webp` | audience:seniors | 444630094 | 1600×1067 | Senior man smiling outdoors |
+| `man-young-smiling.webp` | audience:men | 284079266 | 1600×1068 | Young man smiling at work |
+| `woman-window-sill.webp` | audience:women | 489079376 | 1600×1067 | Young Asian woman on window sill |
+
+## Servis (yetkazish, toʻlov, maslahat)
+
+| Fayl | Mavzu | Adobe ID | Oʻlcham | Tavsif |
+|---|---|---|---|---|
+| `doctor-senior-patient.webp` | service:consultation | 705829464 | 1600×1044 | Doctor consults senior patient |
+| `pharmacist-counter.webp` | service:pharmacy | 297702393 | 1600×1067 | Pharmacist with customer |
+| `courier-delivery.webp` | service:delivery | 269061788 | 1600×1067 | Courier delivers parcel |
+| `online-shopping-sofa.webp` | service:online | 632001980 | 1600×1067 | Woman shopping on phone |
+| `blood-tests.webp` | service:analysis | 280186170 | 1600×1068 | Blood sample tubes |
+| `warehouse-packing.webp` | service:fulfilment | 283921322 | 1600×1067 | Worker packing box in warehouse |
+| `contactless-payment.webp` | service:payment | 271380947 | 1600×1067 | Contactless card and phone payment |
+| `support-operator.webp` | service:support | 517316374 | 1600×900 | Support operator with headset |
+| `woman-phone-sofa.webp` | service:online | 362395800 | 1600×1042 | Woman messaging on phone on sofa |
+| `doctor-woman.webp` | service:consultation | 146625980 | 1600×1099 | Female doctor in clinic |
+
+## Qabul qilish shakli va bannerlar
+
+| Fayl | Mavzu | Adobe ID | Oʻlcham | Tavsif |
+|---|---|---|---|---|
+| `effervescent-glass.webp` | format:effervescent | 261362437 | 1600×1067 | Effervescent tablet in water |
+| `pill-organizer.webp` | format:routine | 409273464 | 1600×1067 | Pill organizer daily vitamins |
+| `woman-pill-water.webp` | format:taking | 279760393 | 1600×1088 | Woman takes capsule with water |
+| `supplements-white.webp` | format:assorted | 488937561 | 1600×712 | Supplements on white |
+| `reading-supplement-label.webp` | format:label | 714318242 | 1600×1067 | Woman reads supplement bottle label |
+| `first-aid-kit.webp` | format:aptechka | 334400396 | 1600×1067 | Home first aid kit |
+| `pills-color-top.webp` | format:assorted | 666728282 | 1600×1067 | Pills and capsules top view |
+| `pills-from-bottle-hand.webp` | format:taking | 520395954 | 1600×1067 | Pouring capsules from bottle into hand |
+| `banner-supplements-wide.webp` | format:banner | 527425831 | 1600×482 | Immunity supplements on white, wide copy space |
+| `banner-woman-wide.webp` | format:banner | 265168183 | 1600×632 | Happy woman portrait with copy space (wide) |
+| `pharmacy-counter-blur.webp` | format:banner | 472562654 | 1600×778 | Pharmacy counter with blurred shelves |
 
 ## Turmush tarzi
 
@@ -140,34 +186,8 @@
 | `food-dried-fruits.webp` | lifestyle:nutrition/local | 600361495 | 1600×1066 | Bowl of dried fruits |
 | `green-tea.webp` | lifestyle:drinks | 129240783 | 1600×1067 | Green tea with teapot |
 | `honey-jar.webp` | lifestyle:immunity | 369737127 | 1600×1067 | Honey jar with honeycombs |
-
-## Qabul qilish shakli
-
-| Fayl | Mavzu | Adobe ID | Oʻlcham | Tavsif |
-|---|---|---|---|---|
-| `effervescent-glass.webp` | format:effervescent | 261362437 | 1600×1067 | Effervescent tablet in water |
-| `pill-organizer.webp` | format:routine | 409273464 | 1600×1067 | Pill organizer daily vitamins |
-| `woman-pill-water.webp` | format:taking | 279760393 | 1600×1088 | Woman takes capsule with water |
-| `supplements-white.webp` | format:assorted | 488937561 | 1600×712 | Supplements on white |
-| `reading-supplement-label.webp` | format:label | 714318242 | 1600×1067 | Woman reads supplement bottle label |
-| `first-aid-kit.webp` | format:aptechka | 334400396 | 1600×1067 | Home first aid kit |
-| `pills-color-top.webp` | format:assorted | 666728282 | 1600×1067 | Pills and capsules top view |
-| `pills-from-bottle-hand.webp` | format:taking | 520395954 | 1600×1067 | Pouring capsules from bottle into hand |
-
-## Servis (yetkazish, toʻlov, maslahat)
-
-| Fayl | Mavzu | Adobe ID | Oʻlcham | Tavsif |
-|---|---|---|---|---|
-| `doctor-senior-patient.webp` | service:consultation | 705829464 | 1600×1044 | Doctor consults senior patient |
-| `pharmacist-counter.webp` | service:pharmacy | 297702393 | 1600×1067 | Pharmacist with customer |
-| `courier-delivery.webp` | service:delivery | 269061788 | 1600×1067 | Courier delivers parcel |
-| `online-shopping-sofa.webp` | service:online | 632001980 | 1600×1067 | Woman shopping on phone |
-| `blood-tests.webp` | service:analysis | 280186170 | 1600×1068 | Blood sample tubes |
-| `warehouse-packing.webp` | service:fulfilment | 283921322 | 1600×1067 | Worker packing box in warehouse |
-| `contactless-payment.webp` | service:payment | 271380947 | 1600×1067 | Contactless card and phone payment |
-| `support-operator.webp` | service:support | 517316374 | 1600×900 | Support operator with headset |
-| `woman-phone-sofa.webp` | service:online | 362395800 | 1600×1042 | Woman messaging on phone on sofa |
-| `doctor-woman.webp` | service:consultation | 146625980 | 1600×1099 | Female doctor in clinic |
+| `vegetables-assorted.webp` | lifestyle:nutrition | 369550407 | 1600×1067 | Assorted fresh vegetables top view |
+| `breakfast-power-plate.webp` | lifestyle:nutrition/weight | 172470311 | 1600×1250 | Breakfast power plate |
 
 ## Mavsum
 
