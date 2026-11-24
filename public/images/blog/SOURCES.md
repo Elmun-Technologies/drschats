@@ -38,3 +38,6 @@ Fayl -> Adobe Stock ID. Internetdan olingan yoki AI rasm yo'q. Yangi rasm qo'shi
 | st-aud-expectant.webp | 336265028 (2026-11-24; oldin qadoq fotosi edi) |
 | st-aud-recovery.webp | 457079685 (2026-11-24; oldin qadoq fotosi edi) |
 | st-aud-man.webp | 438705525 (2026-11-24) |
+| pill-organizer.webp (bank) | vitaminlarni ichish vaqti (2026-11-25) | 409273464 |
+| hair-loss-brush.webp (bank) | soch toʻkilishi (2026-11-25) | 647031276 |
+| stress-man-laptop.webp (bank) | stress, magniy va B (2026-11-25) | 293191257 |
