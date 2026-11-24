@@ -170,7 +170,7 @@ export const topics1125: RawHealthTopic[] = [
       uz: [
         {
           title: "Qanday harorat isitma hisoblanadi",
-          body: "Qoʻltiq ostida oʻlchanganda odatda 37,0–37,2 °C gacha meʼyor hisoblanadi, 38 °C va undan yuqori — isitma. Harorat kun davomida oʻzgaradi: kechqurun biroz yuqoriroq boʻladi. Yugurish, issiq vanna yoki issiq ovqatdan keyin 20–30 daqiqa kutib oʻlchang.",
+          body: "Qoʻltiq ostidagi harorat ichki (rektal) haroratdan biroz past chiqadi. Kattalarda qoʻltiq ostida 37,2 °C dan yuqori koʻrsatkich — koʻtarilgan, 38 °C va undan yuqori — isitma hisoblanadi. Harorat kun davomida oʻzgaradi: kechqurun biroz yuqoriroq boʻladi. Yugurish, issiq vanna yoki issiq ovqatdan keyin 20–30 daqiqa kutib oʻlchang.",
         },
         {
           title: "Elektron termometr bilan oʻlchash",
@@ -182,13 +182,13 @@ export const topics1125: RawHealthTopic[] = [
         },
         {
           title: "Qachon darhol yordam chaqirish kerak",
-          body: "3 oygacha chaqaloqda 38 °C va undan yuqori harorat; har qanday yoshda tutqanoq, bosilganda yoʻqolmaydigan toshma, nafas olish qiyinlashishi, uyquchanlik va uygʻotish qiyinligi, suyuqlik ichmaslik; isitma 3 kundan uzoq davom etsa — shifokorga murojaat qiling yoki 103 ga qoʻngʻiroq qiling.",
+          body: "3 oygacha chaqaloqda har qanday isitma (qoʻltiq ostida 37,2 °C dan yuqori yoki rektal 38 °C va undan yuqori); har qanday yoshda tutqanoq, bosilganda yoʻqolmaydigan toshma, nafas olish qiyinlashishi, uyquchanlik va uygʻotish qiyinligi, suyuqlik ichmaslik; isitma 3 kundan uzoq davom etsa — shifokorga murojaat qiling yoki 103 ga qoʻngʻiroq qiling.",
         },
       ],
       ru: [
         {
           title: "Какая температура считается повышенной",
-          body: "При измерении под мышкой нормой обычно считается до 37,0–37,2 °C, 38 °C и выше — повышенная температура. В течение дня она меняется: вечером немного выше. После бега, горячей ванны или горячей еды подождите 20–30 минут.",
+          body: "Температура под мышкой немного ниже внутренней (ректальной). У взрослых показатель под мышкой выше 37,2 °C — повышенный, 38 °C и выше — лихорадка. В течение дня она меняется: вечером немного выше. После бега, горячей ванны или горячей еды подождите 20–30 минут.",
         },
         {
           title: "Как мерить электронным термометром",
@@ -200,13 +200,13 @@ export const topics1125: RawHealthTopic[] = [
         },
         {
           title: "Когда сразу вызывать помощь",
-          body: "Температура 38 °C и выше у младенца до 3 месяцев; в любом возрасте судороги, сыпь, которая не исчезает при надавливании, затруднённое дыхание, вялость и трудно разбудить, отказ от питья; температура держится больше 3 дней — обратитесь к врачу или звоните 103.",
+          body: "Любая повышенная температура у младенца до 3 месяцев (под мышкой выше 37,2 °C или ректально 38 °C и выше); в любом возрасте судороги, сыпь, которая не исчезает при надавливании, затруднённое дыхание, вялость и трудно разбудить, отказ от питья; температура держится больше 3 дней — обратитесь к врачу или звоните 103.",
         },
       ],
     },
     bullets: {
-      uz: ["38 °C va yuqori — isitma", "Elektron termometr — simobsiz", "Koʻp suyuqlik, shamollatish", "3 oygacha chaqaloqda 38 °C — darhol shifokor"],
-      ru: ["38 °C и выше — повышенная", "Электронный термометр — без ртути", "Много жидкости, проветривание", "38 °C у младенца до 3 месяцев — сразу к врачу"],
+      uz: ["Qoʻltiq ostida 37,2 °C dan yuqori — koʻtarilgan", "Elektron termometr — simobsiz", "Koʻp suyuqlik, shamollatish", "3 oygacha chaqaloqda isitma — darhol shifokor"],
+      ru: ["Под мышкой выше 37,2 °C — повышенная", "Электронный термометр — без ртути", "Много жидкости, проветривание", "Температура у младенца до 3 месяцев — сразу к врачу"],
     },
     ingredientSlugs: ["vitamin-c", "vitamin-d3"],
     productSlugs: ["dr-frei-thermometer-t30", "dr-frei-thermometer-t10", "hiew-cooling-plaster-16"],
@@ -216,13 +216,13 @@ export const topics1125: RawHealthTopic[] = [
       uz: [
         { question: "Bolada haroratni qayerdan oʻlchash kerak?", answer: "Uyda koʻpincha qoʻltiq ostida oʻlchanadi. Kichik bolalar uchun egiluvchan uchli elektron termometr qulay. Qaysi usul toʻgʻri kelishini pediatr bilan aniqlang." },
         { question: "Sovutuvchi plastir isitmani tushiradimi?", answer: "Plastir peshonani sovutadi va qulaylik beradi, lekin isitma tushiruvchi dori emas. Haroratni termometr bilan kuzatib boring." },
-        { question: "Necha darajada shifokorga qoʻngʻiroq qilish kerak?", answer: "3 oygacha chaqaloqda 38 °C dan — darhol. Kattaroq bolada esa harorat raqamidan tashqari holatiga qarang: holsizlik, toshma, nafas qiyinlashishi yoki 3 kundan uzoq isitma — shifokorga." },
+        { question: "Necha darajada shifokorga qoʻngʻiroq qilish kerak?", answer: "3 oygacha chaqaloqda har qanday isitma bilan — darhol (qoʻltiq ostida 37,2 °C dan yuqori ham). Kattaroq bolada esa harorat raqamidan tashqari holatiga qarang: holsizlik, toshma, nafas qiyinlashishi yoki 3 kundan uzoq isitma — shifokorga." },
         { question: "Elektron termometr aniqmi?", answer: "Toʻgʻri ishlatilganda aniq: quruq qoʻltiq, uchi markazda, signalgacha kutish. Batareya kuchsizlansa natija ishonchsiz boʻlishi mumkin." },
       ],
       ru: [
         { question: "Где мерить температуру ребёнку?", answer: "Дома чаще всего под мышкой. Маленьким детям удобен электронный термометр с гибким наконечником. Какой способ подходит, уточните у педиатра." },
         { question: "Снижает ли температуру охлаждающий пластырь?", answer: "Пластырь охлаждает лоб и даёт комфорт, но это не жаропонижающее. Следите за температурой термометром." },
-        { question: "При какой температуре звонить врачу?", answer: "У младенца до 3 месяцев — сразу при 38 °C. У ребёнка постарше смотрите не только на цифру, но и на состояние: вялость, сыпь, затруднённое дыхание или температура дольше 3 дней — к врачу." },
+        { question: "При какой температуре звонить врачу?", answer: "У младенца до 3 месяцев — сразу при любой повышенной температуре (под мышкой выше 37,2 °C тоже). У ребёнка постарше смотрите не только на цифру, но и на состояние: вялость, сыпь, затруднённое дыхание или температура дольше 3 дней — к врачу." },
         { question: "Точен ли электронный термометр?", answer: "При правильном использовании — да: сухая подмышка, наконечник в центре, ждать сигнала. При слабой батарейке результат может быть ненадёжным." },
       ],
     },
@@ -288,13 +288,13 @@ export const topics1125: RawHealthTopic[] = [
     faq: {
       uz: [
         { question: "Qaysi tonometr yaxshi: mexanik yoki elektron?", answer: "Ikkalasi ham toʻgʻri ishlatilganda aniq. Mexanik tonometr tok va batareyaga bogʻliq emas, lekin fonendoskop bilan ishlashni oʻrganish kerak. Qaysi biri sizga qulayligini shifokor bilan muhokama qiling." },
-        { question: "Bosim qachon xavfli?", answer: "180/120 va undan yuqori boʻlsa, ayniqsa kuchli bosh ogʻrigʻi, koʻkrak ogʻrigʻi, nafas qisishi, nutq yoki koʻrish buzilishi bilan — darhol 103 ga qoʻngʻiroq qiling." },
+        { question: "Bosim qachon xavfli?", answer: "180/120 va undan yuqori chiqsa, 1 daqiqadan keyin qayta oʻlchang. Yana shunday boʻlsa-yu, hech qanday belgi boʻlmasa — shu kuni shifokorga murojaat qiling. Koʻkrak ogʻrigʻi, nafas qisishi, bel ogʻrigʻi, qoʻl-oyoqda holsizlik, nutq yoki koʻrish buzilishi boʻlsa — darhol 103 ga qoʻngʻiroq qiling." },
         { question: "Bosimni qaysi qoʻlda oʻlchash kerak?", answer: "Birinchi marta ikkala qoʻlda oʻlchang. Keyin doim yuqoriroq natija bergan qoʻlda oʻlchang va buni kundalikda belgilang." },
         { question: "Vitaminlar bosimni tushiradimi?", answer: "Qoʻshimcha bosim dorisining oʻrnini bosmaydi. Shifokor buyurgan dorini oʻz-oʻzidan toʻxtatmang; har qanday qoʻshimchani shifokor bilan kelishing." },
       ],
       ru: [
         { question: "Какой тонометр лучше: механический или электронный?", answer: "Оба точны при правильном использовании. Механический не зависит от сети и батареек, но с фонендоскопом нужно научиться работать. Какой удобнее вам, обсудите с врачом." },
-        { question: "Когда давление опасно?", answer: "Если 180/120 и выше, особенно с сильной головной болью, болью в груди, одышкой, нарушением речи или зрения — сразу звоните 103." },
+        { question: "Когда давление опасно?", answer: "Если 180/120 и выше, через минуту измерьте повторно. Если снова так, но симптомов нет — в тот же день обратитесь к врачу. При боли в груди, одышке, боли в спине, слабости в руке или ноге, нарушении речи или зрения — сразу звоните 103." },
         { question: "На какой руке мерить давление?", answer: "В первый раз измерьте на обеих руках. Дальше всегда мерьте на той, где результат был выше, и отметьте это в дневнике." },
         { question: "Снижают ли витамины давление?", answer: "Добавка не заменяет лекарства от давления. Не отменяйте назначенные врачом препараты сами; любую добавку согласуйте с врачом." },
       ],
