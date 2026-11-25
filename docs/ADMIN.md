@@ -307,10 +307,18 @@ va `orders.payment_status`/`paid_at` (`0015_online_payments.sql`).
    MXIK 21 mahsulotga `0035_mxik_codes.sql` bilan yozilgan (Dr Schatz roʻyxati, 2026-11-11;
    faqat boʻsh maydonga). Qadoq kodlari roʻyxatda yoʻq — panelda toʻldiriladi. Kodsiz:
    Neuroforce, Aminomorin, Peano, Hamdard Safi, qahvalar.
+   25.11.2026 roʻyxati bilan qayta solishtirilgan (`0038`: roʻyxat kodi ustun). Kodsiz mahsulotlar:
+   `/admin/products` → «Fiskal kodsiz».
    **Click cheki** toʻlovdan keyin alohida yuboriladi (`ofd_data/submit_items`,
    `lib/payments/click-fiscal*.ts`): Complete'dan soʻng darhol va ishchi har daqiqada
    qayta urinadi (`payments.fiscal_status`, 0036). Kerak: Click «Merchant user ID»
    (Integratsiyalar → Click) va kompaniya STIRi (Fiskal chek bloki).
+   Chek holati va Click qaytargan sabab buyurtma sahifasida («Fiskal chek: …»), qabul qilinmaganlar
+   soni Integratsiyalarda.
+5. **Click «Поставщик не найден»** (toʻlov sahifasi / QR): Click hujjatida «Поставщик» — merchant.
+   Sabab `service_id` / `merchant_id` (notoʻgʻri yoki servis faollashtirilmagan), mahsulot kodlari emas.
+   Click kartasidagi «Click sinov sahifasini ochish» havolasi shu ikki ID bilan sahifani ochadi
+   (`transaction_param=TEST`, Prepare `-5` — pul yechilmaydi). Havolaga `merchant_user_id` qoʻshilmaydi.
 
 **Oqim:** checkout buyurtmani `payment_status='pending'` bilan saqlaydi va mijozni
 toʻlov sahifasiga yuboradi (summa — serverdagi jami, brauzerdan emas). Toʻlov tizimi

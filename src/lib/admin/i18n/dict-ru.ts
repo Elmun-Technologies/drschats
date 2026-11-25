@@ -2173,4 +2173,8 @@ export const RU: Record<string, string> = {
   "chek yuborildi": "чек отправлен",
   "chek qabul qilinmadi": "чек не принят",
   "chek yuborilmadi — kod yetishmaydi": "чек не отправлен — не хватает кодов",
+  "Service ID va Merchant ID toʻgʻriligini tekshirish": "Проверка Service ID и Merchant ID",
+  "Click sinov sahifasini ochish": "Открыть тестовую страницу Click",
+  "Sahifa doʻkoningiz nomini koʻrsatsa — IDʼlar toʻgʻri (buyurtma yoʻq, pul yechilmaydi). «Поставщик не найден» chiqsa — Service ID yoki Merchant ID merchant.click.uz dagi bilan mos emas yoki servis Click tomonida hali faollashtirilmagan: mahsulot kodlariga bogʻliq emas.": "Если страница показывает название вашего магазина — ID верные (заказа нет, деньги не списываются). Если выходит «Поставщик не найден» — Service ID или Merchant ID не совпадают с данными в merchant.click.uz либо сервис ещё не активирован на стороне Click: с кодами товаров это не связано.",
+  "Merchant ID boshqa maydon bilan bir xil. Service ID, Merchant ID va Merchant user ID — uchta alohida raqam; merchant.click.uz dan qayta koʻchiring.": "Merchant ID совпадает с другим полем. Service ID, Merchant ID и Merchant user ID — три разных числа; скопируйте их заново из merchant.click.uz.",
 };

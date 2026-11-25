@@ -27,9 +27,19 @@ keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Paym
   (`Analytics.tsx`), do'kon CSP'si `report-only` va ikkala host ro'yxatda. GTM va Meta Pixel — ulanmagan
   (Pixel: Business Manager qarori kutilmoqda). GA4 hisobi va Metrika schyotchigi `n4zvi` Yandex akkauntida —
   kompaniya akkauntiga o'tkazish kerak.
-- **Click** kalitlari kiritilgan (INN `307895851`), lekin **fiskal chek ketmaydi**: har SKU uchun package code
-  va yetkazish MXIK/package code buxgalterdan kutilmoqda (`0035_mxik_codes.sql` faqat MXIK'ni to'ldirgan;
-  Neuroforce, Aminomorin, Peano, Hamdard Safi, qahvalar qoplanmagan). Shu paytgacha Click'ni yoqmaslik xavfsizroq.
+- **Click** kalitlari kiritilgan (INN `307895851`). **2026-11-25:** toʻlov sahifasida QR skanerlanganda
+  «Поставщик не найден» chiqyapti. Click hujjatida «Поставщик» = merchant (doʻkon), yaʼni xato toʻlov
+  havolasidagi `service_id` / `merchant_id` dan (notoʻgʻri raqam yoki servis Click tomonida faollashtirilmagan),
+  MXIK'dan emas — chek toʻlovdan **keyin** alohida soʻrov bilan ketadi. Tekshirish: `/admin/integrations` →
+  Click → «Click sinov sahifasini ochish»; ID'larni merchant.click.uz bilan solishtirish; boʻlmasa Click menejeri.
+  Egasidan javob kutilmoqda (xabar aynan qayerda chiqadi).
+- **MXIK (IKPU)**: Dr Schatz 25.11.2026 roʻyxati bilan solishtirildi — 21 mahsulotning kodi 0035 dagi bilan
+  bir xil; `0038` roʻyxat kodini majburan qoʻyadi (panelda oʻzgartirilgan boʻlsa ham). tasnif.soliq.uz bu
+  muhitdan ochilmadi (ulanishni uzadi / 503) — kodlar rasmiy saytda tekshirilmagan. **Fiskal chek hali ketmaydi**:
+  qadoq kodi hech bir mahsulotda yoʻq (roʻyxatda ustuni yoʻq), yetkazish MXIK/qadoq kodi yoʻq, 9 SKU roʻyxatda
+  yoʻq (Neuroforce, Aminomorin, Peano, Hamdard Safi, qahvalar). Buxgalterdan kutilmoqda. Panelda: `/admin/products`
+  → «Fiskal kodsiz» filtri, buyurtma sahifasida Click cheki holati va rad sababi, Integratsiyalarda qabul
+  qilinmagan cheklar soni.
 - **Payme**: kalitlar hali kiritilmagan. **Eskiz SMS**: keyinga qoldirilgan. Operator Telegram tokeni va
   Resend panelda sozlanmagan.
 - `integration_settings` dagi 2 ta eski (yangi `INTEGRATION_ENCRYPTION_KEY` bilan ochilmaydigan) qator

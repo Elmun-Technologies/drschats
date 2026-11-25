@@ -4,6 +4,7 @@ import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, Field, Notice, Pill, inputClass } from "@/components/admin/ui";
 import type { IntegrationAdminOverview } from "@/lib/integrations/settings";
 import { t } from "@/lib/admin/i18n/server";
+import { clickPayUrl } from "@/lib/payments/click";
 
 export function Status({ on, label }: { on: boolean; label?: string }) {
   return <Pill tone={on ? "dark" : "outline"}>{label ?? (on ? t("Ulangan") : t("Ulanmagan"))}</Pill>;
@@ -261,6 +262,16 @@ export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overvie
             <Endpoint label="Prepare URL" url={`${siteUrl}/api/payments/click/prepare`} />
             <Endpoint label="Complete URL" url={`${siteUrl}/api/payments/click/complete`} />
             <p className="text-[13px] leading-[18px] text-muted">{t("Har soʻrovning md5 imzosi Secret key bilan tekshiriladi; summa buyurtma jamiga teng boʻlmasa toʻlov rad etiladi.")}</p>
+            {click.serviceId && click.merchantId && (
+              <div className="flex flex-col gap-1 rounded-[12px] bg-tile p-3">
+                <span className="text-[13px] font-semibold text-ink-2">{t("Service ID va Merchant ID toʻgʻriligini tekshirish")}</span>
+                <External href={clickPayUrl({ serviceId: click.serviceId, merchantId: click.merchantId, orderNumber: "TEST", amount: 1000, returnUrl: `${siteUrl}/` })}>{t("Click sinov sahifasini ochish")}</External>
+                <p className="text-[13px] leading-[18px] text-muted">{t("Sahifa doʻkoningiz nomini koʻrsatsa — IDʼlar toʻgʻri (buyurtma yoʻq, pul yechilmaydi). «Поставщик не найден» chiqsa — Service ID yoki Merchant ID merchant.click.uz dagi bilan mos emas yoki servis Click tomonida hali faollashtirilmagan: mahsulot kodlariga bogʻliq emas.")}</p>
+              </div>
+            )}
+            {click.merchantId && (click.merchantId === click.serviceId || click.merchantId === click.merchantUserId) && (
+              <Notice tone="error">{t("Merchant ID boshqa maydon bilan bir xil. Service ID, Merchant ID va Merchant user ID — uchta alohida raqam; merchant.click.uz dan qayta koʻchiring.")}</Notice>
+            )}
           </div>
         </Card>
       </div>
