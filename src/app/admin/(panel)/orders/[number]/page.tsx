@@ -6,7 +6,7 @@ import { desc, eq, inArray } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { getOrder } from "@/lib/admin/queries";
 import { botOrderEvents, ORDER_STATUSES, products } from "@/lib/db/schema";
-import { DELIVERY_LABEL, LOCALE_LABEL, NEXT_STATUS, PAYMENT_LABEL, PAYMENT_STATE_LABEL, PAYMENT_STATUS_LABEL, STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
+import { DELIVERY_LABEL, FISCAL_STATUS_LABEL, LOCALE_LABEL, NEXT_STATUS, PAYMENT_LABEL, PAYMENT_STATE_LABEL, PAYMENT_STATUS_LABEL, STATUS_LABEL, STATUS_TONE, formatDateTime } from "@/lib/admin/order-labels";
 import { setOrderStatus, updateOrder } from "@/app/admin/_actions/orders";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { CopyButton } from "@/components/admin/CopyButton";
@@ -148,6 +148,7 @@ export default async function AdminOrderPage({ params }: { params: Promise<{ num
                     {payments.map((p) => (
                       <span key={p.id} className="text-[13px] text-muted">
                         {p.provider === "payme" ? "Payme" : "Click"} #{p.providerTxId.slice(-10)} · {som(p.amount / 100)} · {PAYMENT_STATE_LABEL[p.state]}
+                        {p.fiscalStatus && <span className={p.fiscalStatus === "sent" ? "block" : "block font-semibold text-ink"}>{t("Fiskal chek")}: {FISCAL_STATUS_LABEL[p.fiscalStatus]}{p.fiscalStatus !== "sent" && p.fiscalError ? ` (${p.fiscalError})` : ""}</span>}
                       </span>
                     ))}
                   </span>

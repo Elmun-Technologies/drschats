@@ -15,7 +15,7 @@ import { adminTitle, t } from "@/lib/admin/i18n/server";
 export const generateMetadata = () => adminTitle("Integratsiyalar");
 export const dynamic = "force-dynamic";
 
-/** Products on sale without the fiscal codes Payme's receipt needs. */
+/** Products on sale without the codes the fiscal receipt (Payme, Click) needs. */
 async function missingFiscal(): Promise<number> {
   try {
     const rows = (await getDb().execute(sql`
@@ -23,6 +23,18 @@ async function missingFiscal(): Promise<number> {
     return Number(rows[0]?.n ?? 0);
   } catch {
     return 0;
+  }
+}
+
+/** Paid Click payments whose fiscal receipt Click has not accepted yet, with the latest reason. */
+async function clickReceiptsWaiting(): Promise<{ n: number; error: string | null }> {
+  try {
+    const rows = (await getDb().execute(sql`
+      select count(*) as n, (array_agg(fiscal_error order by id desc) filter (where fiscal_error is not null))[1] as error
+      from payments where provider = 'click' and state = 2 and fiscal_status in ('pending', 'failed', 'missing_codes')`)) as unknown as { n: string; error: string | null }[];
+    return { n: Number(rows[0]?.n ?? 0), error: rows[0]?.error ?? null };
+  } catch {
+    return { n: 0, error: null };
   }
 }
 
@@ -49,7 +61,7 @@ function Row({ name, detail, on, label }: { name: string; detail: string; on: bo
 
 export default async function AdminIntegrationsPage() {
   await requireAdmin();
-  const [overview, health, online, noFiscal, system] = await Promise.all([getIntegrationAdminOverview(), journeyHealth(), readOnlineProviders(), missingFiscal(), configStatus()]);
+  const [overview, health, online, noFiscal, system, receipts] = await Promise.all([getIntegrationAdminOverview(), journeyHealth(), readOnlineProviders(), missingFiscal(), configStatus(), clickReceiptsWaiting()]);
   const ready = { payme: online.includes("payme"), click: online.includes("click") };
   const a = overview.analytics;
   const telegramClub = Boolean(process.env.BOT_API_KEY && process.env.TELEGRAM_CLUB_BOT_TOKEN);
@@ -73,7 +85,8 @@ export default async function AdminIntegrationsPage() {
       </div>
 
       <SectionTitle>{t("Onlayn toʻlov")}</SectionTitle>
-      {ready.payme && noFiscal > 0 && <div className="mb-4"><Notice>{t("{n} ta sotuvdagi mahsulotda MXIK yoki qadoq kodi yoʻq — ular bor buyurtmada Payme chekni maʼlumotsiz chiqaradi.", { n: formatNumber(noFiscal) })} <Link href="/admin/products" className={linkClass}>{t("Kodlarni mahsulotlarda kiriting.")}</Link></Notice></div>}
+      {(ready.payme || ready.click) && noFiscal > 0 && <div className="mb-4"><Notice>{t("{n} ta sotuvdagi mahsulotda MXIK yoki qadoq kodi yoʻq — ular bor buyurtmada fiskal chek chiqmaydi: Payme chekni maʼlumotsiz chiqaradi, Click chekni umuman olmaydi.", { n: formatNumber(noFiscal) })} <Link href="/admin/products?filter=nofiscal" className={linkClass}>{t("Kodsiz mahsulotlarni koʻrish.")}</Link></Notice></div>}
+      {receipts.n > 0 && <div className="mb-4"><Notice tone="error">{t("{n} ta toʻlangan Click toʻlovining fiskal cheki hali qabul qilinmagan.", { n: formatNumber(receipts.n) })}{receipts.error ? ` ${t("Oxirgi sabab: {error}", { error: receipts.error })}` : ""}</Notice></div>}
       <PaymentForms overview={overview} siteUrl={SITE_URL} ready={ready} ordersInDb={ORDERS_IN_DB} />
 
       <SectionTitle>{t("Xabar kanallari")}</SectionTitle>

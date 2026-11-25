@@ -41,6 +41,9 @@ export interface PaymentRow {
   performTime: number | null;
   cancelTime: number | null;
   providerTime: number | null;
+  /** Click only (0036): where the fiscal receipt of a performed payment stands. */
+  fiscalStatus: ClickFiscalStatus | null;
+  fiscalError: string | null;
 }
 
 type RawPayment = {
@@ -55,6 +58,8 @@ type RawPayment = {
   perform_time: string | number | null;
   cancel_time: string | number | null;
   provider_time: string | number | null;
+  fiscal_status?: ClickFiscalStatus | null;
+  fiscal_error?: string | null;
 };
 
 const n = (v: string | number | null) => (v == null ? null : Number(v));
@@ -72,6 +77,8 @@ function toRow(r: RawPayment): PaymentRow {
     performTime: n(r.perform_time),
     cancelTime: n(r.cancel_time),
     providerTime: n(r.provider_time),
+    fiscalStatus: r.fiscal_status ?? null,
+    fiscalError: r.fiscal_error ?? null,
   };
 }
 

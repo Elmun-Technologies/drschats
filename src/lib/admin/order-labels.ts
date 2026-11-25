@@ -50,3 +50,11 @@ export const PAYMENT_STATE_LABEL: Record<number, string> = labels({
   [-1]: "bekor (toʻlanmagan)",
   [-2]: "qaytarildi",
 });
+
+/** Click fiscal receipt of a performed payment (payments.fiscal_status, 0036). */
+export const FISCAL_STATUS_LABEL: Record<string, string> = labels({
+  pending: "chek navbatda",
+  sent: "chek yuborildi",
+  failed: "chek qabul qilinmadi",
+  missing_codes: "chek yuborilmadi — kod yetishmaydi",
+});

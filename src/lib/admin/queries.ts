@@ -51,6 +51,8 @@ export async function listProducts(q?: string) {
       kind: products.kind,
       images: products.images,
       cutout: products.cutout,
+      mxikCode: products.mxikCode,
+      packageCode: products.packageCode,
       updatedAt: products.updatedAt,
       createdAt: products.createdAt,
       sort: products.sort,

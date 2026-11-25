@@ -22,6 +22,7 @@ const FILTERS = {
   low: { label: "Kam qolganlar", test: (p: Row) => p.kind !== "unlisted" && isLowStock(p.stockQty, p.lowAt) },
   sale: { label: "Chegirmada", test: (p: Row) => Boolean(p.oldPrice) },
   noimage: { label: "Rasmsiz", test: (p: Row) => !p.cutout && p.images.length === 0 },
+  nofiscal: { label: "Fiskal kodsiz", test: (p: Row) => p.kind !== "unlisted" && (!p.mxikCode || !p.packageCode) },
   hidden: { label: "Sotuvdan olingan", test: (p: Row) => p.kind === "unlisted" },
 } as const;
 type Filter = keyof typeof FILTERS;
@@ -137,6 +138,7 @@ export default async function AdminProductsPage({
         className="mb-4"
         items={(Object.keys(FILTERS) as Filter[])
           .filter((key) => key !== "noimage" || inCategory.some(FILTERS.noimage.test))
+          .filter((key) => key !== "nofiscal" || inCategory.some(FILTERS.nofiscal.test))
           .filter((key) => key !== "low" || anyTracked)
           .map((key) => ({ href: href({ filter: key }), label: t(FILTERS[key].label), active: key === filter, count: inCategory.filter(FILTERS[key].test).length }))}
       />
@@ -182,6 +184,8 @@ export default async function AdminProductsPage({
                           {p.kind !== "unlisted" && !p.inStock && p.stockQty == null && <Pill tone="outline">{t("tugagan")}</Pill>}
                           {p.stockQty != null && <Pill tone={stockLabel(p.stockQty, p.lowAt).tone} className="sm:hidden">{stockText(p.stockQty, p.lowAt)}</Pill>}
                           {p.kind === "addon" && <Pill tone="muted">{t("qoʻshimcha")}</Pill>}
+                          {filter === "nofiscal" && !p.mxikCode && <Pill tone="outline">{t("MXIK yoʻq")}</Pill>}
+                          {filter === "nofiscal" && !p.packageCode && <Pill tone="outline">{t("qadoq kodi yoʻq")}</Pill>}
                         </span>
                       </span>
                       <span className="shrink-0 text-right text-[14px] font-semibold tabular-nums text-ink sm:text-[15px]">
