@@ -68,9 +68,30 @@ bo'limlar + 3–4 FAQ (uz/ru), faqat katalogdagi tarkib; isbotsiz raqamlar (D3 �
 o'zgardi — katalog kartasida manba (dengiz/qoramol) yozilmagan, `ingredients.ts` va `health-topics.ts` (beauty/joints)
 da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 
+## 2026-11-24 / 25 — rasm banki, hero foto, yangi mavzular va blog
+
+- **Rasm banki** (#186, #193): Adobe Stock'dan litsenziyalangan **210 ta foto va 14 ta video** —
+  `public/images/bank/*.webp`, `public/videos/bank/*.mp4`, roʻyxat va Adobe ID'lar `docs/IMAGE-BANK.md`,
+  `docs/image-bank.tsv`. Yangi sahifa yoki maqola rasmi avval shu bankdan olinadi.
+- **Mavzu sahifalariga hero foto** (#187): `lib/content/topic-images.ts` — har mavzuga bankdan bitta noyob
+  foto (test buni tekshiradi), OG rasm va `primaryImageOfPage`.
+- **Kesma rasmlar** (#188): 11 ta mahsulot (qahvalar, termometr, ingalyator, Safi, Hiew, Potenton) Adobe
+  bilan fondan ajratildi, 640×640 PNG.
+- **Yangi mavzular** (#191, #193): `/symptoms/dry-skin`, `eye-strain`, `fever`, `numbness`, `bleeding-gums`,
+  `period-pain`, `cracked-lips`; `/goals/blood-pressure`, `menopause`, `vegetarian`
+  (`health-topics-1125.ts`, `health-topics-1126.ts`; `subjects.ts` ga `topic` ulangan). Isitma va 180/120
+  bosim boʻyicha Codex tuzatishlari (AAP/AHA) kiritilgan.
+- **Blog** (#189, #190, #192, #193): +9 maqola (probiotiklar, doimiy charchoq, 60+ vitaminlar, ichish
+  vaqti, soch toʻkilishi, stress va magniy, imtihon davri, telefon va uyqu, qoʻl-oyoq sovushi) — jami 41.
+- **GSC indekslash** (kvota ~10/kun): 24-noyabr kvota tugagan; yangi URL'lar navbatda.
+- **Ishga tushirish auditi** (2026-11-25, repodan tashqarida): P0 — oferta yoʻq, operator Telegram/Resend
+  sozlanmagan, fiskal chek (package code, 9 SKU'da MXIK yoʻq), `/licenses` dagi raqamsiz daʼvolar,
+  shaxsiy maʼlumotlar (pd.gov.uz, server UZ tashqarisida), DNS Vercel'da (2026-12-14 gacha).
+  **Repo public** — hujjatlardagi infratuzilma maʼlumotlari ochiq; egasining qarori kutilmoqda.
+
 ## Yaqinda tugagan (main'ga merge qilingan)
 
-- **Rasm banki** (2026-11-24): Adobe Stock bepul davrida 160 ta haqiqiy foto (AI emas) va 5 ta qisqa video litsenziyalandi — `public/images/bank/`, `public/videos/bank/`, reyestr `docs/IMAGE-BANK.md` (+ `docs/image-bank.tsv`). Yangi sahifa/blog/banner uchun rasm avval shu yerdan olinadi. Keyingi qadam: 49 ta mavzu sahifasiga (goals/symptoms/vitamins) hero rasm sloti va bankdan moslash.
+- **Rasm banki** (2026-11-24): Adobe Stock bepul davrida 160 ta haqiqiy foto (AI emas) va 5 ta qisqa video litsenziyalandi — `public/images/bank/`, `public/videos/bank/`, reyestr `docs/IMAGE-BANK.md` (+ `docs/image-bank.tsv`). Yangi sahifa/blog/banner uchun rasm avval shu yerdan olinadi. Mavzu sahifalariga hero foto #187 bilan qoʻshildi (yuqoridagi boʻlim).
 - **Yandex Vebmaster**: govita.uz huquqi tasdiqlandi (HTML-fayl, 2026-11-24). «Фиды» boʻlimida faqat koʻchmas mulk/vakansiya/transport/xizmat toifalari bor — tovar YML feedi bu yerga ulanmaydi (Yandex Business / Tovarlar kabineti kerak, egasi).
 
 - **Talab tahlili — bozor maʼlumoti oldindan** (2026-11-12): `0037_keyword_market_baseline.sql` 2026-11-02 Planner eksportini (1 913 soʻz, oyiga 250 800 qidiruv) boʻsh jadvalga yozadi — `/admin/keywords` fayl yuklamasdan toʻladi. Sahifaga qoʻshildi: talab darajasi (1000+/100–999/10–99/10 dan kam), tillar ulushi, mavsum, «Sahifa kerak», oʻsayotgan/pasayayotgan soʻzlar (`lib/keywords/report.ts`, testli). **Keyingi qadam (foydalanuvchi tanlagan «a» variant)**: «Sahifa kerak» roʻyxatidagi mavzuga tugma bilan uz/ru sahifa qoralamasi — Anthropic API kaliti va bazadagi qoralama sahifalar kerak.
