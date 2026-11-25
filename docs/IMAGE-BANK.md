@@ -1,6 +1,6 @@
 # Rasm banki (Adobe Stock, litsenziyalangan)
 
-2026-11-24 da Adobe Stock bepul davrida litsenziyalangan **160 ta foto va 5 ta video**, 2026-11-25 da yana **50 ta foto va 9 ta video** (jami 210 foto, 14 video) — haqiqiy suratlar (AI-generatsiya yoʻq, `isGenTech: false`). Fotolar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Videolar: `public/videos/bank/<slug>.mp4` (720p, ovozsiz, ≤12 s). Litsenziya doimiy — Adobe hisobida ID boʻyicha qayta yuklab olish yangi litsenziya talab qilmaydi.
+2026-11-24 da Adobe Stock bepul davrida litsenziyalangan **160 ta foto va 5 ta video**, 2026-11-25 da yana **50 ta foto va 9 ta video** (jami 210 foto, 14 video), shu kuni yana **32 ta eʼtibor tortadigan foto** (jami 242 foto) — haqiqiy suratlar (AI-generatsiya yoʻq, `isGenTech: false`). Fotolar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Videolar: `public/videos/bank/<slug>.mp4` (720p, ovozsiz, ≤12 s). Litsenziya doimiy — Adobe hisobida ID boʻyicha qayta yuklab olish yangi litsenziya talab qilmaydi.
 
 **Qoidalar:** ishlatishdan oldin rasm mavzuga mosligini tekshiring; qadoq yoki boshqa brend koʻrinmasin; `alt` uz/ru tilida rasm mazmunini aytsin; tibbiy vaʼda yoʻq. Ishlatilgan rasmni `public/images/blog/SOURCES.md` ga ham yozing. Kerakli mavzu topilmasa — Adobe Stock (litsenziyali) yoki egasidan haqiqiy foto; AI-generatsiya rasm ishlatilmaydi (CLAUDE.md).
 
@@ -287,3 +287,42 @@
 | `child-drinking-water.mp4` | 208027193 | 1280×720, 12 s | Bola stakandan suv ichmoqda |
 | `family-breakfast-milk.mp4` | 514620202 | 1280×720, 12 s | Qizcha nonushtada sut ichmoqda |
 | `pharmacist-bag.mp4` | 2021632948 | 1280×720, 9 s | Farmatsevt buyurtmani paketga solmoqda |
+
+## Eʼtiborni tortadigan rasmlar (2026-11-25, 2-partiya)
+
+Yorqin, kontrastli kadrlar (sariq/rangli fon, makro, kuchli kompozitsiya) — blog muqovalari, dastur va ingredient sahifalari, bosh sahifa plitkalari uchun. Eski `public/images/stock/st-*` oʻrniga.
+
+| Fayl | Mavzu | Adobe ID | Oʻlcham | Tavsif |
+|---|---|---|---|---|
+| `woman-thermometer-bed.webp` | device:thermometer | 1077543812 | 1600×1067 | Ayol karavotda termometr bilan haroratini oʻlchamoqda |
+| `man-bp-living-room.webp` | device:tonometer | 798280600 | 1600×900 | Erkak uyda qon bosimini oʻlchamoqda |
+| `senior-bp-home.webp` | device:tonometer | 428107689 | 1600×1067 | Keksa erkak uyda bosimini oʻlchamoqda |
+| `office-stretch-woman.webp` | program:office | 1893617341 | 1600×1067 | Ofisda choʻzilib dam olayotgan ayol |
+| `man-breakfast-kitchen.webp` | audience:men | 281053952 | 1600×1067 | Oshxonada nonushta tayyorlayotgan erkak |
+| `woman-sunlight-eyes-closed.webp` | ingredient:vitamin-d3 | 483023918 | 1600×1067 | Quyosh nurida koʻzini yumgan ayol |
+| `mandarins-turquoise.webp` | ingredient:vitamin-c | 414799990 | 1600×939 | Feruza fonda mandarin boʻlaklari |
+| `omega-spoon-yellow.webp` | ingredient:epa-dha | 373515076 | 1600×1067 | Sariq fonda qoshiqdagi omega-3 kapsulalari |
+| `milk-splash-color.webp` | ingredient:calcium | 430520892 | 1600×1067 | Rangli fonda sut sachrayotgan stakan |
+| `iron-foods-bowls.webp` | ingredient:iron | 408323337 | 1600×1067 | Temirga boy mahsulotlar kosalarda |
+| `b12-animal-foods.webp` | ingredient:vitamin-b12 | 428722621 | 1600×1067 | Baliq, goʻsht, tuxum va pishloq |
+| `woman-mask-off-yellow.webp` | program:immunity | 376722898 | 1600×1067 | Sariq fonda niqobini yechib kulayotgan ayol |
+| `calm-woman-yellow.webp` | program:stress | 487564314 | 1600×1067 | Sariq fonda xotirjam meditatsiya qilayotgan ayol |
+| `serum-woman-yellow.webp` | program:skin | 350867716 | 1600×1066 | Sariq fonda yuziga zardob tomizayotgan ayol |
+| `woman-heart-yellow.webp` | program:women | 619168754 | 1600×1067 | Sariq fonda qoʻlini yuragiga qoʻyib kulayotgan ayol |
+| `milk-glass-blue.webp` | ingredient:calcium | 322834069 | 1067×1600 | Koʻk fonda sut sachrayotgan stakan |
+| `kid-orange-glasses.webp` | audience:kids | 506634240 | 1600×1600 | Apelsin boʻlaklarini koʻzoynakdek tutgan bola |
+| `pregnant-heart-hands.webp` | audience:pregnancy | 391539124 | 1600×984 | Qorniga qoʻllari bilan yurak yasagan homilador ayol |
+| `beauty-profile-yellow.webp` | goal:beauty | 327959202 | 1600×1067 | Sariq tonli goʻzallik portreti, koʻzlari yumuq |
+| `fizz-tablet-water.webp` | format:effervescent | 67985985 | 1339×1600 | Suvda eriyotgan shipuchi tabletka |
+| `lemon-capsules-yellow.webp` | ingredient:vitamin-c | 331531749 | 1600×1067 | Sariq fonda limon va kapsulalar |
+| `man-flex-yellow.webp` | audience:men | 300316257 | 1600×1067 | Sariq fonda muskullarini koʻrsatayotgan erkak |
+| `winter-girl-smile.webp` | goal:immunity | 239230341 | 1600×1067 | Qishki shapka va sharfda kulayotgan qiz |
+| `pills-bottle-yellow.webp` | format:assorted | 439156169 | 1600×1066 | Sariq fonda idishdan sochilgan tabletkalar |
+| `phone-hand-colorful.webp` | service:quiz | 364324743 | 1600×1067 | Rangli fonda qoʻlda smartfon |
+| `pharmacist-counter-smile.webp` | service:pharmacy | 176342421 | 1600×1068 | Dorixona peshtaxtasida tabassum qilayotgan farmatsevt |
+| `pharmacy-shelf-worker.webp` | service:partners | 548615304 | 1600×900 | Dorixona javonlari yonida xodim |
+| `girl-oranges-yellow.webp` | audience:kids | 732696872 | 1600×1066 | Sariq fonda apelsinlarni koʻziga tutgan qiz |
+| `senior-woman-yellow.webp` | audience:seniors | 405927997 | 1600×1020 | Sariq fonda kulayotgan keksa ayol |
+| `eggs-yolk-blue.webp` | ingredient:vitamin-k2 | 419694965 | 1600×1067 | Koʻk fonda tuxum va tuxum sarigʻi |
+| `chickpea-seeds-bowl.webp` | ingredient:zinc | 677908998 | 1600×1067 | Noʻxat, urugʻlar va sabzavotli kosa |
+| `buttermilk-glass.webp` | ingredient:probiotics | 749578565 | 1067×1600 | Stakandagi qatiq ichimligi |

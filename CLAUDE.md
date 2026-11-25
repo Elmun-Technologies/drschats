@@ -702,7 +702,7 @@ kelishi kerak.
 `extendTailwindMerge`). Yangi `--text-*` token qo'shsangiz, uni o'sha ro'yxatga
 ham qo'shing — aks holda `cn("text-yangi", "text-muted")` o'lchamni tashlab
 yuboradi. `formatMoney` uz uchun `soʻm` (U+02BB) yozadi.
-Stok foto: `public/images/stock/st-*`.
+Foto: rasm banki `public/images/bank/*.webp` (Adobe Stock, roʻyxat `docs/IMAGE-BANK.md`; mavzu — `topic-images.ts`, dastur/ingredient — `page-images.ts`). Eski `public/images/stock/st-*` faqat bazadagi kategoriya rasmlari uchun qoldirilgan.
 
 Manba: `design/` papkasi. Har bir UI ishi oldidan tegishli `design/pages/<Sahifa>.html` va `design/screenshots/<Sahifa>.jpg` ni oʻqing. Dizayndan chetga chiqish faqat kelishilgan holda.
 

@@ -35,8 +35,8 @@ export const KIT_DEFAULT = ["dr-frei-thermometer-t30", "hiew-cooling-plaster-16"
 export const CARE_PHOTO_FIT: Record<CareKind, "contain" | "cover"> = { mom: "cover", baby: "cover" };
 
 export const CARE_PHOTO: Record<CareKind, string> = {
-  mom: "/images/stock/st-aud-expectant.webp",
-  baby: "/images/stock/st-aud-child.webp",
+  mom: "/images/bank/ultrasound-pregnant.webp",
+  baby: "/images/bank/baby-crawling.webp",
 };
 
 export interface CareStageTile {

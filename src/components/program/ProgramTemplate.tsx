@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import type { ProgramPageData } from "@/lib/content/program-loader";
@@ -11,6 +12,8 @@ import { Disclaimer } from "@/components/legal/Disclaimer";
 import { chipClass } from "@/components/ui/Chip";
 import { DiscountBadge } from "@/components/ui/Price";
 import { AddProgramButton } from "./AddProgramButton";
+import { programImage } from "@/lib/content/page-images";
+import { topicImageSrc } from "@/lib/content/topic-images";
 
 const H2 = "text-[22px] font-bold leading-7 lg:text-h-section";
 
@@ -29,6 +32,7 @@ export async function ProgramTemplate({
   const t = await getTranslations("programs");
   const prod = await getTranslations("product");
   const { program, products, ingredients, topics, pricing, reviewer } = data;
+  const hero = programImage(program.slug);
 
   return (
     <div className="wrap flex flex-col gap-8 pb-9 pt-1 lg:gap-14 lg:pb-[72px] lg:pt-5">
@@ -52,6 +56,19 @@ export async function ProgramTemplate({
             <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page">{program.name}</h1>
             <p className="text-[17px] font-semibold leading-[24px] lg:text-[19px] lg:leading-[28px]">{program.headline}</p>
             <p className="text-[15px] leading-[22px] text-ink-2 lg:text-lead">{program.intro}</p>
+            {hero && (
+              <div className="relative mt-2 aspect-[16/9] overflow-hidden rounded-[24px] bg-tile lg:mt-4">
+                <Image
+                  src={topicImageSrc(hero)}
+                  alt={hero.alt[locale]}
+                  fill
+                  priority
+                  sizes="(min-width: 1296px) 840px, (min-width: 1024px) 60vw, calc(100vw - 32px)"
+                  className="object-cover"
+                  style={hero.position ? { objectPosition: hero.position } : undefined}
+                />
+              </div>
+            )}
             {reviewer && <ReviewedBy expert={reviewer} />}
           </header>
 

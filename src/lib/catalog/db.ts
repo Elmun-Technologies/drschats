@@ -87,7 +87,7 @@ async function readCatalog(): Promise<CatalogData> {
       slug: c.slug,
       name: c.name,
       description: c.description,
-      image: c.image ?? "/images/stock/st-cat-capsules.webp",
+      image: c.image ?? "/images/bank/pills-bottle-yellow.webp",
     })),
     brands: brandRows.map((b) => ({ slug: b.slug, name: b.name })),
     products: rows.map(
