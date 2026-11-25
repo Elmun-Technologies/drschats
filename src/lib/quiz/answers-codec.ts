@@ -1,9 +1,11 @@
 import type { QuizAnswers } from "./engine";
 
 /*
-  Answers travel in the URL so a plan is shareable and the result page can be
-  rendered on the server with the full product objects, instead of shipping the
-  whole catalogue to the browser.
+  Answers reach the result page so it can be rendered on the server with the
+  full product objects, instead of shipping the whole catalogue to the browser.
+  The quiz hands them over in a short-lived first-party cookie, not the URL:
+  they are health data (pregnancy, medicines), and analytics tags read the URL.
+  A legacy `?a=` link still renders.
 
   Format: `questionId.option1_option2~questionId.option`
 */
@@ -26,3 +28,6 @@ export function decodeAnswers(encoded: string | undefined): QuizAnswers {
   }
   return answers;
 }
+
+/** Cookie that carries the encoded answers from the quiz to its result page. */
+export const QUIZ_ANSWERS_COOKIE = "gv_quiz";

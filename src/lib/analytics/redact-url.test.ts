@@ -13,4 +13,10 @@ describe("redactUrl", () => {
     expect(redactUrl("/ru/email/preferences", "?token=x")).toBe("/ru/email/preferences");
     expect(redactUrl("/ru", "")).toBe("/ru");
   });
+
+  it("drops quiz answers on the result page only", () => {
+    expect(redactUrl("/uz/quiz/result", "?a=who.self~preg.yes")).toBe("/uz/quiz/result");
+    expect(redactUrl("/ru/quiz/result/", "?a=x&utm_source=ig")).toBe("/ru/quiz/result/?utm_source=ig");
+    expect(redactUrl("/uz/products", "?a=1")).toBe("/uz/products?a=1");
+  });
 });
