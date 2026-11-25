@@ -81,6 +81,11 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
   `period-pain`, `cracked-lips`; `/goals/blood-pressure`, `menopause`, `vegetarian`
   (`health-topics-1125.ts`, `health-topics-1126.ts`; `subjects.ts` ga `topic` ulangan). Isitma va 180/120
   bosim boʻyicha Codex tuzatishlari (AAP/AHA) kiritilgan.
+- **Ona va bola SEO sahifalari** (2026-11-25 kech): 5 ta yangi maqsad sahifasi (uz + ru, `health-topics-1127.ts`) —
+  homiladorlikni rejalashtirish, emizish davri, trimestrlar, maktab oʻquvchilari (7–13), bola uchun uy aptechkasi.
+  Planner talabidan («витамины для планирования беременности», «для кормящих», «для школьников»), kalit soʻzlar
+  `subjects.ts` da shu sahifalarga koʻchirildi. Emizish sahifasida mahsulot yoʻq — qadoqda emizish yozilgan mahsulot
+  katalogda yoʻq. `/care` hisob/eslatma bosqichi hamon egasining maʼlumotini kutyapti (`docs/ONA-BOLA.md`).
 - **Eski rasmlar almashtirildi** (2026-11-25): Adobe Stock'dan yana 32 ta yorqin, eʼtibor tortadigan foto
   (sariq/rangli fon, makro). `public/images/stock/st-*` endi saytda ishlatilmaydi (faqat bazadagi eski kategoriya
   rasmlari uchun qoldi): blog muqovalari (11 ta eski + standart), bosh sahifa plitkalari, «Biz haqimizda»,
