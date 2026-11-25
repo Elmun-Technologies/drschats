@@ -195,4 +195,5 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 ## Auditoriya «dunyolari» (2026-11-25, pilot)
 
 - `/goals/sport` — umumiy shablon oʻrniga oʻz dunyosi: toʻq hero + foto + raqamlar, «Mashgʻulot kuni» lentasi (5 qadam, mahsulot bilan), «Sportchi toʻplami» (3 mahsulot, bitta tugma bilan savatga, `topic_bundle_add_all`). Aksent `--color-world-sport`.
-- Keyingisi (egasi pilotni maʼqullagach): bolalar (yosh tanlash), ayollar (hayot bosqichlari), homiladorlar (trimestr), erkaklar, keksalar, ofis, goʻzallik — har biriga oʻz aksent va modul.
+- v2 (egasi fikri: «boʻsh, emotsiya yoʻq»): Pantone ranglari (`--color-pantone-*`), hero-kollaj (arka foto + dumaloq foto + mahsulot stikerlari narxi bilan), rangli raqam kartalari, har qadamda foto (test majburiy). Dunyolar: sport (Flame + qora), bolalar (Very Peri, «yoʻl»), ayollar (Peach Fuzz + Viva Magenta), erkaklar (qora + Classic Blue), keksalar (Mocha Mousse, yirik qatorlar).
+- Qolgani: homiladorlar (yangi foto kerak), ofis, goʻzallik, menopauza.

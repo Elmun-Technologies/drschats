@@ -15,7 +15,7 @@ describe.each(WORLD_ENTRIES.map(([key]) => [key] as const))("world %s", (key) =>
 
   it.each(["uz", "ru"] as const)("%s: copy carries no medical promise and uz uses ʻ", (locale) => {
     const w = topicWorld(kind, slug, locale)!;
-    const texts = [w.eyebrow, w.dayTitle, w.dayIntro, w.bundle.title, w.bundle.text, ...w.stats.map((s) => s.label), ...w.steps.flatMap((s) => [s.title, s.body])];
+    const texts = [w.eyebrow, w.dayTitle, w.dayIntro, ...(w.bundle ? [w.bundle.title, w.bundle.text] : []), ...w.stats.map((s) => s.label), ...w.steps.flatMap((s) => [s.title, s.body])];
     for (const text of texts) {
       for (const re of BANNED_CLAIMS) expect(text, text).not.toMatch(re);
       if (locale === "uz") expect(text, text).not.toMatch(/[oOgG]['’‘]/);
@@ -27,10 +27,25 @@ describe.each(WORLD_ENTRIES.map(([key]) => [key] as const))("world %s", (key) =>
     const topic = getHealthTopic(slug, "uz");
     expect(topic).toBeTruthy();
     const onTopic = new Set(topic!.productSlugs);
-    for (const src of [w.hero.src, ...w.steps.flatMap((s) => (s.image ? [s.image.src] : []))]) expect(existsSync(bankFile(src)), src).toBe(true);
-    for (const p of [...w.bundle.slugs, ...w.steps.flatMap((s) => (s.productSlug ? [s.productSlug] : []))]) {
+    for (const src of [w.hero.src, w.inset.src, ...w.steps.map((s) => s.image.src)]) expect(existsSync(bankFile(src)), src).toBe(true);
+    for (const p of [...w.stickers, ...(w.bundle?.slugs ?? []), ...w.steps.flatMap((s) => (s.productSlug ? [s.productSlug] : []))]) {
       expect(catalogue.has(p), p).toBe(true);
       expect(onTopic.has(p), p).toBe(true);
+    }
+  });
+
+  it("every step has its own photo, none repeated inside the page", () => {
+    const w = topicWorld(kind, slug, "uz")!;
+    const files = [w.hero.src, w.inset.src, ...w.steps.map((s) => s.image.src)];
+    expect(new Set(files).size).toBe(files.length);
+  });
+
+  it("step links lead to a page that exists", () => {
+    const w = topicWorld(kind, slug, "uz")!;
+    for (const href of w.steps.flatMap((s) => (s.href ? [s.href] : []))) {
+      const m = href.match(/^\/goals\/(.+)$/);
+      if (m) expect(getHealthTopic(m[1], "uz"), href).toBeTruthy();
+      else expect(["/care/baby", "/care/mom"]).toContain(href);
     }
   });
 });

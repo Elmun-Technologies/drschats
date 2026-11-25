@@ -23,6 +23,7 @@ export const PATHS = [
   "/goals",
   // An audience "world": dark hero, day timeline, accent set panel.
   "/goals/sport",
+  "/goals/women",
   // The care hubs: tracker, box / kit builder, stage tiles.
   "/care/mom",
   "/care/baby",

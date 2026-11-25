@@ -101,7 +101,7 @@ export async function HealthTopicTemplate({
         </nav>
 
         {world ? (
-          <WorldHero world={world} hasBundle={bundle.length > 0} name={topic.name} headline={topic.headline} intro={topic.intro} />
+          <WorldHero world={world} hasBundle={bundle.length > 0} products={products} locale={locale} name={topic.name} headline={topic.headline} intro={topic.intro} />
         ) : (
           <div className={cn(hero && "grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:items-center lg:gap-12")}>
             <header className="flex max-w-[820px] flex-col gap-2 lg:gap-3">
