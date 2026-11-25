@@ -7,7 +7,7 @@ import type { RawArticle } from "./blog";
   on cold hands and Raynaud's phenomenon, WHO guidance on daily water intake for adults.
   Photos: Adobe Stock bank, docs/IMAGE-BANK.md.
 */
-export const articlesNov2026i: RawArticle[] = [
+export const articlesNov2026j: RawArticle[] = [
   {
     slug: "imtihon-davrida-talaba-ovqatlanishi-va-uyqusi",
     date: "2026-11-25",
