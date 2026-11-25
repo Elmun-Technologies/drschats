@@ -107,8 +107,9 @@ export const SUBJECTS: KeywordSubject[] = [
 
   /* ---------- audiences ---------- */
   { id: "aud-kids", kind: "audience", label: "Bolalar uchun", ru: ["витамины для детей", "детские витамины", "витамины для детей от 3 лет", "витамины для детей сироп", "жевательные витамины для детей"], uz: ["bolalar uchun vitamin", "bolalar uchun vitaminlar", "bolalar vitamini"], site: { terms: ["kids", "bolalar", "детск", "kinder"], topic: "kids" } },
-  { id: "aud-teens", kind: "audience", label: "Oʻsmirlar va maktab oʻquvchilari", ru: ["витамины для подростков", "витамины для школьников"], uz: ["o'smirlar uchun vitamin", "maktab o'quvchilari uchun vitamin"], site: { topic: "teens" } },
-  { id: "aud-pregnant", kind: "audience", label: "Homiladorlar uchun", ru: ["витамины для беременных", "витамины при беременности", "витамины для планирования беременности", "витамины для кормящих"], uz: ["homiladorlar uchun vitamin", "homiladorlik vitaminlari", "homiladorlikda vitamin"], site: { terms: ["prenatal", "homilador", "беремен"], topic: "pregnancy" } },
+  { id: "aud-teens", kind: "audience", label: "Oʻsmirlar va maktab oʻquvchilari", ru: ["витамины для подростков"], uz: ["o'smirlar uchun vitamin"], site: { topic: "teens" } },
+  { id: "aud-school", kind: "audience", label: "Maktab oʻquvchilari (7–13)", ru: ["витамины для школьников", "витамины для детей 7 лет", "витамины для детей 10 лет"], uz: ["maktab o'quvchilari uchun vitamin"], site: { topic: "school-kids" } },
+  { id: "aud-pregnant", kind: "audience", label: "Homiladorlar uchun", ru: ["витамины для беременных", "витамины при беременности"], uz: ["homiladorlar uchun vitamin", "homiladorlik vitaminlari", "homiladorlikda vitamin"], site: { terms: ["prenatal", "homilador", "беремен"], topic: "pregnancy" } },
   { id: "aud-women", kind: "audience", label: "Ayollar uchun", ru: ["витамины для женщин", "витамины для женщин после 40", "витамины для женщин после 50"], uz: ["ayollar uchun vitamin", "ayollar uchun vitaminlar"], site: { terms: ["women", "ayollar", "женщин", "woman"], topic: "women" } },
   { id: "aud-men", kind: "audience", label: "Erkaklar uchun", ru: ["витамины для мужчин", "витамины для мужчин после 40"], uz: ["erkaklar uchun vitamin", "erkaklar uchun vitaminlar"], site: { terms: ["erkaklar", "мужчин", "for men", "men's"], topic: "men" } },
   { id: "aud-elderly", kind: "audience", label: "Keksalar uchun", ru: ["витамины для пожилых", "витамины после 60"], uz: ["keksalar uchun vitamin"], site: { topic: "seniors" } },
@@ -135,6 +136,10 @@ export const SUBJECTS: KeywordSubject[] = [
   { id: "sym-period-pain", kind: "symptom", label: "Hayz ogʻrigʻi", ru: ["боли при месячных", "болит живот при месячных"], uz: ["hayz og'rig'i", "hayz paytida og'riq"], site: { topic: "period-pain" } },
   { id: "sym-cracked-lips", kind: "symptom", label: "Lab yorilishi", ru: ["трескаются губы", "трещины в уголках рта", "заеды"], uz: ["lab yorilishi", "lab burchagi yorilishi"], site: { topic: "cracked-lips" } },
   { id: "goal-vegetarian", kind: "goal", label: "Vegetarian ovqatlanish", ru: ["витамины для вегетарианцев", "b12 вегетарианцам"], uz: ["vegetarian vitamin", "vegetarian ovqatlanish"], site: { topic: "vegetarian" } },
+  { id: "goal-pregnancy-planning", kind: "goal", label: "Homiladorlikni rejalashtirish", ru: ["витамины для планирования беременности", "фолиевая кислота при планировании"], uz: ["homiladorlikni rejalashtirish", "homiladorlikka tayyorgarlik vitamin"], site: { topic: "pregnancy-planning" } },
+  { id: "goal-breastfeeding", kind: "goal", label: "Emizish davri", ru: ["витамины для кормящих", "витамины при грудном вскармливании"], uz: ["emizikli onalar uchun vitamin", "emizish davrida vitamin"], site: { topic: "breastfeeding" } },
+  { id: "goal-trimesters", kind: "goal", label: "Homiladorlik trimestrlari", ru: ["витамины по триместрам", "витамины в 1 триместре", "витамины во 2 триместре", "витамины в 3 триместре"], uz: ["homiladorlik trimestr vitamin"], site: { topic: "pregnancy-trimesters" } },
+  { id: "goal-baby-first-aid", kind: "goal", label: "Bola uchun aptechka", ru: ["детская аптечка", "аптечка для новорожденного"], uz: ["bola uchun aptechka", "chaqaloq aptechkasi"], site: { topic: "baby-first-aid" } },
 
   /* ---------- forms ---------- */
   { id: "form-effervescent", kind: "form", label: "Shipuchi tabletkalar", ru: ["шипучие витамины", "шипучие таблетки витамины"], uz: ["shipuchi vitamin", "eruvchan vitamin"], site: { terms: ["shipuchi", "шипуч", "effervescent", "eruvchan"], category: "shipuchi-tabletkalar" } },

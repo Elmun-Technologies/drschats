@@ -4,6 +4,7 @@ import { audienceGoalTopics } from "./health-topics-audience";
 import { moreTopics } from "./health-topics-more";
 import { topics1125 } from "./health-topics-1125";
 import { topics1126 } from "./health-topics-1126";
+import { topics1127 } from "./health-topics-1127";
 
 type L<T = string> = Record<Locale, T>;
 
@@ -1771,6 +1772,7 @@ const raw: RawHealthTopic[] = [
   ...moreTopics,
   ...topics1125,
   ...topics1126,
+  ...topics1127,
 ];
 
 function localise(topic: RawHealthTopic, locale: Locale): HealthTopic {
