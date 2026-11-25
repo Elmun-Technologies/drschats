@@ -130,6 +130,11 @@ export const SUBJECTS: KeywordSubject[] = [
   { id: "sym-fever", kind: "symptom", label: "Isitma, harorat oʻlchash", ru: ["температура у ребенка", "как измерить температуру", "градусник электронный"], uz: ["isitma", "harorat o'lchash", "termometr"], site: { topic: "fever" } },
   { id: "goal-blood-pressure", kind: "goal", label: "Qon bosimi nazorati", ru: ["как измерить давление", "тонометр купить", "норма давления"], uz: ["qon bosimi", "tonometr", "bosim o'lchash"], site: { topic: "blood-pressure" } },
   { id: "goal-menopause", kind: "goal", label: "Menopauza", ru: ["витамины при климаксе", "климакс", "менопауза витамины"], uz: ["menopauza", "klimaks"], site: { topic: "menopause" } },
+  { id: "sym-numbness", kind: "symptom", label: "Qoʻl-oyoq uvishishi", ru: ["немеют руки", "немеют ноги", "онемение пальцев рук"], uz: ["qo'l uvishishi", "oyoq uvishishi"], site: { topic: "numbness" } },
+  { id: "sym-gums", kind: "symptom", label: "Milk qonashi", ru: ["кровоточат десны", "кровоточивость десен"], uz: ["milk qonashi", "tish milki qonashi"], site: { topic: "bleeding-gums" } },
+  { id: "sym-period-pain", kind: "symptom", label: "Hayz ogʻrigʻi", ru: ["боли при месячных", "болит живот при месячных"], uz: ["hayz og'rig'i", "hayz paytida og'riq"], site: { topic: "period-pain" } },
+  { id: "sym-cracked-lips", kind: "symptom", label: "Lab yorilishi", ru: ["трескаются губы", "трещины в уголках рта", "заеды"], uz: ["lab yorilishi", "lab burchagi yorilishi"], site: { topic: "cracked-lips" } },
+  { id: "goal-vegetarian", kind: "goal", label: "Vegetarian ovqatlanish", ru: ["витамины для вегетарианцев", "b12 вегетарианцам"], uz: ["vegetarian vitamin", "vegetarian ovqatlanish"], site: { topic: "vegetarian" } },
 
   /* ---------- forms ---------- */
   { id: "form-effervescent", kind: "form", label: "Shipuchi tabletkalar", ru: ["шипучие витамины", "шипучие таблетки витамины"], uz: ["shipuchi vitamin", "eruvchan vitamin"], site: { terms: ["shipuchi", "шипуч", "effervescent", "eruvchan"], category: "shipuchi-tabletkalar" } },

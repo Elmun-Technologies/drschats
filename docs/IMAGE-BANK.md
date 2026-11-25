@@ -1,6 +1,6 @@
 # Rasm banki (Adobe Stock, litsenziyalangan)
 
-2026-11-24 da Adobe Stock bepul davrida litsenziyalangan **160 ta foto va 5 ta video** — haqiqiy suratlar (AI-generatsiya yoʻq, `isGenTech: false`). Fotolar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Videolar: `public/videos/bank/<slug>.mp4` (720p, ovozsiz, ≤12 s). Litsenziya doimiy — Adobe hisobida ID boʻyicha qayta yuklab olish yangi litsenziya talab qilmaydi.
+2026-11-24 da Adobe Stock bepul davrida litsenziyalangan **160 ta foto va 5 ta video**, 2026-11-25 da yana **50 ta foto va 9 ta video** (jami 210 foto, 14 video) — haqiqiy suratlar (AI-generatsiya yoʻq, `isGenTech: false`). Fotolar: `public/images/bank/<slug>.webp` (1600 px gacha, webp q78). Videolar: `public/videos/bank/<slug>.mp4` (720p, ovozsiz, ≤12 s). Litsenziya doimiy — Adobe hisobida ID boʻyicha qayta yuklab olish yangi litsenziya talab qilmaydi.
 
 **Qoidalar:** ishlatishdan oldin rasm mavzuga mosligini tekshiring; qadoq yoki boshqa brend koʻrinmasin; `alt` uz/ru tilida rasm mazmunini aytsin; tibbiy vaʼda yoʻq. Ishlatilgan rasmni `public/images/blog/SOURCES.md` ga ham yozing. Kerakli mavzu topilmasa — Adobe Stock (litsenziyali) yoki egasidan haqiqiy foto; AI-generatsiya rasm ishlatilmaydi (CLAUDE.md).
 
@@ -214,6 +214,61 @@
 | `season-new-year.webp` | promo:new-year | 302505736 | 1600×1070 | Family decorating New Year tree |
 | `shopping-bags.webp` | promo:sale | 390518818 | 1600×1067 | Woman with shopping bags |
 
+## Qoʻshimcha (2026-11-25)
+
+| Fayl | Mavzu | Adobe ID | Oʻlcham | Tavsif |
+|---|---|---|---|---|
+| `man-focus-laptop.webp` | goal:brain | 209719726 | 1600×1067 | Diqqat bilan noutbukda ishlayotgan erkak |
+| `woman-reading-rest-eyes.webp` | goal:eyes | 296697900 | 1600×1067 | Kitobdan keyin koʻzini dam oldirayotgan ayol |
+| `nail-broken.webp` | symptom:brittle-nails | 364467050 | 1600×1068 | Singan tirnoq |
+| `woman-window-pensive.webp` | symptom:stress-anxiety | 338964800 | 1600×1067 | Derazaga oʻychan qarayotgan ayol |
+| `family-cooking-asian.webp` | audience:family | 334221380 | 1600×1067 | Oila uyda ovqat tayyorlamoqda |
+| `man-stretching-park.webp` | goal:sport | 244851405 | 1600×1067 | Parkda choʻzilish mashqi |
+| `woman-glowing-skin.webp` | goal:beauty | 521814857 | 1600×1067 | Terisiga tegib turgan ayol |
+| `kid-winter-running.webp` | goal:immunity/kids | 461571402 | 1600×1067 | Qishda yugurayotgan bola |
+| `woman-garden-stairs.webp` | symptom:joint-pain | 864974142 | 1600×1067 | Bogʻ zinasidan tushayotgan ayol |
+| `student-exam-night.webp` | audience:students | 1885257081 | 1600×1067 | Kechasi imtihonga tayyorlanayotgan talaba |
+| `woman-hot-water-bottle.webp` | audience:women | 404603486 | 1600×1067 | Isitgich bilan divanda yotgan ayol (hayz ogʻrigʻi) |
+| `hand-tingling.webp` | symptom:numbness | 445526649 | 1600×994 | Qoʻl uvishishi |
+| `lips-balm.webp` | symptom:dry-lips | 669692010 | 1600×1066 | Lablarga balzam surtish |
+| `gums-brushing.webp` | symptom:gums | 405975574 | 1600×1066 | Tish yuvganda milk qonashi |
+| `dark-circles-mirror.webp` | symptom:dark-circles | 480762458 | 1600×1069 | Koʻz ostidagi qora doiralar |
+| `woman-cold-hands-winter.webp` | symptom:cold-hands | 1678866216 | 1600×1067 | Qishda qoʻlini isitayotgan ayol |
+| `doctor-thyroid-check.webp` | goal:thyroid | 341840515 | 1600×1067 | Endokrinolog boʻyinni tekshirmoqda |
+| `toddler-refusing-food.webp` | audience:kids | 482973264 | 1600×1067 | Ovqat yeyishni istamagan kichkintoy |
+| `nurse-tired-shift.webp` | audience:shift-workers | 257600822 | 1600×1067 | Navbatchilikdan charchagan hamshira |
+| `driver-yawning.webp` | audience:drivers | 499230918 | 1600×1067 | Rulda esnayotgan haydovchi |
+| `vegetarian-bowl.webp` | audience:vegetarians | 301992773 | 1600×1067 | Vegetarian taom kosasi |
+| `traveler-airport.webp` | audience:travel | 436582439 | 1600×985 | Aeroportda chamadonli ayol |
+| `woman-run-water-sweat.webp` | season:summer | 693425331 | 1600×800 | Yugurishdan keyin suv ichayotgan ayol |
+| `man-foam-roller.webp` | goal:sport | 525428011 | 1600×1067 | Mashqdan keyin rolik bilan tiklanish |
+| `mother-vitamins-baby.webp` | audience:moms | 625081334 | 1067×1600 | Chaqaloqli ona tomizgich bilan |
+| `seaweed-bowl.webp` | ingredient:iodine | 670266599 | 1600×1067 | Dengiz karami |
+| `pilates-women.webp` | goal:women | 552971595 | 1600×1067 | Pilates mashgʻuloti |
+| `man-doctor-consult.webp` | audience:men | 1172414606 | 1600×1067 | Erkak shifokor qabulida |
+| `family-dinner-table.webp` | audience:family | 490519819 | 1600×1067 | Oila dasturxon atrofida |
+| `woman-unboxing-parcel.webp` | service:delivery | 359351686 | 1600×1067 | Ayol uyda posilkani ochmoqda |
+| `phone-bed-night.webp` | symptom:insomnia | 273516824 | 1600×1068 | Kechasi yotoqda telefon |
+| `sweets-cake-craving.webp` | symptom:sweet-cravings | 327968784 | 1600×1065 | Shirinlik yeyayotgan ayol |
+| `kids-school-snow.webp` | audience:kids | 572184034 | 1600×1067 | Qorda maktabga ketayotgan bolalar |
+| `elderly-couple-park.webp` | audience:seniors | 368233005 | 1600×1067 | Parkda sayr qilayotgan keksa juftlik |
+| `tea-lemon-honey.webp` | season:winter | 684771250 | 1600×1061 | Limon va asalli choy |
+| `asian-woman-smiling.webp` | audience:women | 361523538 | 1600×1067 | Jilmayib turgan yosh ayol |
+| `child-height-measure.webp` | audience:kids | 597351792 | 844×1600 | Bolaning boʻyini oʻlchash |
+| `woman-dumbbells-gym.webp` | goal:sport | 412469480 | 1600×1005 | Ayol gantel bilan mashq qilmoqda |
+| `snoring-couple.webp` | symptom:insomnia | 562071222 | 1600×1067 | Xurrak tufayli uxlay olmagan ayol |
+| `mother-daughter-handwash.webp` | goal:immunity | 573388592 | 1600×1067 | Ona va qiz qoʻl yuvmoqda |
+| `baby-feet-hands.webp` | audience:newborn | 355916705 | 1600×1067 | Chaqaloq oyoqchalari ona qoʻlida |
+| `city-bukhara.webp` | place:bukhara | 790324340 | 1600×1050 | Buxoro, madrasa peshtoqi |
+| `supplement-spoon-marble.webp` | banner:supplements | 322897926 | 1600×1067 | Qoshiqdagi qoʻshimchalar, marmar fon |
+| `baby-crawling.webp` | audience:baby | 109438982 | 1600×1179 | Emaklayotgan chaqaloq |
+| `man-running-snow.webp` | season:winter | 613130572 | 1600×1067 | Qishda yugurayotgan erkak |
+| `pensioner-reading-breakfast.webp` | audience:seniors | 505176226 | 1600×1065 | Nonushtada gazeta oʻqiyotgan keksa |
+| `father-son-football.webp` | audience:kids | 376869105 | 1600×1050 | Ota-bola futbol oʻynamoqda |
+| `couple-cooking-salad.webp` | lifestyle:food | 366186088 | 1600×533 | Juftlik salat tayyorlamoqda |
+| `pregnant-window.webp` | audience:pregnancy | 162540452 | 1600×1067 | Deraza yonida homilador ayol |
+| `woman-office-water.webp` | lifestyle:office | 308720593 | 1600×1067 | Ofisda suv ichayotgan ayol |
+
 ## Videolar
 
 | Fayl | Adobe ID | Format | Tavsif |
@@ -223,3 +278,12 @@
 | `effervescent-macro.mp4` | 539120539 | 1280×720, 12 s | Eruvchi tabletka suvda (makro) |
 | `courier-parcel.mp4` | 506765382 | 1280×720, 9 s | Kuryer posilkani topshirmoqda |
 | `kitchen-morning-vertical.mp4` | 1782276867 | 720×1280, 9 s | Ayol oshxonada nonushta (vertikal, Reels) |
+| `supplements-daily-vertical.mp4` | 712153739 | 720×1280, 12 s | Kaftda kapsula (vertikal) |
+| `woman-vitamins-sofa-vertical.mp4` | 1845169234 | 720×1280, 8 s | Divanda vitamin ichayotgan ayol (vertikal) |
+| `snow-road-walk-vertical.mp4` | 1885422899 | 720×1280, 10 s | Qorli yoʻlda yurayotgan odam (vertikal) |
+| `snowfall-city-night-vertical.mp4` | 482995346 | 720×1280, 7 s | Kechki shaharda qor yogʻmoqda (vertikal) |
+| `morning-stretch-vertical.mp4` | 936165121 | 720×1280, 12 s | Ertalab deraza oldida choʻzilish (vertikal) |
+| `office-yawn-vertical.mp4` | 826952447 | 720×1280, 12 s | Ofisda charchagan ayol (vertikal) |
+| `child-drinking-water.mp4` | 208027193 | 1280×720, 12 s | Bola stakandan suv ichmoqda |
+| `family-breakfast-milk.mp4` | 514620202 | 1280×720, 12 s | Qizcha nonushtada sut ichmoqda |
+| `pharmacist-bag.mp4` | 2021632948 | 1280×720, 9 s | Farmatsevt buyurtmani paketga solmoqda |
