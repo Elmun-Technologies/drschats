@@ -269,8 +269,14 @@ export async function ordersFromPhone(phone: string): Promise<number | null> {
   }
 }
 
-/** The retired `/images/stock/st-*` set still sits in rows seeded before 2026-11-25; the category's pack shot replaces it. */
+/*
+  Rows seeded before 2026-11-25 carry the generic capsules placeholder; only that
+  value is swapped for the category's pack shot. Any other stored image, a stock
+  one an admin picked included, is kept as chosen.
+*/
+const SEEDED_PLACEHOLDER = "/images/stock/st-cat-capsules.webp";
+
 function categoryImage(slug: string, stored: string | null): string {
-  if (stored && !stored.startsWith("/images/stock/")) return stored;
+  if (stored && stored !== SEEDED_PLACEHOLDER) return stored;
   return categoryCutout(slug) ?? "/images/bank/pills-bottle-yellow.webp";
 }
