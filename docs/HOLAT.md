@@ -91,7 +91,7 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 
 ## Yaqinda tugagan (main'ga merge qilingan)
 
-- **Rasm banki** (2026-11-24): Adobe Stock bepul davrida 160 ta haqiqiy foto (AI emas) va 5 ta qisqa video litsenziyalandi — `public/images/bank/`, `public/videos/bank/`, reyestr `docs/IMAGE-BANK.md` (+ `docs/image-bank.tsv`). Yangi sahifa/blog/banner uchun rasm avval shu yerdan olinadi. Keyingi qadam: 49 ta mavzu sahifasiga (goals/symptoms/vitamins) hero rasm sloti va bankdan moslash.
+- **Rasm banki** (2026-11-24): Adobe Stock bepul davrida 160 ta haqiqiy foto (AI emas) va 5 ta qisqa video litsenziyalandi — `public/images/bank/`, `public/videos/bank/`, reyestr `docs/IMAGE-BANK.md` (+ `docs/image-bank.tsv`). Yangi sahifa/blog/banner uchun rasm avval shu yerdan olinadi. Mavzu sahifalariga hero foto #187 bilan qoʻshildi (yuqoridagi boʻlim).
 - **Yandex Vebmaster**: govita.uz huquqi tasdiqlandi (HTML-fayl, 2026-11-24). «Фиды» boʻlimida faqat koʻchmas mulk/vakansiya/transport/xizmat toifalari bor — tovar YML feedi bu yerga ulanmaydi (Yandex Business / Tovarlar kabineti kerak, egasi).
 
 - **Talab tahlili — bozor maʼlumoti oldindan** (2026-11-12): `0037_keyword_market_baseline.sql` 2026-11-02 Planner eksportini (1 913 soʻz, oyiga 250 800 qidiruv) boʻsh jadvalga yozadi — `/admin/keywords` fayl yuklamasdan toʻladi. Sahifaga qoʻshildi: talab darajasi (1000+/100–999/10–99/10 dan kam), tillar ulushi, mavsum, «Sahifa kerak», oʻsayotgan/pasayayotgan soʻzlar (`lib/keywords/report.ts`, testli). **Keyingi qadam (foydalanuvchi tanlagan «a» variant)**: «Sahifa kerak» roʻyxatidagi mavzuga tugma bilan uz/ru sahifa qoralamasi — Anthropic API kaliti va bazadagi qoralama sahifalar kerak.
