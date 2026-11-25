@@ -21,6 +21,8 @@ export const PATHS = [
   // No results: the notify form and the suggested terms.
   "/search?q=topilmaydigan",
   "/goals",
+  // An audience "world": dark hero, day timeline, accent set panel.
+  "/goals/sport",
   // The care hubs: tracker, box / kit builder, stage tiles.
   "/care/mom",
   "/care/baby",

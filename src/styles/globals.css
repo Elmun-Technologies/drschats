@@ -65,6 +65,8 @@
   /* Swiss Energy brand panel only (owner's decision, 2026-10) — not a sale colour. */
   --color-swiss: #d52b1e;
   --color-yellow: #ffd43b;
+  /* Audience "worlds" (owner's decision, 2026-11-25): one accent per audience page, only inside that page. */
+  --color-world-sport: #ff6a2b;
   --color-yellow-banner: #ffe58a;
 
   --font-onest: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;

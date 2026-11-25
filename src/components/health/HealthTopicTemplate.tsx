@@ -19,6 +19,8 @@ import { Disclaimer } from "@/components/legal/Disclaimer";
 import { chipClass } from "@/components/ui/Chip";
 import { cn } from "@/lib/utils";
 import { ingredientTopicSlug } from "./topic-links";
+import { topicWorld } from "@/lib/content/topic-worlds";
+import { WorldBundle, WorldDay, WorldHero } from "./world/TopicWorldView";
 
 /** Products shown right under the intro; the rest follow the article. */
 const LEAD_PRODUCTS = 4;
@@ -57,7 +59,10 @@ export async function HealthTopicTemplate({
   ]);
 
   const hero = topicImage(topic.kind, topic.slug);
-  const shown = products.slice(0, MAX_PRODUCTS);
+  // An audience with its own "world" — own hero, day and set; the set's products leave the grids below.
+  const world = topicWorld(topic.kind, topic.slug, locale);
+  const inBundle = new Set(world?.bundle.slugs ?? []);
+  const shown = products.filter((p) => !inBundle.has(p.slug)).slice(0, MAX_PRODUCTS);
   const lead = shown.slice(0, LEAD_PRODUCTS);
   const more = shown.slice(LEAD_PRODUCTS);
   // The topic's own shelf, not the whole catalogue — when it exists and has something on it.
@@ -94,30 +99,37 @@ export async function HealthTopicTemplate({
           <span aria-current="page" className="text-ink">{topic.name}</span>
         </nav>
 
-        <div className={cn(hero && "grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:items-center lg:gap-12")}>
-          <header className="flex max-w-[820px] flex-col gap-2 lg:gap-3">
-            <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted lg:text-sm">{t(`${topic.kind}.singular`)}</span>
-            <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page">{topic.name}</h1>
-            <p className="text-[17px] font-semibold leading-[24px] text-ink lg:text-[19px] lg:leading-[28px]">{topic.headline}</p>
-            <p className="text-[15px] leading-[22px] text-ink-2 lg:text-lead">{topic.intro}</p>
-          </header>
-          {hero && (
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] bg-tile">
-              <Image
-                src={topicImageSrc(hero)}
-                alt={hero.alt[locale]}
-                fill
-                priority
-                sizes="(min-width: 1296px) 500px, (min-width: 1024px) 40vw, calc(100vw - 32px)"
-                className="object-cover"
-                style={hero.position ? { objectPosition: hero.position } : undefined}
-              />
-            </div>
-          )}
-        </div>
+        {world ? (
+          <WorldHero world={world} name={topic.name} headline={topic.headline} intro={topic.intro} />
+        ) : (
+          <div className={cn(hero && "grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:items-center lg:gap-12")}>
+            <header className="flex max-w-[820px] flex-col gap-2 lg:gap-3">
+              <span className="text-[13px] font-semibold uppercase tracking-[0.06em] text-muted lg:text-sm">{t(`${topic.kind}.singular`)}</span>
+              <h1 className="text-[28px] font-extrabold leading-[34px] lg:text-h-page">{topic.name}</h1>
+              <p className="text-[17px] font-semibold leading-[24px] text-ink lg:text-[19px] lg:leading-[28px]">{topic.headline}</p>
+              <p className="text-[15px] leading-[22px] text-ink-2 lg:text-lead">{topic.intro}</p>
+            </header>
+            {hero && (
+              <div className="relative aspect-[16/10] overflow-hidden rounded-[24px] bg-tile">
+                <Image
+                  src={topicImageSrc(hero)}
+                  alt={hero.alt[locale]}
+                  fill
+                  priority
+                  sizes="(min-width: 1296px) 500px, (min-width: 1024px) 40vw, calc(100vw - 32px)"
+                  className="object-cover"
+                  style={hero.position ? { objectPosition: hero.position } : undefined}
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         {reviewer && <ReviewedBy expert={reviewer} />}
       </div>
+
+      {world && <WorldDay world={world} products={products} locale={locale} />}
+      {world && <WorldBundle world={world} products={products} locale={locale} list={`${topic.kind}/${topic.slug}`} />}
 
       {lead.length > 0 && (
         <section aria-labelledby="topic-products" className="flex flex-col gap-3.5 lg:gap-6">
@@ -141,7 +153,7 @@ export async function HealthTopicTemplate({
         </section>
       )}
 
-      {topic.bullets.length > 0 && (
+      {!world && topic.bullets.length > 0 && (
         <ul className="grid gap-2.5 sm:grid-cols-2 lg:grid-cols-4 lg:gap-3">
           {topic.bullets.map((b) => (
             <li key={b} className="flex items-start gap-3 rounded-[20px] bg-tile p-4 text-[15px] font-medium leading-[22px] lg:p-5">

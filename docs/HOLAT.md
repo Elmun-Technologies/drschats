@@ -191,3 +191,8 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 - claude-mem kabi "cloud memory" vositalari bu muhitda (har sessiya = yangi konteyner)
   ishlamaydi — faqat git'ga commit qilingan narsa saqlanadi. Shu HOLAT.md — aynan shu
   uchun.
+
+## Auditoriya «dunyolari» (2026-11-25, pilot)
+
+- `/goals/sport` — umumiy shablon oʻrniga oʻz dunyosi: toʻq hero + foto + raqamlar, «Mashgʻulot kuni» lentasi (5 qadam, mahsulot bilan), «Sportchi toʻplami» (3 mahsulot, bitta tugma bilan savatga, `topic_bundle_add_all`). Aksent `--color-world-sport`.
+- Keyingisi (egasi pilotni maʼqullagach): bolalar (yosh tanlash), ayollar (hayot bosqichlari), homiladorlar (trimestr), erkaklar, keksalar, ofis, goʻzallik — har biriga oʻz aksent va modul.
