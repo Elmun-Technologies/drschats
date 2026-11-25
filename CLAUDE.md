@@ -43,7 +43,7 @@ Kod emas, kontent va konfiguratsiya bo'shliqlari. To'liq ro'yxat va har birining
 qadamlari: **[`docs/QOLGAN-ISHLAR.md`](docs/QOLGAN-ISHLAR.md)**.
 
 Qisqacha (ishlab turgan saytdan sanaldi): `/vitamins` **22**, `/symptoms` **16**,
-`/goals` **21** mavzu; `/programs` 7, `/blog` 38, `/ingredients` 12,
+`/goals` **21** mavzu; `/programs` 7, `/blog` 41, `/ingredients` 12,
 `/where-to-buy` 11 ta dorixona tarmog'i. Mahsulot rasmlari **haqiqiy** — har bir SKU
 o'z fotosiga ega (`photos-coverage.test.ts`). **Istisno (2026-11 auditi):** 4 ta SKU'ning
 birinchi rasmi generatsiya qilingan packshot — `delical-vanil-200ml`, `dr-frei-turbo-base-ingalyator`,
