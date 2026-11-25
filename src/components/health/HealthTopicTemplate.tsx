@@ -20,7 +20,7 @@ import { chipClass } from "@/components/ui/Chip";
 import { cn } from "@/lib/utils";
 import { ingredientTopicSlug } from "./topic-links";
 import { topicWorld } from "@/lib/content/topic-worlds";
-import { WorldBundle, WorldDay, WorldHero } from "./world/TopicWorldView";
+import { WorldBundle, WorldDay, WorldHero, bundleProducts } from "./world/TopicWorldView";
 
 /** Products shown right under the intro; the rest follow the article. */
 const LEAD_PRODUCTS = 4;
@@ -61,7 +61,8 @@ export async function HealthTopicTemplate({
   const hero = topicImage(topic.kind, topic.slug);
   // An audience with its own "world" — own hero, day and set; the set's products leave the grids below.
   const world = topicWorld(topic.kind, topic.slug, locale);
-  const inBundle = new Set(world?.bundle.slugs ?? []);
+  const bundle = world ? bundleProducts(world, products) : [];
+  const inBundle = new Set(bundle.map((p) => p.slug));
   const shown = products.filter((p) => !inBundle.has(p.slug)).slice(0, MAX_PRODUCTS);
   const lead = shown.slice(0, LEAD_PRODUCTS);
   const more = shown.slice(LEAD_PRODUCTS);
@@ -100,7 +101,7 @@ export async function HealthTopicTemplate({
         </nav>
 
         {world ? (
-          <WorldHero world={world} name={topic.name} headline={topic.headline} intro={topic.intro} />
+          <WorldHero world={world} hasBundle={bundle.length > 0} name={topic.name} headline={topic.headline} intro={topic.intro} />
         ) : (
           <div className={cn(hero && "grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,500px)] lg:items-center lg:gap-12")}>
             <header className="flex max-w-[820px] flex-col gap-2 lg:gap-3">

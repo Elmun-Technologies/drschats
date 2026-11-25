@@ -21,11 +21,13 @@ export function WorldHero({
   name,
   headline,
   intro,
+  hasBundle,
 }: {
   world: TopicWorld;
   name: string;
   headline: string;
   intro: string;
+  hasBundle: boolean;
 }) {
   const a = ACCENT[world.accent];
   return (
@@ -39,9 +41,11 @@ export function WorldHero({
           <p className="text-[17px] font-semibold leading-[24px] lg:text-[20px] lg:leading-[28px]">{headline}</p>
           <p className="text-[15px] leading-[22px] text-on-dark-2 lg:text-lead">{intro}</p>
           <div className="flex flex-wrap gap-2.5 pt-1">
-            <a href="#world-bundle" className={cn(buttonVariants("primary", "lg"), a.bg, "text-ink hover:bg-white hover:text-ink")}>
-              {world.ctaBundle}
-            </a>
+            {hasBundle && (
+              <a href="#world-bundle" className={cn(buttonVariants("primary", "lg"), a.bg, "text-ink hover:bg-white hover:text-ink")}>
+                {world.ctaBundle}
+              </a>
+            )}
             <a href="#world-day" className={cn(buttonVariants("primary", "lg"), "border border-white/40 bg-transparent text-white hover:bg-white/10")}>
               {world.ctaDay}
             </a>
@@ -125,11 +129,19 @@ export function WorldDay({ world, products, locale }: { world: TopicWorld; produ
   );
 }
 
+/** The set as it will render: in-stock products, or none when fewer than two remain. */
+export function bundleProducts(world: TopicWorld, products: Product[]): Product[] {
+  const available = world.bundle.slugs
+    .map((slug) => products.find((p) => p.slug === slug))
+    .filter((p): p is Product => !!p && p.inStock);
+  return available.length >= 2 ? available : [];
+}
+
 export function WorldBundle({ world, products, locale, list }: { world: TopicWorld; products: Product[]; locale: Locale; list: string }) {
   const a = ACCENT[world.accent];
-  const set = world.bundle.slugs.map((slug) => products.find((p) => p.slug === slug)).filter((p): p is Product => !!p);
-  const available = set.filter((p) => p.inStock);
-  if (available.length < 2) return null;
+  const set = bundleProducts(world, products);
+  const available = set;
+  if (set.length === 0) return null;
   const total = available.reduce((sum, p) => sum + p.price, 0);
 
   return (

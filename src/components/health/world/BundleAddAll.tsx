@@ -18,7 +18,7 @@ export function BundleAddAll({ products, label, list, className }: { products: P
 
   function addAll() {
     for (const p of available) {
-      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice }, 1, { silent: true });
+      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt, stockQty: p.stock?.qty }, 1, { silent: true });
     }
     track("topic_bundle_add_all", { list, count: available.length });
     notify();
