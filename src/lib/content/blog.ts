@@ -6,6 +6,7 @@ import { articlesNov2026e } from "./blog-articles-2026-11-19b";
 import { articlesNov2026f } from "./blog-articles-2026-11-20";
 import { articlesNov2026g } from "./blog-articles-2026-11-24";
 import { articlesNov2026h } from "./blog-articles-2026-11-24b";
+import { articlesNov2026i } from "./blog-articles-2026-11-25";
 import type { Locale } from "@/lib/i18n/routing";
 
 type L<T = string> = Record<Locale, T>;
@@ -96,6 +97,9 @@ const IMAGES: Record<string, string> = {
   "bank2-ayran": "/images/bank/ayran-drink.webp",
   "bank2-fatigue": "/images/bank/woman-low-mood.webp",
   "bank2-seniors": "/images/bank/senior-couple-home.webp",
+  "bank3-student": "/images/bank/student-exam-night.webp",
+  "bank3-phone-bed": "/images/bank/phone-bed-night.webp",
+  "bank3-cold-hands": "/images/bank/woman-cold-hands-winter.webp",
 };
 const img = (seed: string) => IMAGES[seed] ?? "/images/stock/st-cat-capsules.webp";
 
@@ -108,6 +112,7 @@ const rawArticles: RawArticle[] = [
   ...articlesNov2026f,
   ...articlesNov2026g,
   ...articlesNov2026h,
+  ...articlesNov2026i,
   {
     slug: "omega-3-nima-uchun-kerak",
     date: "2026-05-20",
