@@ -4,12 +4,12 @@
   one table and cannot drift.
 */
 export const AUDIENCE_PHOTOS: Record<string, { src: string; position: string }> = {
-  "self-woman": { src: "/images/stock/st-aud-woman.webp", position: "center 30%" },
-  "self-man": { src: "/images/stock/st-aud-man.webp", position: "78% center" },
-  child: { src: "/images/stock/st-aud-child.webp", position: "center" },
-  expectant: { src: "/images/stock/st-aud-expectant.webp", position: "30% center" },
-  parent: { src: "/images/stock/st-aud-senior.webp", position: "center" },
-  recovery: { src: "/images/stock/st-aud-recovery.webp", position: "center" },
+  "self-woman": { src: "/images/bank/asian-woman-smiling.webp", position: "center 25%" },
+  "self-man": { src: "/images/bank/man-young-smiling.webp", position: "center 25%" },
+  child: { src: "/images/bank/girl-oranges-yellow.webp", position: "center 30%" },
+  expectant: { src: "/images/bank/pregnant-window.webp", position: "center 35%" },
+  parent: { src: "/images/bank/senior-woman-yellow.webp", position: "center 25%" },
+  recovery: { src: "/images/bank/tea-lemon-honey.webp", position: "center" },
 };
 
 /** Key under `home.audience`. */

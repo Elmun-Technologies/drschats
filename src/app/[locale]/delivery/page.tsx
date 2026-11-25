@@ -61,7 +61,7 @@ export default async function DeliveryPage({ params }: { params: Promise<{ local
 
       <div className="flex flex-col overflow-hidden rounded-[20px] bg-dark-panel text-white lg:flex-row lg:items-center lg:gap-8 lg:rounded-[28px] lg:p-7 lg:pl-8">
         <div className="relative h-40 w-full lg:order-2 lg:h-[172px] lg:w-[260px] lg:shrink-0 lg:overflow-hidden lg:rounded-[16px]">
-          <Image src="/images/stock/st-delivery-door.webp" alt="" fill sizes="(max-width: 1023px) 100vw, 260px" className="object-cover" />
+          <Image src="/images/bank/woman-unboxing-parcel.webp" alt="" fill sizes="(max-width: 1023px) 100vw, 260px" className="object-cover" />
         </div>
         <div className="flex flex-col gap-2 p-5 lg:flex-1 lg:p-0">
           <p className="text-[22px] font-bold leading-7 lg:text-[32px] lg:leading-[38px]">

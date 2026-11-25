@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getIngredients, getSynergy } from "@/lib/content/ingredients.sanity";
@@ -10,6 +11,8 @@ import { Container } from "@/components/ui/Container";
 import { Link } from "@/lib/i18n/navigation";
 import { Reveal } from "@/components/animation/Reveal";
 import { Disclaimer } from "@/components/legal/Disclaimer";
+import { ingredientImage } from "@/lib/content/page-images";
+import { topicImageSrc } from "@/lib/content/topic-images";
 
 export const revalidate = 60;
 
@@ -51,6 +54,7 @@ export default async function IngredientsPage({
           {ingredients.map((ing, i) => (
             <Reveal key={ing.slug} index={Math.min(i, 6)} className="h-full">
               <div className="flex h-full flex-col rounded-2xl border border-line bg-bg p-6">
+                <IngredientImage slug={ing.slug} locale={locale} />
                 <div className="flex flex-col items-start gap-2">
                   <h2 className="text-lg font-bold leading-6">{ing.name}</h2>
                   <span className="rounded-full bg-tile px-2.5 py-1 text-[13px] font-medium text-ink-2">{ing.role}</span>
@@ -109,6 +113,23 @@ export default async function IngredientsPage({
           <Disclaimer variant="article" />
         </div>
       </Container>
+    </div>
+  );
+}
+
+function IngredientImage({ slug, locale }: { slug: string; locale: Locale }) {
+  const image = ingredientImage(slug);
+  if (!image) return null;
+  return (
+    <div className="relative -mx-2 -mt-2 mb-4 aspect-[16/10] overflow-hidden rounded-xl bg-tile">
+      <Image
+        src={topicImageSrc(image)}
+        alt={image.alt[locale]}
+        fill
+        sizes="(min-width: 1024px) 380px, (min-width: 640px) 45vw, calc(100vw - 64px)"
+        className="object-cover"
+        style={image.position ? { objectPosition: image.position } : undefined}
+      />
     </div>
   );
 }

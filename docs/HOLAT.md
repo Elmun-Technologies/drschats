@@ -81,6 +81,12 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
   `period-pain`, `cracked-lips`; `/goals/blood-pressure`, `menopause`, `vegetarian`
   (`health-topics-1125.ts`, `health-topics-1126.ts`; `subjects.ts` ga `topic` ulangan). Isitma va 180/120
   bosim boʻyicha Codex tuzatishlari (AAP/AHA) kiritilgan.
+- **Eski rasmlar almashtirildi** (2026-11-25): Adobe Stock'dan yana 32 ta yorqin, eʼtibor tortadigan foto
+  (sariq/rangli fon, makro). `public/images/stock/st-*` endi saytda ishlatilmaydi (faqat bazadagi eski kategoriya
+  rasmlari uchun qoldi): blog muqovalari (11 ta eski + standart), bosh sahifa plitkalari, «Biz haqimizda»,
+  «Yetkazish», «Hamkorlar», test «Kim uchun» kartalari, `/care`. Yangi: 7 ta dastur sahifasi va kartasiga hamda
+  12 ta ingredient kartasiga foto (`lib/content/page-images.ts`, test bilan, OG rasm). Admin rasm tanlash oynasida
+  «Rasm banki (Adobe)» boʻlimi.
 - **Blog** (#189, #190, #192, #193): +9 maqola (probiotiklar, doimiy charchoq, 60+ vitaminlar, ichish
   vaqti, soch toʻkilishi, stress va magniy, imtihon davri, telefon va uyqu, qoʻl-oyoq sovushi) — jami 41.
 - **GSC indekslash** (kvota ~10/kun): 24-noyabr kvota tugagan; yangi URL'lar navbatda.

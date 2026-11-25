@@ -19,7 +19,7 @@ export type L<T = string> = Record<Locale, T>;
   (BRAND.productImageOverrides, checked by photos-coverage.test.ts).
 */
 const img = (id: string, alt: string) => ({
-  url: categoryCutout(id.replace(/^cat-/, "")) ?? "/images/stock/st-cat-capsules.webp",
+  url: categoryCutout(id.replace(/^cat-/, "")) ?? "/images/bank/pills-bottle-yellow.webp",
   alt,
 });
 

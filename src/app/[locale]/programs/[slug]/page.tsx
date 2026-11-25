@@ -8,6 +8,8 @@ import { buildPageMetadata, SITE_URL } from "@/lib/seo/metadata";
 import { JsonLd, breadcrumbLd, collectionLd, faqLd } from "@/lib/seo/jsonld";
 import { ProgramTemplate } from "@/components/program/ProgramTemplate";
 import { clampDescription, seoTitle } from "@/lib/seo/page-meta";
+import { programImage } from "@/lib/content/page-images";
+import { topicImageSrc } from "@/lib/content/topic-images";
 
 export const revalidate = 3600;
 export const dynamicParams = true;
@@ -29,6 +31,7 @@ export async function generateMetadata({
     path: `/programs/${slug}`,
     title: await seoTitle(locale, "program", { name: program.name }),
     description: clampDescription(`${program.headline}. ${program.intro}`),
+    ...ogImage(slug),
   });
 }
 
@@ -69,4 +72,9 @@ export default async function ProgramPage({
       <ProgramTemplate data={data} locale={locale} />
     </>
   );
+}
+
+function ogImage(slug: string): { image?: string } {
+  const image = programImage(slug);
+  return image ? { image: `${SITE_URL}${topicImageSrc(image)}` } : {};
 }
