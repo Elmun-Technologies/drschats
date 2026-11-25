@@ -24,7 +24,7 @@ describe("categoryCutout", () => {
   );
 
   it("returns nothing for a category without one", () => {
-    expect(categoryCutout("coffee")).toBeUndefined();
+    expect(categoryCutout("herbal")).toBeUndefined();
   });
 });
 
