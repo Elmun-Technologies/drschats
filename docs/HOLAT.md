@@ -88,10 +88,10 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
   sozlanmagan, fiskal chek (package code, 9 SKU'da MXIK yoʻq), `/licenses` dagi raqamsiz daʼvolar,
   shaxsiy maʼlumotlar (pd.gov.uz, server UZ tashqarisida), DNS Vercel'da (2026-12-14 gacha).
   **Repo public** — hujjatlardagi infratuzilma maʼlumotlari ochiq; egasining qarori kutilmoqda.
-- **Test javoblari analitikaga ketmaydi** (audit H8): `/quiz/result?a=` dagi javoblar (homiladorlik, dorilar)
-  `redactUrl` da shu sahifa uchun olib tashlanadi; GA4 `page_location` va Metrika birinchi hiti (`defer` + qoʻlda
-  `hit`) tozalangan URL bilan. Qolgan: GA4 adminida «browser history» sahifa koʻrishlari va GTM/Pixel oʻzi URL'ni
-  oladi — ular yoqilsa, quiz natijasida tozalash GA/GTM sozlamasida qilinadi.
+- **Test javoblari analitikaga ketmaydi** (audit H8): quiz javoblari (homiladorlik, dorilar) natija sahifasiga
+  URL emas, 1 kunlik `gv_quiz` cookie bilan oʻtadi (`QUIZ_ANSWERS_COOKIE`), shuning uchun GA4/GTM/Pixel/Metrika
+  URL'ida yoʻq. Eski `?a=` havola hamon ochiladi va `redactUrl` uni oʻz kuzatuvdan, GA4/Metrika birinchi
+  hitidan olib tashlaydi.
 
 ## Yaqinda tugagan (main'ga merge qilingan)
 

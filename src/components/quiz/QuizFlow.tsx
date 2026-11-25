@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Link, useRouter } from "@/lib/i18n/navigation";
 import { visibleQuestions, type QuizQuestion } from "@/lib/quiz/questions";
 import { buildQuizResult, saveQuiz, type QuizAnswers } from "@/lib/quiz/engine";
-import { encodeAnswers } from "@/lib/quiz/answers-codec";
+import { encodeAnswers, QUIZ_ANSWERS_COOKIE } from "@/lib/quiz/answers-codec";
 import { useProfile } from "@/lib/profile/store";
 import { track } from "@/lib/analytics/events";
 import { AUDIENCE_PHOTOS, audienceSubtitleKey } from "@/lib/content/audience";
@@ -107,7 +107,9 @@ export function QuizFlow({
       answered: result.answeredCount,
       top_topic: result.rankedTopics[0] ?? null,
     });
-    router.push(`/quiz/result?a=${encodeURIComponent(encodeAnswers(answers))}`);
+    // Not in the URL: analytics tags would send the answers with every page view.
+    document.cookie = `${QUIZ_ANSWERS_COOKIE}=${encodeURIComponent(encodeAnswers(answers))}; path=/; max-age=86400; SameSite=Lax${location.protocol === "https:" ? "; Secure" : ""}`;
+    router.push("/quiz/result");
   }
 
 

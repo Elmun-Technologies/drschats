@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
+import { cookies } from "next/headers";
 import { buildQuizPlan, decodeAnswers } from "@/lib/quiz/recommend";
+import { QUIZ_ANSWERS_COOKIE } from "@/lib/quiz/answers-codec";
 import { getQuizQuestions } from "@/lib/quiz/questions";
 import { reviewerForKey } from "@/lib/content/experts.sanity";
 import { buildPageMetadata } from "@/lib/seo/metadata";
@@ -37,10 +39,12 @@ export default async function QuizResultPage({
   params: Promise<{ locale: Locale }>;
   searchParams: Promise<{ a?: string | string[] }>;
 }) {
-  const [{ locale }, { a }] = await Promise.all([params, searchParams]);
+  const [{ locale }, { a }, jar] = await Promise.all([params, searchParams, cookies()]);
   setRequestLocale(locale);
 
-  const answers = decodeAnswers(firstParam(a));
+  // A legacy `?a=` link wins; otherwise the answers the quiz left in the cookie.
+  const fromCookie = jar.get(QUIZ_ANSWERS_COOKIE)?.value;
+  const answers = decodeAnswers(firstParam(a) ?? (fromCookie ? safeDecode(fromCookie) : undefined));
   const [plan, reviewerResult] = await Promise.all([
     buildQuizPlan(answers, locale),
     reviewerForKey("quiz", locale),
@@ -56,4 +60,12 @@ export default async function QuizResultPage({
     .join(", ");
 
   return <QuizPlanView plan={plan} reviewer={reviewer} audience={audience || undefined} locale={locale} />;
+}
+
+function safeDecode(value: string): string | undefined {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return undefined;
+  }
 }
