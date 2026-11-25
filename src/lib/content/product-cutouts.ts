@@ -56,6 +56,7 @@ const CATEGORY_CUTOUT_SLUG: Record<string, string> = {
   skin: "peano-balzam-30g",
   devices: "dr-frei-tonometr-a20",
   collagen: "swiss-energy-nature-collagen",
+  coffee: "swiss-energy-coffee-edel-250g",
 };
 
 export function categoryCutout(slug: string): string | undefined {
