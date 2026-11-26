@@ -191,3 +191,9 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 - claude-mem kabi "cloud memory" vositalari bu muhitda (har sessiya = yangi konteyner)
   ishlamaydi — faqat git'ga commit qilingan narsa saqlanadi. Shu HOLAT.md — aynan shu
   uchun.
+
+## Auditoriya «dunyolari» (2026-11-25, pilot)
+
+- `/goals/sport` — umumiy shablon oʻrniga oʻz dunyosi: toʻq hero + foto + raqamlar, «Mashgʻulot kuni» lentasi (5 qadam, mahsulot bilan), «Sportchi toʻplami» (3 mahsulot, bitta tugma bilan savatga, `topic_bundle_add_all`). Aksent `--color-world-sport`.
+- v2 (egasi fikri: «boʻsh, emotsiya yoʻq»): Pantone ranglari (`--color-pantone-*`), hero-kollaj (arka foto + dumaloq foto + mahsulot stikerlari narxi bilan), rangli raqam kartalari, har qadamda foto (test majburiy). Dunyolar: sport (Flame + qora), bolalar (Very Peri, «yoʻl»), ayollar (Peach Fuzz + Viva Magenta), erkaklar (qora + Classic Blue), keksalar (Mocha Mousse, yirik qatorlar).
+- Qolgani: homiladorlar (yangi foto kerak), ofis, goʻzallik, menopauza.
