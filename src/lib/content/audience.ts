@@ -12,6 +12,19 @@ export const AUDIENCE_PHOTOS: Record<string, { src: string; position: string }> 
   recovery: { src: "/images/bank/tea-lemon-honey.webp", position: "center" },
 };
 
+/*
+  Where the home page's "who" cards lead: the audience pages built as their own
+  worlds (topic-worlds.ts). An option without a page of its own goes to the quiz,
+  with the answer filled in.
+*/
+export const AUDIENCE_PAGES: Record<string, string> = {
+  "self-woman": "/goals/women",
+  "self-man": "/goals/men",
+  child: "/goals/kids",
+  expectant: "/care/mom",
+  parent: "/goals/seniors",
+};
+
 /** Key under `home.audience`. */
 export function audienceSubtitleKey(optionId: string): string {
   return AUDIENCE_SUBTITLES[optionId] ?? "subtitleFallback";
