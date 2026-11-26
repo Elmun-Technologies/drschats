@@ -1,5 +1,6 @@
 "use client";
 
+import { isAdult } from "@/lib/catalog/adult";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -75,6 +76,7 @@ export function ProductCard({
       oldPrice: product.oldPrice,
       saleEndsAt: product.saleEndsAt,
       stockQty: product.stock?.qty,
+      ...(isAdult(product) ? { adult: true } : {}),
     });
   }
 

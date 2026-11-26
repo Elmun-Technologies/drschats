@@ -1,4 +1,5 @@
 import { getTranslations } from "next-intl/server";
+import { COUPLES_HREF, isAdult } from "@/lib/catalog/adult";
 import type { MetadataRoute } from "next";
 import { locales, routing } from "@/lib/i18n/routing";
 import { shopflow } from "@/lib/shopflow";
@@ -29,7 +30,7 @@ export const dynamic = "force-dynamic";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [categories, allProducts] = await Promise.all([
     shopflow.getCategories(routing.defaultLocale).catch(() => []),
-    getAllProducts({ locale: routing.defaultLocale, sort: "popular" }).catch(() => ({ items: [] as Product[], total: 0, page: 1, pageSize: 0 })),
+    getAllProducts({ locale: routing.defaultLocale, sort: "popular", adult: "include" }).catch(() => ({ items: [] as Product[], total: 0, page: 1, pageSize: 0 })),
   ]);
 
   // Build a rating map for priority boosting
@@ -64,6 +65,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(hasReviews(allProducts.items, stories.length) ? ["/reviews"] : []),
     ...(OFFER_PUBLISHED ? ["/offer"] : []),
     ...(loyaltyProgrammeLive(loyaltyRules) ? ["/loyalty"] : []),
+    // The 18+ page is indexed once its shelf has products (owner's decision, 2026-11-25).
+    ...(allProducts.items.some(isAdult) ? [COUPLES_HREF] : []),
   ];
 
   const populatedFamilies = new Set(healthTopics.map((t) => TOPIC_BASE_PATH[t.kind]));
@@ -80,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
   const productPaths = allProducts.items.map((p) => `/product/${p.slug}`);
   // A brand page with no products is an empty page — listed once it has one.
-  const brandPaths = [...new Set(allProducts.items.map((p) => brandOf(p)?.slug).filter(Boolean))].map(
+  const brandPaths = [...new Set(allProducts.items.filter((p) => !isAdult(p)).map((p) => brandOf(p)?.slug).filter(Boolean))].map(
     (slug) => `/brands/${slug}`,
   );
   const blogPaths = blogSlugs.map((slug) => `/blog/${slug}`);

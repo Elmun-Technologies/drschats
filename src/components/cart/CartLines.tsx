@@ -10,7 +10,7 @@ import { useCart } from "@/lib/cart/store";
 import { useCommerce } from "@/lib/commerce/context";
 import { usePromotions } from "@/lib/cart/promotions-context";
 import { useWishlist } from "@/lib/wishlist/store";
-import { track, trackAddToWishlist } from "@/lib/analytics/events";
+import { itemOf, track, trackAddToWishlist } from "@/lib/analytics/events";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { productBrand } from "@/lib/content/product-brands";
 import { productCutout } from "@/lib/content/product-cutouts";
@@ -89,7 +89,7 @@ function Line({ line: l, compact, onNavigate }: { line: CartLine; compact: boole
   const wish = () => {
     toggleWish(l.productId);
     if (saved) track("remove_from_wishlist", { item_id: l.slug });
-    else trackAddToWishlist({ item_id: l.slug, item_name: l.name, price: l.price });
+    else trackAddToWishlist(itemOf(l));
   };
 
   return (

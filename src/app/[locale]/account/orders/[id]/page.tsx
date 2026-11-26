@@ -24,6 +24,6 @@ export default async function OrderPage({ params }: { params: Params }) {
   setRequestLocale(locale);
   assertAccountAreaExists();
   // The catalogue, so "Buyurtmani takrorlash" can put real products back in the cart.
-  const pool = await getAllProducts({ locale }).catch(() => ({ items: [] }));
+  const pool = await getAllProducts({ locale, adult: "include" }).catch(() => ({ items: [] }));
   return <OrderDetail orderId={decodeURIComponent(id)} catalogue={pool.items} />;
 }

@@ -59,7 +59,7 @@ export const STATIC_PAGE_KEYS = [
   "about", "contact", "delivery", "payment", "guarantee", "requisites", "licenses",
   "blog", "brands", "loyalty", "reviews", "whereToBuy", "offer", "sale",
   "goals", "symptoms", "vitamins", "programs", "quiz", "ingredients", "partners", "privacy",
-  "careMom", "careBaby",
+  "careMom", "careBaby", "couples",
 ] as const;
 
 export type StaticPageKey = (typeof STATIC_PAGE_KEYS)[number];

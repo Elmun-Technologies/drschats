@@ -1,4 +1,5 @@
 import { useCallback } from "react";
+import { isAdult } from "@/lib/catalog/adult";
 import { create } from "zustand";
 import type { Product } from "@/lib/shopflow/types";
 import { useCart } from "@/lib/cart/store";
@@ -54,6 +55,7 @@ export function useAddToCart(product: Product) {
         saleEndsAt: product.saleEndsAt,
         stockQty: product.stock?.qty,
         subscription: subscribing ? { intervalDays } : undefined,
+        ...(isAdult(product) ? { adult: true } : {}),
       },
       qty,
       options,

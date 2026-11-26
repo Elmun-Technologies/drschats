@@ -1,5 +1,6 @@
 import { getHealthTopicIndex } from "./health-topics.sanity";
 import { TOPIC_BASE_PATH, TOPIC_KINDS } from "./health-topics";
+import { COUPLES_HREF } from "@/lib/catalog/adult";
 
 /*
   Which health families are worth linking to yet.
@@ -34,6 +35,7 @@ export const ALL_TOPIC_PATHS: string[] = TOPIC_KINDS.map((kind) => TOPIC_BASE_PA
  * topic families that have at least one page.
  */
 export function isNavigable(href: string, populated: string[]): boolean {
-  if (!ALL_TOPIC_PATHS.includes(href)) return true;
+  // The 18+ page follows the same rule: linked only once its shelf has products (layout adds it to `populated`).
+  if (!ALL_TOPIC_PATHS.includes(href) && href !== COUPLES_HREF) return true;
   return populated.includes(href);
 }

@@ -549,3 +549,15 @@ body {
 .no-scrollbar::-webkit-scrollbar {
   display: none;
 }
+
+/* 18+ pages (components/adult/AgeGate): blurred until the visitor confirms their age. */
+.age-gated {
+  filter: blur(22px);
+  pointer-events: none;
+  user-select: none;
+}
+html.age-ok .age-gated {
+  filter: none;
+  pointer-events: auto;
+  user-select: auto;
+}

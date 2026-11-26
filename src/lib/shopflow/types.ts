@@ -144,6 +144,12 @@ export interface ProductListParams {
    * for, so an accessory never becomes the face of a campaign.
    */
   assortment?: "listed" | "core" | "all";
+  /**
+   * The 18+ category (`lib/catalog/adult.ts`). Left out unless asked for:
+   * `"include"` for what the visitor already chose (cart, wishlist, orders),
+   * `"only"` for its own page. Asking for that category by name means `"only"`.
+   */
+  adult?: "exclude" | "include" | "only";
   search?: string;
   origin?: string;
   minPrice?: number;
@@ -210,6 +216,8 @@ export interface OrderRequest {
     house?: string;
     apartment?: string;
     landmark?: string;
+    /** Set on the server when the order holds an 18+ product: black opaque package, nothing written on it. */
+    discreet?: boolean;
   };
   /**
    * The customer's requested payment method, not proof that payment was made

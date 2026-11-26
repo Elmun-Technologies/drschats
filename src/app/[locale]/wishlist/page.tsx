@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { isAdult } from "@/lib/catalog/adult";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { getAllProducts } from "@/lib/shop/all-products";
@@ -38,10 +39,10 @@ export default async function WishlistPage({
 
   // The saved ids live in the visitor's browser, so the page ships a pool and
   // the client picks its own out of it. See WishlistView for the trade-off.
-  const pool = await getAllProducts({ locale, sort: "popular" });
+  const pool = await getAllProducts({ locale, sort: "popular", adult: "include" });
   // Cut-out pack shots first, as on every other rail.
   const recommended = pool.items
-    .filter((p) => (p.assortment ?? "core") === "core")
+    .filter((p) => (p.assortment ?? "core") === "core" && !isAdult(p))
     .sort((a, b) => Number(!cutoutOf(a)) - Number(!cutoutOf(b)));
 
   return <WishlistView allProducts={pool.items} recommended={recommended} />;
