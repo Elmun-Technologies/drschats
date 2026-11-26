@@ -42,7 +42,8 @@
     },
     "whereToBuy": "Qayerdan sotib olish",
     "careMom": "Onalar uchun",
-    "careBaby": "Bola 0–3 yosh"
+    "careBaby": "Bola 0–3 yosh",
+    "couples": "18+ Juftliklar uchun"
   },
   "common": {
     "addToCart": "Savatga qoʻshish",
@@ -808,7 +809,9 @@
       "soldOutLines": "Sotuvda qolmagan: {names}. Ularni savatdan olib tashlang va buyurtmani qayta yuboring."
     },
     "pickupPoint": "Olib ketish manzili",
-    "pickupPointNote": "Buyurtma tayyor boʻlgach, shu manzildan olib ketasiz. Operator qoʻngʻiroq qilganda vaqtni kelishamiz."
+    "pickupPointNote": "Buyurtma tayyor boʻlgach, shu manzildan olib ketasiz. Operator qoʻngʻiroq qilganda vaqtni kelishamiz.",
+    "discreetTitle": "18+ buyurtma maxfiy qadoqda keladi",
+    "discreetText": "Qora, shaffof boʻlmagan qadoq, ustida mahsulot nomi yozilmaydi. Alohida soʻrash shart emas."
   },
   "footer": {
     "delivery": "Yetkazib berish",
@@ -985,6 +988,10 @@
       "careBaby": {
         "title": "Bolalar uchun termometr, ingalyator va 0–3 yosh kuzatuvi | govita",
         "description": "Bolaning yoshini oyda bepul hisoblash, har bosqich eslatmalari, bolalar termometri, sovutuvchi plastir va ingalyator — uy aptechkasini yigʻing."
+      },
+      "couples": {
+        "title": "Prezervativlar Dolphi — Toshkentda sotib olish, maxfiy qadoq | govita",
+        "description": "Dolphi prezervativlari rasmiy distributordan. Toshkent boʻylab {hours} soatda, qora shaffof boʻlmagan qadoqda — ustida mahsulot nomi yozilmaydi."
       }
     }
   },
@@ -1191,6 +1198,10 @@
       {
         "question": "Yetkazib berishda toʻlasam boʻladimi?",
         "answer": "Ha — yetkazib berishda naqd pul bilan toʻlaysiz."
+      },
+      {
+        "question": "18+ mahsulotlar qanday qadoqda keladi?",
+        "answer": "Qora, shaffof boʻlmagan qadoqda — ustida mahsulot nomi ham, toifasi ham yozilmaydi. Buyurtma haqidagi SMS va Telegram xabarlarida ham mahsulot nomi boʻlmaydi."
       }
     ],
     "whereToBuy": {
@@ -1642,11 +1653,15 @@
         "body": "Sayt toʻgʻri ishlashi va tahlil uchun cookiesʼdan foydalanadi (Google Tag Manager, Yandex.Metrika). Shuningdek, saytning oʻz tahlil tizimi anonim identifikator (gv_vid cookie) orqali qaysi sahifa va mahsulotlar koʻrilgani hamda savatdagi mahsulotlarni qayd etadi; buyurtma berganingizda bu maʼlumot buyurtmangizga bogʻlanadi. Bu yozuvlar 13 oydan keyin oʻchiriladi va uchinchi tomonga berilmaydi. Brauzer sozlamalarida cookiesʼni oʻchirib qoʻyishingiz mumkin, lekin saytning baʼzi funksiyalari ishlamay qolishi mumkin. Bannerlarning qaysi variantini koʻrsatishni tanlash uchun tasodifiy identifikator (gv_ab cookie) saqlanadi — u shaxsni aniqlamaydi."
       },
       {
-        "heading": "7. Siyosat oʻzgarishlari",
+        "heading": "7. 18+ mahsulotlar",
+        "body": "«Juftliklar uchun» (18+) boʻlimi faqat 18 yoshdan kattaligini tasdiqlagan foydalanuvchiga ochiladi; tasdiq brauzeringizda (cookie) 30 kun saqlanadi. Bu boʻlimda koʻrgan mahsulotlaringiz «yaqinda koʻrilgan» roʻyxatiga, tavsiyalarga va reklama auditoriyalariga yozilmaydi, Meta Pixel'ga yuborilmaydi; tahlil tizimlariga faqat umumiy «18+» belgisi bilan, mahsulot nomisiz ketadi. Bunday buyurtma maxfiy qadoqda yetkaziladi, SMS, Telegram va elektron pochta xabarlarida mahsulot nomi yozilmaydi. 18 yoshgacha boʻlgan shaxslarga bu mahsulotlar sotilmaydi."
+      },
+      {
+        "heading": "8. Siyosat oʻzgarishlari",
         "body": "Biz ushbu siyosatni yangilashimiz mumkin. Muhim oʻzgarishlar boʻlsa, bot orqali xabardor qilamiz yoki saytda eʼlon joylashtiramiz. Joriy versiya doimo ushbu sahifada mavjud boʻladi."
       },
       {
-        "heading": "8. Aloqa",
+        "heading": "9. Aloqa",
         "body": "Maxfiylik boʻyicha savollar uchun murojaat qiling:\n• Telegram-bot: @govita_bot → /yordam\n• Instagram: @govita_uz\n• Email: info@govita.uz"
       }
     ]

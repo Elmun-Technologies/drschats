@@ -1,5 +1,6 @@
 "use client";
 
+import { isAdult } from "@/lib/catalog/adult";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
@@ -134,7 +135,7 @@ export function CompareView({ allProducts }: { allProducts: Product[] }) {
                       className="w-full"
                       disabled={!p.inStock}
                       onClick={() => {
-                        add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt });
+                        add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt , ...(isAdult(p) ? { adult: true } : {}) });
                       }}
                     >
                       {p.inStock ? common("addToCartShort") : common("outOfStock")}

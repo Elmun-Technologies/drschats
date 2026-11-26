@@ -17,6 +17,6 @@ export default async function ComparePage({ params }: { params: Promise<{ locale
   setRequestLocale(locale);
   // The picks live in the visitor's browser, so the page ships a pool and the
   // client resolves its own — the same trade-off as the wishlist.
-  const pool = await getAllProducts({ locale });
+  const pool = await getAllProducts({ locale, adult: "include" });
   return <CompareView allProducts={pool.items} />;
 }

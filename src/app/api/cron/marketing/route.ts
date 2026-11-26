@@ -1,4 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { shopflow } from "@/lib/shopflow";
+import { ADULT_CATEGORY } from "@/lib/catalog/adult";
 import { z } from "zod";
 import { locales, type Locale } from "@/lib/i18n/routing";
 import { siteOrigin } from "@/lib/email/config";
@@ -127,13 +129,32 @@ function toTelegramText(campaign: Campaign, locale: Locale): string {
     .join("\n");
 }
 
+/*
+  An 18+ product (lib/catalog/adult.ts) is never named in a reminder: the line
+  becomes "18+" and links to the cart, not to the product page.
+*/
+async function hideAdultItems(campaign: Campaign, locale: Locale): Promise<Campaign> {
+  if (!("items" in campaign) || !Array.isArray(campaign.items) || campaign.items.length === 0) return campaign;
+  const adult = await shopflow
+    .getProducts({ locale, category: ADULT_CATEGORY, pageSize: 200 })
+    .then((r) => r.items.map((p) => `/product/${p.slug}`))
+    .catch(() => [] as string[]);
+  if (adult.length === 0) return campaign;
+  const cartUrl = `${siteOrigin()}/${locale}/cart`;
+  const items = campaign.items.map((item) =>
+    adult.some((path) => item.url.endsWith(path)) ? { ...item, name: "18+", url: cartUrl } : item,
+  );
+  return { ...campaign, items } as Campaign;
+}
+
 async function deliver(message: DueMessage): Promise<boolean> {
   const parsed = dueSchema.safeParse(message);
   if (!parsed.success) return false;
 
   const queued = parsed.data;
-  const campaign = toCampaign(queued, queued.locale);
-  if (!campaign) return false;
+  const built = toCampaign(queued, queued.locale);
+  if (!built) return false;
+  const campaign = await hideAdultItems(built, queued.locale);
 
   if (queued.channel === "email") {
     if (!queued.email) return false;

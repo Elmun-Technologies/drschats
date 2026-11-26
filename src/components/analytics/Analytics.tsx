@@ -4,7 +4,7 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { analyticsIdsFromEnvironment, sanitizeAnalyticsIds, type AnalyticsIds } from "@/lib/analytics/config";
 import { useConsent } from "@/lib/analytics/consent";
-import { redactUrl } from "@/lib/analytics/redact-url";
+import { ADULT_TITLE, currentPage, isAdultPage } from "@/lib/analytics/redact-url";
 
 /*
   Analytics IDs may be set in the deployment environment or managed at runtime
@@ -52,7 +52,8 @@ export function Analytics() {
   if (!resolved || consent !== "granted") return null;
   const { gtm, ga4, metaPixel: pixel, yandexMetrika: ym } = ids;
   // The tags' first hit would carry the raw URL (quiz answers, email tokens); give them the redacted one.
-  const page = redactUrl(window.location.pathname, window.location.search);
+  const page = currentPage();
+  const titleJs = isAdultPage() ? `,page_title:${JSON.stringify(ADULT_TITLE)}` : "";
   const pageJs = JSON.stringify(page).replace(/</g, "\\u003c");
 
   return (
@@ -67,7 +68,7 @@ export function Analytics() {
         <>
           <Script src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4)}`} strategy="afterInteractive" />
           <Script id="ga4" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}',{page_location:location.origin+${pageJs}});`}
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}',{page_location:location.origin+${pageJs}${titleJs}});`}
           </Script>
         </>
       )}

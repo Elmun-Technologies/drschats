@@ -14,6 +14,8 @@
   at, offer included.
 */
 
+import { ADULT_CATEGORY, isAdult } from "@/lib/catalog/adult";
+import { ADULT_TITLE, isAdultPage } from "./redact-url";
 import { journey, journeyPage } from "@/lib/journey/client";
 import { RECO_VARIANT, impressionSlugs, type RecoList } from "@/lib/reco/lists";
 import { analyticsIdsFromEnvironment, type AnalyticsIds } from "./config";
@@ -90,8 +92,22 @@ export function track(event: string, payload: Payload = {}) {
 
 const valueOf = (items: AnalyticsItem[]) => items.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-export function itemOf(p: { slug: string; name: string; price: number; categorySlug?: string | null }, quantity = 1, offerPercent?: number): AnalyticsItem {
+/*
+  An 18+ product (lib/catalog/adult.ts) is reported as a generic "18+" item:
+  its name and slug never reach GA4, GTM or the journey, and Meta's pixel is
+  not told about it at all (`pixelItems`).
+*/
+export const ADULT_ITEM_ID = "adult";
+
+export function itemOf(
+  p: { slug: string; name: string; price: number; categorySlug?: string | null; adult?: boolean },
+  quantity = 1,
+  offerPercent?: number,
+): AnalyticsItem {
   const discount = offerPercent ? Math.round((p.price * offerPercent) / 100) : 0;
+  if (p.adult || isAdult(p)) {
+    return { item_id: ADULT_ITEM_ID, item_name: "18+", price: p.price - discount, quantity, ...(discount ? { discount } : {}), item_category: ADULT_CATEGORY };
+  }
   return {
     item_id: p.slug,
     item_name: p.name,
@@ -102,8 +118,11 @@ export function itemOf(p: { slug: string; name: string; price: number; categoryS
   };
 }
 
+const forPixel = (items: AnalyticsItem[]) => items.filter((i) => i.item_id !== ADULT_ITEM_ID);
+
 export function trackViewProduct(item: AnalyticsItem) {
   send("view_item", { currency: CURRENCY, value: item.price, items: [item] }, true);
+  if (forPixel([item]).length === 0) return;
   window.fbq?.("track", "ViewContent", { content_ids: [item.item_id], content_type: "product", value: item.price, currency: CURRENCY });
 }
 
@@ -128,6 +147,7 @@ export function trackRecClick(list: RecoList, item: AnalyticsItem, position: num
 export function trackAddToCart(item: AnalyticsItem) {
   const value = item.price * item.quantity;
   send("add_to_cart", { currency: CURRENCY, value, items: [item] }, true);
+  if (forPixel([item]).length === 0) return;
   window.fbq?.("track", "AddToCart", { content_ids: [item.item_id], content_type: "product", value, currency: CURRENCY });
 }
 
@@ -137,6 +157,7 @@ export function trackRemoveFromCart(item: AnalyticsItem) {
 
 export function trackAddToWishlist(item: Pick<AnalyticsItem, "item_id"> & Partial<AnalyticsItem>) {
   send("add_to_wishlist", { currency: CURRENCY, value: item.price ?? 0, items: [item] }, true);
+  if (item.item_id === ADULT_ITEM_ID) return;
   window.fbq?.("track", "AddToWishlist", { content_ids: [item.item_id] });
 }
 
@@ -178,7 +199,7 @@ export function trackOrder(orderId: string, totals: { total: number; shipping: n
   window.fbq?.(
     "track",
     "Purchase",
-    { value: totals.total, currency: CURRENCY, content_ids: items.map((i) => i.item_id), content_type: "product", num_items: items.length },
+    { value: totals.total, currency: CURRENCY, content_ids: forPixel(items).map((i) => i.item_id), content_type: "product", num_items: items.length },
     { eventID: orderId },
   );
   window.fbq?.("track", "Lead", { value: totals.total, currency: CURRENCY }, { eventID: `lead-${orderId}` });
@@ -260,7 +281,10 @@ export function trackPageNotFound() {
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */
 export function trackPageView(url: string) {
   journeyPage(url);
-  window.fbq?.("track", "PageView");
+  const adult = isAdultPage();
+  // GA4's own history page_view reads these: keep the 18+ product out of it (lib/analytics/redact-url.ts).
+  window.gtag?.("set", { page_location: location.origin + url, ...(adult ? { page_title: ADULT_TITLE } : {}) });
+  if (!adult) window.fbq?.("track", "PageView");
   const ymId = analyticsIds().yandexMetrika;
-  if (ymId) window.ym?.(Number(ymId), "hit", url);
+  if (ymId) window.ym?.(Number(ymId), "hit", url, adult ? { title: ADULT_TITLE } : undefined);
 }

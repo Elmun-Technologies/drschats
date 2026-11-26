@@ -611,6 +611,15 @@ export function CheckoutForm({
           </Step>
 
           <Step n={2} title={t("deliverySection")}>
+            {lines.some((l) => l.adult) && (
+              <div className="flex items-start gap-3 rounded-[16px] bg-ink p-4 text-white">
+                <span aria-hidden className="mt-0.5 h-4 w-4 shrink-0 rounded-[5px] bg-white/20" />
+                <span className="flex flex-col gap-0.5">
+                  <span className="text-[15px] font-bold">{t("discreetTitle")}</span>
+                  <span className="text-[14px] leading-[20px] text-on-dark-2">{t("discreetText")}</span>
+                </span>
+              </div>
+            )}
             <div role="radiogroup" aria-label={t("method")} className="grid gap-2.5 lg:grid-cols-2">
               <RadioCard value="courier" {...register("method")}>
                 <OptionText

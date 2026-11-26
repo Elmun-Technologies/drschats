@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { ADULT_CATEGORY, COUPLES_HREF } from "@/lib/catalog/adult";
 import "@/styles/globals.css";
 import type { ReactNode } from "react";
 import type { Metadata } from "next";
@@ -92,6 +93,11 @@ export default async function LocaleLayout({
     liveExperiments(locale as Locale),
     getOnlineProviders().catch(() => []),
   ]);
+  const adultShelf = await shopflow
+    .getProducts({ locale: locale as Locale, category: ADULT_CATEGORY, pageSize: 1 })
+    .then((r) => r.total > 0)
+    .catch(() => false);
+  const navPaths = adultShelf ? [...topicPaths, COUPLES_HREF] : topicPaths;
   const weeklyDeal = toMenuDeal(deals?.items[0]);
 
   return (
@@ -121,16 +127,16 @@ export default async function LocaleLayout({
               {tc("skipToContent")}
             </a>
             <MotionPreferences>
-              <Header categories={categories} topicPaths={topicPaths} deal={weeklyDeal} announcements={announcements} />
+              <Header categories={categories} topicPaths={navPaths} deal={weeklyDeal} announcements={announcements} />
               {strips.length > 0 && <PromoStrip banners={strips} />}
               {/* The tab bar is fixed, so its height is reserved twice: here, so
                   the seam between main and footer never rests under it, and
                   again at the end of the footer, which is what actually runs
                   beneath it when scrolled to the bottom. */}
               <main id="main-content" className="pb-[var(--bottom-nav)]">{children}</main>
-              <Footer categories={categories} topicPaths={topicPaths} onlineProviders={onlineProviders} />
+              <Footer categories={categories} topicPaths={navPaths} onlineProviders={onlineProviders} />
               <CookieConsent />
-              <MobileBottomNav categories={categories} topicPaths={topicPaths} />
+              <MobileBottomNav categories={categories} topicPaths={navPaths} />
               <DeferredUi firstOrder={firstOrder} />
             </MotionPreferences>
           </CommerceProvider>

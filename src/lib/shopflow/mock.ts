@@ -148,6 +148,16 @@ export const rawCategories: RawCategory[] = [
   catSimple("cat-omega", "omega", "Omega va baliq yogʻi", "Омега и рыбий жир"),
   catSimple("cat-sport", "sport", "Sport va fitnes", "Спорт и фитнес"),
   catSimple("cat-joints", "joints", "Boʻgʻimlar", "Суставы"),
+  {
+    id: "cat-adult",
+    slug: "adult",
+    name: { uz: "18+ Juftliklar uchun", ru: "18+ Для пар" },
+    description: {
+      uz: "Prezervativlar — rasmiy distributordan, maxfiy qadoqda.",
+      ru: "Презервативы — от официального дистрибьютора, в анонимной упаковке.",
+    },
+    image: "/images/bank/pills-bottle-yellow.webp",
+  },
 ];
 
 export interface RawProduct {

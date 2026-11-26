@@ -19,3 +19,21 @@ export function redactUrl(pathname: string, search: string): string {
   const rest = params.toString();
   return rest ? `${pathname}?${rest}` : pathname;
 }
+
+/*
+  An 18+ page (components/adult/AgeGate renders `data-adult-page`) is reported
+  under one generic path and title: the product's slug and name stay out of
+  every panel, first-party journey included.
+*/
+export const ADULT_PAGE = "/18plus";
+export const ADULT_TITLE = "18+";
+
+export function isAdultPage(): boolean {
+  return typeof document !== "undefined" && document.querySelector("[data-adult-page]") !== null;
+}
+
+/** The current page as analytics may see it. */
+export function currentPage(): string {
+  if (isAdultPage()) return `/${location.pathname.split("/")[1] ?? ""}${ADULT_PAGE}`;
+  return redactUrl(location.pathname, location.search);
+}

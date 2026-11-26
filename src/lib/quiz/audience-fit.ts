@@ -1,5 +1,6 @@
 import type { Product } from "@/lib/shopflow/types";
 import type { QuizAnswers } from "./engine";
+import { isAdult } from "@/lib/catalog/adult";
 
 /*
   Who a product may be recommended to.
@@ -40,6 +41,7 @@ export function fitsAudience(product: Product, answers: QuizAnswers): boolean {
  */
 export function audienceOf(product: Pick<Product, "slug" | "categorySlug">): string | null {
   if (product.categorySlug === "kids") return "child";
+  if (isAdult(product)) return "adult";
   return ONLY_FOR[product.slug]?.[0] ?? null;
 }
 

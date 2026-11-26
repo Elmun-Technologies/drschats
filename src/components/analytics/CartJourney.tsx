@@ -16,7 +16,12 @@ export function CartJourney() {
         if (state.lines === previous.lines) return;
         journeyCart({
           value: state.lines.reduce((sum, l) => sum + lineTotal(l), 0),
-          items: state.lines.slice(0, 50).map((l) => ({ slug: l.slug, name: l.name.slice(0, 200), quantity: l.quantity, price: l.price })),
+          // An 18+ line is kept as "18+" in the journey, like every other analytics path.
+          items: state.lines.slice(0, 50).map((l) =>
+            l.adult
+              ? { slug: "adult", name: "18+", quantity: l.quantity, price: l.price }
+              : { slug: l.slug, name: l.name.slice(0, 200), quantity: l.quantity, price: l.price },
+          ),
         });
       }),
     [],

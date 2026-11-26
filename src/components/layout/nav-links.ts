@@ -11,6 +11,8 @@ export const HEALTH_LINKS = [
   { key: "programs", href: "/programs" },
   { key: "careMom", href: "/care/mom" },
   { key: "careBaby", href: "/care/baby" },
+  // 18+, shown only while the shelf has products (nav-sections.ts).
+  { key: "couples", href: "/couples" },
 ] as const;
 
 /** The two care hubs, lit up in the desktop category row (docs/ONA-BOLA.md). */
