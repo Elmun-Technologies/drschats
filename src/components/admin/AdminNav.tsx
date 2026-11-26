@@ -13,6 +13,7 @@ export const NAV_GROUPS = [
     label: "Umumiy",
     items: [
       { href: "/admin", label: "Bosh sahifa", icon: "home", exact: true },
+      { href: "/admin/assistant", label: "AI yordamchi", icon: "spark" },
       { href: "/admin/analytics", label: "Analitika", icon: "chart" },
       { href: "/admin/keywords", label: "Talab tahlili", icon: "target" },
     ],
@@ -73,6 +74,7 @@ export const NAV_GROUPS = [
 export function NavIcon({ name, className }: { name: string; className?: string }) {
   const paths: Record<string, ReactNode> = {
     home: <><path d="m3.5 10 8.5-7 8.5 7" /><path d="M5.5 9v10h13V9M9 19v-6h6v6" /></>,
+    spark: <><path d="M12 3.5 13.8 9l5.7 1.8-5.7 1.8L12 18.2l-1.8-5.6-5.7-1.8L10.2 9z" /><path d="M18.5 3.5v3M17 5h3" /></>,
     chart: <><path d="M4 19V5M4 19h16" /><path d="m7 15 3-4 3 2 5-7" /></>,
     orders: <><path d="M6 7h12l-1 13H7z" /><path d="M9 7a3 3 0 0 1 6 0" /></>,
     users: <><circle cx="9" cy="8" r="3" /><path d="M3.5 19c.5-3 2.5-4.5 5.5-4.5s5 1.5 5.5 4.5" /><path d="M16 5.5a3 3 0 0 1 0 5.8M17 14.7c2 .5 3.2 1.9 3.5 4.3" /></>,

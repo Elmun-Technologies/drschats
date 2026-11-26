@@ -53,6 +53,8 @@ export function can(role: AdminRole, permission: Permission): boolean {
 /* Longest prefix wins; anything not listed is owner-only, so a new page is closed until it is placed here. */
 const PATHS: [string, Permission][] = [
   ["/admin/security", "dashboard"],
+  // Every role may open the chat; each tool inside checks its own permission (lib/assistant/tools.ts).
+  ["/admin/assistant", "dashboard"],
   ["/admin/print/orders", "orders"],
   ["/admin/orders", "orders"],
   ["/admin/customers", "customers"],

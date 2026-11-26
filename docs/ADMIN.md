@@ -361,6 +361,21 @@ mijozni imzolangan `/track/<raqam>.<imzo>` sahifasiga qaytaradi: holat, kerak bo
 - **Cookie**: «Rad etish» / «Qabul qilish» (`lib/analytics/consent.ts`); rozilikgacha
   GTM/GA4/Pixel/Metrika yuklanmaydi va `/api/t` ga hech narsa yuborilmaydi.
 
+## AI yordamchi — `/admin/assistant` (0039)
+
+Admin paneldagi agent: savollarga javob beradi va ish bajaradi. Kod: `lib/assistant/`.
+
+- **Yoqish**: `/admin/integrations` → «AI yordamchi» → Anthropic API kaliti (`sk-ant-…`, shifrlangan `integration_settings` da; env `ANTHROPIC_API_KEY` — zaxira) va model. Kalit yo'q — sahifa «ulanmagan» deydi, boshqa hech narsa o'zgarmaydi.
+- **Model**: sukut `claude-haiku-5-5` (eng arzoni). `claude-sonnet-5-5` — selectda, deploysiz. Ro'yxat bitta: `lib/assistant/config.ts`.
+- **Arxitektura**: Messages API + tool use, loop bizning serverda (`agent.ts`): asboblar adminning o'z sessiyasi va ruxsati bilan ishlaydi. Bitta qadamda bitta tool (parallel o'chiq), har qadamda ko'pi bilan 12 ta chaqiriq, `effort: medium`, prompt caching (top-level `cache_control`).
+- **Asboblar** (`tools.ts`): o'qish — mahsulot qidirish/o'qish, kategoriya va brendlar, savdo xulosasi, buyurtmalar, mijozlar, promokodlar, bozor talabi; yozish — promokod ochish/yoqish, mahsulot yaratish/o'zgartirish (narx, eski narx, ombor), buyurtma holati. Har asbob `Permission` ni aytadi, rol faqat o'z asboblarini ko'radi (`roles.ts` jadvali).
+- **Yozish faqat tasdiq bilan**: model yozish asbobini chaqirsa loop to'xtaydi, admin «Tasdiqlash / Rad etish» kartasini ko'radi (`preview`), keyin asbob **panelning o'z server action'i** orqali bajariladi (`savePromoCode`, `saveProduct`, `setOrderStatus`) — validatsiya, audit, kesh bir xil. Qo'shimcha audit: `assistant.approve` / `assistant.reject`.
+- **Rasmlar**: brauzer 1568 px JPEG ga kichraytiradi (model shuni ko'radi); `catalog` ruxsati va Tigris bo'lsa asl fayl `/admin/products/upload` ga yuklanadi va URL mahsulotga qo'yiladi.
+- **Maxfiylik**: mijoz telefoni modelga yashirilgan holda ketadi (`redactPhone`). Tool natijasidagi matn — ma'lumot, buyruq emas (system prompt).
+- **Saqlash**: `assistant_conversations` (har admin faqat o'zinikini ko'radi), tarix API'ga qanday yuborilgan bo'lsa shunday (thinking bloklari ham — o'zgartirilmaydi). 40 ta xabardan keyin yangi suhbat so'raladi. Sarf: tokenlar yoziladi, sahifada taxminiy $.
+- **Cheklov**: 40 so'rov / 10 daqiqa / admin. Anthropic konsolida oylik limit qo'ying.
+- **Yangi asbob qo'shish**: `tools.ts` ga (permission, zod sxema, yozish bo'lsa `preview`), `labels.ts` ga nom, `dict-ru.ts` ga tarjima; `assistant.test.ts` qoidalarni tekshiradi.
+
 ## Xavfsizlik
 
 - Parol — scrypt (`node:crypto`), sessiya — HMAC imzolangan cookie

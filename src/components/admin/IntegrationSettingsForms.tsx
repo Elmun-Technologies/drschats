@@ -1,9 +1,10 @@
 import type { ReactNode } from "react";
-import { saveAnalyticsIntegration, saveClickIntegration, saveEmailIntegration, saveFiscalSettings, savePaymeIntegration, saveOperatorIntegration, saveSmsIntegration, saveVerificationCodes, sendResendTestEmail, sendTestSms, testOperatorTelegramConnection } from "@/app/admin/_actions/integrations";
+import { saveAssistantIntegration, saveAnalyticsIntegration, saveClickIntegration, saveEmailIntegration, saveFiscalSettings, savePaymeIntegration, saveOperatorIntegration, saveSmsIntegration, saveVerificationCodes, sendResendTestEmail, sendTestSms, testOperatorTelegramConnection } from "@/app/admin/_actions/integrations";
 import { ActionForm } from "@/components/admin/ActionForm";
 import { Card, Field, Notice, Pill, inputClass } from "@/components/admin/ui";
 import type { IntegrationAdminOverview } from "@/lib/integrations/settings";
 import { t } from "@/lib/admin/i18n/server";
+import { ASSISTANT_MODELS, assistantModelOf } from "@/lib/assistant/config";
 
 export function Status({ on, label }: { on: boolean; label?: string }) {
   return <Pill tone={on ? "dark" : "outline"}>{label ?? (on ? t("Ulangan") : t("Ulanmagan"))}</Pill>;
@@ -284,5 +285,39 @@ export function PaymentForms({ overview, siteUrl, ready, ordersInDb }: { overvie
         </Card>
       </div>
     </>
+  );
+}
+
+export function AssistantForm({ overview }: { overview: IntegrationAdminOverview }) {
+  const a = overview.assistant;
+  const keyHint = a.configured
+    ? a.keyManagedInAdmin ? t("Shifrlangan holda saqlangan va qayta koʻrsatilmaydi.") : t("Deploy sozlamasidan ({env}) olinmoqda.", { env: "ANTHROPIC_API_KEY" })
+    : t("Kalit kiritilmagan — yordamchi oʻchiq.");
+  return (
+    <Card
+      id="assistant"
+      title={t("AI yordamchi — Claude")}
+      lead={t("Admin paneldagi yordamchi (/admin/assistant) savollarga javob beradi va ish bajaradi: mahsulot, promokod, buyurtma holati. Oʻzgartiradigan har amalni admin oldin tasdiqlaydi. Toʻlov Anthropic hisobidan, ishlatilgan token boʻyicha.")}
+      actions={<Status on={a.configured} />}
+    >
+      {!overview.encryptionConfigured && <div className="mb-4"><Notice>{t("Kalitni panelda saqlash uchun deployʼda INTEGRATION_ENCRYPTION_KEY kerak (openssl rand -hex 32).")}</Notice></div>}
+      <ActionForm action={saveAssistantIntegration} submitLabel={t("Saqlash")} className="flex flex-col gap-4">
+        <Field label={t("Anthropic API kaliti")} hint={keyHint}>
+          <input name="apiKey" type="password" autoComplete="new-password" spellCheck={false} placeholder="sk-ant-…" className={inputClass} />
+        </Field>
+        <Field label={t("Model")} hint={t("Haiku — eng arzoni, kundalik ish uchun yetarli. Sonnet murakkab vazifalarda aniqroq, lekin ancha qimmat.")}>
+          <select name="model" defaultValue={assistantModelOf(a.model)} className={inputClass}>
+            {ASSISTANT_MODELS.map((m) => (
+              <option key={m.id} value={m.id}>{t(m.label)}</option>
+            ))}
+          </select>
+        </Field>
+        <p className="text-[13px] leading-[18px] text-muted">
+          <External href="https://console.anthropic.com/settings/keys">{t("console.anthropic.com → API Keys")}</External>{" "}
+          {t("— kalit yarating, hisobga balans qoʻshing va oylik limit (Limits) qoʻying.")}
+        </p>
+        {a.keyManagedInAdmin && <ClearOverride name="clearApiKey" label={t("Paneldagi kalitni oʻchirish")} />}
+      </ActionForm>
+    </Card>
   );
 }

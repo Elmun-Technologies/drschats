@@ -20,6 +20,12 @@ keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Paym
 `/admin/integrations` da **qayta kiritilishi** kerak (shifrlash kaliti yangilandi). Tafsilot:
 [`DEPLOY-HETZNER.md`](DEPLOY-HETZNER.md) → «Hozirgi holat: Coolify».
 
+## AI yordamchi (2026-11-25, branch `claude/admin-assistant`)
+
+- **1-bosqich qurildi**: `/admin/assistant` — chat, rasm, tasdiqli yozish amallari (promokod, mahsulot yaratish/o'zgartirish, buyurtma holati) va o'qish (mahsulot, buyurtma, mijoz, savdo, promokod, bozor talabi). Model sukut Haiku 5.5. Hujjat: `docs/ADMIN.md` → AI yordamchi.
+- **Ishga tushirish**: merge → deploy (0039 migratsiya oʻzi) → `/admin/integrations` → «AI yordamchi» → Anthropic API kaliti. Haqiqiy API bilan hali sinalmagan (sessiyada kalit yo'q) — birinchi suhbatlarni kuzatish kerak.
+- **2-bosqich (keyin)**: aksiya, banner, bugungi taklif, kategoriya/brend, kampaniya qoralamasi; suhbatni o'chirish; sifat testlari to'plami.
+
 ## Integratsiyalar holati (2026-11-23, `/admin/integrations`, kodsiz sozlandi)
 
 - **Analitika ulandi**: GA4 `G-WBYMBW0ZEZ` va Yandex Metrika `114537981` (Webvisor **o'chiq** — forma

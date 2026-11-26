@@ -755,3 +755,20 @@ export const subscriptions = pgTable("subscriptions", {
   createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
+
+/* AI yordamchi — db/migrations/0039_admin_assistant.sql */
+export const assistantConversations = pgTable("assistant_conversations", {
+  id: bigserial("id", { mode: "number" }).primaryKey(),
+  adminUserId: integer("admin_user_id").references(() => adminUsers.id, { onDelete: "cascade" }),
+  title: text("title"),
+  /** Claude Messages API history (lib/assistant/agent.ts), replayed as stored. */
+  messages: jsonb("messages").$type<unknown[]>().notNull().default([]),
+  pending: jsonb("pending").$type<unknown>(),
+  model: text("model"),
+  inputTokens: bigint("input_tokens", { mode: "number" }).notNull().default(0),
+  outputTokens: bigint("output_tokens", { mode: "number" }).notNull().default(0),
+  cacheReadTokens: bigint("cache_read_tokens", { mode: "number" }).notNull().default(0),
+  cacheWriteTokens: bigint("cache_write_tokens", { mode: "number" }).notNull().default(0),
+  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
+});

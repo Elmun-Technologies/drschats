@@ -5,7 +5,7 @@ import { ORDERS_IN_DB } from "@/lib/shopflow";
 import { readOnlineProviders } from "@/lib/payments/availability";
 import { getIntegrationAdminOverview } from "@/lib/integrations/settings";
 import { SITE_URL } from "@/lib/config/site";
-import { AnalyticsForm, MessagingForms, PaymentForms, SmsForm, Status, VerificationForm } from "@/components/admin/IntegrationSettingsForms";
+import { AnalyticsForm, AssistantForm, MessagingForms, PaymentForms, SmsForm, Status, VerificationForm } from "@/components/admin/IntegrationSettingsForms";
 import { Card, Notice, PageHeader, SectionTitle, linkClass } from "@/components/admin/ui";
 import { formatNumber } from "@/lib/utils";
 import { requireAdmin } from "@/lib/admin/session";
@@ -93,6 +93,11 @@ export default async function AdminIntegrationsPage() {
             <Link href="/admin/messages" className={linkClass}>{t("Xabarlar jurnali →")}</Link>
           </p>
         </Card>
+      </div>
+
+      <SectionTitle>{t("AI yordamchi")}</SectionTitle>
+      <div className="grid gap-4 xl:grid-cols-2">
+        <AssistantForm overview={overview} />
       </div>
 
       <SectionTitle>{t("Tizim holati")}</SectionTitle>

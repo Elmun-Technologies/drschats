@@ -10,6 +10,7 @@ import { getRuntimeIntegrationSettings, saveIntegrationSettings, type Integratio
 import { SITE_SETTINGS_TAG, savePublicSettings, verificationCode } from "@/lib/integrations/site-settings";
 import type { FormState } from "./catalog";
 import { t } from "@/lib/admin/i18n/server";
+import { ASSISTANT_MODELS, DEFAULT_ASSISTANT_MODEL, type AssistantModel } from "@/lib/assistant/config";
 
 /** Zod messages are written in Uzbek at module level; they are translated when returned. */
 function issue(error: z.ZodError): string | undefined {
@@ -484,4 +485,37 @@ export async function saveFiscalSettings(_: FormState, form: FormData): Promise<
   revalidatePath("/admin/integrations");
   await auditLog(admin, "integration.save", auditTarget(form));
   return { ok: t("Saqlandi. Keyingi Payme va Click toʻlovlari chekida shu kodlar ishlatiladi.") };
+}
+
+/* ---------- AI yordamchi (lib/assistant) ---------- */
+
+const assistantSchema = z.object({
+  apiKey: z.string().trim().max(256).regex(/^$|^sk-ant-[A-Za-z0-9_-]{20,}$/, "Anthropic API kaliti sk-ant- bilan boshlanadi — console.anthropic.com dan nusxalang."),
+  model: z.enum(ASSISTANT_MODELS.map((m) => m.id) as [AssistantModel, ...AssistantModel[]]),
+  clearApiKey: z.boolean(),
+});
+
+export async function saveAssistantIntegration(_: FormState, form: FormData): Promise<FormState> {
+  const admin = await requireAdmin("integrations");
+  const key = form.get("apiKey");
+  const parsed = assistantSchema.safeParse({
+    apiKey: typeof key === "string" ? key : "",
+    model: formString(form, "model") || DEFAULT_ASSISTANT_MODEL,
+    clearApiKey: form.get("clearApiKey") === "on",
+  });
+  if (!parsed.success) return { error: issue(parsed.error) ?? t("Maydonlarni tekshiring.") };
+  const unavailable = integrationSettingsError();
+  if (unavailable) return unavailable;
+  const updates: IntegrationSettingUpdates = { "assistant.model": parsed.data.model };
+  if (parsed.data.clearApiKey) updates["assistant.apiKey"] = null;
+  else if (parsed.data.apiKey) updates["assistant.apiKey"] = parsed.data.apiKey;
+  try {
+    await saveIntegrationSettings(updates, admin.id);
+  } catch (error) {
+    return { error: saveErrorMessage(error) };
+  }
+  revalidatePath("/admin/integrations");
+  revalidatePath("/admin/assistant");
+  await auditLog(admin, "integration.save", "assistant", { model: parsed.data.model, key: parsed.data.clearApiKey ? "cleared" : parsed.data.apiKey ? "set" : "unchanged" });
+  return { ok: t("Saqlandi. Yordamchi: /admin/assistant") };
 }
