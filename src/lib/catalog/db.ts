@@ -8,6 +8,7 @@ import { builtInCatalog, type RawProduct, type RawPromotion } from "@/lib/shopfl
 import type { OrderRequest, OrderResult } from "@/lib/shopflow/types";
 import type { CatalogData } from "./engine";
 import { createCircuit } from "./circuit";
+import { categoryCutout } from "@/lib/content/product-cutouts";
 import { StockShortage, readLowStockDefault, takeStock } from "./stock";
 import type { RawDeal } from "./deals";
 import { approvedReviewSummaries } from "@/lib/reviews/server";
@@ -87,7 +88,7 @@ async function readCatalog(): Promise<CatalogData> {
       slug: c.slug,
       name: c.name,
       description: c.description,
-      image: c.image ?? "/images/stock/st-cat-capsules.webp",
+      image: categoryImage(c.slug, c.image),
     })),
     brands: brandRows.map((b) => ({ slug: b.slug, name: b.name })),
     products: rows.map(
@@ -266,4 +267,16 @@ export async function ordersFromPhone(phone: string): Promise<number | null> {
     console.error("[orders] phone lookup failed:", (err as Error).message);
     return null;
   }
+}
+
+/*
+  Rows seeded before 2026-11-25 carry the generic capsules placeholder; only that
+  value is swapped for the category's pack shot. Any other stored image, a stock
+  one an admin picked included, is kept as chosen.
+*/
+const SEEDED_PLACEHOLDER = "/images/stock/st-cat-capsules.webp";
+
+function categoryImage(slug: string, stored: string | null): string {
+  if (stored && stored !== SEEDED_PLACEHOLDER) return stored;
+  return categoryCutout(slug) ?? "/images/bank/pills-bottle-yellow.webp";
 }

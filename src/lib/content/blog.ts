@@ -6,6 +6,9 @@ import { articlesNov2026e } from "./blog-articles-2026-11-19b";
 import { articlesNov2026f } from "./blog-articles-2026-11-20";
 import { articlesNov2026g } from "./blog-articles-2026-11-24";
 import { articlesNov2026h } from "./blog-articles-2026-11-24b";
+import { articlesNov2026i } from "./blog-articles-2026-11-25";
+import { articlesNov2026j } from "./blog-articles-2026-11-25b";
+import { articlesNov2026k } from "./blog-articles-2026-11-26";
 import type { Locale } from "@/lib/i18n/routing";
 
 type L<T = string> = Record<Locale, T>;
@@ -44,7 +47,7 @@ export interface Article {
 }
 
 /*
-  Licensed stock photos (public/images/stock), one per article. An article
+  Licensed stock photos (public/images/bank, public/images/blog), one per article. An article
   without its own entry falls back to a neutral pack shot of capsules rather
   than a drawn placeholder.
 */
@@ -52,20 +55,20 @@ const IMAGES: Record<string, string> = {
   "blog-omega3": "/images/blog/omega3-capsules.webp",
   "blog-vitamind": "/images/blog/vitamin-d-sun-woman.webp",
   "blog-magnesium": "/images/blog/magnesium-capsules.webp",
-  "blog-calcium": "/images/stock/st-aud-senior.webp",
-  "blog-kids": "/images/stock/st-aud-child.webp",
-  "blog-pregnancy": "/images/stock/st-aud-expectant.webp",
-  "blog-collagen": "/images/stock/st-aud-woman.webp",
-  "blog-tonometer": "/images/stock/st-range-devices.webp",
+  "blog-calcium": "/images/bank/milk-glass-blue.webp",
+  "blog-kids": "/images/bank/kid-orange-glasses.webp",
+  "blog-pregnancy": "/images/bank/pregnant-heart-hands.webp",
+  "blog-collagen": "/images/bank/beauty-profile-yellow.webp",
+  "blog-tonometer": "/images/bank/senior-bp-home.webp",
   "blog-inhaler": "/images/blog/inhaler-mother-son.webp",
-  "blog-effervescent": "/images/stock/st-cat-citrus.webp",
-  "blog-vitaminc": "/images/stock/st-cat-orange.webp",
+  "blog-effervescent": "/images/bank/fizz-tablet-water.webp",
+  "blog-vitaminc": "/images/bank/lemon-capsules-yellow.webp",
   "blog-eyes": "/images/blog/eyes-tired-laptop.webp",
   "blog-hair": "/images/blog/hair-curly-woman.webp",
-  "blog-men": "/images/stock/st-aud-man.webp",
-  "blog-immunity": "/images/stock/st-aud-recovery.webp",
-  "blog-bp": "/images/stock/st-range-devices.webp",
-  "blog-thermo": "/images/stock/st-range-devices.webp",
+  "blog-men": "/images/bank/man-flex-yellow.webp",
+  "blog-immunity": "/images/bank/winter-girl-smile.webp",
+  "blog-bp": "/images/bank/man-bp-living-room.webp",
+  "blog-thermo": "/images/bank/woman-thermometer-bed.webp",
   "blog-coffee": "/images/blog/coffee-cup-beans.webp",
   "bank-vitamin-spoon": "/images/blog/vitamin-supplement-spoon.webp",
   "bank-vitamin-capsule": "/images/blog/vitamin-capsule-wood.webp",
@@ -96,8 +99,16 @@ const IMAGES: Record<string, string> = {
   "bank2-ayran": "/images/bank/ayran-drink.webp",
   "bank2-fatigue": "/images/bank/woman-low-mood.webp",
   "bank2-seniors": "/images/bank/senior-couple-home.webp",
+  "bank2-pill-organizer": "/images/bank/pill-organizer.webp",
+  "bank2-hair-loss": "/images/bank/hair-loss-brush.webp",
+  "bank2-stress": "/images/bank/stress-man-laptop.webp",
+  "bank3-student": "/images/bank/student-exam-night.webp",
+  "bank3-phone-bed": "/images/bank/phone-bed-night.webp",
+  "bank3-cold-hands": "/images/bank/woman-cold-hands-winter.webp",
+  "bank4-blood-tests": "/images/bank/blood-tests.webp",
+  "bank4-healthy-food": "/images/bank/food-healthy-mix.webp",
 };
-const img = (seed: string) => IMAGES[seed] ?? "/images/stock/st-cat-capsules.webp";
+const img = (seed: string) => IMAGES[seed] ?? "/images/bank/pills-bottle-yellow.webp";
 
 const rawArticles: RawArticle[] = [
   ...articlesNov2026,
@@ -108,6 +119,9 @@ const rawArticles: RawArticle[] = [
   ...articlesNov2026f,
   ...articlesNov2026g,
   ...articlesNov2026h,
+  ...articlesNov2026i,
+  ...articlesNov2026j,
+  ...articlesNov2026k,
   {
     slug: "omega-3-nima-uchun-kerak",
     date: "2026-05-20",

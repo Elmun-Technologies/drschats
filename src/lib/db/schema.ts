@@ -756,7 +756,7 @@ export const subscriptions = pgTable("subscriptions", {
   updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow(),
 });
 
-/* AI yordamchi — db/migrations/0038_admin_assistant.sql */
+/* AI yordamchi — db/migrations/0039_admin_assistant.sql */
 export const assistantConversations = pgTable("assistant_conversations", {
   id: bigserial("id", { mode: "number" }).primaryKey(),
   adminUserId: integer("admin_user_id").references(() => adminUsers.id, { onDelete: "cascade" }),

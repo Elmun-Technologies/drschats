@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
 import { loadProgramIndex } from "@/lib/content/program-loader";
@@ -8,6 +9,8 @@ import { Link } from "@/lib/i18n/navigation";
 import { Disclaimer } from "@/components/legal/Disclaimer";
 import { DiscountBadge } from "@/components/ui/Price";
 import { staticPageMetadata } from "@/lib/seo/page-meta";
+import { programImage } from "@/lib/content/page-images";
+import { topicImageSrc } from "@/lib/content/topic-images";
 
 export const revalidate = 3600;
 
@@ -54,6 +57,7 @@ export default async function ProgramsPage({
                     href={`/programs/${program.slug}`}
                     className="group flex h-full flex-col gap-3 rounded-[20px] bg-tile p-5 transition-colors hover:bg-tile-hover lg:p-6"
                   >
+                    <ProgramCardImage slug={program.slug} locale={locale} />
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="inline-flex h-7 items-center rounded-pill bg-bg px-2.5 text-[13px] font-semibold">
                         {t("duration", { days: program.durationDays })}
@@ -82,5 +86,22 @@ export default async function ProgramsPage({
           <Disclaimer variant="product" />
       </div>
     </>
+  );
+}
+
+function ProgramCardImage({ slug, locale }: { slug: string; locale: Locale }) {
+  const image = programImage(slug);
+  if (!image) return null;
+  return (
+    <span className="relative block aspect-[16/10] overflow-hidden rounded-[16px] bg-bg">
+      <Image
+        src={topicImageSrc(image)}
+        alt={image.alt[locale]}
+        fill
+        sizes="(min-width: 1296px) 400px, (min-width: 640px) 45vw, calc(100vw - 72px)"
+        className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+        style={image.position ? { objectPosition: image.position } : undefined}
+      />
+    </span>
   );
 }

@@ -4,6 +4,7 @@ import Script from "next/script";
 import { useEffect, useState } from "react";
 import { analyticsIdsFromEnvironment, sanitizeAnalyticsIds, type AnalyticsIds } from "@/lib/analytics/config";
 import { useConsent } from "@/lib/analytics/consent";
+import { ADULT_TITLE, currentPage, isAdultPage } from "@/lib/analytics/redact-url";
 
 /*
   Analytics IDs may be set in the deployment environment or managed at runtime
@@ -50,6 +51,10 @@ export function Analytics() {
 
   if (!resolved || consent !== "granted") return null;
   const { gtm, ga4, metaPixel: pixel, yandexMetrika: ym } = ids;
+  // The tags' first hit would carry the raw URL (quiz answers, email tokens); give them the redacted one.
+  const page = currentPage();
+  const titleJs = isAdultPage() ? `,page_title:${JSON.stringify(ADULT_TITLE)}` : "";
+  const pageJs = JSON.stringify(page).replace(/</g, "\\u003c");
 
   return (
     <>
@@ -63,7 +68,7 @@ export function Analytics() {
         <>
           <Script src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(ga4)}`} strategy="afterInteractive" />
           <Script id="ga4" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}');`}
+            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','${ga4}',{page_location:location.origin+${pageJs}${titleJs}});`}
           </Script>
         </>
       )}
@@ -77,7 +82,7 @@ export function Analytics() {
 
       {ym && (
         <Script id="yandex-metrika" strategy="lazyOnload">
-          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym(${ym},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,webvisor:${webvisor ? "true" : "false"}});`}
+          {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js','ym');ym(${ym},'init',{clickmap:true,trackLinks:true,accurateTrackBounce:true,defer:true,webvisor:${webvisor ? "true" : "false"}});ym(${ym},'hit',${pageJs});`}
         </Script>
       )}
     </>

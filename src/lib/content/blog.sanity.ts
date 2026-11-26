@@ -35,7 +35,7 @@ function mapImage(raw: { mainImage?: unknown }): string {
       // fall through to placeholder
     }
   }
-  return "/images/stock/st-cat-capsules.webp";
+  return "/images/bank/pills-bottle-yellow.webp";
 }
 
 type SanityRaw = any;

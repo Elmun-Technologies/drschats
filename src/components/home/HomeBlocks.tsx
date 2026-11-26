@@ -255,10 +255,10 @@ export async function HomeServices() {
   };
   const fill = (s: string) => s.replace(/\{\w+\}/g, (k) => values[k] ?? k);
   const tiles = [
-    { href: "/quiz", image: "/images/stock/st-cat-capsules.webp", pack: false },
+    { href: "/quiz", image: "/images/bank/phone-hand-colorful.webp", pack: false },
     { href: "/loyalty", image: productCutout("swiss-energy-immunovit-30") ?? null, pack: true },
-    { href: "/delivery", image: "/images/stock/st-delivery-door.webp", pack: false },
-    { href: "/where-to-buy", image: "/images/stock/st-shelf-range.webp", pack: false },
+    { href: "/delivery", image: "/images/bank/courier-delivery.webp", pack: false },
+    { href: "/where-to-buy", image: "/images/bank/pharmacist-counter-smile.webp", pack: false },
   ];
 
   return (
@@ -316,9 +316,9 @@ export async function HomeOrigin() {
 }
 
 const NEWS_IMAGES = [
-  "/images/stock/st-cat-orange.webp",
-  "/images/stock/st-shelf-range.webp",
-  "/images/stock/st-range-devices.webp",
+  "/images/bank/lemon-capsules-yellow.webp",
+  "/images/bank/pharmacy-shelf-worker.webp",
+  "/images/bank/man-bp-living-room.webp",
 ];
 
 export async function HomeNews({ locale }: { locale: Locale }) {

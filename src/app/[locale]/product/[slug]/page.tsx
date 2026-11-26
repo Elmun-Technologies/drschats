@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import { isAdult } from "@/lib/catalog/adult";
+import { adultCopy } from "@/lib/content/adult";
+import { AgeGate } from "@/components/adult/AgeGate";
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import type { Locale } from "@/lib/i18n/routing";
@@ -47,10 +50,14 @@ export default async function ProductPage({
   if (!found) notFound();
   // A withdrawn product keeps its page for old links and orders, shown as not sold.
   const product = found.assortment === "unlisted" ? { ...found, inStock: false } : found;
+  const adult = isAdult(product);
 
   const [upsells, allProducts, allTopics, categories, t] = await Promise.all([
     shopflow.getUpsells(product.id, locale).catch(() => []),
-    shopflow.getProducts({ locale, sort: "popular", pageSize: 50 }).catch(() => ({ items: [], total: 0, page: 1, pageSize: 50 })),
+    // An 18+ product is compared only with its own shelf; every other page never sees that shelf.
+    shopflow
+      .getProducts({ locale, sort: "popular", pageSize: 50, adult: adult ? "only" : "exclude" })
+      .catch(() => ({ items: [], total: 0, page: 1, pageSize: 50 })),
     getHealthTopics(locale).catch(() => []),
     shopflow.getCategories(locale).catch(() => []),
     getTranslations("product"),
@@ -99,17 +106,33 @@ export default async function ProductPage({
         ])}
       />
       <ViewTracker slug={product.slug} categorySlug={product.categorySlug ?? ""} price={product.price} />
-      <ProductTemplate
-        product={product}
-        category={category}
-        upsells={upsells}
-        similar={similar}
-        allProducts={allProducts.items}
-        locale={locale}
-        reviewer={reviewer}
-        topics={topics}
-        articles={articles}
-      />
+      {adult ? (
+        <AgeGate text={adultCopy(locale).gate}>
+          <ProductTemplate
+            product={product}
+            category={category}
+            upsells={upsells}
+            similar={similar}
+            allProducts={allProducts.items}
+            locale={locale}
+            reviewer={reviewer}
+            topics={[]}
+            articles={[]}
+          />
+        </AgeGate>
+      ) : (
+        <ProductTemplate
+          product={product}
+          category={category}
+          upsells={upsells}
+          similar={similar}
+          allProducts={allProducts.items}
+          locale={locale}
+          reviewer={reviewer}
+          topics={topics}
+          articles={articles}
+        />
+      )}
     </>
   );
 }

@@ -76,6 +76,7 @@ export function operatorOrderText(order: OrderRequest, orderId: string): Promise
       order.customer.email ? `✉️ ${order.customer.email}` : "",
       `📍 ${regionName(order.delivery.region)}, ${order.delivery.address}`,
       `🚚 ${order.delivery.method}`,
+      order.delivery.discreet ? "🖤 MAXFIY QADOQ (18+): qora, shaffof boʻlmagan paket, ustida hech narsa yozilmasin" : "",
       order.payment
         ? `💳 ${order.payment.method === "online" ? `Onlayn toʻlov: ${order.payment.provider === "click" ? "Click" : "Payme"} — kutilmoqda (toʻlansa alohida xabar keladi)` : "Yetkazishda toʻlov, naqd"}`
         : "",

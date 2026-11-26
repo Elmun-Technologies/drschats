@@ -361,7 +361,7 @@ mijozni imzolangan `/track/<raqam>.<imzo>` sahifasiga qaytaradi: holat, kerak bo
 - **Cookie**: «Rad etish» / «Qabul qilish» (`lib/analytics/consent.ts`); rozilikgacha
   GTM/GA4/Pixel/Metrika yuklanmaydi va `/api/t` ga hech narsa yuborilmaydi.
 
-## AI yordamchi — `/admin/assistant` (0038)
+## AI yordamchi — `/admin/assistant` (0039)
 
 Admin paneldagi agent: savollarga javob beradi va ish bajaradi. Kod: `lib/assistant/`.
 

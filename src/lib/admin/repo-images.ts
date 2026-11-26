@@ -4,7 +4,7 @@
   the client filters and ranks — so the picker works without Tigris.
 */
 
-export type RepoImageKind = "photo" | "cutout" | "stock";
+export type RepoImageKind = "photo" | "cutout" | "stock" | "bank";
 
 export interface RepoImage {
   /** Site path, e.g. "/products/aminomorin-forte-30-4.webp". */
@@ -18,6 +18,7 @@ export const REPO_IMAGE_KINDS: Record<RepoImageKind, string> = {
   photo: "Mahsulot fotosi",
   cutout: "Kesma (fonsiz)",
   stock: "Stok foto",
+  bank: "Rasm banki (Adobe)",
 };
 
 /** Folders under public/ and what each holds. Only files directly inside are listed. */
@@ -25,6 +26,7 @@ export const REPO_IMAGE_DIRS: { dir: string; kind: RepoImageKind; match: RegExp 
   { dir: "products", kind: "photo", match: /\.(webp|jpe?g|png|avif)$/i },
   { dir: "images/products", kind: "cutout", match: /^c-.+\.png$/i },
   { dir: "images/stock", kind: "stock", match: /^st-.+\.(webp|jpe?g|png|avif)$/i },
+  { dir: "images/bank", kind: "bank", match: /\.webp$/i },
 ];
 
 /** "c-swiss-energy-calcivit-30-hero.png" → "swiss-energy-calcivit-30-hero" */

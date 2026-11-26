@@ -1688,6 +1688,7 @@ export const RU: Record<string, string> = {
   "Statik kontent": "Статический контент",
   "Statik maqolalar roʻyxati faqat koʻrish uchun. Sanity ulanganidan soʻng ushbu paneldan Studioʼga oʻtib maqola yozish va nashr qilish mumkin boʻladi.": "Список статических статей — только для просмотра. После подключения Sanity из этой панели можно будет перейти в Studio, писать и публиковать статьи.",
   "Stok foto": "Стоковое фото",
+  "Rasm banki (Adobe)": "Фотобанк (Adobe)",
   "Summa": "Сумма",
   "Summa (soʻm)": "Сумма (сум)",
   "soʻm": "сум",

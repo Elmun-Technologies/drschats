@@ -1,5 +1,6 @@
 "use client";
 
+import { isAdult } from "@/lib/catalog/adult";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import type { Locale } from "@/lib/i18n/routing";
@@ -56,7 +57,7 @@ export function WishlistView({ allProducts, recommended }: { allProducts: Produc
   function addAll() {
     for (const p of inStock) {
       // Silent: one confirmation for the whole batch, not one per product.
-      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt }, 1, { silent: true });
+      add({ productId: p.id, slug: p.slug, name: p.name, image: p.images[0]?.url ?? "", price: p.price, oldPrice: p.oldPrice, saleEndsAt: p.saleEndsAt , ...(isAdult(p) ? { adult: true } : {}) }, 1, { silent: true });
     }
     notify();
   }

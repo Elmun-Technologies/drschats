@@ -65,6 +65,15 @@
   /* Swiss Energy brand panel only (owner's decision, 2026-10) — not a sale colour. */
   --color-swiss: #d52b1e;
   --color-yellow: #ffd43b;
+  /* Audience "worlds" (owner's decision, 2026-11-25): Pantone colours, only inside that audience page. */
+  --color-pantone-cloud: #f0eee9; /* 11-4201 Cloud Dancer, colour of 2026 */
+  --color-pantone-peri: #6667ab; /* 17-3938 Very Peri */
+  --color-pantone-peach: #ffbe98; /* 13-1023 Peach Fuzz */
+  --color-pantone-sun: #f5df4d; /* 13-0647 Illuminating */
+  --color-pantone-magenta: #bb2649; /* 18-1750 Viva Magenta */
+  --color-pantone-mocha: #a47864; /* 17-1230 Mocha Mousse */
+  --color-pantone-blue: #0f4c81; /* 19-4052 Classic Blue */
+  --color-pantone-flame: #f2552c; /* 17-1462 Flame */
   --color-yellow-banner: #ffe58a;
 
   --font-onest: "Onest", "Onest Fallback", "Segoe UI", Arial, sans-serif;
@@ -539,4 +548,16 @@ body {
 }
 .no-scrollbar::-webkit-scrollbar {
   display: none;
+}
+
+/* 18+ pages (components/adult/AgeGate): blurred until the visitor confirms their age. */
+.age-gated {
+  filter: blur(22px);
+  pointer-events: none;
+  user-select: none;
+}
+html.age-ok .age-gated {
+  filter: none;
+  pointer-events: auto;
+  user-select: auto;
 }

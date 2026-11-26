@@ -1,5 +1,6 @@
 "use server";
 
+import { isAdult } from "@/lib/catalog/adult";
 import { cookies, headers } from "next/headers";
 import { ORDERS_IN_DB, SHOPFLOW_IS_MOCK, shopflow } from "@/lib/shopflow";
 import { verifyInitData } from "@/lib/bot/webapp";
@@ -61,7 +62,7 @@ function trackUrl(locale: string, orderId: string): string {
   return `${siteOrigin()}/${locale}/track/${orderTrackToken(orderId)}`;
 }
 
-async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
+async function emailOrderConfirmation(order: OrderRequest, orderId: string, adultSlugs: Set<string>) {
   const email = order.customer.email;
   if (!email) return;
 
@@ -71,9 +72,10 @@ async function emailOrderConfirmation(order: OrderRequest, orderId: string) {
     campaign: {
       type: "order",
       orderId,
+      // An 18+ line is not named in the mail: an inbox is often read over a shoulder.
       items: order.items.map((item) => ({
-        name: `${item.name} × ${item.quantity}`,
-        url: `${siteOrigin()}/${order.locale}/product/${item.slug}`,
+        name: `${adultSlugs.has(item.slug) ? "18+" : item.name} × ${item.quantity}`,
+        url: adultSlugs.has(item.slug) ? trackUrl(order.locale, orderId) : `${siteOrigin()}/${order.locale}/product/${item.slug}`,
         price: formatMoney(lineTotal({ price: item.unitPrice, quantity: item.quantity, upsellDiscountPercent: item.upsellDiscountPercent }), order.locale),
       })),
       total: formatMoney(order.totals.total, order.locale),
@@ -286,6 +288,9 @@ export async function submitOrder(
     });
     if (!priced.ok) return { ok: false, error: priced.error, slug: priced.slug };
     let order = priced.order;
+    // 18+ (lib/catalog/adult.ts): the package is discreet, decided here and not by the browser.
+    const adultSlugs = new Set(found.filter(isAdult).map((p) => p.slug));
+    order = { ...order, delivery: { ...order.delivery, discreet: adultSlugs.size > 0 || undefined } };
 
     /*
       Orders kept in our own database go through the promo transaction: the
@@ -348,11 +353,12 @@ export async function submitOrder(
               total: order.totals.total,
               phone: order.customer.phone,
               name: order.customer.name,
-              items: order.items,
+              // The journey never holds an 18+ product by name (lib/catalog/adult.ts); the order itself does.
+              items: order.items.map((i) => (adultSlugs.has(i.slug) ? { ...i, slug: "adult", name: "18+" } : i)),
             })
           : Promise.resolve(),
         clubBotReceipt(result.orderId, telegramUser?.id ?? sessionChat, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),
-        emailOrderConfirmation(order, result.orderId),
+        emailOrderConfirmation(order, result.orderId, adultSlugs),
         ORDERS_IN_DB ? recordSubscriptions(result.orderId, order) : Promise.resolve(0),
         order.customer.email && order.customer.marketingOptIn
           ? requestEmailOptIn({

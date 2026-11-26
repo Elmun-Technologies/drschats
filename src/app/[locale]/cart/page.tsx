@@ -40,7 +40,7 @@ export default async function CartPage({
   // The pool the modal and the order action use, so every offer shown is one the server accepts.
   const [recommended, catalogue, firstOrder, loyalty, onlineProviders] = await Promise.all([
     upsellPool(locale),
-    getAllProducts({ locale }),
+    getAllProducts({ locale, adult: "include" }),
     firstOrderOffer(),
     publicLoyalty(),
     readOnlineProviders(),

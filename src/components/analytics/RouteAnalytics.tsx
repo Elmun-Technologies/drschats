@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { captureAttribution } from "@/lib/analytics/attribution";
 import { trackPageView } from "@/lib/analytics/events";
-import { redactUrl } from "@/lib/analytics/redact-url";
+import { currentPage } from "@/lib/analytics/redact-url";
 import { journeyPage } from "@/lib/journey/client";
 
 /*
@@ -23,10 +23,10 @@ export function RouteAnalytics() {
     captureAttribution();
     if (first.current) {
       first.current = false;
-      journeyPage(redactUrl(window.location.pathname, window.location.search));
+      journeyPage(currentPage());
       return;
     }
-    trackPageView(redactUrl(window.location.pathname, window.location.search));
+    trackPageView(currentPage());
   }, [pathname, search]);
 
   return null;

@@ -23,7 +23,7 @@ keyingi qadam: DNS'ni Cloudflare'ga koʻchirish (Ahost'da NS almashtirish). Paym
 ## AI yordamchi (2026-11-25, branch `claude/admin-assistant`)
 
 - **1-bosqich qurildi**: `/admin/assistant` — chat, rasm, tasdiqli yozish amallari (promokod, mahsulot yaratish/o'zgartirish, buyurtma holati) va o'qish (mahsulot, buyurtma, mijoz, savdo, promokod, bozor talabi). Model sukut Haiku 5.5. Hujjat: `docs/ADMIN.md` → AI yordamchi.
-- **Ishga tushirish**: merge → deploy (0038 migratsiya o'zi) → `/admin/integrations` → «AI yordamchi» → Anthropic API kaliti. Haqiqiy API bilan hali sinalmagan (sessiyada kalit yo'q) — birinchi suhbatlarni kuzatish kerak.
+- **Ishga tushirish**: merge → deploy (0039 migratsiya oʻzi) → `/admin/integrations` → «AI yordamchi» → Anthropic API kaliti. Haqiqiy API bilan hali sinalmagan (sessiyada kalit yo'q) — birinchi suhbatlarni kuzatish kerak.
 - **2-bosqich (keyin)**: aksiya, banner, bugungi taklif, kategoriya/brend, kampaniya qoralamasi; suhbatni o'chirish; sifat testlari to'plami.
 
 ## Integratsiyalar holati (2026-11-23, `/admin/integrations`, kodsiz sozlandi)
@@ -74,9 +74,45 @@ bo'limlar + 3–4 FAQ (uz/ru), faqat katalogdagi tarkib; isbotsiz raqamlar (D3 �
 o'zgardi — katalog kartasida manba (dengiz/qoramol) yozilmagan, `ingredients.ts` va `health-topics.ts` (beauty/joints)
 da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 
+## 2026-11-24 / 25 — rasm banki, hero foto, yangi mavzular va blog
+
+- **Rasm banki** (#186, #193): Adobe Stock'dan litsenziyalangan **210 ta foto va 14 ta video** —
+  `public/images/bank/*.webp`, `public/videos/bank/*.mp4`, roʻyxat va Adobe ID'lar `docs/IMAGE-BANK.md`,
+  `docs/image-bank.tsv`. Yangi sahifa yoki maqola rasmi avval shu bankdan olinadi.
+- **Mavzu sahifalariga hero foto** (#187): `lib/content/topic-images.ts` — har mavzuga bankdan bitta noyob
+  foto (test buni tekshiradi), OG rasm va `primaryImageOfPage`.
+- **Kesma rasmlar** (#188): 11 ta mahsulot (qahvalar, termometr, ingalyator, Safi, Hiew, Potenton) Adobe
+  bilan fondan ajratildi, 640×640 PNG.
+- **Yangi mavzular** (#191, #193): `/symptoms/dry-skin`, `eye-strain`, `fever`, `numbness`, `bleeding-gums`,
+  `period-pain`, `cracked-lips`; `/goals/blood-pressure`, `menopause`, `vegetarian`
+  (`health-topics-1125.ts`, `health-topics-1126.ts`; `subjects.ts` ga `topic` ulangan). Isitma va 180/120
+  bosim boʻyicha Codex tuzatishlari (AAP/AHA) kiritilgan.
+- **Ona va bola SEO sahifalari** (2026-11-25 kech): 5 ta yangi maqsad sahifasi (uz + ru, `health-topics-1127.ts`) —
+  homiladorlikni rejalashtirish, emizish davri, trimestrlar, maktab oʻquvchilari (7–13), bola uchun uy aptechkasi.
+  Planner talabidan («витамины для планирования беременности», «для кормящих», «для школьников»), kalit soʻzlar
+  `subjects.ts` da shu sahifalarga koʻchirildi. Emizish sahifasida mahsulot yoʻq — qadoqda emizish yozilgan mahsulot
+  katalogda yoʻq. `/care` hisob/eslatma bosqichi hamon egasining maʼlumotini kutyapti (`docs/ONA-BOLA.md`).
+- **Eski rasmlar almashtirildi** (2026-11-25): Adobe Stock'dan yana 32 ta yorqin, eʼtibor tortadigan foto
+  (sariq/rangli fon, makro). `public/images/stock/st-*` endi saytda ishlatilmaydi (faqat bazadagi eski kategoriya
+  rasmlari uchun qoldi): blog muqovalari (11 ta eski + standart), bosh sahifa plitkalari, «Biz haqimizda»,
+  «Yetkazish», «Hamkorlar», test «Kim uchun» kartalari, `/care`. Yangi: 7 ta dastur sahifasi va kartasiga hamda
+  12 ta ingredient kartasiga foto (`lib/content/page-images.ts`, test bilan, OG rasm). Admin rasm tanlash oynasida
+  «Rasm banki (Adobe)» boʻlimi.
+- **Blog** (#189, #190, #192, #193): +9 maqola (probiotiklar, doimiy charchoq, 60+ vitaminlar, ichish
+  vaqti, soch toʻkilishi, stress va magniy, imtihon davri, telefon va uyqu, qoʻl-oyoq sovushi) — jami 41.
+- **GSC indekslash** (kvota ~10/kun): 24-noyabr kvota tugagan; yangi URL'lar navbatda.
+- **Ishga tushirish auditi** (2026-11-25, repodan tashqarida): P0 — oferta yoʻq, operator Telegram/Resend
+  sozlanmagan, fiskal chek (package code, 9 SKU'da MXIK yoʻq), `/licenses` dagi raqamsiz daʼvolar,
+  shaxsiy maʼlumotlar (pd.gov.uz, server UZ tashqarisida), DNS Vercel'da (2026-12-14 gacha).
+  **Repo public** — hujjatlardagi infratuzilma maʼlumotlari ochiq; egasining qarori kutilmoqda.
+- **Test javoblari analitikaga ketmaydi** (audit H8): quiz javoblari (homiladorlik, dorilar) natija sahifasiga
+  URL emas, 1 kunlik `gv_quiz` cookie bilan oʻtadi (`QUIZ_ANSWERS_COOKIE`), shuning uchun GA4/GTM/Pixel/Metrika
+  URL'ida yoʻq. Eski `?a=` havola hamon ochiladi va `redactUrl` uni oʻz kuzatuvdan, GA4/Metrika birinchi
+  hitidan olib tashlaydi.
+
 ## Yaqinda tugagan (main'ga merge qilingan)
 
-- **Rasm banki** (2026-11-24): Adobe Stock bepul davrida 160 ta haqiqiy foto (AI emas) va 5 ta qisqa video litsenziyalandi — `public/images/bank/`, `public/videos/bank/`, reyestr `docs/IMAGE-BANK.md` (+ `docs/image-bank.tsv`). Yangi sahifa/blog/banner uchun rasm avval shu yerdan olinadi. Keyingi qadam: 49 ta mavzu sahifasiga (goals/symptoms/vitamins) hero rasm sloti va bankdan moslash.
+- **Rasm banki** (2026-11-24): Adobe Stock bepul davrida 160 ta haqiqiy foto (AI emas) va 5 ta qisqa video litsenziyalandi — `public/images/bank/`, `public/videos/bank/`, reyestr `docs/IMAGE-BANK.md` (+ `docs/image-bank.tsv`). Yangi sahifa/blog/banner uchun rasm avval shu yerdan olinadi. Mavzu sahifalariga hero foto #187 bilan qoʻshildi (yuqoridagi boʻlim).
 - **Yandex Vebmaster**: govita.uz huquqi tasdiqlandi (HTML-fayl, 2026-11-24). «Фиды» boʻlimida faqat koʻchmas mulk/vakansiya/transport/xizmat toifalari bor — tovar YML feedi bu yerga ulanmaydi (Yandex Business / Tovarlar kabineti kerak, egasi).
 
 - **Talab tahlili — bozor maʼlumoti oldindan** (2026-11-12): `0037_keyword_market_baseline.sql` 2026-11-02 Planner eksportini (1 913 soʻz, oyiga 250 800 qidiruv) boʻsh jadvalga yozadi — `/admin/keywords` fayl yuklamasdan toʻladi. Sahifaga qoʻshildi: talab darajasi (1000+/100–999/10–99/10 dan kam), tillar ulushi, mavsum, «Sahifa kerak», oʻsayotgan/pasayayotgan soʻzlar (`lib/keywords/report.ts`, testli). **Keyingi qadam (foydalanuvchi tanlagan «a» variant)**: «Sahifa kerak» roʻyxatidagi mavzuga tugma bilan uz/ru sahifa qoralamasi — Anthropic API kaliti va bazadagi qoralama sahifalar kerak.
@@ -161,3 +197,14 @@ da hamon «dengiz» deyiladi; egasidan tasdiq kerak.
 - claude-mem kabi "cloud memory" vositalari bu muhitda (har sessiya = yangi konteyner)
   ishlamaydi — faqat git'ga commit qilingan narsa saqlanadi. Shu HOLAT.md — aynan shu
   uchun.
+
+## Auditoriya «dunyolari» (2026-11-25, pilot)
+
+- `/goals/sport` — umumiy shablon oʻrniga oʻz dunyosi: toʻq hero + foto + raqamlar, «Mashgʻulot kuni» lentasi (5 qadam, mahsulot bilan), «Sportchi toʻplami» (3 mahsulot, bitta tugma bilan savatga, `topic_bundle_add_all`). Aksent `--color-world-sport`.
+- v2 (egasi fikri: «boʻsh, emotsiya yoʻq»): Pantone ranglari (`--color-pantone-*`), hero-kollaj (arka foto + dumaloq foto + mahsulot stikerlari narxi bilan), rangli raqam kartalari, har qadamda foto (test majburiy). Dunyolar: sport (Flame + qora), bolalar (Very Peri, «yoʻl»), ayollar (Peach Fuzz + Viva Magenta), erkaklar (qora + Classic Blue), keksalar (Mocha Mousse, yirik qatorlar).
+- Qolgani: homiladorlar (yangi foto kerak), ofis, goʻzallik, menopauza.
+
+## 18+ «Juftliklar uchun» — Dolphi (2026-11-26)
+
+- Infratuzilma tayyor: `adult` kategoriyasi (0038), katalog izolyatsiyasi, yosh darvozasi, `/couples` sahifasi, maxfiy qadoq belgisi, analytics/pixel maskasi, maxfiylik siyosati §7, yetkazish FAQ. Batafsil va ochiq ishlar: `docs/KATTALAR-18.md`.
+- Kutilmoqda: Dolphi SKU roʻyxati, rasmlar, MXIK, distributor hujjatlari, yurist koʻrigi.

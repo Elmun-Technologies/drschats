@@ -1,3 +1,4 @@
+import { ADULT_CATEGORY, isAdult } from "./adult";
 import { productKeyword } from "@/lib/content/product-keywords";
 import type { Locale } from "@/lib/i18n/routing";
 import { BRAND } from "@/lib/brand";
@@ -191,7 +192,8 @@ export class CatalogEngine implements ShopflowClient {
 
   async getCategories(locale: Locale): Promise<Category[]> {
     const data = await this.load();
-    return data.categories.map((c) => resolveCategory(c, data, locale));
+    // The 18+ shelf is reached through its own page, never the shared category list.
+    return data.categories.filter((c) => c.slug !== ADULT_CATEGORY).map((c) => resolveCategory(c, data, locale));
   }
 
   async getProducts(params: ProductListParams): Promise<ProductListResult> {
@@ -199,6 +201,7 @@ export class CatalogEngine implements ShopflowClient {
       locale, category, search, origin, minPrice, maxPrice, sort,
       assortment = "listed", page = 1, pageSize = 12,
     } = params;
+    const adult = category === ADULT_CATEGORY ? "only" : (params.adult ?? "exclude");
     const data = await this.load();
     let items = data.products
       // Products withdrawn from sale disappear from every listing unless a
@@ -217,6 +220,8 @@ export class CatalogEngine implements ShopflowClient {
       });
 
     if (assortment === "core") items = items.filter((p) => p.assortment === "core");
+    if (adult === "exclude") items = items.filter((p) => !isAdult(p));
+    if (adult === "only") items = items.filter(isAdult);
 
     if (category) items = items.filter((p) => p.categorySlug === category);
     if (origin) items = items.filter((p) => p.origin === origin);

@@ -49,6 +49,8 @@ export interface CartLine {
   soldOut?: boolean;
   /** Tracked stock when the line was added / last synced; caps the stepper. */
   stockQty?: number;
+  /** An 18+ product: discreet packaging, and its name never reaches an ad pixel. */
+  adult?: boolean;
 }
 
 export interface CartTotals {
