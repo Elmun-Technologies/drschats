@@ -7,7 +7,7 @@ import { COMMERCE } from "@/lib/config/commerce";
 import { getCommerceSettings } from "@/lib/commerce/server";
 import { BRAND } from "@/lib/brand";
 import { getQuizQuestions } from "@/lib/quiz/questions";
-import { AUDIENCE_PHOTOS, audienceSubtitleKey } from "@/lib/content/audience";
+import { AUDIENCE_PAGES, AUDIENCE_PHOTOS, audienceSubtitleKey } from "@/lib/content/audience";
 import { categoryCutout, productCutout } from "@/lib/content/product-cutouts";
 import { JsonLd, faqLd } from "@/lib/seo/jsonld";
 import type { Locale } from "@/lib/i18n/routing";
@@ -214,7 +214,7 @@ export async function HomeAudience({ locale }: { locale: Locale }) {
           return (
             <Link
               key={o.id}
-              href={{ pathname: "/quiz", query: { who: o.id } }}
+              href={AUDIENCE_PAGES[o.id] ?? { pathname: "/quiz", query: { who: o.id } }}
               className="flex w-[136px] shrink-0 flex-col gap-2 lg:w-auto lg:gap-2.5"
             >
               <span className="relative block h-[170px] overflow-hidden rounded-[18px] bg-tile lg:aspect-[4/5] lg:h-auto lg:rounded-[20px]">
