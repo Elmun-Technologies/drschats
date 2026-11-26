@@ -15,6 +15,7 @@
 */
 
 import { ADULT_CATEGORY, isAdult } from "@/lib/catalog/adult";
+import { ADULT_TITLE, isAdultPage } from "./redact-url";
 import { journey, journeyPage } from "@/lib/journey/client";
 import { RECO_VARIANT, impressionSlugs, type RecoList } from "@/lib/reco/lists";
 import { analyticsIdsFromEnvironment, type AnalyticsIds } from "./config";
@@ -280,7 +281,10 @@ export function trackPageNotFound() {
 /** Single-page navigations: Meta Pixel and Metrika only count hard loads on their own. */
 export function trackPageView(url: string) {
   journeyPage(url);
-  window.fbq?.("track", "PageView");
+  const adult = isAdultPage();
+  // GA4's own history page_view reads these: keep the 18+ product out of it (lib/analytics/redact-url.ts).
+  window.gtag?.("set", { page_location: location.origin + url, ...(adult ? { page_title: ADULT_TITLE } : {}) });
+  if (!adult) window.fbq?.("track", "PageView");
   const ymId = analyticsIds().yandexMetrika;
-  if (ymId) window.ym?.(Number(ymId), "hit", url);
+  if (ymId) window.ym?.(Number(ymId), "hit", url, adult ? { title: ADULT_TITLE } : undefined);
 }

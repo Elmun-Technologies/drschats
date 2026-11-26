@@ -353,7 +353,8 @@ export async function submitOrder(
               total: order.totals.total,
               phone: order.customer.phone,
               name: order.customer.name,
-              items: order.items,
+              // The journey never holds an 18+ product by name (lib/catalog/adult.ts); the order itself does.
+              items: order.items.map((i) => (adultSlugs.has(i.slug) ? { ...i, slug: "adult", name: "18+" } : i)),
             })
           : Promise.resolve(),
         clubBotReceipt(result.orderId, telegramUser?.id ?? sessionChat, { earn: pointsEarn, spent: pointsSpent(order.totals.adjustments) }),

@@ -53,7 +53,7 @@ export function AgeGate({
           __html: `try{if(document.cookie.split("; ").indexOf("${AGE_COOKIE}=1")>-1)document.documentElement.classList.add("age-ok")}catch(e){}`,
         }}
       />
-      <div className="relative">
+      <div className="relative" data-adult-page>
         <div
           className="age-gated"
           inert={ok !== true}
